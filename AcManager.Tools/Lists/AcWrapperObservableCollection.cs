@@ -45,6 +45,7 @@ namespace AcManager.Tools.Lists {
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
                 case NotifyCollectionChangedAction.Reset:
+                    // BUG: unsubscribe!
                     foreach (var item in Items) {
                         Subscribe(item);
                     }

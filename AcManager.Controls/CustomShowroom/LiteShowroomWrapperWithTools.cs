@@ -10,12 +10,15 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.Controls.CustomShowroom {
     public class LiteShowroomWrapperWithTools : LiteShowroomWrapper {
+        [CanBeNull]
         private LiteShowroomTools _tools;
+
         private bool _visibleTools = true;
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
@@ -160,7 +163,7 @@ namespace AcManager.Controls.CustomShowroom {
         private bool _skip;
 
         private void Tools_LocationChanged(object sender, EventArgs e) {
-            if (_skip) return;
+            if (_skip || _tools == null) return;
             
             var pos = new Point(_tools.Left, _tools.Top);
             foreach (var i in from i in Enumerable.Range(0, StickyLocationsCount)
@@ -253,7 +256,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnRender() {
-            if (Paused && !_tools.IsActive && !Renderer.IsDirty) return;
+            if (_tools == null || Renderer == null || Paused && !_tools.IsActive && !Renderer.IsDirty) return;
             Renderer.Draw();
         }
 

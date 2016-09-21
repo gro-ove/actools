@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
-    <Grid>
+    <mui:Cell>
         <DockPanel x:Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <!--first two rows-->
             <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
@@ -29,29 +29,29 @@
                 <!--first column, showroom & filter-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
+                    <mui:BetterComboBox IsReadOnly="True" Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                                 <Setter Property="ToolTip" Value="{StaticResource ShowroomPreviewToolTip}" />
                             </Style>
                         </ComboBox.ItemContainerStyle>
-                    </ComboBox>
+                    </mui:BetterComboBox>
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
+                    <mui:BetterComboBox IsReadOnly="True" Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
                 </StackPanel>
 
                 <!--second column, camera position-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_CameraPositionLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="4 0 4 0" Text="{Binding CameraPosition}" />
+                    <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraPosition}" />
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="1">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_LookAtLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="4 0 4 0" Text="{Binding CameraLookAt}" />
+                    <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraLookAt}" />
                 </StackPanel>
             </Grid>
 
@@ -113,12 +113,12 @@
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
+                    <mui:BetterTextBox Margin="5 0 5 0" Text="{Binding CameraFov}" Mode="Number" Placeholder="?" />
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_ExposureLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" mui:TextBoxAdvancement.SpecialMode="Number" mui:WatermarkService.Watermark="?" />
+                    <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" Mode="Number" Placeholder="?" />
                 </StackPanel>
             </Grid>
         </DockPanel>
@@ -160,7 +160,7 @@
             <TextBlock Text="{x:Static c:ControlsStrings.Common_Error}" Style="{StaticResource Heading1}" />
             <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
         </StackPanel>
-    </Grid>
+    </mui:Cell>
 
     <mui:ModernDialog.ButtonsRowContent>
         <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding}"

@@ -31,7 +31,7 @@
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Online.ShowBrandBadges}">
-                <Label Content="Show brand badges in cars list" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_ShowBrandBadges}" />
             </CheckBox>
 
             <!--connection-->

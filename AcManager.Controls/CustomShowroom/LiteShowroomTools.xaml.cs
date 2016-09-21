@@ -22,6 +22,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
@@ -200,6 +201,20 @@ namespace AcManager.Controls.CustomShowroom {
                 if (!AmbientShadowsMode && Renderer != null) {
                     Renderer.AmbientShadowHighlight = false;
                 }
+            }));
+
+            private static string ToString(Vector3 vec) {
+                return $"{-vec.X:F3}, {vec.Y:F3}, {vec.Z:F3}";
+            }
+
+            private DelegateCommand _copyCameraPositionCommand;
+
+            public DelegateCommand CopyCameraPositionCommand => _copyCameraPositionCommand ?? (_copyCameraPositionCommand = new DelegateCommand(() => {
+                if (Renderer == null) return;
+                ShowMessage(string.Format("Camera position: {0}\nLook at: {1}\nFOV: {2:F1}°",
+                        ToString(Renderer.Camera.Position), ToString(Renderer.Camera.Position + Renderer.Camera.Look),
+                        180d / Math.PI * Renderer.Camera.FovY),
+                        "Camera Position");
             }));
 
             private double _ambientShadowDiffusion;

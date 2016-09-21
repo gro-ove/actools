@@ -105,6 +105,14 @@ namespace AcManager.Tools.Objects {
             Rename(SettingsHolder.Drive.AutoAddReplaysExtension ? Name + Extension : Name);
         }
 
+        public override bool HandleChangedFile(string filename) {
+            if (string.Equals(filename, Location, StringComparison.OrdinalIgnoreCase)) {
+                Size = new FileInfo(Location).Length;
+            }
+
+            return true;
+        }
+
         public override string Name {
             get { return base.Name; }
             protected set {

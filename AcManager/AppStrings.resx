@@ -3318,4 +3318,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
     <value>Show AI Level In Driver’s Name</value>
   </data>
+  <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
+    <value>Show brand badges in cars list</value>
+  </data>
 </root>

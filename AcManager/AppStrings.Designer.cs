@@ -6934,6 +6934,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show brand badges in cars list.
+        /// </summary>
+        public static string Settings_Online_ShowBrandBadges {
+            get {
+                return ResourceManager.GetString("Settings_Online_ShowBrandBadges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Plugins.
         /// </summary>
         public static string Settings_Plugins {

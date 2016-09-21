@@ -125,6 +125,8 @@
 
                 <Button Margin="0 12 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
                         Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                <Button Margin="0 12 0 0" Command="{Binding CopyCameraPositionCommand}" ToolTip="Use this button if you want to find coordinates for updating previews"
+                        Content="Copy Camera Position" />
 
                 <StackPanel
                         Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">

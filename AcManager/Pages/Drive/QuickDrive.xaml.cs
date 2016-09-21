@@ -279,8 +279,6 @@ namespace AcManager.Pages.Drive {
                     Time = Time,
                     TimeMultipler = TimeMultipler,
                 }, o => {
-                    Temperature = o.Temperature;
-                    Time = o.Time;
                     TimeMultipler = o.TimeMultipler;
 
                     if (_weatherId == null && o.RealConditions) {
@@ -288,12 +286,16 @@ namespace AcManager.Pages.Drive {
                         RealConditionsTimezones = o.RealConditionsTimezones ?? RealConditionsTimezones;
                         RealConditionsManualTime = o.RealConditionsManualTime ?? RealConditionsManualTime;
                         RealConditions = true;
+                        UpdateConditions();
                     } else {
                         RealConditions = false;
                         RealConditionsLocalWeather = false;
                         RealConditionsTimezones = false;
                         RealConditionsManualTime = false;
                     }
+
+                    Temperature = o.Temperature;
+                    Time = o.Time;
 
                     try {
                         _skipLoading = o.ModeData != null;
