@@ -44,7 +44,7 @@ namespace AcManager.Tools.Managers.Presets {
         public IEnumerable<ISavedPresetEntry> GetSavedPresets(string category) {
             var directory = GetDirectory(category);
 
-            var filesList = FileUtils.GetFiles(directory)
+            var filesList = FileUtils.GetFilesRecursive(directory)
                                      .Where(x => x.ToLowerInvariant().EndsWith(FileExtension))
                                      .Select(x => new SavedPresetEntry(directory, x))
                                      .ToList<ISavedPresetEntry>();

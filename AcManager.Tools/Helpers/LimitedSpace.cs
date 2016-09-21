@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers {
             LimitedStorage.RegisterSpace(SelectedLayout, 25);
             LimitedStorage.RegisterSpace(SelectedEntry, 25);
             LimitedStorage.RegisterSpace(OnlineQuickFilter, 25);
-            LimitedStorage.RegisterSpace(OnlineSelectedCar, 100);
+            LimitedStorage.RegisterSpace(OnlineSelectedCar, 25);
             LimitedStorage.RegisterSpace(OnlineSorting, 25);
         }
     }

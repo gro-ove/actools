@@ -167,10 +167,13 @@
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BetterScrollBar.cs" />
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
+    <Compile Include="Windows\Controls\BooleanSwitch.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
+    <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
+    <Compile Include="Windows\Controls\Switch.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />

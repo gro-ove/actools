@@ -104,14 +104,14 @@ namespace AcManager.Pages.Selected {
                 }
 
                 var directory = FileUtils.GetDocumentsScreensDirectory();
-                var shots = Directory.GetFiles(directory);
+                var shots = FileUtils.GetFilesSafe(directory);
 
                 await QuickDrive.RunAsync(track: SelectedTrackConfiguration);
                 if (ScreenshotsConverter.CurrentConversion?.IsCompleted == false) {
                     await ScreenshotsConverter.CurrentConversion;
                 }
 
-                var newShots = Directory.GetFiles(directory)
+                var newShots = FileUtils.GetFilesSafe(directory)
                                         .Where(x => !shots.Contains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
                 if (!newShots.Any()) {
                     NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, ControlsStrings.AcObject_CannotUpdatePreview_TrackCommentary);
@@ -144,6 +144,7 @@ namespace AcManager.Pages.Selected {
                     InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
+
                 if (dialog.ShowDialog() == true) {
                     try {
                         ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth);

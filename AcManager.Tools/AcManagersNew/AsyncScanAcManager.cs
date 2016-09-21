@@ -103,7 +103,6 @@ namespace AcManager.Tools.AcManagersNew {
 
         public async Task ActualScanAsync(CancellationToken cancellation) {
             Status = AsyncScanManagerStatus.Loading;
-            ClearList();
 
             IEnumerable<AcPlaceholderNew> entries;
             try {
@@ -122,6 +121,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (IsScanning) throw new Exception("Scanning already in process");
             
             IsScanning = true;
+            ClearList();
 
             try {
                 InnerWrappersList.AddRange(entries.Select(x => new AcItemWrapper(this, x)));

@@ -13,7 +13,7 @@ namespace AcTools.Utils {
                     yield return candidate;
                 }
             } else {
-                foreach (var candidate in GetFiles(baseDirectory).Where(candidate => candidate != missingFilename && 
+                foreach (var candidate in GetFilesRecursive(baseDirectory).Where(candidate => candidate != missingFilename && 
                         CouldBeRenamedFile(baseDirectory, missingFilename, candidate))) {
                     yield return candidate;
                 }

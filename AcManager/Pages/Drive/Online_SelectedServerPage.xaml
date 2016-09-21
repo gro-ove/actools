@@ -19,15 +19,41 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding Entry}" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <DockPanel DataContext="{Binding Entry}" Background="Transparent">
+        <c:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
+            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+                <Button Content="{x:Static g:AppStrings.Toolbar_Refresh}" ToolTip="{x:Static g:AppStrings.Toolbar_Refresh_OnlineTooltip}"
+                        Command="{Binding RefreshCommand}" />
+                <Separator />
+                <ToggleButton x:Name="AssistsButton" Content="Assists"
+                        IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                    <ToggleButton.ToolTip>
+                        <c:AssistsDescription />
+                    </ToggleButton.ToolTip>
+                </ToggleButton>
+                <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
+                        IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                    <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
+                </c:ModernPopup>
+                <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
+                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Button.ToolTip>
+                        <Grid>
+                            <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}"
+                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Text="{Binding NonAvailableReason, StringFormat='{}{0} (Gtrl+G, Ctrl+Alt+G to connect anyway)'}"
+                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                        </Grid>
+                    </Button.ToolTip>
+                </Button>
+                <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}"
+                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </ToolBar>
+        </c:AcToolBar>
 
-        <Grid>
+        <mui:Switch Value="{Binding Status}">
             <!-- error -->
-            <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Error}">
+            <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Error}">
                 <!-- server's name -->
                 <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
@@ -57,12 +83,12 @@
             </StackPanel>
 
             <!-- loading -->
-            <Grid Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Loading}">
+            <Border mui:Switch.When="{x:Static t:ServerStatus.Loading}">
                 <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Grid>
+            </Border>
 
             <!-- content -->
-            <DockPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Ready}">
+            <DockPanel mui:Switch.When="{x:Static t:ServerStatus.Ready}">
                 <StackPanel DockPanel.Dock="Top">
                     <!-- server's name -->
                     <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
@@ -85,25 +111,17 @@
                     </DockPanel>
 
                     <!-- password -->
-                    <Grid Margin="0 0 0 20" Visibility="{Binding PasswordRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel Orientation="Horizontal" Margin="0 0 16 0">
+                    <DockPanel Margin="0 0 0 20" Visibility="{Binding PasswordRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal" Margin="0 0 16 0" DockPanel.Dock="Left">
                             <Path Data="{StaticResource LockIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}" Stretch="Uniform"
-                                    Visibility="Visible" x:Name="PasswordIcon" HorizontalAlignment="Left"
-                                    ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="10 2 2 2" />
+                                    Visibility="Visible" HorizontalAlignment="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}"
+                                    Margin="10 2 2 2" />
                             <TextBlock Text="{x:Static g:AppStrings.Online_PasswordLabel}" Style="{StaticResource Heading2}" />
                         </StackPanel>
-
-                        <DockPanel Grid.Column="1">
-                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
-                                    DockPanel.Dock="Right" Visibility="{Binding WrongPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <mui:ProperPasswordBox Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBoxAsTextBlock}" />
-                        </DockPanel>
-                    </Grid>
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                DockPanel.Dock="Right" Visibility="{Binding WrongPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <mui:ProperPasswordBox Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBoxAsTextBlock}" />
+                    </DockPanel>
 
                     <!-- track & car -->
                     <Grid Height="160">
@@ -113,45 +131,47 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <Grid ClipToBounds="True" Background="Gray">
-                            <Grid.ToolTip>
+                        <mui:Cell ClipToBounds="True" Background="Gray">
+                            <mui:Cell.ToolTip>
                                 <ToolTip>
                                     <StackPanel Margin="4 8">
                                         <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
                                         <c:TrackBlock Track="{Binding Track}" ShowPreview="False" Width="512" MaxHeight="320" />
                                     </StackPanel>
                                 </ToolTip>
-                            </Grid.ToolTip>
+                            </mui:Cell.ToolTip>
                             <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill"
                                     c:ImageViewerService.Image="{Binding Track.PreviewImage}" />
                             <mui:BetterImage Filename="{Binding Track.OutlineImage}" ShowBroken="False" IsHitTestVisible="False" />
                             <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Track.Name}" Foreground="White"
                                     IsHitTestVisible="False" />
-                        </Grid>
+                        </mui:Cell>
 
-                        <Grid ClipToBounds="True" Background="Gray" Grid.Column="2"
-                                Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <mui:BetterImage Stretch="UniformToFill" Filename="{Binding CarsView.CurrentItem.AvailableSkin.PreviewImage}"
+                        <mui:Cell ClipToBounds="True" Background="Gray" Grid.Column="2">
+                            <mui:BetterImage Stretch="UniformToFill" Filename="{Binding SelectedCarEntry.AvailableSkin.PreviewImage}"
                                     HorizontalAlignment="Center" />
-                            <Grid Visibility="{Binding CarsView.CurrentItem.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
+                            <Border Visibility="{Binding SelectedCarEntry.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
                                     Background="#111111">
                                 <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_SkinIsMissing}" Foreground="#444444"
                                         HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
-                            </Grid>
-                            <Grid DataContext="{Binding CarsView.CurrentItem}" Background="Transparent"
+                            </Border>
+                            <Border DataContext="{Binding SelectedCarEntry}" Background="Transparent"
                                     c:ImageViewerService.Image="{Binding AvailableSkin.PreviewImage}">
-                                <Grid.ToolTip>
+                                <Border.ToolTip>
                                     <StackPanel Margin="4 8">
                                         <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
                                         <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                                     </StackPanel>
-                                </Grid.ToolTip>
-                            </Grid>
+                                </Border.ToolTip>
+                            </Border>
                             <ComboBox ItemsSource="{Binding CarsView}" Background="#99333333" Foreground="White" Padding="4" VerticalAlignment="Bottom"
                                     BorderThickness="0" IsSynchronizedWithCurrentItem="True">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type t:ServerEntry+CarEntry}">
-                                        <TextBlock Text="{Binding DisplayName}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" Margin="0 0 4 0" />
+                                            <TextBlock Text="{Binding DisplayName}" />
+                                        </StackPanel>
 
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding IsAvailable}" Value="False">
@@ -160,24 +180,19 @@
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
-                                <!--<ComboBox.ItemContainerStyle>
-                                    <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                                        <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>-->
                             </ComboBox>
-                        </Grid>
+                        </mui:Cell>
 
-                        <Grid Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                        <!--<Grid Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                                 Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#111111">
                             <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_AllCarsAreTaken}" Foreground="#888888"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="4" TextWrapping="Wrap" TextAlignment="Center" />
-                        </Grid>
+                        </Grid>-->
                     </Grid>
 
                     <!--skins list-->
                     <Border Margin="-2 6 -2 0" Visibility="{Binding BookingMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ListBox DataContext="{Binding CarsView.CurrentItem}" ItemsSource="{Binding CarObject.SkinsActualList}"
+                        <ListBox DataContext="{Binding SelectedCarEntry}" ItemsSource="{Binding CarObject.SkinsActualList}"
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="False"
                                 SelectedItem="{Binding AvailableSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
@@ -219,7 +234,7 @@
                         <TextBlock Text="{x:Static g:AppStrings.Online_LeftLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                         <TextBlock Text="{Binding Time}" Grid.Column="1" Grid.Row="1" />
-                        <TextBlock x:Name="TimeLeftTextBlock" Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
+                        <TextBlock Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
                     </Grid>
 
                     <!-- sessions list -->
@@ -227,15 +242,10 @@
                     <ItemsControl ItemsSource="{Binding Sessions}" Margin="20 8 0 20">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type t:ServerEntry+Session}">
-                                <Grid x:Name="Main">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock x:Name="TypeText" Text="{Binding DisplayType}" />
-                                    <TextBlock x:Name="DurationText" Text="{Binding DisplayDuration}" Grid.Column="1" />
-                                </Grid>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" Width="200" x:Name="TypeText" Text="{Binding DisplayType}" />
+                                    <TextBlock x:Name="DurationText" Text="{Binding DisplayDuration}" />
+                                </DockPanel>
 
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -285,37 +295,6 @@
                     </ScrollViewer>
                 </DockPanel>
             </DockPanel>
-        </Grid>
-
-        <c:AcToolBar x:Name="ToolBar" IsActive="True" Grid.Row="1" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Refresh}" ToolTip="{x:Static g:AppStrings.Toolbar_Refresh_OnlineTooltip}"
-                        Command="{Binding RefreshCommand}" />
-                <Separator />
-                <ToggleButton x:Name="AssistsButton" Content="Assists"
-                        IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
-                    <ToggleButton.ToolTip>
-                        <c:AssistsDescription />
-                    </ToggleButton.ToolTip>
-                </ToggleButton>
-                <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
-                        IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
-                    <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
-                </c:ModernPopup>
-                <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
-                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Button.ToolTip>
-                        <Grid>
-                            <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}"
-                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <TextBlock Text="{Binding NonAvailableReason, StringFormat='{}{0} (Gtrl+G, Ctrl+Alt+G to connect anyway)'}"
-                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                        </Grid>
-                    </Button.ToolTip>
-                </Button>
-                <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}"
-                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            </ToolBar>
-        </c:AcToolBar>
-    </Grid>
+        </mui:Switch>
+    </DockPanel>
 </UserControl>

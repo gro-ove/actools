@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -189,6 +190,50 @@ namespace AcManager.Tools.Helpers.Api {
             return result;
         }
 
+        [NotNull]
+        private static ServerInformation[] LoadListUsingRequest(string uri) {
+            var request = (HttpWebRequest)WebRequest.Create(uri);
+            request.Method = "GET";
+            request.UserAgent = InternalUtils.GetKunosUserAgent();
+            request.Headers.Add("Accept-Encoding", "gzip");
+
+            if (OptionIgnoreSystemProxy) {
+                request.Proxy = null;
+            }
+
+            if (OptionForceDisabledCache) {
+                request.CachePolicy = _cachePolicy ??
+                        (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
+            }
+
+            request.ContinueTimeout = OptionWebRequestTimeout;
+            request.ReadWriteTimeout = OptionWebRequestTimeout;
+            request.Timeout = OptionWebRequestTimeout;
+
+            ServerInformation[] result;
+            using (var response = (HttpWebResponse)request.GetResponse()) {
+                if (response.StatusCode != HttpStatusCode.OK) {
+                    throw new Exception($"StatusCode = {response.StatusCode}");
+                }
+
+                using (var stream = response.GetResponseStream()) {
+                    if (stream == null) {
+                        throw new Exception(@"ResponseStream = null");
+                    }
+
+                    if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
+                        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                            result = ServerInformation.DeserializeSafe(deflateStream);
+                        }
+                    } else {
+                        result = ServerInformation.DeserializeSafe(stream);
+                    }
+                }
+            }
+            
+            return result;
+        }
+
         [CanBeNull]
         public static ServerInformation[] TryToGetList() {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
@@ -198,12 +243,9 @@ namespace AcManager.Tools.Helpers.Api {
                 var requestUri = $"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var data = Load(requestUri);
+                    var parsed = LoadListUsingRequest(requestUri);
                     var loadTime = watch.Elapsed;
-                    watch.Restart();
-                    var parsed = JsonConvert.DeserializeObject<ServerInformation[]>(data);
-                    var parsingTime = watch.Elapsed;
-                    Logging.Write($"List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
+                    Logging.Write($"List (loading+parsing): {loadTime.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (WebException e) {
                     Logging.Warning($"Cannot get servers list: {requestUri}, {e.Message}");

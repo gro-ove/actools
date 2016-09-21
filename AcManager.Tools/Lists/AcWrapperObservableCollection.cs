@@ -43,27 +43,42 @@ namespace AcManager.Tools.Lists {
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            if (e.OldItems != null) {
-                foreach (AcItemWrapper item in e.OldItems) {
-                    Unsubscribe(item);
-                }
-            }
+            switch (e.Action) {
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (var item in Items) {
+                        Subscribe(item);
+                    }
+                    break;
 
-            if (e.NewItems != null) {
-                foreach (AcItemWrapper item in e.NewItems) {
-                    Subscribe(item);
-                }
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                    if (e.OldItems != null) {
+                        foreach (AcItemWrapper item in e.OldItems) {
+                            Unsubscribe(item);
+                        }
+                    }
+
+                    if (e.NewItems != null) {
+                        foreach (AcItemWrapper item in e.NewItems) {
+                            Subscribe(item);
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Move:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             CollectionChangedInner?.Invoke(this, e);
         }
 
         public override void AddRange(IEnumerable<AcItemWrapper> range) {
-            var list = range.ToList();
-            base.AddRange(list);
-
-            foreach (var item in list) {
-                Subscribe(item);
+            foreach (var item in range) {
+                Add(item);
             }
         }
 
@@ -98,7 +113,7 @@ namespace AcManager.Tools.Lists {
             ItemPropertyChanged?.Invoke(sender, e);
         }
 
-        public void RefreshFilter([NotNull]AcPlaceholderNew valueObject) {
+        public void RefreshFilter([NotNull] AcPlaceholderNew valueObject) {
             var wrapperObject = Items.FirstOrDefault(x => x.Value == valueObject);
             if (wrapperObject == null) {
                 Logging.Warning("Wrapper object is null");
@@ -108,7 +123,7 @@ namespace AcManager.Tools.Lists {
             RefreshFilter(wrapperObject);
         }
 
-        public void RefreshFilter([NotNull]AcItemWrapper wrapperObject) {
+        public void RefreshFilter([NotNull] AcItemWrapper wrapperObject) {
             CollectionChangedInner?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, wrapperObject, wrapperObject));
         }
 
@@ -138,6 +153,10 @@ namespace AcManager.Tools.Lists {
         }
 
         public new void Clear() {
+            foreach (var item in Items) {
+                Unsubscribe(item);
+            }
+
             base.Clear();
             IsReady = false;
         }

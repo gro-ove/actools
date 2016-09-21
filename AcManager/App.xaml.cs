@@ -177,9 +177,6 @@ namespace AcManager {
                     new StarterPlus());
 
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
-            OnlineManager.Initialize();
-            LanManager.Initialize();
-            RecentManager.Initialize();
             Superintendent.Initialize();
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);

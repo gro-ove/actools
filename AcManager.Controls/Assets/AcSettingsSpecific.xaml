@@ -33,32 +33,36 @@
 
             <mui:BooleanSwitch DockPanel.Dock="Bottom" Value="{Binding RangeMode}"
                     Visibility="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <mui:Cell mui:BooleanSwitch.When="True">
-                    <Rectangle Fill="{DynamicResource ButtonBackground}" />
-                    <Rectangle Fill="{DynamicResource Accent}" Height="4" Margin="2"
-                            Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                        <Rectangle.RenderTransform>
-                            <ScaleTransform ScaleY="1" ScaleX="{Binding Value}" />
-                        </Rectangle.RenderTransform>
-                    </Rectangle>
-                </mui:Cell>
-                <mui:Cell mui:BooleanSwitch.When="False">
-                    <Rectangle Margin="2 0 10 0" x:Name="Helper" />
-                    <Rectangle Fill="{DynamicResource ButtonBackground}" />
-                    <Rectangle Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left"
-                            Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                        <Rectangle.RenderTransform>
-                            <TranslateTransform Y="0">
-                                <TranslateTransform.X>
-                                    <MultiBinding Converter="{StaticResource MultiMultiplyConverter}">
-                                        <Binding Path="Value" />
-                                        <Binding ElementName="Helper" Path="ActualWidth" />
-                                    </MultiBinding>
-                                </TranslateTransform.X>
-                            </TranslateTransform>
-                        </Rectangle.RenderTransform>
-                    </Rectangle>
-                </mui:Cell>
+                <mui:BooleanSwitch.True>
+                    <mui:Cell>
+                        <Rectangle Fill="{DynamicResource ButtonBackground}" />
+                        <Rectangle Fill="{DynamicResource Accent}" Height="4" Margin="2"
+                                Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                            <Rectangle.RenderTransform>
+                                <ScaleTransform ScaleY="1" ScaleX="{Binding Value}" />
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                    </mui:Cell>
+                </mui:BooleanSwitch.True>
+                <mui:BooleanSwitch.False>
+                    <mui:Cell>
+                        <Rectangle Margin="2 0 10 0" x:Name="Helper" />
+                        <Rectangle Fill="{DynamicResource ButtonBackground}" />
+                        <Rectangle Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left"
+                                Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                            <Rectangle.RenderTransform>
+                                <TranslateTransform Y="0">
+                                    <TranslateTransform.X>
+                                        <MultiBinding Converter="{StaticResource MultiMultiplyConverter}">
+                                            <Binding Path="Value" />
+                                            <Binding ElementName="Helper" Path="ActualWidth" />
+                                        </MultiBinding>
+                                    </TranslateTransform.X>
+                                </TranslateTransform>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                    </mui:Cell>
+                </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
 
             <DockPanel Margin="0 0 0 4" VerticalAlignment="Top" Width="200" DockPanel.Dock="Left">
@@ -90,46 +94,50 @@
                 </CheckBox>
 
                 <mui:BooleanSwitch Value="{Binding RangeMode}">
-                    <StackPanel mui:BooleanSwitch.When="True">
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
-                            <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
-                        </DockPanel>
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
-                            <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
-                        </DockPanel>
-                        <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
-                            <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
-                        </DockPanel>
-                    </StackPanel>
-                    <StackPanel mui:BooleanSwitch.When="False">
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
-                            <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None"
-                                    IsSnapToTickEnabled="True" />
-                        </DockPanel>
-                        <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
-                            <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
-                        </DockPanel>
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
-                            <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
-                        </DockPanel>
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
-                            <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
-                        </DockPanel>
-                    </StackPanel>
+                    <mui:BooleanSwitch.True>
+                        <StackPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
+                                <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
+                            </DockPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
+                                <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
+                            </DockPanel>
+                            <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                                <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                        <StackPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
+                                <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None"
+                                        IsSnapToTickEnabled="True" />
+                            </DockPanel>
+                            <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                                <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
+                            </DockPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
+                                <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
+                            </DockPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
+                                <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </mui:BooleanSwitch.False>
                 </mui:BooleanSwitch>
             </StackPanel>
         </DockPanel>

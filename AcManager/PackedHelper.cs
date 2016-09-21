@@ -28,6 +28,11 @@ namespace AcManager {
 
         private List<string> _temporaryFiles;
 
+        private static string Time() {
+            var t = DateTime.Now;
+            return $"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}";
+        }
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Log(string s) {
             if (_logFilename == null) return;
@@ -37,7 +42,7 @@ namespace AcManager {
                 File.WriteAllBytes(_logFilename, new byte[0]);
             } else {
                 using (var writer = new StreamWriter(_logFilename, true)) {
-                    writer.WriteLine(s);
+                    writer.WriteLine($"{Time()}: {s}");
                 }
             }
         }
@@ -204,6 +209,7 @@ namespace AcManager {
                 for (i = 1; i < 50; i++) {
                     try {
                         result = Assembly.LoadFrom(filename);
+                        break;
                     } catch (FileLoadException) {
                         // special case for idiotic Panda AV
                         Log("fileloadexception! next attempt in 250 ms");
@@ -211,12 +217,13 @@ namespace AcManager {
                     }
                 }
 
-                if (i > 1) {
-                    Log($"{i+1} attempt is successfull");
+                if (result == null) {
+                    Log("no success");
+                    throw new Exception("Can’t access unpacked library");
                 }
 
-                if (result == null) {
-                    throw new Exception("Can’t access unpacked library");
+                if (i > 1) {
+                    Log($"{i + 1} attempt is successfull");
                 }
 
                 if (OptionCache) {

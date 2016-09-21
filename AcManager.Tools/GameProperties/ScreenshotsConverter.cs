@@ -18,9 +18,7 @@ namespace AcManager.Tools.GameProperties {
 
         private static IEnumerable<string> GetBitmaps() {
             try {
-                var directory = FileUtils.GetDocumentsScreensDirectory();
-                if (!Directory.Exists(directory)) return new string[0];
-                return Directory.GetFiles(directory)
+                return FileUtils.GetFilesSafe(FileUtils.GetDocumentsScreensDirectory())
                                 .Where(file => file.EndsWith(@".bmp", StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
                 Logging.Error("Can’t get files without extension: " + e);

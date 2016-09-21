@@ -107,7 +107,7 @@ namespace AcManager.Pages.Dialogs {
                 _timer.Tick += OnTick;
             }
 
-            Car = server.GetSelectedCar();
+            Car = server.SelectedCarEntry?.CarObject;
             Track = server.Track;
 
             try {
@@ -143,7 +143,7 @@ namespace AcManager.Pages.Dialogs {
         public void OnUpdate(BookingResult response) {
             if (response?.IsSuccessful != true) return;
 
-            Car = ServerEntry.GetSelectedCar();
+            Car = ServerEntry.SelectedCarEntry?.CarObject;
             Track = ServerEntry.Track;
 
             try {

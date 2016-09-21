@@ -47,8 +47,11 @@ namespace AcManager.Tools.AcManagersNew {
             protected set {
                 if (value == _isLoaded) return;
                 _isLoaded = value;
-                LoadedCount = WrappersList.Count;
                 OnPropertyChanged();
+
+                if (value) {
+                    LoadedCount = InnerWrappersList.Count;
+                }
             }
         }
 
@@ -69,7 +72,7 @@ namespace AcManager.Tools.AcManagersNew {
         
         public IAcWrapperObservableCollection WrappersList {
             get {
-                if (!IsScanned) {
+                if (!IsScanned && !IsScanning) {
                     Scan();
                 }
 
@@ -79,7 +82,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         public IAcObjectList WrappersAsIList {
             get {
-                if (!IsScanned) {
+                if (!IsScanned && !IsScanning) {
                     Scan();
                 }
 
@@ -299,7 +302,7 @@ namespace AcManager.Tools.AcManagersNew {
         
         [CanBeNull]
         public AcItemWrapper GetWrapperById([NotNull] string id) {
-            if (!IsScanned) {
+            if (!IsScanned && !IsScanning) {
                 Scan();
             }
 

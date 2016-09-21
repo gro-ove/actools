@@ -1,18 +1,36 @@
-using System.Linq;
+using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public abstract class BaseSwitch : Panel {
-        protected abstract bool TestChild(DependencyObject child);
+    public abstract class BaseSwitch : FrameworkElement {
+        [CanBeNull]
+        protected abstract UIElement GetChild();
 
-        protected object GetChild() {
-            return InternalChildren.OfType<DependencyObject>().FirstOrDefault(TestChild);
+
+        private UIElement _activeChild;
+
+        private void SetActiveChild(UIElement element) {
+            if (ReferenceEquals(_activeChild, element)) return;
+
+            if (_activeChild != null) {
+                RemoveLogicalChild(_activeChild);
+                RemoveVisualChild(_activeChild);
+            }
+
+            _activeChild = element;
+
+            if (_activeChild != null) {
+                AddLogicalChild(_activeChild);
+                AddVisualChild(_activeChild);
+            }
         }
 
         protected override Size MeasureOverride(Size constraint) {
-            var e = GetChild() as UIElement;
+            SetActiveChild(GetChild());
+
+            var e = _activeChild;
             if (e == null) return Size.Empty;
 
             e.Measure(constraint);
@@ -20,17 +38,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds) {
-            var e = GetChild() as UIElement;
-            if (e == null) return Size.Empty;
-
-            e.Arrange(new Rect(arrangeBounds));
-            return e.RenderSize;
+            _activeChild?.Arrange(new Rect(arrangeBounds));
+            return arrangeBounds;
         }
 
-        protected override int VisualChildrenCount => GetChild() is UIElement ? 1 : 0;
+        protected override int VisualChildrenCount => _activeChild != null ? 1 : 0;
 
         protected override Visual GetVisualChild(int index) {
-            return GetChild() as UIElement;
+            var child = _activeChild;
+            if (child == null || index != 0) throw new ArgumentOutOfRangeException(nameof(index));
+            return child;
         }
         
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -38,56 +55,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (element != null) {
                 (VisualTreeHelper.GetParent(element) as BaseSwitch)?.InvalidateMeasure();
             }
-        }
-    }
-
-    public class Switch : BaseSwitch {
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public object Value {
-            get { return GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
-        }
-
-        public static object GetWhen(DependencyObject obj) {
-            return (object)obj.GetValue(WhenProperty);
-        }
-
-        public static void SetWhen(DependencyObject obj, object value) {
-            obj.SetValue(WhenProperty, value);
-        }
-
-        public static readonly DependencyProperty WhenProperty = DependencyProperty.RegisterAttached("When", typeof(object),
-                typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnWhenChanged));
-
-        protected override bool TestChild(DependencyObject child) {
-            return Equals(Value, GetWhen(child));
-        }
-    }
-
-    public class BooleanSwitch : BaseSwitch {
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public bool Value {
-            get { return (bool)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
-        }
-
-        public static bool GetWhen(DependencyObject obj) {
-            return (bool)obj.GetValue(WhenProperty);
-        }
-
-        public static void SetWhen(DependencyObject obj, bool value) {
-            obj.SetValue(WhenProperty, value);
-        }
-
-        public static readonly DependencyProperty WhenProperty = DependencyProperty.RegisterAttached("When", typeof(bool),
-                typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnWhenChanged));
-
-        protected override bool TestChild(DependencyObject child) {
-            return Value == GetWhen(child);
         }
     }
 }

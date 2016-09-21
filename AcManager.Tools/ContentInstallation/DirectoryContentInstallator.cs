@@ -54,7 +54,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync() {
             return Task.Run(() => {
-                var result = FileUtils.GetFiles(Directory).Select(x => (IFileInfo)new InnerFileInfo(Directory, x)).ToList();
+                var result = FileUtils.GetFilesRecursive(Directory).Select(x => (IFileInfo)new InnerFileInfo(Directory, x)).ToList();
                 return (IEnumerable<IFileInfo>)result;
             });
         }

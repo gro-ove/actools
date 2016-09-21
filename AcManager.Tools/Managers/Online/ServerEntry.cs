@@ -405,10 +405,6 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public CarObject GetById([NotNull] string id) {
-            return CarsOrTheirIds.FirstOrDefault(x => string.Equals(x.CarId, id, StringComparison.OrdinalIgnoreCase))?.CarObject;
-        }
-
         private int _currentDriversCount;
 
         public int CurrentDriversCount {
@@ -561,17 +557,6 @@ namespace AcManager.Tools.Managers.Online {
                 _isAvailable = value;
                 OnPropertyChanged();
                 _joinCommand?.RaiseCanExecuteChanged();
-            }
-        }
-
-        private string _field;
-
-        public string Field {
-            get { return _field; }
-            set {
-                if (Equals(value, _field)) return;
-                _field = value;
-                OnPropertyChanged();
             }
         }
 
@@ -761,8 +746,8 @@ namespace AcManager.Tools.Managers.Online {
                     OnPropertyChanged(nameof(CurrentDrivers));
                 }
 
-                CurrentDriversCount = information.Cars.Count(x => x.IsConnected || !string.IsNullOrEmpty(x.DriverName));
-
+                // CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
+                
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
                     await Task.Delay(50);
@@ -791,17 +776,29 @@ namespace AcManager.Tools.Managers.Online {
                     cars = information.Cars.Where(x => x.IsEntryList)
                                       .GroupBy(x => x.CarId)
                                       .Select(g => {
-                                          var x = g.ToList();
-                                          var car = carObjects.GetByIdOrDefault(x[0].CarId, StringComparison.OrdinalIgnoreCase);
-                                          if (car == null) return null;
+                                          var group = g.ToList();
+                                          var id = group[0].CarId;
+                                          var existing = Cars?.GetByIdOrDefault(id);
+                                          if (existing != null) {
+                                              var car = existing.CarObject;
+                                              var availableSkinId = group.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId;
+                                              existing.Total = group.Count;
+                                              existing.Available = group.Count(y => !y.IsConnected && y.IsEntryList);
+                                              existing.AvailableSkin = availableSkinId == null
+                                                      ? null : availableSkinId == string.Empty ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId);
+                                              return existing;
+                                          } else {
+                                              var car = carObjects.GetByIdOrDefault(id, StringComparison.OrdinalIgnoreCase);
+                                              if (car == null) return null;
 
-                                          var availableSkinId = x.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId;
-                                          return new CarEntry(car) {
-                                              Total = x.Count,
-                                              Available = x.Count(y => !y.IsConnected && y.IsEntryList),
-                                              AvailableSkin = availableSkinId == null ? null : availableSkinId == string.Empty
-                                                      ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId)
-                                          };
+                                              var availableSkinId = group.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId;
+                                              return new CarEntry(car) {
+                                                  Total = group.Count,
+                                                  Available = group.Count(y => !y.IsConnected && y.IsEntryList),
+                                                  AvailableSkin = availableSkinId == null ? null : availableSkinId == string.Empty
+                                                          ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId)
+                                              };
+                                          }
                                       }).ToList();
                 }
 
@@ -892,8 +889,22 @@ namespace AcManager.Tools.Managers.Online {
             CarsView.MoveCurrentTo(firstAvailable);
         }
 
+        private CarEntry _selectedCarEntry;
+
+        [CanBeNull]
+        public CarEntry SelectedCarEntry {
+            get { return _selectedCarEntry; }
+            set {
+                if (Equals(value, _selectedCarEntry)) return;
+                _selectedCarEntry = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void SelectedCarChanged(object sender, EventArgs e) {
-            var selectedCar = GetSelectedCar();
+            SelectedCarEntry = CarsView?.CurrentItem as CarEntry;
+
+            var selectedCar = SelectedCarEntry?.CarObject;
             LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, selectedCar?.Id);
             AvailableUpdate();
         }
@@ -918,11 +929,6 @@ namespace AcManager.Tools.Managers.Online {
 
         public static readonly object ActualJoin = new object();
         public static readonly object ForceJoin = new object();
-
-        [CanBeNull]
-        public CarObject GetSelectedCar() {
-            return (CarsView?.CurrentItem as CarEntry)?.CarObject;
-        }
 
         [CanBeNull]
         public CarSkinObject GetSelectedCarSkin() {

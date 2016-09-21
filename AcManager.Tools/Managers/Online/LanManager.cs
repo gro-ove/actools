@@ -10,12 +10,9 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
     public class LanManager : BaseOnlineManager {
-        public static void Initialize() {
-            Debug.Assert(Instance == null);
-            Instance = new LanManager();
-        }
+        private static LanManager _instance;
 
-        public static LanManager Instance { get; private set; }
+        public static LanManager Instance => _instance ?? (_instance = new LanManager());
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             var result = new List<ServerEntry>();

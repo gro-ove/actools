@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -190,6 +191,68 @@ namespace AcTools.Utils.Helpers {
             }
 
             return result;
+        }
+    }
+
+    /// <summary>
+    /// Deserialization without reflection.
+    /// </summary>
+    [LocalizationRequired(false)]
+    public static class JsonDeserializationExtension {
+        public static void MatchNext(this JsonTextReader reader, JsonToken token) {
+            if (!reader.Read() || reader.TokenType != token) {
+                throw new Exception(token + " expected");
+            }
+        }
+
+        public static bool IsMatchNext(this JsonTextReader reader, JsonToken token) {
+            return reader.Read() && reader.TokenType == token;
+        }
+
+        public static bool Until(this JsonTextReader reader, JsonToken token) {
+            return reader.Read() && reader.TokenType != token;
+        }
+
+        public static string[] ReadStringArray(this JsonTextReader reader, int approximateSize = 10) {
+            if (reader.TokenType != JsonToken.StartArray) {
+                throw new Exception("StartArray expected");
+            }
+
+            var result = new List<string>(approximateSize);
+            while (reader.Until(JsonToken.EndArray)) {
+                if (reader.Value == null) throw new Exception("Value expected");
+                result.Add(reader.Value.ToString());
+            }
+
+            return result.ToArray();
+        }
+
+        public static int[] ReadIntArray(this JsonTextReader reader, int approximateSize = 10) {
+            if (reader.TokenType != JsonToken.StartArray) {
+                throw new Exception("StartArray expected");
+            }
+
+            var result = new List<int>(approximateSize);
+            while (reader.Until(JsonToken.EndArray)) {
+                if (reader.Value == null) throw new Exception("Value expected");
+                result.Add(int.Parse(reader.Value.ToString(), CultureInfo.InvariantCulture));
+            }
+
+            return result.ToArray();
+        }
+
+        public static long[] ReadLongArray(this JsonTextReader reader, int approximateSize = 10) {
+            if (reader.TokenType != JsonToken.StartArray) {
+                throw new Exception("StartArray expected");
+            }
+
+            var result = new List<long>(approximateSize);
+            while (reader.Until(JsonToken.EndArray)) {
+                if (reader.Value == null) throw new Exception("Value expected");
+                result.Add(long.Parse(reader.Value.ToString(), CultureInfo.InvariantCulture));
+            }
+
+            return result.ToArray();
         }
     }
 

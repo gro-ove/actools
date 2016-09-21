@@ -26,12 +26,9 @@ namespace AcManager.Tools.Managers.Online {
     public class RecentManager : BaseOnlineManager {
         public static int OptionScanPingTimeout = 200;
 
-        public static void Initialize() {
-            Debug.Assert(Instance == null);
-            Instance = new RecentManager();
-        }
+        private static RecentManager _instance;
 
-        public static RecentManager Instance { get; private set; }
+        public static RecentManager Instance => _instance ?? (_instance = new RecentManager());
 
         private const string KeySavedServers = "RecentManager.SavedServers";
         

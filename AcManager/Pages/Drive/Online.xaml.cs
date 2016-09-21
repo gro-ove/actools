@@ -299,6 +299,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private CancellationTokenSource _pingingSource;
+            private readonly List<IDisposable> _disposeMe = new List<IDisposable>();
 
             public override void Load() {
                 if (Loaded) return;
@@ -317,6 +318,7 @@ namespace AcManager.Pages.Drive {
                     _pingingSource = null;
                 }
 
+                _disposeMe.DisposeEverything();
                 base.Unload();
             }
 
@@ -433,6 +435,22 @@ namespace AcManager.Pages.Drive {
                     }
                 }
             }, () => Manager is RecentManager));
+
+            private AsyncCommand _refreshCommand;
+
+            public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async () => {
+                if (_pingingSource != null) {
+                    _pingingSource.Cancel();
+                    _disposeMe.Add(_pingingSource);
+                    _pingingSource = null;
+                }
+
+                await Manager.RefreshListCommand.ExecuteAsync();
+                Manager.StopPinging();
+
+                _pingingSource = new CancellationTokenSource();
+                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
+            }));
 
             protected override void OnCurrentChanged(object sender, EventArgs e) {
                 base.OnCurrentChanged(sender, e);

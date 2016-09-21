@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -21,24 +20,12 @@ namespace AcManager.Tools.Managers.Online {
         public static BaseOnlineManager ManagerByMode(OnlineManagerType type) {
             switch (type) {
                 case OnlineManagerType.Online:
-                    if (OnlineManager.Instance == null) {
-                        OnlineManager.Initialize();
-                    }
-
                     return OnlineManager.Instance;
 
                 case OnlineManagerType.Lan:
-                    if (LanManager.Instance == null) {
-                        LanManager.Initialize();
-                    }
-
                     return LanManager.Instance;
 
                 case OnlineManagerType.Recent:
-                    if (RecentManager.Instance == null) {
-                        RecentManager.Initialize();
-                    }
-
                     return RecentManager.Instance;
             }
 
@@ -106,9 +93,20 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private int _pinging;
+
+        public void StopPinging() {
+            if (PingingInProcess) {
+                _pinging++;
+                PingingInProcess = false;
+            }
+        }
+
         public async Task PingEverything(IFilter<ServerEntry> priorityFilter, CancellationToken cancellation = default(CancellationToken)) {
             if (PingingInProcess) return;
+
             Pinged = LoadedOnly.Count(x => x.Status != ServerStatus.Unloaded);
+            var pinging = ++_pinging;
 
             try {
                 PingingInProcess = true;
@@ -116,7 +114,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (priorityFilter != null) {
                     await LoadedOnly.Where(priorityFilter.Test).Select(async x => {
-                        if (cancellation.IsCancellationRequested) return;
+                        if (cancellation.IsCancellationRequested || pinging != _pinging) return;
                         if (x.Status == ServerStatus.Unloaded) {
                             await x.Update(ServerEntry.UpdateMode.Lite);
                             Pinged++;
@@ -127,26 +125,32 @@ namespace AcManager.Tools.Managers.Online {
                     if (cancellation.IsCancellationRequested) return;
                 }
 
+                if (pinging != _pinging) return;
                 await LoadedOnly.Select(async x => {
-                    if (cancellation.IsCancellationRequested) return;
+                    if (cancellation.IsCancellationRequested || pinging != _pinging) return;
                     if (x.Status == ServerStatus.Unloaded) {
                         await x.Update(ServerEntry.UpdateMode.Lite);
                         Pinged++;
                     }
                 }).WhenAll(SettingsHolder.Online.PingConcurrency, cancellation);
+
+                if (pinging != _pinging) return;
                 UpdateList();
 
                 if (Pinged > 0) {
                     Logging.Write($"Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
                 }
             } finally {
-                PingingInProcess = false;
+                if (pinging == _pinging) {
+                    PingingInProcess = false;
+                }
             }
         }
 
-        private ICommand _refreshCommand;
+        private AsyncCommand _refreshCommand;
 
-        public ICommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(() => {
+        public AsyncCommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(() => {
+            StopPinging();
             InnerWrappersList.Clear();
             return RescanAsync();
         }, () => !ErrorFatal));

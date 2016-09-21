@@ -77,7 +77,9 @@ namespace AcTools.Render.Wrapper {
                 case Keys.F8:
                     var multipler = 2;
                     var image = _renderer.Shot(multipler);
-                    var filename = Path.Combine(FileUtils.GetDocumentsScreensDirectory(), "__custom_showroom_" + DateTime.Now.ToUnixTimestamp() + ".jpg");
+                    var directory = FileUtils.GetDocumentsScreensDirectory();
+                    FileUtils.EnsureDirectoryExists(directory);
+                    var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
                     image.HighQualityResize(new Size(image.Width / multipler, image.Height / multipler)).Save(filename);
                     break;
 

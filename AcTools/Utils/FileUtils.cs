@@ -159,7 +159,13 @@ namespace AcTools.Utils {
             }
         }
 
-        public static IEnumerable<string> GetFiles(string path, string searchPattern = null) {
+        [NotNull]
+        public static IEnumerable<string> GetFilesSafe([NotNull] string path, string searchPattern = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) {
+            return Directory.Exists(path) ? searchPattern == null ? Directory.GetFiles(path) : Directory.GetFiles(path, searchPattern, searchOption) :
+                    new string[0];
+        }
+
+        public static IEnumerable<string> GetFilesRecursive(string path, string searchPattern = null) {
             var queue = new Queue<string>();
             queue.Enqueue(path);
 

@@ -131,6 +131,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showBrandBadges;
+
+            public bool ShowBrandBadges {
+                get { return _showBrandBadges ?? (_showBrandBadges = ValuesStorage.GetBool("Settings.OnlineSettings.ShowBrandBadges", true)).Value; }
+                set {
+                    if (Equals(value, _showBrandBadges)) return;
+                    _showBrandBadges = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ShowBrandBadges", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _rememberPasswords;
 
             public bool RememberPasswords {

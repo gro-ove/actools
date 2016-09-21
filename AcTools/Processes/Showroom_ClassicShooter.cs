@@ -59,7 +59,7 @@ namespace AcTools.Processes {
             private const int IterationCount = 20;
 
             private const int DisableRotationClickX = 1272,
-                DisableRotationClickY = 1018;
+                    DisableRotationClickY = 1018;
 
             private string _lastShot;
 
@@ -96,8 +96,8 @@ namespace AcTools.Processes {
                 Showroom();
 
                 if (manual) {
-                    // DisableAutorotation();
-                    // SendKeys.SendWait("{F7}");
+                    DisableAutorotation();
+                    SendKeys.SendWait("{F7}");
                     _lastShot = WaitShot();
                 }
 
@@ -164,11 +164,22 @@ namespace AcTools.Processes {
                 }
             }
 
+            private void DeleteShot(string filename) {
+                for (var i = 0; i < 10; i++) {
+                    try {
+                        File.Delete(filename);
+                        return;
+                    } catch (IOException) {
+                        Thread.Sleep(200);
+                    }
+                }
+            }
+
             private void LoadingWait() {
                 PressKey(Keys.F8);
                 var shot = WaitShot();
                 if (shot != null) {
-                    File.Delete(shot);
+                    DeleteShot(shot);
                 }
 
                 Wait(WaitTimeoutPre);
@@ -255,7 +266,7 @@ namespace AcTools.Processes {
                 }
 
                 for (; time > 0; time -= WaitTimeoutStep) {
-                    var files = Directory.GetFiles(FileUtils.GetDocumentsScreensDirectory(), "Showroom_" + CarId + "_*.bmp")
+                    var files = FileUtils.GetFilesSafe(FileUtils.GetDocumentsScreensDirectory(), $"Showroom_{CarId}_*.bmp")
                         .Where(x => new FileInfo(x).CreationTime > from).ToList();
                     if (files.Any()) {
                         Wait(WaitTimeoutEnsure);

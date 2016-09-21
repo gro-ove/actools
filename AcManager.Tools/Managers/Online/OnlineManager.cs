@@ -10,12 +10,9 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
     public class OnlineManager : BaseOnlineManager {
-        public static void Initialize() {
-            Debug.Assert(Instance == null);
-            Instance = new OnlineManager();
-        }
+        private static OnlineManager _instance;
 
-        public static OnlineManager Instance { get; private set; }
+        public static OnlineManager Instance => _instance ?? (_instance = new OnlineManager());
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             ErrorFatal = false;
