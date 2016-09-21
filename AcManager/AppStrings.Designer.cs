@@ -6192,6 +6192,60 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show AI level in driver’s name.
+        /// </summary>
+        public static string Settings_Drive_AiLevelInDriverName {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AiLevelInDriverName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only for non-fixed AI level.
+        /// </summary>
+        public static string Settings_Drive_AiLevelInDriverName_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AiLevelInDriverName_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always record ghost in hotlap mode.
+        /// </summary>
+        public static string Settings_Drive_AlwaysRecordGhost {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AlwaysRecordGhost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record ghost while hotlapping even if it’s hidden.
+        /// </summary>
+        public static string Settings_Drive_AlwaysRecordGhost_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AlwaysRecordGhost_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cache brands.
+        /// </summary>
+        public static string Settings_Drive_CacheBrands {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CacheBrands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In car selection dialog.
+        /// </summary>
+        public static string Settings_Drive_CacheBrands_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CacheBrands_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow to change AI level.
         /// </summary>
         public static string Settings_Drive_ChangeAiLevel {
@@ -6273,11 +6327,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extended Weather.
+        /// </summary>
+        public static string Settings_Drive_ExtendedWeatherHeader {
+            get {
+                return ResourceManager.GetString("Settings_Drive_ExtendedWeatherHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kunos career:.
         /// </summary>
         public static string Settings_Drive_KunosCareerHeader {
             get {
                 return ResourceManager.GetString("Settings_Drive_KunosCareerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local address.
+        /// </summary>
+        public static string Settings_Drive_LocalAddress {
+            get {
+                return ResourceManager.GetString("Settings_Drive_LocalAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For local weather.
+        /// </summary>
+        public static string Settings_Drive_LocalAddress_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_LocalAddress_Tooltip", resourceCulture);
             }
         }
         
@@ -6314,6 +6395,24 @@ namespace AcManager {
         public static string Settings_Drive_OnlineNameLabel {
             get {
                 return ResourceManager.GetString("Settings_Drive_OnlineNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Override default PP filter in Oculus Rift mode.
+        /// </summary>
+        public static string Settings_Drive_OverridePpFilterOculusFix {
+            get {
+                return ResourceManager.GetString("Settings_Drive_OverridePpFilterOculusFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporary overwrite system/cfg/ppfilters/default.ini with selected PP filter if Oculus Rift mode is enabled.
+        /// </summary>
+        public static string Settings_Drive_OverridePpFilterOculusFix_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_OverridePpFilterOculusFix_Tooltip", resourceCulture);
             }
         }
         
@@ -6417,6 +6516,42 @@ namespace AcManager {
         public static string Settings_Drive_StartImmediately {
             get {
                 return ResourceManager.GetString("Settings_Drive_StartImmediately", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use custom weather’s particles.
+        /// </summary>
+        public static string Settings_Drive_WeatherParticles {
+            get {
+                return ResourceManager.GetString("Settings_Drive_WeatherParticles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Particles will be reverted back later.
+        /// </summary>
+        public static string Settings_Drive_WeatherParticles_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_WeatherParticles_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use custom weather’s PP-filter.
+        /// </summary>
+        public static string Settings_Drive_WeatherPpFilter {
+            get {
+                return ResourceManager.GetString("Settings_Drive_WeatherPpFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PP-filter will be switched back later.
+        /// </summary>
+        public static string Settings_Drive_WeatherPpFilter_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_WeatherPpFilter_Tooltip", resourceCulture);
             }
         }
         

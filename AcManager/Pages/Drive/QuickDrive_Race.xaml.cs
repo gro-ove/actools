@@ -181,7 +181,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "manual":
-                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesFiltered;
+                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesManual;
                             RaceGridViewModel.FilterValue = null;
                             RaceGridViewModel.NonfilteredList.ReplaceEverythingBy(
                                     o.ManualList?.Select(x => CarsManager.Instance.GetById(x)).NonNull().Select(x => new RaceGridEntry(x)) ??
@@ -189,7 +189,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "filtered_by_":
-                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesManual;
+                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesFiltered;
                             RaceGridViewModel.FilterValue = o.OpponentsCarsFilter;
                             break;
 

@@ -753,6 +753,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveAiLevelInName;
+
+            public bool QuickDriveAiLevelInName {
+                get { return _quickDriveAiLevelInName ?? (_quickDriveAiLevelInName = ValuesStorage.GetBool("RaceGrid.AiLevelInDriverName", false)).Value; }
+                set {
+                    if (Equals(value, _quickDriveAiLevelInName)) return;
+                    _quickDriveAiLevelInName = value;
+                    ValuesStorage.Set("RaceGrid.AiLevelInDriverName", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _alwaysRecordGhost;
 
             public bool AlwaysRecordGhost {

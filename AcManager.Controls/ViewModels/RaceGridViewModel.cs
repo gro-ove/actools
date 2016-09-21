@@ -186,7 +186,7 @@ namespace AcManager.Controls.ViewModels {
 
                 var mode = Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
-                    NonfatalError.NotifyBackground("Racing grid mode is missing", $"Canít find racing grid mode with ID ì{data.ModeId}î");
+                    NonfatalError.NotifyBackground("Racing grid mode is missing", $"Can‚Äôt find racing grid mode with ID ‚Äú{data.ModeId}‚Äù");
                     Mode = BuiltInGridMode.SameCar;
                 } else {
                     Mode = mode;
@@ -228,11 +228,9 @@ namespace AcManager.Controls.ViewModels {
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
                 }
-
-                Logging.Error(data.StartingPosition);
+                
                 StartingPosition = data.StartingPosition ?? 7;
                 FinishLoading();
-                Logging.Error(data.StartingPosition);
             }, Reset);
 
             _presetsHelper = new PresetsMenuHelper();
@@ -564,29 +562,26 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged(nameof(IsBusy));
                 ErrorMessage = null;
 
-                while (true) {
-                    var mode = Mode;
-                    var candidates = await FindCandidates();
-                    if (mode != Mode) continue;
-                    if (candidates == null) {
-                        Logging.Warning("candidates=null");
-                        return;
-                    }
+                again:
+                var mode = Mode;
+                var candidates = await FindCandidates();
+                if (mode != Mode) goto again;
 
-                    Logging.Debug(candidates.JoinToString(", "));
-                    NonfilteredList.ReplaceEverythingBy(candidates);
-                    break;
-                }
+                // I‚Äôve seen that XKCD comic, but I still think goto is more 
+                // suitable than a loop here
+
+                if (candidates == null) return;
+                NonfilteredList.ReplaceEverythingBy(candidates);
             } catch (SyntaxErrorException e) {
                 ErrorMessage = "Syntax error: " + e.Message;
-                NonfatalError.Notify("Canít update race grid", e);
+                NonfatalError.Notify("Can‚Äôt update race grid", e);
             } catch (ScriptRuntimeException e) {
                 ErrorMessage = e.Message;
             } catch (InformativeException e) when (e.SolutionCommentary == null) {
                 ErrorMessage = e.Message;
             } catch (Exception e) {
                 ErrorMessage = e.Message;
-                NonfatalError.Notify("Canít update race grid", e);
+                NonfatalError.Notify("Can‚Äôt update race grid", e);
             } finally {
                 _rebuildingTask = null;
                 OnPropertyChanged(nameof(IsBusy));
@@ -609,7 +604,7 @@ namespace AcManager.Controls.ViewModels {
         private async Task<IReadOnlyList<RaceGridEntry>> FindCandidates(CancellationToken cancellation = default(CancellationToken)) {
             var mode = Mode;
 
-            // Donít change anything in Fixed or Manual mode
+            // Don‚Äôt change anything in Fixed or Manual mode
             if (mode == BuiltInGridMode.Custom || mode == BuiltInGridMode.CandidatesManual) {
                 return null;
             }
@@ -654,7 +649,7 @@ namespace AcManager.Controls.ViewModels {
 
                     if (!string.IsNullOrWhiteSpace(candidatesMode.Script)) {
                         var state = LuaHelper.GetExtended();
-                        if (state == null) throw new InformativeException("Canít initialize Lua");
+                        if (state == null) throw new InformativeException("Can‚Äôt initialize Lua");
 
                         if (mode.AffectedByCar) {
                             state.Globals[@"selected"] = _playerCar;
@@ -901,17 +896,12 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private const string KeyAiLevelInDriverName = "RaceGrid.AiLevelInDriverName";
-
-        private bool _aiLevelInDriverName = ValuesStorage.GetBool(KeyAiLevelInDriverName);
-
         public bool AiLevelInDriverName {
-            get { return _aiLevelInDriverName && !AiLevelFixed; }
+            get { return !AiLevelFixed && SettingsHolder.Drive.QuickDriveAiLevelInName; }
             set {
-                if (Equals(value, _aiLevelInDriverName)) return;
-                _aiLevelInDriverName = value;
+                if (Equals(value, SettingsHolder.Drive.QuickDriveAiLevelInName)) return;
+                SettingsHolder.Drive.QuickDriveAiLevelInName = value;
                 OnPropertyChanged();
-                ValuesStorage.Set(KeyAiLevelInDriverName, value);
             }
         }
         #endregion

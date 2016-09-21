@@ -52,19 +52,18 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_NameLabel}" />
-                <TextBox Text="{Binding Drive.PlayerName}" mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Drive.PlayerName}" Placeholder="?" />
             </DockPanel>
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_NationalityLabel}" />
-                <TextBox Text="{Binding Drive.PlayerNationality}" mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Drive.PlayerNationality}" Placeholder="?" />
             </DockPanel>
 
             <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
-                <TextBox Text="{Binding Drive.PlayerNameOnline}" mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                        IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
+                <mui:BetterTextBox Text="{Binding Drive.PlayerNameOnline}" Placeholder="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
             <!--quick drive-->
@@ -74,18 +73,22 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="Record ghost while hotlapping even if it's hidden">
-                <Label Content="Always record ghost in hotlap mode" />
+            <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="In car selection dialog">
-                <Label Content="Cache brands" />
+            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CacheBrands_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_CacheBrands}" />
             </CheckBox>
 
-            <DockPanel ToolTip="For local weather"
+            <CheckBox IsChecked="{Binding Drive.QuickDriveAiLevelInName}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName}" />
+            </CheckBox>
+
+            <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_LocalAddress_Tooltip}"
                     Visibility="{Binding Drive.LocalAddress, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <Label Content="Local address" />
-                <TextBox Text="{Binding Drive.LocalAddress}" mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_LocalAddress}" />
+                <mui:BetterTextBox Text="{Binding Drive.LocalAddress}" Placeholder="?" />
             </DockPanel>
 
             <!--kunos career-->
@@ -103,8 +106,8 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
             <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}"
-                    ToolTip="Temporary overwrite system/cfg/ppfilters/default.ini with selected PP filter if Oculus Rift mode is enabled">
-                <Label Content="Overwrite default PP filter in Oculus Rift mode" />
+                    ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />
             </CheckBox>
 
             <DockPanel>
@@ -116,7 +119,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_PreCommandLabel}" />
-                <TextBox Text="{Binding Drive.PreCommand}" mui:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" />
+                <mui:BetterTextBox Text="{Binding Drive.PreCommand}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
             </DockPanel>
 
             <DockPanel>
@@ -128,25 +131,25 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_PostCommandLabel}" />
-                <TextBox Text="{Binding Drive.PostCommand}" mui:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" />
+                <mui:BetterTextBox Text="{Binding Drive.PostCommand}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots}" />
             </CheckBox>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Extended Weather" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_ExtendedWeatherHeader}" />
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CustomClouds_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_CustomClouds}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.WeatherSpecificPpFilter}" ToolTip="PP-filter will be switched back later">
-                <Label Content="Use custom weather's PP-filter" />
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificPpFilter}" ToolTip="{x:Static g:AppStrings.Settings_Drive_WeatherPpFilter_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_WeatherPpFilter}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.WeatherSpecificTyreSmoke}" ToolTip="Particles will be reverted back later">
-                <Label Content="Use custom weather's particles" />
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificTyreSmoke}" ToolTip="{x:Static g:AppStrings.Settings_Drive_WeatherParticles_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_WeatherParticles}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

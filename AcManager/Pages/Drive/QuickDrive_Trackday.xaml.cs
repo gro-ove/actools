@@ -45,9 +45,9 @@ namespace AcManager.Pages.Drive {
             }
             
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
-                return new Game.WeekendProperties {
+                return new Game.TrackdayProperties {
                     AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
-                    Penalties = false,
+                    Penalties = Penalties,
                     JumpStartPenalty = Game.JumpStartPenaltyType.None,
                     StartingPosition = 1,
                     RaceLaps = LapsNumber,

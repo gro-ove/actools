@@ -63,6 +63,12 @@
                 </CheckBox>
             </StackPanel>
 
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="{StaticResource ElementMargin}">
+                <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
+                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+                </CheckBox>
+            </StackPanel>
+
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
                 <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"

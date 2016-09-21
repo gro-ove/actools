@@ -673,15 +673,6 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please wait….
-        /// </summary>
-        public static string Common_PleaseWait {
-            get {
-                return ResourceManager.GetString("Common_PleaseWait", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to  point.
         /// </summary>
         public static string Common_PointsPostfix {
@@ -2346,6 +2337,15 @@ namespace AcManager.Controls {
         public static string Showroom_ShowroomLabel {
             get {
                 return ResourceManager.GetString("Showroom_ShowroomLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Black.
+        /// </summary>
+        public static string Theme_Black {
+            get {
+                return ResourceManager.GetString("Theme_Black", resourceCulture);
             }
         }
         

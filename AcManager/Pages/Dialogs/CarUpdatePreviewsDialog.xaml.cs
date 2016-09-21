@@ -26,6 +26,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -690,7 +691,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            Status = ControlsStrings.Common_PleaseWait;
+            Status = UiStrings.Common_PleaseWait;
             SelectPhase(Phase.Waiting);
 
             _cancellationTokenSource = new CancellationTokenSource();

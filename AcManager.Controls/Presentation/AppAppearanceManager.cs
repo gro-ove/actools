@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using AcManager.Controls.Properties;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -22,6 +23,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyLargeSubMenuFont = "AppAppearanceManager.LargeSubMenuFont";
 
         public const string UriDefaultTheme = "/AcManager.Controls;component/Assets/ModernUI.AcTheme.xaml";
+        public const string UriBlackTheme = "/AcManager.Controls;component/Assets/ModernUI.Black.xaml";
 
         public static AppAppearanceManager Instance { get; private set; }
 
@@ -192,6 +194,10 @@ namespace AcManager.Controls.Presentation {
             new Link {
                 DisplayName = ControlsStrings.Theme_Dark,
                 Source = AppearanceManager.DarkThemeSource
+            },
+            new Link {
+                DisplayName = ControlsStrings.Theme_Black,
+                Source = new Uri(UriBlackTheme, UriKind.Relative)
             },
             new Link {
                 DisplayName = ControlsStrings.Theme_Light,

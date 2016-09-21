@@ -293,7 +293,7 @@ namespace AcTools.Processes {
             protected override void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection {
                     ["NAME"] = "Track Day",
-                    ["DURATION_MINUTES"] = 1200,
+                    ["DURATION_MINUTES"] = 720,
                     ["SPAWN_SET"] = StartType.Pit.Value,
                     ["TYPE"] = SessionType.Qualification
                 };

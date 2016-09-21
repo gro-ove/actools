@@ -272,6 +272,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\ModernUI.Black.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Plugins.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -440,6 +444,7 @@
     <EmbeddedResource Include="Properties\BinaryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
