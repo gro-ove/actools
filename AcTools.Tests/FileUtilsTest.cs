@@ -8,26 +8,24 @@ namespace AcTools.Tests {
     public class FileUtilsTest {
         [TestMethod]
         public void GetRelativePath() {
-            Assert.AreEqual(
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows"),
-                    @"system32\a.exe");
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows"));
 
-            Assert.AreEqual(
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\"),
-                    @"system32\a.exe");
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\"));
 
-            Assert.AreEqual(
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:/Windows"),
-                    @"system32\a.exe");
+            Assert.AreEqual(@"system32\a.exe",
+                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:/Windows"));
 
-            Assert.AreEqual(
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\s"),
-                    @"C:\Windows\system32\a.exe");
+            Assert.AreEqual(@"C:\Windows\system32\a.exe",
+                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\s"));
         }
 
         [TestMethod]
         public void EnsureUniqueTest() {
-            var testDir = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))) ?? "", "test");
+            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
+            testDir = Path.Combine(testDir, "test");
 
             var a = Path.Combine(testDir, "a");
             Assert.AreEqual(a, FileUtils.EnsureUnique(a));

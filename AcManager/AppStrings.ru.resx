@@ -267,8 +267,8 @@
     <value>Язык</value>
   </data>
   <data name="Main_Online" xml:space="preserve">
-    <value>Онлайн</value>
-  </data>
+    <value>Интернет</value>
+  <alternative>Онлайн</alternative></data>
   <data name="Main_Lan" xml:space="preserve">
     <value>LAN</value>
   </data>
@@ -409,8 +409,8 @@
     <value>Качество:</value>
   </data>
   <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
-    <value>Максимальный размер</value>
-  </data>
+    <value>Макс. размер</value>
+  <alternative>Максимальный размер</alternative></data>
   <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
     <value>Максимальный размер (рекомендуемый): {0} МБ</value>
   </data>
@@ -827,8 +827,8 @@
     <value>Формы:</value>
   </data>
   <data name="AcSettings_Audio" xml:space="preserve">
-    <value>Аудио</value>
-  </data>
+    <value>Звук</value>
+  <alternative>Аудио</alternative></data>
   <data name="AcSettings_Audio_Engine" xml:space="preserve">
     <value>Двигатель</value>
   </data>
@@ -917,8 +917,8 @@
     <value>Стартовая позиция:</value>
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
-    <value>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ОНЛАЙН.</value>
-  </data>
+    <value>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ИНТЕРНЕТ.</value>
+  <alternative>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ОНЛАЙН.</alternative></data>
   <data name="Rsr_Commentary" xml:space="preserve">
     <value>Если вы используете Chrome-подобный браузер, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]здесь[/url] находится расширение для запуска событий RSR напрямую из браузера!</value>
   </data>
@@ -1010,9 +1010,300 @@
     <value>Разное</value>
   </data>
   <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
-    <value>На весь экран</value>
-  </data>
+    <value>Во весь экран</value>
+  <alternative>На весь экран</alternative></data>
   <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
     <value>Качество:</value>
+  </data>
+  <data name="AcSettings_FieldOfView" xml:space="preserve">
+    <value>Поле зрения</value>
+  </data>
+  <data name="KunosCareer_ProgressFormat" xml:space="preserve">
+    <value>Прогресс: {0}</value>
+  </data>
+  <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
+    <value>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, не работает?)</value>
+  </data>
+  <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
+    <value>Анизотропная фильтрация:</value>
+  </data>
+  <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
+    <value>Сглаживание:</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
+    <value>Тест</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
+    <value>Запустить тест (Ctrl+G)</value>
+  </data>
+  <data name="AcSettings_Video_CustomResolutionLabel" xml:space="preserve">
+    <value>Пользовательское разрешение:</value>
+  </data>
+  <data name="AcSettings_Video_DepthOfFieldLabel" xml:space="preserve">
+    <value>Глубина резкости:</value>
+  </data>
+  <data name="AcSettings_Video_EnablePostProcessing" xml:space="preserve">
+    <value>Включить эффекты постобработки</value>
+  </data>
+  <data name="AcSettings_Video_FixResolutionAutomatically" xml:space="preserve">
+    <value>Исправлять разрешение автоматически</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>Частота кадров</value>
+  </data>
+  <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
+    <value>Качество бликов:</value>
+  </data>
+  <data name="AcSettings_Video_HighQuality" xml:space="preserve">
+    <value>Высокое качество</value>
+  </data>
+  <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
+    <value>Ограничение частоты кадров</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
+    <value>Макс. задержка кадров</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
+    <value>Максимальная задержка кадров; авто — определяется настройками видеокарты</value>
+  </data>
+  <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
+    <value>Установите отрицательное значение (например, -1), чтобы получить резкое изображение</value>
+  </data>
+  <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
+    <value>Разрешение в зеркалах:</value>
+  </data>
+  <data name="AcSettings_Video_MirrorsHeader" xml:space="preserve">
+    <value>Зеркала:</value>
+  </data>
+  <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
+    <value>Размытие</value>
+  </data>
+  <data name="AcSettings_Video_OverallQualityLabel" xml:space="preserve">
+    <value>Общее качество:</value>
+  </data>
+  <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
+    <value>Постобработка:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
+    <value>Отражения:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
+    <value>Разрешение отражений:</value>
+  </data>
+  <data name="AcSettings_Video_RenderingDistance" xml:space="preserve">
+    <value>Дальн. отображения</value>
+  </data>
+  <data name="AcSettings_Video_RenderingFrequencyLabel" xml:space="preserve">
+    <value>Частота отображения:</value>
+  </data>
+  <data name="AcSettings_Video_RenderingModeLabel" xml:space="preserve">
+    <value>Режим отображения:</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionLabel" xml:space="preserve">
+    <value>Разрешение:</value>
+  </data>
+  <data name="AcSettings_Video_Saturation" xml:space="preserve">
+    <value>Насыщенность</value>
+  </data>
+  <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
+    <value>Разрешение теней:</value>
+  </data>
+  <data name="AcSettings_Video_SmokeGenerationLabel" xml:space="preserve">
+    <value>Образование дыма:</value>
+  </data>
+  <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
+    <value>Показывать дым в зеркалах</value>
+  </data>
+  <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
+    <value>Система:</value>
+  </data>
+  <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
+    <value>Вертикальная синхронизация</value>
+  </data>
+  <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
+    <value>Детализация окружения:</value>
+  </data>
+  <data name="AcSettings_ViewAndUi" xml:space="preserve">
+    <value>Вид и интерфейс</value>
+  </data>
+  <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
+    <value>Величина симуляции</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
+    <value>Хотите лучшее качество снимков экрана?</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
+    <value>Переключите на BMP, установите дополнение Magick.NET и не забудьте включить автоматическое преобразование на вкладке НАСТРОЙКИ/ВОЖДЕНИЕ.</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
+    <value>Формат снимков экрана</value>
+  </data>
+  <data name="AcSettings_System_Logging" xml:space="preserve">
+    <value>Ведение журнала (рекомендуется)</value>
+  </data>
+  <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Нажмите клавишу F7, чтобы переключиться в режим свободной камеры</value>
+  </data>
+  <data name="AcSettings_System_FreeCamera" xml:space="preserve">
+    <value>Разрешить свободную камеру</value>
+  </data>
+  <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
+    <value>Приложения разработчика</value>
+  </data>
+  <data name="AcSettings_System" xml:space="preserve">
+    <value>Система</value>
+  </data>
+  <data name="AcSettings_Skidmarks" xml:space="preserve">
+    <value>Следы торможения</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
+    <value>Количество</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
+    <value>Высота от земли</value>
+  </data>
+  <data name="AcSettings_ReplaysHeader" xml:space="preserve">
+    <value>Повторы:</value>
+  </data>
+  <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
+    <value>Показывать ближайших соперников</value>
+  </data>
+  <data name="AcSettings_ProximityIndicator" xml:space="preserve">
+    <value>Индикатор близости</value>
+  </data>
+  <data name="AcSettings_Mirrors_RenderingDistance" xml:space="preserve">
+    <value>Дальн. прорисовки</value>
+  </data>
+  <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
+    <value>Вертикальный угол</value>
+  </data>
+  <data name="AcSettings_Exposure_Value" xml:space="preserve">
+    <value>Величина</value>
+  </data>
+  <data name="AcSettings_DefaultValue" xml:space="preserve">
+    <value>Значение по умолчанию:</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>Шины</value>
+  </data>
+  <data name="AcSettings_Audio_Surface" xml:space="preserve">
+    <value>Покрытие</value>
+  </data>
+  <data name="AcSettings_Audio_Opponents" xml:space="preserve">
+    <value>Соперники</value>
+  </data>
+  <data name="AcSettings_Audio_Master" xml:space="preserve">
+    <value>Общий</value>
+  </data>
+  <data name="AcSettings_Audio_LevelsHeader" xml:space="preserve">
+    <value>Уровни:</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
+    <value>Переключите на низко или нормально, если вы испытываете проблемы со звуком</value>
+  </data>
+  <data name="AcSettings_GhostCar_StartShowingAt" xml:space="preserve">
+    <value>Начать показывать за</value>
+  </data>
+  <data name="AcSettings_GhostCar_RecordingLimit" xml:space="preserve">
+    <value>Лимит записи</value>
+  </data>
+  <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
+    <value>Непрозрачность</value>
+  </data>
+  <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
+    <value>Макс. непрозрачн. за</value>
+  </data>
+  <data name="AcSettings_GhostCar" xml:space="preserve">
+    <value>Автомобиль-призрак</value>
+  </data>
+  <data name="Controls_Abs" xml:space="preserve">
+    <value>АБС:</value>
+  </data>
+  <data name="Controls_AlreadyUsed" xml:space="preserve">
+    <value>Уже используется</value>
+  </data>
+  <data name="Controls_AlreadyUsed_Message" xml:space="preserve">
+    <value>"{0}" уже используется для {1}. Вы хотите сначала удалить старое значение?</value>
+  </data>
+  <data name="Controls_AlreadyUsed_MultipleMessage" xml:space="preserve">
+    <value>"{0}" уже используется для {1} и {2}. Вы хотите сначала удалить старое значение?</value>
+  </data>
+  <data name="Controls_BrakeBalance" xml:space="preserve">
+    <value>Тормозной баланс:</value>
+  </data>
+  <data name="Controls_AdditionalBindings" xml:space="preserve">
+    <value>Дополнительные привязки:</value>
+  </data>
+  <data name="Controls_CombineWithKeyboard" xml:space="preserve">
+    <value>Объединить с клавиатурой</value>
+  </data>
+  <data name="Controls_DetectedControllersHeader" xml:space="preserve">
+    <value>Контроллеры:</value>
+  </data>
+  <data name="Controls_DeviceFormat" xml:space="preserve">
+    <value>Устройство: {0}</value>
+  </data>
+  <data name="Controls_EnableMouseSteering" xml:space="preserve">
+    <value>Включить управление мышью</value>
+  </data>
+  <data name="Controls_EngineBrake" xml:space="preserve">
+    <value>Торможение двигателем:</value>
+  </data>
+  <data name="Controls_GearShiftDebouncing" xml:space="preserve">
+    <value>Анти-дребезг рычага</value>
+  </data>
+  <data name="Controls_GearShiftDebouncing_Tooltip" xml:space="preserve">
+    <value>Предотвращает случайное переключение передач из-за неисправного оборудования</value>
+  </data>
+  <data name="Controls_Gestures" xml:space="preserve">
+    <value>Жесты:</value>
+  </data>
+  <data name="Controls_InputMethodLabel" xml:space="preserve">
+    <value>Метод ввода:</value>
+  </data>
+  <data name="Controls_InvalidDirectory_Commentary" xml:space="preserve">
+    <value>Пожалуйста, выберите файл в исходном каталоге (“cfg\controllers\savedsetups”) или в подкаталоге.</value>
+  </data>
+  <data name="Controls_InvertFfb" xml:space="preserve">
+    <value>Инвертировать FFB</value>
+  </data>
+  <data name="Controls_KeyboardSteeringHeader" xml:space="preserve">
+    <value>Управление клавиатурой:</value>
+  </data>
+  <data name="Controls_Miscellaneous" xml:space="preserve">
+    <value>Разное:</value>
+  </data>
+  <data name="Controls_MouseSteeringHeader" xml:space="preserve">
+    <value>Управление мышью:</value>
+  </data>
+  <data name="Controls_SharePreset" xml:space="preserve">
+    <value>Расшарить пресет</value>
+  </data>
+  <data name="Controls_ShiftersHeader" xml:space="preserve">
+    <value>Переключатели:</value>
+  </data>
+  <data name="Controls_SteeringSpeed" xml:space="preserve">
+    <value>Скорость руления</value>
+  </data>
+  <data name="Controls_Test_Tooltip" xml:space="preserve">
+    <value>Тест текущих настроек в Быстром Заезде</value>
+  </data>
+  <data name="Controls_TractionControl" xml:space="preserve">
+    <value>Контроль тяги:</value>
+  </data>
+  <data name="Controls_Turbo" xml:space="preserve">
+    <value>Турбо:</value>
+  </data>
+  <data name="Controls_UseHShifter" xml:space="preserve">
+    <value>Использовать Н-образный переключатель</value>
+  </data>
+  <data name="Controls_UseMouseButtons" xml:space="preserve">
+    <value>Использовать кнопки мыши для газа и тормоза</value>
+  </data>
+  <data name="Controls_View" xml:space="preserve">
+    <value>Вид:</value>
+  </data>
+  <data name="Common_Share_SettingsTooltip" xml:space="preserve">
+    <value>Расшарить текущие настройки (Ctrl+Page Up)</value>
   </data>
 </root>

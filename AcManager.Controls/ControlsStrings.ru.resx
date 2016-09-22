@@ -144,14 +144,14 @@
     <value>Помощники:</value>
   </data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>АКПП:</value>
-  </data>
+    <value>Авто-переключение:</value>
+  <alternative>АКПП:</alternative></data>
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
     <value>Авто-сцепление:</value>
   </data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Авто-блип:</value>
-  </data>
+    <value>Авто-перегазовка:</value>
+  <alternative>Авто-блип:</alternative></data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Стабилизация:</value>
   </data>
@@ -297,8 +297,8 @@
     <value>Угол зрения</value>
   </data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
-    <value>Привязать рулевое колесо</value>
-  </data>
+    <value>Зафиксировать руль</value>
+  <alternative>Привязать рулевое колесо</alternative></data>
   <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
     <value>Привязать камеру к горизонту</value>
   </data>
@@ -342,8 +342,8 @@
     <value>Яркость</value>
   </data>
   <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
-    <value>Угол зрения (по вертикали)</value>
-  </data>
+    <value>Поле зрения (по вертикали)</value>
+  <alternative>Угол зрения (по вертикали)</alternative></data>
   <data name="QuickSwitches_HideArms" xml:space="preserve">
     <value>Скрыть руки</value>
   </data>
@@ -414,8 +414,8 @@
     <value>Гамма</value>
   </data>
   <data name="Controls_InvertAxis" xml:space="preserve">
-    <value>Развернуть</value>
-  </data>
+    <value>Инвертировать</value>
+  <alternative>Развернуть</alternative></data>
   <data name="Controls_Preview_Device" xml:space="preserve">
     <value>Устройство: [b]{0}[/b]</value>
   </data>
@@ -453,8 +453,8 @@
     <value> мин</value>
   </data>
   <data name="Controls_WaitingForInput" xml:space="preserve">
-    <value>Ожидание</value>
-  </data>
+    <value>Ожидание ввода</value>
+  <alternative>Ожидание</alternative></data>
   <data name="Common_MinutePostfix" xml:space="preserve">
     <value> минута</value>
   </data>
@@ -517,5 +517,68 @@
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
     <value>Шоурум</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Экспозиция:</value>
+  </data>
+  <data name="Controls_ClickToAssign" xml:space="preserve">
+    <value>Нажмите чтобы назначить</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Установите 0 для Logitech G920, оставьте 1 для всех остальных</value>
+  </data>
+  <data name="Controls_DegressLabel" xml:space="preserve">
+    <value>Градусы</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Эффекты:</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>Усиление эффекта недостаточной поворачиваемости</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Эксперементальные</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Усиление</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>Гироскопический эффект</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Эффект бордюра</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>Кнопка на клавиатуре</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>Загрузить "{0}"? Текущие значения будут заменены (но позже могут быть восстановлены из корзины).</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Минимальное усилие</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Разное:</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Эффект дороги</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Физический движок пропускает шаги, чтобы согласовать рули с маленьким входным буфером FF; если у вас возникли проблемы с CPU, увеличение значения до 2-4 может помочь</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>Пропускать шаги FFB</value>
+  </data>
+  <data name="Controls_SlipEffect" xml:space="preserve">
+    <value>Эффект скольжения</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>Программная блокировка</value>
+  </data>
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
+    <value>Чувствительность к скорости</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>Разблокировать экспериментальные опции (будьте осторожны!)</value>
   </data>
 </root>

@@ -143,8 +143,8 @@
     <comment>Parameters: width, height, refresh rate</comment>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
-    <value>Заданное вручную</value>
-  </data>
+    <value>Задать вручную</value>
+  <alternative>Заданное вручную</alternative></data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (без сжатия)</value>
   </data>
@@ -628,8 +628,8 @@
     <value>место</value>
   </data>
   <data name="Assists_AutoShifting" xml:space="preserve">
-    <value>Автоматическая КПП</value>
-  </data>
+    <value>Автоматическое переключение передач</value>
+  <alternative>Автоматическая КПП</alternative></data>
   <data name="Assists_AutoClutch" xml:space="preserve">
     <value>Автоматическое сцепление</value>
   </data>
@@ -676,6 +676,153 @@
     <value>Скрыть руль</value>
   </data>
   <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
-    <value>Привязать рулевое колесо</value>
+    <value>Зафиксировать руль</value>
+  <alternative>Привязать рулевое колесо</alternative></data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Скрыть руки водителя</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Ограничить руль</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>Разрешить перекрытие приложений</value>
+  </data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>Показывать имена водителей</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Показывать виртуальное зеркало</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Показывать лидеров</value>
+  </data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>Показывать повреждения (граф. интерфейс)</value>
+  </data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>Показывать время отставания от соперников</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Единицы измерения:</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Камера:</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Скорость взгляда</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Угол взгляда</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Тряска от скорости</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>Перегрузки:</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Боковые</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Вертикальные</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Продольные</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Вид:</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Зафиксировать</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Сервер недоступен (ping не удался).</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Помощники</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Ограничить вращение виртуального руля</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Убедитесь, что приложение имеет доступ к каталогу cfg.</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Невозможно сохранить настройки AC</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Рулевое управление</value>
+  </data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>Моргнуть фарами</value>
+  </data>
+  <data name="Controls_Drs" xml:space="preserve">
+    <value>Активация DRS</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Тормоза</value>
+  </data>
+  <data name="Controls_Mguh_Mode" xml:space="preserve">
+    <value>Режим MGU-H</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Сместить вперёд</value>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Сместить назад</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Контроль тяги:</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>АБС:</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Антиблокировочная тормозная система</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Автоматическая синхронизация оборотов при понижении передачи</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Автоматический выжим сцепления при переключении передач</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Не путайте это с АКПП</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Показать идеальную траекторию движения</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Повреждаются двигатель, коробка передач, подвеска и прочее</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Нереально, но может быть полезно, если вы только начинаете учиться водить машину или дрифу</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Оптимизация сцепления во время ускорения</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Нагрев шин в гараже</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Коэффициент для износа шин</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Если предусмотрено</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Отключено</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Включено</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Эффект Slipstream</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Коэффициент для эффекта Slipstream</value>
   </data>
 </root>

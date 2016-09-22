@@ -1,6 +1,7 @@
 ﻿using AcTools.Windows;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -159,12 +160,13 @@ namespace AcTools.Utils {
             }
         }
 
-        [NotNull]
-        public static IEnumerable<string> GetFilesSafe([NotNull] string path, string searchPattern = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) {
+        [Localizable(false), NotNull]
+        public static string[] GetFilesSafe([NotNull] string path, string searchPattern = null, SearchOption searchOption = SearchOption.TopDirectoryOnly) {
             return Directory.Exists(path) ? searchPattern == null ? Directory.GetFiles(path) : Directory.GetFiles(path, searchPattern, searchOption) :
                     new string[0];
         }
 
+        [NotNull]
         public static IEnumerable<string> GetFilesRecursive(string path, string searchPattern = null) {
             var queue = new Queue<string>();
             queue.Enqueue(path);

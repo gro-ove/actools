@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,9 +12,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.QuickSwitches;
+using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -40,6 +41,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
+using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
@@ -288,13 +290,34 @@ namespace AcManager.Pages.Windows {
             if (_loaded) return;
             _loaded = true;
 
-            FancyBackgroundManager.Instance.AddListener(this);
             AboutHelper.Instance.PropertyChanged += About_PropertyChanged;
             UpdateAboutIsNew();
-            
-            // MediaElement.Source = new Uri(@"C:\Users\Carrot\Desktop\Temp\1\rain.wmv", UriKind.RelativeOrAbsolute);
-            // VideoElement.Static = @"https://storage.ape.yandex.net/get/TableauBackgrounds/2319aea3fe3682d8f887bfc5f0cfd9e4.jpg";
-            // VideoElement.Source = @"https://storage.ape.yandex.net/get/TableauBackgrounds/c106cc40bb124e3530fdc3c61e220b3d.webm";
+
+            var background = AppArguments.Get(AppFlag.Background);
+            if (string.IsNullOrWhiteSpace(background)) {
+                FancyBackgroundManager.Instance.AddListener(this);
+            } else {
+                if (background.ElementAt(1) != ':') {
+                    background = System.IO.Path.Combine(FilesStorage.Instance.GetDirectory("Themes", "Backgrounds"), background);
+                }
+
+                var animatedBackground = Regex.IsMatch(background, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
+                        background : null;
+                var staticBackground = animatedBackground == null ? background : Regex.Replace(background, @"\.\w+$", @".jpg");
+                
+                BackgroundContent = new Viewbox {
+                    Stretch = Stretch.UniformToFill,
+                    Opacity = AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Child = new DynamicBackground {
+                        Width = 1280,
+                        Height = 720,
+                        Animated = animatedBackground,
+                        Static = staticBackground
+                    }
+                };
+            }
         }
 
         private void UpdateAboutIsNew() {

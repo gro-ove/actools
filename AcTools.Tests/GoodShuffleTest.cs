@@ -48,8 +48,8 @@ namespace AcTools.Tests {
             var v1 = Enumerable.Range(0, 100).Select(x => GoodShuffle.Get(array).Next).Count(x => x == 1);
 
             // assert
-            Assert.AreEqual(v0, 20, 10, "v0: isn’t random enough");
-            Assert.AreEqual(v1, 20, 10, "v1: isn’t random enough");
+            Assert.AreEqual(20, v0, 10, "v0: isn’t random enough");
+            Assert.AreEqual(20, v1, 10, "v1: isn’t random enough");
         }
     }
 }

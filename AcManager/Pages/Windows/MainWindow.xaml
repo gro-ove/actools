@@ -8,12 +8,6 @@
         PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
         AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
         LocationAndSizeKey="MainWindow_LS" x:Name="Window">
-    <!--animated background-->
-    <!--<mui:ModernWindow.BackgroundContent>
-        <Viewbox Stretch="UniformToFill" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <c:VideoElement x:Name="VideoElement" Width="1280" Height="720" />
-        </Viewbox>
-    </mui:ModernWindow.BackgroundContent>-->
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>

@@ -184,7 +184,7 @@ namespace AcManager.Controls.ViewModels {
                 FilterValue = data.FilterValue;
                 ErrorMessage = null;
 
-                var mode = Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(data.ModeId);
+                var mode = Modes.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
                     NonfatalError.NotifyBackground("Racing grid mode is missing", $"Can’t find racing grid mode with ID “{data.ModeId}”");
                     Mode = BuiltInGridMode.SameCar;
@@ -503,7 +503,7 @@ namespace AcManager.Controls.ViewModels {
         #region Modes list
         private readonly HierarchicalGroup _randomGroup;
 
-        public BetterObservableCollection<object> Modes { get; }
+        public HierarchicalGroup Modes { get; }
 
         private ICommand _switchModeCommand;
 

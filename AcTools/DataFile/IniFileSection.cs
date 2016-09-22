@@ -48,7 +48,7 @@ namespace AcTools.DataFile {
         }
 
         internal void SetDirect(string key, string value) {
-            Set(key, value);
+            base[key] = value;
         }
         
         [CanBeNull, Pure, Localizable(false)]

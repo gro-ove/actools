@@ -1,15 +1,21 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
-using AcManager.Controls.Properties;
+using AcManager.Tools.Data;
+using AcManager.Tools.Helpers;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
+        public static bool OptionCustomThemes = false;
         public static bool OptionIdealFormattingModeDefaultValue = false;
 
         public const string KeyTheme = "appearance_theme";
@@ -29,16 +35,92 @@ namespace AcManager.Controls.Presentation {
 
         public static AppAppearanceManager Initialize() {
             if (Instance != null) throw new Exception(@"Already initialized");
-            return Instance = new AppAppearanceManager();
+            Instance = new AppAppearanceManager();
+            Instance.InnerInitialize();
+            return Instance;
         }
 
-        private readonly bool _loading;
+        private string _themeError;
 
-        private AppAppearanceManager() {
+        public string ThemeError {
+            get { return _themeError; }
+            internal set {
+                if (Equals(value, _themeError)) return;
+                _themeError = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public sealed class ThemeLink : Link, IWithId {
+            public ThemeLink(string name, Uri source) {
+                DisplayName = name;
+                Source = source;
+
+                Id = source.ToString();
+            }
+
+            private readonly string _filename;
+            private DateTime _modified;
+
+            public ThemeLink(string filename) {
+                DisplayName = Path.GetFileNameWithoutExtension(filename);
+                Source = new Uri($"file://{filename}", UriKind.Absolute);
+
+                _filename = filename;
+                Id = Path.GetFileName(filename);
+            }
+
+            public string Id { get; }
+
+            public bool Apply() {
+                try {
+                    AppearanceManager.Current.ThemeSource = Source;
+                    if (_filename != null) {
+                        _modified = new FileInfo(_filename).LastWriteTime;
+                    }
+
+                    Instance.ThemeError = null;
+                    return true;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    Instance.ThemeError = e.Message;
+                    return false;
+                }
+            }
+
+            public bool Update() {
+                if (_filename == null) return false;
+
+                var fileInfo = new FileInfo(_filename);
+                if (!fileInfo.Exists) return false;
+
+                try {
+                    var modified = fileInfo.LastWriteTime;
+                    if (modified > _modified) {
+                        AppearanceManager.Current.ThemeSource = Source;
+                        _modified = modified;
+                    }
+
+                    Instance.ThemeError = null;
+                    return true;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    Instance.ThemeError = e.Message;
+                    return false;
+                }
+            }
+        }
+
+        private bool _loading;
+
+        private AppAppearanceManager() {}
+
+        private void InnerInitialize() {
             AppearanceManager.Current.Initialize();
 
-            var theme = ValuesStorage.GetUri(KeyTheme);
-            SelectedTheme = Themes.FirstOrDefault(x => x.Source == theme) ?? Themes.FirstOrDefault();
+            var theme = ValuesStorage.GetString(KeyTheme);
+            InitializeThemesList();
+            SelectedTheme = Themes.OfType<ThemeLink>().GetByIdOrDefault(theme) ?? Themes.OfType<ThemeLink>().FirstOrDefault();
 
             try {
                 _loading = true;
@@ -186,35 +268,48 @@ namespace AcManager.Controls.Presentation {
             }
         }
 
-        public Link[] Themes { get; } = {
-            new Link {
-                DisplayName = ControlsStrings.Theme_Nordschleife,
-                Source = new Uri(UriDefaultTheme, UriKind.Relative)
-            },
-            new Link {
-                DisplayName = ControlsStrings.Theme_Dark,
-                Source = AppearanceManager.DarkThemeSource
-            },
-            new Link {
-                DisplayName = ControlsStrings.Theme_Black,
-                Source = new Uri(UriBlackTheme, UriKind.Relative)
-            },
-            new Link {
-                DisplayName = ControlsStrings.Theme_Light,
-                Source = AppearanceManager.LightThemeSource
-            }
+        private static readonly ThemeLink[] BuiltInThemes = {
+            new ThemeLink(ControlsStrings.Theme_Nordschleife, new Uri(UriDefaultTheme, UriKind.Relative)),
+            new ThemeLink(ControlsStrings.Theme_Dark, AppearanceManager.DarkThemeSource),
+            new ThemeLink(ControlsStrings.Theme_Black, new Uri(UriBlackTheme, UriKind.Relative)),
+            new ThemeLink(ControlsStrings.Theme_Light, AppearanceManager.LightThemeSource)
         };
 
-        private Link _selectedTheme;
+        public HierarchicalGroup Themes { get; } = new HierarchicalGroup();
 
-        public Link SelectedTheme {
+        private void InitializeThemesList() {
+            if (OptionCustomThemes) {
+                UpdateThemesList();
+                FilesStorage.Instance.Watcher(FilesStorage.Instance.GetDirectory("Themes")).Update += (sender, args) => {
+                    UpdateThemesList();
+                };
+            } else {
+                Themes.ReplaceEverythingBy(BuiltInThemes);
+            }
+        }
+
+        private void UpdateThemesList() {
+            var dir = FilesStorage.Instance.GetDirectory("Themes");
+            var files = FileUtils.GetFilesSafe(dir, "*.xaml");
+            Themes.ReplaceEverythingBy(files.Any()
+                    ? BuiltInThemes.OfType<object>().Append(new Separator()).Concat(files.Select(x => new ThemeLink(x)))
+                    : BuiltInThemes);
+            SelectedTheme?.Update();
+        }
+
+        private ThemeLink _selectedTheme;
+
+        public ThemeLink SelectedTheme {
             get { return _selectedTheme; }
             set {
                 if (value == null || Equals(value, _selectedTheme)) return;
-                _selectedTheme = value;
-                OnPropertyChanged();
-                ValuesStorage.Set(KeyTheme, value.Source);
-                AppearanceManager.Current.ThemeSource = value.Source;
+                if (value.Apply()) {
+                    _selectedTheme = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeyTheme, value.Id);
+                } else {
+                    SelectedTheme = BuiltInThemes.First();
+                }
             }
         }
         #endregion

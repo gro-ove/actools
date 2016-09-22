@@ -115,6 +115,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IniParsingTest.cs" />
     <Compile Include="Kn5ExportTest.cs" />
     <Compile Include="FileUtilsTest.cs" />
     <Compile Include="GoodShuffleTest.cs" />

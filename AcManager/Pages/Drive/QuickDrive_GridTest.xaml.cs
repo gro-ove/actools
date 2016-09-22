@@ -204,7 +204,7 @@ namespace AcManager.Pages.Drive {
                     return null;
                 }
 
-                var mode = RaceGridViewModel.Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(saved.ModeId);
+                var mode = RaceGridViewModel.Modes.GetByIdOrDefault<IRaceGridMode>(saved.ModeId);
                 if (mode == null) return null;
 
                 var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({"Random"})" : mode.DisplayName;

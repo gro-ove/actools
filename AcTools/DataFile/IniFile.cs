@@ -54,21 +54,21 @@ namespace AcTools.DataFile {
             set { Content[key] = value; }
         }
 
-        private static void ParseStringFinish(IniFileSection currentSection, string data, int nonSpace, ref string key, ref int tokenStarted) {
+        private static void ParseStringFinish(IniFileSection currentSection, string data, int nonSpace, ref string key, ref int started) {
             if (key != null) {
                 string value;
-                if (tokenStarted != -1) {
-                    var length = 1 + nonSpace - tokenStarted;
-                    value = length < 0 ? null : data.Substring(tokenStarted, length);
+                if (started != -1) {
+                    var length = 1 + nonSpace - started;
+                    value = length < 0 ? null : data.Substring(started, length);
                 } else {
-                    value = null;
+                    value = "";
                 }
 
                 currentSection.SetDirect(key, value);
                 key = null;
             }
 
-            tokenStarted = -1;
+            started = -1;
         }
 
         protected override void ParseString(string data) {

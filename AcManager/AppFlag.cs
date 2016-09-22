@@ -43,13 +43,6 @@ namespace AcManager {
         ForceLocale,
 
         /// <summary>
-        /// Load locales from Locales folder located in “…\AppData\Local\AcTools Content Manager”
-        /// if exists. Enabled by default.
-        /// Example: --use-custom-locales=no.
-        /// </summary>
-        UseCustomLocales,
-
-        /// <summary>
         /// UI scale (as a temporary solution for 4K screens). Make sure ideal formatting mode
         /// is enabled when using unusual scale.
         /// Example: --ui-scale=1.5.
@@ -240,6 +233,18 @@ namespace AcManager {
         /// <summary>
         /// Specific executable for SSE starter. Example: --sse-name=acs_x86_sse.exe.
         /// </summary>
-        SseName
+        SseName,
+
+        /// <summary>
+        /// Custom background, could be animated (put a JPEG file nearby as a replacement
+        /// when app isn’t active). Example: --background=mountain.webm.
+        /// </summary>
+        Background,
+
+        /// <summary>
+        /// Opacity of custom background. Default value: 0.5.
+        /// Example: --background-opacity=0.2.
+        /// </summary>
+        BackgroundOpacity
     }
 }
