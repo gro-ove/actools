@@ -174,8 +174,8 @@
     <value>Нет базовой версии</value>
   </data>
   <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
-    <value>Не получится запустить игру</value>
-  </data>
+    <value>Невозможно запустить игру</value>
+  <alternative>Не получится запустить игру</alternative></data>
   <data name="NotSupported" xml:space="preserve">
     <value>Не поддерживается</value>
   </data>
@@ -824,5 +824,140 @@
   </data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
     <value>Коэффициент для эффекта Slipstream</value>
+  </data>
+  <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
+    <value>Оригинальный лаунчер не найден; пожалуйста, смените стартер.</value>
+  </data>
+  <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
+    <value>Пожалуйста, восстановите оригинальный лаунчер и попробуйте снова (или смените стартер).</value>
+  </data>
+  <data name="Online_Server_TrackIsMissing" xml:space="preserve">
+    <value>Трек {0} не найден.</value>
+  </data>
+  <data name="Online_Server_CarsAreMissing" xml:space="preserve">
+    <value>Автомобили {0} не найден.</value>
+  </data>
+  <data name="Online_Server_CarIsMissing" xml:space="preserve">
+    <value>Автомобиль {0} не найден.</value>
+  </data>
+  <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
+    <value>Проверьте правильность адреса сервера и его доступность.</value>
+  </data>
+  <data name="Online_ScanningNothingFound" xml:space="preserve">
+    <value>Ничего не найдено</value>
+  </data>
+  <data name="Online_CannotAccessServer" xml:space="preserve">
+    <value>Невозможно получить доступ к серверу</value>
+  </data>
+  <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
+    <value>Получение информации напрямую (вторая попытка)...</value>
+  </data>
+  <data name="Online_GettingInformationDirectly" xml:space="preserve">
+    <value>Получение информации напрямую...</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>Попытка пинга для поиска HTTP-порта...</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Невозможно загрузить данные</value>
+  </data>
+  <data name="Online_CannotParseAddress" xml:space="preserve">
+    <value>Невозможно обработать адрес</value>
+  </data>
+  <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
+    <value>Убедитесь, что используете последнюю версию CM.</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Повтор</value>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Невозможно обновить информацию сервера</value>
+  </data>
+  <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
+    <value>Убедитесь, что эти файлы не используются в данный момент.</value>
+  </data>
+  <data name="Replay_CannotRenameReplays" xml:space="preserve">
+    <value>Невозможно переименовать реплеи</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Невозможно пересканировать автомобили</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Объект не может быть перемещен</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>ID неверен</value>
+  </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Пресеты помощников</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Директория отсутствует</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Невозможно установить плагин</value>
+  </data>
+  <data name="Online_Server_UnhandledError" xml:space="preserve">
+    <value>Внутренняя ошибка: {0}.</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Сервер недоступен.</value>
+  </data>
+  <data name="OfficialStarter_CannotRun" xml:space="preserve">
+    <value>Невозможно запустить</value>
+  </data>
+  <data name="Online_Session_LapsDuration" xml:space="preserve">
+    <value>{0} круг(ов)</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Не может быть отключен</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>Машины не совпадают</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Директория не определена</value>
+  </data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>Необходима основная папка AC</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>Папка "{0}" не найдена</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Пресет стартовой решетки</value>
+  </data>
+  <data name="PpFilterObject_CannotSave" xml:space="preserve">
+    <value>Невозможно сохранить фильтр</value>
+  </data>
+  <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Некоторые автомобили требуют наличия этого шрифта. Вы уверены, что хотите его удалить?</value>
+  </data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>Удалить шрифт</value>
+  </data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Убедитесь, что этот папка с этим объектом не используется в другом приложении.</value>
+  </data>
+  <data name="JumpStart_CarLocked" xml:space="preserve">
+    <value>Машина заблокирована</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>Правое заднее</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>Левое заднее</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>Правое переднее</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>Левое переднее</value>
+  </data>
+  <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
+    <value>Невозможно восстановить непропатченную версию оригинального лаунчера. Пожалуйста,  [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]пройдите по ссылке, чтобы восстановить его[/url].</value>
+  </data>
+  <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
+    <value>Невозможно использовать Официальный Стартер: слишком старая версия игры. Хотите переключиться на Tricky Starter? Вы всегда можете поменять его в Настройки/Вождение.</value>
   </data>
 </root>

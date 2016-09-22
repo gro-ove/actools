@@ -216,8 +216,8 @@
     <value>Кнопка на руле</value>
   </data>
   <data name="AssistsPreset_Gamer" xml:space="preserve">
-    <value>Игрок</value>
-  </data>
+    <value>Геймер</value>
+  <alternative>Игрок</alternative></data>
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Опытный</value>
   </data>
@@ -580,5 +580,113 @@
   </data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Разблокировать экспериментальные опции (будьте осторожны!)</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>Размер тени будет сохранен в “data/ambient_shadows.ini”, но данные зашифрованы, и это действие ни к чему не приведет. Продолжить?</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>Данные зашифрованы</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Перезагружаем текстуры...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Обновляем тени...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Топливо</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Шины:</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Отменено</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>Ожидание...</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Гонщиков онлайн:</value>
+  </data>
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
+    <value>Трек не найден:</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>Автомобиль не найден:</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>Вернуть рекомендуемые значения</value>
+  </data>
+  <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
+    <value>Рекомендуемое значение: {0}%</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>Загрузка...</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>Сохранить как Описание</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>Сохранить как Страну</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>Сохранить как Год</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Сохранить и закрыть</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Выберите год или описание и нажмите ОК; зажмите Ctrl, чтобы расширить описание вместо его замены.</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Невозможно обновить превью</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>Вы должны сделать как минимум один скриншот.</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> точка</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Черный</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Не сохранено</value>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>Недоступно, требуемая версия приложения {0}.</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Скачать и установить ({0})</value>
+  </data>
+  <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
+    <value>Создать новый файл ui_skin.json (Alt+S)</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Год начала производства</value>
+  </data>
+  <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
+    <value>Отправить ui_skin.json в Корзину (Alt+Delete)</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>Параметры шейдера:</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
+    <value>Невозможно обновить окружающие тени</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>Присоединиться с {0}</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Очистить привязку клавиатуры</value>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>Очистить привязку руля</value>
   </data>
 </root>
