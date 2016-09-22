@@ -58,6 +58,10 @@ Temporary Items
 *.dll
 
 *.fx.o
+*.DotSettings
+*.csproj.user
+*.csproj.vspscc
+.vs/*
 
 Packages
 
