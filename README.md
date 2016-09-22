@@ -43,10 +43,12 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
 # Build notes
 
- - Download Library directory [here](https://drive.google.com/file/d/0B6GfX1zRa8pOMnVwV1dBV1Z4cjQ/view?usp=drivesdk). I didn’t use Nuget for all of references because eigher I needed specific libraries locations (this way, I’m able to use 32-bit libraries for 32-bit build and otherwise) or I slightly modified some of them (for example, now JSON-parser works reads numbers starting with “0” according to JSON specifications). But, if you want, you can collect this folder from scratch, those changes aren’t be very important.
+ - Some of references were added directly as DLL-files. I didn’t use Nuget for all of references because eigher I needed specific libraries locations (this way, I’m able to use 32-bit libraries for 32-bit build and otherwise using simplest .csproj “trick”) or I slightly modified some of them (for example, now JSON-parser works reads numbers starting with “0” according to JSON specifications). All these references are located in Library directory, you can get them [here](https://drive.google.com/file/d/0B6GfX1zRa8pOMnVwV1dBV1Z4cjQ/view?usp=drivesdk). Or just collect them from scratch, those changes aren’t be very important.
 
- - Take AcTools.Internal from [the unpacked version](https://trello.com/c/w5xT6ssZ/49-contacts) (or make your own compatible version, it mostly contains different API codes, salts and addresses).
+ - I recommend to switch to x86 (or, if you need, x64) platform. As far as I can see, most libraries (such as SlimDX, Magick.NET or Awesomium) won’t work with AnyCPU.
 
- - You might need to install DirectX SDK to rebuild *AcTools.Render/Base/Shaders/ShadersTemplate.tt*.
+ - Take AcTools.Internal from [the unpacked version](https://trello.com/c/w5xT6ssZ/49-contacts) (or make your own compatible version, it mostly contains different API codes, addresses and salts for testing checksums).
 
- - Please, feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don't have any experience it open-source, there might be some things I forgot to mention.
+ - You might need to install DirectX SDK to rebuild [AcTools.Render/Base/Shaders/ShadersTemplate.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Base/Shaders/ShadersTemplate.tt). But, just in case, builded *ShadersTemplate.cs* and *Shaders.resources* are already included.
+
+ - Please, feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don’t have any experience it open-source, there might be some things I forgot to mention.
