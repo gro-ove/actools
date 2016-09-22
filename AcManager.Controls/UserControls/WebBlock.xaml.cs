@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Managers.Plugins;
+using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
@@ -21,6 +23,10 @@ namespace AcManager.Controls.UserControls {
         private void OnNavigated(object sender, PageLoadedEventArgs e) {
             UrlTextBox.Text = e.Url;
             ModifyPage();
+
+            if (SaveKey != null && e.Url.StartsWith(@"http", StringComparison.OrdinalIgnoreCase)) {
+                ValuesStorage.Set(SaveKey, e.Url);
+            }
         }
 
         public void SetScriptProvider(ScriptProviderBase provider) {
@@ -54,13 +60,15 @@ namespace AcManager.Controls.UserControls {
             ((WebBlock)o).OnUserAgentChanged((string)e.NewValue);
         }
 
-        private void OnUserAgentChanged(string newValue) {
+        private void OnUserAgentChanged([CanBeNull] string newValue) {
+            if (newValue == null) return;
             _something.SetUserAgent(newValue);
         }
 
         public static readonly DependencyProperty UserStyleProperty = DependencyProperty.Register(nameof(UserStyle), typeof(string),
                 typeof(WebBlock), new PropertyMetadata(OnUserStyleChanged));
 
+        [CanBeNull]
         public string UserStyle {
             get { return (string)GetValue(UserStyleProperty); }
             set { SetValue(UserStyleProperty, value); }
@@ -74,8 +82,17 @@ namespace AcManager.Controls.UserControls {
             SetUserStyle(newValue);
         }
 
+        public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
+                typeof(WebBlock));
+
+        [CanBeNull]
+        public string SaveKey {
+            get { return (string)GetValue(SaveKeyProperty); }
+            set { SetValue(SaveKeyProperty, value); }
+        }
+
         [Localizable(false)]
-        private void SetUserStyle(string userStyle) {
+        private void SetUserStyle([CanBeNull] string userStyle) {
             if (string.IsNullOrWhiteSpace(userStyle)) return;
 
             const string jsMark = "/* JS part:";
@@ -118,6 +135,7 @@ if (document.body){
         public static readonly DependencyProperty StartPageProperty = DependencyProperty.Register(nameof(StartPage), typeof(string),
                 typeof(WebBlock), new PropertyMetadata(OnStartPageChanged));
 
+        [CanBeNull]
         public string StartPage {
             get { return (string)GetValue(StartPageProperty); }
             set { SetValue(StartPageProperty, value); }
@@ -127,12 +145,14 @@ if (document.body){
             ((WebBlock)o).OnStartPageChanged((string)e.NewValue);
         }
 
-        private void OnStartPageChanged(string newValue) {
-            Navigate(newValue ?? @"about:blank");
+        private void OnStartPageChanged([CanBeNull] string newValue) {
+            if (_loaded) {
+                Navigate(newValue);
+            }
         }
 
-        public void Navigate(string url) {
-            _something.Navigate(url);
+        public void Navigate([CanBeNull] string url) {
+            _something.Navigate(url ?? @"about:blank");
         }
 
         public event EventHandler<PageLoadedEventArgs> PageLoaded;
@@ -195,6 +215,7 @@ if (document.body){
             if (_loaded) return;
             _loaded = true;
             _something.OnLoaded();
+            Navigate((SaveKey == null ? null : ValuesStorage.GetString(SaveKey)) ?? StartPage);
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

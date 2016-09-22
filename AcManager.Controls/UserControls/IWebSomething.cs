@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     internal interface IWebSomething {
@@ -7,17 +8,18 @@ namespace AcManager.Controls.UserControls {
 
         event EventHandler<PageLoadedEventArgs> Navigated;
 
+        [NotNull]
         string GetUrl();
 
         void SetScriptProvider(ScriptProviderBase provider);
 
-        void SetUserAgent(string userAgent);
+        void SetUserAgent([NotNull] string userAgent);
 
         void ModifyPage();
 
-        void Execute(string js);
+        void Execute([NotNull] string js);
 
-        void Navigate(string url);
+        void Navigate([NotNull] string url);
 
         void GoBack();
 

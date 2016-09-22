@@ -142,6 +142,8 @@ namespace AcManager {
 
             FancyBackgroundManager.Initialize();
             DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+            
+            AppArguments.Set(AppFlag.CustomThemes, ref AppAppearanceManager.OptionCustomThemes);
             AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));
             AppAppearanceManager.Initialize();

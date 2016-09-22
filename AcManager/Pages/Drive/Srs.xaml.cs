@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
@@ -416,10 +417,9 @@ var a = [];
 var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
 for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
 window.external.SetCars(JSON.stringify(a));", true);
-            } else if (uri.StartsWith(@"http://www.simracingsystem.com/race.php", StringComparison.OrdinalIgnoreCase)) {
+            } else if (Regex.IsMatch(uri, @"http://(?:www\.)simracingsystem\.com/race\d*\.php", RegexOptions.IgnoreCase)) {
                 Logging.Write("WebBrowser_OnPageLoaded(): " + uri);
                 WebBrowser.Execute(@"
-window.external.Log('Here');
 var b = document.querySelector('[onclick*=""REMOTE/REQUESTED_CAR""]');
 if (!b){
     window.external.SetParams(null);

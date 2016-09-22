@@ -7,12 +7,14 @@ namespace AcManager {
         /// <summary>
         /// Keep comments in INI-files while saving. Might cause some issues with invald
         /// files (for example, if there are two sections having the same name). Slower,
-        /// so disabled by default. Example: --keep-ini-comments.
+        /// so disabled by default.
+        /// Example: --keep-ini-comments.
         /// </summary>
         KeepIniComments,
 
         /// <summary>
-        /// Filter for ignoring specific in-game controls. Example: --ignore-controls=g27.
+        /// Filter for ignoring specific in-game controls.
+        /// Example: --ignore-controls=g27.
         /// </summary>
         IgnoreControls,
 
@@ -237,7 +239,9 @@ namespace AcManager {
 
         /// <summary>
         /// Custom background, could be animated (put a JPEG file nearby as a replacement
-        /// when app isn’t active). Example: --background=mountain.webm.
+        /// when app isn’t active). If it’s not a full path, CM will look for a file(s) in
+        /// …\AppData\Local\AcTools Content Manager\Themes\Backgrounds.
+        /// Example: --background=mountain.webm.
         /// </summary>
         Background,
 
@@ -245,6 +249,13 @@ namespace AcManager {
         /// Opacity of custom background. Default value: 0.5.
         /// Example: --background-opacity=0.2.
         /// </summary>
-        BackgroundOpacity
+        BackgroundOpacity,
+
+        /// <summary>
+        /// Scan …\AppData\Local\AcTools Content Manager\Themes for custom themes and add them
+        /// to themes list.
+        /// Example: --custom-themes=on.
+        /// </summary>
+        CustomThemes
     }
 }
