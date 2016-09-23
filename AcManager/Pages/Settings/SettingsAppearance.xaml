@@ -36,7 +36,7 @@
                 <mui:HierarchicalComboBox ItemsSource="{Binding AppAppearanceManager.Themes}"
                         SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
             </DockPanel>
-            <TextBlock Text="{Binding AppAppearanceManager.ThemeError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
+            <TextBlock Text="{Binding AppAppearanceManager.ThemeError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}" TextWrapping="Wrap"
                     Visibility="{Binding AppAppearanceManager.ThemeError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">

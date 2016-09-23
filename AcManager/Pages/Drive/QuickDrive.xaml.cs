@@ -281,21 +281,17 @@ namespace AcManager.Pages.Drive {
                 }, o => {
                     TimeMultipler = o.TimeMultipler;
 
-                    if (_weatherId == null && o.RealConditions) {
-                        RealConditionsLocalWeather = o.RealConditionsLocalWeather ?? RealConditionsLocalWeather;
-                        RealConditionsTimezones = o.RealConditionsTimezones ?? RealConditionsTimezones;
-                        RealConditionsManualTime = o.RealConditionsManualTime ?? RealConditionsManualTime;
-                        RealConditions = true;
-                        UpdateConditions();
-                    } else {
-                        RealConditions = false;
-                        RealConditionsLocalWeather = false;
-                        RealConditionsTimezones = false;
-                        RealConditionsManualTime = false;
-                    }
+                    RealConditions = _weatherId == null && o.RealConditions;
+                    RealConditionsTimezones = o.RealConditionsTimezones ?? true;
+                    RealConditionsLocalWeather = o.RealConditionsLocalWeather ?? false;
+                    RealConditionsManualTime = o.RealConditionsManualTime ?? false;
 
                     Temperature = o.Temperature;
                     Time = o.Time;
+
+                    if (RealConditions) {
+                        UpdateConditions();
+                    }
 
                     try {
                         _skipLoading = o.ModeData != null;

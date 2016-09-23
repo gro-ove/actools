@@ -118,10 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Main_UnhandledException" xml:space="preserve">
-    <value>Непойманная ошибка:
+    <value>Необрабатываемая ошибка:
 
 {0}</value>
-  </data>
+  <alternative>Непойманная ошибка:
+
+{0}</alternative></data>
   <data name="App_DataUpdated" xml:space="preserve">
     <value>Данные обновлены</value>
   </data>
@@ -1305,5 +1307,11 @@
   </data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Расшарить текущие настройки (Ctrl+Page Up)</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>RSR вернул файл в неподдерживаемом формате.</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>Убедитесь, что данные верны.</value>
   </data>
 </root>

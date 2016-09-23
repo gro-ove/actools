@@ -35,7 +35,7 @@
 
         <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Controls.Devices}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

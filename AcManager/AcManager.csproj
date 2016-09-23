@@ -1175,9 +1175,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
+    <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
-    </None>
+    </EmbeddedResource>
     <None Include="App.manifest">
       <SubType>Designer</SubType>
     </None>

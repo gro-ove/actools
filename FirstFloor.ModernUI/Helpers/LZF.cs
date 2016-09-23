@@ -45,6 +45,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace FirstFloor.ModernUI.Helpers {
     /* Benchmark with Alice29 Canterbury Corpus
@@ -82,13 +83,12 @@ namespace FirstFloor.ModernUI.Helpers {
          21,0012 ms.
     */
 
-
     /// <summary>
     /// Improved C# LZF Compressor, a very small data compression library. The compression algorithm is extremely fast. 
     /// </summary>
-    internal sealed class Lzf {
+    internal static class Lzf {
         /// <summary>
-        /// Hashtable, thac can be allocated only once
+        /// Hashtable, thac can be allocated only once.
         /// </summary>
         private static readonly long[] HashTable = new long[Hsize];
 
@@ -99,21 +99,18 @@ namespace FirstFloor.ModernUI.Helpers {
         private const uint MaxRef = (1 << 8) + (1 << 3);
 
         /// <summary>
-        /// Compresses the data using LibLZF algorithm
+        /// Compresses the data using LibLZF algorithm.
         /// </summary>
-        /// <param name="input">Reference to the data to compress</param>
-        /// <param name="inputLength">Lenght of the data to compress</param>
-        /// <param name="output">Reference to a buffer which will contain the compressed data</param>
-        /// <param name="outputLength">Lenght of the compression buffer (should be bigger than the input buffer)</param>
-        /// <returns>The size of the compressed archive in the output buffer</returns>
+        /// <param name="input">Reference to the data to compress.</param>
+        /// <param name="inputLength">Lenght of the data to compress.</param>
+        /// <param name="output">Reference to a buffer which will contain the compressed data.</param>
+        /// <param name="outputLength">Lenght of the compression buffer (should be bigger than the input buffer).</param>
+        /// <returns>The size of the compressed archive in the output buffer.</returns>
         public static int Compress(byte[] input, int inputLength, byte[] output, int outputLength) {
             lock (HashTable) {
                 Array.Clear(HashTable, 0, (int)Hsize);
 
-                uint iidx = 0;
-                uint oidx = 0;
-
-                var hval = (uint)((input[iidx] << 8) | input[iidx + 1]);
+                uint iidx = 0, oidx = 0, hval = (uint)((input[iidx] << 8) | input[iidx + 1]);
                 var lit = 0;
 
                 for (;;) {
@@ -124,12 +121,8 @@ namespace FirstFloor.ModernUI.Helpers {
                         HashTable[hslot] = iidx;
 
                         long off;
-                        if ((off = iidx - reference - 1) < MaxOff
-                                && iidx + 4 < inputLength
-                                && reference > 0
-                                && input[reference + 0] == input[iidx + 0]
-                                && input[reference + 1] == input[iidx + 1]
-                                && input[reference + 2] == input[iidx + 2]) {
+                        if ((off = iidx - reference - 1) < MaxOff && iidx + 4 < inputLength && reference > 0 && input[reference + 0] == input[iidx + 0]
+                                && input[reference + 1] == input[iidx + 1] && input[reference + 2] == input[iidx + 2]) {
                             /* match found at *reference++ */
                             uint len = 2;
                             var maxlen = (uint)inputLength - iidx - len;
@@ -192,7 +185,6 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 if (lit != 0) {
                     if (oidx + lit + 1 >= outputLength) return 0;
-
                     output[oidx++] = (byte)(lit - 1);
                     lit = -lit;
                     do {
@@ -204,44 +196,106 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        /// <summary>
+        /// Compresses the data using LibLZF algorithm.
+        /// </summary>
+        /// <param name="input">Reference to the data to compress.</param>
+        /// <param name="inputLength">Lenght of the data to compress.</param>
+        /// <param name="output">Output stream with compressed data.</param>
+        public static void Compress(byte[] input, int inputLength, Stream output) {
+            lock (HashTable) {
+                Array.Clear(HashTable, 0, (int)Hsize);
+
+                uint iidx = 0, hval = (uint)((input[iidx] << 8) | input[iidx + 1]);
+                var lit = 0;
+
+                for (;;) {
+                    if (iidx < inputLength - 2) {
+                        hval = (hval << 8) | input[iidx + 2];
+                        long hslot = (hval ^ (hval << 5)) >> (int)(3 * 8 - Hlog - hval * 5) & (Hsize - 1);
+                        var reference = HashTable[hslot];
+                        HashTable[hslot] = iidx;
+
+                        long off;
+                        if ((off = iidx - reference - 1) < MaxOff && iidx + 4 < inputLength && reference > 0 && input[reference + 0] == input[iidx + 0]
+                                && input[reference + 1] == input[iidx + 1] && input[reference + 2] == input[iidx + 2]) {
+                            /* match found at *reference++ */
+                            uint len = 2;
+                            var maxlen = (uint)inputLength - iidx - len;
+                            maxlen = maxlen > MaxRef ? MaxRef : maxlen;
+
+                            do {
+                                len++;
+                            } while (len < maxlen && input[reference + len] == input[iidx + len]);
+
+                            if (lit != 0) {
+                                output.WriteByte((byte)(lit - 1));
+                                lit = -lit;
+                                do {
+                                    output.WriteByte(input[iidx + lit]);
+                                } while (++lit != 0);
+                            }
+
+                            len -= 2;
+                            iidx++;
+
+                            if (len < 7) {
+                                output.WriteByte((byte)((off >> 8) + (len << 5)));
+                            } else {
+                                output.WriteByte((byte)((off >> 8) + (7 << 5)));
+                                output.WriteByte((byte)(len - 7));
+                            }
+
+                            output.WriteByte((byte)off);
+
+                            iidx += len - 1;
+                            hval = (uint)((input[iidx] << 8) | input[iidx + 1]);
+
+                            hval = (hval << 8) | input[iidx + 2];
+                            HashTable[(hval ^ (hval << 5)) >> (int)(3 * 8 - Hlog - hval * 5) & (Hsize - 1)] = iidx;
+                            iidx++;
+
+                            hval = (hval << 8) | input[iidx + 2];
+                            HashTable[(hval ^ (hval << 5)) >> (int)(3 * 8 - Hlog - hval * 5) & (Hsize - 1)] = iidx;
+                            iidx++;
+                            continue;
+                        }
+                    } else if (iidx == inputLength) break;
+
+                    /* one more literal byte we must copy */
+                    lit++;
+                    iidx++;
+
+                    if (lit == MaxLit) {
+                        output.WriteByte((byte)(MaxLit - 1));
+                        lit = -lit;
+                        do {
+                            output.WriteByte(input[iidx + lit]);
+                        } while (++lit != 0);
+                    }
+                }
+
+                if (lit == 0) return;
+
+                output.WriteByte((byte)(lit - 1));
+                lit = -lit;
+                do {
+                    output.WriteByte(input[iidx + lit]);
+                } while (++lit != 0);
+            }
+        }
+
         public static byte[] Compress(byte[] input) {
             if (input.Length == 0) return new byte[0];
 
-            for (var i = 1; i < 10; i++) {
-                var result = new byte[input.Length * i];
-                var length = Compress(input, input.Length, result, result.Length);
-                if (length == 0) continue;
-                if (length == input.Length * i) return result;
-
-                var slice = new byte[length];
-                Array.Copy(result, 0, slice, 0, length);
-                return slice;
+            using (var stream = new MemoryStream(input.Length)) {
+                Compress(input, input.Length, stream);
+                return stream.ToArray();
             }
-
-            throw new Exception("Can’t compress data");
         }
-
-        public static byte[] CompressWithPrefix(byte[] input, byte flag) {
-            if (input.Length == 0) return new byte[0];
-
-            for (var i = 1; i < 10; i++) {
-                var result = new byte[input.Length * i];
-                var length = Compress(input, input.Length, result, result.Length);
-                if (length == 0) continue;
-                if (length == input.Length * i) return result;
-
-                var slice = new byte[length + 1];
-                slice[0] = flag;
-                Array.Copy(result, 0, slice, 1, length);
-                return slice;
-            }
-
-            throw new Exception("Can’t compress data");
-        }
-
 
         /// <summary>
-        /// Decompresses the data using LibLZF algorithm
+        /// Decompresses the data using LibLZF algorithm.
         /// </summary>
         /// <param name="input">Reference to the data to decompress</param>
         /// <param name="inputOffset">Starting offset</param>
@@ -290,12 +344,12 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         /// <summary>
-        /// Bad solution, but still.
+        /// When decompressed size is unknown.
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
+        /// <param name="input">Compressed data.</param>
+        /// <param name="offset">Start of compressed data in array.</param>
+        /// <param name="count">Size of compressed data.</param>
+        /// <returns>Decompressed data.</returns>
         public static byte[] Decompress(byte[] input, int offset, int count) {
             if (input.Length == 0) return new byte[0];
 

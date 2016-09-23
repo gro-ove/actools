@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public CarSkinObject GetSkinByIdFromConfig([NotNull]string skinId) {
-            return string.IsNullOrWhiteSpace(skinId) || skinId == "-" ? GetFirstSkinOrNull() : GetSkinById(skinId);
+            return string.IsNullOrWhiteSpace(skinId) || skinId == @"-" ? GetFirstSkinOrNull() : GetSkinById(skinId);
         }
 
         [CanBeNull]

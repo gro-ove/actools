@@ -16,11 +16,13 @@ using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace AcManager {
     [Localizable(false)]
     internal class PackedHelper {
         public static bool OptionCache = true;
+        public static bool OptionDirectLoading = false;
 
         private readonly string _logFilename;
         private readonly string _temporaryDirectory;
@@ -53,7 +55,7 @@ namespace AcManager {
         }
 
         private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e) {
-            Log("unhandled exception: " + e.ExceptionObject);
+            Log("Unhandled exception: " + e.ExceptionObject);
             Environment.Exit(1);
         }
 
@@ -73,40 +75,53 @@ namespace AcManager {
                 SetUnhandledExceptionHandler();
             }
         }
-        
-        private string ExtractResource(string id) {
-            var hash = _references.GetString(id + "//hash");
-            if (hash == null) {
-                Log("missing!");
-                return null;
+
+        private static int Decompress(byte[] input, int inputOffset, int inputLength, byte[] output, int outputLength) {
+            var iidx = (uint)inputOffset;
+            uint oidx = 0;
+            do {
+                uint ctrl = input[iidx++];
+                if (ctrl < 1 << 5) {
+                    ctrl++;
+                    do {
+                        output[oidx++] = input[iidx++];
+                    } while (--ctrl != 0);
+                } else {
+                    var len = ctrl >> 5;
+                    var reference = (int)(oidx - ((ctrl & 0x1f) << 8) - 1);
+                    if (len == 7) len += input[iidx++];
+                    reference -= input[iidx++];
+                    output[oidx++] = output[reference++];
+                    output[oidx++] = output[reference++];
+                    do {
+                        output[oidx++] = output[reference++];
+                    } while (--len != 0);
+                }
+            } while (iidx < inputLength);
+            return (int)oidx;
+        }
+
+        private static byte[] DecompressSmart(byte[] input) {
+            if (input.Length == 0) return new byte[0];
+            var size = BitConverter.ToInt32(input, 0);
+            var result = new byte[size];
+            var decompress = Decompress(input, 4, input.Length - 4, result, result.Length);
+            if (decompress != size) {
+                throw new Exception($"Invalid data ({decompress}≠{size})");
             }
+            return result;
+        }
 
-#if LOCALIZABLE
-            _first = false;
-#endif
-
-            var prefix = id + "_";
-            var name = prefix + hash + ".dll";
-            var filename = Path.Combine(_temporaryDirectory, name);
-            Log("extracting resource: " + filename);
-
-            if (File.Exists(filename)) {
-                Log("already extracted, reusing: " + filename);
-                return filename;
-            }
-
+        [CanBeNull]
+        private byte[] GetData(string id) {
             var bytes = _references.GetObject(id) as byte[];
-            if (bytes == null) {
-                Log("missing!");
-                return null;
-            }
+            if (bytes == null) throw new Exception("Data is missing");
 
-            var compressed = _references.GetObject(id + "//compressed") as bool?;
-            if (compressed == true) {
-                Log("compressed! decompressing…");
-
+            if (_references.GetObject(id + "//fast") as bool? == true) {
+                bytes = DecompressSmart(bytes);
+            } else if (_references.GetObject(id + "//compressed") as bool? == true) {
                 using (var memory = new MemoryStream(bytes))
-                using (var output = new MemoryStream()) {
+                using (var output = new MemoryStream(bytes.Length * 2)) {
                     using (var decomp = new DeflateStream(memory, CompressionMode.Decompress)) {
                         decomp.CopyTo(output);
                     }
@@ -115,22 +130,93 @@ namespace AcManager {
                 }
             }
 
+            return bytes;
+        }
+
+        private Assembly Extract(string id) {
+            if (OptionDirectLoading && _references.GetObject(id + "//direct") as bool? == true) {
+                var sw = Stopwatch.StartNew();
+                var data = GetData(id);
+                var unpacking = sw.ElapsedMilliseconds;
+                sw.Restart();
+                var assembly = Assembly.Load(data);
+
+                if (_logFilename != null) {
+                    Log("Direct: " + id + ", unpacking=" + unpacking + " ms, loading=" + sw.ElapsedMilliseconds + " ms");
+                }
+
+                return assembly;
+            }
+
+            Assembly result = null;
+            string filename;
+            try {
+                filename = ExtractToFile(id);
+            } catch (Exception e) {
+                Log("Error: " + e);
+                return null;
+            }
+
+            int i;
+            for (i = 1; i < 20; i++) {
+                try {
+                    result = Assembly.LoadFrom(filename);
+                    break;
+                } catch (FileLoadException) {
+                    Log("FileLoadException! Next attempt in 500 ms");
+                    Thread.Sleep(500);
+                }
+            }
+
+            if (result == null) throw new Exception("Can’t access unpacked library");
+            if (i > 1) {
+                Log($"{i + 1} attempt is successfull");
+            }
+
+            return result;
+        }
+
+        [NotNull]
+        private string ExtractToFile(string id) {
+            var hash = _references.GetString(id + "//hash");
+            if (hash == null) throw new Exception($"Checksum for {id} is missing");
+
+#if LOCALIZABLE
+            _first = false;
+#endif
+
+            var prefix = id + "_";
+            var name = prefix + hash + ".dll";
+            var filename = Path.Combine(_temporaryDirectory, name);
+            if (File.Exists(filename)) {
+                if (_logFilename != null) {
+                    Log("Already extracted: " + filename);
+                }
+
+                return filename;
+            }
+
+            Log("Extracting resource: " + filename);
+
+            var bytes = GetData(id);
+            if (bytes == null) throw new Exception($"Data for {id} is missing");
+
             if (_temporaryFiles == null) {
                 _temporaryFiles = Directory.GetFiles(_temporaryDirectory, "*.dll").Select(Path.GetFileName).ToList();
             }
 
             var previous = _temporaryFiles.FirstOrDefault(x => x.StartsWith(prefix));
             if (previous != null) {
-                Log("removing previous version: " + previous);
+                Log("Removing previous version: " + previous);
                 try {
                     File.Delete(Path.Combine(_temporaryDirectory, previous));
                     _temporaryFiles.Remove(previous);
                 } catch (Exception e) {
-                    Log("can’t remove: " + e);
+                    Log("Can’t remove: " + e);
                 }
             }
 
-            Log("writing, " + bytes.Length + " bytes");
+            Log("Writing, " + bytes.Length + " bytes");
             File.WriteAllBytes(filename, bytes);
             return filename;
         }
@@ -146,18 +232,15 @@ namespace AcManager {
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
             if (_ignore) return null;
 
-            var name = new AssemblyName(args.Name).Name;
+            var id = new AssemblyName(args.Name).Name;
 
             Assembly result;
-            if (_cached.TryGetValue(name, out result)) return result;
+            if (_cached.TryGetValue(id, out result)) return result;
             
-            if (string.Equals(name, "system.web", StringComparison.OrdinalIgnoreCase)) {
+            if (string.Equals(id, "System.Web", StringComparison.OrdinalIgnoreCase)) {
                 if (MessageBox.Show("Looks like you don’t have .NET 4 installed. Would you like to install it?", "Error",
                         MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {
-                    Process.Start(new ProcessStartInfo {
-                        UseShellExecute = true,
-                        FileName = "http://www.microsoft.com/en-us/download/details.aspx?id=17718"
-                    });
+                    Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=17718");
                 }
 
                 Environment.Exit(10);
@@ -184,50 +267,21 @@ namespace AcManager {
                 }
             }
 #else
-            if (name.StartsWith("PresentationFramework") || name.EndsWith(".resources")) return null;
+            if (id.StartsWith("PresentationFramework") || id.EndsWith(".resources")) return null;
 #endif
 
-            if (name == "Magick.NET-x86") {
-                return null;
-            }
+            if (id == "Magick.NET-x86") return null;
 
-            Log("resolve: " + args.Name + " as " + name);
+            if (_logFilename != null) {
+                Log("Resolve: " + args.Name + " as " + id);
+            }
 
             try {
                 _ignore = true;
-
-                string filename;
-                try {
-                    filename = ExtractResource(name);
-                    if (filename == null) return null;
-                } catch (Exception e) {
-                    Log("error: " + e);
-                    return null;
-                }
-                
-                int i;
-                for (i = 1; i < 50; i++) {
-                    try {
-                        result = Assembly.LoadFrom(filename);
-                        break;
-                    } catch (FileLoadException) {
-                        // special case for idiotic Panda AV
-                        Log("fileloadexception! next attempt in 250 ms");
-                        Thread.Sleep(250);
-                    }
-                }
-
-                if (result == null) {
-                    Log("no success");
-                    throw new Exception("Can’t access unpacked library");
-                }
-
-                if (i > 1) {
-                    Log($"{i + 1} attempt is successfull");
-                }
+                result = Extract(id);
 
                 if (OptionCache) {
-                    _cached[name] = result;
+                    _cached[id] = result;
                 }
 
                 return result;

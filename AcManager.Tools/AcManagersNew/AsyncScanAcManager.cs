@@ -45,10 +45,8 @@ namespace AcManager.Tools.AcManagersNew {
 
         public async Task ScanAsync() {
             var scanned = IsScanned;
-            lock (InnerWrappersList) {
-                if (IsScanned && !scanned) {
-                    return;
-                }
+            lock (ScanningLock) {
+                if (IsScanned && !scanned) return;
             }
 
             using (_cancellationTokenSource = new CancellationTokenSource()) {
@@ -62,6 +60,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (!IsScanned) {
                 await ScanAsync();
             }
+
             await base.EnsureLoadedAsync();
         }
 
@@ -96,6 +95,7 @@ namespace AcManager.Tools.AcManagersNew {
             foreach (var obj in InnerWrappersList.Select(x => x.Value).OfType<T>()) {
                 obj.Outdate();
             }
+
             InnerWrappersList.Clear();
             IsScanned = false;
             IsLoaded = false;

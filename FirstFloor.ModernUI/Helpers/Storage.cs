@@ -31,7 +31,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
             Load();
 
-            _exitEvent += (sender, args) => {
+            ExitEvent += (sender, args) => {
                 if (_dirty) {
                     Save();
                 }
@@ -60,7 +60,6 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             var deflateMode = bytes[0] == DeflateFlag;
-
             if (!deflateMode && !bytes.Any(x => x < 0x20 && x != '\t' && x != '\n' && x != '\r')) {
                 return Encoding.UTF8.GetString(bytes);
             }
@@ -81,19 +80,20 @@ namespace FirstFloor.ModernUI.Helpers {
         private byte[] EncodeBytes(string s) {
             var bytes = Encoding.UTF8.GetBytes(s);
             if (_disableCompression) return bytes;
-            if (_useDeflate) {
-                using (var output = new MemoryStream()) {
-                    output.WriteByte(DeflateFlag);
 
+            using (var output = new MemoryStream()) {
+                output.WriteByte(DeflateFlag);
+
+                if (_useDeflate) {
                     using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
                         gzip.Write(bytes, 0, bytes.Length);
                     }
-
-                    return output.ToArray();
+                } else {
+                    Lzf.Compress(bytes, bytes.Length, output);
                 }
-            }
 
-            return Lzf.CompressWithPrefix(bytes, LzfFlag);
+                return output.ToArray();
+            }
         }
 
         public static string EncodeBase64([NotNull] string s) {
@@ -226,38 +226,47 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        private void SaveData(string data) {
+            try {
+                var bytes = Encoding.UTF8.GetBytes(data);
+                if (_disableCompression) {
+                    File.WriteAllBytes(_filename, bytes);
+                    return;
+                }
+
+                using (var output = new FileStream(_filename, FileMode.Create, FileAccess.Write, FileShare.Read)) {
+                    if (_useDeflate) {
+                        output.WriteByte(DeflateFlag);
+                        using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
+                            gzip.Write(bytes, 0, bytes.Length);
+                        }
+                    } else {
+                        output.WriteByte(LzfFlag);
+                        Lzf.Compress(bytes, bytes.Length, output);
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
         private void Save() {
             if (_filename == null) return;
-
-            var data = GetData();
-            try {
-                File.WriteAllBytes(_filename, EncodeBytes(data));
-            } catch (Exception e) {
-                Logging.Write("Cannot save values: " + e);
-            }
+            SaveData(GetData());
         }
 
         private async Task SaveAsync() {
             if (_filename == null) return;
-
             var sw = Stopwatch.StartNew();
-
-            await Task.Run(() => {
-                var data = GetData();
-                try {
-                    File.WriteAllBytes(_filename, EncodeBytes(data));
-                } catch (Exception e) {
-                    Logging.Write("Cannot save values: " + e);
-                }
-            });
-
+            var data = GetData();
+            await Task.Run(() => SaveData(data));
             PreviosSaveTime = sw.Elapsed;
         }
 
-        private static event EventHandler _exitEvent;
+        private static event EventHandler ExitEvent;
 
         public static void SaveBeforeExit() {
-            _exitEvent?.Invoke(null, EventArgs.Empty);
+            ExitEvent?.Invoke(null, EventArgs.Empty);
         }
 
         private bool _dirty;

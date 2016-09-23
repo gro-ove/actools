@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -246,7 +248,7 @@ namespace AcTools.Utils.Helpers {
         public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable as IList<T> ?? enumerable.ToList();
-            return list.ElementAt(new Random().Next(0, list.Count));
+            return list.ElementAt(MathUtils.Random(0, list.Count));
         }
 
         [Pure, NotNull]

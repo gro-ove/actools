@@ -28,6 +28,8 @@ namespace AcManager.Tools.AcManagersNew {
         [NotNull]
         protected readonly AcWrapperObservableCollection InnerWrappersList;
 
+        public bool CheckIfScanningInProcess() => IsScanning;
+
         protected bool IsScanning;
         protected bool LoadingReset;
         private bool _isScanned;
@@ -69,23 +71,27 @@ namespace AcManager.Tools.AcManagersNew {
         protected virtual AcWrapperObservableCollection CreateCollection() {
             return new AcWrapperObservableCollection();
         }
-        
-        public IAcWrapperObservableCollection WrappersList {
-            get {
+
+        protected readonly object ScanningLock = new object();
+
+        private void EnsureScanned() {
+            lock (ScanningLock) {
                 if (!IsScanned && !IsScanning) {
                     Scan();
                 }
-
+            }
+        }
+        
+        public IAcWrapperObservableCollection WrappersList {
+            get {
+                EnsureScanned();
                 return InnerWrappersList;
             }
         }
 
         public IAcObjectList WrappersAsIList {
             get {
-                if (!IsScanned && !IsScanning) {
-                    Scan();
-                }
-
+                EnsureScanned();
                 return InnerWrappersList;
             }
         }
@@ -114,7 +120,7 @@ namespace AcManager.Tools.AcManagersNew {
         
         public void Scan() {
             var scanned = _isScanned;
-            lock (InnerWrappersList) {
+            lock (ScanningLock) {
                 if (_isScanned && !scanned) {
                     return;
                 }
@@ -157,10 +163,7 @@ namespace AcManager.Tools.AcManagersNew {
         protected abstract IEnumerable<AcPlaceholderNew> ScanInner();
 
         public void EnsureLoaded() {
-            if (!IsScanned) {
-                Scan();
-            }
-
+            EnsureScanned();
             if (!IsLoaded) {
                 Load();
             }
@@ -169,10 +172,7 @@ namespace AcManager.Tools.AcManagersNew {
         private Task _loadingTask;
 
         public virtual async Task EnsureLoadedAsync() {
-            if (!IsScanned) {
-                Scan();
-            }
-
+            EnsureScanned();
             if (!IsLoaded) {
                 await (_loadingTask ?? (_loadingTask = LoadAsync()));
                 _loadingTask = null;
@@ -193,12 +193,11 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        private readonly object _loadLocker = new object();
+        private readonly object _loadLock = new object();
 
         protected void Load() {
             var start = Stopwatch.StartNew();
-
-            lock (_loadLocker) {
+            lock (_loadLock) {
                 foreach (var item in WrappersList.Where(x => !x.IsLoaded)) {
                     item.Value = CreateAndLoadAcObject(item.Value.Id, item.Value.Enabled);
                 }
@@ -302,13 +301,9 @@ namespace AcManager.Tools.AcManagersNew {
         
         [CanBeNull]
         public AcItemWrapper GetWrapperById([NotNull] string id) {
-            if (!IsScanned && !IsScanning) {
-                Scan();
-            }
-
-            for (var i = 0; i < InnerWrappersList.Count; i++) {
-                var x = InnerWrappersList[i];
-                if (x.Value.Id.Equals(id, StringComparison.OrdinalIgnoreCase)) return x;
+            for (var i = 0; i < WrappersList.Count; i++) {
+                var x = WrappersList[i];
+                if (x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)) return x;
             }
             return null;
         }
@@ -323,7 +318,7 @@ namespace AcManager.Tools.AcManagersNew {
                     return (T)wrapper.Value;
                 }
 
-                var value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
+                var value = CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled);
                 wrapper.Value = value;
                 isFreshlyLoaded = true;
                 return value;
@@ -339,7 +334,7 @@ namespace AcManager.Tools.AcManagersNew {
                     return (T)wrapper.Value;
                 }
 
-                var value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
+                var value = CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled);
                 wrapper.Value = value;
                 return value;
             }
@@ -353,7 +348,7 @@ namespace AcManager.Tools.AcManagersNew {
                 return (T)wrapper.Value;
             }
 
-            var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled, false));
+            var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Id, wrapper.Value.Enabled, false));
             wrapper.Value = value;
             return value;
         }

@@ -5,7 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
-        /// Who knew Kunos are so careless? Enabled by default.
+        /// Load libraries directly, without dumping them on disk.
+        /// Example: --direct-assemblies-loading.
+        /// </summary>
+        DirectAssembliesLoading,
+
+        /// <summary>
+        /// Considering how often skins’ IDs might change, this option is enabled by default.
         /// Example: --ignore-missing-skins-in-kunos-events=no.
         /// </summary>
         IgnoreMissingSkinsInKunosEvents,
@@ -260,7 +266,7 @@ namespace AcManager {
         /// <summary>
         /// Scan …\AppData\Local\AcTools Content Manager\Themes for custom themes and add them
         /// to themes list.
-        /// Example: --custom-themes=on.
+        /// Example: --custom-themes.
         /// </summary>
         CustomThemes
     }
