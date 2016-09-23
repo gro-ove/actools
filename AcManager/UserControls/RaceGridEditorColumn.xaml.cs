@@ -10,7 +10,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
-using AcManager.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -156,19 +155,10 @@ namespace AcManager.UserControls {
             }
         }
 
-        private ICommand _setupCommand;
-
-        public ICommand SetupCommand => _setupCommand ?? (_setupCommand = new DelegateCommand(() => {
-            var model = Model;
-            if (model == null) return;
-
-            new SetupRaceGridDialog(model).ShowDialog();
-        }));
-
         [ValueConversion(typeof(bool), typeof(string))]
         private class InnerModeToLabelConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value as bool? == true ? "Candidates:" : "Opponents:";
+                return value as bool? == true ? AppStrings.RaceGrid_Candidates : AppStrings.RaceGrid_Opponents;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

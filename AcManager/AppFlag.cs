@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Who knew Kunos are so careless? Enabled by default.
+        /// Example: --ignore-missing-skins-in-kunos-events=no.
+        /// </summary>
+        IgnoreMissingSkinsInKunosEvents,
+
+        /// <summary>
         /// Keep comments in INI-files while saving. Might cause some issues with invald
         /// files (for example, if there are two sections having the same name). Slower,
         /// so disabled by default.

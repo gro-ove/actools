@@ -160,7 +160,7 @@
             <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Margin="8 0 8 8" Height="4" />
             <TextBlock TextAlignment="Center" Style="{StaticResource Small}">
                 <TextBlock.Text>
-                    <MultiBinding StringFormat="{}Loaded {1} out of {0}">
+                    <MultiBinding StringFormat="{x:Static g:AppStrings.RaceGrid_LoadingProgress}">
                         <Binding Path="WrappersList.Count" />
                         <Binding Path="LoadedCount" />
                     </MultiBinding>
@@ -184,8 +184,9 @@
                     ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" HorizontalAlignment="Right" Margin="0 0 4 0"
                     Style="{StaticResource NonTransparent}"
                     IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-            <mui:ModernToggleButton x:Name="DetailsButton" Grid.Column="2" IconData="{StaticResource ListGearIconData}" ToolTip="Detailed settings"
-                    HorizontalAlignment="Right" Margin="0 0 0 0" Style="{StaticResource NonTransparent}"
+            <mui:ModernToggleButton x:Name="DetailsButton" Grid.Column="2" IconData="{StaticResource ListGearIconData}"
+                    ToolTip="{x:Static g:AppStrings.RaceGrid_DetailedSettings}" HorizontalAlignment="Right" Margin="0 0 0 0"
+                    Style="{StaticResource NonTransparent}"
                     IsHitTestVisible="{Binding ElementName=DetailsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
 
             <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="SelectCarPopup" Placement="Custom" Padding="8"
@@ -208,16 +209,17 @@
 
                         <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{Binding SelectedCar.CarClass, StringFormat='{}Class: {0}'}" Style="{StaticResource Small}" DockPanel.Dock="Top"
-                                Margin="0 0 0 4" />
+                        <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
+                                Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}">
+                        </TextBlock>
                         <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
                                 TextWrapping="Wrap" />
                     </DockPanel>
 
                     <uc:SelectCar Grid.Row="1" SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
-                        <Button Command="{Binding AddOpponentCarCommand}" Content="Add" />
-                        <Button Command="{Binding ClosePopupsCommand}" Content="Close" Margin="4 0 0 0" />
+                        <Button Command="{Binding AddOpponentCarCommand}" Content="{x:Static mui:UiStrings.Common_Add}" />
+                        <Button Command="{Binding ClosePopupsCommand}" Content="{x:Static mui:UiStrings.Close}" Margin="4 0 0 0" />
                     </StackPanel>
                 </Grid>
             </c:ModernPopup>
@@ -232,13 +234,16 @@
                     <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.FilteredView}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
                             Drop="ItemsControl_OnDrop" MinRowHeight="20">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="*" Header="Car" SortMemberPath="Car" CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                            <DataGridTemplateColumn Width="120" Header="Skin" SortMemberPath="CarSkin" CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
+                            <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car"
+                                    CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
+                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin"
+                                    CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
                             <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
                                     CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-                            <DataGridTemplateColumn Width="120" Header="Nationality" SortMemberPath="Nationality"
+                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
                                     CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-                            <DataGridTemplateColumn Width="60" Header="AI" SortMemberPath="AiLevel" CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
+                            <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Ai}" SortMemberPath="AiLevel"
+                                    CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -246,8 +251,8 @@
                         <c:UserPresetsControl Margin="0 0 4 0" UserPresetable="{Binding DataContext}" MinWidth="300" />
                         <Button Command="{Binding DataContext.ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
                                 Content="{x:Static g:AppStrings.Common_Share}" />
-                        <Button Command="{Binding AddOpponentCarCommand}" Content="Add" />
-                        <Button Command="{Binding ClosePopupsCommand}" Content="Close" Margin="4 0 0 0" />
+                        <Button Command="{Binding AddOpponentCarCommand}" Content="{x:Static mui:UiStrings.Common_Add}" />
+                        <Button Command="{Binding ClosePopupsCommand}" Content="{x:Static mui:UiStrings.Close}" Margin="4 0 0 0" />
                     </StackPanel>
                 </Grid>
             </c:ModernPopup>
@@ -259,9 +264,10 @@
                     Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory" />
         </DockPanel>
 
-        <TextBlock Text="{Binding ErrorMessage, TargetNullValue='Matching candidates not found'}" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
+        <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
                 Visibility="{Binding FilteredView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 4 0 0"
-                FontWeight="Bold" IsHitTestVisible="False" TextWrapping="Wrap" />
+                FontWeight="Bold" IsHitTestVisible="False" TextWrapping="Wrap"
+                Text="{Binding ErrorMessage, TargetNullValue={x:Static mui:UiStrings.RaceGrid_CandidatesNotFound}}" />
 
         <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
@@ -269,8 +275,8 @@
                 Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True" mui:Draggable.Enabled="True">
             <ListBox.ContextMenu>
                 <ContextMenu DataContext="{x:Reference This}">
-                    <MenuItem Header="Save Race Grid As Preset" Command="{Binding SavePresetCommand}" />
-                    <MenuItem Header="Share Race Grid" Command="{Binding SavePresetCommand}" />
+                    <MenuItem Header="{x:Static mui:UiStrings.RaceGrid_SavePresetHeader}" Command="{Binding SavePresetCommand}" />
+                    <MenuItem Header="{x:Static mui:UiStrings.RaceGrid_ShareHeader}" Command="{Binding SavePresetCommand}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.Style>
@@ -284,7 +290,7 @@
                                     </DockPanel.InputBindings>
                                     <DockPanel.ContextMenu>
                                         <mui:InheritingContextMenu DataContext="{x:Reference This}">
-                                            <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                            <MenuItem Header="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding DeleteSelectedCommand}" />
                                         </mui:InheritingContextMenu>
                                     </DockPanel.ContextMenu>
                                     <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
@@ -299,9 +305,9 @@
                                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
                                                 VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
                                     </Button>
-                                    <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
-                                            ToolTip="Candidate priority" Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center" Width="20"
-                                            Padding="0 -1 0 -1" mui:TextBoxAdvancement.SpecialMode="Positive" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                                    <mui:BetterTextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
+                                            ToolTip="{x:Static g:AppStrings.RaceGrid_CandidatePriority}" Style="{StaticResource Borderless.White.Small}"
+                                            VerticalAlignment="Center" Width="20" Mode="Positive" />
                                     <TextBlock Text="{Binding DisplayName}" />
                                 </DockPanel>
                                 <DataTemplate.Triggers>
@@ -331,8 +337,8 @@
                                             </DockPanel.InputBindings>
                                             <DockPanel.ContextMenu>
                                                 <mui:InheritingContextMenu DataContext="{x:Reference This}">
-                                                    <MenuItem Header="Clone" Command="{Binding CloneSelectedCommand}" />
-                                                    <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneSelectedCommand}" />
+                                                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding DeleteSelectedCommand}" />
                                                 </mui:InheritingContextMenu>
                                             </DockPanel.ContextMenu>
                                             <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
@@ -355,7 +361,7 @@
                                         <DataTemplate.Triggers>
                                             <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">
                                                 <!--<Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />-->
-                                                <Setter Property="ToolTip" Value="There is no pit stop for this car" />
+                                                <Setter Property="ToolTip" Value="{x:Static g:AppStrings.RaceGrid_OverTheLimit}" />
                                                 <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding SpecialEntry}" Value="True">

@@ -170,8 +170,11 @@ namespace AcManager.Tools.Objects {
                 } else {
                     carSkin = skin == null ? car.GetFirstSkinOrNull() : car.GetSkinByIdFromConfig(skin);
                     if (carSkin == null) {
-                        AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.GetNonEmpty("SKIN"));
-                        carSkin = car.GetFirstSkinOrNull();
+                        if (!KunosEventObjectBase.OptionIgnoreMissingSkins) {
+                            AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.GetNonEmpty("SKIN"));
+                        }
+
+                        carSkin = (CarSkinObject)car.SkinsManager.WrappersList.RandomElement().Loaded();
                     }
                 }
 

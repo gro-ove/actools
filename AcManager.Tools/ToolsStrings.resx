@@ -1521,4 +1521,7 @@
   <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
     <value>Drive-Through</value>
   </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Track Day</value>
+  </data>
 </root>

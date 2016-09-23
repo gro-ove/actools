@@ -255,13 +255,18 @@ namespace AcTools.DataFile {
             base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
+        private static string DoubleToString(double d) {
+            var s = d.ToString(CultureInfo.InvariantCulture);
+            return s.IndexOf('.') == -1 ? $"{s}.0" : s;
+        }
+
         public void Set([NotNull, LocalizationRequired(false)] string key, double value) {
-            base[key] = value.ToString(CultureInfo.InvariantCulture);
+            base[key] = DoubleToString(value);
         }
 
         public void Set([NotNull, LocalizationRequired(false)] string key, double? value) {
             if (!value.HasValue) return;
-            base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
+            base[key] = DoubleToString(value.Value);
         }
 
         public void Set([NotNull, LocalizationRequired(false)] string key, double value, string format) {

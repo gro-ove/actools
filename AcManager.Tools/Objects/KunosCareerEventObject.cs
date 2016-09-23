@@ -169,23 +169,20 @@ namespace AcManager.Tools.Objects {
             return ini;
         }
 
-        private DelegateCommand _goCommand;
+        private AsyncCommand _goCommand;
 
-        // TODO: async command
-        public DelegateCommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand(async () => {
-            await GameWrapper.StartAsync(new Game.StartProperties {
-                AdditionalPropertieses = {
-                    ConditionType.HasValue ? new PlaceConditions {
-                        Type = ConditionType.Value,
-                        FirstPlaceTarget = FirstPlaceTarget,
-                        SecondPlaceTarget = SecondPlaceTarget,
-                        ThirdPlaceTarget = ThirdPlaceTarget
-                    } : null,
-                    new KunosCareerManager.CareerProperties { CareerId = KunosCareerId, EventId = Id }
-                },
-                PreparedConfig = ConvertConfig(new IniFile(IniFilename)),
-                AssistsProperties = null
-            });
-        }, () => IsAvailable));
+        public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(() => GameWrapper.StartAsync(new Game.StartProperties {
+            AdditionalPropertieses = {
+                ConditionType.HasValue ? new PlaceConditions {
+                    Type = ConditionType.Value,
+                    FirstPlaceTarget = FirstPlaceTarget,
+                    SecondPlaceTarget = SecondPlaceTarget,
+                    ThirdPlaceTarget = ThirdPlaceTarget
+                } : null,
+                new KunosCareerManager.CareerProperties { CareerId = KunosCareerId, EventId = Id }
+            },
+            PreparedConfig = ConvertConfig(new IniFile(IniFilename)),
+            AssistsProperties = null
+        }), () => IsAvailable));
     }
 }

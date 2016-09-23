@@ -3394,6 +3394,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track Day.
+        /// </summary>
+        public static string Session_TrackDay {
+            get {
+                return ResourceManager.GetString("Session_TrackDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Player.
         /// </summary>
         public static string Settings_DefaultPlayerName {

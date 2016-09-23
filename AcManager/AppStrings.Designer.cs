@@ -152,6 +152,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recent changes.
+        /// </summary>
+        public static string About_RecentChanges {
+            get {
+                return ResourceManager.GetString("About_RecentChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report an issue.
         /// </summary>
         public static string About_ReportAnIssue {
@@ -202,6 +211,15 @@ namespace AcManager {
         public static string About_ReportAnIssue_Title {
             get {
                 return ResourceManager.GetString("About_ReportAnIssue_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Special thanks for translation to:.
+        /// </summary>
+        public static string About_ThanksForTranslationHeader {
+            get {
+                return ResourceManager.GetString("About_ThanksForTranslationHeader", resourceCulture);
             }
         }
         
@@ -3695,6 +3713,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use local weather instead of weather on the track.
+        /// </summary>
+        public static string Drive_LocalWeather_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_LocalWeather_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Weather.
+        /// </summary>
+        public static string Drive_LocalWeatherHeader {
+            get {
+                return ResourceManager.GetString("Drive_LocalWeatherHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Limited by number of pits available ({0}).
         /// </summary>
         public static string Drive_OpponentsMaximumLimitation_Tooltip {
@@ -3772,6 +3808,15 @@ namespace AcManager {
         public static string Drive_RealConditions {
             get {
                 return ResourceManager.GetString("Drive_RealConditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Time Manually.
+        /// </summary>
+        public static string Drive_SetTimeManuallyHeader {
+            get {
+                return ResourceManager.GetString("Drive_SetTimeManuallyHeader", resourceCulture);
             }
         }
         
@@ -3862,6 +3907,15 @@ namespace AcManager {
         public static string Drive_TyreBlankets {
             get {
                 return ResourceManager.GetString("Drive_TyreBlankets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t load real weather.
+        /// </summary>
+        public static string Drive_Weather_CannotLoad {
+            get {
+                return ResourceManager.GetString("Drive_Weather_CannotLoad", resourceCulture);
             }
         }
         
@@ -5475,6 +5529,69 @@ namespace AcManager {
         public static string Race_Waiting {
             get {
                 return ResourceManager.GetString("Race_Waiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Candidate priority.
+        /// </summary>
+        public static string RaceGrid_CandidatePriority {
+            get {
+                return ResourceManager.GetString("RaceGrid_CandidatePriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Candidates:.
+        /// </summary>
+        public static string RaceGrid_Candidates {
+            get {
+                return ResourceManager.GetString("RaceGrid_Candidates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class: {0}.
+        /// </summary>
+        public static string RaceGrid_ClassFormat {
+            get {
+                return ResourceManager.GetString("RaceGrid_ClassFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detailed settings.
+        /// </summary>
+        public static string RaceGrid_DetailedSettings {
+            get {
+                return ResourceManager.GetString("RaceGrid_DetailedSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {1} out of {0}.
+        /// </summary>
+        public static string RaceGrid_LoadingProgress {
+            get {
+                return ResourceManager.GetString("RaceGrid_LoadingProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opponents:.
+        /// </summary>
+        public static string RaceGrid_Opponents {
+            get {
+                return ResourceManager.GetString("RaceGrid_Opponents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no pit stop for this car.
+        /// </summary>
+        public static string RaceGrid_OverTheLimit {
+            get {
+                return ResourceManager.GetString("RaceGrid_OverTheLimit", resourceCulture);
             }
         }
         
@@ -8000,6 +8117,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AI.
+        /// </summary>
+        public static string TableHeader_Ai {
+            get {
+                return ResourceManager.GetString("TableHeader_Ai", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Best Lap.
         /// </summary>
         public static string TableHeader_BestLap {
@@ -8018,6 +8144,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skin.
+        /// </summary>
+        public static string TableHeader_CarSkin {
+            get {
+                return ResourceManager.GetString("TableHeader_CarSkin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Locked.
         /// </summary>
         public static string TableHeader_Locked {
@@ -8032,6 +8167,15 @@ namespace AcManager {
         public static string TableHeader_Name {
             get {
                 return ResourceManager.GetString("TableHeader_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nationality.
+        /// </summary>
+        public static string TableHeader_Nationality {
+            get {
+                return ResourceManager.GetString("TableHeader_Nationality", resourceCulture);
             }
         }
         

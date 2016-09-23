@@ -88,6 +88,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Common_Add {
+            get {
+                return ResourceManager.GetString("Common_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops!.
         /// </summary>
         public static string Common_Oops {
@@ -1164,6 +1173,33 @@ namespace FirstFloor.ModernUI {
         public static string Progress_Uploading_KnownTotal {
             get {
                 return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matching candidates not found.
+        /// </summary>
+        public static string RaceGrid_CandidatesNotFound {
+            get {
+                return ResourceManager.GetString("RaceGrid_CandidatesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Race Grid As Preset.
+        /// </summary>
+        public static string RaceGrid_SavePresetHeader {
+            get {
+                return ResourceManager.GetString("RaceGrid_SavePresetHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share Race Grid.
+        /// </summary>
+        public static string RaceGrid_ShareHeader {
+            get {
+                return ResourceManager.GetString("RaceGrid_ShareHeader", resourceCulture);
             }
         }
         

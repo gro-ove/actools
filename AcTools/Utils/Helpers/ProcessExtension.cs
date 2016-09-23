@@ -52,8 +52,12 @@ namespace AcTools.Utils.Helpers {
             return new string(text.Reverse().ToArray());
         }
 
-        public static Process Start(string filename, IEnumerable<string> args) {
-            return Process.Start(filename, args.Select(GetQuotedArgument).JoinToString(" "));
+        public static Process Start(string filename, IEnumerable<string> args, bool shell = true) {
+            return Process.Start(new ProcessStartInfo {
+                FileName = filename,
+                Arguments = args.Select(GetQuotedArgument).JoinToString(" "),
+                UseShellExecute = shell
+            });
         }
 
         public static bool HasExitedSafe(this Process process) {
@@ -61,13 +65,6 @@ namespace AcTools.Utils.Helpers {
             if (handle == IntPtr.Zero || handle == new IntPtr(-1)) return true;
 
             try {
-                // Although this is the wrong way to check whether the process has exited,
-                // it was historically the way we checked for it, and a lot of code then took a dependency on
-                // the fact that this would always be set before the pipes were closed, so they would read
-                // the exit code out after calling ReadToEnd() or standard output or standard error. In order
-                // to allow 259 to function as a valid exit code and to break as few people as possible that
-                // took the ReadToEnd dependency, we check for an exit code before doing the more correct
-                // check to see if we have been signalled.
                 int exitCode;
                 if (Kernel32.GetExitCodeProcess(handle, out exitCode) && exitCode != Kernel32.STILL_ACTIVE) return true;
 

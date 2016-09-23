@@ -30,7 +30,8 @@
             </Grid.ColumnDefinitions>
 
             <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="Car_OnDrop">
+                    VerticalContentAlignment="Stretch" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True"
+                    Drop="Car_OnDrop">
                 <mui:Cell Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
                     <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
                     <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
@@ -71,16 +72,18 @@
                         </Border>
                     </mui:Cell>
                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
-                            Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                            Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
                     <DockPanel.ContextMenu>
                         <ContextMenu x:Name="ConditionsOptions" DataContext="{Binding Data, Source={StaticResource Model}}">
                             <!--TODO-->
-                            <MenuItem Header="Local weather" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}" IsCheckable="True"
-                                    ToolTip="Use local weather instead of weather on the track" Command="{Binding SwitchLocalWeatherCommand}" />
-                            <MenuItem Header="Set Time Manually" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
+                            <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}"
+                                    IsCheckable="True" ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}"
+                                    Command="{Binding SwitchLocalWeatherCommand}" />
+                            <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}"
+                                    IsCheckable="True" />
                             <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
                                     IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
                             <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
@@ -109,13 +112,15 @@
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Border.ToolTip>
-                                <Grid>
-                                    <TextBlock Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}"
-                                            Text="Can't load real weather" />
-                                    <TextBlock
-                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                                            Text="{Binding RealWeather.Description, StringFormat={x:Static g:AppStrings.Drive_Weather_Warning}, FallbackValue=?}" />
-                                </Grid>
+                                <mui:ReferenceSwitch Value="{Binding RealWeather}">
+                                    <mui:ReferenceSwitch.Null>
+                                        <TextBlock Text="{x:Static g:AppStrings.Drive_Weather_CannotLoad}" />
+                                    </mui:ReferenceSwitch.Null>
+                                    <mui:ReferenceSwitch.NonNull>
+                                        <TextBlock
+                                                Text="{Binding RealWeather.Description, StringFormat={x:Static g:AppStrings.Drive_Weather_Warning}, FallbackValue=?}" />
+                                    </mui:ReferenceSwitch.NonNull>
+                                </mui:ReferenceSwitch>
                             </Border.ToolTip>
                             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
                         </Border>
@@ -164,8 +169,7 @@
                         </mui:Cell.ToolTip>
 
                         <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
-                                Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False"
-                                TickPlacement="BottomRight" />
+                                Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -182,7 +186,7 @@
                 <StackPanel Grid.Row="1" Grid.Column="2">
                     <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
-                            Margin="0 0 0 4" x:Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                            Margin="0 0 0 4" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -228,7 +232,7 @@
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Hotlap}" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Race}" Source="/Pages/Drive/QuickDrive_Race.xaml" />
-                    <mui:Link DisplayName="Track Day" Source="/Pages/Drive/QuickDrive_Trackday.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TrackDay}" Source="/Pages/Drive/QuickDrive_Trackday.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
                     <!--<mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />-->
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />

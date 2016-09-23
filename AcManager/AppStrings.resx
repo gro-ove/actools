@@ -3366,4 +3366,52 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
     <value>Record ghost while hotlapping even if it’s hidden</value>
   </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>Special thanks for translation to:</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>Recent changes</value>
+  </data>
+  <data name="RaceGrid_LoadingProgress" xml:space="preserve">
+    <value>Loaded {1} out of {0}</value>
+  </data>
+  <data name="RaceGrid_DetailedSettings" xml:space="preserve">
+    <value>Detailed settings</value>
+  </data>
+  <data name="RaceGrid_ClassFormat" xml:space="preserve">
+    <value>Class: {0}</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="RaceGrid_CandidatePriority" xml:space="preserve">
+    <value>Candidate priority</value>
+  </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>There is no pit stop for this car</value>
+  </data>
+  <data name="RaceGrid_Candidates" xml:space="preserve">
+    <value>Candidates:</value>
+  </data>
+  <data name="RaceGrid_Opponents" xml:space="preserve">
+    <value>Opponents:</value>
+  </data>
+  <data name="Drive_LocalWeatherHeader" xml:space="preserve">
+    <value>Local Weather</value>
+  </data>
+  <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
+    <value>Set Time Manually</value>
+  </data>
+  <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
+    <value>Use local weather instead of weather on the track</value>
+  </data>
+  <data name="Drive_Weather_CannotLoad" xml:space="preserve">
+    <value>Can’t load real weather</value>
+  </data>
 </root>

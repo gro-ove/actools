@@ -594,4 +594,16 @@
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>Uploaded {0} of {1}</value>
   </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Matching candidates not found</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Save Race Grid As Preset</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Share Race Grid</value>
+  </data>
 </root>

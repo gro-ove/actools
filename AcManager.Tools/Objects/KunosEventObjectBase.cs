@@ -16,6 +16,8 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
     public abstract class KunosEventObjectBase : AcIniObject {
+        public static bool OptionIgnoreMissingSkins = true;
+
         protected KunosEventObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
 
         protected sealed override void InitializeLocations() {
@@ -412,10 +414,13 @@ namespace AcManager.Tools.Objects {
 
             if (CarObject != null) {
                 CarSkin = CarSkinId == null ? null : CarObject.GetSkinByIdFromConfig(CarSkinId);
-                ErrorIf(CarSkin == null, AcErrorType.Data_KunosCareerCarSkinIsMissing, CarId, CarSkinId);
+
+                if (!OptionIgnoreMissingSkins) {
+                    ErrorIf(CarSkin == null, AcErrorType.Data_KunosCareerCarSkinIsMissing, CarId, CarSkinId);
+                }
 
                 if (CarSkin == null) {
-                    CarSkin = CarObject.GetFirstSkinOrNull();
+                    CarSkin = (CarSkinObject)CarObject.SkinsManager.WrappersList.RandomElement().Loaded();
                 }
             } else {
                 RemoveError(AcErrorType.Data_KunosCareerCarSkinIsMissing);
