@@ -304,6 +304,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="outputLength">The size of the decompressed archive in the output buffer</param>
         /// <returns>Returns decompressed size</returns>
         public static int Decompress(byte[] input, int inputOffset, int inputLength, byte[] output, int outputLength) {
+            var inputEnd = inputLength + inputOffset;
             var iidx = (uint)inputOffset;
             uint oidx = 0;
 
@@ -339,7 +340,7 @@ namespace FirstFloor.ModernUI.Helpers {
                         output[oidx++] = output[reference++];
                     } while (--len != 0);
                 }
-            } while (iidx < inputLength);
+            } while (iidx < inputEnd);
             return (int)oidx;
         }
 
@@ -354,6 +355,8 @@ namespace FirstFloor.ModernUI.Helpers {
             if (input.Length == 0) return new byte[0];
 
             var result = new List<byte>(count * 2);
+            var end = offset + count;
+
             do {
                 uint ctrl = input[offset++];
                 if (ctrl < 1 << 5) {
@@ -379,7 +382,7 @@ namespace FirstFloor.ModernUI.Helpers {
                         result.Add(result[reference++]);
                     } while (--len != 0);
                 }
-            } while (offset < count);
+            } while (offset < end);
             return result.ToArray();
         }
     }

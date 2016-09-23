@@ -426,34 +426,34 @@ namespace AcManager.Tools.Helpers {
             public static readonly StarterType OfficialStarterType = new StarterType(
                     "Official",
                     string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
-                    "Official way from Kunos; might be slow and unreliable, but doesn’t require patching");
+                    ToolsStrings.Settings_Starter_Official_Description);
 
             public static readonly StarterType TrickyStarterType = new StarterType(
                     "Tricky",
                     ToolsStrings.Settings_Starter_Tricky,
-                    "Tricky way to start the race; one of the fastest, but doesn’t work without running Steam or Internet-connection");
+                    ToolsStrings.Settings_Starter_Tricky_Description);
 
             public static readonly StarterType UiModuleStarterType = new StarterType(
                     "UI Module",
-                    "UI Module",
-                    "Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time");
+                    ToolsStrings.Settings_Starter_UiModule,
+                    ToolsStrings.Settings_Starter_UiModule_Description);
 
             public static readonly StarterType StarterPlusType = new StarterType(
                     "Starter+",
                     ToolsStrings.Settings_Starter_StarterPlus,
-                    "Modified version of original launcher, obsolete since 1.7 release",
+                    ToolsStrings.Settings_Starter_StarterPlus_Description,
                     StarterPlus.AddonId);
 
             public static readonly StarterType SseStarterType = new StarterType(
                     "SSE",
                     ToolsStrings.Settings_Starter_Sse,
-                    "Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments",
+                    ToolsStrings.Settings_Starter_Sse_Description,
                     SseStarter.AddonId);
 
             public static readonly StarterType NaiveStarterType = new StarterType(
                     "Naive",
                     ToolsStrings.Settings_Starter_Naive,
-                    "Just tries to run acs.exe directly; in most cases will fail");
+                    ToolsStrings.Settings_Starter_Naive_Description);
 
             private StarterType _selectedStarterType;
 

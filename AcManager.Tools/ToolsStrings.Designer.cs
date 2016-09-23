@@ -1663,6 +1663,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t initialize Lua.
+        /// </summary>
+        public static string Common_LuaFailed {
+            get {
+                return ResourceManager.GetString("Common_LuaFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Make sure Internet-connection works..
         /// </summary>
         public static string Common_MakeSureInternetWorks {
@@ -1758,6 +1767,15 @@ namespace AcManager.Tools {
         public static string Common_SteamIdIsMissing {
             get {
                 return ResourceManager.GetString("Common_SteamIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error: {0}.
+        /// </summary>
+        public static string Common_SyntaxErrorFormat {
+            get {
+                return ResourceManager.GetString("Common_SyntaxErrorFormat", resourceCulture);
             }
         }
         
@@ -3223,6 +3241,51 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t update race grid.
+        /// </summary>
+        public static string RaceGrid_CannotUpdate {
+            get {
+                return ResourceManager.GetString("RaceGrid_CannotUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Racing grid mode is missing.
+        /// </summary>
+        public static string RaceGrid_GridModeIsMissing {
+            get {
+                return ResourceManager.GetString("RaceGrid_GridModeIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t find racing grid mode with ID “{0}”.
+        /// </summary>
+        public static string RaceGrid_GridModeIsMissing_Commentary {
+            get {
+                return ResourceManager.GetString("RaceGrid_GridModeIsMissing_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script should return filtering function.
+        /// </summary>
+        public static string RaceGrid_InvalidScriptResult {
+            get {
+                return ResourceManager.GetString("RaceGrid_InvalidScriptResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string RaceGrid_Random {
+            get {
+                return ResourceManager.GetString("RaceGrid_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t rename replays.
         /// </summary>
         public static string Replay_CannotRenameReplays {
@@ -3448,11 +3511,29 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Just tries to run acs.exe directly; in most cases will fail.
+        /// </summary>
+        public static string Settings_Starter_Naive_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Naive_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Official.
         /// </summary>
         public static string Settings_Starter_Official {
             get {
                 return ResourceManager.GetString("Settings_Starter_Official", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Official way from Kunos; might be slow and unreliable, but doesn’t require patching.
+        /// </summary>
+        public static string Settings_Starter_Official_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Official_Description", resourceCulture);
             }
         }
         
@@ -3466,6 +3547,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments.
+        /// </summary>
+        public static string Settings_Starter_Sse_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Sse_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starter+.
         /// </summary>
         public static string Settings_Starter_StarterPlus {
@@ -3475,11 +3565,47 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modified version of original launcher, obsolete since 1.7 release.
+        /// </summary>
+        public static string Settings_Starter_StarterPlus_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_StarterPlus_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tricky.
         /// </summary>
         public static string Settings_Starter_Tricky {
             get {
                 return ResourceManager.GetString("Settings_Starter_Tricky", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tricky way to start the race; one of the fastest, but doesn’t work without running Steam or Internet-connection.
+        /// </summary>
+        public static string Settings_Starter_Tricky_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Tricky_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UI Module.
+        /// </summary>
+        public static string Settings_Starter_UiModule {
+            get {
+                return ResourceManager.GetString("Settings_Starter_UiModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time.
+        /// </summary>
+        public static string Settings_Starter_UiModule_Description {
+            get {
+                return ResourceManager.GetString("Settings_Starter_UiModule_Description", resourceCulture);
             }
         }
         

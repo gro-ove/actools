@@ -197,6 +197,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 return new BitmapEntry(bi, width, height);
+            } catch (FileNotFoundException) {
+                return new BitmapEntry();
             } catch (Exception e) {
                 Logging.Warning("Loading failed: " + e);
                 return new BitmapEntry();

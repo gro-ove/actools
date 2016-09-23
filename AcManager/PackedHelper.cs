@@ -22,7 +22,7 @@ namespace AcManager {
     [Localizable(false)]
     internal class PackedHelper {
         public static bool OptionCache = true;
-        public static bool OptionDirectLoading = false;
+        public static bool OptionDirectLoading = true;
 
         private readonly string _logFilename;
         private readonly string _temporaryDirectory;
@@ -76,28 +76,27 @@ namespace AcManager {
             }
         }
 
-        private static int Decompress(byte[] input, int inputOffset, int inputLength, byte[] output, int outputLength) {
-            var iidx = (uint)inputOffset;
+        private static int Decompress(byte[] input, uint offset, int end, byte[] output) {
             uint oidx = 0;
             do {
-                uint ctrl = input[iidx++];
+                uint ctrl = input[offset++];
                 if (ctrl < 1 << 5) {
                     ctrl++;
                     do {
-                        output[oidx++] = input[iidx++];
+                        output[oidx++] = input[offset++];
                     } while (--ctrl != 0);
                 } else {
                     var len = ctrl >> 5;
                     var reference = (int)(oidx - ((ctrl & 0x1f) << 8) - 1);
-                    if (len == 7) len += input[iidx++];
-                    reference -= input[iidx++];
+                    if (len == 7) len += input[offset++];
+                    reference -= input[offset++];
                     output[oidx++] = output[reference++];
                     output[oidx++] = output[reference++];
                     do {
                         output[oidx++] = output[reference++];
                     } while (--len != 0);
                 }
-            } while (iidx < inputLength);
+            } while (offset < end);
             return (int)oidx;
         }
 
@@ -105,7 +104,7 @@ namespace AcManager {
             if (input.Length == 0) return new byte[0];
             var size = BitConverter.ToInt32(input, 0);
             var result = new byte[size];
-            var decompress = Decompress(input, 4, input.Length - 4, result, result.Length);
+            var decompress = Decompress(input, 4, input.Length, result);
             if (decompress != size) {
                 throw new Exception($"Invalid data ({decompress}≠{size})");
             }
@@ -117,7 +116,7 @@ namespace AcManager {
             var bytes = _references.GetObject(id) as byte[];
             if (bytes == null) throw new Exception("Data is missing");
 
-            if (_references.GetObject(id + "//fast") as bool? == true) {
+            if (_references.GetObject(id + "//compressed/lzf") as bool? == true) {
                 bytes = DecompressSmart(bytes);
             } else if (_references.GetObject(id + "//compressed") as bool? == true) {
                 using (var memory = new MemoryStream(bytes))

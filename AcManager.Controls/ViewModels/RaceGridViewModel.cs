@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -186,7 +187,8 @@ namespace AcManager.Controls.ViewModels {
 
                 var mode = Modes.GetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
-                    NonfatalError.NotifyBackground("Racing grid mode is missing", $"Can’t find racing grid mode with ID “{data.ModeId}”");
+                    NonfatalError.NotifyBackground(ToolsStrings.RaceGrid_GridModeIsMissing,
+                            string.Format(ToolsStrings.RaceGrid_GridModeIsMissing_Commentary, data.ModeId));
                     Mode = BuiltInGridMode.SameCar;
                 } else {
                     Mode = mode;
@@ -235,7 +237,7 @@ namespace AcManager.Controls.ViewModels {
 
             _presetsHelper = new PresetsMenuHelper();
 
-            _randomGroup = new HierarchicalGroup("Random");
+            _randomGroup = new HierarchicalGroup(ToolsStrings.RaceGrid_Random);
             UpdateRandomModes();
 
             Modes = new HierarchicalGroup {
@@ -244,7 +246,7 @@ namespace AcManager.Controls.ViewModels {
                 BuiltInGridMode.Custom,
                 _presetsHelper.Create(PresetableKeyValue, p => {
                     ImportFromPresetData(p.ReadData());
-                }, "Presets")
+                }, ControlsStrings.Common_Presets)
             };
 
             NonfilteredList.CollectionChanged += OnCollectionChanged;
@@ -366,7 +368,6 @@ namespace AcManager.Controls.ViewModels {
             switch (e.PropertyName) {
                 case nameof(RaceGridEntry.CandidatePriority):
                     if (Mode.CandidatesMode) {
-                        // TODO: Presets will require different behavior
                         Mode = BuiltInGridMode.CandidatesManual;
                     }
                     break;
@@ -512,8 +513,6 @@ namespace AcManager.Controls.ViewModels {
         }, o => o != null));
 
         private void UpdateRandomModes() {
-            Logging.Debug("UpdateRandomModes()");
-
             var items = new List<object> {
                 BuiltInGridMode.CandidatesSameGroup,
                 BuiltInGridMode.CandidatesFiltered,
@@ -573,19 +572,18 @@ namespace AcManager.Controls.ViewModels {
                 if (candidates == null) return;
                 NonfilteredList.ReplaceEverythingBy(candidates);
             } catch (SyntaxErrorException e) {
-                ErrorMessage = "Syntax error: " + e.Message;
-                NonfatalError.Notify("Can’t update race grid", e);
+                ErrorMessage = string.Format(ToolsStrings.Common_SyntaxErrorFormat, e.Message);
+                NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } catch (ScriptRuntimeException e) {
                 ErrorMessage = e.Message;
             } catch (InformativeException e) when (e.SolutionCommentary == null) {
                 ErrorMessage = e.Message;
             } catch (Exception e) {
                 ErrorMessage = e.Message;
-                NonfatalError.Notify("Can’t update race grid", e);
+                NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } finally {
                 _rebuildingTask = null;
                 OnPropertyChanged(nameof(IsBusy));
-                Logging.Debug("RebuildGridAsync(): finished");
             }
         }
 
@@ -649,7 +647,7 @@ namespace AcManager.Controls.ViewModels {
 
                     if (!string.IsNullOrWhiteSpace(candidatesMode.Script)) {
                         var state = LuaHelper.GetExtended();
-                        if (state == null) throw new InformativeException("Can’t initialize Lua");
+                        if (state == null) throw new InformativeException(ToolsStrings.Common_LuaFailed);
 
                         if (mode.AffectedByCar) {
                             state.Globals[@"selected"] = _playerCar;
@@ -663,7 +661,7 @@ namespace AcManager.Controls.ViewModels {
                         if (result.Type == DataType.Boolean && !result.Boolean) return new RaceGridEntry[0];
 
                         var fn = result.Function;
-                        if (fn == null) throw new InformativeException("Script should return filtering function");
+                        if (fn == null) throw new InformativeException(ToolsStrings.RaceGrid_InvalidScriptResult);
 
                         carsEnumerable = carsEnumerable.Where(x => fn.Call(x).Boolean);
                     }
@@ -742,7 +740,6 @@ namespace AcManager.Controls.ViewModels {
 
         [CanBeNull]
         private TrackObjectBase _track;
-
 
         [CanBeNull]
         public TrackObjectBase PlayerTrack {
