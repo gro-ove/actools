@@ -47,12 +47,26 @@ namespace AcManager.Tools.Managers.Online {
             ;
         }, () => true));
 
-        public Task EnsureLoadedAsync() {
-            if (IsLoaded) return Task.Delay(0);
-            return LoadAsync();
+        private Task _loadingTask;
+
+        public async Task EnsureLoadedAsync() {
+            if (IsLoaded) return;
+
+            if (_loadingTask != null) {
+                await _loadingTask;
+            } else {
+                try {
+                    _loadingTask = InnerLoadAsync();
+                    await _loadingTask;
+
+                    IsLoaded = true;
+                } finally {
+                    _loadingTask = null;
+                }
+            }
         }
 
-        protected abstract Task LoadAsync();
+        protected abstract Task InnerLoadAsync();
 
         public static BaseOnlineManager ManagerByMode(OnlineManagerType type) {
             switch (type) {
@@ -80,7 +94,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public static OnlineManager Instance => _instance ?? (_instance = new OnlineManager());
 
-        protected override async Task LoadAsync() {
+        protected override async Task InnerLoadAsync() {
             Status = OnlineManagerStatus.Loading;
 
             try {
