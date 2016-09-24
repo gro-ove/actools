@@ -26,12 +26,13 @@ namespace AcManager {
         public static string ApplicationDataDirectory { get; private set; }
 
         public static string GetLogName(string id) {
-#if DEBUG
-            return Path.Combine(ApplicationDataDirectory, "Logs", $"{id}.log");
-#else
+            if (AppArguments.GetBool(AppFlag.SingleLogFile)) {
+                return Path.Combine(ApplicationDataDirectory, "Logs", $"{id}.log");
+            }
+
             var now = DateTime.Now;
-            return Path.Combine(ApplicationDataDirectory, "Logs", $"{id}_{now.Year % 100:D2}{now.Month:D2}{now.Day:D2}_{now.Hour:D2}{now.Minute:D2}{now.Second:D2}.log");
-#endif
+            return Path.Combine(ApplicationDataDirectory, "Logs",
+                    $"{id}_{now.Year % 100:D2}{now.Month:D2}{now.Day:D2}_{now.Hour:D2}{now.Minute:D2}{now.Second:D2}.log");
         }
 
         private static bool Rename(string oldName, string newName) {

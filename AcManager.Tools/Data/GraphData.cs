@@ -4,33 +4,33 @@ using System.Linq;
 using System.Windows;
 using Newtonsoft.Json.Linq;
 
-namespace AcManager.Tools.Objects {
+namespace AcManager.Tools.Data {
     public class GraphData {
-        private readonly Dictionary<double, double> _values;
-        public IReadOnlyDictionary<double, double> Values => _values;
+        private readonly Dictionary<double, double> _points;
+        public IReadOnlyDictionary<double, double> Points => _points;
 
         private readonly List<Point> _normalizedValuesArray;
         public IReadOnlyList<Point> NormalizedValuesArray => _normalizedValuesArray;
 
         public readonly double MinX, MaxX, MinY, MaxY;
 
-        public GraphData(Dictionary<double, double> values) {
-            _values = values;
+        public GraphData(Dictionary<double, double> points) {
+            _points = points;
 
-            if (Values.Count == 0) {
+            if (Points.Count == 0) {
                 MinX = MaxX = MinY = MaxY = 0.0;
                 _normalizedValuesArray = new List<Point>();
                 return;
             }
 
-            MinX = Values.Keys.Min();
-            MaxX = Values.Keys.Max();
+            MinX = Points.Keys.Min();
+            MaxX = Points.Keys.Max();
 
-            MinY = Values.Values.Min();
-            MaxY = Values.Values.Max();
+            MinY = Points.Values.Min();
+            MaxY = Points.Values.Max();
 
             _normalizedValuesArray =
-                Values.Select(x => new Point((x.Key - MinX) / (MaxX - MinX), (x.Value - MinY) / (MaxY - MinY))).ToList();
+                Points.Select(x => new Point((x.Key - MinX) / (MaxX - MinX), (x.Value - MinY) / (MaxY - MinY))).ToList();
         }
 
         public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {
@@ -58,11 +58,11 @@ namespace AcManager.Tools.Objects {
         }
 
         public GraphData ScaleBy(double multipler) {
-            return new GraphData(Values.ToDictionary(x => x.Key, x => x.Value * multipler));
+            return new GraphData(Points.ToDictionary(x => x.Key, x => x.Value * multipler));
         }
 
         public JArray ToJArray() {
-            return new JArray(Values.Select(x => new JArray(x.Key, x.Value)).ToArray<object>());
+            return new JArray(Points.Select(x => new JArray(x.Key, x.Value)).ToArray<object>());
         }
     }
 }

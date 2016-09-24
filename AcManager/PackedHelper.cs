@@ -100,7 +100,7 @@ namespace AcManager {
             return (int)oidx;
         }
 
-        private static byte[] DecompressSmart(byte[] input) {
+        private static byte[] DecompressLzfSmart(byte[] input) {
             if (input.Length == 0) return new byte[0];
             var size = BitConverter.ToInt32(input, 0);
             var result = new byte[size];
@@ -117,7 +117,7 @@ namespace AcManager {
             if (bytes == null) throw new Exception("Data is missing");
 
             if (_references.GetObject(id + "//compressed/lzf") as bool? == true) {
-                bytes = DecompressSmart(bytes);
+                bytes = DecompressLzfSmart(bytes);
             } else if (_references.GetObject(id + "//compressed") as bool? == true) {
                 using (var memory = new MemoryStream(bytes))
                 using (var output = new MemoryStream(bytes.Length * 2)) {

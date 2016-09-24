@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Tools;
+using AcManager.Tools.Data;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Utils;

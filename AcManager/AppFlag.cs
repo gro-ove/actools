@@ -268,6 +268,12 @@ namespace AcManager {
         /// to themes list.
         /// Example: --custom-themes.
         /// </summary>
-        CustomThemes
+        CustomThemes,
+
+        /// <summary>
+        /// For internal use.
+        /// Example: --single-log-file.
+        /// </summary>
+        SingleLogFile
     }
 }

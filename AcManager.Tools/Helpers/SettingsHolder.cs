@@ -929,6 +929,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _smoothCurves;
+
+            public bool SmoothCurves {
+                get { return _smoothCurves ?? (_smoothCurves = ValuesStorage.GetBool("Settings.ContentSettings.SmoothCurves", false)).Value; }
+                set {
+                    if (Equals(value, _smoothCurves)) return;
+                    _smoothCurves = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SmoothCurves", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {
