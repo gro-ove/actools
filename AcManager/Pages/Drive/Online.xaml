@@ -11,11 +11,11 @@
 
     <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Manager.Status}">
         <!-- loading -->
-        <ProgressBar mui:Switch.When="{x:Static t:AsyncScanManagerStatus.Loading}" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+        <ProgressBar mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                 Height="4" Margin="20 0 20 0" />
 
         <!-- error -->
-        <StackPanel mui:Switch.When="{x:Static t:AsyncScanManagerStatus.Error}" Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
             <mui:BbCodeBlock BbCode="{Binding Manager.ErrorMessage}" Margin="20" />
             <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 20 0"
@@ -23,7 +23,7 @@
         </StackPanel>
 
         <!-- list -->
-        <Grid mui:Switch.When="{x:Static t:AsyncScanManagerStatus.Ready}">
+        <Grid mui:Switch.When="{x:Static t:OnlineManagerStatus.Ready}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="9" />

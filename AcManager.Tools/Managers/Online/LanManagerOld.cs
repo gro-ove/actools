@@ -9,17 +9,17 @@ using AcManager.Tools.Helpers.Api;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
-    public class LanManager : BaseOnlineManager {
-        private static LanManager _instance;
+    public class LanManagerOld : BaseOnlineManagerOld {
+        private static LanManagerOld _instance;
 
-        public static LanManager Instance => _instance ?? (_instance = new LanManager());
+        public static LanManagerOld Instance => _instance ?? (_instance = new LanManagerOld());
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            var result = new List<ServerEntry>();
+            var result = new List<ServerEntryOld>();
 
             KunosApiProvider.TryToGetLanList(i => {
                 try {
-                    result.Add(new ServerEntry(this, i, true));
+                    result.Add(new ServerEntryOld(this, i, true));
                 } catch (Exception e) {
                     Logging.Warning("Cannot create ServerEntry: " + e);
                 }
@@ -40,10 +40,10 @@ namespace AcManager.Tools.Managers.Online {
             await Task.Run(() => {
                 KunosApiProvider.TryToGetLanList(async i => {
                     try {
-                        var entry = new ServerEntry(this, i, true);
+                        var entry = new ServerEntryOld(this, i, true);
                         InnerWrappersList.Add(new AcItemWrapper(this, entry));
                         if (entry.Status == ServerStatus.Unloaded) {
-                            await entry.Update(ServerEntry.UpdateMode.Lite); // BUG: Wait?
+                            await entry.Update(ServerEntryOld.UpdateMode.Lite); // BUG: Wait?
                         }
                         Pinged++;
                     } catch (Exception e) {

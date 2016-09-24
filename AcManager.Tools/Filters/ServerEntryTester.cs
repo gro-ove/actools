@@ -63,13 +63,16 @@ namespace AcManager.Tools.Filters {
                 case "left":
                 case "ended":
                     return nameof(ServerEntry.SessionEnd);
+
+                case "name":
+                    return nameof(ServerEntry.DisplayName);
             }
 
             return null;
         }
 
         public static string InheritingParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcObjectTester.InheritingParameterFromKey(key);
+            return InnerParameterFromKey(key);
         }
 
         public string ParameterFromKey(string key) {
@@ -184,8 +187,11 @@ namespace AcManager.Tools.Filters {
                     sessionType = Game.SessionType.TimeAttack;
                     break;
 
+                case "name":
+                    return value.Test(obj.DisplayName);
+
                 default:
-                    return AcObjectTester.Instance.Test(obj, key, value);
+                    return false;
             }
 
             var session = obj.Sessions.FirstOrDefault(x => x.Type == sessionType);

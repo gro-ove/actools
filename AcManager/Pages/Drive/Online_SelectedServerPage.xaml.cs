@@ -17,45 +17,45 @@ using FirstFloor.ModernUI.Windows;
 namespace AcManager.Pages.Drive {
     public partial class Online_SelectedServerPage : ILoadableContent, IParametrizedUriContent {
         private OnlineManagerType _type;
-        private BaseOnlineManager _manager;
-        private ServerEntry _entry;
+        private BaseOnlineManager _managerOld;
+        private ServerEntry _entryOld;
 
         public void OnUri(Uri uri) {
             _type = uri.GetQueryParamEnum<OnlineManagerType>("Mode");
-            _manager = BaseOnlineManager.ManagerByMode(_type);
+            _managerOld = BaseOnlineManager.ManagerByMode(_type);
 
             var id = uri.GetQueryParam("Id");
             if (id == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
 
-            _entry = _manager.GetById(id);
-            if (_entry == null) {
+            _entryOld = _managerOld.GetById(id);
+            if (_entryOld == null) {
                 throw new Exception(string.Format(AppStrings.Online_ServerWithIdIsMissing, id));
             }
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
-            return _entry.Status == ServerStatus.Unloaded ? _entry.Update(ServerEntry.UpdateMode.Normal) :
+            return _entryOld.Status == ServerStatus.Unloaded ? _entryOld.Update(ServerEntry.UpdateMode.Normal) :
                     Task.Delay(0, cancellationToken);
         }
 
         public void Load() {
-            if (_entry.Status == ServerStatus.Unloaded) {
-                _entry.Update(ServerEntry.UpdateMode.Normal).Forget();
+            if (_entryOld.Status == ServerStatus.Unloaded) {
+                _entryOld.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
         }
 
         public void Initialize() {
-            DataContext = new ViewModel(_entry);
+            DataContext = new ViewModel(_entryOld);
             InitializeComponent();
 
-            if (Model.Entry == null) return;
+            if (Model.EntryOld == null) return;
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
-                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
+                new InputBinding(Model.EntryOld.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
+                new InputBinding(Model.EntryOld.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.EntryOld.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.EntryOld.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
                     CommandParameter = ServerEntry.ForceJoin
                 }
             });
@@ -68,7 +68,7 @@ namespace AcManager.Pages.Drive {
         private DateTime _sessionEndedUpdate;
 
         private bool RequiresUpdate() {
-            var entry = Model.Entry;
+            var entry = Model.EntryOld;
             if (entry.Status != ServerStatus.Ready) {
                 return false;
             }
@@ -91,9 +91,9 @@ namespace AcManager.Pages.Drive {
         private void OnTick(object sender, EventArgs e) {
             if (Application.Current.MainWindow?.IsActive != true) return;
 
-            Model.Entry.OnTick();
+            Model.EntryOld.OnTick();
             if (RequiresUpdate()) {
-                Model.Entry.Update(ServerEntry.UpdateMode.Full, true).Forget();
+                Model.EntryOld.Update(ServerEntry.UpdateMode.Full, true).Forget();
             }
         }
 
@@ -128,16 +128,16 @@ namespace AcManager.Pages.Drive {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            public ServerEntry Entry { get; }
+            public ServerEntry EntryOld { get; }
 
-            public ViewModel(ServerEntry entry) {
-                Entry = entry;
-                FancyBackgroundManager.Instance.ChangeBackground(Entry.Track?.PreviewImage);
+            public ViewModel(ServerEntry entryOld) {
+                EntryOld = entryOld;
+                FancyBackgroundManager.Instance.ChangeBackground(EntryOld.Track?.PreviewImage);
             }
         }
 
         private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var entry = Model.Entry;
+            var entry = Model.EntryOld;
             if (entry.IsBooked && entry.BookingTimeLeft > TimeSpan.FromSeconds(3)) {
                 entry.RebookSkin().Forget();
             }

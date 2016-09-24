@@ -23,12 +23,12 @@ namespace AcManager.Tools.Managers.Online {
                 : base(loader, initialValue) {}
     }
 
-    public class RecentManager : BaseOnlineManager {
+    public class RecentManagerOld : BaseOnlineManagerOld {
         public static int OptionScanPingTimeout = 200;
 
-        private static RecentManager _instance;
+        private static RecentManagerOld _instance;
 
-        public static RecentManager Instance => _instance ?? (_instance = new RecentManager());
+        public static RecentManagerOld Instance => _instance ?? (_instance = new RecentManagerOld());
 
         private const string KeySavedServers = "RecentManager.SavedServers";
         
@@ -157,7 +157,7 @@ namespace AcManager.Tools.Managers.Online {
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return from address in ValuesStorage.GetStringList(KeySavedServers)
-                   let entry = ServerEntry.FromAddress(this, address)
+                   let entry = ServerEntryOld.FromAddress(this, address)
                    where entry != null
                    select entry;
         }
@@ -176,7 +176,7 @@ namespace AcManager.Tools.Managers.Online {
                 UnavailableList.Clear();
                 await LoadList().Select(async address => {
                     try {
-                        var entry = await Task.Run(() => ServerEntry.FromAddress(this, address));
+                        var entry = await Task.Run(() => ServerEntryOld.FromAddress(this, address));
                         if (entry == null) {
                             UnavailableList.Add(address);
                             return;
@@ -185,7 +185,7 @@ namespace AcManager.Tools.Managers.Online {
                         InnerWrappersList.Add(new AcItemWrapper(this, entry));
 
                         if (entry.Status == ServerStatus.Unloaded) {
-                            await entry.Update(ServerEntry.UpdateMode.Lite);
+                            await entry.Update(ServerEntryOld.UpdateMode.Lite);
                         }
 
                         Pinged++;

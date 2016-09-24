@@ -143,6 +143,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ChangeableObservableCollection.cs" />
+    <Compile Include="CollectionExtension.cs" />
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\CommandBase.cs" />

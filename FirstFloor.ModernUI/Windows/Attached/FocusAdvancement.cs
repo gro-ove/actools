@@ -8,16 +8,18 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Windows.Attached {
     // temporary
     // todo: replace by BetterTextBox
-    [Obsolete]
     public static class FocusAdvancement {
+        [Obsolete]
         public static bool GetAdvancesByEnterKey(DependencyObject obj) {
             return (bool)obj.GetValue(AdvancesByEnterKeyProperty);
         }
 
+        [Obsolete]
         public static void SetAdvancesByEnterKey(DependencyObject obj, bool value) {
             obj.SetValue(AdvancesByEnterKeyProperty, value);
         }
 
+        [Obsolete]
         public static readonly DependencyProperty AdvancesByEnterKeyProperty = DependencyProperty.RegisterAttached("AdvancesByEnterKey",
             typeof(bool), typeof(FocusAdvancement), new UIPropertyMetadata(OnAdvancesByEnterKeyPropertyChanged));
 

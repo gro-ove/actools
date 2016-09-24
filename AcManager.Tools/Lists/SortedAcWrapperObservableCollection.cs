@@ -9,18 +9,6 @@ using AcTools.Utils.Helpers;
 namespace AcManager.Tools.Lists {
     public class SortedAcWrapperObservableCollection : AcWrapperObservableCollection, IComparer<AcItemWrapper> {
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            if (e.OldItems != null) {
-                foreach (AcItemWrapper item in e.OldItems) {
-                    Subscribe(item);
-                }
-            }
-
-            if (e.NewItems != null) {
-                foreach (AcItemWrapper item in e.NewItems) {
-                    Unsubscribe(item);
-                }
-            }
-
             if (IsSorted()) {
                 CollectionChangedInnerInvoke(e);
             } else {

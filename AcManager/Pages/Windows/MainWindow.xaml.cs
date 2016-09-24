@@ -174,8 +174,8 @@ namespace AcManager.Pages.Windows {
             var group = (LinkGroupFilterable)sender;
             var type = group.Source.GetQueryParamEnum<OnlineManagerType>(@"Mode");
 
-            var oldKey = type + @"_" + typeof(ServerEntry).Name + @"_" + e.OldValue;
-            var newKey = type + @"_" + typeof(ServerEntry).Name + @"_" + e.NewValue;
+            var oldKey = type + @"_" + typeof(ServerEntryOld).Name + @"_" + e.OldValue;
+            var newKey = type + @"_" + typeof(ServerEntryOld).Name + @"_" + e.NewValue;
             LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
             LimitedStorage.Move(LimitedSpace.OnlineSorting, oldKey, newKey);
             LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, oldKey, newKey);

@@ -14,9 +14,7 @@ namespace FirstFloor.ModernUI {
 
         public BetterObservableCollection([NotNull] IEnumerable<T> collection) : base(collection) {}
 
-        public static BetterObservableCollection<T> Create([NotNull] IEnumerable<T> collection) => new BetterObservableCollection<T>(collection);
-
-        public virtual void AddRange([NotNull] IEnumerable<T> range) {
+        public void AddRange(IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             var list = range.ToList();
@@ -35,49 +33,32 @@ namespace FirstFloor.ModernUI {
             }
         }
 
-        public virtual void RemoveRange(IEnumerable<T> items) {
-            foreach (var item in items) {
-                Remove(item);
+        private void ReplaceEverythingBy([NotNull] IList<T> list) {
+            Items.Clear();
+            foreach (var item in list) {
+                Items.Add(item);
             }
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public virtual bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {
+        public bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             var list = range as IList<T> ?? range.ToList();
             if (Items.SequenceEqual(list)) return false;
 
-            Items.Clear();
-            foreach (var item in list) {
-                Items.Add(item);
-            }
-
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            ReplaceEverythingBy(list);
             return true;
         }
 
-        public virtual void ReplaceEverythingBy([NotNull] IEnumerable<T> range) {
+        public void ReplaceEverythingBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             // for cases when range is somehow created from Items
-            var list = range as IList<T> ?? range.ToList();
-
-            Items.Clear();
-            foreach (var item in list) {
-                Items.Add(item);
-            }
-
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        public void Replace(T item, T newItem) {
-            var index = IndexOf(item);
-            if (index < 0) return;
-            this[index] = newItem;
+            ReplaceEverythingBy(range as IList<T> ?? range.ToList());
         }
     }
 }

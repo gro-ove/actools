@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
-    public class ServerEntry : Displayable, IComparer, IWithId {
+    public class ServerEntryOld : AcObjectNew, IComparer {
         public class Session {
             public bool IsActive { get; set; }
 
@@ -99,7 +99,7 @@ namespace AcManager.Tools.Managers.Online {
 
             public override string DisplayName {
                 get { return Total == 0 ? CarObject.DisplayName : $"{CarObject.DisplayName} ({Available}/{Total})"; }
-                set { }
+                set {}
             }
 
             protected bool Equals(CarEntry other) {
@@ -182,12 +182,10 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public string Id { get; }
-
         public string Ip { get; }
 
         /// <summary>
-        /// As a query argument for //aclobby1.grecian.net/lobby.ashx/…
+        /// As a query argument for //aclobby1.grecian.net/lobby.ashx/â€¦
         /// </summary>
         public int Port { get; }
 
@@ -207,10 +205,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool IsUnavailable { get; }
 
-        public ServerEntry([NotNull] ServerInformation information, bool? forceIsLan = null) {
+        public ServerEntryOld(IOnlineManager manager, string id, bool enabled) : base(manager, id, enabled) {
+            IsUnavailable = true;
+        }
+
+        public ServerEntryOld(IOnlineManager manager, [NotNull] ServerInformation information, bool? forceIsLan = null)
+                : base(manager, information.GetUniqueId(), true) {
             if (information == null) throw new ArgumentNullException(nameof(information));
 
-            Id = information.GetUniqueId();
             OriginalInformation = information;
 
             IsLan = forceIsLan ?? information.IsLan;
@@ -224,9 +226,12 @@ namespace AcManager.Tools.Managers.Online {
             SetSomeProperties(information);
         }
 
+        public override void Load() {
+        }
+
         private void SetSomeProperties(ServerInformation information) {
             PreviousUpdateTime = DateTime.Now;
-            DisplayName = Regex.Replace(information.Name.Trim(), @"\s+", " ");
+            Name = Regex.Replace(information.Name.Trim(), @"\s+", " ");
 
             {
                 var country = information.Country.FirstOrDefault() ?? "";
@@ -245,7 +250,7 @@ namespace AcManager.Tools.Managers.Online {
             if (PasswordRequired) {
                 Password = ValuesStorage.GetEncryptedString(PasswordStorageKey);
             }
-
+            
             CarIds = information.CarIds;
             CarsOrTheirIds = CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
             TrackId = information.TrackId;
@@ -361,7 +366,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string _country;
-
+        
         public string Country {
             get { return _country; }
             set {
@@ -373,7 +378,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string _countryId;
-
+        
         public string CountryId {
             get { return _countryId; }
             set {
@@ -742,7 +747,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 // CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
-
+                
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
                     await Task.Delay(50);
@@ -851,10 +856,10 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string GetNonAvailableReason() {
-            if (Status != ServerStatus.Ready) return "CM isn’t ready";
+            if (Status != ServerStatus.Ready) return "CM isnâ€™t ready";
 
             var currentItem = CarsView?.CurrentItem as CarEntry;
-            if (currentItem == null) return "Car isn’t selected";
+            if (currentItem == null) return "Car isnâ€™t selected";
 
             if (PasswordRequired) {
                 if (WrongPassword) return "Password is invalid";
@@ -865,7 +870,7 @@ namespace AcManager.Tools.Managers.Online {
                 var currentSession = Sessions.FirstOrDefault(x => x.IsActive);
                 if (currentSession?.Type != Game.SessionType.Booking) return "Wait for the next booking";
             } else {
-                if (!currentItem.IsAvailable) return "Selected car isn’t available";
+                if (!currentItem.IsAvailable) return "Selected car isnâ€™t available";
             }
 
             return null;
@@ -983,7 +988,7 @@ namespace AcManager.Tools.Managers.Online {
         private void PrepareBookingUi() {
             if (_ui == null) {
                 _ui = _factory.Create();
-                _ui.Show(this);
+                // _ui.Show(this);
             }
         }
 
@@ -1014,7 +1019,7 @@ namespace AcManager.Tools.Managers.Online {
             if (!IsBooked || !BookingMode || BookingTimeLeft < TimeSpan.FromSeconds(2)) {
                 return false;
             }
-
+            
             var carEntry = CarsView?.CurrentItem as CarEntry;
             if (carEntry == null) return false;
 

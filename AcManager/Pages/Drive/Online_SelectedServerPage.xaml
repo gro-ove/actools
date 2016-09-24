@@ -19,7 +19,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel DataContext="{Binding Entry}" Background="Transparent">
+    <DockPanel DataContext="{Binding EntryOld}" Background="Transparent">
         <c:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Refresh}" ToolTip="{x:Static g:AppStrings.Toolbar_Refresh_OnlineTooltip}"
@@ -55,7 +55,7 @@
             <!-- error -->
             <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Error}">
                 <!-- server's name -->
-                <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                 <!-- ip, ping -->
                 <DockPanel Margin="0 4 0 0">
@@ -91,7 +91,7 @@
             <DockPanel mui:Switch.When="{x:Static t:ServerStatus.Ready}">
                 <StackPanel DockPanel.Dock="Top">
                     <!-- server's name -->
-                    <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
+                    <TextBox Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
 
                     <!-- ip, ping -->
                     <DockPanel Margin="0 4 0 20">
@@ -273,7 +273,7 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
+                                <DataTemplate DataType="{x:Type t:ServerEntryOld+CurrentDriver}">
                                     <DockPanel Width="200">
                                         <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True">
                                             <mui:BetterImage.ToolTip>

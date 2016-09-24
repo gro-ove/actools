@@ -14,30 +14,30 @@ using StringBasedFilter;
 namespace AcManager.Tools.Managers.Online {
     public interface IOnlineManager : IAcManagerNew { }
 
-    public abstract class BaseOnlineManager : AsyncScanAcManager<ServerEntry>, IOnlineManager {
+    public abstract class BaseOnlineManagerOld : AsyncScanAcManager<ServerEntryOld>, IOnlineManager {
         public BetterObservableCollection<string> UnavailableList { get; } = new BetterObservableCollection<string>();
 
-        public static BaseOnlineManager ManagerByMode(OnlineManagerType type) {
+        public static BaseOnlineManagerOld ManagerByMode(OnlineManagerType type) {
             switch (type) {
                 case OnlineManagerType.Online:
-                    return OnlineManager.Instance;
+                    return OnlineManagerOld.Instance;
 
                 case OnlineManagerType.Lan:
-                    return LanManager.Instance;
+                    return LanManagerOld.Instance;
 
                 case OnlineManagerType.Recent:
-                    return RecentManager.Instance;
+                    return RecentManagerOld.Instance;
             }
 
             throw new ArgumentOutOfRangeException();
         }
         
-        protected override ServerEntry CreateAcObject(string id, bool enabled) {
+        protected override ServerEntryOld CreateAcObject(string id, bool enabled) {
             throw new NotSupportedException();
         }
 
-        protected ServerEntry CreateAndAddEntry(ServerInformation information, bool withPastLoad = true) {
-            var entry = new ServerEntry(this, information);
+        protected ServerEntryOld CreateAndAddEntry(ServerInformation information, bool withPastLoad = true) {
+            var entry = new ServerEntryOld(this, information);
             if (GetById(entry.Id) != null) throw new Exception(ToolsStrings.Common_IdIsTaken);
 
             entry.Load();
@@ -102,7 +102,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public async Task PingEverything(IFilter<ServerEntry> priorityFilter, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task PingEverything(IFilter<ServerEntryOld> priorityFilter, CancellationToken cancellation = default(CancellationToken)) {
             if (PingingInProcess) return;
 
             Pinged = LoadedOnly.Count(x => x.Status != ServerStatus.Unloaded);
@@ -116,7 +116,7 @@ namespace AcManager.Tools.Managers.Online {
                     await LoadedOnly.Where(priorityFilter.Test).Select(async x => {
                         if (cancellation.IsCancellationRequested || pinging != _pinging) return;
                         if (x.Status == ServerStatus.Unloaded) {
-                            await x.Update(ServerEntry.UpdateMode.Lite);
+                            await x.Update(ServerEntryOld.UpdateMode.Lite);
                             Pinged++;
                         }
                     }).WhenAll(SettingsHolder.Online.PingConcurrency, cancellation);
@@ -129,7 +129,7 @@ namespace AcManager.Tools.Managers.Online {
                 await LoadedOnly.Select(async x => {
                     if (cancellation.IsCancellationRequested || pinging != _pinging) return;
                     if (x.Status == ServerStatus.Unloaded) {
-                        await x.Update(ServerEntry.UpdateMode.Lite);
+                        await x.Update(ServerEntryOld.UpdateMode.Lite);
                         Pinged++;
                     }
                 }).WhenAll(SettingsHolder.Online.PingConcurrency, cancellation);

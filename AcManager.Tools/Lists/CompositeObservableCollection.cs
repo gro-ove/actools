@@ -24,7 +24,7 @@ namespace AcManager.Tools.Lists {
 
         public void Remove(ObservableCollection<T> collection) {
             _childCollections.Remove(collection);
-            RemoveRange(collection);
+            this.RemoveRange(collection);
             collection.CollectionChanged -= Collection_CollectionChanged;
         }
 
@@ -39,7 +39,7 @@ namespace AcManager.Tools.Lists {
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    RemoveRange(e.OldItems.Cast<T>());
+                    this.RemoveRange(e.OldItems.Cast<T>());
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
@@ -47,7 +47,7 @@ namespace AcManager.Tools.Lists {
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    RemoveRange(e.OldItems.Cast<T>());
+                    this.RemoveRange(e.OldItems.Cast<T>());
                     AddRange(e.NewItems.Cast<T>());
                     break;
 

@@ -8,7 +8,7 @@ namespace AcManager.Tools.Filters {
     /// Kind of obsolete.
     /// </summary>
     public class UniqueAcObjectTester : ITester<AcObjectNew> {
-        public static UniqueAcObjectTester Instance = new UniqueAcObjectTester();
+        public static readonly UniqueAcObjectTester Instance = new UniqueAcObjectTester();
 
         public string ParameterFromKey(string key) {
             return AcObjectTester.InnerParameterFromKey(key) ??
@@ -18,8 +18,7 @@ namespace AcManager.Tools.Filters {
                    CarSkinObjectTester.InnerParameterFromKey(key) ??
                    TrackObjectTester.InnerParameterFromKey(key) ??
                    TrackBaseObjectTester.InnerParameterFromKey(key) ??
-                   ShowroomObjectTester.InnerParameterFromKey(key) ??
-                   ServerEntryTester.InnerParameterFromKey(key);
+                   ShowroomObjectTester.InnerParameterFromKey(key);
         }
 
         public bool Test(AcObjectNew obj, string key, ITestEntry value) {
@@ -35,9 +34,6 @@ namespace AcManager.Tools.Filters {
 
                 case nameof(CarSkinObject):
                     return CarSkinObjectTester.Instance.Test((CarSkinObject)obj, key, value);
-
-                case nameof(ServerEntry):
-                    return ServerEntryTester.Instance.Test((ServerEntry)obj, key, value);
 
                 default:
                     return AcObjectTester.Instance.Test(obj, key, value);
