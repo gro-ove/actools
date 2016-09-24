@@ -256,8 +256,8 @@ namespace AcTools.DataFile {
         }
 
         private static string DoubleToString(double d) {
-            var s = d.ToString(CultureInfo.InvariantCulture);
-            return s.IndexOf('.') == -1 ? $"{s}.0" : s;
+            return d.ToString(CultureInfo.InvariantCulture);
+            // return s.IndexOf('.') == -1 ? $"{s}.0" : s;
         }
 
         public void Set([NotNull, LocalizationRequired(false)] string key, double value) {

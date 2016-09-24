@@ -472,7 +472,7 @@ namespace AcTools.Processes {
         public class AssistsProperties : AdditionalProperties {
             public bool IdealLine;
             public bool AutoBlip;
-            public double StabilityControl;
+            public int StabilityControl;
             public bool AutoBrake;
             public bool AutoShifter;
             public AssistState Abs;
