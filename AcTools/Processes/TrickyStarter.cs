@@ -65,7 +65,7 @@ namespace AcTools.Processes {
             _launcherProcess = Process.Start(new ProcessStartInfo {
                 WorkingDirectory = AcRoot,
                 FileName = Path.GetFileName(_acLauncher) ?? "",
-                Arguments = "acs_x86.exe 4000"
+                Arguments = $"--first-stage {AcsName}"
             });
         }
 
