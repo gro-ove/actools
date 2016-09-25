@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using AcManager.Tools.AcManagersNew;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
@@ -10,15 +12,19 @@ namespace AcManager.Tools.Managers {
 
         public static Superintendent Initialize() {
             if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new Superintendent();
+            Instance = new Superintendent();
+            Instance.InnerInitialize();
+            return Instance;
         }
-
-        private readonly IReadOnlyList<IAcManagerNew> _managers;
 
         public Superintendent() {
             AcRootDirectory.Initialize();
             AcRootDirectory.Instance.Changed += AcRootDirectory_Changed;
+        }
 
+        private IReadOnlyList<IAcManagerNew> _managers;
+
+        private void InnerInitialize() {
             _managers = new IAcManagerNew[] {
                 CarsManager.Initialize(),
                 TracksManager.Initialize()
@@ -27,6 +33,32 @@ namespace AcManager.Tools.Managers {
             if (IsReady) {
                 RescanManagers();
             }
+        }
+
+        public class ClosingEventArgs : EventArgs {
+            private readonly List<string> _list = new List<string>();
+
+            public IReadOnlyList<string> UnsavedDisplayNames => _list;
+
+            public void Add(string displayName) {
+                _list.Add(displayName);
+            }
+        }
+
+        public event EventHandler<ClosingEventArgs> Closing;
+
+        public IReadOnlyList<string> UnsavedChanges() {
+            var args = new ClosingEventArgs();
+            Logging.Debug(args);
+            Closing?.Invoke(this, args);
+            Logging.Debug(args.UnsavedDisplayNames.JoinToString(";"));
+            return args.UnsavedDisplayNames;
+        }
+
+        public event EventHandler SavingAll;
+
+        public void SaveAll() {
+            SavingAll?.Invoke(this, EventArgs.Empty);
         }
 
         private void RescanManagers() {

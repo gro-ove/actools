@@ -18,7 +18,17 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            return value?.ToString().ToUpperInvariant();
+            var s = value as string;
+            if (s != null) {
+                return s.ToUpperInvariant();
+            }
+
+            var type = value?.GetType();
+            if (type != null && (type.IsValueType || type.IsGenericType)) {
+                return value.ToString().ToUpperInvariant();
+            }
+
+            return value;
         }
 
         /// <summary>
