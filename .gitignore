@@ -69,9 +69,6 @@ Packages
 AcTools.Tests/test/kn5/*
 
 # Some way too meaningless or dead projects
-AcStarter/*
-AcTemp/*
-DataAcdUnpack/*
 *.suo
 
 # Specific unnecessary source files

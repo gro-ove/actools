@@ -32,21 +32,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             throw new NotSupportedException();
         }
 
+        protected void SetPlaceholder() {
+            Inlines.Clear();
+            var placeholder = Placeholder;
+            if (!string.IsNullOrEmpty(placeholder)) {
+                var inline = new Run { Text = placeholder };
+                inline.SetBinding(TextElement.ForegroundProperty, new Binding {
+                    Path = new PropertyPath(nameof(Foreground)),
+                    Source = this,
+                    Converter = this
+                });
+                Inlines.Add(inline);
+            }
+        }
+
         private void Update() {
             var text = Text;
             if (string.IsNullOrEmpty(text)) {
-                Inlines.Clear();
-
-                var placeholder = Placeholder;
-                if (!string.IsNullOrEmpty(placeholder)) {
-                    var inline = new Run { Text = placeholder };
-                    inline.SetBinding(TextElement.ForegroundProperty, new Binding {
-                        Path = new PropertyPath(nameof(Foreground)),
-                        Source = this,
-                        Converter = this
-                    });
-                    Inlines.Add(inline);
-                }
+                SetPlaceholder();
             } else {
                 SetValue(TextBlock.TextProperty, text);
             }

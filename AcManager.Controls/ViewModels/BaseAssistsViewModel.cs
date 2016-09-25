@@ -270,7 +270,7 @@ namespace AcManager.Controls.ViewModels {
         private class SaveableData {
             public bool IdealLine;
             public bool AutoBlip;
-            public int StabilityControl;
+            public double StabilityControl;
             public bool AutoBrake;
             public bool AutoShifter;
             public double SlipSteam;
@@ -301,7 +301,7 @@ namespace AcManager.Controls.ViewModels {
             }, o => {
                 IdealLine = o.IdealLine;
                 AutoBlip = o.AutoBlip;
-                StabilityControl = o.StabilityControl;
+                StabilityControl = (int)o.StabilityControl;
                 AutoBrake = o.AutoBrake;
                 AutoShifter = o.AutoShifter;
                 SlipsteamMultipler = o.SlipSteam;

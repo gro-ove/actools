@@ -99,7 +99,7 @@ namespace AcManager.Pages.Dialogs {
             var conditions = properties?.GetAdditional<PlaceConditions>();
             var takenPlace = conditions?.GetTakenPlace(result) ?? PlaceConditions.UnremarkablePlace;
 
-            Logging.Write($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
+            Logging.Debug($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
 
             {
                 var extra = result.GetExtraByType<Game.ResultExtraDrift>();

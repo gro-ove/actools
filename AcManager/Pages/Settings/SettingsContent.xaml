@@ -15,8 +15,8 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Content_LoadingConcurrencyLabel}" />
-                <TextBox Text="{Binding Holder.LoadingConcurrency}" ToolTip="{x:Static g:AppStrings.Settings_Content_LoadingConcurrency_Tooltip}"
-                        mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Positive" />
+                <mui:BetterTextBox Text="{Binding Holder.LoadingConcurrency}" ToolTip="{x:Static g:AppStrings.Settings_Content_LoadingConcurrency_Tooltip}"
+                        Placeholder="?" Mode="Positive" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.SimpleFiltering}" ToolTip="Filter objects or servers the way which is more similar to original launcher">
@@ -29,6 +29,18 @@
 
             <CheckBox IsChecked="{Binding Holder.ScrollAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically}" />
+            </CheckBox>
+
+            <!--power and torque curves-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Power and torque curves:" />
+
+            <CheckBox IsChecked="{Binding Holder.CurversInDrive}" ToolTip="Might be enabled by default soon" mui:NewMarkService.New="True">
+                <Label Content="Show curves in Drive section" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.SmoothCurves}" ToolTip="Might be less accurate since I have no idea what interpolation algorithm AC uses"
+                    mui:NewMarkService.New="True">
+                <Label Content="Smooth curves" />
             </CheckBox>
 
             <!--find information specific-->
@@ -70,8 +82,8 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Content_FontIconSymbol}" />
-                <TextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="{x:Static g:AppStrings.Settings_Content_FontIconSymbol_Tooltip}"
-                        mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="{x:Static g:AppStrings.Settings_Content_FontIconSymbol_Tooltip}"
+                        Placeholder="?" />
             </DockPanel>
         </StackPanel>
     </ScrollViewer>

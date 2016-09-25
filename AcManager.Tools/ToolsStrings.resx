@@ -1566,4 +1566,7 @@
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Just tries to run acs.exe directly; in most cases will fail</value>
   </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
 </root>

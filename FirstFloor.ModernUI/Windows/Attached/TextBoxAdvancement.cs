@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -7,17 +8,21 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     // temporary
     // todo: replace by BetterTextBox
     public static class TextBoxAdvancement {
+        [Obsolete]
         public static SpecialMode GetSpecialMode(DependencyObject obj) {
             return (SpecialMode)obj.GetValue(SpecialModeProperty);
         }
 
+        [Obsolete]
         public static void SetSpecialMode(DependencyObject obj, SpecialMode value) {
             obj.SetValue(SpecialModeProperty, value);
         }
 
+        [Obsolete]
         public static readonly DependencyProperty SpecialModeProperty = DependencyProperty.RegisterAttached("SpecialMode",
             typeof(SpecialMode), typeof(TextBoxAdvancement), new UIPropertyMetadata(OnSpecialModePropertyChanged));
 
+        [Obsolete]
         static void OnSpecialModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as TextBox;
             if (element == null) return;
@@ -51,6 +56,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static readonly DependencyProperty MaxValueProperty = DependencyProperty.RegisterAttached("MaxValue", typeof(double),
                 typeof(TextBoxAdvancement), new UIPropertyMetadata(double.MaxValue));
 
+        [Obsolete]
         private static void Element_KeyDown(object sender, KeyEventArgs e) {
             if (!e.Key.Equals(Key.Up) && !e.Key.Equals(Key.Down)) return;
 

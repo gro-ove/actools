@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
+using AcManager.Tools.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager {
@@ -26,6 +27,8 @@ namespace AcManager {
 
         private readonly string _logFilename;
         private readonly string _temporaryDirectory;
+
+        [CanBeNull]
         private readonly ResourceManager _references;
 
         private List<string> _temporaryFiles;
@@ -68,8 +71,12 @@ namespace AcManager {
 
             Log(null);
             Handler = HandlerImpl;
-
+            
+#if DEBUG
+            _references = null;
+#else
             _references = new ResourceManager(referencesId, Assembly.GetExecutingAssembly());
+#endif
 
             if (logFilename != null) {
                 SetUnhandledExceptionHandler();
@@ -111,9 +118,9 @@ namespace AcManager {
             return result;
         }
 
-        [CanBeNull]
+        [NotNull]
         private byte[] GetData(string id) {
-            var bytes = _references.GetObject(id) as byte[];
+            var bytes = _references?.GetObject(id) as byte[];
             if (bytes == null) throw new Exception("Data is missing");
 
             if (_references.GetObject(id + "//compressed/lzf") as bool? == true) {
@@ -132,7 +139,10 @@ namespace AcManager {
             return bytes;
         }
 
+        [CanBeNull]
         private Assembly Extract(string id) {
+            if (_references == null) return null;
+
             if (OptionDirectLoading && _references.GetObject(id + "//direct") as bool? == true) {
                 var sw = Stopwatch.StartNew();
                 var data = GetData(id);
@@ -177,7 +187,7 @@ namespace AcManager {
 
         [NotNull]
         private string ExtractToFile(string id) {
-            var hash = _references.GetString(id + "//hash");
+            var hash = _references?.GetString(id + "//hash");
             if (hash == null) throw new Exception($"Checksum for {id} is missing");
 
 #if LOCALIZABLE

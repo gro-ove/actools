@@ -929,6 +929,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _curversInDrive;
+
+            public bool CurversInDrive {
+                get { return _curversInDrive ?? (_curversInDrive = ValuesStorage.GetBool("Settings.ContentSettings.CurversInDrive", false)).Value; }
+                set {
+                    if (Equals(value, _curversInDrive)) return;
+                    _curversInDrive = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CurversInDrive", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _smoothCurves;
 
             public bool SmoothCurves {

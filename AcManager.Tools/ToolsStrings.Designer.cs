@@ -3880,6 +3880,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RPM.
+        /// </summary>
+        public static string Units_RPM {
+            get {
+                return ResourceManager.GetString("Units_RPM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authentication token is missing.
         /// </summary>
         public static string Uploader_AuthenticationTokenIsMissing {
