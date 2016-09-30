@@ -148,9 +148,10 @@ namespace FirstFloor.ModernUI.Localizable {
         /// <returns>Localized string</returns>
         public static string ConvertLong(int v, string s) {
             string result;
-            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
+            var culture = CultureInfo.CurrentUICulture;
+            if (culture.Name.Length < 2) return s;
+            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "ru":
-                case "ru-ru":
                     result = Base(v);
                     break;
                 default:

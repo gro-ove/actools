@@ -1569,4 +1569,10 @@
   <data name="Units_RPM" xml:space="preserve">
     <value>RPM</value>
   </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Can’t load image using Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Please, try to make image a bit smaller.</value>
+  </data>
 </root>

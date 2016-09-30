@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:co="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
         xmlns:h="clr-namespace:FirstFloor.ModernUI.Helpers" xmlns:pr="clr-namespace:FirstFloor.ModernUI.Presentation" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Errors" DataContext="{x:Static h:NonfatalError.Instance}" SizeToContent="Manual" Width="480" Height="600"
-                 LocationAndSizeKey=".NonfatalErrors.LS" KeyDown="OnKeyDown">
+        LocationAndSizeKey=".NonfatalErrors.LS" KeyDown="OnKeyDown">
     <co:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,12 +18,21 @@
         <ListBox.ItemTemplate>
             <DataTemplate>
                 <DockPanel Margin="0 4 0 4" TextBlock.FontWeight="Normal">
+                    <ItemsControl ItemsSource="{Binding Solutions}" DockPanel.Dock="Bottom" Margin="0 8 0 0"
+                            Visibility="{Binding HasSolutions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type h:INonfatalErrorSolution}">
+                                <Button Content="{Binding DisplayName}" Command="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
                     <Ellipse Width="4" Height="4" Fill="{DynamicResource Go}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="4 0 8 0"
                             Visibility="{Binding Unseen, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" DockPanel.Dock="Top" />
-                    <TextBlock FontFamily="Consolas" Text="{Binding Exception.Message}" Margin="0 4 0 0" DockPanel.Dock="Top"
+                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" DockPanel.Dock="Top" TextWrapping="Wrap" />
+                    <TextBlock FontFamily="Consolas" Text="{Binding Exception.Message}" Margin="0 4 0 0" DockPanel.Dock="Top" TextWrapping="Wrap"
                             Visibility="{Binding Exception, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                    <TextBlock Style="{StaticResource Small}" Text="{Binding Commentary}" Margin="0 4 0 0"
+                    <TextBlock Style="{StaticResource Small}" Text="{Binding Commentary}" Margin="0 4 0 0" TextWrapping="Wrap"
                             Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                 </DockPanel>
             </DataTemplate>

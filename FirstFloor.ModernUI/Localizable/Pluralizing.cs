@@ -26,12 +26,15 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         public static string Convert(int v, string s) {
-            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
+            var culture = CultureInfo.CurrentUICulture;
+            if (culture.Name.Length < 2) return s;
+            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "ru":
-                case "ru-ru":
                     return Ru(v, s);
-                default:
+                case "en":
                     return En(v, s);
+                default:
+                    return s;
             }
         }
     }

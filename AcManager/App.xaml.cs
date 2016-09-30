@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -121,7 +122,7 @@ namespace AcManager {
                     WebBrowserHelper.DisableBrowserEmulationMode();
                     ValuesStorage.Set(WebBrowserEmulationModeDisabledKey, WebBrowserHelper.EmulationModeDisablingVersion);
                 } catch (Exception e) {
-                    Logging.Warning("cannot disable emulation mode: " + e);
+                    Logging.Warning("Can’t disable emulation mode: " + e);
                 }
             }
 
@@ -207,12 +208,31 @@ namespace AcManager {
                 try {
                     return fn();
                 } catch (OutOfMemoryException e) {
-                    NonfatalError.Notify("Can’t load image using Magick.NET", "Please, try to make image a bit smaller.", e);
+                    NonfatalError.Notify(ToolsStrings.MagickNet_CannotLoad, ToolsStrings.MagickNet_CannotLoad_Commentary, e);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t load image using Magick.NET", e);
+                    NonfatalError.Notify(ToolsStrings.MagickNet_CannotLoad, e);
                 }
                 return null;
             };
+
+            AbstractDataFile.ErrorsCatcher = new DataSyntaxErrorCatcher();
+        }
+
+        private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
+            public void Catch(AbstractDataFile file, int line) {
+                if (file.Mode == AbstractDataFile.StorageMode.AcdFile) {
+                    NonfatalError.NotifyBackground(string.Format("Syntax error in packed {0} at {1} line", file.UnpackedFilename, line),
+                            "File is still parsed, but some values might be skipped.");
+                } else {
+                    NonfatalError.NotifyBackground(string.Format("Syntax error in {0} at {1} line", Path.GetFileName(file.SourceFilename), line),
+                            "File is still parsed, but some values might be skipped.", null, new[] {
+                                new INonfatalErrorSolution("Open File", null, token => {
+                                    WindowsHelper.OpenFile(file.SourceFilename);
+                                    return Task.Delay(0, token);
+                                })
+                            });
+                }
+            }
         }
 
         private void PrepareUi() {
@@ -221,7 +241,7 @@ namespace AcManager {
                 ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(700));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
             } catch (Exception e) {
-                Logging.Warning("Can’t prepare UI: " + e);
+                Logging.Error(e);
             }
 
             PopupHelper.Initialize();

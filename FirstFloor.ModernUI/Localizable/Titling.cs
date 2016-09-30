@@ -131,15 +131,16 @@ namespace FirstFloor.ModernUI.Localizable {
 
         public static string Convert(string s) {
             var culture = CultureInfo.CurrentUICulture;
-            switch (culture.Name.ToLowerInvariant()) {
+            if (culture.Name.Length < 2) return s;
+            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "ru":
-                case "ru-ru":
                     return Ru(s, culture);
                 case "fr":
-                case "fr-fr":
                     return Fr(s, culture);
-                default:
+                case "en":
                     return En(s, culture);
+                default:
+                    return s;
             }
         }
     }

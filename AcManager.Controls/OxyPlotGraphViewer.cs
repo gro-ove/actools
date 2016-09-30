@@ -9,6 +9,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -144,7 +145,7 @@ namespace AcManager.Controls {
         private const string KeyRpm = "rpm";
         private const string KeyBhp = "bhp";
         private const string KeyNm = "nm";
-        // private const string FormatString = "{0}\n{1}: {2:F0}\n{3}: {4:F0}";
+
         private static readonly OxyColor PowerColor = OxyColor.FromUInt32(0xffff0000);
         private static readonly OxyColor TorqueColor = OxyColor.FromUInt32(0xffffff00);
 
@@ -207,7 +208,7 @@ namespace AcManager.Controls {
             }
 
             internal static List<ScreenPoint> CreateSpline(IList<ScreenPoint> points, double alpha, double tolerance) {
-                var screenPointList = new List<ScreenPoint>(points?.Count ?? 0);
+                var screenPointList = new List<ScreenPoint>();
                 if (points == null) return screenPointList;
                 
                 var count = points.Count;

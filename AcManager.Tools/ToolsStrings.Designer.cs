@@ -2842,6 +2842,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t load image using Magick.NET.
+        /// </summary>
+        public static string MagickNet_CannotLoad {
+            get {
+                return ResourceManager.GetString("MagickNet_CannotLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, try to make image a bit smaller..
+        /// </summary>
+        public static string MagickNet_CannotLoad_Commentary {
+            get {
+                return ResourceManager.GetString("MagickNet_CannotLoad_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Supported.
         /// </summary>
         public static string NotSupported {

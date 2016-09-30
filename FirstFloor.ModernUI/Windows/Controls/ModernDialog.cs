@@ -103,10 +103,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return CreateExtraStyledDialogButton(styleKey, content, new DelegateCommand(action, canExecute));
         }
 
-        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, Action action = null) {
+        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, ICommand command = null) {
             return new Button {
                 Content = content,
-                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new DelegateCommand(action)),
+                Command = command == null ? CloseCommand : new CombinedCommand(CloseCommand, command),
                 CommandParameter = result,
                 IsDefault = isDefault,
                 IsCancel = isCancel,

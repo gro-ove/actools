@@ -28,12 +28,16 @@ namespace FirstFloor.ModernUI.Commands {
             ExecuteAsync().Forget();
         }
 
+        protected virtual Task ExecuteInner() {
+            return _execute();
+        }
+
         public async Task ExecuteAsync() {
             try {
                 _inProcess = true;
                 RaiseCanExecuteChanged();
 
-                await _execute();
+                await ExecuteInner();
 
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);

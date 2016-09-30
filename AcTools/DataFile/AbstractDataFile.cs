@@ -7,6 +7,8 @@ using AcTools.Utils;
 
 namespace AcTools.DataFile {
     public abstract class AbstractDataFile {
+        public static ISyntaxErrorsCatcher ErrorsCatcher { get; set; }
+
         public enum StorageMode {
             UnpackedFile,
             AcdFile

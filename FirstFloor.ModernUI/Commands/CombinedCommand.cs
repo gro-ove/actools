@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Commands {
         private readonly ICommand _first;
         private readonly ICommand _second;
 
-        public CombinedCommand(ICommand first, ICommand second) : base(false, true) {
+        public CombinedCommand(ICommand first, ICommand second) : base(false, false) {
             _first = first;
             _second = second;
             WeakEventManager<ICommand, EventArgs>.AddHandler(first, nameof(ICommand.CanExecuteChanged), Handler);

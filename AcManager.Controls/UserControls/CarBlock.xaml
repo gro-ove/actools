@@ -112,9 +112,8 @@
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>
 
-                <mui:BooleanSwitch Value="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}}">
-                    <c:OxyPlotGraphViewer SourcePower="{Binding SpecsPowerCurve}" SourceTorque="{Binding SpecsTorqueCurve}" Margin="0 8 0 0" />
-                </mui:BooleanSwitch>
+                <c:OxyPlotGraphViewer Car="{Binding}" Margin="0 8 0 0"
+                        Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <!-- description -->
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />

@@ -181,7 +181,7 @@ namespace AcManager.Controls.Dialogs {
                     var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
                     if (whatsGoingOn != null) {
                         NonfatalError.Notify(whatsGoingOn.GetDescription(), solutions: new[] {
-                            whatsGoingOn
+                            whatsGoingOn.Solution
                         });
                     }
                 } catch (Exception e) {

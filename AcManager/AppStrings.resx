@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2088,8 +2088,8 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>If you’re using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
-    <value>Start race (Ctrl+G)</value>
-  </data>
+    <value>Start Race (Ctrl+G)</value>
+  <alternative>Start race (Ctrl+G)</alternative></data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
     <value>RSR app is missing</value>
   </data>

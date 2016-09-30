@@ -300,7 +300,7 @@ namespace AcManager.Pages.Dialogs {
                 Model.CurrentState = ViewModel.State.Cancelled;
 
                 var whatsGoingOn = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn>();
-                fixButton = this.CreateFixItButton(whatsGoingOn);
+                fixButton = this.CreateFixItButton(whatsGoingOn?.Solution);
                 Model.ErrorMessage = whatsGoingOn?.GetDescription();
             } else {
                 try {
