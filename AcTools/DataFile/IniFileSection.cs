@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using AcTools.Utils.Helpers;
+using AcTools.Utils.Physics;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
@@ -159,8 +161,14 @@ namespace AcTools.DataFile {
             return FlexibleParser.TryParseLong(GetPossiblyEmpty(key)) ?? defaultValue;
         }
 
+        [Pure, CanBeNull]
+        public Lut GetLut([NotNull, LocalizationRequired(false)] string key) {
+            var value = GetNonEmpty(key);
+            return value == null ? null : Lut.FromValue(value);
+        }
+
         /// <summary>
-        /// Warning! Throws exception if value is missing!
+        /// Warning! Throws exception if value is missing! Doesn’t tranform strings in any way.
         /// </summary>
         [Obsolete, Pure]
         public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
@@ -172,24 +180,46 @@ namespace AcTools.DataFile {
             return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
+        /// <summary>
+        /// Just in case, this method can parse entries from something like “OVERSTEER_FACTOR” to “OversteerFactor”.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
         [Pure]
         public T? GetEnumNullable<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
 
+            var s = GetNonEmpty(key);
+            if (s == null) return null;
+
             T result;
-            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ? result : (T?)null;
+            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ||
+                    s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : (T?)null;
         }
 
+        /// <summary>
+        /// Just in case, this method can parse entries from something like “OVERSTEER_FACTOR” to “OversteerFactor”.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
         [Pure]
         public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
 
+            var s = GetNonEmpty(key);
+            if (s == null) return defaultValue;
+
             T result;
-            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ? result : defaultValue;
+            return Enum.TryParse(s, ignoreCase, out result) ||
+                    s.Contains('_') && Enum.TryParse(s.Replace("_", ""), ignoreCase, out result) ? result : defaultValue;
         }
 
         [Pure]
@@ -253,6 +283,11 @@ namespace AcTools.DataFile {
         public void Set([NotNull, LocalizationRequired(false)] string key, long? value) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public void Set([NotNull, LocalizationRequired(false)] string key, [CanBeNull] Lut value) {
+            if (value == null) return;
+            base[key] = value.ToString();
         }
 
         private static string DoubleToString(double d) {

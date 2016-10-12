@@ -119,7 +119,9 @@
     <Compile Include="Kn5ExportTest.cs" />
     <Compile Include="FileUtilsTest.cs" />
     <Compile Include="GoodShuffleTest.cs" />
+    <Compile Include="LutTest.cs" />
     <Compile Include="MathUtilsTest.cs" />
+    <Compile Include="PhysicsTest.cs" />
     <Compile Include="ProcessExtensionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensionTest.cs" />

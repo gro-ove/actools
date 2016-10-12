@@ -23,7 +23,6 @@ namespace FirstFloor.ModernUI.Localizable {
 
         private static string RuPostfix(int v, string s) {
             // http://ilyabirman.ru/meanwhile/all/o-naraschenii-okonchaniy-chislitelnyh/
-
             switch (s?.ToLower(CultureInfo.CurrentUICulture)) {
                 case "место":
                     return "-е";
@@ -40,9 +39,11 @@ namespace FirstFloor.ModernUI.Localizable {
         /// <returns>Localized string</returns>
         public static string ConvertPostfix(int v, string s) {
             if (v < 0) v = -v;
-            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
+
+            var culture = CultureInfo.CurrentUICulture;
+            if (culture.Name.Length < 2) return v.ToString();
+            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "ru":
-                case "ru-ru":
                     return RuPostfix(v, s);
                 default:
                     return EnPostfix(v, s);

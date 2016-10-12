@@ -96,7 +96,7 @@ namespace AcTools.DataFile {
                         break;
 
                     case '=':
-                        if (started != -1) {
+                        if (started != -1 && key == null) {
                             key = data.Substring(started, 1 + nonSpace - started);
                             started = -1;
                         }

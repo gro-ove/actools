@@ -417,7 +417,7 @@ namespace AcManager.Controls {
             var power = SourcePower;
             var torque = SourceTorque;
 
-            var maximumValue = Math.Max(power?.Points.Values.MaxOrDefault() ?? 0d, torque?.Points.Values.MaxOrDefault() ?? 0d);
+            var maximumValue = Math.Max(power?.MaxY ?? 0d, torque?.MaxY ?? 0d);
             foreach (var axis in Model.Axes.Where(x => x.Position != AxisPosition.Bottom)) {
                 axis.Maximum = maximumValue * 1.05;
             }
@@ -433,7 +433,7 @@ namespace AcManager.Controls {
 
             series.Points.Clear();
             if (data != null) {
-                series.Points.AddRange(data.Points.Select(x => new DataPoint(x.Key, x.Value)));
+                series.Points.AddRange(data.Points.Select(x => new DataPoint(x.X, x.Y)));
             }
         }
     }

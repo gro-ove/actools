@@ -4,7 +4,39 @@ using System.IO;
 using AcTools.AcdFile;
 
 namespace AcTools.DataFile {
-    public class DataWrapper {
+    public interface IDataWrapper {
+        IniFile GetIniFile([Localizable(false)] string name);
+
+        LutDataFile GetLutFile(string name);
+
+        RawDataFile GetRawFile(string name);
+    }
+
+    public class DataDirectoryWrapper : IDataWrapper {
+        private readonly string _directory;
+
+        public DataDirectoryWrapper(string directory) {
+            if (!Directory.Exists(directory)) {
+                throw new DirectoryNotFoundException(directory);
+            }
+
+            _directory = directory;
+        }
+
+        public IniFile GetIniFile(string name) {
+            return new IniFile(Path.Combine(_directory, name));
+        }
+
+        public LutDataFile GetLutFile(string name) {
+            return new LutDataFile(Path.Combine(_directory, name));
+        }
+
+        public RawDataFile GetRawFile(string name) {
+            return new RawDataFile(Path.Combine(_directory, name));
+        }
+    }
+
+    public class DataWrapper : IDataWrapper {
         private readonly string _carDirectory;
         private readonly Acd _acd;
         private readonly Dictionary<string, AbstractDataFile> _cache;
