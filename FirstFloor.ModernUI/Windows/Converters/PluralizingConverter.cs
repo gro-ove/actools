@@ -35,7 +35,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             if (_extRegex == null) {
                 _extRegex = new Regex(@"\{([^\d\s].*)\}", RegexOptions.Compiled);
-                _lastRegex = new Regex(@"([^\d\s]+)\s*$", RegexOptions.Compiled);
+                _lastRegex = new Regex(@"((?:[^\d\s]+ |[^\d\s]+)+)\s*$", RegexOptions.Compiled);
             }
 
             var found = false;

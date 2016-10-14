@@ -129,16 +129,24 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
+        #region Spanish
+        private static string Es(string s, CultureInfo culture) {
+            return CapitalizeFirst(s, culture);
+        }
+        #endregion
+
         public static string Convert(string s) {
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return s;
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
-                case "ru":
-                    return Ru(s, culture);
-                case "fr":
-                    return Fr(s, culture);
                 case "en":
                     return En(s, culture);
+                case "es":
+                    return Es(s, culture);
+                case "fr":
+                    return Fr(s, culture);
+                case "ru":
+                    return Ru(s, culture);
                 default:
                     return s;
             }

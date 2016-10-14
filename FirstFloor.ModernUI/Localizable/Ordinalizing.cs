@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace FirstFloor.ModernUI.Localizable {
@@ -8,6 +9,10 @@ namespace FirstFloor.ModernUI.Localizable {
     /// </summary>
     [Localizable(false)]
     internal static class Ordinalizing {
+        private const string FallbackToShort = "-";
+
+        #region Languages-specific
+        #region English
         private static string EnPostfix(int v, string s) {
             switch (v % 10) {
                 case 1:
@@ -21,15 +26,63 @@ namespace FirstFloor.ModernUI.Localizable {
             }
         }
 
-        private static string RuPostfix(int v, string s) {
-            // http://ilyabirman.ru/meanwhile/all/o-naraschenii-okonchaniy-chislitelnyh/
+        private static string EnLong(int v, string s) {
+            return BaseLong(v);
+        }
+        #endregion
+
+        #region Russian
+        private enum RuGenger {
+            Masculine, Feminine, Neuter
+        }
+
+        private static RuGenger RuGetGenger(string s) {
             switch (s?.ToLower(CultureInfo.CurrentUICulture)) {
                 case "место":
-                    return "-е";
+                    return RuGenger.Neuter;
             }
 
-            return "-й";
+            return RuGenger.Masculine;
         }
+
+        private static string RuPostfix(int v, string s) {
+            /* http://ilyabirman.ru/meanwhile/all/o-naraschenii-okonchaniy-chislitelnyh/ */
+            switch (RuGetGenger(s)) {
+                case RuGenger.Masculine:
+                    return "-й";
+                case RuGenger.Feminine:
+                    return "-я";
+                case RuGenger.Neuter:
+                    return "-е";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string RuLong(int v, string s) {
+            switch (RuGetGenger(s)) {
+                case RuGenger.Masculine:
+                    return BaseLong(v);
+                case RuGenger.Feminine:
+                    return FallbackToShort;
+                case RuGenger.Neuter:
+                    return FallbackToShort;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        #endregion
+
+        #region Spanish
+        private static string EsPostfix(int v, string s) {
+            return "º";
+        }
+
+        private static string EsLong(int v, string s) {
+            return BaseLong(v);
+        }
+        #endregion
+        #endregion
 
         /// <summary>
         /// Postfix version: “1” → “st”, “2” → “nd”, …
@@ -43,10 +96,14 @@ namespace FirstFloor.ModernUI.Localizable {
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return v.ToString();
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
+                case "en":
+                    return EnPostfix(v, s);
+                case "es":
+                    return EsPostfix(v, s);
                 case "ru":
                     return RuPostfix(v, s);
                 default:
-                    return EnPostfix(v, s);
+                    return v.ToString();
             }
         }
 
@@ -61,14 +118,14 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         /// <summary>
-        /// Base version, takes strings from resources. DoesnвЂ™t consider different genders, 
+        /// Base version, takes strings from resources. Doesn’t consider different genders, 
         /// forms and everything.
         /// </summary>
         /// <param name="v">Value</param>
         /// <returns></returns>
-        private static string Base(int v) {
+        private static string BaseLong(int v) {
             if (v < 0) {
-                return string.Format(UiStrings.Ordinalizing_Minus, Base(-v).ToLowerInvariant());
+                return string.Format(UiStrings.Ordinalizing_Minus, BaseLong(-v).ToLowerInvariant());
             }
 
             switch (v) {
@@ -152,15 +209,21 @@ namespace FirstFloor.ModernUI.Localizable {
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return s;
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
+                case "en":
+                    result = EnLong(v, s);
+                    break;
+                case "es":
+                    result = EsLong(v, s);
+                    break;
                 case "ru":
-                    result = Base(v);
+                    result = RuLong(v, s);
                     break;
                 default:
-                    result = Base(v);
+                    result = BaseLong(v);
                     break;
             }
 
-            return result == @"-" ? ConvertShort(v, s) : result;
+            return result == FallbackToShort ? ConvertShort(v, s) : result;
         }
     }
 }

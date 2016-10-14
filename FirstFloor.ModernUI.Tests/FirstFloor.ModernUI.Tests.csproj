@@ -99,6 +99,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -114,6 +115,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="LocalizableTest.cs" />
     <Compile Include="LzfTest.cs" />
     <Compile Include="ValuesStorageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

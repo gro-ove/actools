@@ -10,6 +10,10 @@ namespace FirstFloor.ModernUI.Localizable {
             return v == 1 ? s : PluralizingDictionary.En(s);
         }
 
+        private static string Es(int v, string s) {
+            return v == 1 ? s : PluralizingDictionary.Es(s);
+        }
+
         private static string Ru(int v, string s) {
             if (s == string.Empty) return string.Empty;
 
@@ -29,10 +33,12 @@ namespace FirstFloor.ModernUI.Localizable {
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return s;
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
-                case "ru":
-                    return Ru(v, s);
                 case "en":
                     return En(v, s);
+                case "es":
+                    return Es(v, s);
+                case "ru":
+                    return Ru(v, s);
                 default:
                     return s;
             }
