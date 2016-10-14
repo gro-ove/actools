@@ -79,15 +79,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
-            try {
-                var parser = new BbCodeParser(bbCode, element) {
-                    Commands = (navigator ?? DefaultLinkNavigator).Commands
-                };
-                return parser.Parse();
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return new Run { Text = bbCode };
+            var complex = false;
+            for (var i = 1; i < bbCode.Length; i += 2) {
+                if (bbCode[i - 1] == '[' || bbCode[i] == '[') {
+                    complex = true;
+                    break;
+                }
             }
+
+            if (complex) {
+                try {
+                    return new BbCodeParser(bbCode, element) {
+                        Commands = (navigator ?? DefaultLinkNavigator).Commands
+                    }.Parse();
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            return new Run { Text = bbCode };
         }
 
         private void Update() {

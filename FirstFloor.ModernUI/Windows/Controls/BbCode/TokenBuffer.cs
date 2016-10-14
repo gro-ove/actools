@@ -22,8 +22,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             do {
                 token = lexer.NextToken();
                 _tokens.Add(token);
-            }
-            while (token.TokenType != Lexer.TokenEnd);
+            } while (token.TokenType != Lexer.TokenEnd);
         }
 
         /// <summary>

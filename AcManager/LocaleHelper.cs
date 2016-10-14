@@ -37,9 +37,10 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
+
             bool found;
             if (IsSupported(langId)) {
-                CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
                 found = true;
             } else {
                 var package = FilesStorage.Instance.GetFilename("Locales", langId + ".pak");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
@@ -74,8 +75,77 @@ namespace FirstFloor.ModernUI.Localizable {
         #endregion
 
         #region Spanish
+        private enum EsGenger {
+            Default, Feminine, NounMasculine, PreMasculine
+        }
+
+        private static EsGenger EsGetGenger(string s) {
+#if DEBUG
+            Logging.Debug("gender: " + s);
+#endif
+            if (string.IsNullOrEmpty(s)) return EsGenger.Default;
+
+            var lower = s.ToLower(CultureInfo.CurrentUICulture);
+            switch (lower) {
+                case "coche":
+                    return EsGenger.PreMasculine;
+                case "foto":
+                case "moto":
+                case "mujer":
+                    return EsGenger.Feminine;
+            }
+
+            var lastCharacter = lower[lower.Length - 1];
+            switch (lastCharacter) {
+                case 'a':
+                    return EsGenger.Feminine;
+                case 'o':
+                    return EsGenger.NounMasculine;
+            }
+
+            if (lower.EndsWith("sión") || lower.EndsWith("ción") || lower.EndsWith("gión") ||
+                    lower.EndsWith("ez") || lower.EndsWith("triz") ||lower.EndsWith("umbre") ||
+                    lower.EndsWith("dad") || lower.EndsWith("tad") || lower.EndsWith("tud")) {
+                return EsGenger.Feminine;
+            }
+
+            if (lower.EndsWith("ma") || lower.EndsWith("ta") || lower.EndsWith("pa")) {
+                return EsGenger.NounMasculine;
+            }
+
+            return EsGenger.Default;
+        }
+
         private static string EsPostfix(int v, string s) {
-            return "º";
+            var g = EsGetGenger(s);
+
+            if (v == 1) {
+                switch (g) {
+                    case EsGenger.Default:
+                        return ".º";
+                    case EsGenger.Feminine:
+                        return ".ᵉʳᵃ";
+                    case EsGenger.NounMasculine:
+                        return ".ᵉʳᵒ";
+                    case EsGenger.PreMasculine:
+                        return ".ᵉʳ";
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            switch (g) {
+                case EsGenger.Default:
+                    return ".º";
+                case EsGenger.Feminine:
+                    return ".ª";
+                case EsGenger.NounMasculine:
+                    return ".º";
+                case EsGenger.PreMasculine:
+                    return ".º";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private static string EsLong(int v, string s) {

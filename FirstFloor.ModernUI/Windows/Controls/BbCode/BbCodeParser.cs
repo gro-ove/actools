@@ -22,6 +22,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         private const string TagItalic = "i";
         private const string TagSize = "size";
         private const string TagStrike = "s";
+        private const string TagSuperscript = "sup";
         private const string TagUnderline = "u";
         private const string TagUrl = "url";
         private const string TagImage = "img";
@@ -38,6 +39,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             public FontFamily FontFamily { get; set; }
             public Brush Foreground { get; set; }
             public TextDecorationCollection TextDecorations { get; set; }
+            public FontVariants? FontVariants { get; set; }
             public string NavigateUri { get; set; }
             public string ImageUri { get; set; }
 
@@ -55,6 +57,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 }
                 if (FontStyle.HasValue) {
                     run.FontStyle = FontStyle.Value;
+                }
+                if (FontVariants.HasValue) {
+                    Typography.SetVariants(run, FontVariants.Value);
                 }
                 if (Foreground != null) {
                     run.Foreground = Foreground;
@@ -86,10 +91,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         private void ParseTag(string tag, bool start, ParseContext context) {
             if (tag == TagBold) {
-                context.FontWeight = null;
-                if (start) {
-                    context.FontWeight = FontWeights.Bold;
-                }
+                context.FontWeight = start ? (FontWeight?)FontWeights.Bold : null;
             } else if (tag == TagColor) {
                 if (start) {
                     var token = La(1);
@@ -105,11 +107,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                     context.Foreground = null;
                 }
             } else if (tag == TagItalic) {
-                if (start) {
-                    context.FontStyle = FontStyles.Italic;
-                } else {
-                    context.FontStyle = null;
-                }
+                context.FontStyle = start ? (FontStyle?)FontStyles.Italic : null;
             } else if (tag == TagMono) {
                 context.FontFamily = start ? new FontFamily("Consolas") : null;
             } else if (tag == TagSize) {
@@ -125,6 +123,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 context.TextDecorations = start ? TextDecorations.Underline : null;
             } else if (tag == TagStrike) {
                 context.TextDecorations = start ? TextDecorations.Strikethrough : null;
+            } else if (tag == TagSuperscript) {
+                context.FontVariants = start ? (FontVariants?)FontVariants.Superscript : null;
             } else if (tag == TagImage) {
                 if (start) {
                     var token = La(1);
@@ -153,94 +153,97 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 var token = La(1);
                 Consume();
 
-                if (token.TokenType == BbCodeLexer.TokenStartTag) {
-                    ParseTag(token.Value, true, context);
-                } else if (token.TokenType == BbCodeLexer.TokenEndTag) {
-                    ParseTag(token.Value, false, context);
-                } else if (token.TokenType == BbCodeLexer.TokenText) {
-                    var parent = span;
+                switch (token.TokenType) {
+                    case BbCodeLexer.TokenStartTag:
+                        ParseTag(token.Value, true, context);
+                        break;
+                    case BbCodeLexer.TokenEndTag:
+                        ParseTag(token.Value, false, context);
+                        break;
+                    case BbCodeLexer.TokenText:
+                        var parent = span; 
+                        
+                        {
+                            Uri uri;
+                            string parameter;
+                            string targetName;
 
-                    {
-                        Uri uri;
-                        string parameter;
-                        string targetName;
+                            // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
+                            if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out uri, out parameter, out targetName)) {
+                                var link = new Hyperlink();
 
-                        // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
-                        if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out uri, out parameter, out targetName)) {
-                            var link = new Hyperlink();
-
-                            // assign ICommand instance if available, otherwise set NavigateUri
-                            ICommand command;
-                            if (Commands != null && Commands.TryGetValue(uri, out command)) {
-                                link.Command = command;
-                                link.CommandParameter = parameter;
-                                if (targetName != null) {
-                                    link.CommandTarget = _source?.FindName(targetName) as IInputElement;
+                                // assign ICommand instance if available, otherwise set NavigateUri
+                                ICommand command;
+                                if (Commands != null && Commands.TryGetValue(uri, out command)) {
+                                    link.Command = command;
+                                    link.CommandParameter = parameter;
+                                    if (targetName != null) {
+                                        link.CommandTarget = _source?.FindName(targetName) as IInputElement;
+                                    }
+                                } else {
+                                    link.NavigateUri = uri;
+                                    link.TargetName = parameter;
                                 }
-                            } else {
-                                link.NavigateUri = uri;
-                                link.TargetName = parameter;
+                                parent = link;
+                                span.Inlines.Add(parent);
                             }
-                            parent = link;
-                            span.Inlines.Add(parent);
                         }
-                    }
+                        
+                        {
+                            Uri uri;
+                            string parameter;
+                            string targetName;
 
-                    {
-                        Uri uri;
-                        string parameter;
-                        string targetName;
+                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out uri, out parameter, out targetName)) {
+                                var bi = new BitmapImage();
+                                bi.BeginInit();
+                                bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                                bi.CacheOption = BitmapCacheOption.OnLoad;
+                                bi.UriSource = uri;
+                                bi.EndInit();
 
-                        if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out uri, out parameter, out targetName)) {
-                            var bi = new BitmapImage();
-                            bi.BeginInit();
-                            bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            bi.CacheOption = BitmapCacheOption.OnLoad;
-                            bi.UriSource = uri;
-                            bi.EndInit();
+                                double maxSize;
+                                if (!double.TryParse(parameter, out maxSize)) {
+                                    maxSize = double.MaxValue;
+                                }
 
-                            double maxSize;
-                            if (!double.TryParse(parameter, out maxSize)) {
-                                maxSize = double.MaxValue;
+                                var image = new Image {
+                                    Source = bi,
+                                    ToolTip = new ToolTip {
+                                        Content = new TextBlock { Text = token.Value }
+                                    },
+                                    MaxWidth = maxSize,
+                                    MaxHeight = maxSize,
+                                    Cursor = Cursors.Hand
+                                };
+
+                                image.MouseDown += (sender, args) => {
+                                    BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(uri));
+                                };
+
+                                RenderOptions.SetBitmapScalingMode(image,
+                                        Equals(maxSize, double.MaxValue) ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality);
+                                var container = new InlineUIContainer { Child = image };
+                                span.Inlines.Add(container);
+                                continue;
                             }
-
-                            var image = new Image {
-                                Source = bi,
-                                ToolTip = new ToolTip {
-                                    Content = new TextBlock { Text = token.Value }
-                                },
-                                MaxWidth = maxSize,
-                                MaxHeight = maxSize,
-                                Cursor = Cursors.Hand
-                            };
-
-                            image.MouseDown += (sender, args) => {
-                                BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(uri));
-                            };
-
-                            RenderOptions.SetBitmapScalingMode(image,
-                                    Equals(maxSize, double.MaxValue) ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality);
-                            var container = new InlineUIContainer { Child = image };
-                            span.Inlines.Add(container);
-                            continue;
                         }
-                    }
 
-                    var run = context.CreateRun(token.Value);
-                    parent.Inlines.Add(run);
-                } else if (token.TokenType == BbCodeLexer.TokenLineBreak) {
-                    span.Inlines.Add(new LineBreak());
-                } else if (token.TokenType == BbCodeLexer.TokenAttribute) {
-                    throw new ParseException(UiStrings.UnexpectedToken);
-                } else if (token.TokenType == Lexer.TokenEnd) {
-                    break;
-                } else {
-                    throw new ParseException(UiStrings.UnknownTokenType);
+                        var run = context.CreateRun(token.Value);
+                        parent.Inlines.Add(run);
+                        break;
+                    case BbCodeLexer.TokenLineBreak:
+                        span.Inlines.Add(new LineBreak());
+                        break;
+                    case BbCodeLexer.TokenAttribute:
+                        throw new ParseException(UiStrings.UnexpectedToken);
+                    case Lexer.TokenEnd:
+                        return;
+                    default:
+                        throw new ParseException(UiStrings.UnknownTokenType);
                 }
             }
         }
-
-        
 
         /// <summary>
         /// Parses the text and returns a Span containing the parsed result.

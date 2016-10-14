@@ -45,9 +45,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         /// Initializes a new instance of the <see cref="T:BBCodeLexer"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
-        public BbCodeLexer(string value)
-            : base(value) {
-        }
+        public BbCodeLexer(string value) : base(value) {}
 
         private bool IsTagNameChar() {
             return IsInRange('A', 'Z') || IsInRange('a', 'z') || IsInRange(new[] { '*' });

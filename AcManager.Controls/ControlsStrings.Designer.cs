@@ -439,7 +439,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  °C.
+        ///   Looks up a localized string similar to  °C.
         /// </summary>
         public static string Common_CelsiusPostfix {
             get {
@@ -601,7 +601,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  m.
+        ///   Looks up a localized string similar to  m.
         /// </summary>
         public static string Common_MetersPostfix {
             get {
@@ -610,7 +610,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  ms.
+        ///   Looks up a localized string similar to  ms.
         /// </summary>
         public static string Common_MillisecondsPostfix {
             get {
@@ -628,7 +628,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  min.
+        ///   Looks up a localized string similar to  min.
         /// </summary>
         public static string Common_MinutesPostfix {
             get {
@@ -736,7 +736,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  sec.
+        ///   Looks up a localized string similar to  sec.
         /// </summary>
         public static string Common_SecondsPostfix {
             get {
