@@ -165,8 +165,8 @@
     <value>Сообщение</value>
   </data>
   <data name="AcObject_CarBrandLabel" xml:space="preserve">
-    <value>Бренд:</value>
-  </data>
+    <value>Марка:</value>
+  <alternative>Бренд:</alternative></data>
   <data name="AcObject_ContryLabel" xml:space="preserve">
     <value>Страна:</value>
   </data>
@@ -183,17 +183,17 @@
     <value>Параметры:</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Открыть в шоуруме</value>
-  </data>
+    <value>Открыть в демонстрационном зале</value>
+  <alternative>Открыть в шоуруме</alternative></data>
   <data name="Common_Presets" xml:space="preserve">
-    <value>Пресеты</value>
-  </data>
+    <value>Предустановки</value>
+  <alternative>Пресеты</alternative></data>
   <data name="Common_Settings" xml:space="preserve">
     <value>Настройки</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
     <value>Открыть в кастомном шоуруме</value>
-  </data>
+  <alternative>Открыть в пользовательском демонстрационном зале</alternative></data>
   <data name="Video_CannotPlay" xml:space="preserve">
     <value>Не получится проиграть видео</value>
   </data>
@@ -204,11 +204,11 @@
     <value>Фильтр:</value>
   </data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>Сохранить пресет</value>
-  </data>
+    <value>Сохранить предустановку</value>
+  <alternative>Сохранить пресет</alternative></data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Сохранить текущие параметры как пресет</value>
-  </data>
+    <value>Сохранить текущие параметры как предустановку</value>
+  <alternative>Сохранить текущие параметры как пресет</alternative></data>
   <data name="Presets_Unsaved" xml:space="preserve">
     <value>Не сохранено</value>
   </data>
@@ -324,17 +324,17 @@
     <value>Включить свободную камеру</value>
   </data>
   <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
-    <value>Использовать специальное имя для онлайна</value>
-  </data>
+    <value>Использовать специальное имя для режима "Интернет"</value>
+  <alternative>Использовать специальное имя для онлайна</alternative></data>
   <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
-    <value>Сменить UI-пресет</value>
-  </data>
+    <value>Сменить предустановки интерфейса</value>
+  <alternative>Сменить UI-пресет</alternative></data>
   <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
-    <value>Сменить пресет с управлением</value>
-  </data>
+    <value>Сменить предустановки управления</value>
+  <alternative>Сменить пресет с управлением</alternative></data>
   <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
-    <value>Сменить пресет с графикой</value>
-  </data>
+    <value>Сменить предустановки графики</value>
+  <alternative>Сменить пресет с графикой</alternative></data>
   <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
     <value>Сменить фильтр</value>
   </data>
@@ -372,14 +372,14 @@
     <value>Вы уверены?</value>
   </data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Встроенные пресеты</value>
-  </data>
+    <value>Встроенные предустановки</value>
+  <alternative>Встроенные пресеты</alternative></data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>Пользовательские пресеты</value>
-  </data>
+    <value>Пользовательские предустановки</value>
+  <alternative>Пользовательские пресеты</alternative></data>
   <data name="Share_EnterNameHeader" xml:space="preserve">
-    <value>Расшарить как</value>
-  </data>
+    <value>Поделиться как</value>
+  <alternative>Расшарить как</alternative></data>
   <data name="ImageViewer_DefaultName" xml:space="preserve">
     <value>Изображение</value>
   </data>
@@ -399,8 +399,8 @@
     <value>Ошибка</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
-    <value>Папка «{0}» уже существует. Перезаписать файлы?</value>
-  </data>
+    <value>Каталог «{0}» уже существует. Перезаписать файлы?</value>
+  <alternative>Папка «{0}» уже существует. Перезаписать файлы?</alternative></data>
   <data name="Common_GoodNews" xml:space="preserve">
     <value>Хорошие новости!</value>
   </data>
@@ -411,8 +411,8 @@
     <value>Фильтрация</value>
   </data>
   <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Гамма</value>
-  </data>
+    <value>Нелинейность</value>
+  <alternative>Гамма</alternative></data>
   <data name="Controls_InvertAxis" xml:space="preserve">
     <value>Инвертировать</value>
   <alternative>Развернуть</alternative></data>
@@ -444,8 +444,8 @@
     <value>Сжатие…</value>
   </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} оппонент</value>
-  </data>
+    <value>{0} соперников</value>
+  <alternative>{0} оппонент</alternative></data>
   <data name="Common_Reset" xml:space="preserve">
     <value>Сбросить</value>
   </data>
@@ -471,11 +471,11 @@
     <value>Изменить</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Сменить скин</value>
-  </data>
+    <value>Сменить раскраску</value>
+  <alternative>Сменить скин</alternative></data>
   <data name="Common_OpponentsPostfix" xml:space="preserve">
-    <value> оппонент</value>
-  </data>
+    <value> соперник</value>
+  <alternative> оппонент</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Ещё раз</value>
   </data>
@@ -525,8 +525,8 @@
     <value>Нажмите чтобы назначить</value>
   </data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
-    <value>Установите 0 для Logitech G920, оставьте 1 для всех остальных</value>
-  </data>
+    <value>Установите 0 для Logitech G920, для всех остальных оставьте 1</value>
+  <alternative>Установите 0 для Logitech G920, оставьте 1 для всех остальных</alternative></data>
   <data name="Controls_DegressLabel" xml:space="preserve">
     <value>Градусы</value>
   </data>
@@ -546,8 +546,8 @@
     <value>Гироскопический эффект</value>
   </data>
   <data name="Controls_KerbEffect" xml:space="preserve">
-    <value>Эффект бордюра</value>
-  </data>
+    <value>Эффект бордюров</value>
+  <alternative>Эффект бордюра</alternative></data>
   <data name="Controls_KeyboardButton" xml:space="preserve">
     <value>Кнопка на клавиатуре</value>
   </data>
@@ -576,8 +576,8 @@
     <value>Программная блокировка</value>
   </data>
   <data name="Controls_SpeedSensitivity" xml:space="preserve">
-    <value>Чувствительность к скорости</value>
-  </data>
+    <value>Чувств. к скорости</value>
+  <alternative>Чувствительность к скорости</alternative></data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Разблокировать экспериментальные опции (будьте осторожны!)</value>
   </data>
@@ -612,8 +612,8 @@
     <value>Ожидание...</value>
   </data>
   <data name="Online_DriversOnlineLabel" xml:space="preserve">
-    <value>Гонщиков онлайн:</value>
-  </data>
+    <value>Водителей в сети:</value>
+  <alternative>Гонщиков онлайн:</alternative></data>
   <data name="Online_TrackIsMissingLabel" xml:space="preserve">
     <value>Трек не найден:</value>
   </data>
@@ -648,8 +648,8 @@
     <value>Невозможно обновить превью</value>
   </data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
-    <value>Вы должны сделать как минимум один скриншот.</value>
-  </data>
+    <value>Вы должны сделать как минимум один снимок экрана.</value>
+  <alternative>Вы должны сделать как минимум один скриншот.</alternative></data>
   <data name="Common_PointsPostfix" xml:space="preserve">
     <value> точка</value>
   </data>
@@ -688,5 +688,11 @@
   </data>
   <data name="Controls_ClearWheelBinding" xml:space="preserve">
     <value>Очистить привязку руля</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>Усиление демпфера</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>Мин. уровень демпфера</value>
   </data>
 </root>

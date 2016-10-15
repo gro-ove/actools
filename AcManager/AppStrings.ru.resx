@@ -182,11 +182,11 @@
     <value>Новое имя</value>
   </data>
   <data name="Solution_SetBrandName_Details" xml:space="preserve">
-    <value>Просто указать новое имя бренда</value>
-  </data>
+    <value>Просто указать новое имя марки</value>
+  <alternative>Просто указать новое имя бренда</alternative></data>
   <data name="Common_NewBrandName" xml:space="preserve">
-    <value>Новое имя бренда</value>
-  </data>
+    <value>Новое имя марки</value>
+  <alternative>Новое имя бренда</alternative></data>
   <data name="Solution_SetBrandBadge" xml:space="preserve">
     <value>Поставить значок от {0}</value>
   </data>
@@ -194,8 +194,8 @@
     <value>Поставить «{0}» иконку</value>
   </data>
   <data name="Solution_CreateEmptySkin" xml:space="preserve">
-    <value>Создать пустой скин</value>
-  </data>
+    <value>Создать пустую раскраску</value>
+  <alternative>Создать пустой скин</alternative></data>
   <data name="Solution_Enable" xml:space="preserve">
     <value>Включить</value>
   </data>
@@ -233,8 +233,8 @@
     <value>О программе</value>
   </data>
   <data name="Main_ReleaseNotes" xml:space="preserve">
-    <value>Релизные заметки</value>
-  </data>
+    <value>Примечания к выпускам</value>
+  <alternative>Релизные заметки</alternative></data>
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>Советы</value>
   </data>
@@ -272,8 +272,8 @@
     <value>Интернет</value>
   <alternative>Онлайн</alternative></data>
   <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
-  </data>
+    <value>ЛВС</value>
+  <alternative>LAN</alternative></data>
   <data name="Main_Screenshots" xml:space="preserve">
     <value>Снимки экрана</value>
   <alternative>Скриншоты</alternative></data>
@@ -287,14 +287,14 @@
     <value>Трассы</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Шоурумы</value>
-  </data>
+    <value>Демонстрационные залы</value>
+  <alternative>Шоурумы</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Разное</value>
   </data>
   <data name="Main_ServerPresets" xml:space="preserve">
-    <value>Пресеты</value>
-  </data>
+    <value>Предустановки</value>
+  <alternative>Пресеты</alternative></data>
   <data name="Main_ServerRunned" xml:space="preserve">
     <value>Запущенное</value>
   </data>
@@ -338,8 +338,8 @@
     <value>Машины:</value>
   </data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Шоурумы:</value>
-  </data>
+    <value>Демонстрационные залы:</value>
+  <alternative>Шоурумы:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Шрифты:</value>
   </data>
@@ -351,7 +351,7 @@
   </data>
   <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
     <value>Имя для онлайна:</value>
-  </data>
+  <alternative>Имя:</alternative></data>
   <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
     <value>Быстрый заезд:</value>
   </data>
@@ -359,8 +359,8 @@
     <value>Заменять облака погодными облаками</value>
   </data>
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
-    <value>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</value>
-  </data>
+    <value>Автоматически конвертировать снимки экрана из BMP в JPEG при выходе</value>
+  <alternative>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</alternative></data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>Режим разработчика</value>
   </data>
@@ -396,8 +396,8 @@
     <value>Переключатели</value>
   </data>
   <data name="Settings_Sharing" xml:space="preserve">
-    <value>Шаринг</value>
-  </data>
+    <value>Поделиться</value>
+  <alternative>Шаринг</alternative></data>
   <data name="Settings_Appearance" xml:space="preserve">
     <value>Оформление</value>
   <alternative>оформление</alternative></data>
@@ -423,11 +423,11 @@
     <value>Разлогиниться</value>
   </data>
   <data name="Common_SignIn" xml:space="preserve">
-    <value>Залогиниться</value>
-  </data>
+    <value>Войти</value>
+  <alternative>Залогиниться</alternative></data>
   <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
-    <value>Папка:</value>
-  </data>
+    <value>Каталог:</value>
+  <alternative>Папка:</alternative></data>
   <data name="Common_Update" xml:space="preserve">
     <value>Обновить</value>
   </data>
@@ -438,8 +438,8 @@
     <value>Имя</value>
   </data>
   <data name="Toolbar_Folder" xml:space="preserve">
-    <value>Папка</value>
-  </data>
+    <value>Каталог</value>
+  <alternative>Папка</alternative></data>
   <data name="Toolbar_Reload" xml:space="preserve">
     <value>Перезагрузить</value>
   </data>
@@ -447,29 +447,29 @@
     <value>Перезагрузить (Ctrl+R)</value>
   </data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Шоурум</value>
-  </data>
+    <value>Демонстрационный зал</value>
+  <alternative>Шоурум</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Кастомный Шоурум</value>
-  </data>
+    <value>Демонстрационный зал</value>
+  <alternative>Кастомный Шоурум</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
-    <value>Тест-драйв</value>
-  </data>
+    <value>Пробный заезд</value>
+  <alternative>Тест-драйв</alternative></data>
   <data name="Toolbar_CarSkins" xml:space="preserve">
-    <value>Скины</value>
-  </data>
+    <value>Раскраски</value>
+  <alternative>Скины</alternative></data>
   <data name="Toolbar_CarSetups" xml:space="preserve">
     <value>Сетапы</value>
-  </data>
+  <alternative>Настройки</alternative></data>
   <data name="Filter_ByAuthor" xml:space="preserve">
     <value>Фильтровать по автору</value>
   </data>
   <data name="Filter_ByTag" xml:space="preserve">
-    <value>Фильтровать по тегу</value>
-  </data>
+    <value>Фильтровать по метке</value>
+  <alternative>Фильтровать по тегу</alternative></data>
   <data name="Filter_ByBrand" xml:space="preserve">
-    <value>Фильтровать по бренду</value>
-  </data>
+    <value>Фильтровать по марке</value>
+  <alternative>Фильтровать по бренду</alternative></data>
   <data name="Filter_ByCountry" xml:space="preserve">
     <value>Фильтровать по стране</value>
   </data>
@@ -549,14 +549,14 @@
     <value>Заменить звук на звук от другой машины</value>
   </data>
   <data name="Car_DeleteSkin" xml:space="preserve">
-    <value>Удалить скин</value>
-  </data>
+    <value>Удалить раскраску</value>
+  <alternative>Удалить скин</alternative></data>
   <data name="Car_SkinFormat" xml:space="preserve">
-    <value>Скин: {0}</value>
-  </data>
+    <value>Раскраска: {0}</value>
+  <alternative>Скин: {0}</alternative></data>
   <data name="Common_Share" xml:space="preserve">
-    <value>Расшарить</value>
-  </data>
+    <value>Поделиться</value>
+  <alternative>Расшарить</alternative></data>
   <data name="Common_Test" xml:space="preserve">
     <value>Тест</value>
   </data>
@@ -621,8 +621,8 @@
     <value>Погода:</value>
   </data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Создать новый шоурум</value>
-  </data>
+    <value>Создать новый зал</value>
+  <alternative>Создать новый шоурум</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Лишь выбрать существующее изображение</value>
   </data>
@@ -685,13 +685,13 @@
   </data>
   <data name="List_Replays" xml:space="preserve">
     <value>{0} реплей</value>
-  </data>
+  <alternative>{0} повторов</alternative></data>
   <data name="List_ServerPresets" xml:space="preserve">
     <value>{0} пресет</value>
-  </data>
+  <alternative>{0} предустановок</alternative></data>
   <data name="List_Showrooms" xml:space="preserve">
     <value>{0} шоурум</value>
-  </data>
+  <alternative>{0} залов</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} трасса</value>
   </data>
@@ -742,14 +742,14 @@
     <value>Поиск информации:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>Сперва искать на Википедии</value>
-  </data>
+    <value>Сначала искать на Википедии</value>
+  <alternative>Сперва искать на Википедии</alternative></data>
   <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
-    <value>Автоматически менять логотип бренда</value>
-  </data>
+    <value>Автоматически менять логотип марки</value>
+  <alternative>Автоматически менять логотип бренда</alternative></data>
   <data name="Settings_Drive_Starter" xml:space="preserve">
-    <value>Стартер</value>
-  </data>
+    <value>Стартер игры</value>
+  <alternative>Стартер</alternative></data>
   <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
     <value>Расширить границы</value>
   </data>
@@ -781,8 +781,8 @@
     <value>Машина</value>
   </data>
   <data name="Settings_Sharing_Anonymously" xml:space="preserve">
-    <value>Шарить анонимно</value>
-  </data>
+    <value>Делиться анонимно</value>
+  <alternative>Шарить анонимно</alternative></data>
   <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
     <value>Большие файлы:</value>
   </data>
@@ -799,8 +799,8 @@
     <value>Сетапы</value>
   </data>
   <data name="Main_Skins" xml:space="preserve">
-    <value>Скины</value>
-  </data>
+    <value>Раскраски</value>
+  <alternative>Скины</alternative></data>
   <data name="Common_OneMoreThing" xml:space="preserve">
     <value>Ещё кое-что</value>
   </data>
@@ -910,8 +910,8 @@
     <value>Состояние трассы:</value>
   </data>
   <data name="KunosCareer_LapsLabel" xml:space="preserve">
-    <value>Круги:</value>
-  </data>
+    <value>Кругов:</value>
+  <alternative>Круги:</alternative></data>
   <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
     <value>Уровень ИИ:</value>
   </data>
@@ -919,8 +919,8 @@
     <value>Стартовая позиция:</value>
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
-    <value>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ИНТЕРНЕТ.</value>
-  <alternative>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ОНЛАЙН.</alternative></data>
+    <value>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте раздел ИНТЕРНЕТ.</value>
+  <alternative>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ОНЛАЙН.</alternative><alternative>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ИНТЕРНЕТ.</alternative></data>
   <data name="Rsr_Commentary" xml:space="preserve">
     <value>Если вы используете Chrome-подобный браузер, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]здесь[/url] находится расширение для запуска событий RSR напрямую из браузера!</value>
   </data>
@@ -937,8 +937,8 @@
     <value>Осталось:</value>
   </data>
   <data name="Online_ClientsLabel" xml:space="preserve">
-    <value>Клиенты:</value>
-  </data>
+    <value>Клиентов:</value>
+  <alternative>Клиенты:</alternative></data>
   <data name="Online_SortByLabel" xml:space="preserve">
     <value>Сортировать по:</value>
   </data>
@@ -970,8 +970,8 @@
     <value>Очистить</value>
   </data>
   <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
-    <value>Использовать специальное имя для онлайна</value>
-  </data>
+    <value>Использовать специальное имя для режима "Интернет"</value>
+  <alternative>Использовать специальное имя для онлайна</alternative></data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
     <value>Координаты:</value>
   </data>
@@ -985,8 +985,8 @@
     <value>Регистрация</value>
   </data>
   <data name="Online_Sorting_Name" xml:space="preserve">
-    <value>Имя</value>
-  </data>
+    <value>Имени</value>
+  <alternative>Имя</alternative></data>
   <data name="Race_Preparing" xml:space="preserve">
     <value>Подготовка…</value>
   </data>
@@ -1003,8 +1003,8 @@
     <value>Всё</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Создать новый шоурум</value>
-  </data>
+    <value>Создать новый зал</value>
+  <alternative>Создать новый шоурум</alternative></data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Имя:</value>
   </data>
@@ -1024,8 +1024,8 @@
     <value>Прогресс: {0}</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, не работает?)</value>
-  </data>
+    <value>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, вероятно уже не работает)</value>
+  <alternative>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, не работает?)</alternative></data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
     <value>Анизотропная фильтрация:</value>
   </data>
@@ -1135,8 +1135,8 @@
     <value>Хотите лучшее качество снимков экрана?</value>
   </data>
   <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
-    <value>Переключите на BMP, установите дополнение Magick.NET и не забудьте включить автоматическое преобразование на вкладке НАСТРОЙКИ/ВОЖДЕНИЕ.</value>
-  </data>
+    <value>Переключите на BMP, установите дополнение Magick.NET и не забудьте включить автоматическое преобразование в разделе Настройки/Вождение.</value>
+  <alternative>Переключите на BMP, установите дополнение Magick.NET и не забудьте включить автоматическое преобразование на вкладке НАСТРОЙКИ/ВОЖДЕНИЕ.</alternative></data>
   <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
     <value>Формат снимков экрана</value>
   </data>
@@ -1279,8 +1279,8 @@
     <value>Управление мышью:</value>
   </data>
   <data name="Controls_SharePreset" xml:space="preserve">
-    <value>Расшарить пресет</value>
-  </data>
+    <value>Поделиться предустановкой</value>
+  <alternative>Расшарить пресет</alternative></data>
   <data name="Controls_ShiftersHeader" xml:space="preserve">
     <value>Переключатели:</value>
   </data>
@@ -1306,8 +1306,8 @@
     <value>Вид:</value>
   </data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
-    <value>Расшарить текущие настройки (Ctrl+Page Up)</value>
-  </data>
+    <value>Поделиться текущими настройками (Ctrl+Page Up)</value>
+  <alternative>Расшарить текущие настройки (Ctrl+Page Up)</alternative></data>
   <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
     <value>RSR вернул файл в неподдерживаемом формате.</value>
   </data>
@@ -1366,8 +1366,8 @@
     <value>Светлый (с контуром)</value>
   </data>
   <data name="Select_Brands" xml:space="preserve">
-    <value>Бренды</value>
-  </data>
+    <value>Марки</value>
+  <alternative>Бренды</alternative></data>
   <data name="Select_Categories" xml:space="preserve">
     <value>Категории</value>
   </data>
@@ -1391,5 +1391,821 @@
   </data>
   <data name="Controls_RemoveOld" xml:space="preserve">
     <value>Да, удалить старое</value>
+  </data>
+  <data name="AcSettings_Video_HeatShimmering" xml:space="preserve">
+    <value>Эффект теплового мерцания</value>
+  </data>
+  <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
+    <value>Сумеречные лучи</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>Последние изменения</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Нажмите чтобы увидеть последние изменения</value>
+  </data>
+  <data name="About_Description" xml:space="preserve">
+    <value>Приложение альтернативного запуска и управления контентом для [url="http://www.assettocorsa.net/"]Assetto Corsa[/url].</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>Не могу отправить логи</value>
+  </data>
+  <data name="About_ContactUsHeader" xml:space="preserve">
+    <value>Свяжитесь с нами:</value>
+  </data>
+  <data name="About_ContactInformation" xml:space="preserve">
+    <value>Если у вас есть вопрос, идея или предложение по этому приложению, или вы хотите сообщить о какой-то конкретной проблеме, пожалуйста, свяжитесь с нами, используя [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] или [url="https://trello.com/c/w5xT6ssZ/49-contacts"]что-то другое[/url].</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent" xml:space="preserve">
+    <value>Логи отправлены</value>
+  </data>
+  <data name="About_MarkAllAsRead" xml:space="preserve">
+    <value>Отметить всё как прочитанное</value>
+  </data>
+  <data name="About_Footer" xml:space="preserve">
+    <value>Content Manager создан благодаря [url="/Pages/About/Credits.xaml|_top"]открытому программному обеспечению[/url].
+Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2016 AcClub. Все права защищены.</value>
+  </data>
+  <data name="About_MoreInformation" xml:space="preserve">
+    <value>Больше информации</value>
+  </data>
+  <data name="About_ReportAnIssue" xml:space="preserve">
+    <value>Сообщить о проблеме</value>
+  </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>Отдельное спасибо за перевод:</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>Версия: {0}</value>
+  </data>
+  <data name="About_ReportAnIssue_Title" xml:space="preserve">
+    <value>В чем проблема?</value>
+  </data>
+  <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
+    <value>Опишите проблему и оставьте пожалуйста какие-нибудь контакты, если хотите получить ответ (это также помогло бы решить проблему).</value>
+  </data>
+  <data name="Settings_Replays_AddExtension" xml:space="preserve">
+    <value>Автоматически добавлять ".acreplay" для новых повторов</value>
+  </data>
+  <data name="Settings_Replays_AddExtension_Tooltip" xml:space="preserve">
+    <value>Автоматически добавлять расширение ".acreplay" для новых повторов сделанных игрой</value>
+  </data>
+  <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
+    <value>Добавить к существующим</value>
+  </data>
+  <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
+    <value>Добавить расширение ".acreplay" ко всем существующим повторам</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
+    <value>Автосохранение повторов</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays_Tooltip" xml:space="preserve">
+    <value>Обычный "cr" будет автоматически переименован.</value>
+  </data>
+  <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
+    <value>Имя файла и расширение для повторов:</value>
+  </data>
+  <data name="Settings_Replays_ExtensionHeader_Tooltip" xml:space="preserve">
+    <value>С расширением ".acreplay" вы сможете запустить повтор, просто щелкнув его в проводнике</value>
+  </data>
+  <data name="Settings_Replays_LoadInformation" xml:space="preserve">
+    <value>Загружать информацию о повторах</value>
+  </data>
+  <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
+    <value>Пытаться определять трассу, автомобиль и погоду для повторов на вкладке МЕДИА/ПОВТОРЫ</value>
+  </data>
+  <data name="Settings_Replays_NameFormat" xml:space="preserve">
+    <value>Формат имени для повтора</value>
+  </data>
+  <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
+    <value>Используется для сохранения и автосохранения повторов после гонки.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название автомобиля;
+ [b][mono]{car.id}[/mono][/b] — id автомобиля;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы;
+ [b][mono]{date}[/mono][/b] — дата и время в правильном формате;
+ [b][mono]{date_ac}[/mono][/b] — дата и время в формате AC.
+
+Модификаторы:
+ [b][mono]{…:l}[/mono][/b] — нижний регистр;
+ [b][mono]{…:u}[/mono][/b] — верхний регистр;
+ [b][mono]{…:0}[/mono][/b] — только первый символ.
+
+Примеры:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — формат Kunos по умолчанию;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — что-то вроде “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+[b]Осторожно[/b]:
+ Не используйте символы, такие как “[” или “]”!</value>
+  </data>
+  <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
+    <value>Действия связанные с повторами:</value>
+  </data>
+  <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
+    <value>Команда после повтора:</value>
+  </data>
+  <data name="AcSettings_Replays_EventPreLabel" xml:space="preserve">
+    <value>Команда перед повтором:</value>
+  </data>
+  <data name="RaceResult_SaveReplay" xml:space="preserve">
+    <value>Сохранить повтор</value>
+  </data>
+  <data name="RaceResult_UnsaveReplay" xml:space="preserve">
+    <value>Не сохранять повтор</value>
+  </data>
+  <data name="Replay_CannotShare" xml:space="preserve">
+    <value>Невозможно поделиться повторами</value>
+  </data>
+  <data name="Solution_RemoveReplay" xml:space="preserve">
+    <value>Удалить повтор</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>Повтор будет удалён в корзину</value>
+  </data>
+  <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
+    <value>Удалить повтор в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
+    <value>Открыть каталог с повторами (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>Воспроизвести повтор (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
+    <value>Переименовать повтор в соответствии с новым именем (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
+    <value>Поделиться повтором используя Google Диск (Ctrl+Page Up)</value>
+  </data>
+  <data name="Replay_SharedReadMe" xml:space="preserve">
+    <value>{0}
+
+Для просмотра распаковать “{1}” в “…\Documents\Assetto Corsa\replay”.</value>
+  </data>
+  <data name="Toolbar_UploadAndShare" xml:space="preserve">
+    <value>Выгрузить и поделиться</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
+    <value>Переименовать приложение в соответствии с новым именем (Ctrl+S)</value>
+  </data>
+  <data name="Race_LaunchingGame" xml:space="preserve">
+    <value>Запуск игры...</value>
+  </data>
+  <data name="Race_Waiting" xml:space="preserve">
+    <value>Ожидание окончания гонки...</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>Ярлык в меню "Пуск" (для современных уведомлений)</value>
+  </data>
+  <data name="Settings_Drive_32bit" xml:space="preserve">
+    <value>Использовать 32-битную версию</value>
+  </data>
+  <data name="Settings_Drive_AiLevelInDriverName" xml:space="preserve">
+    <value>Показывать уровень ИИ в именах водителей</value>
+  </data>
+  <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
+    <value>Только для не фиксированного уровня ИИ</value>
+  </data>
+  <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
+    <value>Всегда записывать "призрак" в режиме "Быстрый круг"</value>
+  </data>
+  <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
+    <value>Записывать "призрак" в режиме "Быстрый круг" даже если он скрыт</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands_Tooltip" xml:space="preserve">
+    <value>В диалоге выбора автомобиля</value>
+  </data>
+  <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
+    <value>Разрешить изменять уровень ИИ</value>
+  </data>
+  <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
+    <value>Разрешить изменять раскраску автомобиля</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
+    <value>Я настоятельно рекомендую сначала включить Magick.NET — с ним, качество результата будет выше</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds_Tooltip" xml:space="preserve">
+    <value>Конечно, только временно</value>
+  </data>
+  <data name="Settings_Drive_EventsHeader" xml:space="preserve">
+    <value>События связанные с игрой:</value>
+  </data>
+  <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
+    <value>Расширенная погода:</value>
+  </data>
+  <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
+    <value>Kunos карьера:</value>
+  </data>
+  <data name="Settings_Drive_LocalAddress" xml:space="preserve">
+    <value>Локальный адрес</value>
+  </data>
+  <data name="Settings_Drive_LocalAddress_Tooltip" xml:space="preserve">
+    <value>Для локальной погоды</value>
+  </data>
+  <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
+    <value>Переопределить ПП фильтр по умолчанию в режиме Oculus Rift</value>
+  </data>
+  <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
+    <value>Временно перезаписать system/cfg/ppfilters/default.ini с выбранным ПП фильтром если включен режим Oculus Rift</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>Имя игрока:</value>
+  </data>
+  <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
+    <value>Команда перед гонкой:</value>
+  </data>
+  <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
+    <value>Не показывать результаты в режиме Практика</value>
+  </data>
+  <data name="Settings_Drive_StartImmediately" xml:space="preserve">
+    <value>Начинать гонку немедленно</value>
+  </data>
+  <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
+    <value>Применять пользовательский погодный ПП-фильтр</value>
+  </data>
+  <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
+    <value>ПП-фильтр будет включен позже</value>
+  </data>
+  <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
+    <value>Эта команда будет выполнена после завершения acs.exe, но до прочтения всех результирующих json-файлов.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название автомобиля;
+ [b][mono]{car.id}[/mono][/b] — id автомобиля;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</value>
+  </data>
+  <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
+    <value>Команда после гонки:</value>
+  </data>
+  <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
+    <value>Эта команда будет выполнена перед запуском acs.exe,но после применения всех ini-файлов.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название автомобиля;
+ [b][mono]{car.id}[/mono][/b] — id автомобиля;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands" xml:space="preserve">
+    <value>Кэшировать марки</value>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>Кругов:</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>Теоретически:</value>
+  </data>
+  <data name="Drive_GhostCar" xml:space="preserve">
+    <value>Автомобиль-призрак</value>
+  </data>
+  <data name="Drive_GhostCarAdvantage" xml:space="preserve">
+    <value>Преимущество автомобиля-призрака</value>
+  </data>
+  <data name="Drive_StartFrom" xml:space="preserve">
+    <value>Откуда начать:</value>
+  </data>
+  <data name="Drive_RaceDuration" xml:space="preserve">
+    <value>Продолжительность гонки</value>
+  </data>
+  <data name="Drive_OpponentsStrength" xml:space="preserve">
+    <value>Уровень соперников</value>
+  </data>
+  <data name="Drive_OpponentsStrengthMin" xml:space="preserve">
+    <value>Уровень соперников (мин.)</value>
+  </data>
+  <data name="Drive_FixedOpponentsStrength" xml:space="preserve">
+    <value>Фиксированный уровень соперников</value>
+  </data>
+  <data name="Drive_StartingPosition" xml:space="preserve">
+    <value>Стартовая позиция</value>
+  </data>
+  <data name="Drive_Ordinal_Last" xml:space="preserve">
+    <value>Последний</value>
+  </data>
+  <data name="RaceGrid_Candidates" xml:space="preserve">
+    <value>Кандидаты:</value>
+  </data>
+  <data name="RaceGrid_CandidatePriority" xml:space="preserve">
+    <value>Приоритет кандидатов</value>
+  </data>
+  <data name="RaceGrid_DetailedSettings" xml:space="preserve">
+    <value>Подробные настройки</value>
+  </data>
+  <data name="Drive_Ordinal_Random" xml:space="preserve">
+    <value>Случайная</value>
+  </data>
+  <data name="Drive_TimeMultiplerLabel" xml:space="preserve">
+    <value>Ход времени</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>Включить секцию Sim Racing System (SRS)</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
+    <value>Автоматически переключать приложение RSR</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>Автоматически показывать или скрывать приложения RSR, если гонка или событие не связаны с RSR</value>
+  </data>
+  <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
+    <value>Настраиваемый оптимизированный стиль для встроенного веб-сайта RSR</value>
+  </data>
+  <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
+    <value>Настраиваемый оптимизированный стиль для встроенного веб-сайта SRS</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline_Tooltip" xml:space="preserve">
+    <value>Приложение установит специальное SRS имя автоматически, чтобы избежать проблем</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
+    <value>Значение по умолчанию: “SimRacingSystem*”</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Маска для SRS серверов:</value>
+  </data>
+  <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
+    <value>Включить быстрые переключатели</value>
+  </data>
+  <data name="Settings_QuickSwitches_Description" xml:space="preserve">
+    <value>Быстрые переключатели — небольшое всплывающее меню, которое позволяет изменить различные настройки из любого места программы. Чтобы открыть это меню, нажмите клавишу Alt+~ или правую кнопку мыши. Кроме того, можно изменить параметры с помощью клавиш Alt+1...Alt+9.[br][br]Если вы хотите ещё какие-нибудь опции, напишите [url="https://trello.com/c/ad89Y9rL/71-quick-switches"]сюда[/url] или [url="https://trello.com/c/w5xT6ssZ/49-contacts"]используйте любой другой способ[/url].</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>Гонка отменена</value>
+  </data>
+  <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
+    <value>Скольжение шин</value>
+  </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>Быстрое сглаживание (FXAA)</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>Твой идентификатор Steam для интернета:</value>
+  </data>
+  <data name="AcRoot_Welcome" xml:space="preserve">
+    <value>Добро пожаловать в Content Manager и спасибо за то что используете его! Есть всего несколько настроек, которые осталось сделать перед запуском:</value>
+  </data>
+  <data name="Settings_General_ValuesHeader" xml:space="preserve">
+    <value>Хранилище настроек:</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes" xml:space="preserve">
+    <value>Большое поле поиска</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
+    <value>Кстати, попробуйте такие сочетания клавиш как F6/Ctrl+T/Ctrl+W/Ctrl+Tab/и.т.д.</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
+    <value>Не забудьте, что есть сочетание клавиш для каждой кнопки</value>
+  </data>
+  <data name="Drive_JumpStartPenalty" xml:space="preserve">
+    <value>Штраф за фальстарт</value>
+  </data>
+  <data name="Online_FilterEmpty_Short" xml:space="preserve">
+    <value>Пустые</value>
+  </data>
+  <data name="Online_FilterEmpty" xml:space="preserve">
+    <value>Показывать пустые сервера</value>
+  </data>
+  <data name="Online_FilterFull_Short" xml:space="preserve">
+    <value>Полные</value>
+  </data>
+  <data name="Online_FilterFull" xml:space="preserve">
+    <value>Показывать полные сервера</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Online_FilterPassword" xml:space="preserve">
+    <value>Показывать сервера защищённые паролем</value>
+  </data>
+  <data name="Online_FilterMissing_Short" xml:space="preserve">
+    <value>Отсутствует</value>
+  </data>
+  <data name="Online_FilterMissing" xml:space="preserve">
+    <value>Показывать сервера с отсутствующим контентом</value>
+  </data>
+  <data name="Online_FilterWithBooking" xml:space="preserve">
+    <value>Показывать сервера с регистрацией</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Водители в сети:</value>
+  </data>
+  <data name="Online_Sorting_Drivers" xml:space="preserve">
+    <value>Водителям</value>
+  </data>
+  <data name="Online_Sorting_Capacity" xml:space="preserve">
+    <value>Заполненности</value>
+  </data>
+  <data name="Online_Sorting_CarsNumber" xml:space="preserve">
+    <value>Количеству авто</value>
+  </data>
+  <data name="Online_NothingToDisplay" xml:space="preserve">
+    <value>Нечего отображать</value>
+  </data>
+  <data name="Online_AddNewServer" xml:space="preserve">
+    <value>Добавить новый сервер</value>
+  </data>
+  <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
+    <value>Показывать логотипы марок в списке автомобилей</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
+    <value>Загружать информацию с сервера напрямую</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
+    <value>Загружать информацию с сервера напрямую, а не через сервера AC; может быть быстрее и более актуально, но некоторые данные (например активная сессия) могут отсутствовать</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads" xml:space="preserve">
+    <value>Использовать ветвление вместо асинхронного API</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
+    <value>Более корректный опрос, но самый медленный</value>
+  </data>
+  <data name="Settings_Online_PingingHeader" xml:space="preserve">
+    <value>Опрос:</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency" xml:space="preserve">
+    <value>Согласованность</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
+    <value>Увеличьте значение, чтобы сделать опрос всего списка быстрее, но это будет менее точно</value>
+  </data>
+  <data name="Settings_Online_PingTimeout" xml:space="preserve">
+    <value>Время ожидания</value>
+  </data>
+  <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
+    <value>Подключение:</value>
+  </data>
+  <data name="Settings_Online_AddingByIpHeader" xml:space="preserve">
+    <value>Добавление по IP:</value>
+  </data>
+  <data name="Online_AddingServer" xml:space="preserve">
+    <value>Добавление сервера...</value>
+  </data>
+  <data name="Settings_Online_PortsLabel" xml:space="preserve">
+    <value>Сканировать порты:</value>
+  </data>
+  <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
+    <value>Время ожидания</value>
+  </data>
+  <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
+    <value>Определённое перечисление, например “9000-10000”</value>
+  </data>
+  <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
+    <value>Определённое перечисление, например “9600,9602,9700-9750”</value>
+  </data>
+  <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
+    <value>Сканировать подключения:</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>ЛВС</value>
+  </data>
+  <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
+    <value>Управление настройками сервера:</value>
+  </data>
+  <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
+    <value>Простой демонстрационный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
+    <value>Автоматическая регулировка поворота камеры</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons" xml:space="preserve">
+    <value>Инвертировать кнопки мыши</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>Простой зал:</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>Качественный зал:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
+    <value>Зал по умолчанию</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
+    <value>По умолчанию:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
+    <value>Использовать оттенки</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>Использовать сглаживание (MSAA)</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>Использовать быстрое сглаживание (FXAA)</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
+    <value>Пытаться держать автомобиль в центре экрана как можно дольше (но без каких-либо сложных расчетов)</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
+    <value>Использовать левую кнопку мыши для панорамирования и правую для вращения модели</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
+    <value>Отключите, если вам нужна максимальная производительность</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>Делает картинку хуже, как мне кажется</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>Вы можете переключать это в любое время с помощью клавиши F</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
+    <value>Удерживайте клавишу CTRL при запуске чтобы выбрать другой</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
+    <value>Я сомневаюсь, что у вас есть время, чтобы обновить их все</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
+    <value>Скачать предварительные просмотры обычных демонстрационных залов</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>Значок символ шрифта:</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
+    <value>Один символ, который будет использоваться для значка</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
+    <value>Меньшее значение может ухудшить отзывчивость интерфейса, но уменьшить время загрузки</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
+    <value>Загружать параллельно:</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
+    <value>Добавить “site:wikipedia.org” по умолчанию</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically" xml:space="preserve">
+    <value>Автоматическая прокрутка до выбранного элемента</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
+    <value>К примеру, на отключение</value>
+  </data>
+  <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
+    <value>Открыть каталог с демонстрационными залами (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
+    <value>Создать новый зал из существующей панорамы (Ctrl+N)</value>
+  </data>
+  <data name="CreateShowroom_CannotCreate" xml:space="preserve">
+    <value>Не удалось создать новый зал</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Отключить (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
+    <value>Сохранить изменённый JSON-файл (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
+    <value>Сохранить изменённый INI-файл (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
+    <value>Удалить зал в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview" xml:space="preserve">
+    <value>Обновить пред. просмотр</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>Обновить пред. просмотр залов (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Отключить звук</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Отключить звук (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
+    <value>Обновить информацию о сервере (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Analyze" xml:space="preserve">
+    <value>Анализ</value>
+  </data>
+  <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
+    <value>Управление раскрасками</value>
+  </data>
+  <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
+    <value>Управление настройками</value>
+  </data>
+  <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
+    <value>Открыть каталог с автомобилями (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
+    <value>Открыть каталог со шрифтами (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
+    <value>Открыть каталог с ПП фильтрами (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
+    <value>Открыть каталог с настройками (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
+    <value>Открыть каталог с раскрасками (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
+    <value>Открыть каталог с трассами (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
+    <value>Открыть каталог с погодой (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
+    <value>Открыть каталог с приложениями (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>Искать информацию</value>
+  </data>
+  <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
+    <value>Искать информацию об автомобиле (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>Искать информацию о трассе (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
+    <value>Обновить пред. просмотр раскрасок (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>Обновить пред. просмотр трасс (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>Обновить пред. просмотр погоды (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews" xml:space="preserve">
+    <value>Обновить пред. просмотры</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
+    <value>Обновить все пред. просмотры (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_Delete_AppTooltip" xml:space="preserve">
+    <value>Удалить приложение в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
+    <value>Удалить автомобиль в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
+    <value>Удалить шрифт в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
+    <value>Удалить ПП фильтр в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
+    <value>Удалить настройку в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
+    <value>Удалить раскраску в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_TrackTooltip" xml:space="preserve">
+    <value>Удалить трассу в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_WeatherTooltip" xml:space="preserve">
+    <value>Удалить погоду в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
+    <value>Просмотр автомобиля в демонстрационном зале (Ctrl+H)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
+    <value>Ручной режим</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
+    <value>Простой пользовательский зал</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
+    <value>Качественный пользовательский зал</value>
+  </data>
+  <data name="Tags_CleanUp" xml:space="preserve">
+    <value>Очистить метки</value>
+  </data>
+  <data name="Tags_CleanUpAndSort" xml:space="preserve">
+    <value>Очистить и сортировать метки</value>
+  </data>
+  <data name="Tags_Sort" xml:space="preserve">
+    <value>Сортировать метки</value>
+  </data>
+  <data name="Solution_GenerateLivery" xml:space="preserve">
+    <value>Сгенерировать новую раскраску</value>
+  </data>
+  <data name="Solution_GenerateLivery_Details" xml:space="preserve">
+    <value>Сгенерировать новую раскраску используя последние настройки редактора раскрасок</value>
+  </data>
+  <data name="Solution_RandomLivery" xml:space="preserve">
+    <value>Сгенерировать случайную раскраску</value>
+  </data>
+  <data name="Toolbar_ChangeLivery" xml:space="preserve">
+    <value>Изменить раскраску</value>
+  </data>
+  <data name="Toolbar_GenerateLivery" xml:space="preserve">
+    <value>Сгенерировать раскраску</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
+    <value>Сгенерировать случайную раскраску</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>Использовать трассу в Быстром Заезде (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
+    <value>Использовать автомобиль в Быстром Заезде (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_UpdateMap" xml:space="preserve">
+    <value>Обновить карту</value>
+  </data>
+  <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
+    <value>Переключиться в режим редактирования (Ctrl+E)</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Поделиться погодой (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>Изменить идентификатор погоды (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Мало параметров?</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Переключитесь в режим редактирования если хотите изменить другие параметры погоды.</value>
+  </data>
+  <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
+    <value>Использовать как:</value>
+  </data>
+  <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
+    <value>Последнее сканирование: {0}</value>
+  </data>
+  <data name="AcObject_FontLastScannedNever" xml:space="preserve">
+    <value>Последнее сканирование: Никогда</value>
+  </data>
+  <data name="AcObject_UsingsRescan" xml:space="preserve">
+    <value>Пересканировать</value>
+  </data>
+  <data name="AcObject_FontUsedInLabel" xml:space="preserve">
+    <value>Используется в:</value>
+  </data>
+  <data name="AcObject_FontTestLabel" xml:space="preserve">
+    <value>Тест:</value>
+  </data>
+  <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
+    <value>Создать новый шрифт используя инструменты Kunos (Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
+    <value>Пересканировать используемые и отключить все неиспользуемые шрифты (Ctrl+Shift+D)</value>
+  </data>
+  <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
+    <value>Собрать список автомобилей на шрифт (Ctrl+U)</value>
+  </data>
+  <data name="Toolbar_RescanUsings" xml:space="preserve">
+    <value>Пересканировать используемые</value>
+  </data>
+  <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
+    <value>Поделиться фильтром (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
+    <value>Тестировать фильтр в демонстрационном зале (Ctrl+G)</value>
+  </data>
+  <data name="Page_Wip" xml:space="preserve">
+    <value>Эта раздел ещё не готов</value>
+  </data>
+  <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
+    <value>Автоматически копировать ссылку в буфер обмена</value>
+  </data>
+  <data name="Settings_Sharing_NameLabel" xml:space="preserve">
+    <value>Делиться под именем:</value>
+  </data>
+  <data name="Settings_Sharing_Unnamed" xml:space="preserve">
+    <value>Не использовать имя</value>
+  </data>
+  <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
+    <value>Проверять параметры перед отправкой</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
+    <value>Нажмите  “Обновить”, чтобы перезагрузить список каталогов</value>
+  </data>
+  <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
+    <value>Пикселей на экран</value>
+  </data>
+  <data name="Page_Wip_Commentary" xml:space="preserve">
+    <value>Если вы хотите узнать больше о разработке, [url="https://trello.com/b/MwqpL8Bw/content-manager"]здесь доска Trello[/url] с большим количеством информации.</value>
+  </data>
+  <data name="Controls_ReturnRate" xml:space="preserve">
+    <value>Скорость возврата</value>
+  </data>
+  <data name="Controls_OppositeLockSpeed" xml:space="preserve">
+    <value>Скорость блокировки</value>
+  </data>
+  <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
+    <value>Распакованный язык будет загружен из каталога “AppData\Local\AcTools Content Manager\Locales\(ID)”, где ID это ваш выбранный язык</value>
+  </data>
+  <data name="Settings_Locale_LoadCustom" xml:space="preserve">
+    <value>Заменять строки из распакованного языка, если существует</value>
   </data>
 </root>

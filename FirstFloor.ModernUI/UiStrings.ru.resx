@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -409,5 +409,8 @@
   </data>
   <data name="Common_PleaseWait" xml:space="preserve">
     <value>Пожалуйста, подождите…</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Соответствующие кандидаты не найдены</value>
   </data>
 </root>

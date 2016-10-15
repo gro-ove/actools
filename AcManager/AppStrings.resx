@@ -987,7 +987,7 @@ Values for replacement:
 Modifiers:
  [b][mono]{…:l}[/mono][/b] — lowercase;
  [b][mono]{…:u}[/mono][/b] — uppercase;
- [b][mono]{…:0}[/mono][/b] — only first symbol.                                
+ [b][mono]{…:0}[/mono][/b] — only first symbol.
 
 Examples:
  [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
@@ -997,7 +997,30 @@ If you need some other values, please, contact us and we’ll add them.
 
 [b]Warning[/b]:
  Don't use symbols like “[” or “]”!</value>
-  </data>
+  <alternative>Used for saving or autosaving replays after the race.
+
+Values for replacement:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id;
+ [b][mono]{date}[/mono][/b] — date and time in proper format;
+ [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
+
+Modifiers:
+ [b][mono]{…:l}[/mono][/b] — lowercase;
+ [b][mono]{…:u}[/mono][/b] — uppercase;
+ [b][mono]{…:0}[/mono][/b] — only first symbol.                                
+
+Examples:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+If you need some other values, please, contact us and we’ll add them.
+
+[b]Warning[/b]:
+ Don't use symbols like “[” or “]”!</alternative></data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>
   </data>
@@ -3331,8 +3354,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Cache brands</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
-    <value>Always record ghost in hotlap mode</value>
-  </data>
+    <value>Always record ghost in hot lap mode</value>
+  <alternative>Always record ghost in hotlap mode</alternative></data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
     <value>Use custom weather’s particles</value>
   </data>
@@ -3340,8 +3363,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Use custom weather’s PP-filter</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>Extended Weather</value>
-  </data>
+    <value>Extended Weather:</value>
+  <alternative>Extended Weather</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP-filter will be switched back later</value>
   </data>
@@ -3364,8 +3387,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>In car selection dialog</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
-    <value>Record ghost while hotlapping even if it’s hidden</value>
-  </data>
+    <value>Record ghost while hot lapping even if it’s hidden</value>
+  <alternative>Record ghost while hotlapping even if it’s hidden</alternative></data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
     <value>Special thanks for translation to:</value>
   </data>

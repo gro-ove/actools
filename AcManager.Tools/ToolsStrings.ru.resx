@@ -156,8 +156,8 @@
     <value>KN5 модель</value>
   </data>
   <data name="Common_AcReplay" xml:space="preserve">
-    <value>AC реплей</value>
-  </data>
+    <value>AC повтор</value>
+  <alternative>AC реплей</alternative></data>
   <data name="SearchEngine_Yandex" xml:space="preserve">
     <value>Яндекс</value>
   </data>
@@ -165,8 +165,8 @@
     <value>Месяц</value>
   </data>
   <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Графонистый</value>
-  </data>
+    <value>Качественный</value>
+  <alternative>Графонистый</alternative></data>
   <data name="CustomShowroom_Lite" xml:space="preserve">
     <value>Простой</value>
   </data>
@@ -300,11 +300,11 @@
     <value>Попробуйте ещё раз.</value>
   </data>
   <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
-    <value>Не удаётся сохранить реплей</value>
-  </data>
+    <value>Не удаётся сохранить повтор</value>
+  <alternative>Не удаётся сохранить реплей</alternative></data>
   <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
-    <value>Не удаётся удалить реплей</value>
-  </data>
+    <value>Не удаётся удалить повтор</value>
+  <alternative>Не удаётся удалить реплей</alternative></data>
   <data name="FontObject_DisableFont" xml:space="preserve">
     <value>Отключить шрифт</value>
   </data>
@@ -315,23 +315,23 @@
     <value>Имя отсутствует</value>
   </data>
   <data name="AcError_BrandNameIsMissing" xml:space="preserve">
-    <value>Имя бренда отстутствует</value>
-  </data>
+    <value>Имя марки отсутствует</value>
+  <alternative>Имя бренда отстутствует</alternative></data>
   <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
-    <value>Папка «ui» отсутствует</value>
-  </data>
+    <value>Каталог «ui» отсутствует</value>
+  <alternative>Папка «ui» отсутствует</alternative></data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
     <value>Базовая версия отсутствует</value>
   </data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>Иконка бренда отсутствует</value>
-  </data>
+    <value>Иконка марки отсутствует</value>
+  <alternative>Иконка бренда отсутствует</alternative></data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
     <value>Иконка апгрейда отсутствует</value>
   </data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>Скины отсутствуют</value>
-  </data>
+    <value>Раскраски отсутствуют</value>
+  <alternative>Скины отсутствуют</alternative></data>
   <data name="Common_None" xml:space="preserve">
     <value>Нет</value>
   </data>
@@ -393,8 +393,8 @@
     <value>Нужный контент отсутствует</value>
   </data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
-    <value>Скин «{1}» для «{0}» отсутствует</value>
-  </data>
+    <value>Раскраска «{1}» для «{0}» отсутствует</value>
+  <alternative>Скин «{1}» для «{0}» отсутствует</alternative></data>
   <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
     <value>Трасса «{0}» отсутствует</value>
   </data>
@@ -501,8 +501,8 @@
     <value>Не удалось</value>
   </data>
   <data name="Presets_FileFilter" xml:space="preserve">
-    <value>Пресеты (*{0})|*{0}</value>
-  </data>
+    <value>Предустановки (*{0})|*{0}</value>
+  <alternative>Пресеты (*{0})|*{0}</alternative></data>
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
     <value>Пожалуйста, выберите файл в изначальной папке или любой подпапке.</value>
   </data>
@@ -510,8 +510,8 @@
     <value>Дрифт</value>
   </data>
   <data name="Session_Hotlap" xml:space="preserve">
-    <value>Хотлап</value>
-  </data>
+    <value>Быстрый круг</value>
+  <alternative>Хотлап</alternative></data>
   <data name="Session_Qualification" xml:space="preserve">
     <value>Квалификация</value>
   </data>
@@ -591,8 +591,8 @@
     <value>Фильтр</value>
   </data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
-    <value>FFB-пресет</value>
-  </data>
+    <value>Предустановка Force Feedback</value>
+  <alternative>FFB-пресет</alternative></data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>Погода</value>
   </data>
@@ -615,8 +615,8 @@
     <value>Неверный формат</value>
   </data>
   <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
+    <value>Google Диск</value>
+  <alternative>Google Drive</alternative></data>
   <data name="Settings_PeriodFormat" xml:space="preserve">
     <value>Раз в {0}</value>
   </data>
@@ -667,8 +667,8 @@
     <value>Файл «{0}» отсутствует</value>
   </data>
   <data name="Weather_Clear" xml:space="preserve">
-    <value>Очистить</value>
-  </data>
+    <value>Ясно</value>
+  <alternative>Очистить</alternative></data>
   <data name="AcSettings_View_LockCamera" xml:space="preserve">
     <value>Привязать камеру к горизонту</value>
   </data>
@@ -754,8 +754,8 @@
     <value>Невозможно сохранить настройки AC</value>
   </data>
   <data name="Controls_Steering" xml:space="preserve">
-    <value>Рулевое управление</value>
-  </data>
+    <value>Руление</value>
+  <alternative>Рулевое управление</alternative></data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
     <value>Моргнуть фарами</value>
   </data>
@@ -835,8 +835,8 @@
     <value>Трек {0} не найден.</value>
   </data>
   <data name="Online_Server_CarsAreMissing" xml:space="preserve">
-    <value>Автомобили {0} не найдены.</value>
-  <alternative>Автомобили {0} не найден.</alternative></data>
+    <value>Автомобили {0} не найден.</value>
+  <alternative>Автомобили {0} не найдены.</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Автомобиль {0} не найден.</value>
   </data>
@@ -871,14 +871,14 @@
     <value>Повтор</value>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Невозможно обновить информацию сервера</value>
-  </data>
+    <value>Невозможно обновить информацию о сервере</value>
+  <alternative>Невозможно обновить информацию сервера</alternative></data>
   <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
     <value>Убедитесь, что эти файлы не используются в данный момент.</value>
   </data>
   <data name="Replay_CannotRenameReplays" xml:space="preserve">
-    <value>Невозможно переименовать реплеи</value>
-  </data>
+    <value>Невозможно переименовать повторы</value>
+  <alternative>Невозможно переименовать реплеи</alternative></data>
   <data name="Fonts_RescanUsings" xml:space="preserve">
     <value>Невозможно пересканировать автомобили</value>
   </data>
@@ -889,8 +889,8 @@
     <value>ID неверен</value>
   </data>
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
-    <value>Пресеты помощников</value>
-  </data>
+    <value>Предустановка помощников</value>
+  <alternative>Пресеты помощников</alternative></data>
   <data name="AcRootDirectory_Missing" xml:space="preserve">
     <value>Директория отсутствует</value>
   </data>
@@ -919,14 +919,14 @@
     <value>Директория не определена</value>
   </data>
   <data name="AcRootDirectory_Required" xml:space="preserve">
-    <value>Необходима основная папка AC</value>
-  </data>
+    <value>Необходим основной каталог AC</value>
+  <alternative>Необходима основная папка AC</alternative></data>
   <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
-    <value>Папка "{0}" не найдена</value>
-  </data>
+    <value>Каталог "{0}" не найден</value>
+  <alternative>Папка "{0}" не найдена</alternative></data>
   <data name="Shared_RaceGridPreset" xml:space="preserve">
-    <value>Пресет стартовой решетки</value>
-  </data>
+    <value>Предустановка стартовой решетки</value>
+  <alternative>Пресет стартовой решетки</alternative></data>
   <data name="PpFilterObject_CannotSave" xml:space="preserve">
     <value>Невозможно сохранить фильтр</value>
   </data>
@@ -937,8 +937,8 @@
     <value>Удалить шрифт</value>
   </data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>Убедитесь, что этот папка с этим объектом не используется в другом приложении.</value>
-  </data>
+    <value>Убедитесь, что каталог с этим объектом не используется в другом приложении.</value>
+  <alternative>Убедитесь, что этот папка с этим объектом не используется в другом приложении.</alternative></data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
     <value>Машина заблокирована</value>
   </data>
@@ -959,5 +959,23 @@
   </data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
     <value>Невозможно использовать Официальный Стартер: слишком старая версия игры. Хотите переключиться на Tricky Starter? Вы всегда можете поменять его в Настройки/Вождение.</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Праздновать</value>
+  </data>
+  <data name="Controls_Complain" xml:space="preserve">
+    <value>Выразить недовольство</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Тип решётки:</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Добавить новый автомобиль в список</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Такие же автомобили</value>
+  </data>
+  <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
+    <value>Введите проверочный код для Google Диска</value>
   </data>
 </root>
