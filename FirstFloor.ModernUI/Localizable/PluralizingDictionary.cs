@@ -73,6 +73,8 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "круг":
                 case "оппонент":
                 case "противник":
+                case "соперник":
+                case "повтор":
                 case "пит-стоп":
                 case "час":
                 case "фильтр":
@@ -82,6 +84,7 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "пресет":
                 case "шоурум":
                 case "сервер":
+                case "зал":
                     return two ? s + "а" : s + "ов";
 
                 case "минута":
@@ -91,6 +94,10 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "секунда":
                     return two ? s.Substring(0, s.Length - 1) + "ы" : s.Substring(0, s.Length - 1);
 
+                case "ошибка":
+                case "предустановка":
+                    return two ? s.Substring(0, s.Length - 1) + "и" : s.Substring(0, s.Length - 2) + "ок";
+
                 case "день":
                     return two ? "дня" : "дней";
                 case "месяц":
@@ -99,8 +106,6 @@ namespace FirstFloor.ModernUI.Localizable {
                     return two ? "недели" : "недель";
                 case "очко":
                     return two ? "очка" : "очков";
-                case "ошибка":
-                    return two ? "ошибки" : "ошибок";
                 case "запись":
                     return two ? "записи" : "записей";
                 case "реплей":

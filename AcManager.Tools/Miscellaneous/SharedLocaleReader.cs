@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using AcTools.Utils.Helpers;
@@ -11,6 +12,25 @@ using SharpCompress.Archive.Zip;
 namespace AcManager.Tools.Miscellaneous {
     [Localizable(false)]
     public static class SharedLocaleReader {
+        private class Cell {
+            public Cell(XElement node) {
+                Node = node;
+                Location = node.Attribute("r")?.Value ?? "";
+            }
+
+            public XElement Node { get; }
+
+            public string Location { get; }
+        }
+
+        private static string GetString(this IEnumerable<Cell> source, string location, IEnumerable<string> strings) {
+            var cell = source.FirstOrDefault(x => x.Location == location);
+            if (string.IsNullOrEmpty(cell?.Node.Value)) return null;
+
+            var id = cell.Node.Value.AsInt();
+            return strings.ElementAtOrDefault(id);
+        }
+
         [NotNull, Pure]
         public static Dictionary<string, Dictionary<string, string>> Read([NotNull] string filename, [NotNull] string localeId) {
             var r = new Dictionary<string, Dictionary<string, string>>();
@@ -27,15 +47,12 @@ namespace AcManager.Tools.Miscellaneous {
                 if (i == null) return r;
                 var c = XDocument.Parse(zip.Entries.First(x => x.Key == $"xl/worksheets/sheet{i.ToInvariantString()}.xml")
                                             .OpenEntryStream().ReadAsStringAndDispose())
-                                    .Descendants(n + "c").Select(x => new { Node = x, Location = x.Attribute("r")?.Value }).ToList();
+                                    .Descendants(n + "c").Select(x => new Cell(x)).ToList();
                 foreach (var x in c.Where(x => x.Location?.StartsWith("B") == true && x.Location != "B1")) {
-                    var a = x.Location.Replace("B", "A");
-                    var d = x.Location.Replace("B", "D");
-                    var g = s.ElementAtOrDefault(c.FirstOrDefault(y => y.Location == a)?.Node.Value.AsInt() ?? -1);
-                    var t = s.ElementAtOrDefault(c.FirstOrDefault(y => y.Location == d)?.Node.Value.AsInt() ?? -1);
+                    var g = c.GetString(x.Location.Replace("B", "A"), s);
+                    var t = c.GetString(x.Location.Replace("B", "D"), s);
                     var k = s.ElementAtOrDefault(x.Node.Element(n + "v")?.Value.AsInt() ?? -1);
                     if (k == null || t == null || g == null) continue;
-
                     Dictionary<string, string> gd;
                     if (r.TryGetValue(g, out gd)) {
                         gd.Add(k, t);

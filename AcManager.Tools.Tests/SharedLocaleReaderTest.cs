@@ -18,6 +18,7 @@ namespace AcManager.Tools.Tests {
 
             var read = SharedLocaleReader.Read(Path.Combine(testDir, "test.xlsx"), "ru");
             Assert.AreEqual("Крут. момент:", read["AppStrings"]["CarSpecs_TorqueLabel"]);
+            Assert.IsFalse(read["AppStrings"].ContainsKey("Settings_Locale_LoadCustom"));
 
             var nothing = SharedLocaleReader.Read(Path.Combine(testDir, "test.xlsx"), "pl");
             Assert.AreEqual(0, nothing.Count);

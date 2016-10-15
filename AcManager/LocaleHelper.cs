@@ -65,11 +65,15 @@ namespace AcManager {
             }
         }
 
+        public static string GetGoogleSheetsFilename() {
+            var locales = FilesStorage.Instance.GetDirectory("Locales");
+            return Path.Combine(locales, "google-sheets-export.xlsx");
+        }
+
         private static bool InitializeCustom(string langId) {
             var found = false;
 
-            var locales = FilesStorage.Instance.GetDirectory("Locales");
-            var googleSheets = Path.Combine(locales, "google-sheets-export.xlsx");
+            var googleSheets = GetGoogleSheetsFilename();
             if (File.Exists(googleSheets)) {
                 try {
                     var loaded = SharedLocaleReader.Read(googleSheets, langId);
@@ -82,11 +86,13 @@ namespace AcManager {
                 }
             }
 
-            var localeDirectory = Path.Combine(locales, langId);
-            if (Directory.Exists(localeDirectory)) {
-                Logging.Write(localeDirectory);
-                CustomResourceManager.SetCustomSource(localeDirectory);
-                found = true;
+            if (SettingsHolder.Locale.ResxLocalesMode) {
+                var localeDirectory = FilesStorage.Instance.Combine("Locales", langId);
+                if (Directory.Exists(localeDirectory)) {
+                    Logging.Write(localeDirectory);
+                    CustomResourceManager.SetCustomSource(localeDirectory);
+                    found = true;
+                }
             }
 
             return found;

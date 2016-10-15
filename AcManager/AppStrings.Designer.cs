@@ -4901,6 +4901,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not supported request: “{0}”.
+        /// </summary>
+        public static string Main_NotSupportedRequest {
+            get {
+                return ResourceManager.GetString("Main_NotSupportedRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Now With Official Support!.
         /// </summary>
         public static string Main_OfficialSupportNotification {

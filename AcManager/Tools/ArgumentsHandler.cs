@@ -28,6 +28,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using SharpCompress.Common;
 using SharpCompress.Reader;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
@@ -38,7 +39,7 @@ namespace AcManager.Tools {
         public async Task<ArgumentHandleResult> ProcessArgument(string argument) {
             if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
 
-            if (argument.StartsWith(CustomUriSchemeHelper.UriScheme)) {
+            if (argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.InvariantCultureIgnoreCase)) {
                 return await ProcessUriRequest(argument);
             }
 
@@ -60,6 +61,12 @@ namespace AcManager.Tools {
         private async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
                 return await FlexibleLoader.LoadAsync(argument, name, extension, waiting, waiting.CancellationToken);
+            }
+        }
+
+        private async Task<string> LoadRemoveFileTo(string argument, string destination) {
+            using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
+                return await FlexibleLoader.LoadAsyncTo(argument, destination, waiting, waiting.CancellationToken);
             }
         }
 
@@ -88,6 +95,7 @@ namespace AcManager.Tools {
             return ArgumentHandleResult.Successful;
         }
 
+        [Obsolete]
         private async Task<ArgumentHandleResult> ProcessUriRequestObsolete(string request) {
             string key, param;
             NameValueCollection query;
@@ -146,10 +154,12 @@ namespace AcManager.Tools {
             if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return ArgumentHandleResult.FailedShow;
 
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
-            Logging.Write("URI Request: " + request);
+            Logging.Debug("URI Request: " + request);
 
             if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
+#pragma warning disable 612
                 return await ProcessUriRequestObsolete(request);
+#pragma warning restore 612
             }
 
             CustomUriRequest custom;
@@ -161,9 +171,12 @@ namespace AcManager.Tools {
             }
 
             try {
-                switch (custom.Path) {
+                switch (custom.Path.ToLowerInvariant()) {
                     case "setsteamid":
                         return ArgumentHandleResult.Ignore; // TODO?
+
+                    case "loadgooglespreadsheetslocale":
+                        return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"));
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
@@ -178,13 +191,39 @@ namespace AcManager.Tools {
                         return await ProcessShared(custom.Params.Get(@"id"));
 
                     default:
-                        NonfatalError.Notify($"Not supported request: “{custom.Path}”", AppStrings.Main_CannotProcessArgument_Commentary);
+                        NonfatalError.Notify(string.Format(AppStrings.Main_NotSupportedRequest, custom.Path), AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotProcessRequest, AppStrings.Arguments_CannotProcessRequest_Commentary, e);
                 return ArgumentHandleResult.Failed;
             }
+        }
+
+        public async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale) {
+            if (string.IsNullOrWhiteSpace(id)) {
+                Logging.Warning("ID is missing");
+                return ArgumentHandleResult.FailedShow;
+            }
+
+            var url = $"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
+            var path = await LoadRemoveFileTo(url, LocaleHelper.GetGoogleSheetsFilename());
+            if (string.IsNullOrWhiteSpace(path)) {
+                Logging.Warning("Can’t load file");
+                return ArgumentHandleResult.FailedShow;
+            }
+
+            SettingsHolder.Locale.LoadUnpacked = true;
+            if (locale != null) {
+                SettingsHolder.Locale.LocaleName = locale;
+            }
+
+            if (ModernDialog.ShowMessage("Custom locales updated. Would you like to restart app now?", "Locales Updated", MessageBoxButton.YesNo) ==
+                    MessageBoxResult.Yes) {
+                WindowsHelper.RestartCurrentApplication();
+            }
+
+            return ArgumentHandleResult.Successful;
         }
 
         public async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {

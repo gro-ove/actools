@@ -254,7 +254,7 @@ namespace AcManager.Pages.Settings {
             private ICommand _submitUnpackedCommand;
 
             public ICommand SubmitUnpackedCommand => _submitUnpackedCommand ?? (_submitUnpackedCommand = new AsyncCommand(async () => {
-                var directory = FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName);
+                var directory = FilesStorage.Instance.Combine("Locales", Locale.LocaleName);
                 if (!Directory.Exists(directory)) return;
 
                 try {
@@ -268,7 +268,7 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);
                 }
-            }, () => Directory.Exists(FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName)), 3000));
+            }, () => Directory.Exists(FilesStorage.Instance.Combine("Locales", Locale.LocaleName)), 3000));
 
             private ICommand _restartCommand;
 

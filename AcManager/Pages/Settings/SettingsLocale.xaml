@@ -71,16 +71,16 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Custom Translations" />
             <Button Command="{Binding MoreInformationCommand}" ToolTip="Please, read this instruction first" Content="How To Translate" Margin="0 0 0 8" />
 
-            <DockPanel>
+            <DockPanel MinHeight="29">
+                <Button Command="{Binding SubmitUnpackedCommand}" ToolTip="Send unpacked locale to include it to CM" Content="Submit"
+                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Command="{Binding PrepareUnpackedCommand}" ToolTip="Prepare unpacked locale" Content="Prepare"
+                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <mui:ContextMenuButton DockPanel.Dock="Right">
                     <ContextMenu>
                         <MenuItem IsCheckable="True" IsChecked="{Binding Locale.ResxLocalesMode}" Header="Translate Using Resx" />
                     </ContextMenu>
                 </mui:ContextMenuButton>
-                <Button Command="{Binding SubmitUnpackedCommand}" ToolTip="Send unpacked locale to include it to CM" Content="Submit"
-                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Command="{Binding PrepareUnpackedCommand}" ToolTip="Prepare unpacked locale" Content="Prepare"
-                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <CheckBox IsChecked="{Binding Locale.LoadUnpacked}" ToolTip="{x:Static g:AppStrings.Settings_Locale_LoadCustom_Tooltip}">
                     <Label Content="{x:Static g:AppStrings.Settings_Locale_LoadCustom}" />
                 </CheckBox>
