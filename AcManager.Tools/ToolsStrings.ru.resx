@@ -835,8 +835,8 @@
     <value>Трек {0} не найден.</value>
   </data>
   <data name="Online_Server_CarsAreMissing" xml:space="preserve">
-    <value>Автомобили {0} не найден.</value>
-  </data>
+    <value>Автомобили {0} не найдены.</value>
+  <alternative>Автомобили {0} не найден.</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Автомобиль {0} не найден.</value>
   </data>

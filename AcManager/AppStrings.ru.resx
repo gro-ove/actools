@@ -603,8 +603,8 @@
     <value>Отключить неиспользуемые</value>
   </data>
   <data name="AcObject_AppActivated" xml:space="preserve">
-    <value>_Включено</value>
-  </data>
+    <value>Включено</value>
+  <alternative>_Включено</alternative></data>
   <data name="Toolbar_Play" xml:space="preserve">
     <value>Воспроизвести</value>
   </data>
@@ -1313,5 +1313,83 @@
   </data>
   <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
     <value>Убедитесь, что данные верны.</value>
+  </data>
+  <data name="CarSpecs_PowerLabel" xml:space="preserve">
+    <value>Мощность:</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>Крут. момент:</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Вес:</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Макс. скорость:</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Ускорение:</value>
+  </data>
+  <data name="CarPreviews_Title" xml:space="preserve">
+    <value>Обновить превью</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>Снимать в 3840×2160</value>
+  </data>
+  <data name="LiveryIcon_Title" xml:space="preserve">
+    <value>Иконка скина</value>
+  </data>
+  <data name="LiveryIcon_ResultLabel" xml:space="preserve">
+    <value>Результат:</value>
+  </data>
+  <data name="LiveryIcon_StyleLabel" xml:space="preserve">
+    <value>Стиль:</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>Форма:</value>
+  </data>
+  <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
+    <value>Вторичный цвет:</value>
+  </data>
+  <data name="LiveryIcon_TertiaryColorLabel" xml:space="preserve">
+    <value>Третичный цвет:</value>
+  </data>
+  <data name="LiveryIcon_NumberValue" xml:space="preserve">
+    <value>Номер</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>Цвет номера:</value>
+  </data>
+  <data name="LiveryIcon_Number_Condensed" xml:space="preserve">
+    <value>Сжатый</value>
+  </data>
+  <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
+    <value>Светлый (с контуром)</value>
+  </data>
+  <data name="Select_Brands" xml:space="preserve">
+    <value>Бренды</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>Категории</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>Страны</value>
+  </data>
+  <data name="UpgradeIcon_Title" xml:space="preserve">
+    <value>Иконка апгрейда</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="Controls_SwapUsings" xml:space="preserve">
+    <value>Поменять местами</value>
+  </data>
+  <data name="Controls_ApplyToAll" xml:space="preserve">
+    <value>Нет, назначить всем</value>
+  </data>
+  <data name="Controls_RemoveOld" xml:space="preserve">
+    <value>Да, удалить старое</value>
   </data>
 </root>
