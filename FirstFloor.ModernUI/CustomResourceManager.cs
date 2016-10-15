@@ -15,9 +15,14 @@ namespace FirstFloor.ModernUI {
         public static bool BasicMode;
 
         private static string _customSource;
+        private static Dictionary<string, Dictionary<string, string>> _customDirect;
 
         public static void SetCustomSource(string directory) {
             _customSource = directory;
+        }
+
+        public static void SetCustomSource(Dictionary<string, Dictionary<string, string>> direct) {
+            _customDirect = direct;
         }
 
         public CustomResourceManager(string baseName, Assembly assembly) : base(baseName, assembly) {}
@@ -43,13 +48,19 @@ namespace FirstFloor.ModernUI {
             }
 
             try {
-                if (_customSource != null) {
-                    if (_custom == null) {
-                        var location = Path.Combine(_customSource, BaseName.Split('.').Last() + "." + CultureInfo.CurrentUICulture + ".resx");
-                        _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
-                        Logging.Write("Custom: " + location);
+                if (_customDirect != null && _custom == null) {
+                    _customDirect.TryGetValue(BaseName.Split('.').Last(), out _custom);
+                    if (_custom == null && _customSource == null) {
+                        _custom = new Dictionary<string, string>();
                     }
+                }
 
+                if (_customSource != null && _custom == null) {
+                    var location = Path.Combine(_customSource, BaseName.Split('.').Last() + "." + CultureInfo.CurrentUICulture + ".resx");
+                    _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
+                }
+
+                if (_custom != null) {
                     string result;
                     if (_custom.TryGetValue(name, out result)) return result;
                 }

@@ -56,8 +56,8 @@
                 <DockPanel>
                     <Label Content="Locale version:" />
                     <Button Command="{Binding LocaleUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding LocaleUpdater.InstalledVersion, Mode=OneWay}"
-                            Placeholder="?" IsReadOnly="True" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding LocaleUpdater.InstalledVersion, Mode=OneWay}" Placeholder="?"
+                            IsReadOnly="True" />
                 </DockPanel>
                 <TextBlock Text="{Binding LocaleUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
                         Visibility="{Binding LocaleUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -72,8 +72,15 @@
             <Button Command="{Binding MoreInformationCommand}" ToolTip="Please, read this instruction first" Content="How To Translate" Margin="0 0 0 8" />
 
             <DockPanel>
-                <Button Command="{Binding SubmitUnpackedCommand}" ToolTip="Send unpacked locale to include it to CM" Content="Submit" />
-                <Button Command="{Binding PrepareUnpackedCommand}" ToolTip="Prepare unpacked locale" Content="Prepare" />
+                <DockPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding Locale.ResxLocalesMode}" Header="Translate Using Resx" />
+                    </ContextMenu>
+                </DockPanel.ContextMenu>
+                <Button Command="{Binding SubmitUnpackedCommand}" ToolTip="Send unpacked locale to include it to CM" Content="Submit"
+                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Command="{Binding PrepareUnpackedCommand}" ToolTip="Prepare unpacked locale" Content="Prepare"
+                        Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <CheckBox IsChecked="{Binding Locale.LoadUnpacked}" ToolTip="{x:Static g:AppStrings.Settings_Locale_LoadCustom_Tooltip}">
                     <Label Content="{x:Static g:AppStrings.Settings_Locale_LoadCustom}" />
                 </CheckBox>

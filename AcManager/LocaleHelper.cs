@@ -37,7 +37,6 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
 
             bool found;
             if (IsSupported(langId)) {
@@ -56,13 +55,7 @@ namespace AcManager {
             }
 
             if (SettingsHolder.Locale.LoadUnpacked) {
-                var locales = FilesStorage.Instance.GetDirectory("Locales");
-                var localeDirectory = Path.Combine(locales, langId);
-                if (Directory.Exists(localeDirectory)) {
-                    Logging.Write("Custom: " + localeDirectory);
-                    CustomResourceManager.SetCustomSource(localeDirectory);
-                    found = true;
-                }
+                found = InitializeCustom(langId) || found;
             }
 
             if (found || AppArguments.GetBool(AppFlag.ForceLocale)) {
@@ -70,6 +63,33 @@ namespace AcManager {
             } else {
                 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
             }
+        }
+
+        private static bool InitializeCustom(string langId) {
+            var found = false;
+
+            var locales = FilesStorage.Instance.GetDirectory("Locales");
+            var googleSheets = Path.Combine(locales, "google-sheets-export.xlsx");
+            if (File.Exists(googleSheets)) {
+                try {
+                    var loaded = SharedLocaleReader.Read(googleSheets, langId);
+                    if (loaded.Any()) {
+                        CustomResourceManager.SetCustomSource(loaded);
+                        found = true;
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            var localeDirectory = Path.Combine(locales, langId);
+            if (Directory.Exists(localeDirectory)) {
+                Logging.Write(localeDirectory);
+                CustomResourceManager.SetCustomSource(localeDirectory);
+                found = true;
+            }
+
+            return found;
         }
 
         private static Dictionary<string, Assembly> LoadAssemblies(ZipArchive archive) {

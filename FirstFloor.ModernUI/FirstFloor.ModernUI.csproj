@@ -169,6 +169,7 @@
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
     <Compile Include="Windows\Controls\BooleanSwitch.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
+    <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />

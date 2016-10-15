@@ -1483,6 +1483,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _resxLocalesMode;
+
+            public bool ResxLocalesMode {
+                get { return _resxLocalesMode ?? (_resxLocalesMode = ValuesStorage.GetBool("Settings.LocaleSettings.ResxLocalesMode", false)).Value; }
+                set {
+                    if (Equals(value, _resxLocalesMode)) return;
+                    _resxLocalesMode = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.ResxLocalesMode", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private PeriodEntry _updatePeriod;
 
             [NotNull]
