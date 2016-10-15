@@ -76,8 +76,9 @@
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
-                    <DockPanel.ContextMenu>
-                        <ContextMenu x:Name="ConditionsOptions" DataContext="{Binding Data, Source={StaticResource Model}}">
+                    <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 8"
+                            Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ContextMenu>
                             <!--TODO-->
                             <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}"
                                     IsCheckable="True" ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}"
@@ -88,21 +89,10 @@
                                     IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
                             <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
                         </ContextMenu>
-                    </DockPanel.ContextMenu>
-                    <CheckBox DockPanel.Dock="Left" IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
+                    </mui:ContextMenuButton>
+                    <CheckBox IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
                         <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
                     </CheckBox>
-                    <Button PreviewMouseLeftButtonUp="MoreConditionsOptions_OnPreviewMouseLeftButtonUp"
-                            Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="Transparent" Padding="0 8 4 8">
-                                    <Path Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2 3"
-                                            Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" />
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
                 </DockPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
@@ -144,7 +134,6 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />

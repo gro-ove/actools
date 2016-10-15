@@ -39,9 +39,11 @@
                 <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" Background="Transparent"
+            <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" Background="Transparent"
                     IsEnabled="{Binding RaceGridViewModel.AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
-                <StackPanel.ContextMenu>
+                <Slider DockPanel.Dock="Bottom" Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
+                        Value="{Binding RaceGridViewModel.AiLevelMin}" />
+                <mui:ContextMenuButton DockPanel.Dock="Right">
                     <ContextMenu>
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
                                 IsChecked="{Binding RaceGridViewModel.AiLevelArrangeRandomly, Mode=TwoWay}" />
@@ -52,10 +54,9 @@
                         <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
                                 IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}" />
                     </ContextMenu>
-                </StackPanel.ContextMenu>
+                </mui:ContextMenuButton>
                 <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
-                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevelMin}" />
-            </StackPanel>
+            </DockPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
                 <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">

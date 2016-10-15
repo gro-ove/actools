@@ -72,11 +72,11 @@
             <Button Command="{Binding MoreInformationCommand}" ToolTip="Please, read this instruction first" Content="How To Translate" Margin="0 0 0 8" />
 
             <DockPanel>
-                <DockPanel.ContextMenu>
+                <mui:ContextMenuButton DockPanel.Dock="Right">
                     <ContextMenu>
                         <MenuItem IsCheckable="True" IsChecked="{Binding Locale.ResxLocalesMode}" Header="Translate Using Resx" />
                     </ContextMenu>
-                </DockPanel.ContextMenu>
+                </mui:ContextMenuButton>
                 <Button Command="{Binding SubmitUnpackedCommand}" ToolTip="Send unpacked locale to include it to CM" Content="Submit"
                         Visibility="{Binding Locale.ResxLocalesMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Command="{Binding PrepareUnpackedCommand}" ToolTip="Prepare unpacked locale" Content="Prepare"

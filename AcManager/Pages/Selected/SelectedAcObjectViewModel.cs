@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using JetBrains.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
@@ -16,7 +19,30 @@ using StringBasedFilter;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
-    public abstract class SelectedAcObjectViewModel<T> : NotifyPropertyChanged, ISelectedAcObjectViewModel where T : AcCommonObject {
+    public abstract class SelectedAcObjectViewModel : NotifyPropertyChanged {
+        private class InnerVersionInfoLabelConverter : IMultiValueConverter {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+                var obj = values.FirstOrDefault() as AcJsonObjectNew;
+                if (obj == null || obj.Author != null || obj.Url == null && obj.Version == null) {
+                    return ControlsStrings.AcObject_AuthorLabel;
+                }
+
+                if (obj.Version != null) {
+                    return ControlsStrings.AcObject_VersionLabel;
+                }
+
+                return ControlsStrings.AcObject_UrlLabel;
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
+            }
+        }
+
+        public static IMultiValueConverter VersionInfoLabelConverter { get; } = new InnerVersionInfoLabelConverter();
+    }
+
+    public abstract class SelectedAcObjectViewModel<T> : SelectedAcObjectViewModel, ISelectedAcObjectViewModel where T : AcCommonObject {
         [NotNull]
         public T SelectedObject { get; }
 

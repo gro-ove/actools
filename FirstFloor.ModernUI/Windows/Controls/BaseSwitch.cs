@@ -20,7 +20,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 RemoveVisualChild(_activeChild);
 
                 var fe = _activeChild as FrameworkElement;
-                if (fe != null && fe.DataContext == null) {
+                if (fe != null) {
                     BindingOperations.ClearBinding(fe, DataContextProperty);
                 }
             }

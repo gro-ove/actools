@@ -2,6 +2,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BBCodeBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ContextMenuButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HistoricalTextBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />

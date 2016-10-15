@@ -2758,7 +2758,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start race (Ctrl+G).
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string Common_Go_RaceTooltip {
             get {
@@ -6327,7 +6327,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always record ghost in hotlap mode.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string Settings_Drive_AlwaysRecordGhost {
             get {
@@ -6336,7 +6336,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Record ghost while hotlapping even if it’s hidden.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string Settings_Drive_AlwaysRecordGhost_Tooltip {
             get {
@@ -6444,7 +6444,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extended Weather.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string Settings_Drive_ExtendedWeatherHeader {
             get {
@@ -7303,7 +7303,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replays’ file name and extension:.
+        ///   Looks up a localized string similar to Replays’ file names and extensions:.
         /// </summary>
         public static string Settings_Replays_ExtensionHeader {
             get {
@@ -7348,20 +7348,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Used for saving or autosaving replays after the race.
-        ///
-        ///Values for replacement:
-        /// [b][mono]{type}[/mono][/b] — type of race;
-        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
-        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
-        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id;
-        /// [b][mono]{date}[/mono][/b] — date and time in proper format;
-        /// [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
-        ///
-        ///Modifiers:
-        /// [b][mono]{…:l}[/mono][/b] — lowercase;
-        /// [b][mono]{…:u}[/mono][/b]  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string Settings_Replays_NameFormat_Tooltip {
             get {
