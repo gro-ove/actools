@@ -444,8 +444,8 @@
     <value>Сжатие…</value>
   </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} соперников</value>
-  <alternative>{0} оппонент</alternative></data>
+    <value>{0} соперник</value>
+  <alternative>{0} оппонент</alternative><alternative>{0} соперников</alternative></data>
   <data name="Common_Reset" xml:space="preserve">
     <value>Сбросить</value>
   </data>

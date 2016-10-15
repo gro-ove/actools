@@ -835,8 +835,8 @@
     <value>Трек {0} не найден.</value>
   </data>
   <data name="Online_Server_CarsAreMissing" xml:space="preserve">
-    <value>Автомобили {0} не найден.</value>
-  <alternative>Автомобили {0} не найдены.</alternative></data>
+    <value>Автомобили {0} не найдены.</value>
+  <alternative>Автомобили {0} не найден.</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Автомобиль {0} не найден.</value>
   </data>
@@ -907,8 +907,8 @@
     <value>Невозможно запустить</value>
   </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
-    <value>{0} круг(ов)</value>
-  </data>
+    <value>{0} круг</value>
+  <alternative>{0} круг(ов)</alternative></data>
   <data name="AcObject_CannotBeDisabled" xml:space="preserve">
     <value>Не может быть отключен</value>
   </data>
@@ -964,8 +964,8 @@
     <value>Праздновать</value>
   </data>
   <data name="Controls_Complain" xml:space="preserve">
-    <value>Выразить недовольство</value>
-  </data>
+    <value>Пожаловаться</value>
+  <alternative>Выразить недовольство</alternative></data>
   <data name="Drive_GridType" xml:space="preserve">
     <value>Тип решётки:</value>
   </data>
@@ -977,5 +977,14 @@
   </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Введите проверочный код для Google Диска</value>
+  </data>
+  <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Не удалось переключить: {0}</value>
+  </data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>Не удалось переключить</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Начать</value>
   </data>
 </root>

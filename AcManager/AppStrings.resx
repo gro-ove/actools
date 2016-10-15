@@ -961,7 +961,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>With “.acreplay” extension you’ll be able to start a replay just by clicking it in Windows Explorer</value>
   </data>
   <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
-    <value>Replays’ file name and extension:</value>
+    <value>Replays’ file names and extensions:</value>
   </data>
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
     <value>Autosave replays</value>
@@ -3436,5 +3436,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Drive_Weather_CannotLoad" xml:space="preserve">
     <value>Can’t load real weather</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Not supported request: “{0}”</value>
   </data>
 </root>

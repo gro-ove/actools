@@ -459,8 +459,8 @@
     <value>Раскраски</value>
   <alternative>Скины</alternative></data>
   <data name="Toolbar_CarSetups" xml:space="preserve">
-    <value>Сетапы</value>
-  <alternative>Настройки</alternative></data>
+    <value>Предустановки</value>
+  <alternative>Настройки</alternative><alternative>Сетапы</alternative></data>
   <data name="Filter_ByAuthor" xml:space="preserve">
     <value>Фильтровать по автору</value>
   </data>
@@ -666,8 +666,8 @@
     <value>Число облаков</value>
   </data>
   <data name="List_Setups" xml:space="preserve">
-    <value>{0} сетап</value>
-  </data>
+    <value>{0} предустановка</value>
+  <alternative>{0} сетап</alternative></data>
   <data name="List_Skins" xml:space="preserve">
     <value>{0} скин</value>
   </data>
@@ -684,14 +684,14 @@
     <value>{0} приложение</value>
   </data>
   <data name="List_Replays" xml:space="preserve">
-    <value>{0} реплей</value>
-  <alternative>{0} повторов</alternative></data>
+    <value>{0} повтор</value>
+  <alternative>{0} повторов</alternative><alternative>{0} реплей</alternative></data>
   <data name="List_ServerPresets" xml:space="preserve">
     <value>{0} пресет</value>
   <alternative>{0} предустановок</alternative></data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} шоурум</value>
-  <alternative>{0} залов</alternative></data>
+    <value>{0} зал</value>
+  <alternative>{0} залов</alternative><alternative>{0} шоурум</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} трасса</value>
   </data>
@@ -796,8 +796,8 @@
     <value>Добавлены:</value>
   </data>
   <data name="Main_Setups" xml:space="preserve">
-    <value>Сетапы</value>
-  </data>
+    <value>Предустановки</value>
+  <alternative>Сетапы</alternative></data>
   <data name="Main_Skins" xml:space="preserve">
     <value>Раскраски</value>
   <alternative>Скины</alternative></data>
@@ -1024,8 +1024,8 @@
     <value>Прогресс: {0}</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, вероятно уже не работает)</value>
-  <alternative>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, не работает?)</alternative></data>
+    <value>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск; вероятно, уже не работает)</value>
+  <alternative>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, не работает?)</alternative><alternative>Разрешить неподдерживаемый DirectX 10 (используйте на свой страх и риск, вероятно уже не работает)</alternative></data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
     <value>Анизотропная фильтрация:</value>
   </data>
@@ -1405,8 +1405,8 @@
     <value>Нажмите чтобы увидеть последние изменения</value>
   </data>
   <data name="About_Description" xml:space="preserve">
-    <value>Приложение альтернативного запуска и управления контентом для [url="http://www.assettocorsa.net/"]Assetto Corsa[/url].</value>
-  </data>
+    <value>Альтернативный лаунчер и программа для управления контентом для [url="http://www.assettocorsa.net/"]Assetto Corsa[/url]</value>
+  <alternative>Приложение альтернативного запуска и управления контентом для [url="http://www.assettocorsa.net/"]Assetto Corsa[/url].</alternative></data>
   <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
     <value>Не могу отправить логи</value>
   </data>
@@ -2207,5 +2207,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
     <value>Заменять строки из распакованного языка, если существует</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Лучший круг</value>
   </data>
 </root>
