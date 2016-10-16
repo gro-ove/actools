@@ -3440,4 +3440,55 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Main_NotSupportedRequest" xml:space="preserve">
     <value>Not supported request: “{0}”</value>
   </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
+    <value>Update locale before start up</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
+    <value>Will take no longer than 500 ms</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>How To Translate</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Custom Translations</value>
+  </data>
+  <data name="Settings_Locale_ResxMode" xml:space="preserve">
+    <value>Translate Resx Files</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>Prepare</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>Prepare unpacked locale</value>
+  </data>
+  <data name="Settings_Locale_Submit_Tooltip" xml:space="preserve">
+    <value>Send unpacked locale to include it to CM</value>
+  </data>
+  <data name="Settings_Locale_VersionLabel" xml:space="preserve">
+    <value>Locale version:</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>Locale ID</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
+    <value>Just hold Ctrl when you click Close button to restart CM faster</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>Officially supported</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
+    <value>Set locale by its ID</value>
+  </data>
 </root>

@@ -72,9 +72,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            public string DisplayHint => Id == null ? "Set locale by its ID" : IsSupported ? "Officially supported" :
-                    !IsInstalled ? $"{Size.ToReadableSize()} ({Coverity * 100:F1}%)" : Equals(Coverity, 1d) ? "Installed" :
-                            string.Format("{0} ({1:F1}%)", "Installed", Coverity * 100);
+            public string DisplayHint => Id == null ? AppStrings.Settings_Locale_SetLocaleById : IsSupported ? AppStrings.Settings_Locale_OfficiallySupported :
+                    !IsInstalled ? $"{Size.ToReadableSize()} ({Coverity * 100:F1}%)" : Equals(Coverity, 1d) ? AppStrings.Settings_Locale_Installed :
+                            $"{AppStrings.Settings_Locale_Installed} ({Coverity * 100:F1}%)";
 
             public LocaleEntry([Localizable(false)] string id, string version, double coverity = 1d, long size = 0L) {
                 Id = id;
@@ -85,7 +85,7 @@ namespace AcManager.Pages.Settings {
 
                 CanBeUpdated = id != null && !Equals(coverity, 1d);
 
-                var name = id == null ? "Custom" : new CultureInfo(id).NativeName.ToTitle();
+                var name = id == null ? AppStrings.Settings_Locale_Custom : new CultureInfo(id).NativeName.ToTitle();
                 DisplayName = name;
             }
         }

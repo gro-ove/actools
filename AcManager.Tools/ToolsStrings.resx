@@ -1575,4 +1575,7 @@
   <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
     <value>Please, try to make image a bit smaller.</value>
   </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
 </root>

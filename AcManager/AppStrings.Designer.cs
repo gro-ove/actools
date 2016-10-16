@@ -6979,11 +6979,56 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        public static string Settings_Locale_Custom {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Translations.
+        /// </summary>
+        public static string Settings_Locale_CustomTranslationsHeader {
+            get {
+                return ResourceManager.GetString("Settings_Locale_CustomTranslationsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flag “--force-locale” is set!.
         /// </summary>
         public static string Settings_Locale_ForceLocaleWarning {
             get {
                 return ResourceManager.GetString("Settings_Locale_ForceLocaleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How To Translate.
+        /// </summary>
+        public static string Settings_Locale_HowToTranslate {
+            get {
+                return ResourceManager.GetString("Settings_Locale_HowToTranslate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed.
+        /// </summary>
+        public static string Settings_Locale_Installed {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Installed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        public static string Settings_Locale_LanguageLabel {
+            get {
+                return ResourceManager.GetString("Settings_Locale_LanguageLabel", resourceCulture);
             }
         }
         
@@ -7006,11 +7051,119 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Locale ID.
+        /// </summary>
+        public static string Settings_Locale_LocaleId {
+            get {
+                return ResourceManager.GetString("Settings_Locale_LocaleId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Officially supported.
+        /// </summary>
+        public static string Settings_Locale_OfficiallySupported {
+            get {
+                return ResourceManager.GetString("Settings_Locale_OfficiallySupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepare.
+        /// </summary>
+        public static string Settings_Locale_Prepare {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Prepare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepare unpacked locale.
+        /// </summary>
+        public static string Settings_Locale_Prepare_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Prepare_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart.
+        /// </summary>
+        public static string Settings_Locale_RestartApp {
+            get {
+                return ResourceManager.GetString("Settings_Locale_RestartApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just hold Ctrl when you click Close button to restart CM faster.
+        /// </summary>
+        public static string Settings_Locale_RestartApp_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Locale_RestartApp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don’t forget to restart app after any changes.
         /// </summary>
         public static string Settings_Locale_RestartMessage {
             get {
                 return ResourceManager.GetString("Settings_Locale_RestartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translate Resx Files.
+        /// </summary>
+        public static string Settings_Locale_ResxMode {
+            get {
+                return ResourceManager.GetString("Settings_Locale_ResxMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set locale by its ID.
+        /// </summary>
+        public static string Settings_Locale_SetLocaleById {
+            get {
+                return ResourceManager.GetString("Settings_Locale_SetLocaleById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send unpacked locale to include it to CM.
+        /// </summary>
+        public static string Settings_Locale_Submit_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Submit_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update locale before start up.
+        /// </summary>
+        public static string Settings_Locale_UpdateBeforeStartUp {
+            get {
+                return ResourceManager.GetString("Settings_Locale_UpdateBeforeStartUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Will take no longer than 500 ms.
+        /// </summary>
+        public static string Settings_Locale_UpdateBeforeStartUp_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Locale_UpdateBeforeStartUp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locale version:.
+        /// </summary>
+        public static string Settings_Locale_VersionLabel {
+            get {
+                return ResourceManager.GetString("Settings_Locale_VersionLabel", resourceCulture);
             }
         }
         

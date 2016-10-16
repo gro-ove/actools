@@ -1771,6 +1771,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string Common_Submit {
+            get {
+                return ResourceManager.GetString("Common_Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Syntax error: {0}.
         /// </summary>
         public static string Common_SyntaxErrorFormat {
