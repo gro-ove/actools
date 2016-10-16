@@ -18,11 +18,16 @@ namespace AcManager.Tools.Helpers.Loaders {
             return new DirectLoader(uri);
         }
 
-        public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
+        public static Task<string> LoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var tmp = name == null
-                ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
-                : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+                    ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
+                    : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+            return LoadAsyncTo(argument, tmp, progress, cancellation);
+        }
+
+        public static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
 
             try {
@@ -57,13 +62,13 @@ namespace AcManager.Tools.Helpers.Loaders {
                         progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
                     };
 
-                    await loader.DownloadAsync(client, tmp, cancellation);
+                    await loader.DownloadAsync(client, destination, cancellation);
                     if (cancellation.IsCancellationRequested) return null;
 
-                    Logging.Write("Result: " + tmp);
+                    Logging.Debug("Loaded: " + destination);
                 }
 
-                return tmp;
+                return destination;
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {

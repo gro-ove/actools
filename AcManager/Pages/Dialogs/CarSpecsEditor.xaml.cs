@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Tools;
+using AcManager.Tools.Data;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Utils;
@@ -18,7 +19,7 @@ using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class CarSpecsEditor : INotifyPropertyChanged {
+    public sealed partial class CarSpecsEditor : INotifyPropertyChanged {
         public CarObject Car { get; private set; }
 
         private GraphData _torqueGraph, _powerGraph;
@@ -172,53 +173,46 @@ namespace AcManager.Pages.Dialogs {
         private void RecalculateAndScaleCurves(object sender, RoutedEventArgs e) {
             double power, torque;
             if (!FlexibleParser.TryParseDouble(PowerInput.Text, out power) ||
-                !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
+                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
                 ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
                 return;
             }
 
-            Dictionary<double, double> torqueData;
+            Lut torqueData;
             try {
-                torqueData = TorquePhysicUtils.LoadCarTorque(Car.Location);
+                torqueData = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
             } catch (FileNotFoundException) {
                 return;
             }
 
-            torqueData[0] = 0;
-            var torqueDataOrdered = torqueData.OrderBy(x => x.Key);
-
-            TorqueGraph = new GraphData(torqueDataOrdered.ToDictionary(x => x.Key, x => x.Value)).ScaleTo(torque);
-            PowerGraph = new GraphData(torqueDataOrdered.ToDictionary(x => x.Key, x => x.Key * x.Value)).ScaleTo(power);
+            TorqueGraph = new GraphData(torqueData).ScaleTo(torque);
+            PowerGraph = new GraphData(torqueData.Transform(x => x.X * x.Y)).ScaleTo(power);
         }
 
         private void RecalculateCurves(object sender, RoutedEventArgs e) {
             var dlg = new CarTransmissionLossSelector(Car);
             dlg.ShowDialog();
-
             if (!dlg.IsResultOk) return;
 
             var lossMultipler = 100.0 / (100.0 - dlg.Value);
 
-            Dictionary<double, double> torqueData;
+            Lut torque;
             try {
-                torqueData = TorquePhysicUtils.LoadCarTorque(Car.Location);
+                torque = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
             } catch (FileNotFoundException) {
                 return;
             }
 
-            torqueData[0] = 0;
-            var torqueDataOrdered = torqueData.OrderBy(x => x.Key);
+            torque.TransformSelf(x => x.Y * lossMultipler);
+            var power = TorquePhysicUtils.TorqueToPower(torque);
 
-            var torqueDataResult = torqueDataOrdered.ToDictionary(x => x.Key, x => x.Value * lossMultipler);
-            var powerDataResult = torqueDataResult.ToDictionary(x => x.Key,
-                                                                x => TorquePhysicUtils.TorqueToPower(x.Value, x.Key));
-
-            TorqueGraph = new GraphData(torqueDataResult);
-            PowerGraph = new GraphData(powerDataResult);
+            TorqueGraph = new GraphData(torque);
+            PowerGraph = new GraphData(power);
 
             if (ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torqueDataResult.Values.Max().ToString(@"F0", CultureInfo.InvariantCulture));
-                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, powerDataResult.Values.Max().ToString(@"F0", CultureInfo.InvariantCulture));
+                // MaxY values were updated while creating new GraphData instances above
+                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
             }
         }
 
@@ -285,7 +279,7 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

@@ -1,9 +1,9 @@
-﻿using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Navigation;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
+using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -46,7 +46,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow), new PropertyMetadata(new DefaultLinkNavigator()));
 
-        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(ModernUI.UiStrings.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
+        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModernWindow"/> class.

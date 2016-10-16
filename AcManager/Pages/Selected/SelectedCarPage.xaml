@@ -115,7 +115,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- preview of selected skin -->
-                <mui:Cell x:Name="SelectedSkinPreview">
+                <mui:Cell>
                     <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
                             PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
                             MaxHeight="575" MaxWidth="1022"
@@ -246,8 +246,8 @@
                         </DockPanel.ToolTip>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
                                 ToolTip="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
-                        <mui:BbCodeBlock Text="{Binding SelectedObject.ParentDisplayName}"
-                                mui:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown" />
+                        <mui:BbCodeBlock Text="{Binding SelectedObject.ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}"
+                                MouseDown="ParentBlock_OnMouseDown" />
                     </DockPanel>
 
                     <DockPanel Grid.Row="2" Grid.Column="1">
@@ -257,9 +257,15 @@
                                         CommandParameter="author" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
-                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" mui:WatermarkService.Watermark="?"
-                                MouseUp="VersionInfoBlock_OnMouse" />
+                        <TextBlock ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{x:Static sel:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
+                                    <Binding Path="SelectedObject" />
+                                    <Binding Path="SelectedObject.VersionInfoDisplay" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="VersionInfoBlock_OnMouse" />
                     </DockPanel>
 
                     <!-- last row -->
@@ -281,13 +287,12 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" />
-                        <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" mui:WatermarkService.Watermark="?"
-                                MouseDown="SpecsInfoBlock_OnMouseDown" />
+                        <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" Placeholder="?" MouseDown="SpecsInfoBlock_OnMouseDown" />
                     </DockPanel>
                 </Grid>
 
                 <!-- description -->
-                <TextBox Style="{StaticResource TextBoxAsTextBlock}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
             </StackPanel>
         </StackPanel>
     </c:AcObjectBase>

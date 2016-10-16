@@ -48,7 +48,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public override ContentWatcher Watcher(params string[] name) {
-            return base.Watcher(CombineFilename(DataUserDirName, Path.Combine(name)));
+            return base.Watcher(Combine(DataUserDirName, Path.Combine(name)));
         }
 
         public class ContentEntry {
@@ -71,8 +71,8 @@ namespace AcManager.Tools.Helpers {
         public ContentEntry GetContentFile(params string[] name) {
             var nameJoined = Path.Combine(name);
 
-            var contentFile = CombineFilename(DataDirName, nameJoined);
-            var contentUserFile = CombineFilename(DataUserDirName, nameJoined);
+            var contentFile = Combine(DataDirName, nameJoined);
+            var contentUserFile = Combine(DataUserDirName, nameJoined);
             
             EnsureDirectory(Path.GetDirectoryName(contentFile));
             EnsureDirectory(Path.GetDirectoryName(contentUserFile));

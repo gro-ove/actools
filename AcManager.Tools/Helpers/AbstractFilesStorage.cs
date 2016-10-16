@@ -9,12 +9,12 @@ namespace AcManager.Tools.Helpers {
             _path = path;
         }
 
-        public string CombineFilename(params string[] parts) {
+        public string Combine(params string[] parts) {
             return parts.Length == 0 ? _path : Path.Combine(_path, Path.Combine(parts));
         }
 
         public string EnsureDirectory(params string[] parts) {
-            var directory = CombineFilename(parts);
+            var directory = Combine(parts);
 
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
@@ -24,13 +24,13 @@ namespace AcManager.Tools.Helpers {
         }
 
         public string GetFilename([Localizable(false)] params string[] parts) {
-            var filename = CombineFilename(parts);
+            var filename = Combine(parts);
             EnsureDirectory(Path.GetDirectoryName(filename));
             return filename;
         }
 
         public string GetDirectory([Localizable(false)] params string[] file) {
-            var filename = Path.Combine(_path, Path.Combine(file));
+            var filename = Combine(file);
             EnsureDirectory(filename);
             return filename;
         }

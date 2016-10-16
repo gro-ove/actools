@@ -634,7 +634,7 @@ namespace AcManager.Pages.Dialogs {
                     ErrorMessage = (whatsGoingOn?.GetDescription() ?? errorMessage)?.ToSentence();
                     if (whatsGoingOn?.Fix != null) {
                         Buttons = new[] {
-                            this.CreateFixItButton(whatsGoingOn),
+                            this.CreateFixItButton(whatsGoingOn.Solution),
                             OkButton
                         };
                     } else {

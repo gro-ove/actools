@@ -104,6 +104,9 @@ namespace AcManager.Pages.Dialogs {
 
                 ReviewMode = !FirstRun && IsReviewNeeded();
                 Value = AcRootDirectory.Instance.IsReady ? AcRootDirectory.Instance.Value : AcRootDirectory.TryToFind();
+#if DEBUG
+                Value = Value?.Replace("D:", "C:");
+#endif
 
                 var steamId = SteamIdHelper.Instance.Value;
                 SteamProfiles = new BetterObservableCollection<SteamProfile>(SteamIdHelper.TryToFind().Append(SteamProfile.None));
@@ -124,7 +127,7 @@ namespace AcManager.Pages.Dialogs {
                     _isValueAcceptable = value;
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    _applyCommand?.RaiseCanExecuteChanged();
+                    CommandManager.InvalidateRequerySuggested();
                 }
             }
 
@@ -135,11 +138,10 @@ namespace AcManager.Pages.Dialogs {
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
-                    _isValueAcceptable = AcRootDirectory.CheckDirectory(_value, out _previousInacceptanceReason);
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsValueAcceptable));
+
+                    IsValueAcceptable = AcRootDirectory.CheckDirectory(_value, out _previousInacceptanceReason);
                     OnErrorsChanged();
-                    _applyCommand?.RaiseCanExecuteChanged();
                 }
             }
 

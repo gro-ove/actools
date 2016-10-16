@@ -326,6 +326,7 @@
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Miscellaneous\LocalePackageManifest.cs" />
     <Compile Include="Miscellaneous\LocaleUpdater.cs" />
+    <Compile Include="Miscellaneous\SharedLocaleReader.cs" />
     <Compile Include="Miscellaneous\SharingHelper.cs" />
     <Compile Include="Objects\CarObject_Setups.cs" />
     <Compile Include="Objects\CarSetupObject.cs" />

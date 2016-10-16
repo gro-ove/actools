@@ -1,27 +1,30 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
-    public interface INonfatalErrorSolution {
-        [CanBeNull]
-        string DisplayName { get; }
+    public class INonfatalErrorSolution : AsyncCommand {
+        private readonly NonfatalErrorEntry _entry;
+        private readonly Func<CancellationToken, Task> _execute;
 
-        bool CanBeApplied { get; }
+        [NotNull]
+        public string DisplayName { get; }
 
-        Task Apply(CancellationToken cancellationToken);
-    }
+        public INonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [NotNull] Func<CancellationToken, Task> execute, Func<bool> canExecute = null)
+                : base(() => Task.Delay(0), canExecute, 0, false) {
+            _entry = entry;
+            _execute = execute;
+            DisplayName = displayName ?? "Fix It";
+        }
 
-    public static class NonfatalErrorSolution {
-        public static async Task Solve([NotNull] this INonfatalErrorSolution solution, NonfatalErrorEntry entry = null) {
-            if (solution == null) throw new ArgumentNullException(nameof(solution));
-
+        protected override async Task ExecuteInner() {
             try {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Solving the issue…");
-                    await solution.Apply(waiting.CancellationToken);
+                    await _execute(waiting.CancellationToken);
                 }
             } catch (TaskCanceledException) {
                 return;
@@ -30,8 +33,8 @@ namespace FirstFloor.ModernUI.Helpers {
                 return;
             }
 
-            if (entry != null) {
-                NonfatalError.Instance.Errors.Remove(entry);
+            if (_entry != null) {
+                NonfatalError.Instance.Errors.Remove(_entry);
             }
         }
     }

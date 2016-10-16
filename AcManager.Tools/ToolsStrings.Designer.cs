@@ -1771,6 +1771,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string Common_Submit {
+            get {
+                return ResourceManager.GetString("Common_Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Syntax error: {0}.
         /// </summary>
         public static string Common_SyntaxErrorFormat {
@@ -2842,6 +2851,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t load image using Magick.NET.
+        /// </summary>
+        public static string MagickNet_CannotLoad {
+            get {
+                return ResourceManager.GetString("MagickNet_CannotLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, try to make image a bit smaller..
+        /// </summary>
+        public static string MagickNet_CannotLoad_Commentary {
+            get {
+                return ResourceManager.GetString("MagickNet_CannotLoad_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Supported.
         /// </summary>
         public static string NotSupported {
@@ -3876,6 +3903,15 @@ namespace AcManager.Tools {
         public static string Units_Nm {
             get {
                 return ResourceManager.GetString("Units_Nm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RPM.
+        /// </summary>
+        public static string Units_RPM {
+            get {
+                return ResourceManager.GetString("Units_RPM", resourceCulture);
             }
         }
         

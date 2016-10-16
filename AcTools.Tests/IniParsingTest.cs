@@ -8,6 +8,7 @@ namespace AcTools.Tests {
         private static string Data = @"[SECTION_0]
 KEY0=VALUE0 ; COMMENT
 A=BCD
+VLEQ=some=thing
    KEY_WITH SPACES = something[TOTALLY MESSED UP SECTION]value= kkk
    ; comment
 
@@ -35,6 +36,7 @@ NO_EMPTY_LINE=AFTERWARDS";
             Assert.AreEqual(3, parsed.Count());
 
             Assert.AreEqual("VALUE", parsed["SECTION_1"].GetNonEmpty("NORMAL"));
+            Assert.AreEqual("some=thing", parsed["SECTION_0"].GetNonEmpty("VLEQ"));
             Assert.AreEqual(null, parsed["SECTION_1"].GetNonEmpty("KEY_WITHOUT_VALUE_AND_COMMENT_BUNCH_OF_SPACES"));
             Assert.AreEqual("", parsed["SECTION_1"].GetPossiblyEmpty("KEY_WITHOUT_VALUE_AND_COMMENT_BUNCH_OF_SPACES"));
             Assert.AreEqual(null, parsed["SECTION_1"].GetNonEmpty("COMPLI"));

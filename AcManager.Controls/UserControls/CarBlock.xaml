@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:Controls="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d"
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools"
+             xmlns:t="http://acstuff.ru/app/tools"
+             mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -14,7 +16,7 @@
     </UserControl.Resources>
 
     <DockPanel x:Name="InnerCarBlockPanel">
-        <Grid DockPanel.Dock="Top" x:Name="Grid" MaxWidth="1022"
+        <mui:Cell DockPanel.Dock="Top" MaxWidth="1022"
                 Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="PreviewImage_OnMouseDown" MaxWidth="1022"
                     Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
@@ -34,10 +36,10 @@
                     Style="{StaticResource CarBlockButton}">
                 <Image Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
             </Button>
-        </Grid>
+        </mui:Cell>
 
         <!-- data section -->
-        <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 10 0 0"
+        <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 8 0 0"
                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <!-- tags -->
@@ -59,36 +61,36 @@
 
                     <!-- first row -->
                     <DockPanel x:Name="InnerBrandArea" Background="Transparent" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
                                 DockPanel.Dock="Left" />
-                        <TextBlock Text="{Binding Brand}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
                                 DockPanel.Dock="Left" />
-                        <TextBlock Text="{Binding Country}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <!-- second row -->
                     <DockPanel x:Name="InnerClassArea" Background="Transparent" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left"
                                 Style="{StaticResource LabelWithPadding}" />
-                        <TextBlock Text="{Binding CarClass}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        <mui:PlaceholderTextBlock Text="{Binding CarClass}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <DockPanel x:Name="InnerYearArea" Background="Transparent" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_YearLabel}" Width="80" DockPanel.Dock="Left"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Width="80" DockPanel.Dock="Left"
                                 Style="{StaticResource LabelWithPadding}" />
-                        <TextBlock Text="{Binding Year, TargetNullValue=''}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
+                        <mui:PlaceholderTextBlock Text="{Binding Year, TargetNullValue=''}" Placeholder="?" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <!-- third row -->
-                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
                             Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}"
-                            ToolTip="{x:Static Controls:ControlsStrings.AcObject_Author_Tooltip}">
+                            ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
                                 <Binding Path="Author" />
@@ -98,17 +100,20 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <TextBlock Text="{Binding ParentDisplayName}" attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}"
+                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}"
                             Grid.Column="1" Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="3" Grid.Row="2"
+                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3"
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3"
                             Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
+                    <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>
+
+                <c:OxyPlotGraphViewer Car="{Binding}" Margin="0 8 0 0"
+                        Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <!-- description -->
                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />

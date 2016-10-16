@@ -25,7 +25,7 @@ namespace AcManager.Tools.Data {
         }
 
         private static string GetInstalledVersion() {
-            var versionFilename = FilesStorage.Instance.CombineFilename(FilesStorage.DataDirName, @"Manifest.json");
+            var versionFilename = FilesStorage.Instance.Combine(FilesStorage.DataDirName, @"Manifest.json");
 
             try {
                 return File.Exists(versionFilename) ? VersionFromData(File.ReadAllText(versionFilename)) : null;
@@ -79,7 +79,7 @@ namespace AcManager.Tools.Data {
 
                 string installedVersion = null;
                 await Task.Run(() => {
-                    var location = FilesStorage.Instance.CombineFilename(FilesStorage.DataDirName);
+                    var location = FilesStorage.Instance.Combine(FilesStorage.DataDirName);
                     Directory.Delete(location, true);
 
                     using (var stream = new MemoryStream(data, false))

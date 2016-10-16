@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -12,7 +13,7 @@ namespace FirstFloor.ModernUI.Helpers {
             DisplayName = problemDescription;
             Commentary = solutionCommentary;
             Exception = exception;
-            Solutions = solutions;
+            Solutions = solutions as IReadOnlyList<INonfatalErrorSolution> ?? solutions.ToList();
         }
 
         private bool _unseen = true;
@@ -32,6 +33,8 @@ namespace FirstFloor.ModernUI.Helpers {
         public Exception Exception { get; }
 
         [NotNull]
-        public IEnumerable<INonfatalErrorSolution> Solutions { get; set; }
+        public IReadOnlyList<INonfatalErrorSolution> Solutions { get; set; }
+
+        public bool HasSolutions => Solutions.Any();
     }
 }

@@ -1,51 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
+using AcTools.Utils.Helpers;
+using AcTools.Utils.Physics;
 using Newtonsoft.Json.Linq;
 
-namespace AcManager.Tools.Objects {
+namespace AcManager.Tools.Data {
     public class GraphData {
-        private readonly Dictionary<double, double> _values;
-        public IReadOnlyDictionary<double, double> Values => _values;
+        private readonly Lut _points;
+
+        public IReadOnlyList<LutPoint> Points => _points;
 
         private readonly List<Point> _normalizedValuesArray;
+
         public IReadOnlyList<Point> NormalizedValuesArray => _normalizedValuesArray;
 
         public readonly double MinX, MaxX, MinY, MaxY;
 
-        public GraphData(Dictionary<double, double> values) {
-            _values = values;
+        public GraphData(Lut points) {
+            _points = points;
 
-            if (Values.Count == 0) {
+            if (Points.Count == 0) {
                 MinX = MaxX = MinY = MaxY = 0.0;
                 _normalizedValuesArray = new List<Point>();
                 return;
             }
 
-            MinX = Values.Keys.Min();
-            MaxX = Values.Keys.Max();
+            _points.UpdateBoundingBox();
+            MinX = _points.MinX;
+            MaxX = _points.MaxX;
+            MinY = _points.MinY;
+            MaxY = _points.MaxY;
 
-            MinY = Values.Values.Min();
-            MaxY = Values.Values.Max();
-
-            _normalizedValuesArray =
-                Values.Select(x => new Point((x.Key - MinX) / (MaxX - MinX), (x.Value - MinY) / (MaxY - MinY))).ToList();
+            _normalizedValuesArray = Points.Select(x => new Point((x.X - MinX) / (MaxX - MinX), (x.Y - MinY) / (MaxY - MinY))).ToList();
         }
 
         public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {
         }
-
-        // ReSharper disable once SuggestBaseTypeForParameter
-        private static Dictionary<double, double> ConvertToValues(JArray obj) {
-            var values = new Dictionary<double, double>();
+        
+        private static Lut ConvertToValues(JArray obj) {
+            var values = new Lut();
             if (obj == null) return values;
 
             foreach (var entry in obj.OfType<JArray>()) {
-                double key, value;
-                if (double.TryParse(Convert.ToString(entry[0]), out key) &&
-                    double.TryParse(Convert.ToString(entry[1]), out value)) {
-                    values[key] = value;
+                double x, y;
+                if (FlexibleParser.TryParseDouble(Convert.ToString(entry[0], CultureInfo.InvariantCulture), out x) &&
+                        FlexibleParser.TryParseDouble(Convert.ToString(entry[1], CultureInfo.InvariantCulture), out y)) {
+                    values.Add(new LutPoint(x, y));
                 }
             }
 
@@ -58,11 +61,11 @@ namespace AcManager.Tools.Objects {
         }
 
         public GraphData ScaleBy(double multipler) {
-            return new GraphData(Values.ToDictionary(x => x.Key, x => x.Value * multipler));
+            return new GraphData(_points.Transform(x => x.Y * multipler));
         }
 
         public JArray ToJArray() {
-            return new JArray(Values.Select(x => new JArray(x.Key, x.Value)).ToArray<object>());
+            return new JArray(Points.Select(x => new JArray(x.X, x.Y)).ToArray<object>());
         }
     }
 }

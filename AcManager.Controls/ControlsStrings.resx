@@ -582,10 +582,10 @@ Entry type: [b]{2}[/b]</value>
     <value>Highlight size</value>
   </data>
   <data name="Common_MetersPostfix" xml:space="preserve">
-    <value> m</value>
+    <value> m</value>
   </data>
   <data name="Common_MinutesPostfix" xml:space="preserve">
-    <value> min</value>
+    <value> min</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
     <value>Updating shadows…</value>
@@ -703,7 +703,7 @@ Depth mode: [b]{4}[/b]</value>
     <comment>Join using specific car</comment>
   </data>
   <data name="Common_MillisecondsPostfix" xml:space="preserve">
-    <value> ms</value>
+    <value> ms</value>
   </data>
   <data name="Online_PasswordRequired" xml:space="preserve">
     <value>Password required</value>
@@ -781,7 +781,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Compressing…</value>
   </data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
+    <value> °C</value>
   <comment>@Invariant</comment></data>
   <data name="Common_CelsiusFormat" xml:space="preserve">
     <value>{0:F0} °C</value>
@@ -812,7 +812,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Showroom</value>
   </data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
-    <value> sec</value>
+    <value> sec</value>
   </data>
   <data name="Common_LapsPostfix" xml:space="preserve">
     <value> lap</value>

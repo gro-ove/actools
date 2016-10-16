@@ -99,7 +99,7 @@ namespace AcManager.Pages.Dialogs {
             var conditions = properties?.GetAdditional<PlaceConditions>();
             var takenPlace = conditions?.GetTakenPlace(result) ?? PlaceConditions.UnremarkablePlace;
 
-            Logging.Write($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
+            Logging.Debug($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
 
             {
                 var extra = result.GetExtraByType<Game.ResultExtraDrift>();
@@ -300,7 +300,7 @@ namespace AcManager.Pages.Dialogs {
                 Model.CurrentState = ViewModel.State.Cancelled;
 
                 var whatsGoingOn = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn>();
-                fixButton = this.CreateFixItButton(whatsGoingOn);
+                fixButton = this.CreateFixItButton(whatsGoingOn?.Solution);
                 Model.ErrorMessage = whatsGoingOn?.GetDescription();
             } else {
                 try {

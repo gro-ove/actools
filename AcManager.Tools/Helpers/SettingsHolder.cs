@@ -929,6 +929,30 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _curversInDrive;
+
+            public bool CurversInDrive {
+                get { return _curversInDrive ?? (_curversInDrive = ValuesStorage.GetBool("Settings.ContentSettings.CurversInDrive", false)).Value; }
+                set {
+                    if (Equals(value, _curversInDrive)) return;
+                    _curversInDrive = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CurversInDrive", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _smoothCurves;
+
+            public bool SmoothCurves {
+                get { return _smoothCurves ?? (_smoothCurves = ValuesStorage.GetBool("Settings.ContentSettings.SmoothCurves", false)).Value; }
+                set {
+                    if (Equals(value, _smoothCurves)) return;
+                    _smoothCurves = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SmoothCurves", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {
@@ -1455,6 +1479,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _loadUnpacked)) return;
                     _loadUnpacked = value;
                     ValuesStorage.Set("Settings.LocaleSettings.LoadUnpacked", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _resxLocalesMode;
+
+            public bool ResxLocalesMode {
+                get { return _resxLocalesMode ?? (_resxLocalesMode = ValuesStorage.GetBool("Settings.LocaleSettings.ResxLocalesMode", false)).Value; }
+                set {
+                    if (Equals(value, _resxLocalesMode)) return;
+                    _resxLocalesMode = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.ResxLocalesMode", value);
                     OnPropertyChanged();
                 }
             }

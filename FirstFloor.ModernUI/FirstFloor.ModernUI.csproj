@@ -171,6 +171,7 @@
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
     <Compile Include="Windows\Controls\BooleanSwitch.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
+    <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
@@ -424,6 +425,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\BetterTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ContextMenuButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

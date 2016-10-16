@@ -28,7 +28,7 @@ namespace AcManager.Tools.AcObjectsNew {
             SuggestionLists.CountriesList.AddUnique(Country);
         }
 
-        public virtual void ReloadJsonData() {
+        public void ReloadJsonData() {
             ClearErrors(AcErrorCategory.Data);
             if (!LoadJsonOrThrow()) {
                 ClearData();
@@ -147,7 +147,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id.StartsWith(@"ks_");
         }
 
-        protected virtual void LoadVersionInfo(JObject json) {
+        protected void LoadVersionInfo(JObject json) {
             Author = json.GetStringValueOnly("author")?.Trim() ?? (TestIfKunos() ? AuthorKunos : null);
             Version = json.GetStringValueOnly("version")?.Trim();
             Url = json.GetStringValueOnly("url")?.Trim();

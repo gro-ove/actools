@@ -10,6 +10,7 @@ namespace AcManager.Tools.Starters {
         [NotNull]
         private static IAcsStarter CreateFromSettings() {
             var type = SettingsHolder.Drive.SelectedStarterType;
+
             if (type == SettingsHolder.DriveSettings.OfficialStarterType) {
                 return new OfficialStarter();
             }
@@ -43,14 +44,14 @@ namespace AcManager.Tools.Starters {
             throw new ArgumentOutOfRangeException(nameof(SettingsHolder.Drive.SelectedStarterType));
         }
 
-        private static IAcsStarter SetPlatform(this IAcsStarter starter) {
+        private static void SetPlatform([NotNull] this IAcsStarter starter) {
             var p = starter as IAcsPlatformSpecificStarter;
             if (p != null) {
                 p.Use32Version = SettingsHolder.Drive.Use32BitVersion;
             }
-            return starter;
         }
 
+        [NotNull]
         private static IAcsStarter CreateFallback() {
             return new TrickyStarter(AcRootDirectory.Instance.Value) {
                 Use32Version = SettingsHolder.Drive.Use32BitVersion
@@ -58,12 +59,15 @@ namespace AcManager.Tools.Starters {
         }
 
         public static IAcsStarter Create() {
-            var result = CreateFromSettings().SetPlatform();
+            var result = CreateFromSettings();
+            result.SetPlatform();
+            Logging.Debug($"Starter created: {result.GetType().Name}");
             
             var preparable = result as IAcsPrepareableStarter;
             if (preparable != null && !preparable.TryToPrepare()) {
                 Logging.Warning("Can’t prepare, using fallback starter instead.");
-                return CreateFallback().SetPlatform();
+                result = CreateFallback();
+                result.SetPlatform();
             }
 
             return result;

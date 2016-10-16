@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -18,6 +19,21 @@ namespace AcManager.Tools.AcManagersNew {
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {
         protected FileAcManager() {
             SettingsHolder.Content.PropertyChanged += Content_PropertyChanged;
+            Superintendent.Instance.Closing += Superintendent_Closing;
+            Superintendent.Instance.SavingAll += SuperintendentSavingAll;
+        }
+
+        private void SuperintendentSavingAll(object sender, EventArgs e) {
+            foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
+               item.Save();
+            }
+        }
+
+        private void Superintendent_Closing(object sender, Superintendent.ClosingEventArgs e) {
+            foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
+                Logging.Debug(item);
+                e.Add(item.DisplayName);
+            }
         }
 
         private void Content_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

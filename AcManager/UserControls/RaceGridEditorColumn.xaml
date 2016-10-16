@@ -259,7 +259,7 @@
         </Grid>
 
         <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Margin="0 0 8 0" DockPanel.Dock="Left" />
             <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
                     Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory" />
         </DockPanel>

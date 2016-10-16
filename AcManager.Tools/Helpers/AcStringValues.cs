@@ -52,7 +52,7 @@ namespace AcManager.Tools.Helpers {
         private static Regex _nameVersionRegex;
 
         private static Regex NameVersionRegex => _nameVersionRegex ??
-                                              (_nameVersionRegex = new Regex(@"^(.+?) (?:[vV]?(\d+\.\d[\w\.]*))$", RegexOptions.Compiled));
+                                              (_nameVersionRegex = new Regex(@"^(.+?) (?:[vV](\d+\.\d[\w\.]*))$", RegexOptions.Compiled));
 
         public static string GetVersionFromName([NotNull] string name, out string nameWithoutVersion) {
             if (name == null) throw new ArgumentNullException(nameof(name));

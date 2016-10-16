@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,8 +13,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// A lighweight control for displaying small amounts of rich formatted BbCode content.
     /// </summary>
-    [ContentProperty("BbCode")]
-    public class BbCodeBlock : TextBlock {
+    [Localizable(false), ContentProperty(nameof(BbCode))]
+    public class BbCodeBlock : PlaceholderTextBlock {
         public static string Encode(string value) {
             return value?.Replace("[", "\\[");
         }
@@ -33,13 +34,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Identifies the BbCode dependency property.
         /// </summary>
-        public static DependencyProperty BbCodeProperty = DependencyProperty.Register("BbCode", typeof(string), typeof(BbCodeBlock), new PropertyMetadata(OnBbCodeChanged));
+        public static readonly DependencyProperty BbCodeProperty = DependencyProperty.Register(nameof(BbCode), typeof(string), typeof(BbCodeBlock),
+                new PropertyMetadata(OnBbCodeChanged));
 
         /// <summary>
         /// Identifies the LinkNavigator dependency property.
         /// </summary>
-        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(BbCodeBlock),
-                new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
+        public static readonly DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator),
+                typeof(BbCodeBlock), new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
 
         private bool _dirty;
 
@@ -77,15 +79,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
-            try {
-                var parser = new BbCodeParser(bbCode, element) {
-                    Commands = (navigator ?? DefaultLinkNavigator).Commands
-                };
-                return parser.Parse();
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return new Run { Text = bbCode };
+            var complex = false;
+            for (var i = 1; i < bbCode.Length; i += 2) {
+                if (bbCode[i - 1] == '[' || bbCode[i] == '[') {
+                    complex = true;
+                    break;
+                }
             }
+
+            if (complex) {
+                try {
+                    return new BbCodeParser(bbCode, element) {
+                        Commands = (navigator ?? DefaultLinkNavigator).Commands
+                    }.Parse();
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            return new Run { Text = bbCode };
         }
 
         private void Update() {
@@ -94,9 +106,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var bbCode = BbCode;
-
-            Inlines.Clear();
-            if (!string.IsNullOrWhiteSpace(bbCode)) {
+            if (string.IsNullOrWhiteSpace(bbCode)) {
+                SetPlaceholder();
+            } else {
+                Inlines.Clear();
                 Inlines.Add(Parse(bbCode, this, LinkNavigator));
             }
 
@@ -135,18 +148,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Alternative version with selection support (totally different underneath).
     /// </summary>
-    [ContentProperty("BbCode")]
+    [Localizable(false), ContentProperty(nameof(BbCode))]
     public class SelectableBbCodeBlock : RichTextBox {
         /// <summary>
         /// Identifies the BbCode dependency property.
         /// </summary>
-        public static DependencyProperty BbCodeProperty = DependencyProperty.Register("BbCode", typeof(string), typeof(SelectableBbCodeBlock), new PropertyMetadata(OnBbCodeChanged));
+        public static readonly DependencyProperty BbCodeProperty = DependencyProperty.Register(nameof(BbCode), typeof(string), typeof(SelectableBbCodeBlock),
+                new PropertyMetadata(OnBbCodeChanged));
 
         /// <summary>
         /// Identifies the LinkNavigator dependency property.
         /// </summary>
-        public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(SelectableBbCodeBlock),
-                new PropertyMetadata(BbCodeBlock.DefaultLinkNavigator, OnLinkNavigatorChanged));
+        public static readonly DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator),
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(BbCodeBlock.DefaultLinkNavigator, OnLinkNavigatorChanged));
 
         private bool _dirty;
 

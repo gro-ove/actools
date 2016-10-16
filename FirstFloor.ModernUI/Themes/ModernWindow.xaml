@@ -126,7 +126,7 @@
                                                             <Line x:Name="PART_Separator" X1=".5" Y1="3" X2=".5" Y2="12" Margin="5,0" VerticalAlignment="Center"
                                                                     Stroke="{DynamicResource SeparatorBackground}" />
                                                             <c:Cell>
-                                                                <Button Content="{Binding DisplayName}" Command="c:ModernWindow.NavigateTitleLink"
+                                                                <Button Content="{Binding Content}" Command="c:ModernWindow.NavigateTitleLink"
                                                                         CommandParameter="{Binding}" CommandTarget="{Binding ElementName=ContentFrame}"
                                                                         Style="{StaticResource SystemButtonLink}" x:Name="PART_Button" />
                                                                 <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right"

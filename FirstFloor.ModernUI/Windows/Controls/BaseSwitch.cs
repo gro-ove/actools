@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using JetBrains.Annotations;
 
@@ -17,6 +18,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_activeChild != null) {
                 RemoveLogicalChild(_activeChild);
                 RemoveVisualChild(_activeChild);
+
+                var fe = _activeChild as FrameworkElement;
+                if (fe != null) {
+                    BindingOperations.ClearBinding(fe, DataContextProperty);
+                }
             }
 
             _activeChild = element;
@@ -24,6 +30,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_activeChild != null) {
                 AddLogicalChild(_activeChild);
                 AddVisualChild(_activeChild);
+
+                var fe = _activeChild as FrameworkElement;
+                if (fe != null && fe.DataContext == null) {
+                    fe.SetBinding(DataContextProperty, new Binding {
+                        Path = new PropertyPath(nameof(DataContext)),
+                        Source = this
+                    });
+                }
             }
         }
 

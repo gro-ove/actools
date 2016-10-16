@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Windows;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -32,6 +33,33 @@ namespace AcManager.Pages.Lists {
                     : base(CarsManager.Instance, listFilter) {}
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Cars);
+
+            protected override string LoadCurrentId() {
+                if (_selectNextCar != null) {
+                    var value = _selectNextCar;
+                    _selectNextCar = null;
+                    return value;
+                }
+
+                return base.LoadCurrentId();
+            }
         }
+        
+        public static void Show(CarObject car, string carSkinId = null) {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow == null) return;
+
+            _selectNextCar = car.Id;
+            _selectNextCarSkinId = carSkinId;
+
+            NavigateToPage();
+        }
+
+        public static void NavigateToPage() {
+            (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/CarsListPage.xaml", UriKind.Relative));
+        }
+
+        private static string _selectNextCar;
+        private static string _selectNextCarSkinId;
     }
 }

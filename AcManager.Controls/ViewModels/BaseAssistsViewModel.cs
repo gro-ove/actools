@@ -79,12 +79,12 @@ namespace AcManager.Controls.ViewModels {
 
         public RealismLevel AutoBlipRealismLevel => AutoBlip ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
-        private double _stabilityControl;
+        private int _stabilityControl;
 
-        public double StabilityControl {
+        public int StabilityControl {
             get { return _stabilityControl; }
             set {
-                value = Math.Round(value.Clamp(0d, 100d));
+                value = value.Clamp(0, 100);
                 if (Equals(value, _stabilityControl)) return;
                 _stabilityControl = value;
                 OnPropertyChanged();
@@ -301,7 +301,7 @@ namespace AcManager.Controls.ViewModels {
             }, o => {
                 IdealLine = o.IdealLine;
                 AutoBlip = o.AutoBlip;
-                StabilityControl = o.StabilityControl;
+                StabilityControl = (int)o.StabilityControl;
                 AutoBrake = o.AutoBrake;
                 AutoShifter = o.AutoShifter;
                 SlipsteamMultipler = o.SlipSteam;
@@ -316,7 +316,7 @@ namespace AcManager.Controls.ViewModels {
             }, () => {
                 IdealLine = false;
                 AutoBlip = false;
-                StabilityControl = 0d;
+                StabilityControl = 0;
                 AutoBrake = false;
                 AutoShifter = false;
                 SlipsteamMultipler = 1d;

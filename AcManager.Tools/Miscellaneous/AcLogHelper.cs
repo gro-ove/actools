@@ -61,7 +61,7 @@ namespace AcManager.Tools.Miscellaneous {
     }
 
     public static class AcLogHelper {
-        public class WhatsGoingOn : INonfatalErrorSolution {
+        public class WhatsGoingOn {
             public WhatsGoingOnType Type { get; }
 
             public object[] Arguments { get; }
@@ -80,13 +80,10 @@ namespace AcManager.Tools.Miscellaneous {
                 return string.Format(Type.GetDescription(), Arguments);
             }
 
-            string INonfatalErrorSolution.DisplayName => null;
+            private INonfatalErrorSolution _solution;
 
-            bool INonfatalErrorSolution.CanBeApplied => Fix != null;
-
-            Task INonfatalErrorSolution.Apply(CancellationToken cancellationToken) {
-                return Fix(cancellationToken);
-            }
+            public INonfatalErrorSolution Solution => _solution ?? (Fix == null ? null :
+                    _solution = new INonfatalErrorSolution(null, null, Fix, () => Fix != null));
         }
 
         public enum WhatsGoingOnType {

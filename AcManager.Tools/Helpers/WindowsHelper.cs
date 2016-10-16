@@ -12,7 +12,12 @@ namespace AcManager.Tools.Helpers {
 
         public static void RestartCurrentApplication() {
             try {
-                ProcessExtension.Start(MainExecutingFile.Location, Environment.GetCommandLineArgs().Skip(1).ApartFrom(RestartArg).Prepend(RestartArg));
+                ProcessExtension.Start(MainExecutingFile.Location,
+                        Environment.GetCommandLineArgs()
+                                   .Skip(1)
+                                   .ApartFrom(RestartArg)
+                                   .Where(x => !x.StartsWith(@"acmanager:", StringComparison.OrdinalIgnoreCase))
+                                   .Prepend(RestartArg));
                 if (Application.Current != null) {
                     Application.Current.Shutdown();
                 } else {
@@ -30,11 +35,14 @@ namespace AcManager.Tools.Helpers {
         public static void ViewFile(string filename) {
             Process.Start("explorer", "/select," + filename);
         }
-
-        // TODO
+        
         public static void ViewInBrowser([Localizable(false)] string url) {
             if (url == null) return;
             Process.Start(url);
+        }
+        
+        public static void OpenFile(string filename) {
+            Process.Start(filename);
         }
     }
 }

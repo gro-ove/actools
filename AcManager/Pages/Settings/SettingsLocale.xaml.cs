@@ -72,9 +72,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            public string DisplayHint => Id == null ? "Set locale by its ID" : IsSupported ? "Officially supported" :
-                    !IsInstalled ? $"{Size.ToReadableSize()} ({Coverity * 100:F1}%)" : Equals(Coverity, 1d) ? "Installed" :
-                            string.Format("{0} ({1:F1}%)", "Installed", Coverity * 100);
+            public string DisplayHint => Id == null ? AppStrings.Settings_Locale_SetLocaleById : IsSupported ? AppStrings.Settings_Locale_OfficiallySupported :
+                    !IsInstalled ? $"{Size.ToReadableSize()} ({Coverity * 100:F1}%)" : Equals(Coverity, 1d) ? AppStrings.Settings_Locale_Installed :
+                            $"{AppStrings.Settings_Locale_Installed} ({Coverity * 100:F1}%)";
 
             public LocaleEntry([Localizable(false)] string id, string version, double coverity = 1d, long size = 0L) {
                 Id = id;
@@ -85,7 +85,7 @@ namespace AcManager.Pages.Settings {
 
                 CanBeUpdated = id != null && !Equals(coverity, 1d);
 
-                var name = id == null ? "Custom" : new CultureInfo(id).NativeName.ToTitle();
+                var name = id == null ? AppStrings.Settings_Locale_Custom : new CultureInfo(id).NativeName.ToTitle();
                 DisplayName = name;
             }
         }
@@ -254,7 +254,7 @@ namespace AcManager.Pages.Settings {
             private ICommand _submitUnpackedCommand;
 
             public ICommand SubmitUnpackedCommand => _submitUnpackedCommand ?? (_submitUnpackedCommand = new AsyncCommand(async () => {
-                var directory = FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName);
+                var directory = FilesStorage.Instance.Combine("Locales", Locale.LocaleName);
                 if (!Directory.Exists(directory)) return;
 
                 try {
@@ -268,7 +268,7 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);
                 }
-            }, () => Directory.Exists(FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName)), 3000));
+            }, () => Directory.Exists(FilesStorage.Instance.Combine("Locales", Locale.LocaleName)), 3000));
 
             private ICommand _restartCommand;
 

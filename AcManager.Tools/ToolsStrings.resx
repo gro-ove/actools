@@ -1566,4 +1566,16 @@
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Just tries to run acs.exe directly; in most cases will fail</value>
   </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Can’t load image using Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Please, try to make image a bit smaller.</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
 </root>

@@ -42,7 +42,7 @@
                 <mui:BbCodeBlock Margin="0 8 0 40" BbCode="{x:Static g:AppStrings.About_ContactInformation}" />
 
                 <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ThanksForTranslationHeader}" />
-                <mui:SelectableBbCodeBlock Margin="0 8 0 0" BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Stanislav Minakov." />
+                <mui:SelectableBbCodeBlock Margin="0 8 0 0" BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Krom &amp; Joshker, Stanislav Minakov." />
             </StackPanel>
         </ScrollViewer>
 

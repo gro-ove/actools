@@ -144,6 +144,7 @@
     <Compile Include="DataAnalyzer\RulesSet.cs" />
     <Compile Include="DataAnalyzer\RulesSet_Test.cs" />
     <Compile Include="DataFile\IniFileSection.cs" />
+    <Compile Include="DataFile\ISyntaxErrorsCatcher.cs" />
     <Compile Include="DataFile\LutDataFile.cs" />
     <Compile Include="DataFile\RawDataFile.cs" />
     <Compile Include="DataFile\DataWrapper.cs" />
@@ -220,8 +221,13 @@
     <Compile Include="Utils\MathException.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\Matrix.cs" />
+    <Compile Include="Utils\Physics\Combinator.cs" />
+    <Compile Include="Utils\Physics\ControllerInput.cs" />
+    <Compile Include="Utils\Physics\Lut.cs" />
     <Compile Include="Utils\Physics\TorquePhysicUtils.cs" />
     <Compile Include="Utils\Helpers\ProcessExtension.cs" />
+    <Compile Include="Utils\Physics\TurboControllerDescription.cs" />
+    <Compile Include="Utils\Physics\TurboDescription.cs" />
     <Compile Include="Windows\Input\IInputDeviceStateAdaptor.cs" />
     <Compile Include="Windows\Input\IInputMessageDispatcher.cs" />
     <Compile Include="Windows\Input\IInputSimulator.cs" />

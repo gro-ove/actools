@@ -37,9 +37,9 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
+
             bool found;
             if (IsSupported(langId)) {
-                CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
                 found = true;
             } else {
                 var package = FilesStorage.Instance.GetFilename("Locales", langId + ".pak");
@@ -55,13 +55,7 @@ namespace AcManager {
             }
 
             if (SettingsHolder.Locale.LoadUnpacked) {
-                var locales = FilesStorage.Instance.GetDirectory("Locales");
-                var localeDirectory = Path.Combine(locales, langId);
-                if (Directory.Exists(localeDirectory)) {
-                    Logging.Write("Custom: " + localeDirectory);
-                    CustomResourceManager.SetCustomSource(localeDirectory);
-                    found = true;
-                }
+                found = InitializeCustom(langId) || found;
             }
 
             if (found || AppArguments.GetBool(AppFlag.ForceLocale)) {
@@ -69,6 +63,39 @@ namespace AcManager {
             } else {
                 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
             }
+        }
+
+        public static string GetGoogleSheetsFilename() {
+            var locales = FilesStorage.Instance.GetDirectory("Locales");
+            return Path.Combine(locales, "google-sheets-export.xlsx");
+        }
+
+        private static bool InitializeCustom(string langId) {
+            var found = false;
+
+            var googleSheets = GetGoogleSheetsFilename();
+            if (File.Exists(googleSheets)) {
+                try {
+                    var loaded = SharedLocaleReader.Read(googleSheets, langId);
+                    if (loaded.Any()) {
+                        CustomResourceManager.SetCustomSource(loaded);
+                        found = true;
+                    }
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            if (SettingsHolder.Locale.ResxLocalesMode) {
+                var localeDirectory = FilesStorage.Instance.Combine("Locales", langId);
+                if (Directory.Exists(localeDirectory)) {
+                    Logging.Write(localeDirectory);
+                    CustomResourceManager.SetCustomSource(localeDirectory);
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
         private static Dictionary<string, Assembly> LoadAssemblies(ZipArchive archive) {

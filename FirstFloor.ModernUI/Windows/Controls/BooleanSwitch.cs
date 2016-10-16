@@ -1,6 +1,8 @@
 using System.Windows;
+using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    [ContentProperty(nameof(True))]
     public class BooleanSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
                 typeof(BooleanSwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));

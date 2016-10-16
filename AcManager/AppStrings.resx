@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -961,7 +961,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>With “.acreplay” extension you’ll be able to start a replay just by clicking it in Windows Explorer</value>
   </data>
   <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
-    <value>Replays’ file name and extension:</value>
+    <value>Replays’ file names and extensions:</value>
   </data>
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
     <value>Autosave replays</value>
@@ -987,7 +987,7 @@ Values for replacement:
 Modifiers:
  [b][mono]{…:l}[/mono][/b] — lowercase;
  [b][mono]{…:u}[/mono][/b] — uppercase;
- [b][mono]{…:0}[/mono][/b] — only first symbol.                                
+ [b][mono]{…:0}[/mono][/b] — only first symbol.
 
 Examples:
  [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
@@ -997,7 +997,30 @@ If you need some other values, please, contact us and we’ll add them.
 
 [b]Warning[/b]:
  Don't use symbols like “[” or “]”!</value>
-  </data>
+  <alternative>Used for saving or autosaving replays after the race.
+
+Values for replacement:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id;
+ [b][mono]{date}[/mono][/b] — date and time in proper format;
+ [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
+
+Modifiers:
+ [b][mono]{…:l}[/mono][/b] — lowercase;
+ [b][mono]{…:u}[/mono][/b] — uppercase;
+ [b][mono]{…:0}[/mono][/b] — only first symbol.                                
+
+Examples:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+If you need some other values, please, contact us and we’ll add them.
+
+[b]Warning[/b]:
+ Don't use symbols like “[” or “]”!</alternative></data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>
   </data>
@@ -2088,8 +2111,8 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>If you’re using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
-    <value>Start race (Ctrl+G)</value>
-  </data>
+    <value>Start Race (Ctrl+G)</value>
+  <alternative>Start race (Ctrl+G)</alternative></data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
     <value>RSR app is missing</value>
   </data>
@@ -3331,8 +3354,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Cache brands</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
-    <value>Always record ghost in hotlap mode</value>
-  </data>
+    <value>Always record ghost in hot lap mode</value>
+  <alternative>Always record ghost in hotlap mode</alternative></data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
     <value>Use custom weather’s particles</value>
   </data>
@@ -3340,8 +3363,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Use custom weather’s PP-filter</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>Extended Weather</value>
-  </data>
+    <value>Extended Weather:</value>
+  <alternative>Extended Weather</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP-filter will be switched back later</value>
   </data>
@@ -3364,8 +3387,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>In car selection dialog</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
-    <value>Record ghost while hotlapping even if it’s hidden</value>
-  </data>
+    <value>Record ghost while hot lapping even if it’s hidden</value>
+  <alternative>Record ghost while hotlapping even if it’s hidden</alternative></data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
     <value>Special thanks for translation to:</value>
   </data>
@@ -3413,5 +3436,59 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Drive_Weather_CannotLoad" xml:space="preserve">
     <value>Can’t load real weather</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Not supported request: “{0}”</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
+    <value>Update locale before start up</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
+    <value>Will take no longer than 500 ms</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>How To Translate</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Custom Translations</value>
+  </data>
+  <data name="Settings_Locale_ResxMode" xml:space="preserve">
+    <value>Translate Resx Files</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>Prepare</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>Prepare unpacked locale</value>
+  </data>
+  <data name="Settings_Locale_Submit_Tooltip" xml:space="preserve">
+    <value>Send unpacked locale to include it to CM</value>
+  </data>
+  <data name="Settings_Locale_VersionLabel" xml:space="preserve">
+    <value>Locale version:</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>Locale ID</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
+    <value>Just hold Ctrl when you click Close button to restart CM faster</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>Officially supported</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
+    <value>Set locale by its ID</value>
   </data>
 </root>

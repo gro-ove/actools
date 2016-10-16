@@ -15,8 +15,11 @@ using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.UserControls;
+using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
+using AcManager.Pages.Lists;
 using AcManager.Tools;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
@@ -390,6 +393,20 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private void OnClosing(object sender, CancelEventArgs e) {
+            var unsaved = Superintendent.Instance.UnsavedChanges();
+            if (unsaved.Count == 0) return;
+            
+            var result = ModernDialog.ShowMessage(
+                    $"Save changes to the following items?\n\n{unsaved.Select(x => $" • {x}").JoinToString(Environment.NewLine)}",
+                    "Unsaved Changes", MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes) {
+                Superintendent.Instance.SaveAll();
+            } else if (result != MessageBoxResult.No) {
+                e.Cancel = true;
+            }
+        }
+
         private void InitializePopup() {
             if (Popup.Child == null) {
                 Popup.Child = new QuickSwitchesBlock();
@@ -548,5 +565,33 @@ namespace AcManager.Pages.Windows {
         }
 
         public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
+
+        private void TitleLinkCars_OnDrop(object sender, DragEventArgs e) {
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+
+            if (raceGridEntry == null && carObject == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            CarsListPage.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
+            e.Effects = DragDropEffects.Copy;
+
+            // TODO: moving tracks
+        }
+
+        private void TitleLinkDrive_OnDrop(object sender, DragEventArgs e) {
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+
+            if (raceGridEntry == null && carObject == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            QuickDrive.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
+            e.Effects = DragDropEffects.Copy;
+        }
     }
 }
