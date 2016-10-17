@@ -1578,4 +1578,16 @@
   <data name="Common_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Syntax error in packed {0} at {1} line</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Syntax error in {0} at {1} line</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>File is still parsed, but some values might be skipped.</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Open File</value>
+  </data>
 </root>

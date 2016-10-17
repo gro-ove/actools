@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +34,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
+using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -56,7 +56,9 @@ namespace AcManager {
                 ValuesStorage.Initialize();
                 CacheStorage.Initialize();
             } else {
-                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"),
+                        InternalUtils.GetValuesStorageEncryptionKey(),
+                        AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
@@ -221,12 +223,12 @@ namespace AcManager {
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
             public void Catch(AbstractDataFile file, int line) {
                 if (file.Mode == AbstractDataFile.StorageMode.AcdFile) {
-                    NonfatalError.NotifyBackground(string.Format("Syntax error in packed {0} at {1} line", file.UnpackedFilename, line),
-                            "File is still parsed, but some values might be skipped.");
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed, file.UnpackedFilename, line),
+                            ToolsStrings.SyntaxError_Commentary);
                 } else {
-                    NonfatalError.NotifyBackground(string.Format("Syntax error in {0} at {1} line", Path.GetFileName(file.SourceFilename), line),
-                            "File is still parsed, but some values might be skipped.", null, new[] {
-                                new INonfatalErrorSolution("Open File", null, token => {
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.SourceFilename), line),
+                            ToolsStrings.SyntaxError_Commentary, null, new[] {
+                                new INonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
                                     WindowsHelper.OpenFile(file.SourceFilename);
                                     return Task.Delay(0, token);
                                 })
@@ -265,15 +267,21 @@ namespace AcManager {
 
         private async void BackgroundInitialization() {
             await Task.Delay(1000);
+            if (AppArguments.Has(AppFlag.TestIfAcdAvailable)) {
+                if (!Acd.IsAvailable()) {
+                    NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
+                }
+            }
+
             if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
                 List<ChangelogEntry> changelog;
                 try {
                     changelog = await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
                 } catch (WebException e) {
-                    NonfatalError.NotifyBackground("Can’t load changelog", ToolsStrings.Common_MakeSureInternetWorks, e);
+                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
                     return;
                 } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t load changelog", e);
+                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, e);
                     return;
                 }
 
@@ -281,7 +289,7 @@ namespace AcManager {
                 if (changelog.Any()) {
                     Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
                         ModernDialog.ShowMessage(changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                          .JoinToString(Environment.NewLine.RepeatString(2)), "Recent Changes", MessageBoxButton.OK);
+                                                          .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title, MessageBoxButton.OK);
                     });
                 }
             }

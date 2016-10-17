@@ -161,7 +161,7 @@ namespace AcManager.Pages.Dialogs {
         private void ScaleCurves(object sender, RoutedEventArgs e) {
             double power, torque;
             if (!FlexibleParser.TryParseDouble(PowerInput.Text, out power) ||
-                !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
+                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
                 ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
                 return;
             }
@@ -171,22 +171,23 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RecalculateAndScaleCurves(object sender, RoutedEventArgs e) {
-            double power, torque;
-            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out power) ||
-                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
+            double maxPower, maxTorque;
+            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out maxPower) ||
+                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out maxTorque)) {
                 ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
                 return;
             }
 
-            Lut torqueData;
+            Lut torque;
             try {
-                torqueData = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
-            } catch (FileNotFoundException) {
+                torque = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
+            } catch (FileNotFoundException ex) {
+                Logging.Warning(ex);
                 return;
             }
 
-            TorqueGraph = new GraphData(torqueData).ScaleTo(torque);
-            PowerGraph = new GraphData(torqueData.Transform(x => x.X * x.Y)).ScaleTo(power);
+            TorqueGraph = new GraphData(torque).ScaleTo(maxTorque);
+            PowerGraph = new GraphData(torque.Transform(x => x.X * x.Y)).ScaleTo(maxPower);
         }
 
         private void RecalculateCurves(object sender, RoutedEventArgs e) {

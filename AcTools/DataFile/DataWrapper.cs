@@ -88,7 +88,7 @@ namespace AcTools.DataFile {
             return result;
         }
 
-        public static DataWrapper FromFile(string carDirectory) {
+        public static DataWrapper FromDirectory(string carDirectory) {
             if (!Directory.Exists(carDirectory)) {
                 throw new DirectoryNotFoundException(carDirectory);
             }

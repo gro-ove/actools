@@ -6,7 +6,7 @@ namespace FirstFloor.ModernUI.Tests {
     public class ValuesStorageTest {
         [TestMethod]
         public void TestEncryption() {
-            ValuesStorage.Initialize(null);
+            ValuesStorage.Initialize(null, "Superior Binturong Sizzling Wry Drake Mediumblue Dizzy Merganser Grateful Flyingsquirrel");
             var str = "Wretched Angora Pretty Northernhairynosedwombat Offbeat Skeletal Turaco";
             var key = "Miniature Curassow Descriptive Terrapin Descriptive Terrapin Swift Brown Spreadwing";
 

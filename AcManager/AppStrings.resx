@@ -3491,4 +3491,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
     <value>Set locale by its ID</value>
   </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>Can’t load changelog</value>
+  </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>Recent Changes</value>
+  </data>
 </root>

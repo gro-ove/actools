@@ -210,7 +210,6 @@
     <Compile Include="Helpers\TreeViewExtension.cs" />
     <Compile Include="Helpers\UriExtension.cs" />
     <Compile Include="Helpers\UserCancelledException.cs" />
-    <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
     <Compile Include="Helpers\ValuesStorage.cs" />
     <Compile Include="Helpers\WrappingStream.cs" />
     <Compile Include="Localizable\Ordinalizing.cs" />

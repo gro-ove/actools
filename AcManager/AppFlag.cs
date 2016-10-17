@@ -107,6 +107,12 @@ namespace AcManager {
         OfflineMode,
 
         /// <summary>
+        /// For internal use. 
+        /// Example: --test-if-acd-available.
+        /// </summary>
+        TestIfAcdAvailable,
+
+        /// <summary>
         /// Disables checking of AC root directory, so any folder will pass.
         /// Use on your own risk.
         /// Example: --disable-ac-root-checking.

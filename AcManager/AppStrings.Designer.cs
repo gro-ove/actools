@@ -2668,6 +2668,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t load changelog.
+        /// </summary>
+        public static string Changelog_CannotLoad {
+            get {
+                return ResourceManager.GetString("Changelog_CannotLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Changes.
+        /// </summary>
+        public static string Changelog_RecentChanges_Title {
+            get {
+                return ResourceManager.GetString("Changelog_RecentChanges_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add To The Library?.
         /// </summary>
         public static string Common_AddToLibrary {

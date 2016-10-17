@@ -3826,6 +3826,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File is still parsed, but some values might be skipped..
+        /// </summary>
+        public static string SyntaxError_Commentary {
+            get {
+                return ResourceManager.GetString("SyntaxError_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error in packed {0} at {1} line.
+        /// </summary>
+        public static string SyntaxError_Packed {
+            get {
+                return ResourceManager.GetString("SyntaxError_Packed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open File.
+        /// </summary>
+        public static string SyntaxError_Solution {
+            get {
+                return ResourceManager.GetString("SyntaxError_Solution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error in {0} at {1} line.
+        /// </summary>
+        public static string SyntaxError_Unpacked {
+            get {
+                return ResourceManager.GetString("SyntaxError_Unpacked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} pit.
         /// </summary>
         public static string TrackBaseObject_Specs_PitsNumber {
