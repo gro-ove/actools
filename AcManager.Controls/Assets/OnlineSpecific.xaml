@@ -129,8 +129,8 @@
                 <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform" Visibility="Hidden"
                         x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}"
                         Margin="10 1 2 3" />
-                <TextBlock Text="{Binding DisplayName}" FontSize="{DynamicResource SmallFontSize}" TextWrapping="NoWrap"
-                        TextTrimming="CharacterEllipsis" Margin="2" x:Name="DisplayNameText" />
+                <TextBlock Text="{Binding DisplayName}" FontSize="{DynamicResource SmallFontSize}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                        Margin="2" x:Name="DisplayNameText" />
             </DockPanel>
 
             <TextBlock Text="{Binding DisplayClients}" Grid.Column="1" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center" />
@@ -163,8 +163,8 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <!-- heavy version -->
-    <DataTemplate x:Key="DetailedListItem" DataType="{x:Type t:ServerEntry}">
+    <!-- heavy version (grid) -->
+    <DataTemplate x:Key="DetailedListItem.Grid" DataType="{x:Type t:ServerEntry}">
         <Grid ContextMenu="{StaticResource ListItemContextMenu}" Height="60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="22" />
@@ -186,8 +186,8 @@
                     x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}"
                     Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
 
-            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                    Margin="2" x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
+            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="2"
+                    x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
 
             <Image Grid.Row="0" Grid.Column="4" Source="{Binding CountryId, Converter={StaticResource CountryIdToImageConverter}}" Width="24" Height="16"
                     DockPanel.Dock="Left" Margin="0 0 4 0" RenderOptions.BitmapScalingMode="LowQuality" />
@@ -249,6 +249,78 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
+    <!-- heavy version (optimized?) -->
+    <DataTemplate x:Key="DetailedListItem" DataType="{x:Type t:ServerEntry}">
+        <DockPanel ContextMenu="{StaticResource ListItemContextMenu}" Height="60">
+            <mui:BooleanSwitch DockPanel.Dock="Left" Value="{Binding PasswordRequired}" Width="22">
+                <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                        HorizontalAlignment="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="10 1 2 3" />
+            </mui:BooleanSwitch>
+
+            <DockPanel DockPanel.Dock="Top" Height="30">
+                <mui:BooleanSwitch DockPanel.Dock="Right" Width="40" Value="{Binding HasErrors}" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <mui:BooleanSwitch.True>
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform">
+                            <Path.ToolTip>
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
+                                    <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="4" />
+                                </StackPanel>
+                            </Path.ToolTip>
+                        </Path>
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Ping, TargetNullValue=?}" Style="{StaticResource Small}" />
+                            <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                        </StackPanel>
+                    </mui:BooleanSwitch.False>
+                </mui:BooleanSwitch>
+
+                <TextBlock DockPanel.Dock="Right" Width="40" Text="{Binding DisplayClients}" Style="{StaticResource Small}" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" ToolTip="{StaticResource ClientsTooltip}" />
+
+                <Image DockPanel.Dock="Right" Source="{Binding CountryId, Converter={StaticResource CountryIdToImageConverter}}" Width="24" Height="16"
+                        Margin="0 0 4 0" RenderOptions.BitmapScalingMode="LowQuality" />
+
+                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="2"
+                        x:Name="DisplayNameText" />
+            </DockPanel>
+
+            <!-- second row -->
+            <StackPanel Orientation="Horizontal" Background="#11888888">
+                <TextBlock Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                        Margin="2 5 2 5" Padding="2" ToolTip="{StaticResource TrackPreviewTooltip}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Small}">
+                            <Setter Property="Text" Value="{Binding Track.Name}" />
+                            <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Track}" Value="{x:Null}">
+                                    <Setter Property="Text" Value="{Binding TrackId}" />
+                                    <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <ItemsControl ItemsSource="{Binding Sessions}" Width="90" HorizontalAlignment="Left" Margin="4 0 4 0"
+                        ItemTemplate="{StaticResource SessionItem}" ItemsPanel="{StaticResource HorizontalItemsPanel}" />
+
+                <ItemsControl ItemsSource="{Binding CarsOrTheirIds}" HorizontalAlignment="Left" ItemsPanel="{StaticResource HorizontalItemsPanel}"
+                        ItemTemplate="{StaticResource CarItem}" />
+            </StackPanel>
+        </DockPanel>
+
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
     <!-- heavy version+ -->
     <DataTemplate x:Key="DetailedPlusListItem" DataType="{x:Type t:ServerEntry}">
         <Grid ContextMenu="{StaticResource ListItemContextMenu}" Height="60">
@@ -273,8 +345,8 @@
                     x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}"
                     Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
 
-            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                    Margin="2" x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" />
+            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="2"
+                    x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" />
 
             <DockPanel Grid.Row="0" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Image Source="{Binding CountryId, Converter={StaticResource CountryIdToImageConverter}}" HorizontalAlignment="Right" Width="24" Height="16"
