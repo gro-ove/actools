@@ -25,6 +25,11 @@ namespace AcTools.DataFile {
 
             for (var i = 0; i < data.Length; i++) {
                 switch (data[i]) {
+                    case '\r':
+                        if (i + 1 < data.Length && data[i + 1] == '\n') continue;
+                        malformed = line;
+                        break;
+
                     case '|':
                         if (started != -1) {
                             if (!double.IsNaN(key) || !FlexibleParser.TryParseDouble(data.Substring(started, i - started), out key)) {
