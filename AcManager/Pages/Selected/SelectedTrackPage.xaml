@@ -176,8 +176,7 @@
                 </Grid>
 
                 <!-- description -->
-                <TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding SelectedTrackConfiguration.Description}"
-                        TextWrapping="Wrap" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
             </StackPanel>
         </StackPanel>
     </c:AcObjectBase>

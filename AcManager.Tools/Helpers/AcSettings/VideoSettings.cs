@@ -70,6 +70,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 DisplayName = string.Format(ToolsStrings.AcSettings_ResolutionFormat, Width, Height, Framerate);
             }
 
+            [ContractAnnotation(@"null => false")]
             public bool Same(ResolutionEntry other) {
                 return other != null && Width == other.Width && Height == other.Height && Equals(Framerate, other.Framerate);
             }
@@ -218,7 +219,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 try {
                     return AcVideoModes.GetResolutionEntries().ToList();
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t get a proper list of resolutions", e);
+                    NonfatalError.Notify(ToolsStrings.AcSettings_CannotGetResolutions, e);
                 }
             }
 
@@ -232,10 +233,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private static class AcVideoModes {
             [StructLayout(LayoutKind.Sequential)]
             private struct VideoMode {
-                public int Index;
-                public int Width;
-                public int Height;
-                public float Refresh;
+                public readonly int Index;
+                public readonly int Width;
+                public readonly int Height;
+                public readonly float Refresh;
             }
 
             public static IReadOnlyList<ResolutionEntry> GetResolutionEntries() {
@@ -247,10 +248,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                                  }).Distinct().ToList();
             }
 
-            [DllImport("acVideoModes.dll")]
+            [DllImport(@"acVideoModes.dll")]
             private static extern int acInitVideoModes();
 
-            [DllImport("acVideoModes.dll")]
+            [DllImport(@"acVideoModes.dll")]
             private static extern int acGetVideoMode(int index, ref VideoMode mode);
         }
 
@@ -691,7 +692,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             if (Fullscreen && ReferenceEquals(resolution, CustomResolution) && SettingsHolder.Common.FixResolutionAutomatically) {
                 Resolution = GetClosestToCustom();
                 ForceSave();
-                Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
+                if (!ReferenceEquals(CustomResolution, Resolution)) {
+                    Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
+                }
             } else {
                 Resolution = resolution;
             }
@@ -781,7 +784,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             ini["MIRROR"].Set("SIZE", MirrorResolution);
 
             section = ini["CUBEMAP"];
-            if (CubemapResolution.Value == @"0") {
+            if (CubemapResolution.Value == "0") {
                 section.Set("SIZE", 0);
                 section.Set("FACES_PER_FRAME", 0);
                 section.Set("FARPLANE", 0);

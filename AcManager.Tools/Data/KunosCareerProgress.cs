@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,26 +19,24 @@ namespace AcManager.Tools.Data {
 
         public static KunosCareerProgress Instance => _instance ?? (_instance = new KunosCareerProgress());
 
-        public static void Initialize() {
-            Debug.Assert(_instance == null);
-            _instance = new KunosCareerProgress();
-        }
-
         private readonly string _filename;
 
         private KunosCareerProgress() {
             _filename = FileUtils.GetKunosCareerProgressFilename();
 
-            var fsWatcher = new FileSystemWatcher {
-                Path = Path.GetDirectoryName(_filename),
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
-                Filter = Path.GetFileName(_filename)
-            };
-            fsWatcher.Changed += FsWatcher_Changed;
-            fsWatcher.Created += FsWatcher_Changed;
-            fsWatcher.Deleted += FsWatcher_Changed;
-            fsWatcher.Renamed += FsWatcher_Changed;
-            fsWatcher.EnableRaisingEvents = true;
+            var directory = Path.GetDirectoryName(_filename);
+            if (Directory.Exists(directory)) {
+                var fsWatcher = new FileSystemWatcher {
+                    Path = directory,
+                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
+                    Filter = Path.GetFileName(_filename)
+                };
+                fsWatcher.Changed += FsWatcher_Changed;
+                fsWatcher.Created += FsWatcher_Changed;
+                fsWatcher.Deleted += FsWatcher_Changed;
+                fsWatcher.Renamed += FsWatcher_Changed;
+                fsWatcher.EnableRaisingEvents = true;
+            }
 
             Load();
         }

@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Thickness x:Key="ElementMargin">0 0 8 8</Thickness>
@@ -44,16 +45,27 @@
                 <Slider DockPanel.Dock="Bottom" Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
                         Value="{Binding RaceGridViewModel.AiLevelMin}" />
                 <mui:ContextMenuButton DockPanel.Dock="Right">
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
-                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeRandomly, Mode=TwoWay}" />
-                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
-                                ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}"
-                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse, Mode=TwoWay}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
-                                IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}" />
-                    </ContextMenu>
+                    <c:ModernPopup Padding="8">
+                        <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                            <DockPanel
+                                    IsEnabled="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠1'}">
+                                <Label Content="AI arrange order:" ToolTip="Set to Ascending if you want smartest bot to start in the end of starting grid" />
+                                <mui:LabeledToggleButton LabelChecked="Ascending" LabelUnchecked="Descending"
+                                        IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse}" />
+                            </DockPanel>
+
+                            <DockPanel>
+                                <Label Content="Randomization:" />
+                                <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
+                                        Value="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource PercentageConverter}}" />
+                            </DockPanel>
+
+                            <TextBlock Text="Global:" Style="{StaticResource SettingsPanel.Heading2}" />
+                            <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}" Margin="0">
+                                <Label Content="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" />
+                            </CheckBox>
+                        </StackPanel>
+                    </c:ModernPopup>
                 </mui:ContextMenuButton>
                 <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
             </DockPanel>

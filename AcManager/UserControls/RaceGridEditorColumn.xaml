@@ -16,6 +16,7 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="NonTransparent" TargetType="mui:ModernButton" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
@@ -177,8 +178,21 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource LabelWithPadding}"
-                    Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
+            <DockPanel>
+                <mui:ContextMenuButton Visibility="{Binding Mode.CandidatesMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        DockPanel.Dock="Right">
+                    <c:ModernPopup Padding="8">
+                        <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                            <DockPanel Margin="0">
+                                <Label Content="Arrange way:" ToolTip="Way to arrange candidates" />
+                                <mui:LabeledToggleButton LabelChecked="Shuffle" LabelUnchecked="Random" IsChecked="{Binding ShuffleCandidates}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </c:ModernPopup>
+                </mui:ContextMenuButton>
+                <TextBlock Style="{StaticResource LabelWithPadding}"
+                        Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
+            </DockPanel>
 
             <mui:ModernToggleButton x:Name="AddCarButton" Grid.Column="1" IconData="{StaticResource AddIconData}"
                     ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" HorizontalAlignment="Right" Margin="0 0 4 0"

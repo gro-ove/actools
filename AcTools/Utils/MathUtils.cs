@@ -105,7 +105,7 @@ namespace AcTools.Utils {
 
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
 
-        public static int Random(int maxValue) => RandomInstance.Next(maxValue);
+        public static int Random(int maxValueExclusive) => RandomInstance.Next(maxValueExclusive);
 
         public static int Random(int minValueInclusive, int maxValueExclusive) => RandomInstance.Next(minValueInclusive, maxValueExclusive);
 

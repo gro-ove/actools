@@ -1590,4 +1590,7 @@
   <data name="SyntaxError_Solution" xml:space="preserve">
     <value>Open File</value>
   </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Can’t get a proper list of resolutions</value>
+  </data>
 </root>

@@ -556,6 +556,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t get a proper list of resolutions.
+        /// </summary>
+        public static string AcSettings_CannotGetResolutions {
+            get {
+                return ResourceManager.GetString("AcSettings_CannotGetResolutions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t save AC settings.
         /// </summary>
         public static string AcSettings_CannotSave {

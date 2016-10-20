@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Markup;
 
 namespace AcManager.Controls.UserControls {
@@ -28,11 +29,28 @@ namespace AcManager.Controls.UserControls {
         }
 
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(nameof(Content), typeof(object),
-                typeof(ModernPopup));
+                typeof(ModernPopup), new PropertyMetadata(OnContentChanged));
 
         public object Content {
             get { return GetValue(ContentProperty); }
             set { SetValue(ContentProperty, value); }
+        }
+
+        private static void OnContentChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((ModernPopup)o).OnContentChanged(e.OldValue as FrameworkElement, e.NewValue as FrameworkElement);
+        }
+
+        private void OnContentChanged(FrameworkElement oldValue, FrameworkElement newValue) {
+            if (oldValue != null) {
+                BindingOperations.ClearBinding(oldValue, DataContextProperty);
+            }
+
+            if (newValue != null && newValue.DataContext == null) {
+                newValue.SetBinding(DataContextProperty, new Binding {
+                    Path = new PropertyPath(nameof(DataContext)),
+                    Source = this
+                });
+            }
         }
     }
 }

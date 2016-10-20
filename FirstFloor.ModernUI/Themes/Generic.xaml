@@ -5,6 +5,7 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ContextMenuButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HistoricalTextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/LabeledToggleButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernDialog.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernFrame.xaml" />

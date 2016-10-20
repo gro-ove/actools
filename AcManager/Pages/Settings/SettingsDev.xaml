@@ -1,10 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsDev" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-             xmlns:t="http://acstuff.ru/app/tools"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDev+ViewModel}">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDev+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,11 +17,31 @@
             <StackPanel Margin="0 0 0 20" TextBlock.Foreground="Cyan">
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel">
-                        <Setter Property="Height" Value="24"/>
-                        <Setter Property="Margin" Value="0 0 0 4"/>
+                        <Setter Property="Height" Value="24" />
+                        <Setter Property="Margin" Value="0 0 0 4" />
                     </Style>
                 </StackPanel.Resources>
                 <TextBlock Text="Controls Test:" Style="{StaticResource Heading2}" />
+
+                <DockPanel>
+                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
+                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
+                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" HighlightChecked="True" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
+                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" IsChecked="True" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="LabeledToggleButton, stretch:" Width="200" DockPanel.Dock="Left" />
+                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Stretch" />
+                </DockPanel>
 
                 <DockPanel>
                     <Label Content="Previous, placeholder:" Width="200" DockPanel.Dock="Left" />
@@ -86,7 +104,7 @@
                             ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
                 </DockPanel>
             </StackPanel>
-            
+
             <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
                 <DockPanel>
                     <Label Content="User-entered years:" />

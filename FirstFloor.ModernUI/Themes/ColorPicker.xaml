@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
-        xmlns:e="clr-namespace:FirstFloor.ModernUI.Effects" xmlns:mui="clr-namespace:FirstFloor.ModernUI">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:e="clr-namespace:FirstFloor.ModernUI.Effects"
+        xmlns:mui="clr-namespace:FirstFloor.ModernUI">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -22,7 +22,7 @@
                                 Fill="{TemplateBinding Background}" />
                         <Path x:Name="PART_Icon" Width="12" Height="12" Fill="{TemplateBinding Background}" Stretch="Uniform" HorizontalAlignment="Right"
                                 VerticalAlignment="Center" Margin="4"
-                                Data="F1 M 38,20.5833L 53.8333,38L 33.25,58.5833L 15.8333,41.1667L 24.1458,32.8542C 24.1458,32.8542 42.3542,38.3958 44.3333,34.4375C 47.5,29.6875 39.5833,28.5 39.5833,30.0833C 41.1667,31.6667 42.3541,33.6459 42.3541,33.6459C 42.3541,33.6459 22.1667,33.25 19,25.3333C 17.4167,19 36.0208,22.5625 36.0208,22.5625L 38,20.5833 Z M 33.25,24.9375C 33.25,24.9375 23.3542,24.1459 23.3542,25.7292C 23.3542,27.3125 29.2917,28.1042 29.2917,28.1042L 33.25,24.9375 Z M 53.8333,36.4167L 42.75,23.75C 42.75,23.75 51.5395,29.9786 53.0416,30.4792C 54.2291,30.875 57,28.5 60.1667,30.0833C 63.3333,31.6667 60.1666,35.2292 60.1666,33.6459C 60.1666,32.0625 55.4167,33.25 55.4167,33.25C 63.3333,34.8333 64.9166,38 63.3333,39.5833C 61.75,41.1667 59.7708,41.1667 59.7708,39.5833C 59.7708,38 53.8333,36.4167 53.8333,36.4167 Z" />
+                                Data="F1 M 38,20L 53,38L 33,58L 15,41L 24,32C 24,32 42,38 44,34C 47,29 39,28 39,30C 41,31 42,33 42,33C 42,33 22,33 19,25C 17,19 36,22 36,22L 38,20 Z M 33,24C 33,24 23,24 23,25C 23,27 29,28 29,28L 33,24 Z M 53,36L 42,23C 42,23 51,29 53,30C 54,30 57,28 60,30C 63,31 60,35 60,33C 60,32 55,33 55,33C 63,34 64,38 63,39C 61,41 59,41 59,39C 59,38 53,36 53,36 Z" />
                     </c:Cell>
 
                     <ControlTemplate.Triggers>
@@ -62,9 +62,9 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <c:Cell Background="Transparent">
                         <Path Fill="{TemplateBinding Background}" SnapsToDevicePixels="True" Stretch="Fill" Width="4" HorizontalAlignment="Left"
-                                Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z" />
+                                Data="F1 M 30,22L 50,37L 50,38L 30,53L 30,22 Z" />
                         <Path Fill="{TemplateBinding Background}" SnapsToDevicePixels="True" Stretch="Fill" Width="4" HorizontalAlignment="Right"
-                                Data="F1 M 50.6665,22.1667L 30.0833,37.6043L 30.0833,38.7918L 50.6665,53.8333L 50.6665,22.1667 Z" />
+                                Data="F1 M 30,22L 50,37L 50,38L 30,53L 30,22 Z" />
                     </c:Cell>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -121,7 +121,7 @@
                 <ControlTemplate TargetType="{x:Type Thumb}">
                     <c:Cell Background="Transparent">
                         <Path Fill="{TemplateBinding Background}" SnapsToDevicePixels="True" Stretch="Fill"
-                                Data="F1 M 22.2448,39.5833L 19,39.5833L 19,36.4167L 22.2448,36.4167C 22.9875,28.9363 28.9363,22.9875 36.4167,22.2448L 36.4167,19L 39.5833,19L 39.5833,22.2448C 47.0637,22.9875 53.0125,28.9363 53.7552,36.4167L 57,36.4167L 57,39.5833L 53.7552,39.5833C 53.0125,47.0637 47.0637,53.0125 39.5833,53.7552L 39.5833,57L 36.4167,57L 36.4167,53.7552C 28.9363,53.0125 22.9875,47.0637 22.2448,39.5833 Z M 25.4313,36.4167L 28.5,36.4167L 28.5,39.5833L 25.4313,39.5833C 26.1458,45.313 30.687,49.8542 36.4167,50.5687L 36.4167,47.5L 39.5833,47.5L 39.5833,50.5687C 45.313,49.8542 49.8542,45.313 50.5686,39.5833L 47.5,39.5833L 47.5,36.4167L 50.5686,36.4167C 49.8542,30.687 45.313,26.1458 39.5833,25.4314L 39.5833,28.5L 36.4167,28.5L 36.4167,25.4314C 30.687,26.1458 26.1458,30.687 25.4313,36.4167 Z" />
+                                Data="F1 M 22,39L 19,39L 19,36L 22,36C 22,28 28,22 36,22L 36,19L 39,19L 39,22C 47,22 53,28 53,36L 57,36L 57,39L 53,39C 53,47 47,53 39,53L 39,57L 36,57L 36,53C 28,53 22,47 22,39 Z M 25,36L 28,36L 28,39L 25,39C 26,45 30,49 36,50L 36,47L 39,47L 39,50C 45,49 49,45 50,39L 47,39L 47,36L 50,36C 49,30 45,26 39,25L 39,28L 36,28L 36,25C 30,26 26,30 25,36 Z" />
                     </c:Cell>
                 </ControlTemplate>
             </Setter.Value>
@@ -187,7 +187,7 @@
 
                                 <c:ModernButton Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Top"
                                         ToolTip="{x:Static mui:UiStrings.PickColorFromScreen}" x:Name="PART_PickerButton"
-                                        IconData="F1 M 23.7387,4.75L 26.8864,7.89765C 26.55,7.18267 26.3621,6.38412 26.3621,5.54166C 26.3621,2.48109 28.8432,-3.8147e-006 31.9037,-3.8147e-006C 34.9643,-3.8147e-006 37.4454,2.48109 37.4454,5.54166C 37.4454,8.60224 34.9643,11.0833 31.9037,11.0833C 31.0613,11.0833 30.2627,10.8953 29.5477,10.559L 32.6954,13.7067C 33.3137,14.325 33.3137,15.3275 32.6954,15.9459L 32.2879,16.3533C 31.6696,16.9717 30.6671,16.9717 30.0488,16.3533L 21.0921,7.39665C 20.4737,6.77831 20.4737,5.77581 21.0921,5.15747L 21.4995,4.74999C 22.1179,4.13166 23.1204,4.13166 23.7387,4.75 Z M 21.3521,8.84414L 28.607,16.3476C 28.607,16.3476 15.2787,30.0833 7.46011,32.926C 5.68583,34.5024 3.42322,36.4035 1.70399,37.4761L 0,35.7721C 1.05699,34.0706 2.92172,31.8309 4.50135,30.0382C 7.36206,22.1667 21.3521,8.84414 21.3521,8.84414 Z" />
+                                        IconData="F1 M 23,4L 26,7C 26,7 26,6 26,5C 26,2 28,-3e-006 31,-3e-006C 34,-3e-006 37,2 37,5C 37,8 34,11 31,11C 31,11 30,10 29,10L 32,13C 33,14 33,15 32,15L 32,16C 31,16 30,16 30,16L 21,7C 20,6 20,5 21,5L 21,4C 22,4 23,4 23,4 Z M 21,8L 28,16C 28,16 15,30 7,32C 5,34 3,36 1,37L 0,35C 1,34 2,31 4,30C 7,22 21,8 21,8 Z" />
 
                                 <StackPanel Margin="0 0 0 8" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" Width="80">
                                     <Rectangle x:Name="PART_OriginalColor" Height="32" Margin="0 0 0 4"

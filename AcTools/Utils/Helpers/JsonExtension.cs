@@ -272,6 +272,12 @@ namespace AcTools.Utils.Helpers {
             writer.WritePropertyName(key);
             writer.WriteValue(value.Value);
         }
+
+        public static void Write(this JsonTextWriter writer, string key, double? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
         
         public static void Write(this JsonTextWriter writer, string key, string value) {
             if (value == null) return;

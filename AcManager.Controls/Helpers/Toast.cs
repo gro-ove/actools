@@ -47,8 +47,8 @@ namespace AcManager.Controls.Helpers {
                 try {
                     ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
                     return;
-                } catch (Exception e) {
-                    Logging.Warning("Win8 Toaster is not available: " + e);
+                } catch {
+                    Logging.Warning("Win8 Toaster is not available");
                     _winToasterIsNotAvailable = true;
                 }
             }

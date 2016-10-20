@@ -163,6 +163,7 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BetterScrollBar.cs" />
@@ -171,10 +172,12 @@
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
+    <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
+    <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
     <Compile Include="Windows\Controls\Switch.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
@@ -422,6 +425,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\BetterTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\LabeledToggleButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

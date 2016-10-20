@@ -559,8 +559,8 @@
     <value>El filtro de Postprocesado por defecto (default.ini) está perdido pero se requiere</value>
   </data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
-    <value>El lanzador original no se encuentra: por favor, cambia el arranque.</value>
-  </data>
+    <value>El lanzador original no se encuentra: por favor, cambia el arrancador.</value>
+  <alternative>El lanzador original no se encuentra: por favor, cambia el arranque.</alternative></data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
     <value>El modelo del piloto posiblemente se haya perdido.</value>
   </data>
@@ -1256,8 +1256,8 @@
     <value>Por favor, escoge un archivo en el directorio inicial o en algún subdirectorio</value>
   </data>
   <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
-    <value>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</value>
-  </data>
+    <value>Por favor, restaura el arrancador original  e inténtalo de nuevo ( o cambia el arrancador).</value>
+  <alternative>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</alternative></data>
   <data name="Common_Power" xml:space="preserve">
     <value>Potencia</value>
   </data>

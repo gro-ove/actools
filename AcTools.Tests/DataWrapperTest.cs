@@ -14,12 +14,12 @@ namespace AcTools.Tests {
             testDir = Path.Combine(testDir, "test");
 
             var file = DataWrapper.FromDirectory(Path.Combine(testDir, "data", "peugeot_504"));
-            Assert.IsTrue(file.GetRawFile("mirrors.ini").Content.StartsWith("VALID_LUT_FILE"));
-            Assert.IsTrue(file.GetRawFile("power.lut").Content.StartsWith("VALID_LUT_FILE"));
+            Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
+            Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
 
             file = DataWrapper.FromDirectory(Path.Combine(testDir, "data", "peugeot_504_unpacked"));
-            Assert.IsTrue(file.GetRawFile("mirrors.ini").Content.StartsWith("VALID_LUT_FILE"));
-            Assert.IsTrue(file.GetRawFile("power.lut").Content.StartsWith("VALID_LUT_FILE"));
+            Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
+            Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
         }
     }
 }

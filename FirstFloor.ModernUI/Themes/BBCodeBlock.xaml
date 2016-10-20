@@ -1,15 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
-    <Style TargetType="controls:BbCodeBlock">
+    <Style TargetType="c:BbCodeBlock">
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <Style TargetType="controls:SelectableBbCodeBlock">
+    <Style TargetType="c:SelectableBbCodeBlock">
         <Setter Property="ContextMenu" Value="{StaticResource TextBoxReadOnlyContextMenu}" />
         <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />
         <Setter Property="AllowDrop" Value="True" />

@@ -79,7 +79,8 @@ namespace AcManager.Controls.ViewModels {
             [CanBeNull]
             public string[] Names, Nationalities, SkinIds;
 
-            public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
+            public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse, ShuffleCandidates;
+            public double? AiLevelArrangeRandom;
             public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
 
             string IStringSerializable.Serialize() {
@@ -99,7 +100,7 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("SkinIds", SkinIds);
 
                 w.Write("AiLevelFixed", AiLevelFixed);
-                w.Write("AiLevelArrangeRandomly", AiLevelArrangeRandomly);
+                w.Write("AiLevelArrangeRandom", AiLevelArrangeRandom);
                 w.Write("AiLevelArrangeReverse", AiLevelArrangeReverse);
                 w.Write("AiLevel", AiLevel);
                 w.Write("AiLevelMin", AiLevelMin);
@@ -131,8 +132,9 @@ namespace AcManager.Controls.ViewModels {
                 var data = new SaveableData {
                     ModeId = Mode.Id,
                     FilterValue = FilterValue,
+                    ShuffleCandidates = ShuffleCandidates,
                     AiLevelFixed = AiLevelFixed,
-                    AiLevelArrangeRandomly = AiLevelArrangeRandomly,
+                    AiLevelArrangeRandom = AiLevelArrangeRandom,
                     AiLevelArrangeReverse = AiLevelArrangeReverse,
                     AiLevel = AiLevel,
                     AiLevelMin = AiLevelMin,
@@ -176,8 +178,10 @@ namespace AcManager.Controls.ViewModels {
 
                 return data;
             }, data => {
+                ShuffleCandidates = data.ShuffleCandidates ?? true;
                 AiLevelFixed = data.AiLevelFixed ?? false;
-                AiLevelArrangeRandomly = data.AiLevelArrangeRandomly ?? false;
+                AiLevelArrangeRandom = data.AiLevelArrangeRandomly.HasValue ? (data.AiLevelArrangeRandomly.Value ? 1d : 0d) :
+                        data.AiLevelArrangeRandom ?? 0.1d;
                 AiLevelArrangeReverse = data.AiLevelArrangeReverse ?? false;
                 AiLevel = data.AiLevel ?? 95;
                 AiLevelMin = data.AiLevelMin ?? 85;
@@ -223,7 +227,7 @@ namespace AcManager.Controls.ViewModels {
                         var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
 
                         return new RaceGridEntry(x) {
-                            AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
+                            AiLevel = aiLevel >= 0 ? aiLevel : null,
                             Name = data.Names?.ElementAtOrDefault(i),
                             Nationality = data.Nationalities?.ElementAtOrDefault(i),
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
@@ -272,8 +276,9 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public void Reset() {
+            ShuffleCandidates = true;
             AiLevelFixed = false;
-            AiLevelArrangeRandomly = false;
+            AiLevelArrangeRandom = 0.1;
             AiLevelArrangeReverse = false;
             AiLevel = 95;
             AiLevelMin = 85;
@@ -802,6 +807,17 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Simple properties
+        private bool _shuffleCandidates;
+
+        public bool ShuffleCandidates {
+            get { return _shuffleCandidates; }
+            set {
+                if (Equals(value, _shuffleCandidates)) return;
+                _shuffleCandidates = value;
+                OnPropertyChanged();
+            }
+        }
+
         public int AiLevelMinimum => SettingsHolder.Drive.QuickDriveExpandBounds ? 30 : 70;
 
         public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
@@ -861,19 +877,20 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private bool _aiLevelArrangeRandomly;
+        private double _aiLevelArrangeRandom;
 
-        public bool AiLevelArrangeRandomly {
-            get { return _aiLevelArrangeRandomly; }
+        public double AiLevelArrangeRandom {
+            get { return _aiLevelArrangeRandom; }
             set {
-                if (Equals(value, _aiLevelArrangeRandomly)) return;
-                _aiLevelArrangeRandomly = value;
+                value = value.Round(0.01);
+                if (Equals(value, _aiLevelArrangeRandom)) return;
+                _aiLevelArrangeRandom = value;
                 OnPropertyChanged();
                 SaveLater();
 
-                if (value) {
-                    AiLevelArrangeReverse = false;
-                }
+                //if (value) {
+                //    AiLevelArrangeReverse = false;
+                //}
             }
         }
 
@@ -886,10 +903,6 @@ namespace AcManager.Controls.ViewModels {
                 _aiLevelArrangeReverse = value;
                 OnPropertyChanged();
                 SaveLater();
-
-                if (value) {
-                    AiLevelArrangeRandomly = false;
-                }
             }
         }
 
@@ -1090,29 +1103,47 @@ namespace AcManager.Controls.ViewModels {
                 aiLevels = null;
             } else {
                 var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                    select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
-                if (AiLevelArrangeRandomly) {
-                    aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
-                } else if (!AiLevelArrangeReverse) {
+                                    select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : 1f - (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
+                if (AiLevelArrangeReverse) {
                     aiLevelsInner = aiLevelsInner.Reverse();
                 }
 
-                aiLevels = AiLevelFixed ? null : aiLevelsInner.Take(opponentsNumber).ToList();
+                if (Equals(AiLevelArrangeRandom, 1d)) {
+                    aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
+                } else if (AiLevelArrangeRandom > 0d) {
+                    aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom);
+                }
+                
+                aiLevels = aiLevelsInner.Take(opponentsNumber).ToList();
+                Logging.Debug("AI levels: " + aiLevels.Select(x => $"{x}%").JoinToString(", "));
             }
 
             IEnumerable<RaceGridEntry> final;
             if (Mode.CandidatesMode) {
                 var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => new[] { x }.Repeat(x.CandidatePriority)).ToList();
-                var shuffled = GoodShuffle.Get(list);
 
-                if (_playerCar != null) {
-                    var same = list.FirstOrDefault(x => x.Car == _playerCar);
-                    if (same != null) {
-                        shuffled.IgnoreOnce(same);
+                if (ShuffleCandidates) {
+                    var shuffled = GoodShuffle.Get(list);
+
+                    if (_playerCar != null) {
+                        var same = list.FirstOrDefault(x => x.Car == _playerCar);
+                        if (same != null) {
+                            shuffled.IgnoreOnce(same);
+                        }
                     }
-                }
 
-                final = shuffled.Take(opponentsNumber);
+                    final = shuffled.Take(OpponentsNumberLimited);
+                } else {
+                    var skip = _playerCar;
+                    final = LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
+                        if (x.Car == skip) {
+                            skip = null;
+                            return false;
+                        }
+
+                        return true;
+                    }).Take(OpponentsNumberLimited);
+                }
             } else {
                 final = NonfilteredList.Where(x => !x.SpecialEntry);
             }

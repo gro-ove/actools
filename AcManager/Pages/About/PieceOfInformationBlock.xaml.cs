@@ -10,6 +10,7 @@ namespace AcManager.Pages.About {
             InitializeComponent();
             Root.DataContext = this;
 
+            /* TODO */
             var mainWindow = Application.Current.MainWindow;
             if (mainWindow != null) {
                 WeakEventManager<Window, EventArgs>.AddHandler(mainWindow, nameof(mainWindow.Activated), Handler);
