@@ -5,18 +5,20 @@ using System.Linq;
 using System.Windows;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public static class WindowsHelper {
         public const string RestartArg = "--restart";
 
+        [Localizable(false), ContractAnnotation("=> halt")]
         public static void RestartCurrentApplication() {
             try {
                 ProcessExtension.Start(MainExecutingFile.Location,
                         Environment.GetCommandLineArgs()
                                    .Skip(1)
                                    .ApartFrom(RestartArg)
-                                   .Where(x => !x.StartsWith(@"acmanager:", StringComparison.OrdinalIgnoreCase))
+                                   .Where(x => !x.StartsWith("acmanager:", StringComparison.OrdinalIgnoreCase))
                                    .Prepend(RestartArg));
                 if (Application.Current != null) {
                     Application.Current.Shutdown();
@@ -27,21 +29,25 @@ namespace AcManager.Tools.Helpers {
                 Logging.Warning("RestartCurrentApplication(): " + e);
             }
         }
-
-        public static void ViewDirectory(string directory) {
+        
+        [Localizable(false)]
+        public static void ViewDirectory([NotNull] string directory) {
             ProcessExtension.Start(@"explorer", new [] { directory });
         }
 
-        public static void ViewFile(string filename) {
+        [Localizable(false)]
+        public static void ViewFile([NotNull] string filename) {
             Process.Start("explorer", "/select," + filename);
         }
-        
-        public static void ViewInBrowser([Localizable(false)] string url) {
+
+        [Localizable(false)]
+        public static void ViewInBrowser([CanBeNull] string url) {
             if (url == null) return;
             Process.Start(url);
         }
-        
-        public static void OpenFile(string filename) {
+
+        [Localizable(false)]
+        public static void OpenFile([NotNull] string filename) {
             Process.Start(filename);
         }
     }

@@ -21,7 +21,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SharpCompress.Common;
-using SharpCompress.Writer;
+using SharpCompress.Writers;
 using StringBasedFilter;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -142,7 +142,7 @@ namespace AcManager.Pages.Selected {
                                         writer.Write(@"ReadMe.txt", stream);
                                     }
 
-                                    writer.Write(SelectedObject.Id, file, SelectedObject.CreationTime);
+                                    writer.Write(SelectedObject.Id, file, SelectedObject.CreationDateTime);
                                 }
 
                                 data = memory.ToArray();

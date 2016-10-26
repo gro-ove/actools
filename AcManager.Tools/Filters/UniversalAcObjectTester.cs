@@ -7,8 +7,8 @@ namespace AcManager.Tools.Filters {
     /// <summary>
     /// Kind of obsolete.
     /// </summary>
-    public class UniqueAcObjectTester : ITester<AcObjectNew> {
-        public static UniqueAcObjectTester Instance = new UniqueAcObjectTester();
+    public class UniversalAcObjectTester : ITester<AcObjectNew> {
+        public static readonly UniversalAcObjectTester Instance = new UniversalAcObjectTester();
 
         public string ParameterFromKey(string key) {
             return AcObjectTester.InnerParameterFromKey(key) ??

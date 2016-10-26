@@ -166,7 +166,7 @@ namespace AcManager.Controls {
                 if (string.IsNullOrWhiteSpace(filter)) {
                     listView.Filter = null;
                 } else {
-                    _filter = Filter.Create(UniqueAcObjectTester.Instance, filter);
+                    _filter = Filter.Create(UniversalAcObjectTester.Instance, filter);
                     listView.Filter = FilterFunc;
                     _observableCollection.ItemPropertyChanged += Collection_ItemPropertyChanged;
                     _observableCollection.WrappedValueChanged += Collection_WrappedValueChanged;

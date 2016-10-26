@@ -2,10 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools"
-             xmlns:t="http://acstuff.ru/app/tools"
-             mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl">
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:t="http://acstuff.ru/app/tools"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl" MaxWidth="540">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,8 +14,7 @@
     </UserControl.Resources>
 
     <DockPanel x:Name="InnerCarBlockPanel">
-        <mui:Cell DockPanel.Dock="Top" MaxWidth="1022"
-                Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:Cell DockPanel.Dock="Top" MaxWidth="1022" Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="PreviewImage_OnMouseDown" MaxWidth="1022"
                     Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
             <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
@@ -100,14 +97,13 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}"
-                            Grid.Column="1" Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2"
-                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" Grid.Column="1"
+                            Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
+                            TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3"
-                            Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
                     <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

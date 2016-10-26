@@ -112,5 +112,9 @@ namespace AcTools.Utils {
         public static double Random() => RandomInstance.NextDouble();
 
         public static double Random(double maxValue) => RandomInstance.NextDouble() * maxValue;
+
+        public static TimeSpan Max(TimeSpan a, TimeSpan b) {
+            return a > b ? a : b;
+        }
     }
 }

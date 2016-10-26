@@ -119,6 +119,7 @@
     <Compile Include="LzfTest.cs" />
     <Compile Include="ValuesStorageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WrappedCollectionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FirstFloor.ModernUI\FirstFloor.ModernUI.csproj">

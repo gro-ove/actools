@@ -42,6 +42,8 @@ namespace AcTools.Processes {
             [JsonProperty(PropertyName = "name")]
             public string Name;
 
+            public bool IsCancelled => !IsNotCancelled;
+
             public virtual bool IsNotCancelled => false;
 
             public virtual string GetDescription() {

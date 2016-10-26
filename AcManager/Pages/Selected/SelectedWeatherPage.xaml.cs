@@ -30,7 +30,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using SharpCompress.Common;
-using SharpCompress.Writer;
+using SharpCompress.Writers;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent, INotifyPropertyChanged {

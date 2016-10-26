@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer x:Name="ScrollViewer">
         <StackPanel>
             <!--controls test-->
             <StackPanel Margin="0 0 0 20" TextBlock.Foreground="Cyan">

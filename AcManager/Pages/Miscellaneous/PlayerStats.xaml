@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.PlayerStats" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+        xmlns:m="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged"
+        d:DataContext="{d:DesignInstance m:PlayerStats+ViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/StatEntry.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ItemsPanelTemplate x:Key="ItemsPanel">
+                <UniformGrid Columns="{Binding Columns}" VerticalAlignment="Top" />
+            </ItemsPanelTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="20 20 20 0">
+            <Button DockPanel.Dock="Right" Command="{Binding RebuildOverallCommand}" Content="Rebuild Stats" Margin="4 0 0 0" />
+            <mui:Cell>
+                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, might not work properly.</mui:BbCodeBlock>
+            </mui:Cell>
+        </DockPanel>
+
+        <ScrollViewer>
+            <ItemsControl Margin="16 20 16 0" ItemsPanel="{StaticResource ItemsPanel}">
+                <c:StatEntry Title="Average speed" ValueUnits="km" Value="{Binding Stats.AverageSpeed, StringFormat='{}{0:F0}'}"
+                        Icon="F1 M 40,47C 39,49 36,49 35,47C 33,46 33,43 35,42C 35,41 36,41 37,41L 43,39L 41,46C 41,46 41,47 40,47 Z M 38,23C 49,23 58,31 58,43L 58,46L 48,46L 48,43C 48,37 43,33 38,33C 32,33 28,37 28,43L 28,46L 18,46L 18,43C 18,31 26,23 38,23 Z M 55,43C 55,38 53,34 50,31L 47,34C 49,36 51,39 51,43L 55,43 Z M 26,30L 29,33C 31,31 34,30 36,30L 36,26C 33,26 29,27 26,30 Z M 46,33L 49,30C 46,27 42,26 38,26L 38,30C 41,30 44,31 46,33 Z M 21,43L 25,43C 25,39 26,36 28,34L 25,31C 22,34 21,38 21,43 Z" />
+
+                <c:StatEntry Title="Total driven distance" ValueUnits="km" Value="{Binding Stats.DistanceKm, StringFormat='{}{0:F1}'}"
+                        Icon="F1 M 31,19L 33,19C 34,19 34,19 34,20L 34,55C 34,56 34,57 33,57L 31,57C 30,57 30,56 30,55L 30,20C 30,19 30,19 31,19 Z M 38,22L 52,31C 52,31 52,32 52,33L 38,41C 37,41 36,40 36,39L 36,23C 36,22 37,22 38,22 Z" />
+
+                <c:StatEntry Title="Gone offroad" Value="{Binding Stats.GoneOffroadTimes}"
+                        ValueUnits="{Binding Stats.GoneOffroadTimes, Converter={StaticResource PluralizingConverter}, ConverterParameter='time'}"
+                        Icon="F1 M 20,57L 38,14L 55,57L 39,57L 39,61L 36,61L 36,57L 20,57 Z M 39,57L 39,49L 47,46L 47,44L 39,47L 39,44L 44,42L 44,41L 39,42L 39,37L 36,37L 36,44L 31,41L 31,44L 36,47L 36,57L 39,57 Z" />
+
+                <c:StatEntry Title="Driving time" Value="{Binding Stats.Time, Converter={StaticResource ReadableTimeSpanConverter}}"
+                        Icon="F1 M 38,23C 46,23 53,30 53,39C 53,48 46,55 38,55C 29,55 22,48 22,39C 22,30 29,23 38,23 Z M 38,27C 31,27 26,33 26,39C 26,46 31,51 38,51C 44,51 49,46 49,39C 49,33 44,27 38,27 Z M 37,30C 38,30 39,31 39,32L 39,38L 45,38C 45,38 46,39 46,39L 46,40C 46,41 45,42 45,42L 38,42C 37,42 36,42 35,41C 35,41 35,40 35,39L 35,32C 35,31 35,30 36,30L 37,30 Z M 49,20C 52,20 55,23 55,26C 55,28 54,29 54,30C 51,27 48,24 44,22C 45,21 47,20 49,20 Z M 26,20C 28,20 30,21 31,22C 27,24 24,27 21,30C 21,29 20,28 20,26C 20,23 23,20 26,20 Z" />
+
+                <!--<m:StatEntry Title="Burnt fuel"
+                        Value="{Binding Overall.FuelBurnt, StringFormat='{}{0:F1} liters'}"
+                        Icon="F1 M 42,19L 42,31C 44,31 48,32 48,49C 49,53 54,53 55,47C 57,42 53,42 52,28C 52,26 52,22 45,19L 45,17C 52,17 57,25 57,26C 57,28 55,28 55,28C 55,28 55,38 57,39C 58,41 58,45 58,49C 58,52 53,55 52,55C 50,55 45,55 45,50C 45,46 45,36 42,35L 42,55C 43,55 44,56 44,57L 44,60L 19,60L 19,57C 19,56 19,55 20,55L 20,19C 20,17 22,15 23,15L 39,15C 41,15 42,17 42,19 Z M 25,33L 37,33C 38,33 39,32 39,31L 39,20C 39,20 38,19 37,19L 25,19C 24,19 23,20 23,20L 23,31C 23,32 24,33 25,33 Z" />-->
+
+                <c:StatEntry Title="Fuel consumption" ValueUnits="l/100km" Value="{Binding Stats.FuelConsumption, StringFormat='{}{0:F1}'}"
+                        Icon="F1 M 42,19L 42,31C 44,31 48,32 48,49C 49,53 54,53 55,47C 57,42 53,42 52,28C 52,26 52,22 45,19L 45,17C 52,17 57,25 57,26C 57,28 55,28 55,28C 55,28 55,38 57,39C 58,41 58,45 58,49C 58,52 53,55 52,55C 50,55 45,55 45,50C 45,46 45,36 42,35L 42,55C 43,55 44,56 44,57L 44,60L 19,60L 19,57C 19,56 19,55 20,55L 20,19C 20,17 22,15 23,15L 39,15C 41,15 42,17 42,19 Z M 25,33L 37,33C 38,33 39,32 39,31L 39,20C 39,20 38,19 37,19L 25,19C 24,19 23,20 23,20L 23,31C 23,32 24,33 25,33 Z" />
+
+                <c:StatEntry Title="Maximum speed" ValueUnits="kph" Value="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1}'}"
+                        CarId="{Binding Stats.MaxSpeedCarId}" />
+
+                <c:StatEntry Title="Driven distance" ValueUnits="km" Value="{Binding Stats.MaxDistancePerCarKm, StringFormat='{}{0:F1}'}"
+                        CarId="{Binding Stats.MaxDistancePerCarCarId}"
+                        Visibility="{Binding Stats.MaxDistancePerCarSame, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+
+                <c:StatEntry Title="Favorite track" ValueUnits="km" Value="{Binding Stats.MaxDistancePerTrackKm, StringFormat='{}{0:F1}'}"
+                        TrackId="{Binding Stats.MaxDistancePerTrackTrackId}"
+                        Visibility="{Binding Stats.MaxDistancePerTrackSame, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+
+                <c:StatEntry Title="Longest jump" ValueUnits="m"
+                        Visibility="{Binding Stats.LongestAirborneCarId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        Value="{Binding Stats.LongestAirborne, StringFormat='{}{0:F1}'}" CarId="{Binding Stats.LongestAirborneCarId}" />
+
+                <c:StatEntry Title="Longest wheelie" ValueUnits="m"
+                        Visibility="{Binding Stats.LongestWheelieCarId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        Value="{Binding Stats.LongestWheelie, StringFormat='{}{0:F1}'}" CarId="{Binding Stats.LongestWheelieCarId}" />
+
+                <c:StatEntry Title="Longest two wheels" ValueUnits="m"
+                        Visibility="{Binding Stats.LongestTwoWheelsCarId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        Value="{Binding Stats.LongestTwoWheels, StringFormat='{}{0:F1}'}" CarId="{Binding Stats.LongestTwoWheelsCarId}" />
+
+                <c:StatEntry Title="Total jumps distance" ValueUnits="m"
+                        Visibility="{Binding Stats.TotalAirborne, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1}"
+                        Value="{Binding Stats.TotalAirborne, StringFormat='{}{0:F1}'}"
+                        Icon="F1 M 56,19C 56,22 54,29 41,42L 40,50L 33,58L 34,50L 25,41L 17,42L 25,35L 33,34C 46,21 53,19 56,19 Z M 23,52L 26,44L 31,49L 23,52 Z M 49,26L 47,25L 44,27L 46,29L 48,31L 50,28L 49,26 Z" />
+
+                <c:StatEntry Title="Tyres worn"
+                        Visibility="{Binding Stats.TotalTyreWearRounded, Converter={StaticResource MoreToVisibilityConverter}}"
+                        Value="{Binding Stats.TotalTyreWearRounded, StringFormat='{}{0:F0}'}"
+                        ValueUnits="{Binding Stats.GoneOffroadTimes, Converter={StaticResource PluralizingConverter}, ConverterParameter='tyre'}"
+                        Icon="F1 M 29,46L 32,48C 34,44 30,41 28,40L 28,42C 28,43 29,45 29,46 Z M 41,54C 42,50 46,49 48,48L 38,41L 38,30L 28,30L 28,38C 36,41 35,47 34,49L 41,54 Z M 43,55C 45,56 48,56 50,54C 51,53 51,51 49,49C 46,50 44,53 43,55L 43,55 Z M 41,39L 51,46C 54,49 55,53 52,56C 50,59 45,60 41,58L 30,50C 27,49 25,45 25,42L 25,30L 23,30L 23,17L 44,17L 44,30L 41,30L 41,39 Z M 26,20L 26,26L 41,26L 41,20L 26,20 Z" />
+
+                <c:StatEntry Title="Total crashes"
+                        Visibility="{Binding Stats.TotalCrashes, Converter={StaticResource MoreToVisibilityConverter}}"
+                        Value="{Binding Stats.TotalCrashes}"
+                        ValueUnits="{Binding Stats.TotalCrashes, Converter={StaticResource PluralizingConverter}, ConverterParameter='crash'}"
+                        Icon="F1 M 12,50C 11,50 11,50 11,49L 10,44C 10,43 10,41 12,40L 14,31L 15,31L 16,31L 26,30L 27,29L 28,29L 33,37C 34,38 35,39 35,40L 36,46C 36,46 36,47 35,47L 35,47L 35,49C 35,50 34,51 33,51C 32,51 31,50 31,49L 31,47L 16,50L 17,51C 17,52 16,53 15,53C 14,54 13,53 13,52L 13,50L 12,50 Z M 14,40L 30,37L 27,32L 16,34L 14,40 Z M 14,41C 13,41 13,43 13,44C 13,45 14,45 15,45C 16,45 17,44 17,43C 17,42 15,41 14,41 Z M 30,39C 29,39 28,40 29,41C 29,42 30,43 31,43C 32,43 33,42 33,41C 33,40 31,39 30,39 Z M 40,47C 39,47 39,46 39,46L 40,40C 40,39 41,38 42,37L 47,29L 48,29L 49,30L 59,31L 60,31L 61,31L 63,40C 65,41 65,42 65,44L 64,49C 64,50 64,50 63,50L 62,50L 62,52C 62,53 61,53 60,53C 59,53 58,52 58,51L 59,49L 44,47L 44,49C 44,50 43,51 42,51C 41,51 40,50 40,49L 40,47L 40,47 Z M 45,37L 61,39L 59,34L 48,32L 45,37 Z M 45,39C 44,39 42,40 42,41C 42,42 43,43 44,43C 45,43 46,42 46,41C 47,40 46,39 45,39 Z M 61,41C 60,41 58,42 58,43C 58,44 59,45 60,45C 61,45 62,44 62,43C 62,42 62,41 61,41 Z M 28,19L 31,17L 34,34L 28,19 Z M 36,17L 39,17L 36,34L 36,17 Z M 44,19L 47,20L 39,36L 44,19 Z" />
+            </ItemsControl>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

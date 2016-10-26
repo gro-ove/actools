@@ -116,8 +116,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -179,6 +179,7 @@
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
     <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
     <Compile Include="Windows\Controls\Switch.cs" />
+    <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
@@ -366,6 +367,7 @@
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
+    <Compile Include="WrappedCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Assets\Converters.xaml">
@@ -615,7 +617,7 @@
   <ItemGroup>
     <None Include="Assets\BrokenImage.bin" />
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
-    <None Include="Packages.config" />
+    <None Include="packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />
     <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
     <Resource Include="Effects\Shaders\ColorPickerBlueSliderEffect.ps" />

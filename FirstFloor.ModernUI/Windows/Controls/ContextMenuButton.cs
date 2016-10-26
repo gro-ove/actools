@@ -23,10 +23,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     popup.Placement = near ? PlacementMode.Bottom : PlacementMode.MousePoint;
                     popup.PlacementTarget = near ? this : null;
 
-                    if (popup.Parent != this) {
+                    /*if (popup.Parent != this) {
                        AddLogicalChild(popup);
                        AddVisualChild(popup);
-                    }
+                    }*/
 
                     popup.IsOpen = true;
                     popup.StaysOpen = false;

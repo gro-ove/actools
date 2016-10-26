@@ -25,6 +25,7 @@ namespace AcManager.Tools.SemiGui {
             _defaultAssistsFactory = factory;
         }
 
+        public static event EventHandler<GameStartedArgs> Started;
         public static event EventHandler<GameEndedArgs> Ended;
         public static event EventHandler<GameFinishedArgs> Finished;
         public static event EventHandler<GameFinishedArgs> Cancelled;
@@ -157,6 +158,7 @@ namespace AcManager.Tools.SemiGui {
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                         if (raceMode) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
+                            Started?.Invoke(null, new GameStartedArgs(properties));
                         } else {
                             properties.SetAdditional(new ReplayCommandExecutor(properties));
                         }

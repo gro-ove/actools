@@ -14,6 +14,12 @@ namespace AcManager.Tools.Filters {
                 case "new":
                     return nameof(AcCommonObject.IsNew);
 
+                case "age":
+                    return nameof(AcCommonObject.AgeInDays);
+
+                case "date":
+                    return nameof(AcCommonObject.CreationDateTime);
+
                 case "errors":
                 case "haserrors":
                     return nameof(AcCommonObject.HasErrors);
@@ -44,6 +50,9 @@ namespace AcManager.Tools.Filters {
 
                 case "age":
                     return value.Test(obj.AgeInDays);
+
+                case "date":
+                    return value.Test(obj.CreationDateTime);
 
                 case "errors":
                 case "haserrors":

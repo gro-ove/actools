@@ -1,4 +1,6 @@
-﻿namespace StringBasedFilter.TestEntries {
+﻿using System;
+
+namespace StringBasedFilter.TestEntries {
     internal class ConstTestEntry : ITestEntry {
         private readonly bool _value;
 
@@ -14,11 +16,15 @@
             return _value;
         }
 
-        public bool Test(double value) {
+        public bool Test(TimeSpan value) {
             return _value;
         }
 
-        public bool Test(object value) {
+        public bool Test(DateTime value) {
+            return _value;
+        }
+
+        public bool Test(double value) {
             return _value;
         }
 

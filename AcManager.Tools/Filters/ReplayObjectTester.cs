@@ -18,6 +18,9 @@ namespace AcManager.Tools.Filters {
 
                 case "size":
                     return value.Test(obj.Size.ToMegabytes());
+                    
+                case "date":
+                    return value.Test(obj.CreationDateTime);
 
                 case "carid":
                     return value.Test(obj.CarId);

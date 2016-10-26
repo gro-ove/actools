@@ -78,7 +78,7 @@
                 <TextBlock Text="{x:Static g:AppStrings.AcObject_DateLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
                 <TextBlock Text="{x:Static g:AppStrings.AcObject_SizeLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
-                <TextBlock Text="{Binding SelectedObject.CreationTime}" Grid.Column="1" Grid.Row="0">
+                <TextBlock Text="{Binding SelectedObject.CreationDateTime}" Grid.Column="1" Grid.Row="0">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByAge}" Command="{Binding FilterCommand}" CommandParameter="age" />

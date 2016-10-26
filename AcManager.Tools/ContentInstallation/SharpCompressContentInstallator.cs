@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
-using SharpCompress.Archive;
+using SharpCompress.Archives;
 using SharpCompress.Common;
 
 namespace AcManager.Tools.ContentInstallation {

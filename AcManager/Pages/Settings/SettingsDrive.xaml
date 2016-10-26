@@ -28,7 +28,7 @@
 
             <CheckBox IsChecked="{Binding Drive.StarterFallbackIfNotAvailable}"
                     Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='UI Module'}">
-                <Label Content="Fallback to Official Starter if original launcher isn't running" />
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_UiModuleFallback}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
@@ -45,6 +45,17 @@
 
             <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
+            </CheckBox>
+
+            <!--shared memory-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="AC’s shared memory" />
+            
+            <CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
+                <Label Content="Watch for AC shared memory" ToolTip="Used for proper hibernation and other stuff" />
+            </CheckBox>
+            
+            <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+                <Label Content="Hibernate CM while racing" ToolTip="This way, CM won’t waste precious CPU and/or GPU time when it’s so needed" />
             </CheckBox>
 
             <!--player’s name-->

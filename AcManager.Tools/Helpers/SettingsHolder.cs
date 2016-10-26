@@ -504,6 +504,30 @@ namespace AcManager.Tools.Helpers {
                 NaiveStarterType
             });
 
+            private bool? _watchForSharedMemory;
+
+            public bool WatchForSharedMemory {
+                get { return _watchForSharedMemory ?? (_watchForSharedMemory = ValuesStorage.GetBool("Settings.DriveSettings.WatchForSharedMemory", true)).Value; }
+                set {
+                    if (Equals(value, _watchForSharedMemory)) return;
+                    _watchForSharedMemory = value;
+                    ValuesStorage.Set("Settings.DriveSettings.WatchForSharedMemory", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _hideWhileRacing;
+
+            public bool HideWhileRacing {
+                get { return _hideWhileRacing ?? (_hideWhileRacing = ValuesStorage.GetBool("Settings.DriveSettings.HideWhileRacing", true)).Value; }
+                set {
+                    if (Equals(value, _hideWhileRacing)) return;
+                    _hideWhileRacing = value;
+                    ValuesStorage.Set("Settings.DriveSettings.HideWhileRacing", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _copyFilterToSystemForOculus;
 
             public bool CopyFilterToSystemForOculus {

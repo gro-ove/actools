@@ -188,6 +188,71 @@
             <TreeViewItem Header="Meta.Vlc">
                 <mui:BbCodeBlock>[url="https://github.com/higankanshi/Meta.Vlc"]Homepage[/url]</mui:BbCodeBlock>
             </TreeViewItem>
+            <TreeViewItem Header="WindowsIcons">
+                <mui:BbCodeBlock>[url="https://github.com/Templarian/WindowsIcons"]Homepage[/url]
+[br][mono]# License
+[br]
+[br]Please carefully understand the license and download the latest icons at ModernUIIcons.com.
+[br]
+[br]## Understand Your Rights
+[br]No Attribution and No Derived Works
+[br]http://creativecommons.org/licenses/by-nd/3.0/ *
+[br]
+[br]- If your project is open source include this license file in the source.
+[br]- Nothing is needed in the front facing project (UNLESS you
+[br]  are using any of the icons listed below in the attribution section).
+[br]- Commercial use is not only allowed but encouraged. If it is an icon
+[br]  in the attribution list below, you still need to attribute those!
+[br]- Do not distribute the entire package (I've allowed this dozens of
+[br]  times for open source projects, but email me first).
+[br]
+[br]## Creator
+[br]- Austin Andrews (@templarian)
+[br]
+[br]## Contributor**
+[br]- Jay Zawrotny (@JayZawrotny)
+[br]  - A Bunch
+[br]- Oren Nachman
+[br]  - appbar.chevron.down
+[br]  - appbar.chevron.up
+[br]  - appbar.chevron.left
+[br]  - appbar.chevron.right
+[br]
+[br]## Derived Works
+[br]- Alex Peattie
+[br]  - Social: http://www.alexpeattie.com/projects/justvector_icons/
+[br]
+[br]## Attribution***
+[br]- Kris Vandermotten (@kvandermotten)
+[br]  - appbar.medical.pulse
+[br]- Constantin Kichinsky (@kichinsky)
+[br]  - appbar.currency.rubles
+[br]  - appbar.currency.grivna
+[br]- Massimo Savazzi (@msavazzi)
+[br]  - List of missing exported icons
+[br]- Proletkult Graphik, from The Noun Project
+[br]  - appbar.draw.pen (inspired)
+[br]- Olivier Guin, from The Noun Project
+[br]  - appbar.draw.marker
+[br]- Gibran Bisio, from The Noun Project
+[br]  - appbar.draw.bucket
+[br]Andrew Forrester, from The Noun Project
+[br]  - appbar.fingerprint
+[br]
+[br]* The license is for attribution, but this is not required.
+[br]** Developers and designers that emailed Templarian the source .design icons to be added into the package. PNGs also accepted, but may take longer to be added.
+[br]*** Icons I've copied so closely you want to attribute them and are also under the CC license.
+[br]
+[br]Contact
+[br]- http://templarian.com/
+[br]- admin[@]templarian[.]com
+[br]
+[br]* Does not apply to copyrighted logos
+[br]- Skype
+[br]- Facebook
+[br]- Twitter
+[br]- etc...</mui:BbCodeBlock>
+            </TreeViewItem>
             <TreeViewItem Header="MoonSharp">
                 <mui:BbCodeBlock>[url="http://www.moonsharp.org/"]Homepage[/url][br]
 [br][mono]Copyright (c) 2014, Marco Mastropaolo
@@ -278,6 +343,77 @@
 [br]OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 [br](INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 [br]OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+[/mono]</mui:BbCodeBlock>
+            </TreeViewItem>
+            <TreeViewItem Header="LevelDB">
+                <mui:BbCodeBlock>[url="https://github.com/google/leveldb"]Homepage[/url][br]
+[br][mono]Copyright (c) 2011 The LevelDB Authors. All rights reserved.
+[br]
+[br]Redistribution and use in source and binary forms, with or without
+[br]modification, are permitted provided that the following conditions are
+[br]met:
+[br]
+[br]   * Redistributions of source code must retain the above copyright
+[br]notice, this list of conditions and the following disclaimer.
+[br]   * Redistributions in binary form must reproduce the above
+[br]copyright notice, this list of conditions and the following disclaimer
+[br]in the documentation and/or other materials provided with the
+[br]distribution.
+[br]   * Neither the name of Google Inc. nor the names of its
+[br]contributors may be used to endorse or promote products derived from
+[br]this software without specific prior written permission.
+[br]
+[br]THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+[br]"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+[br]LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+[br]A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+[br]OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+[br]SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+[br]LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+[br]DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+[br]THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+[br](INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+[br]OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+[/mono]</mui:BbCodeBlock>
+            </TreeViewItem>
+            <TreeViewItem Header="LevelDB for Windows and .NET">
+                <mui:BbCodeBlock>[url="https://github.com/Reactive-Extensions/LevelDB"]Homepage[/url][br]
+[br][mono]Copyright 2012 Microsoft Corporation
+[br]
+[br]Licensed under the Apache License, Version 2.0 (the "License"); you may
+[br]not use this file except in compliance with the License. You may obtain
+[br]a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+[br]
+[br]Unless required by applicable law or agreed to in writing, software
+[br]distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+[br]WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
+[br]the License for the specific language governing permissions
+[br]and limitations under the License.
+[/mono]</mui:BbCodeBlock>
+            </TreeViewItem>
+            <TreeViewItem Header="Assetto Corsa Shared Memory Library">
+                <mui:BbCodeBlock>[url="https://github.com/mdjarv/assettocorsasharedmemory"]Homepage[/url][br]
+[br][mono]MIT License
+[br]
+[br]Copyright (c) 2016 Mathias Djärv
+[br]
+[br]Permission is hereby granted, free of charge, to any person obtaining a copy
+[br]of this software and associated documentation files (the "Software"), to deal
+[br]in the Software without restriction, including without limitation the rights
+[br]to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+[br]copies of the Software, and to permit persons to whom the Software is
+[br]furnished to do so, subject to the following conditions:
+[br]
+[br]The above copyright notice and this permission notice shall be included in all
+[br]copies or substantial portions of the Software.
+[br]
+[br]THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+[br]IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+[br]FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+[br]AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+[br]LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+[br]OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+[br]SOFTWARE.
 [/mono]</mui:BbCodeBlock>
             </TreeViewItem>
         </TreeView>

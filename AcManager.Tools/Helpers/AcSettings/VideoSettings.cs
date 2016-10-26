@@ -248,10 +248,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                                  }).Distinct().ToList();
             }
 
-            [DllImport(@"acVideoModes.dll")]
+            [DllImport(@"acVideoModes.dll", CallingConvention = CallingConvention.Cdecl)]
             private static extern int acInitVideoModes();
 
-            [DllImport(@"acVideoModes.dll")]
+            [DllImport(@"acVideoModes.dll", CallingConvention = CallingConvention.Cdecl)]
             private static extern int acGetVideoMode(int index, ref VideoMode mode);
         }
 

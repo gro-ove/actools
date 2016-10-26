@@ -67,7 +67,6 @@ namespace AcTools.Utils.Helpers {
             try {
                 int exitCode;
                 if (Kernel32.GetExitCodeProcess(handle, out exitCode) && exitCode != Kernel32.STILL_ACTIVE) return true;
-
                 using (var w = new ProcessWrapper.ProcessWaitHandle(handle)) {
                     return w.WaitOne(0, false);
                 }

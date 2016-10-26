@@ -6,7 +6,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class CarObjectTester : IParentTester<CarObject> {
-        public static CarObjectTester Instance = new CarObjectTester();
+        public static readonly CarObjectTester Instance = new CarObjectTester();
 
         internal static string InnerParameterFromKey(string key) {
             switch (key) {

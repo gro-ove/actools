@@ -41,5 +41,13 @@ namespace StringBasedFilter.TestEntries {
         public bool Test(bool value) {
             return Test(value ? 1.0 : 0.0);
         }
+
+        public bool Test(TimeSpan value) {
+            return Test(value.TotalSeconds);
+        }
+
+        public bool Test(DateTime value) {
+            return Test(value.TimeOfDay);
+        }
     }
 }

@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Run webserver with real-time updating player stats at specified port. Set to
+        /// 0 to disable (default value).
+        /// Example: --run-stats-webserver=18081.
+        /// </summary>
+        RunStatsWebserver,
+
+        /// <summary>
         /// Load libraries directly, without dumping them on disk.
         /// Example: --direct-assemblies-loading.
         /// </summary>

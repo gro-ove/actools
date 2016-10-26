@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace StringBasedFilter.TestEntries {
@@ -23,6 +24,14 @@ namespace StringBasedFilter.TestEntries {
 
         public bool Test(bool value) {
             return _regex.IsMatch(value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public bool Test(TimeSpan value) {
+            return Test(value.ToString());
+        }
+
+        public bool Test(DateTime value) {
+            return Test(value.ToString(CultureInfo.CurrentUICulture));
         }
     }
 }

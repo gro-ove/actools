@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -26,6 +25,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Profile;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Online;
@@ -33,6 +33,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
 using AcTools.AcdFile;
 using AcTools.DataFile;
@@ -47,7 +48,7 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App : FatalErrorMessage.IAppRestartHelper {
+    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -76,6 +77,8 @@ namespace AcManager {
             LocaleHelper.InitializeAsync().Wait();
             new App().Run();
         }
+
+        private AppHibernator _hibernator;
 
         private App() {
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
@@ -159,6 +162,7 @@ namespace AcManager {
             ServerEntry.RegisterFactory(uiFactory);
 
             GameWrapper.RegisterFactory(new DefaultAssistsFactory());
+            LapTimesManager.Instance.SetListener();
 
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
@@ -188,10 +192,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
             PrepareUi();
-            var iconUri = new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico",
-                    UriKind.Absolute);
-            CustomShowroomWrapper.SetDefaultIcon(iconUri);
-            Toast.SetDefaultIcon(iconUri);
+            AppIconService.Initialize(this);
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
@@ -218,6 +219,13 @@ namespace AcManager {
             };
 
             AbstractDataFile.ErrorsCatcher = new DataSyntaxErrorCatcher();
+            AcSharedMemory.Initialize();
+
+            AppArguments.Set(AppFlag.RunStatsWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
+            PlayerStatsManager.Instance.SetListener();
+
+            _hibernator = new AppHibernator();
+            _hibernator.SetListener();
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
@@ -359,14 +367,30 @@ namespace AcManager {
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", ControlsStrings.AssistsPreset_Pro);
         }
 
-        private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e) {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
+            Dispose();
         }
 
-        public void Restart() {
+        void FatalErrorMessage.IAppRestartHelper.Restart() {
             WindowsHelper.RestartCurrentApplication();
+        }
+
+        Uri IAppIconProvider.GetTrayIcon() {
+            return WindowsVersionHelper.IsWindows10OrGreater ?
+                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIcon.ico", UriKind.Absolute) :
+                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIconWin8.ico", UriKind.Absolute);
+        }
+
+        Uri IAppIconProvider.GetAppIcon() {
+            return new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute);
+        }
+
+        public void Dispose() {
+            _hibernator?.Dispose();
+            _hibernator = null;
         }
     }
 }

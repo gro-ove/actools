@@ -10,6 +10,69 @@ namespace StringBasedFilter.Parsing {
         private readonly string _key;
         private readonly ITestEntry _testEntry;
 
+        private static ITestEntry CreateTimeSpanTestEntry(Operator op, string value) {
+            var p = value.Split(':');
+            double? result;
+            switch (p.Length) {
+                case 0:
+                    result = null;
+                    break;
+                case 1:
+                    result = FlexibleParser.TryParseDouble(p[0]);
+                    break;
+                case 2:
+                    result = FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1]);
+                    break;
+                case 3:
+                    result = (FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1])) * 60 +
+                            FlexibleParser.TryParseDouble(p[2]);
+                    break;
+                default:
+                    result = ((FlexibleParser.TryParseDouble(p[0]) * 24 + FlexibleParser.TryParseDouble(p[1])) * 60 +
+                            FlexibleParser.TryParseDouble(p[2])) * 60 + FlexibleParser.TryParseDouble(p[3]);
+                    break;
+            }
+
+            if (!result.HasValue) return new ConstTestEntry(false);
+            return new TimeSpanTestEntry(op, TimeSpan.FromSeconds(result.Value), value.IndexOf('.') != -1 || value.IndexOf(',') != -1);
+        }
+
+        private static ITestEntry CreateDateTimeTestEntry(Operator op, string value) {
+            try {
+                var date = DateTime.Parse(value);
+                return new DateTimeTestEntry(op, date, value.IndexOf(' ') != -1);
+            } catch (FormatException) {
+                return new ConstTestEntry(false);
+            }
+        }
+
+        private static ITestEntry CreateNumericTestEntry(Operator op, string key, string value) {
+            if (value.IndexOf(':') != -1) {
+                return CreateTimeSpanTestEntry(op, value);
+            }
+
+            var point = value.IndexOf('.');
+            if (point != -1 && value.IndexOf('.', point + 1) != -1 || value.IndexOf('/') != -1 || value.IndexOf('-') > 0) {
+                return CreateDateTimeTestEntry(op, value);
+            }
+
+            if (DistanceTestEntry.IsDistanceKey(key) || DistanceTestEntry.IsDistanceValue(value)) {
+                double num;
+                return DistanceTestEntry.ToMeters(value, out num) ? new DistanceTestEntry(op, num) :
+                        (ITestEntry)new ConstTestEntry(false);
+            }
+
+            if (point != -1 || value.IndexOf(',') != -1) {
+                double num;
+                return FlexibleParser.TryParseDouble(value, out num) ? new NumberTestEntry(op, num) :
+                        (ITestEntry)new ConstTestEntry(false);
+            } else {
+                int num;
+                return FlexibleParser.TryParseInt(value, out num) ? new IntTestEntry(op, num) :
+                        (ITestEntry)new ConstTestEntry(false);
+            }
+        }
+
         public static FilterTreeNode Create(string value, bool strictMode, out string keyName) {
             ITestEntry testEntry;
 
@@ -20,8 +83,8 @@ namespace StringBasedFilter.Parsing {
                 var match = ParsingRegex.Match(value);
                 if (match.Success) {
                     keyName = match.Groups[1].Value.ToLower();
-                    var op = match.Groups[3].Value;
-                    var end = value.Substring(match.Length);
+                    var op = match.Groups[3].Value[0];
+                    var end = value.Substring(match.Length).TrimStart();
 
                     if (match.Groups[2].Success) {
                         var parser = new FilterParser();
@@ -29,20 +92,28 @@ namespace StringBasedFilter.Parsing {
                         return new FilterTreeNodeChild(keyName, parser.Parse($"{match.Groups[2].Value.Substring(1)}{op}{end}", out properties), strictMode);
                     }
 
-                    if (op == ":") {
-                        testEntry = CreateTestEntry(end, true, false);
-                    } else if (op == "+" || op == "-") {
-                        testEntry = new BooleanTestEntry(op == "+");
-                    } else if (end.Contains(".") || end.Contains(",")) {
-                        double num;
-                        testEntry = FlexibleParser.TryParseDouble(end, out num)
-                                ? new NumberTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
-                                : (ITestEntry)new ConstTestEntry(false);
-                    } else {
-                        int num;
-                        testEntry = FlexibleParser.TryParseInt(end, out num)
-                                ? new IntTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
-                                : (ITestEntry)new ConstTestEntry(false);
+                    switch (op) {
+                        case ':':
+                            testEntry = CreateTestEntry(end, true, false);
+                            break;
+                        case '+':
+                            testEntry = new BooleanTestEntry(true);
+                            break;
+                        case '-':
+                            testEntry = new BooleanTestEntry(false);
+                            break;
+                        case '<':
+                            testEntry = CreateNumericTestEntry(Operator.Less, keyName, end);
+                            break;
+                        case '>':
+                            testEntry = CreateNumericTestEntry(Operator.More, keyName, end);
+                            break;
+                        case '=':
+                            testEntry = CreateNumericTestEntry(Operator.Equal, keyName, end);
+                            break;
+                        default:
+                            testEntry = new ConstTestEntry(false);
+                            break;
                     }
                 } else {
                     keyName = null;

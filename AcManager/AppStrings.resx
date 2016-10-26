@@ -997,7 +997,7 @@ If you need some other values, please, contact us and we’ll add them.
 
 [b]Warning[/b]:
  Don't use symbols like “[” or “]”!</value>
-  <alternative>Used for saving or autosaving replays after the race.
+    <!--Used for saving or autosaving replays after the race.
 
 Values for replacement:
  [b][mono]{type}[/mono][/b] — type of race;
@@ -1020,7 +1020,8 @@ Examples:
 If you need some other values, please, contact us and we’ll add them.
 
 [b]Warning[/b]:
- Don't use symbols like “[” or “]”!</alternative></data>
+ Don't use symbols like “[” or “]”!-->
+</data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>
   </data>
@@ -2112,7 +2113,8 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
     <value>Start Race (Ctrl+G)</value>
-  <alternative>Start race (Ctrl+G)</alternative></data>
+    <!--Start race (Ctrl+G)-->
+  </data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
     <value>RSR app is missing</value>
   </data>
@@ -3355,7 +3357,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
     <value>Always record ghost in hot lap mode</value>
-  <alternative>Always record ghost in hotlap mode</alternative></data>
+    <!--Always record ghost in hotlap mode-->
+  </data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
     <value>Use custom weather’s particles</value>
   </data>
@@ -3364,7 +3367,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
     <value>Extended Weather:</value>
-  <alternative>Extended Weather</alternative></data>
+    <!--Extended Weather-->
+  </data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP-filter will be switched back later</value>
   </data>
@@ -3388,7 +3392,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
     <value>Record ghost while hot lapping even if it’s hidden</value>
-  <alternative>Record ghost while hotlapping even if it’s hidden</alternative></data>
+    <!--Record ghost while hotlapping even if it’s hidden-->
+  </data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
     <value>Special thanks for translation to:</value>
   </data>
@@ -3496,5 +3501,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Changelog_RecentChanges_Title" xml:space="preserve">
     <value>Recent Changes</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>Content Manager is hidden</value>
+  </data>
+  <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
+    <value>Fallback to Official Starter if original launcher isn’t running</value>
   </data>
 </root>

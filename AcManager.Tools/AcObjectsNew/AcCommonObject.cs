@@ -50,7 +50,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public double AgeInDays => (DateTime.Now - CreationTime).TotalDays;
+        public double AgeInDays => (DateTime.Now - CreationDateTime).TotalDays;
 
         public override void Reload() {
             ClearErrors();
@@ -58,11 +58,11 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
         }
 
-        public DateTime CreationTime { get; private set; }
+        public DateTime CreationDateTime { get; private set; }
 
         public void CheckIfNew() {
             try {
-                IsNew = DateTime.Now - CreationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
+                IsNew = DateTime.Now - CreationDateTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
             } catch (Exception) {
                 IsNew = false;
             }
@@ -78,7 +78,7 @@ namespace AcManager.Tools.AcObjectsNew {
             ClearErrors();
             Changed = false;
 
-            CreationTime = File.GetCreationTime(Location);
+            CreationDateTime = File.GetCreationTime(Location);
             CheckIfNew();
 
             try {

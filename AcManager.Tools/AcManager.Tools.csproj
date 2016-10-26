@@ -97,8 +97,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\Packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
@@ -106,15 +106,20 @@
       <HintPath>..\Packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SharpCompress, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="SharpCompress, Version=0.12.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Packages\SharpCompress.0.12.4\lib\net45\SharpCompress.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Management" />
+    <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
@@ -211,6 +216,7 @@
     <Compile Include="Filters\CarObjectTester.cs" />
     <Compile Include="Filters\CarSetupObjectTester.cs" />
     <Compile Include="Filters\CarSkinObjectTester.cs" />
+    <Compile Include="Filters\LapTimeTester.cs" />
     <Compile Include="Filters\ServerEntryTester.cs" />
     <Compile Include="Filters\ServerPresetObjectTester.cs" />
     <Compile Include="Filters\WeatherObjectTester.cs" />
@@ -218,7 +224,7 @@
     <Compile Include="Filters\TrackBaseObjectTester.cs" />
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
-    <Compile Include="Filters\UniqueAcObjectTester.cs" />
+    <Compile Include="Filters\UniversalAcObjectTester.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
@@ -298,6 +304,9 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Profile\LapTimesManager.cs" />
+    <Compile Include="Profile\LapTimesStorage.cs" />
+    <Compile Include="Profile\LapTimeWrapped.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
     <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Managers\CarSetupsDirectories.cs" />
@@ -336,8 +345,24 @@
     <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="Objects\SpecialEventObject.cs" />
     <Compile Include="Objects\WeatherColorEntry.cs" />
+    <Compile Include="Profile\SessionStats.cs" />
+    <Compile Include="Profile\PlayerStatsManager.cs" />
+    <Compile Include="Profile\PlayerStatsWebServer.cs" />
+    <Compile Include="Profile\OverallStats.cs" />
+    <Compile Include="Profile\StorageObjectExtension.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
+    <Compile Include="SemiGui\GameStartedArgs.cs" />
     <Compile Include="SemiGui\IBookingUi.cs" />
+    <Compile Include="SharedMemory\AcFlagType.cs" />
+    <Compile Include="SharedMemory\AcSharedSessionType.cs" />
+    <Compile Include="SharedMemory\AcSharedMemoryStatus.cs" />
+    <Compile Include="SharedMemory\AcSharedMemory.cs" />
+    <Compile Include="SharedMemory\AcGameStatus.cs" />
+    <Compile Include="SharedMemory\AssettoCorsaNotStartedException.cs" />
+    <Compile Include="SharedMemory\AcSharedGraphics.cs" />
+    <Compile Include="SharedMemory\AcSharedPhysics.cs" />
+    <Compile Include="SharedMemory\AcSharedEventArgs.cs" />
+    <Compile Include="SharedMemory\AcSharedStaticInfo.cs" />
     <Compile Include="Starters\ModuleStarter.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -451,6 +476,10 @@
       <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
       <Name>AcManager.Internal</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
+      <Project>{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}</Project>
+      <Name>AcTools.LapTimes</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>

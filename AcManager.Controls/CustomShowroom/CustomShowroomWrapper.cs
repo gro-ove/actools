@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -23,23 +24,6 @@ namespace AcManager.Controls.CustomShowroom {
     }
 
     public static class CustomShowroomWrapper {
-        private static Uri _iconUri;
-        private static Icon _iconValue;
-
-        public static void SetDefaultIcon(Uri iconUri) {
-            _iconUri = iconUri;
-        }
-
-        private static Icon Icon {
-            get {
-                if (_iconValue != null || _iconUri == null) return _iconValue;
-                using (var iconStream = Application.GetResourceStream(_iconUri)?.Stream) {
-                    _iconValue = iconStream == null ? null : new Icon(iconStream);
-                }
-                return _iconValue;
-            }
-        }
-
         private static bool IsSameDirectories(string a, string b) {
             try {
                 var f = Directory.GetFiles(a);
@@ -108,7 +92,7 @@ namespace AcManager.Controls.CustomShowroom {
                     _last = wrapper;
                     SetProperties(wrapper, renderer);
 
-                    wrapper.Form.Icon = Icon;
+                    wrapper.Form.Icon = AppIconService.GetAppIcon();
                 }
 
                 wrapper.Run(() => _starting = false);
@@ -148,7 +132,7 @@ namespace AcManager.Controls.CustomShowroom {
                     _last = wrapper;
                     SetProperties(wrapper, renderer);
 
-                    wrapper.Form.Icon = Icon;
+                    wrapper.Form.Icon = AppIconService.GetAppIcon();
                 }
 
                 wrapper.Run(() => _starting = false);

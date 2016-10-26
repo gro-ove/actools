@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
-    public class Storage : NotifyPropertyChanged {
+    public class Storage : NotifyPropertyChanged, IEnumerable<KeyValuePair<string, string>> {
         private readonly Dictionary<string, string> _storage;
         private readonly string _filename;
         private readonly string _encryptionKey;
@@ -650,6 +651,14 @@ namespace FirstFloor.ModernUI.Helpers {
                 Dirty();
                 OnPropertyChanged(nameof(Count));
             }
+        }
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() {
+            return _storage.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
     }
 }
