@@ -8,10 +8,10 @@
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
-            <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel_Tooltip}">
+            <!--<DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel}" />
                 <ComboBox ItemsSource="{Binding Audio.Latencies}" SelectedItem="{Binding Audio.Latency}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
+            </DockPanel>-->
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" Mode="Integer" Postfix="%"

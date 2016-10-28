@@ -6,6 +6,11 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Profile {
     public partial class PlayerStatsManager {
+        /// <summary>
+        /// Velocity by Y axis.
+        /// </summary>
+        public static float OptionTyreWearScale = 10f;
+
         public class OverallStats : NotifyPropertyChanged {
             private double _maxDistancePerCar;
             private string _maxDistancePerCarCarId;
@@ -206,6 +211,18 @@ namespace AcManager.Tools.Profile {
                 }
             }
 
+            private int _sessionsCount;
+
+            [JsonProperty]
+            public int SessionsCount {
+                get { return _sessionsCount; }
+                set {
+                    if (Equals(value, _sessionsCount)) return;
+                    _sessionsCount = value;
+                    OnPropertyChanged();
+                }
+            }
+
             [JsonProperty]
             public int GoneOffroadTimes {
                 get { return _goneOffroadTimes; }
@@ -294,7 +311,7 @@ namespace AcManager.Tools.Profile {
             public double FuelConsumption => Equals(DistanceKm, 0d) ? 0d : 1e2 * FuelBurnt / DistanceKm;
 
             [JsonIgnore]
-            public double TotalTyreWearRounded => Math.Floor(TotalTyreWear / 0.8);
+            public double TotalTyreWearRounded => Math.Floor(TotalTyreWear * OptionTyreWearScale);
 
             public void Extend(SessionStats session) {
                 /* extremums */
@@ -352,6 +369,7 @@ namespace AcManager.Tools.Profile {
                 TotalTwoWheels += session.TotalTwoWheels;
                 TotalTyreWear += session.TotalTyreWear;
                 TotalCrashes += session.TotalCrashes;
+                SessionsCount++;
             }
 
             public void CopyFrom(OverallStats updated) {

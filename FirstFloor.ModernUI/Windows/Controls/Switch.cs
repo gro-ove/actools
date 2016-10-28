@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Windows;
+using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class Switch : ListSwitch {
@@ -22,7 +24,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnWhenChanged));
 
         protected override bool TestChild(UIElement child) {
-            return Equals(Value, GetWhen(child));
+            return Value.XamlEquals(GetWhen(child));
+        }
+
+        protected override UIElement GetChild() {
+            return UiElements == null ? null : (UiElements.FirstOrDefault(TestChild) ??
+                    UiElements.FirstOrDefault(x => x.GetValue(WhenProperty) == null));
         }
     }
 }

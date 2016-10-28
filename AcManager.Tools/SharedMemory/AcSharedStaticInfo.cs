@@ -65,9 +65,15 @@ namespace AcManager.Tools.SharedMemory {
         public int AidAutoBlip;
 
         // added in 1.7.1
-        public int HasDRS;
-        public int HasERS;
-        public int HasKERS;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool HasDRS;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool HasERS;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool HasKERS;
+
         public float KersMaxJoules;
         public int EngineBrakeSettingsCount;
         public int ErsPowerControllerCount;

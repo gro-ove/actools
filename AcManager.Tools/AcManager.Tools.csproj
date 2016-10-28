@@ -358,7 +358,6 @@
     <Compile Include="SharedMemory\AcSharedMemoryStatus.cs" />
     <Compile Include="SharedMemory\AcSharedMemory.cs" />
     <Compile Include="SharedMemory\AcGameStatus.cs" />
-    <Compile Include="SharedMemory\AssettoCorsaNotStartedException.cs" />
     <Compile Include="SharedMemory\AcSharedGraphics.cs" />
     <Compile Include="SharedMemory\AcSharedPhysics.cs" />
     <Compile Include="SharedMemory\AcSharedEventArgs.cs" />

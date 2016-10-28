@@ -37,7 +37,7 @@ namespace AcManager.Tools.Profile {
         [NotNull]
         public OverallStats Overall => _overall ?? (_overall = _storage.GetOrCreateObject<OverallStats>(KeyOverall, () => new OverallStats(_storage)));
 
-        private SessionStats _current;
+        private WatchingSessionStats _current;
         private SessionStats _last;
 
         [CanBeNull]
@@ -74,7 +74,7 @@ namespace AcManager.Tools.Profile {
                 Apply(_current);
             }
 
-            _current = new SessionStats();
+            _current = new WatchingSessionStats();
             Last = _current;
         }
 
@@ -93,7 +93,7 @@ namespace AcManager.Tools.Profile {
             var newOverall = new OverallStats(_storage);
             var delay = 0;
             foreach (var source in _storage.Where(x => x.Key.StartsWith(KeySessionStatsPrefix)).Select(x => x.Value).ToList()) {
-                newOverall.Extend(JsonConvert.DeserializeObject<SessionStats>(source));
+                newOverall.Extend(SessionStats.Deserialize(source));
                 if (++delay > 5) {
                     await Task.Delay(10);
                 }
@@ -122,7 +122,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
 
             Overall.Extend(current);
             _storage.Set(KeyOverall, Overall);
-            _storage.Set(KeySessionStatsPrefix + current.StartedAt.ToMillisecondsTimestamp(), current);
+            _storage.Set(KeySessionStatsPrefix + current.StartedAt.ToMillisecondsTimestamp(), current.Serialize());
 
             // TODO: save best lap
         }
@@ -199,7 +199,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
             var filter = Filter.Create(new SessionStatsTester(), filterValue);
             
             foreach (var source in _storage.Where(x => x.Key.StartsWith(KeySessionStatsPrefix)).Select(x => x.Value).ToList()) {
-                var stats = JsonConvert.DeserializeObject<SessionStats>(source);
+                var stats = SessionStats.Deserialize(source);
                 if (filter.Test(stats)) {
                     result.Extend(stats);
                 }
@@ -216,7 +216,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
 
             var delay = 0;
             foreach (var source in _storage.Where(x => x.Key.StartsWith(KeySessionStatsPrefix)).Select(x => x.Value).ToList()) {
-                var stats = JsonConvert.DeserializeObject<SessionStats>(source);
+                var stats = SessionStats.Deserialize(source);
                 if (filter.Test(stats)) {
                     result.Extend(stats);
                 }

@@ -26,12 +26,15 @@ namespace AcManager.Tools.SharedMemory {
 
         public int CompletedLaps;
         public int Position;
-        public int CurrentTimeInt;
-        public int LastTimeInt;
-        public int BestTimeInt;
+        public int CurrentTimeMs;
+        public int LastTimeMs;
+        public int BestTimeMs;
         public float SessionTimeLeft;
         public float DistanceTraveled;
-        public int IsInPit;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool IsInPit;
+
         public int CurrentSectorIndex;
         public int LastSectorTime;
         public int NumberOfLaps;
@@ -47,10 +50,13 @@ namespace AcManager.Tools.SharedMemory {
 
         public float PenaltyTime;
         public AcFlagType Flag;
-        public int IdealLineOn;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool IdealLineOn;
 
         // added in 1.5
-        public int IsInPitLane;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool IsInPitLane;
         public float SurfaceGrip;
 
         [Pure]

@@ -60,12 +60,16 @@ namespace AcManager.Tools.SharedMemory {
         public float[] CarDamage;
 
         public int NumberOfTyresOut;
-        public int PitLimiterOn;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool PitLimiterOn;
         public float Abs;
 
         public float KersCharge;
         public float KersInput;
-        public int AutoShifterOn;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool AutoShifterOn;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] RideHeight;
