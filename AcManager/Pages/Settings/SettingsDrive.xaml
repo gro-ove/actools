@@ -39,10 +39,6 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_StartImmediately}" />
             </CheckBox>
 
-            <!--<CheckBox IsChecked="{Binding Drive.ImmediateCancel}">
-                <Label Content="Terminate loading immediately if Escape is pressed" />
-            </CheckBox>-->
-
             <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
             </CheckBox>
@@ -56,6 +52,14 @@
             
             <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
                 <Label Content="Hibernate CM while racing" ToolTip="This way, CM won’t waste precious CPU and/or GPU time when it’s so needed" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+                <Label Content="Terminate loading immediately if Escape is pressed" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+                <Label Content="Continue race if Escape pressed" />
             </CheckBox>
 
             <!--player’s name-->
@@ -90,6 +94,10 @@
 
             <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CacheBrands_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_CacheBrands}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.QuickDriveUseSkinNames}">
+                <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.QuickDriveAiLevelInName}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AiLevelInDriverName_Tooltip}">

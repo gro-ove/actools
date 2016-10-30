@@ -1,10 +1,8 @@
-﻿namespace AcTools.Windows.Input.Native
-{
+﻿namespace AcTools.Windows.Input.Native {
     /// <summary>
-    /// XButton definitions for use in the MouseData property of the <see cref="MOUSEINPUT"/> structure. (See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
+    /// XButton definitions for use in the MouseData property of the <see cref="MountInputEntry"/> structure. (See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
     /// </summary>
-    internal enum XButton : uint
-    {
+    internal enum XButton : uint {
         /// <summary>
         /// Set if the first X button is pressed or released.
         /// </summary>

@@ -29,15 +29,15 @@ namespace AcManager {
         private void UpdateGameListeners() {
             if (SettingsHolder.Drive.WatchForSharedMemory) {
                 if (!_added) {
-                    AcSharedMemory.Instance.GameStarted += OnGameStarted;
-                    AcSharedMemory.Instance.GameFinished += OnGameFinished;
+                    AcSharedMemory.Instance.Start += OnStart;
+                    AcSharedMemory.Instance.Finish += OnFinish;
                     GameWrapper.Started += GameWrapper_Started;
                     GameWrapper.Ended += GameWrapper_Ended;
                     _added = true;
                 }
             } else if (_added) {
-                AcSharedMemory.Instance.GameStarted -= OnGameStarted;
-                AcSharedMemory.Instance.GameFinished -= OnGameFinished;
+                AcSharedMemory.Instance.Start -= OnStart;
+                AcSharedMemory.Instance.Finish -= OnFinish;
                 GameWrapper.Started -= GameWrapper_Started;
                 GameWrapper.Ended -= GameWrapper_Ended;
                 _added = false;
@@ -66,6 +66,8 @@ namespace AcManager {
         private NotifyIcon _trayIcon;
 
         private void Hibernate() {
+            Logging.Here();
+
             /* add an icon to the tray for manual restoration just in case */
             _trayIcon = new NotifyIcon {
                 Icon = AppIconService.GetTrayIcon(),
@@ -115,6 +117,8 @@ namespace AcManager {
         }
 
         private void WakeUp() {
+            Logging.Here();
+
             /* restore processing */
             DisposeHelper.Dispose(ref _pausedProcessing);
 
@@ -135,9 +139,8 @@ namespace AcManager {
             /* remove tray icon */
             if (_trayIcon != null) {
                 _trayIcon.Visible = false;
+                DisposeHelper.Dispose(ref _trayIcon);
             }
-
-            DisposeHelper.Dispose(ref _trayIcon);
         }
 
         private bool _hibernated;
@@ -160,11 +163,11 @@ namespace AcManager {
             }
         }
 
-        private void OnGameStarted(object sender, EventArgs e) {
+        private void OnStart(object sender, EventArgs e) {
             Hibernated = true;
         }
 
-        private void OnGameFinished(object sender, EventArgs e) {
+        private void OnFinish(object sender, EventArgs e) {
             Hibernated = false;
         }
 

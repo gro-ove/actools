@@ -290,11 +290,13 @@ namespace AcManager.Controls {
                 if (subList.Count > 1){
                     yield return new HierarchicalGroup(Path.GetFileName(directory), GroupPresets(subList, directory));
                 } else if (list.Any()) {
+                    subList[0].SetParent(mainDirectory);
                     yield return subList[0];
                 }
             }
 
             foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
+                entry.Entry.SetParent(mainDirectory);
                 yield return entry.Entry;
             }
         }

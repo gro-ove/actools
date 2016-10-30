@@ -5137,6 +5137,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save changes to the following items?.
+        /// </summary>
+        public static string Main_UnsavedChanges {
+            get {
+                return ResourceManager.GetString("Main_UnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved Changes.
+        /// </summary>
+        public static string Main_UnsavedChangesHeader {
+            get {
+                return ResourceManager.GetString("Main_UnsavedChangesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string Main_Weather {

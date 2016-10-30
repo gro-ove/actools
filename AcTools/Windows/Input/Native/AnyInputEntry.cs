@@ -7,24 +7,24 @@ namespace AcTools.Windows.Input.Native {
     /// The combined/overlayed structure that includes Mouse, Keyboard and Hardware Input message data (see: http://msdn.microsoft.com/en-us/library/ms646270(VS.85).aspx)
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
-    internal struct MOUSEKEYBDHARDWAREINPUT {
+    internal struct AnyInputEntry {
         /// <summary>
-        /// The <see cref="MOUSEINPUT"/> definition.
+        /// The <see cref="MountInputEntry"/> definition.
         /// </summary>
         [FieldOffset(0)]
-        public MOUSEINPUT Mouse;
+        public MountInputEntry Mouse;
 
         /// <summary>
-        /// The <see cref="KEYBDINPUT"/> definition.
+        /// The <see cref="KeyboardInputEntry"/> definition.
         /// </summary>
         [FieldOffset(0)]
-        public KEYBDINPUT Keyboard;
+        public KeyboardInputEntry Keyboard;
 
         /// <summary>
-        /// The <see cref="HARDWAREINPUT"/> definition.
+        /// The <see cref="HardwareInputEntry"/> definition.
         /// </summary>
         [FieldOffset(0)]
-        public HARDWAREINPUT Hardware;
+        public HardwareInputEntry Hardware;
     }
 #pragma warning restore 649
 }

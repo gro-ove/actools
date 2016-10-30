@@ -225,6 +225,8 @@
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
+    <Compile Include="GameProperties\ContinueRaceHelper.cs" />
+    <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />

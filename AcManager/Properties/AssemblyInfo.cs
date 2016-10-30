@@ -37,8 +37,8 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.666.12569")]
-[assembly: AssemblyFileVersion("0.7.666.12569")]
+[assembly: AssemblyVersion("0.7.666.12649")]
+[assembly: AssemblyFileVersion("0.7.666.12649")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 10/27/2016 9:28:35 PM
+// Modified at: 10/30/2016 9:23:52 PM

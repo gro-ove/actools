@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -10,7 +9,6 @@ using System.Text;
 using System.Timers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
@@ -49,11 +47,11 @@ namespace AcManager.Tools.SharedMemory {
 
         internal AcSharedMemoryStatus Status {
             get { return _statusValue ?? AcSharedMemoryStatus.Disconnected; }
-            set {
+            private set {
                 if (Equals(value, _statusValue)) return;
 
                 if (_statusValue == AcSharedMemoryStatus.Live) {
-                    GameFinished?.Invoke(this, EventArgs.Empty);
+                    Finish?.Invoke(this, EventArgs.Empty);
                 }
 
                 if (_statusValue == AcSharedMemoryStatus.Connected) {
@@ -77,7 +75,7 @@ namespace AcManager.Tools.SharedMemory {
                     case AcSharedMemoryStatus.Live:
                         _timer.Interval = 50d;
                         _timer.Enabled = true;
-                        GameStarted?.Invoke(this, EventArgs.Empty);
+                        Start?.Invoke(this, EventArgs.Empty);
                         break;
                     case AcSharedMemoryStatus.Disconnected:
                         _timer.Interval = 2000d;
@@ -89,6 +87,30 @@ namespace AcManager.Tools.SharedMemory {
         }
 
         public bool IsLive => Status == AcSharedMemoryStatus.Live;
+
+        private bool _isPaused;
+
+        public bool IsPaused {
+            get { return _isPaused; }
+            set {
+                if (Equals(value, _isPaused)) return;
+                _isPaused = value;
+                OnPropertyChanged();
+                PauseTime = DateTime.Now;
+                (value ? Pause : Resume)?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private DateTime _pauseTime;
+
+        public DateTime PauseTime {
+            get { return _pauseTime; }
+            private set {
+                if (Equals(value, _pauseTime)) return;
+                _pauseTime = value;
+                OnPropertyChanged();
+            }
+        }
 
         private AcShared _shared;
         private DateTime _sharedTime;
@@ -176,6 +198,8 @@ namespace AcManager.Tools.SharedMemory {
             try {
                 var physics = AcSharedPhysics.FromFile(_physicsFile);
                 if (physics.PacketId != _previousPacketId) {
+                    IsPaused = false;
+
                     _previousPacketId = physics.PacketId;
                     _previousPacketTime = DateTime.Now;
 
@@ -189,8 +213,11 @@ namespace AcManager.Tools.SharedMemory {
                     var staticInfo = AcSharedStaticInfo.FromFile(_staticInfoFile);
                     Shared = new AcShared(physics, graphics, staticInfo);
                 } else if (_gameProcess?.HasExitedSafe() ?? (DateTime.Now - _previousPacketTime).TotalSeconds > 1d) {
+                    IsPaused = false;
                     Status = AcSharedMemoryStatus.Connected;
                     Shared = null;
+                } else {
+                    IsPaused = Shared != null && Shared.Graphics.Status == AcGameStatus.AcPause;
                 }
             } catch (Exception ex) {
                 Logging.Error(ex);
@@ -244,12 +271,22 @@ namespace AcManager.Tools.SharedMemory {
         /// <summary>
         /// Game started.
         /// </summary>
-        public event EventHandler GameStarted;
+        public event EventHandler Start;
+
+        /// <summary>
+        /// Game paused.
+        /// </summary>
+        public event EventHandler Pause;
+
+        /// <summary>
+        /// Game resumed.
+        /// </summary>
+        public event EventHandler Resume;
 
         /// <summary>
         /// Game finished.
         /// </summary>
-        public event EventHandler GameFinished;
+        public event EventHandler Finish;
 
         /// <summary>
         /// New physics data arrived.

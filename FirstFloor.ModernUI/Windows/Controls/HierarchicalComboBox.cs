@@ -30,6 +30,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         object GetPreview([CanBeNull] object item);
     }
 
+    public interface IShortDisplayable {
+        string ShortDisplayName { get; }
+    }
+
     public class HierarchicalGroup : BetterObservableCollection<object> {
         public HierarchicalGroup() {}
 
@@ -249,12 +253,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (value == null) return result;
 
             var view = value as HierarchicalItemsView;
-            result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
-                Source = view?._source ?? value,
-                Path = new PropertyPath(nameof(Displayable.DisplayName)),
-                Mode = BindingMode.OneWay
-            });
 
+            var shortDisplayable = (view?._source ?? value) as IShortDisplayable;
+            if (shortDisplayable != null) {
+                result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
+                    Source = shortDisplayable,
+                    Path = new PropertyPath(nameof(IShortDisplayable.ShortDisplayName)),
+                    Mode = BindingMode.OneWay
+                });
+            } else {
+                result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
+                    Source = view?._source ?? value,
+                    Path = new PropertyPath(nameof(Displayable.DisplayName)),
+                    Mode = BindingMode.OneWay
+                });
+            }
+            
             if (view != null) {
                 view._temporaryParent = Parent == null ? null : new WeakReference<HierarchicalComboBox>(Parent);
 

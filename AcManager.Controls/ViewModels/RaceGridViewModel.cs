@@ -1152,11 +1152,29 @@ namespace AcManager.Controls.ViewModels {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
             }
 
+            var takenNames = new List<string>(OpponentsNumberLimited);
+
             return final.Take(OpponentsNumberLimited).Select((entry, i) => {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
-                var name = entry.Name ?? nameNationalities?[i].Name ?? @"AI #" + i;
+
+                var skin = entry.CarSkin;
+                if (skin == null) {
+                    skin = skins.GetValueOrDefault(entry.Car.Id)?.Next;
+                }
+
+                var name = entry.Name;
+                if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames &&
+                        !takenNames.Contains(skin?.DriverName)) {
+                    name = skin?.DriverName;
+                    takenNames.Add(name);
+                }
+
+                if (string.IsNullOrWhiteSpace(name)) {
+                    name = nameNationalities?[i].Name ?? @"AI #" + i;
+                }
+
                 var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
-                var skinId = entry.CarSkin?.Id ?? skins.GetValueOrDefault(entry.Car.Id)?.Next?.Id;
+                var skinId = skin?.Id;
 
                 return new Game.AiCar {
                     AiLevel = level,

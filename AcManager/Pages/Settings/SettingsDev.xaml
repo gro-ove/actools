@@ -121,6 +121,10 @@
                         <Label Content="DH:" />
                         <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
                     </DockPanel>
+                    <DockPanel>
+                        <Label Content="Test:" />
+                        <Button Command="{Binding TestCommand}" Content="Test" />
+                    </DockPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

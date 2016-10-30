@@ -52,19 +52,19 @@
 
         <DockPanel Margin="0 0 0 4">
             <Label Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Assists_StabilityControlLabel}" />
-            <TextBlock Text="{Binding StabilityControl, StringFormat='\{0\}%'}"
+            <TextBlock Text="{Binding StabilityControl, StringFormat='{}{0}%'}"
                     Foreground="{Binding StabilityControlRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
         </DockPanel>
 
         <DockPanel Margin="0 0 0 4">
             <Label Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Assists_FuelLabel}" />
-            <TextBlock Text="{Binding FuelConsumption, Converter={StaticResource BooleanToTextConverter}}"
+            <TextBlock Text="{Binding FuelConsumption, StringFormat='{}{0}×'}"
                     Foreground="{Binding FuelConsumptionRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
         </DockPanel>
 
         <DockPanel Margin="0 0 0 4">
             <Label Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Assists_TyreWearLabel}" />
-            <TextBlock Text="{Binding TyreWearMultipler, StringFormat='\{0\}×'}"
+            <TextBlock Text="{Binding TyreWearMultipler, StringFormat='{}{0}×'}"
                     Foreground="{Binding TyreWearMultiplerRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
         </DockPanel>
     </StackPanel>

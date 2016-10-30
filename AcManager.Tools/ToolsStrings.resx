@@ -1593,4 +1593,31 @@
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
     <value>Can’t get a proper list of resolutions</value>
   </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>UI module “CM Helper” installed and activated. Don’t forget to restart AssettoCorsa.exe before racing!</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Arrange way:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Shuffle</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Way to arrange candidates</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Use skins’ names if available</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Global:</value>
+  </data>
 </root>

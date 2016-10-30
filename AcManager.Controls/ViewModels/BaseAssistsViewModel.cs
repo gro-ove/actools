@@ -1,12 +1,16 @@
 using System;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
@@ -223,7 +227,7 @@ namespace AcManager.Controls.ViewModels {
         public double TyreWearMultipler {
             get { return _tyreWearMultipler; }
             set {
-                value = Math.Round(value.Clamp(0d, 5d), 1);
+                value = Math.Round(value.Clamp(0d, 5d), 2);
                 if (Equals(value, _tyreWearMultipler)) return;
                 _tyreWearMultipler = value;
                 OnPropertyChanged();
@@ -234,11 +238,12 @@ namespace AcManager.Controls.ViewModels {
 
         public RealismLevel TyreWearMultiplerRealismLevel => TyreWearMultipler > 5 ? RealismLevel.NonRealistic : !Equals(TyreWearMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
-        private bool _fuelConsumption = true;
+        private double _fuelConsumption = 1d;
 
-        public bool FuelConsumption {
+        public double FuelConsumption {
             get { return _fuelConsumption; }
             set {
+                value = Math.Round(value.Clamp(0d, 50d), 2);
                 if (Equals(value, _fuelConsumption)) return;
                 _fuelConsumption = value;
                 OnPropertyChanged();
@@ -247,7 +252,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel FuelConsumptionRealismLevel => FuelConsumption ? RealismLevel.Realistic : RealismLevel.NotQuiteRealistic;
+        public RealismLevel FuelConsumptionRealismLevel => Math.Abs(FuelConsumption - 1f) < 0.01 ? RealismLevel.Realistic :
+                Math.Abs(FuelConsumption - 1f) <= 0.5 ? RealismLevel.QuiteRealistic :
+                        RealismLevel.NotQuiteRealistic;
 
         private bool _tyreBlankets;
 
@@ -267,7 +274,21 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Saveable
-        private class SaveableData {
+        public class BoolToDoubleConverter : JsonConverter {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+                writer.WriteValue((double)value);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+                return reader.TokenType == JsonToken.Boolean ? ((bool)reader.Value ? 1d : 0d) : reader.Value.AsDouble();
+            }
+
+            public override bool CanConvert(Type objectType) {
+                return objectType == typeof(double);
+            }
+        }
+
+        private class SaveableData : IStringSerializable {
             public bool IdealLine;
             public bool AutoBlip;
             public double StabilityControl;
@@ -280,8 +301,32 @@ namespace AcManager.Controls.ViewModels {
             public bool VisualDamage;
             public double Damage;
             public double TyreWear;
-            public bool FuelConsumption;
+
+            [JsonConverter(typeof(BoolToDoubleConverter))]
+            public double FuelConsumption;
             public bool TyreBlankets;
+
+            public string Serialize() {
+                var s = new StringWriter();
+                var w = new JsonTextWriter(s);
+
+                w.WriteStartObject();
+                w.Write(nameof(IdealLine), IdealLine);
+                w.Write(nameof(AutoBlip), AutoBlip);
+                w.Write(nameof(StabilityControl), StabilityControl);
+                w.Write(nameof(AutoBrake), AutoBrake);
+                w.Write(nameof(AutoShifter), AutoShifter);
+                w.Write(nameof(SlipSteam), SlipSteam);
+                w.Write(nameof(AutoClutch), AutoClutch);
+                w.Write(nameof(Abs), Abs);
+                w.Write(nameof(TractionControl), TractionControl);
+                w.Write(nameof(VisualDamage), VisualDamage);
+                w.Write(nameof(Damage), Damage);
+                w.Write(nameof(TyreWear), TyreWear);
+                w.WriteEndObject();
+
+                return s.ToString();
+            }
         }
 
         protected virtual void SaveLater() {
@@ -297,7 +342,20 @@ namespace AcManager.Controls.ViewModels {
         /// <param name="fixedMode">Prevent saving</param>
         protected BaseAssistsViewModel(string key, bool fixedMode) {
             Saveable = new SaveHelper<SaveableData>(key ?? DefaultKey, () => fixedMode ? null : new SaveableData {
-                IdealLine = IdealLine, AutoBlip = AutoBlip, StabilityControl = StabilityControl, AutoBrake = AutoBrake, AutoShifter = AutoShifter, SlipSteam = SlipsteamMultipler, AutoClutch = AutoClutch, Abs = Abs, TractionControl = TractionControl, VisualDamage = VisualDamage, Damage = Damage, TyreWear = TyreWearMultipler, FuelConsumption = FuelConsumption, TyreBlankets = TyreBlankets
+                IdealLine = IdealLine,
+                AutoBlip = AutoBlip,
+                StabilityControl = StabilityControl,
+                AutoBrake = AutoBrake,
+                AutoShifter = AutoShifter,
+                SlipSteam = SlipsteamMultipler,
+                AutoClutch = AutoClutch,
+                Abs = Abs,
+                TractionControl = TractionControl,
+                VisualDamage = VisualDamage,
+                Damage = Damage,
+                TyreWear = TyreWearMultipler,
+                FuelConsumption = FuelConsumption,
+                TyreBlankets = TyreBlankets
             }, o => {
                 IdealLine = o.IdealLine;
                 AutoBlip = o.AutoBlip;
@@ -326,7 +384,7 @@ namespace AcManager.Controls.ViewModels {
                 VisualDamage = true;
                 Damage = 100d;
                 TyreWearMultipler = 1d;
-                FuelConsumption = true;
+                FuelConsumption = 1d;
                 TyreBlankets = false;
             });
         }
@@ -357,7 +415,20 @@ namespace AcManager.Controls.ViewModels {
 
         public Game.AssistsProperties ToGameProperties() {
             return new Game.AssistsProperties {
-                IdealLine = IdealLine, AutoBlip = AutoBlip, StabilityControl = StabilityControl, AutoBrake = AutoBrake, AutoShifter = AutoShifter, SlipSteamMultipler = SlipsteamMultipler, AutoClutch = AutoClutch, Abs = Abs, TractionControl = TractionControl, VisualDamage = VisualDamage, Damage = Damage, TyreWearMultipler = TyreWearMultipler, FuelConsumption = FuelConsumption, TyreBlankets = TyreBlankets
+                IdealLine = IdealLine,
+                AutoBlip = AutoBlip,
+                StabilityControl = StabilityControl,
+                AutoBrake = AutoBrake,
+                AutoShifter = AutoShifter,
+                SlipSteamMultipler = SlipsteamMultipler,
+                AutoClutch = AutoClutch,
+                Abs = Abs,
+                TractionControl = TractionControl,
+                VisualDamage = VisualDamage,
+                Damage = Damage,
+                TyreWearMultipler = TyreWearMultipler,
+                FuelConsumption = FuelConsumption,
+                TyreBlankets = TyreBlankets
             };
         }
     }

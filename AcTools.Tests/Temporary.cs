@@ -43,8 +43,8 @@ namespace AcTools.Tests {
                 a[i] = a[j];
                 a[j] = t;
 
-                if (a[i] == i) throw new Exception("Was here!");
-                if (a[j] == j) throw new Exception("Was here!");
+                //if (a[i] == i) throw new Exception("Was here!");
+                //if (a[j] == j) throw new Exception("Was here!");
             }
 
             return r;

@@ -1,12 +1,15 @@
 using System;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Managers.Presets {
-    internal class SavedPresetEntry : Displayable, ISavedPresetEntry {
+    internal class SavedPresetEntry : Displayable, ISavedPresetEntry, IShortDisplayable {
         public string BaseDirectory { get; }
 
         public string Filename { get; }
+
+        private string _displayName;
 
         public override string DisplayName {
             get {
@@ -16,8 +19,20 @@ namespace AcManager.Tools.Managers.Presets {
             }
         }
 
+        private string _displayBaseDirectory;
+        private string _shortDisplayName;
+
+        public string ShortDisplayName {
+            get {
+                if (_shortDisplayName != null) return _shortDisplayName;
+                var start = _displayBaseDirectory.Length + 1;
+                return _shortDisplayName = Filename.Substring(start, Filename.Length - start - PresetsManager.FileExtension.Length);
+            }
+        }
+
         public SavedPresetEntry(string baseDirectory, string filename) {
             BaseDirectory = baseDirectory;
+            _displayBaseDirectory = baseDirectory;
             Filename = filename;
         }
 
@@ -25,7 +40,11 @@ namespace AcManager.Tools.Managers.Presets {
             return FileUtils.ReadAllText(Filename);
         }
 
-        private string _displayName;
+        public void SetParent(string baseDirectory) {
+            _shortDisplayName = null;
+            _displayBaseDirectory = baseDirectory;
+            OnPropertyChanged(nameof(ShortDisplayName));
+        }
 
         public override string ToString() {
             return DisplayName;
@@ -44,7 +63,7 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public override int GetHashCode() {
-            return Filename?.GetHashCode() ?? 0;
+            return Filename.GetHashCode();
         }
     }
 }

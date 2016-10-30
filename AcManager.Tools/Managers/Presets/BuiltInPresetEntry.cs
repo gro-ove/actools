@@ -20,6 +20,8 @@ namespace AcManager.Tools.Managers.Presets {
             return Encoding.UTF8.GetString(Data);
         }
 
+        public void SetParent(string baseDirectory) {}
+
         private string _displayName;
         
         public override string DisplayName {

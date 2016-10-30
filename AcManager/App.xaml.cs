@@ -35,6 +35,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
+using AcTools;
 using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Processes;
@@ -136,6 +137,8 @@ namespace AcManager {
                 NullValueHandling = NullValueHandling.Ignore,
                 Culture = CultureInfo.InvariantCulture
             };
+
+            AcToolsLogging.Logger = (s, m, p, l) => Logging.Write($"{s} (AcTools)", m, p, l);
 
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {

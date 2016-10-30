@@ -472,7 +472,7 @@ namespace AcManager.Tools.Helpers {
 
                     if (value == UiModuleStarterType && ModuleStarter.TryToInstallModule() && ModuleStarter.IsAssettoCorsaRunning) {
                         Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-                            ModernDialog.ShowMessage("UI module “CM Helper” installed and activated. Don’t forget to restart AssettoCorsa.exe before racing!");
+                            ModernDialog.ShowMessage(ToolsStrings.Settings_Starter_UiModule_JustInstalled);
                         }));
                     }
                 }
@@ -615,6 +615,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _immediateCancel)) return;
                     _immediateCancel = value;
                     ValuesStorage.Set("Settings.DriveSettings.ImmediateCancel", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _continueOnEscape;
+
+            public bool ContinueOnEscape {
+                get { return _continueOnEscape ?? (_continueOnEscape = ValuesStorage.GetBool("Settings.DriveSettings.ContinueOnEscape", false)).Value; }
+                set {
+                    if (Equals(value, _continueOnEscape)) return;
+                    _continueOnEscape = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ContinueOnEscape", value);
                     OnPropertyChanged();
                 }
             }
@@ -785,6 +797,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _quickDriveAiLevelInName)) return;
                     _quickDriveAiLevelInName = value;
                     ValuesStorage.Set("RaceGrid.AiLevelInDriverName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _quickDriveUseSkinNames;
+
+            public bool QuickDriveUseSkinNames {
+                get { return _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value; }
+                set {
+                    if (Equals(value, _quickDriveUseSkinNames)) return;
+                    _quickDriveUseSkinNames = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveUseSkinNames", value);
                     OnPropertyChanged();
                 }
             }

@@ -398,8 +398,8 @@ namespace AcManager.Pages.Windows {
             if (unsaved.Count == 0) return;
             
             var result = ModernDialog.ShowMessage(
-                    $"Save changes to the following items?\n\n{unsaved.Select(x => $" • {x}").JoinToString(Environment.NewLine)}",
-                    "Unsaved Changes", MessageBoxButton.YesNoCancel);
+                    $"{AppStrings.Main_UnsavedChanges}\n\n{unsaved.Select(x => $" • {x}").JoinToString(Environment.NewLine)}",
+                    AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes) {
                 Superintendent.Instance.SaveAll();
             } else if (result != MessageBoxResult.No) {

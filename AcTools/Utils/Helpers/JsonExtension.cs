@@ -267,6 +267,11 @@ namespace AcTools.Utils.Helpers {
             writer.WriteValue(value.Value);
         }
 
+        public static void Write(this JsonTextWriter writer, string key, Enum value) {
+            writer.WritePropertyName(key);
+            writer.WriteValue(value);
+        }
+
         public static void Write(this JsonTextWriter writer, string key, DateTime? value) {
             if (value == null) return;
             writer.WritePropertyName(key);

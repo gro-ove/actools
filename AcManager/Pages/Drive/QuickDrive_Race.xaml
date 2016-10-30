@@ -65,7 +65,7 @@
                                         Value="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource PercentageConverter}}" />
                             </DockPanel>
 
-                            <TextBlock Text="Global:" Style="{StaticResource SettingsPanel.Heading2}" />
+                            <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
                             <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}" Margin="0">
                                 <Label Content="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" />
                             </CheckBox>

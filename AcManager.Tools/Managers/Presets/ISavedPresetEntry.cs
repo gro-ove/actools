@@ -12,5 +12,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         [NotNull]
         string ReadData();
+
+        void SetParent(string baseDirectory);
     }
 }

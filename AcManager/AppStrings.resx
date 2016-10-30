@@ -3508,4 +3508,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
     <value>Fallback to Official Starter if original launcher isn’t running</value>
   </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>Unsaved Changes</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>Save changes to the following items?</value>
+  </data>
 </root>

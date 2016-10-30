@@ -109,7 +109,7 @@ namespace AcTools.Utils.Physics {
                         break;
                     }
 
-                    if ((i == 0 || p.X > previousRpm) && p.X < rpm) {
+                    if ((i == 0 || p.X > previousRpm) && p.X < rpm && p.X >= 0) {
                         result.Add(new LutPoint(p.X, ConsiderTurbo(turbos, p.X, p.Y)));
                     }
                 }

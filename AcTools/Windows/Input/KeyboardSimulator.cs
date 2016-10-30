@@ -24,10 +24,10 @@ namespace AcTools.Windows.Input {
 
             if (messageDispatcher == null) {
                 throw new InvalidOperationException(
-                    string.Format(
-                                  "The {0} cannot operate with a null {1}. Please provide a valid {1} instance to use for dispatching {2} messages.",
-                                  typeof (KeyboardSimulator).Name, typeof (IInputMessageDispatcher).Name,
-                                  typeof (INPUT).Name));
+                        string.Format(
+                                "The {0} cannot operate with a null {1}. Please provide a valid {1} instance to use for dispatching {2} messages.",
+                                typeof(KeyboardSimulator).Name, typeof(IInputMessageDispatcher).Name,
+                                typeof(InputEntry).Name));
             }
 
             _inputSimulator = inputSimulator;
@@ -54,10 +54,12 @@ namespace AcTools.Windows.Input {
 
         private void KeysPress(InputBuilder builder, IEnumerable<VirtualKeyCode> keyCodes) {
             if (keyCodes == null) return;
-            foreach (var key in keyCodes) builder.AddKeyPress(key);
+            foreach (var key in keyCodes) {
+                builder.AddKeyPress(key);
+            }
         }
 
-        private void SendSimulatedInput(INPUT[] inputList) {
+        private void SendSimulatedInput(InputEntry[] inputList) {
             _messageDispatcher.DispatchInput(inputList);
         }
 

@@ -75,7 +75,8 @@
                                     Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1" />
                         </Border>
                     </Button>
-                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}" Placeholder="Random" />
+                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
@@ -94,10 +95,19 @@
 
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">
                 <mui:Cell>
-                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
-                            Style="{StaticResource Borderless.White}" />
+                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
                 </mui:Cell>
                 <DataTemplate.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Value="True" />
+                            <Condition Binding="{Binding Name, Converter={StaticResource NullOrWhiteSpaceToBooleanConverter}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding CarSkin.DriverName, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}, FallbackValue='Skin’s Name'}" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
@@ -106,8 +116,8 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
-                        Style="{StaticResource Borderless.White}" />
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentNationality_Random}" Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
@@ -179,14 +189,19 @@
             </Grid.ColumnDefinitions>
 
             <DockPanel>
-                <mui:ContextMenuButton Visibility="{Binding Mode.CandidatesMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        DockPanel.Dock="Right">
+                <mui:ContextMenuButton DockPanel.Dock="Right">
                     <c:ModernPopup Padding="8">
                         <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
-                            <DockPanel Margin="0">
-                                <Label Content="Arrange way:" ToolTip="Way to arrange candidates" />
-                                <mui:LabeledToggleButton LabelChecked="Shuffle" LabelUnchecked="Random" IsChecked="{Binding ShuffleCandidates}" />
+                            <DockPanel IsEnabled="{Binding Mode.CandidatesMode}">
+                                <Label Content="{x:Static t:ToolsStrings.Drive_GridArrangeWay}" ToolTip="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Tooltip}" />
+                                <mui:LabeledToggleButton LabelChecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Shuffle}"
+                                        LabelUnchecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Random}" IsChecked="{Binding ShuffleCandidates}" />
                             </DockPanel>
+
+                            <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
+                            <CheckBox IsChecked="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Margin="0">
+                                <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
+                            </CheckBox>
                         </StackPanel>
                     </c:ModernPopup>
                 </mui:ContextMenuButton>

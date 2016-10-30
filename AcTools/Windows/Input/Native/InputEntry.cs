@@ -10,7 +10,7 @@ namespace AcTools.Windows.Input.Native {
     /// This structure contains information identical to that used in the parameter list of the keybd_event or mouse_event function.
     /// Windows 2000/XP: INPUT_KEYBOARD supports nonkeyboard input methods, such as handwriting recognition or voice recognition, as if it were text input by using the KEYEVENTF_UNICODE flag. For more information, see the remarks section of KEYBDINPUT.
     /// </remarks>
-    internal struct INPUT {
+    internal struct InputEntry {
         /// <summary>
         /// Specifies the type of the input event. This member can be one of the following values. 
         /// <see cref="InputType.Mouse"/> - The event is a mouse event. Use the mi structure of the union.
@@ -22,7 +22,7 @@ namespace AcTools.Windows.Input.Native {
         /// <summary>
         /// The data structure that contains information about the simulated Mouse, Keyboard or Hardware event.
         /// </summary>
-        public MOUSEKEYBDHARDWAREINPUT Data;
+        public AnyInputEntry Data;
     }
 #pragma warning restore 649
 }

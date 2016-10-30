@@ -59,8 +59,8 @@ namespace AcManager.Tools.Profile {
         }
 
         public void SetListener() {
-            AcSharedMemory.Instance.GameStarted += OnGameStarted;
-            AcSharedMemory.Instance.GameFinished += OnGameFinished;
+            AcSharedMemory.Instance.Start += OnStart;
+            AcSharedMemory.Instance.Finish += OnFinish;
             AcSharedMemory.Instance.Updated += OnUpdated;
 
             if (OptionRunStatsWebserver != 0 && _webServer == null) {
@@ -69,7 +69,7 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        private void OnGameStarted(object sender, EventArgs e) {
+        private void OnStart(object sender, EventArgs e) {
             if (_current != null) {
                 Apply(_current);
             }
@@ -78,7 +78,7 @@ namespace AcManager.Tools.Profile {
             Last = _current;
         }
 
-        private void OnGameFinished(object sender, EventArgs e) {
+        private void OnFinish(object sender, EventArgs e) {
             if (_current != null) {
                 Apply(_current);
                 NewSessionAdded?.Invoke(this, new SessionStatsEventArgs(_current));
@@ -109,7 +109,7 @@ namespace AcManager.Tools.Profile {
         }
 
         private void Apply(SessionStats current) {
-            if (current?.CarId == null || current.TrackId == null) return;
+            if (current?.CarId == null || current.TrackId == null || current.Time == TimeSpan.Zero) return;
 
             Logging.Debug($@"Session stats:
 Penalties: {current.Penalties}
@@ -123,8 +123,6 @@ Gone offroad: {current.GoneOffroad} time(s)");
             Overall.Extend(current);
             _storage.Set(KeyOverall, Overall);
             _storage.Set(KeySessionStatsPrefix + current.StartedAt.ToMillisecondsTimestamp(), current.Serialize());
-
-            // TODO: save best lap
         }
 
         public void Dispose() {

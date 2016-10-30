@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.SharedMemory;
 using AcTools.LapTimes;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -38,10 +39,13 @@ namespace AcManager.Tools.Profile {
             var bestLap = e.Result?.GetExtraByType<Game.ResultExtraBestLap>();
             if (basic?.CarId == null || basic.TrackId == null || bestLap == null ||
                     bestLap.IsCancelled) return;
-            
-            AddEntry(new LapTimeEntry(SourceId,
-                    basic.CarId, basic.TrackId, basic.TrackConfigurationId,
-                    DateTime.Now, bestLap.Time));
+
+            var time = SettingsHolder.Drive.WatchForSharedMemory ? PlayerStatsManager.Instance.Last?.BestLap : bestLap.Time;
+            if (time.HasValue) {
+                AddEntry(new LapTimeEntry(SourceId,
+                        basic.CarId, basic.TrackId, basic.TrackConfigurationId,
+                        DateTime.Now, time.Value));
+            }
         }
 
         [CanBeNull]

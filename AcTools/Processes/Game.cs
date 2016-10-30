@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
+using AcTools.Windows.Input;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -104,6 +105,16 @@ namespace AcTools.Processes {
             }
 
             RemoveResultJson();
+            KeyboardListener listener = null;
+
+            if (properties.SetKeyboardListener) {
+                try {
+                    listener = new KeyboardListener();
+                    listener.Subscribe();
+                } catch (Exception e) {
+                    AcToolsLogging.Write("Can’t set listener: " + e);
+                }
+            }
 
             try {
                 progress?.Report(ProgressState.Preparing);
@@ -132,6 +143,7 @@ namespace AcTools.Processes {
                 }
 
                 properties.RevertChanges();
+                listener?.Dispose();
             }
 
             return GetResult();
@@ -164,11 +176,19 @@ namespace AcTools.Processes {
         }
 
         public class StartProperties {
+            /// <summary>
+            /// I can’t quite explain this, but with initializing KeyboardListener from
+            /// AcManager.Tools, they don’t work. So, at least as a temporary solution,
+            /// I’m going to initialize another listener from AcTools itself for
+            /// the duration of the race. All of them will share single hook anyway.
+            /// </summary>
+            public bool SetKeyboardListener;
+
             [CanBeNull]
             public IniFile PreparedConfig;
 
             [CanBeNull]
-            public BasicProperties BasicProperties { get; set; }
+            public BasicProperties BasicProperties;
 
             [CanBeNull]
             public AssistsProperties AssistsProperties;
@@ -288,7 +308,7 @@ namespace AcTools.Processes {
             }
 
             internal void RevertChanges() {
-                AdditionalPropertieses.OfType<RaceIniProperties>().OfType<IDisposable>().DisposeEverything();
+                AdditionalPropertieses.OfType<IDisposable>().DisposeEverything();
 
                 _disposeLater?.DisposeEverything();
                 if (_removeLater == null) return;
