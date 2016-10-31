@@ -390,7 +390,7 @@ namespace AcTools.DataFile {
             return Content.ContainsKey(key);
         }
 
-        public void Remove(string key) {
+        public void Remove([Localizable(false)] string key) {
             if (Content.ContainsKey(key)) {
                 Content.Remove(key);
             }

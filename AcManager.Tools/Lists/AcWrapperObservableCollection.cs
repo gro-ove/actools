@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -87,7 +86,8 @@ namespace AcManager.Tools.Lists {
             throw new NotSupportedException();
         }
 
-        public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {
+        /* TODO: rework this crap with code from online-refactoring branch
+         * public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {
             foreach (var item in Items) {
                 Unsubscribe(item);
             }
@@ -98,7 +98,7 @@ namespace AcManager.Tools.Lists {
             foreach (var item in list) {
                 Subscribe(item);
             }
-        }
+        }*/
 
         public event PropertyChangedEventHandler ItemPropertyChanged;
 

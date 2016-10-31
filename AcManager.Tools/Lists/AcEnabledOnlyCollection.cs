@@ -18,8 +18,6 @@ namespace AcManager.Tools.Lists {
             _collection = collection;
             collection.CollectionChanged += Collection_CollectionChanged;
             collection.WrappedValueChanged += Collection_WrappedValueChanged;
-            Logging.Here();
-
             Rebuild();
         }
 
@@ -58,8 +56,6 @@ namespace AcManager.Tools.Lists {
         
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Collection_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            Logging.Debug(e.OldValue + " → " + e.NewValue);
-
             var o = e.OldValue as T;
             if (o != null) {
                 Remove(o);
