@@ -56,6 +56,8 @@ namespace AcManager.Tools.Lists {
         
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Collection_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+            Logging.Debug(e.OldValue.Id + ", " + e.OldValue.GetType().Name + " → " + e.NewValue.GetType().Name);
+
             var o = e.OldValue as T;
             if (o != null) {
                 Remove(o);

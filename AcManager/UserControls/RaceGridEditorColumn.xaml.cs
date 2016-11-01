@@ -11,8 +11,10 @@ using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -237,6 +239,12 @@ namespace AcManager.UserControls {
             if (e.ClickCount == 2) {
                 OpponentSkin_OnMouseLeftButtonDown(sender, e);
             }
+        }
+
+        private void OpponentSkinCell_OnMouseDown(object sender, MouseEventArgs e) {
+            //var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
+            //entry?.Car.SkinsManager.EnsureLoadedAsync().Forget();
+            //Logging.Debug(entry?.Car.SkinsManager.EnabledOnly.JoinToString(", "));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -14,37 +16,47 @@ namespace AcManager.Tools.Data {
     /// <summary>
     /// Only for KunosCareerObject and KunosCareerEventObject
     /// </summary>
-    public class KunosCareerProgress : NotifyPropertyChanged {
+    public class KunosCareerProgress : NotifyPropertyChanged, IDisposable {
         private static KunosCareerProgress _instance;
 
-        public static KunosCareerProgress Instance => _instance ?? (_instance = new KunosCareerProgress());
+        public static KunosCareerProgress Instance => _instance ??
+                (_instance = new KunosCareerProgress(FileUtils.GetKunosCareerProgressFilename()));
 
         private readonly string _filename;
+        private FileSystemWatcher _fsWatcher;
 
-        private KunosCareerProgress() {
-            _filename = FileUtils.GetKunosCareerProgressFilename();
+        private KunosCareerProgress(string filename) {
+            _filename = filename;
 
             var directory = Path.GetDirectoryName(_filename);
             if (Directory.Exists(directory)) {
-                var fsWatcher = new FileSystemWatcher {
+                _fsWatcher = new FileSystemWatcher {
                     Path = directory,
                     NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
                     Filter = Path.GetFileName(_filename)
                 };
-                fsWatcher.Changed += FsWatcher_Changed;
-                fsWatcher.Created += FsWatcher_Changed;
-                fsWatcher.Deleted += FsWatcher_Changed;
-                fsWatcher.Renamed += FsWatcher_Changed;
-                fsWatcher.EnableRaisingEvents = true;
+                _fsWatcher.Changed += FsWatcher_Changed;
+                _fsWatcher.Created += FsWatcher_Changed;
+                _fsWatcher.Deleted += FsWatcher_Changed;
+                _fsWatcher.Renamed += FsWatcher_Changed;
+                _fsWatcher.EnableRaisingEvents = true;
             }
 
-            Load();
+            if (!TryToLoad()) {
+                Reset();
+            }
         }
+
+#if DEBUG
+        internal static KunosCareerProgress CreateForTests(string filename) {
+            return new KunosCareerProgress(filename);
+        }
+#endif
 
         private DateTime _ignoreChanges;
 
         private void FsWatcher_Changed(object sender, FileSystemEventArgs e) {
-            if (DateTime.Now - _ignoreChanges < TimeSpan.FromSeconds(1)) return;
+            if ((DateTime.Now - _ignoreChanges).TotalSeconds < 1d) return;
             LoadLater();
         }
 
@@ -54,14 +66,20 @@ namespace AcManager.Tools.Data {
             if (_loadingInProgress) return;
             _loadingInProgress = true;
 
-            await Task.Delay(500);
+            await Task.Delay(200);
+            
+            if (Application.Current == null) {
+                await Reload();
+            } else {
+                await Application.Current.Dispatcher.Invoke(Reload);
+            }
 
-            Application.Current.Dispatcher.Invoke(Load);
             _loadingInProgress = false;
         }
 
         private string _currentSeries;
 
+        [CanBeNull]
         internal string CurrentSeries {
             get { return _currentSeries; }
             set {
@@ -138,30 +156,60 @@ namespace AcManager.Tools.Data {
             }
         }
 
-        private void Load() {
+        private void Reset() {
+            Completed = new string[0];
+            CurrentSeries = null;
+            AiLevel = 100;
+            IsNew = true;
+            Entries = new Dictionary<string, KunosCareerProgressEntry>(0);
+        }
+
+        private async Task Reload() {
+            for (var i = 0; i < 3; i++) {
+                if (TryToLoad()) return;
+                await Task.Delay(300);
+            }
+
+            if (!TryToLoad()) {
+                Reset();
+            }
+        }
+
+        private bool TryToLoad() {
             _skipSaving = true;
 
-            var iniFile = new IniFile(_filename);
-            Completed = iniFile["CAREER"].GetStrings("COMPLETE").Select(x => x.ToLowerInvariant()).ToArray();
-            CurrentSeries = iniFile["CAREER"].GetPossiblyEmpty("CURRENTSERIES");
-            AiLevel = iniFile["CAREER"].GetDouble("AI_LEVEL", 95d);
-            IsNew = iniFile["CAREER"].GetInt("INTRO", 0) != 2;
-            Entries = iniFile.Where(x => x.Key.StartsWith(@"SERIES")).ToDictionary(
-                    x => x.Key.ToLowerInvariant(),
-                    x => new KunosCareerProgressEntry(
-                        x.Value.GetInt("EVENT", 0),
-                        Enumerable.Range(0, 999)
-                                .Select(y => $"EVENT{y}")
-                                .TakeWhile(y => x.Value.ContainsKey(y))
-                                .Select(y => x.Value.GetInt(y, 0)).ToArray(),
-                        x.Value.GetIntNullable("POINTS"),
-                        Enumerable.Range(1, 99)
-                                .Select(y => $"AI{y}")
-                                .TakeWhile(y => x.Value.ContainsKey(y))
-                                .Select(y => x.Value.GetInt(y, 0)).ToArray(),
-                        x.Value.GetLong("LASTSELECTED", 0)));
+            try {
+                IniFile iniFile;
+                try {
+                    iniFile = new IniFile(_filename);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load Kunos career progress", e);
+                    return false;
+                }
 
-            _skipSaving = false;
+                Completed = iniFile["CAREER"].GetStrings("COMPLETE").Select(x => x.ToLowerInvariant()).ToArray();
+                CurrentSeries = iniFile["CAREER"].GetNonEmpty("CURRENTSERIES");
+                AiLevel = iniFile["CAREER"].GetDouble("AI_LEVEL", 95d);
+                IsNew = iniFile["CAREER"].GetInt("INTRO", 0) != 2;
+                Entries = iniFile.Where(x => x.Key.StartsWith(@"SERIES")).ToDictionary(
+                        x => x.Key.ToLowerInvariant(),
+                        x => new KunosCareerProgressEntry(
+                                x.Value.GetInt("EVENT", 0),
+                                x.Value.Select(y => new {
+                                    Key = y.Key.StartsWith(@"EVENT") ? FlexibleParser.TryParseInt(y.Key.Substring(5)) : null as int?,
+                                    y.Value
+                                }).Where(y => y.Key.HasValue).ToDictionary(y => y.Key.Value, y => FlexibleParser.ParseInt(y.Value, 0)),
+                                x.Value.GetIntNullable("POINTS"),
+                                x.Value.Select(y => new {
+                                    Key = y.Key.StartsWith(@"AI") ? FlexibleParser.TryParseInt(y.Key.Substring(2)) - 1 : null as int?,
+                                    y.Value
+                                }).Where(y => y.Key.HasValue).ToDictionary(y => y.Key.Value, y => FlexibleParser.ParseInt(y.Value, 0)),
+                                x.Value.GetLong("LASTSELECTED", 0)));
+
+                return true;
+            } finally {
+                _skipSaving = false;
+            }
         }
 
         private void Save() {
@@ -187,12 +235,12 @@ namespace AcManager.Tools.Data {
                     section.Remove(@"POINTS");
                 }
 
-                for (var i = 0; i < pair.Value.EventsResults.Count; i++) {
-                    section[$"EVENT{i}"] = pair.Value.EventsResults[i];
+                foreach (var result in pair.Value.EventsResults.Where(x => x.Value != 0)) {
+                    section[$"EVENT{result.Key}"] = result.Value;
                 }
 
-                for (var i = 0; i < pair.Value.AiPoints?.Count; i++) {
-                    section[$"AI{i + 1}"] = pair.Value.AiPoints[i];
+                foreach (var result in pair.Value.AiPoints.Where(x => x.Value != 0)) {
+                    section[$"AI{result.Key + 1}"] = result.Value;
                 }
             }
 
@@ -219,6 +267,10 @@ namespace AcManager.Tools.Data {
         public static void SaveBeforeExit() {
             if (_instance == null || !_instance._savingInProgress) return;
             _instance.Save();
+        }
+
+        public void Dispose() {
+            DisposeHelper.Dispose(ref _fsWatcher);
         }
     }
 }

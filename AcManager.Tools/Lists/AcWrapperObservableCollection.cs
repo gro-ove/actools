@@ -34,6 +34,7 @@ namespace AcManager.Tools.Lists {
         protected void Subscribe(AcItemWrapper item) {
             item.ValueChanged += Item_ValueChanged;
             item.Value.PropertyChanged += Value_PropertyChanged;
+            Logging.Debug(item.Id + ", " + item.Value.GetType().Name);
         }
 
         protected void Unsubscribe(AcItemWrapper item) {

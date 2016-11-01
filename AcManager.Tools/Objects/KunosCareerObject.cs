@@ -8,6 +8,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
@@ -96,11 +97,6 @@ namespace AcManager.Tools.Objects {
         }
 
         public BetterListCollectionView ChampionshipDriversView { get; }
-
-        protected override void LoadOrThrow() {
-            base.LoadOrThrow();
-            InitializeEventsManager();
-        }
 
         private void InitializeEventsManager() {
             if (EventsManager != null) return;
@@ -559,6 +555,13 @@ namespace AcManager.Tools.Objects {
         }
         #endregion
 
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+            InitializeEventsManager();
+            UpdateIsCompletedFlag();
+            LoadProgress();
+        }
+
         protected override void LoadData(IniFile ini) {
             Name = ini["SERIES"].GetPossiblyEmpty("NAME");
             Code = ini["SERIES"].GetPossiblyEmpty("CODE");
@@ -581,8 +584,6 @@ namespace AcManager.Tools.Objects {
             if (Type == KunosCareerObjectType.Championship) {
                 LoadOpponents();
             }
-
-            LoadProgress();
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -608,66 +609,73 @@ namespace AcManager.Tools.Objects {
             ini["SERIES"].Set("REQUIRESANY", RequiredAnySeries);
         }
 
+        internal void UpdateIsCompletedFlag() {
+            IsCompleted = KunosCareerProgress.Instance.Completed.Contains(Id);
+        }
+
         private void LoadProgressFromEntry() {
             Func<string, bool> fn = x => KunosCareerProgress.Instance.Completed.Contains(x);
             IsAvailable = RequiredSeries.Length == 0 || (RequiredAnySeries ? RequiredSeries.Any(fn) : RequiredSeries.All(fn));
-            IsCompleted = KunosCareerProgress.Instance.Completed.Contains(Id);
-
-            var entry = KunosCareerProgress.Instance.Entries.GetValueOrDefault(Id);
-            if (entry == null) {
-                CompletedEvents = 0;
-                FirstPlaces = 0;
-                SecondPlaces = 0;
-                ThirdPlaces = 0;
-                ChampionshipAiPoints = new int[0];
-                ChampionshipPoints = 0;
-                LastSelectedTimestamp = 0;
-                
-                foreach (var driver in ChampionshipDrivers) {
-                    driver.Points = 0;
-                }
-                ChampionshipDriversView.Refresh();
-                return;
-            }
 
             foreach (var driver in ChampionshipDrivers) {
                 driver.Points = 0;
             }
 
-            CompletedEvents = entry.EventsResults.Count(x => x > 0);
-            if (Type == KunosCareerObjectType.SingleEvents) {
-                FirstPlaces = entry.EventsResults.Count(x => x == 3);
-                SecondPlaces = entry.EventsResults.Count(x => x == 2);
-                ThirdPlaces = entry.EventsResults.Count(x => x == 1);
+            var entry = KunosCareerProgress.Instance.Entries.GetValueOrDefault(Id);
+            if (entry == null) {
+                CompletedEvents = 0;
+
+                FirstPlaces = 0;
+                SecondPlaces = 0;
+                ThirdPlaces = 0;
                 ChampionshipAiPoints = new int[0];
                 ChampionshipPoints = 0;
+                
+                _lastSelectedTimestamp = 0;
             } else {
-                FirstPlaces = entry.EventsResults.Count(x => x == 1);
-                SecondPlaces = entry.EventsResults.Count(x => x == 2);
-                ThirdPlaces = entry.EventsResults.Count(x => x == 3);
-                ChampionshipAiPoints = entry.AiPoints;
-                ChampionshipPoints = entry.Points ?? 0;
+                var count = EventsWrappers.Count;
+                CompletedEvents = entry.EventsResults.Where(x => x.Key < count).Count(x => x.Value > 0);
 
-                for (var i = 0; i < ChampionshipAiPoints.Count; i++) {
-                    var driverEntry = ChampionshipDrivers.GetByIdOrDefault(i);
-                    if (driverEntry != null) {
-                        driverEntry.Points = ChampionshipAiPoints[i];
-                    } else {
-                        Logging.Warning("Missing driver entry with ID=" + i);
+                if (Type == KunosCareerObjectType.SingleEvents) {
+                    FirstPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 3);
+                    SecondPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 2);
+                    ThirdPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 1);
+                    ChampionshipAiPoints = new int[0];
+                    ChampionshipPoints = 0;
+                } else {
+                    FirstPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 1);
+                    SecondPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 2);
+                    ThirdPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 3);
+                    ChampionshipAiPoints = ChampionshipDrivers.Select((x, i) => entry.AiPoints.GetValueOrDefault(i)).ToList();
+                    ChampionshipPoints = entry.Points ?? 0;
+
+                    for (var i = 0; i < ChampionshipAiPoints.Count; i++) {
+                        var driverEntry = ChampionshipDrivers.GetByIdOrDefault(i);
+                        if (driverEntry != null) {
+                            driverEntry.Points = ChampionshipAiPoints[i];
+                        } else {
+                            Logging.Warning("Missing driver entry with ID=" + i);
+                        }
                     }
+
+                    ChampionshipDrivers.GetById(-1).Points = ChampionshipPoints;
                 }
 
-                ChampionshipDrivers.GetById(-1).Points = ChampionshipPoints;
+                _lastSelectedTimestamp = entry.LastSelectedTimestamp;
+
+                if (EventsManager?.IsScanned == true) {
+                    _selectedEvent = EventsManager.GetByNumber(entry.SelectedEvent) ?? _selectedEvent;
+                    OnPropertyChanged(nameof(SelectedEvent));
+                }
             }
 
             ChampionshipDriversView.Refresh();
-
-            _lastSelectedTimestamp = entry.LastSelectedTimestamp;
             OnPropertyChanged(nameof(LastSelectedTimestamp));
 
-            if (EventsManager?.IsScanned == true) {
-                _selectedEvent = EventsManager.GetByNumber(entry.SelectedEvent) ?? _selectedEvent;
-                OnPropertyChanged(nameof(SelectedEvent));
+            if (EventsManager != null) {
+                foreach (var eventObject in EventsManager.LoadedOnly) {
+                    eventObject.LoadProgress();
+                }
             }
         }
 
@@ -709,16 +717,25 @@ namespace AcManager.Tools.Objects {
                     KunosCareerProgress.Instance.UpdateEntry(Id,
                             new KunosCareerProgressEntry(
                                     events.FirstOrDefault(x => x.IsAvailable && !x.IsPassed)?.EventNumber ?? events.LastOrDefault()?.EventNumber ?? 0,
-                                    events.Select(x => x.TakenPlace).TakeWhile(x => x != 0),
+                                    events.Select((x, i) => new {
+                                        Key = i,
+                                        Place = x.TakenPlace
+                                    }).TakeWhile(x => x.Place != 0).ToDictionary(x => x.Key, x => x.Place),
                                     ChampionshipPoints,
-                                    ChampionshipAiPoints),
+                                    ChampionshipAiPoints.Select((x, i) => new {
+                                        Key = i,
+                                        Points = x
+                                    }).ToDictionary(x => x.Key, x => x.Points)),
                             globalUpdate);
                     break;
                 case KunosCareerObjectType.SingleEvents:
                     KunosCareerProgress.Instance.UpdateEntry(Id,
                             new KunosCareerProgressEntry(
                                     SelectedEvent?.EventNumber ?? 0,
-                                    Events.Select(x => 4 - x.TakenPlace),
+                                    Events.Select((x, i) => new {
+                                        Key = i,
+                                        Place = x.TakenPlace == PlaceConditions.UnremarkablePlace ? 0 : 4 - x.TakenPlace
+                                    }).Where(x => x.Place != 0).ToDictionary(x => x.Key, x => x.Place),
                                     null,
                                     null),
                             globalUpdate);
@@ -736,7 +753,7 @@ namespace AcManager.Tools.Objects {
         private CommandBase _championshipResetCommand;
 
         public ICommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
-            KunosCareerProgress.Instance.UpdateEntry(Id, new KunosCareerProgressEntry(0, new int[0], 0, new int[0]), true);
+            KunosCareerProgress.Instance.UpdateEntry(Id, new KunosCareerProgressEntry(0, null, 0, null), true);
             KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.ApartFrom(Id).ToArray();
         }, () => Type == KunosCareerObjectType.Championship && IsStarted));
     }

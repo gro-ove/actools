@@ -35,6 +35,17 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        public static int GetGroup(DependencyObject obj) {
+            return (int)obj.GetValue(GroupProperty);
+        }
+
+        public static void SetGroup(DependencyObject obj, int value) {
+            obj.SetValue(GroupProperty, value);
+        }
+
+        public static readonly DependencyProperty GroupProperty = DependencyProperty.RegisterAttached("Group", typeof(int),
+                typeof(PopupHelper), new UIPropertyMetadata(0));
+
         public static IEnumerable<Popup> GetOpenPopups() {
             return PresentationSource.CurrentSources.OfType<HwndSource>()
                                      .Select(h => h.RootVisual)
@@ -60,7 +71,8 @@ namespace FirstFloor.ModernUI.Helpers {
             var popup = sender as Popup;
             if (popup == null) return;
 
-            foreach (var openPopup in GetOpenPopups().Where(x => !ReferenceEquals(x, popup))) {
+            var group = GetGroup(popup);
+            foreach (var openPopup in GetOpenPopups().Where(x => !ReferenceEquals(x, popup) && (group == 0 || (group & GetGroup(x)) != 0))) {
                 openPopup.IsOpen = false;
             }
         }
