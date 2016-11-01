@@ -30,89 +30,27 @@ namespace AcManager.Tools.Lists {
     /// </summary>
     public interface IAcObjectList : IBaseAcObjectObservableCollection, IList { }
 
-    public class AcWrapperObservableCollection : BetterObservableCollection<AcItemWrapper>, IAcWrapperObservableCollection, IAcObjectList {
-        protected void Subscribe(AcItemWrapper item) {
+    public class AcWrapperObservableCollection : ChangeableObservableCollection<AcItemWrapper>, IAcWrapperObservableCollection, IAcObjectList {
+        protected override void Subscribe(AcItemWrapper item) {
             item.ValueChanged += Item_ValueChanged;
-            item.Value.PropertyChanged += Value_PropertyChanged;
-            Logging.Debug(item.Id + ", " + item.Value.GetType().Name);
+            item.Value.PropertyChanged += Item_PropertyChanged;
         }
 
-        protected void Unsubscribe(AcItemWrapper item) {
+        protected override void Unsubscribe(AcItemWrapper item) {
             item.ValueChanged -= Item_ValueChanged;
-            item.Value.PropertyChanged -= Value_PropertyChanged;
+            item.Value.PropertyChanged -= Item_PropertyChanged;
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Reset:
-                    // BUG: unsubscribe!
-                    foreach (var item in Items) {
-                        Subscribe(item);
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Add:
-                case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems != null) {
-                        foreach (AcItemWrapper item in e.OldItems) {
-                            Unsubscribe(item);
-                        }
-                    }
-
-                    if (e.NewItems != null) {
-                        foreach (AcItemWrapper item in e.NewItems) {
-                            Subscribe(item);
-                        }
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Move:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
             CollectionChangedInner?.Invoke(this, e);
         }
-
-        public override void AddRange(IEnumerable<AcItemWrapper> range) {
-            foreach (var item in range) {
-                Add(item);
-            }
-        }
-
-        public override bool ReplaceIfDifferBy(IEnumerable<AcItemWrapper> range) {
-            throw new NotSupportedException();
-        }
-
-        /* TODO: rework this crap with code from online-refactoring branch
-         * public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {
-            foreach (var item in Items) {
-                Unsubscribe(item);
-            }
-
-            var list = range.ToIListIfItsNot();
-            base.ReplaceEverythingBy(list);
-
-            foreach (var item in list) {
-                Subscribe(item);
-            }
-        }*/
-
-        public event PropertyChangedEventHandler ItemPropertyChanged;
 
         public event WrappedValueChangedEventHandler WrappedValueChanged;
 
         private void Item_ValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            e.OldValue.PropertyChanged -= Value_PropertyChanged;
-            e.NewValue.PropertyChanged += Value_PropertyChanged;
+            e.OldValue.PropertyChanged -= Item_PropertyChanged;
+            e.NewValue.PropertyChanged += Item_PropertyChanged;
             WrappedValueChanged?.Invoke(sender, e);
-        }
-
-        private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            ItemPropertyChanged?.Invoke(sender, e);
         }
 
         public void RefreshFilter([NotNull] AcPlaceholderNew valueObject) {

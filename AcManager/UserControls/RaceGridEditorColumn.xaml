@@ -169,21 +169,21 @@
                         </ComboBox.ItemTemplate>
                     </mui:BetterComboBox>-->
 
-                    <mui:BetterComboBox ItemsSource="{Binding Car.SkinsActualList}" SelectedItem="{Binding CarSkin, Mode=TwoWay}" IsEditable="False"
-                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource BetterComboBox.Borderless.White}"
-                            PreviewMouseDown="OpponentSkinCell_OnMouseDown">
-                        <!--<mui:BetterComboBox.ItemsSource>
-                            <CompositeCollection>
-                                <x:Null />
-                                <CollectionContainer Collection="{Binding Source={StaticResource SkinsList}}" />
-                            </CompositeCollection>
-                        </mui:BetterComboBox.ItemsSource>-->
+                    <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="True"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" ItemsSource="{Binding Car.SkinsActualList}"
+                            IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel Height="18">
-                                    <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
-                                    <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                                    <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                    <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
                                 </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                                        <Setter TargetName="Image" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="Text" Property="Text" Value="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </mui:BetterComboBox>
@@ -236,8 +236,13 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentNationality_Random}" Style="{StaticResource Borderless.White}" />
+                <DockPanel>
+                    <TextBlock
+                            Text="{Binding CarSkin.DisplayName, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}, FallbackValue='Skin Name'}" />
+                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentNationality_Random}" Style="{StaticResource Borderless.White}"
+                            Visibility="Hidden" />
+                </DockPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
@@ -385,7 +390,8 @@
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
                                     CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName" CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
+                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"
+                                    CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
                             <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
                                     CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
                             <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"

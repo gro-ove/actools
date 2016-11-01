@@ -325,7 +325,6 @@
                 </Popup>
                 <ToggleButton Background="Transparent" BorderThickness="0" Padding="0"
                         IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-
                 <DockPanel>
                     <Path x:Name="Arrow" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
                             HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" DockPanel.Dock="Right" />

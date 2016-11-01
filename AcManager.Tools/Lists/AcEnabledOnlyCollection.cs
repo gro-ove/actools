@@ -7,7 +7,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Lists {
     // potentially a bad place, requires reworking
@@ -18,7 +17,6 @@ namespace AcManager.Tools.Lists {
             _collection = collection;
             collection.CollectionChanged += Collection_CollectionChanged;
             collection.WrappedValueChanged += Collection_WrappedValueChanged;
-            Rebuild();
         }
 
         private void Rebuild() {
@@ -56,8 +54,6 @@ namespace AcManager.Tools.Lists {
         
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Collection_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            Logging.Debug(e.OldValue.Id + ", " + e.OldValue.GetType().Name + " → " + e.NewValue.GetType().Name);
-
             var o = e.OldValue as T;
             if (o != null) {
                 Remove(o);

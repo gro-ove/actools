@@ -4,6 +4,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -55,6 +56,7 @@ namespace AcManager.Controls.ViewModels {
         public CarSkinObject CarSkin {
             get { return _carSkin; }
             set {
+                Logging.Debug(value?.Id);
                 if (Equals(value, _carSkin)) return;
                 _carSkin = value;
                 OnPropertyChanged();

@@ -11,10 +11,8 @@ using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Miscellaneous;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -22,10 +20,7 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.UserControls {
-    /// <summary>
-    /// Interaction logic for GridEditorColumn.xaml
-    /// </summary>
-    public partial class RaceGridEditorColumn : INotifyPropertyChanged {
+    public sealed partial class RaceGridEditorColumn : INotifyPropertyChanged {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => {
@@ -241,16 +236,10 @@ namespace AcManager.UserControls {
             }
         }
 
-        private void OpponentSkinCell_OnMouseDown(object sender, MouseEventArgs e) {
-            //var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
-            //entry?.Car.SkinsManager.EnsureLoadedAsync().Forget();
-            //Logging.Debug(entry?.Car.SkinsManager.EnabledOnly.JoinToString(", "));
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
