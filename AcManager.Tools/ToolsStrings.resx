@@ -1620,4 +1620,7 @@
   <data name="Common_GlobalHeader" xml:space="preserve">
     <value>Global:</value>
   </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>You</value>
+  </data>
 </root>

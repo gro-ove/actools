@@ -11,5 +11,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         string Name { get; }
 
         bool IsDisposed { get; }
+
+        void SetProceduralOverride([CanBeNull] byte[] textureBytes, Device device);
     }
 }

@@ -3394,6 +3394,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string RaceGrid_You {
+            get {
+                return ResourceManager.GetString("RaceGrid_You", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t rename replays.
         /// </summary>
         public static string Replay_CannotRenameReplays {

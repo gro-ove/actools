@@ -178,6 +178,7 @@
     <Compile Include="Base\Utils\MathF.cs" />
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
+    <Compile Include="Base\Utils\TextureReader.cs" />
     <Compile Include="DeferredShading\DeferredShadingRenderer.cs" />
     <Compile Include="DeferredShading\Lights\BaseLight.cs" />
     <Compile Include="DeferredShading\Lights\DirectionalLight.cs" />

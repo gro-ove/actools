@@ -83,7 +83,7 @@ SamplerState samAnisotropic {
 
 float3 CalcAmbient(float3 normal) {
 	float up = normal.y * 0.5 + 0.5;
-	return gMaterial.Ambient * 2.0 + gMaterial.Diffuse * up;
+	return gMaterial.Ambient * 1.75 + gMaterial.Diffuse * up * 0.8;
 	//return gAmbientDown + up * gAmbientRange;
 }
 
@@ -144,7 +144,7 @@ PS_IN vs_main(VS_IN vin) {
 
 float PseudoReflection(float3 reflected, float specularExp) {
 	float val = reflected.y + reflected.x * 0.1;
-	float edge = specularExp / 2.0 + 1.0;
+	float edge = specularExp + 1.0;
 	return (
 		saturate((0.3 - abs(0.6 - val)) * edge) +
 		saturate((0.1 - abs(0.1 - val)) * edge)

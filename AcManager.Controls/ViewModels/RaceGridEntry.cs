@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Input;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -13,7 +14,7 @@ namespace AcManager.Controls.ViewModels {
     public class RaceGridPlayerEntry : RaceGridEntry {
         public override bool SpecialEntry => true;
 
-        public override string DisplayName => "You";
+        public override string DisplayName => ToolsStrings.RaceGrid_You;
 
         public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }

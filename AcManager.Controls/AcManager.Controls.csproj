@@ -176,6 +176,7 @@
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
+    <Compile Include="CustomShowroom\PaintShop.cs" />
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="Helpers\AppIconService.cs" />
     <Compile Include="Helpers\AppShortcut.cs" />

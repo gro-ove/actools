@@ -490,7 +490,7 @@ namespace AcTools.Render.Base.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechCopy, TechOverlay, TechShadow, TechDepth, TechFxaa;
+		public EffectTechnique TechCopy, TechCopyNoAlpha, TechOverlay, TechShadow, TechDepth, TechFxaa;
 
 		public EffectResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
 		public EffectScalarVariable FxSizeMultipler;
@@ -501,6 +501,7 @@ namespace AcTools.Render.Base.Shaders {
 			E = new Effect(device, _b);
 
 			TechCopy = E.GetTechniqueByName("Copy");
+			TechCopyNoAlpha = E.GetTechniqueByName("CopyNoAlpha");
 			TechOverlay = E.GetTechniqueByName("Overlay");
 			TechShadow = E.GetTechniqueByName("Shadow");
 			TechDepth = E.GetTechniqueByName("Depth");

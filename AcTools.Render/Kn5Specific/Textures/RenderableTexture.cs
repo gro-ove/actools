@@ -20,7 +20,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private ShaderResourceView _resource;
 
         public ShaderResourceView Resource {
-            get { return _override ?? _resource; }
+            get { return _proceduralOverride ?? _override ?? _resource; }
             internal set {
                 if (Equals(_resource, value)) return;
                 DisposeHelper.Dispose(ref _resource);
@@ -36,6 +36,25 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 if (Equals(_override, value)) return;
                 DisposeHelper.Dispose(ref _override);
                 _override = value;
+            }
+        }
+
+        private ShaderResourceView _proceduralOverride;
+
+        public ShaderResourceView ProceduralOverride {
+            get { return _proceduralOverride; }
+            set {
+                if (Equals(value, _proceduralOverride)) return;
+                DisposeHelper.Dispose(ref _proceduralOverride);
+                _proceduralOverride = value;
+            }
+        }
+
+        public void SetProceduralOverride(byte[] textureBytes, Device device) {
+            try {
+                ProceduralOverride = ShaderResourceView.FromMemory(device, textureBytes);
+            } catch (Exception) {
+                ProceduralOverride = null;
             }
         }
 

@@ -46,6 +46,18 @@
 		}
 	}
 
+	float4 ps_CopyNoAlpha(PS_IN pin) : SV_Target {
+		return float4(gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0).rgb, 1.0);
+	}
+
+	technique10 CopyNoAlpha {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CopyNoAlpha()));
+		}
+	}
+
 // overlay (gui) mode
 	float4 ps_Overlay(PS_IN pin) : SV_Target {
 		float4 b = gInputMap.Sample(samInputImage, pin.Tex);
