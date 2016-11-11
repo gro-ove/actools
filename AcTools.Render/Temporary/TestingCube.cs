@@ -11,7 +11,7 @@ namespace AcTools.Render.Temporary {
     public class TestingCube : TrianglesRenderableObject<InputLayouts.VerticePC> {
         private EffectTestingCube _effectMiniCube;
 
-        public TestingCube() : base(new[] {
+        public TestingCube() : base(null, new[] {
             new InputLayouts.VerticePC(new Vector3(-1.0f, -1.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
             new InputLayouts.VerticePC(new Vector3(-1.0f, 1.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),
             new InputLayouts.VerticePC(new Vector3(1.0f, 1.0f, -1.0f), new Vector4(1.0f, 0.0f, 0.0f, 1.0f)),

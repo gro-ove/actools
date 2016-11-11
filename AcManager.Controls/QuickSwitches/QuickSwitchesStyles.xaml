@@ -41,16 +41,19 @@
                                     </TransformGroup>
                                 </Ellipse.RenderTransform>
                             </Ellipse>
-                            <TextBlock x:Name="PART_Text" DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                    TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
-                                    FontFamily="{StaticResource FontFamily}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
-                                    Margin="4 0 0 0">
-                                <TextBlock.RenderTransform>
+                            <DockPanel x:Name="PART_Text">
+                                <mui:ContextMenuButton x:Name="PART_MoreButton" Command="{TemplateBinding MoreCommand}" DockPanel.Dock="Right" />
+                                <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                        TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
+                                        FontFamily="{StaticResource FontFamily}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
+                                        Margin="4 0 0 0">
+                                </TextBlock>
+                                <DockPanel.RenderTransform>
                                     <TransformGroup>
                                         <TranslateTransform X="-6" />
                                     </TransformGroup>
-                                </TextBlock.RenderTransform>
-                            </TextBlock>
+                                </DockPanel.RenderTransform>
+                            </DockPanel>
                         </StackPanel>
                         <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
                                 Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -95,6 +98,9 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
                             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                        </Trigger>
+                        <Trigger Property="MoreCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_MoreButton" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

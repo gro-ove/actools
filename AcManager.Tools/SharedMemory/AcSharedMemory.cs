@@ -3,14 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
-using System.Management;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Timers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
-using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -139,49 +135,8 @@ namespace AcManager.Tools.SharedMemory {
 
         private Process _gameProcess;
 
-        [DllImport(@"psapi.dll")]
-        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
-
-        public static string GetProcessPathUsingPsApi(int pid) {
-            var sw = Stopwatch.StartNew();
-
-            var processHandle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryInformation, false, pid);
-            if (processHandle == IntPtr.Zero) return null;
-
-            const int lengthSb = 4000;
-            
-            try {
-                var sb = new StringBuilder(lengthSb);
-                return GetModuleFileNameEx(processHandle, IntPtr.Zero, sb, lengthSb) > 0 ? sb.ToString() : null;
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return null;
-            } finally {
-                Kernel32.CloseHandle(processHandle);
-                Logging.Debug(sw.ElapsedMilliseconds + " ms");
-            }
-        }
-
-        [CanBeNull]
-        private static string GetProcessPathUsingManagement(int processId) {
-            var sw = Stopwatch.StartNew();
-
-            try {
-                using (var s = new ManagementObjectSearcher($"SELECT ExecutablePath FROM Win32_Process WHERE ProcessId = {processId}"))
-                using (var c = s.Get()) {
-                    return c.Cast<ManagementObject>().Select(x => x[@"ExecutablePath"]).FirstOrDefault()?.ToString();
-                }
-            } catch (Exception e) {
-                Logging.Warning(e);
-            } finally {
-                Logging.Debug(sw.ElapsedMilliseconds + " ms");
-            }
-
-            return null;
-        }
-
         private static bool IsGameProcess(Process process) {
-            var filename = GetProcessPathUsingPsApi(process.Id) ?? GetProcessPathUsingManagement(process.Id);
+            var filename = process.GetFilenameSafe();
             return filename == null || AcRootDirectory.CheckDirectory(Path.GetDirectoryName(filename));
         }
 

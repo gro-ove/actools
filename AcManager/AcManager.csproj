@@ -161,6 +161,10 @@
       <HintPath>..\Libraries\Awesomium-x86\Awesomium.Windows.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\Packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
@@ -231,6 +235,7 @@
     </Compile>
     <Compile Include="AppArguments.cs" />
     <Compile Include="AppFlag.cs" />
+    <Compile Include="AppHibernator.TaskbarIcon.cs" />
     <Compile Include="AppHibernator.cs" />
     <Compile Include="AppStrings.Designer.cs">
       <AutoGen>True</AutoGen>

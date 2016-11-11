@@ -226,6 +226,7 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.RunStatsWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
             PlayerStatsManager.Instance.SetListener();
+            RhmService.Instance.SetListener();
 
             _hibernator = new AppHibernator();
             _hibernator.SetListener();
@@ -277,53 +278,57 @@ namespace AcManager {
         }
 
         private async void BackgroundInitialization() {
-            await Task.Delay(1000);
-            if (AppArguments.Has(AppFlag.TestIfAcdAvailable)) {
-                if (!Acd.IsAvailable()) {
+            try {
+                await Task.Delay(1000);
+                if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
                     NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
                 }
+
+                if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
+                    List<ChangelogEntry> changelog;
+                    try {
+                        changelog =
+                                await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
+                    } catch (WebException e) {
+                        NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
+                        return;
+                    } catch (Exception e) {
+                        NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, e);
+                        return;
+                    }
+
+                    Logging.Debug("Changelog entries: " + changelog.Count);
+                    if (changelog.Any()) {
+                        Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
+                            ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
+                                                              .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                                MessageBoxButton.OK);
+                        });
+                    }
+                }
+
+                await Task.Delay(1500);
+                WeatherSpecificCloudsHelper.Revert();
+                WeatherSpecificTyreSmokeHelper.Revert();
+                WeatherSpecificPpFilterHelper.Revert();
+                CopyFilterToSystemForOculusHelper.Revert();
+
+                await Task.Delay(1500);
+                CustomUriSchemeHelper.EnsureRegistered();
+
+                await Task.Delay(5000);
+                await Task.Run(() => {
+                    foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
+                                      where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
+                                      let info = new FileInfo(file)
+                                      where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
+                                      select info) {
+                        f.Delete();
+                    }
+                });
+            } catch (Exception e) {
+                Logging.Error(e);
             }
-
-            if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
-                List<ChangelogEntry> changelog;
-                try {
-                    changelog = await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
-                } catch (WebException e) {
-                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
-                    return;
-                } catch (Exception e) {
-                    NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, e);
-                    return;
-                }
-
-                Logging.Debug("Changelog entries: " + changelog.Count);
-                if (changelog.Any()) {
-                    Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
-                        ModernDialog.ShowMessage(changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                          .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title, MessageBoxButton.OK);
-                    });
-                }
-            }
-
-            await Task.Delay(1500);
-            WeatherSpecificCloudsHelper.Revert();
-            WeatherSpecificTyreSmokeHelper.Revert();
-            WeatherSpecificPpFilterHelper.Revert();
-            CopyFilterToSystemForOculusHelper.Revert();
-
-            await Task.Delay(1500);
-            CustomUriSchemeHelper.EnsureRegistered();
-
-            await Task.Delay(5000);
-            await Task.Run(() => {
-                foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
-                                  where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
-                                  let info = new FileInfo(file)
-                                  where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
-                                  select info) {
-                    f.Delete();
-                }
-            });
         }
 
         private void BbCodeBlock_ImageClicked(object sender, BbCodeImageEventArgs e) {
@@ -374,6 +379,7 @@ namespace AcManager {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
+            RhmService.Instance.Dispose();
             Dispose();
         }
 
@@ -392,8 +398,7 @@ namespace AcManager {
         }
 
         public void Dispose() {
-            _hibernator?.Dispose();
-            _hibernator = null;
+            DisposeHelper.Dispose(ref _hibernator);
         }
     }
 }

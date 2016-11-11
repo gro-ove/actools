@@ -11,7 +11,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
     public class SkyObject : TrianglesRenderableObject<InputLayouts.VerticeP> {
         private IRenderableMaterial _material;
 
-        private SkyObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(vertices, indices) {
+        private SkyObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(null, vertices, indices) {
             BoundingBox = new BoundingBox(new Vector3(-9e9f), new Vector3(9e9f));
         }
 

@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base.Utils;
+﻿using System;
+using AcTools.Render.Base.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
@@ -85,6 +86,7 @@ namespace AcTools.Render.Base.Cameras {
         public Plane[] FrustumPlanes => Frustum.Planes;
 
         public virtual bool Visible(BoundingBox box) {
+            if (Frustum == null) throw new Exception("Call SetLens() first");
             return Frustum.Intersect(box) > 0;
         }
 

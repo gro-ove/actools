@@ -278,7 +278,6 @@ namespace AcManager.Controls.CustomShowroom {
                     using (var renderer = new UvRenderer(_kn5)) {
                         renderer.Width = width;
                         renderer.Height = height;
-
                         renderer.Shot(filename, TextureName);
                     }
                 });

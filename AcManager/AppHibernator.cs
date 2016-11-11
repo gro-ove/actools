@@ -14,9 +14,11 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using Application = System.Windows.Application;
+using ContextMenu = System.Windows.Forms.ContextMenu;
+using MenuItem = System.Windows.Forms.MenuItem;
 
 namespace AcManager {
-    public class AppHibernator : IDisposable {
+    public partial class AppHibernator : IDisposable {
         public static bool OptionDisableProcessing = false;
 
         public void SetListener() {
@@ -65,47 +67,37 @@ namespace AcManager {
         private IList<Window> _hiddenWindows;
         private NotifyIcon _trayIcon;
 
-        private void Hibernate() {
-            Logging.Here();
-
-            /* add an icon to the tray for manual restoration just in case */
+        private void AddTrayIcon() {
             _trayIcon = new NotifyIcon {
                 Icon = AppIconService.GetTrayIcon(),
-                Text = AppStrings.Hibernate_TrayText,
-                Visible = true
+                Text = AppStrings.Hibernate_TrayText
             };
-
+            
             _trayIcon.DoubleClick += TrayIcon_DoubleClick;
 
-            var restoreMenuItem = new ToolStripMenuItem { Text = UiStrings.Restore };
+            var restoreMenuItem = new MenuItem { Text = UiStrings.Restore };
             restoreMenuItem.Click += RestoreMenuItem_Click;
 
-            var closeMenuItem = new ToolStripMenuItem { Text = UiStrings.Close };
+            var closeMenuItem = new MenuItem { Text = UiStrings.Close };
             closeMenuItem.Click += CloseMenuItem_Click;
 
-            _trayIcon.ContextMenuStrip = new ContextMenuStrip {
-                Items = {
-                    restoreMenuItem,
-                    closeMenuItem
-                }
-            };
-
-            Application.Current.Dispatcher.Invoke(() => {
-                /* hide windows */
-                _hiddenWindows = Application.Current.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible).ToList();
-                foreach (var window in _hiddenWindows) {
-                    window.Visibility = Visibility.Collapsed;
-                }
-
-                /* pause processing */
-                if (OptionDisableProcessing) {
-                    _pausedProcessing = Application.Current.Dispatcher.DisableProcessing();
-                }
+            _trayIcon.ContextMenu = new ContextMenu(new[] {
+                restoreMenuItem,
+                closeMenuItem
             });
+
+            _trayIcon.Visible = true;
+        }
+
+        private void RemoveTrayIcon() {
+            if (_trayIcon != null) {
+                _trayIcon.Visible = false;
+                DisposeHelper.Dispose(ref _trayIcon);
+            }
         }
 
         private void RestoreMenuItem_Click(object sender, EventArgs e) {
-            Hibernated = false;
+            WakeUp();
         }
 
         private void CloseMenuItem_Click(object sender, EventArgs e) {
@@ -117,30 +109,8 @@ namespace AcManager {
         }
 
         private void WakeUp() {
-            Logging.Here();
-
-            /* restore processing */
-            DisposeHelper.Dispose(ref _pausedProcessing);
-
-            /* show hidden windows */
-            Application.Current.Dispatcher.Invoke(() => {
-                if (_hiddenWindows != null) {
-                    foreach (var window in _hiddenWindows) {
-                        window.Visibility = Visibility.Visible;
-                    }
-                    _hiddenWindows = null;
-                }
-
-                if (_raceStartedByCm) {
-                    (Application.Current.MainWindow as DpiAwareWindow)?.BringToFront();
-                }
-            });
-
-            /* remove tray icon */
-            if (_trayIcon != null) {
-                _trayIcon.Visible = false;
-                DisposeHelper.Dispose(ref _trayIcon);
-            }
+            _raceStartedByCm = true;
+            Hibernated = false;
         }
 
         private bool _hibernated;
@@ -151,15 +121,48 @@ namespace AcManager {
                 if (Equals(value, _hibernated)) return;
                 _hibernated = value;
 
-                try {
-                    if (value) {
-                        Hibernate();
-                    } else {
-                        WakeUp();
+                Application.Current.Dispatcher.Invoke(() => {
+                    try {
+                        if (value) {
+                            /* add an icon to the tray for manual restoration just in case */
+                            // AddTrayIcon();
+                            AddTrayIconWpf();
+
+                            /* hide windows */
+                            _hiddenWindows = Application.Current.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible).ToList();
+                            foreach (var window in _hiddenWindows) {
+                                Logging.Write("hide: " + window);
+                                window.Visibility = Visibility.Collapsed;
+                            }
+
+                            /* pause processing */
+                            if (OptionDisableProcessing) {
+                                _pausedProcessing = Application.Current.Dispatcher.DisableProcessing();
+                            }
+                        } else {
+                            /* restore processing */
+                            DisposeHelper.Dispose(ref _pausedProcessing);
+
+                            /* show hidden windows */
+                            if (_hiddenWindows != null) {
+                                foreach (var window in _hiddenWindows) {
+                                    window.Visibility = Visibility.Visible;
+                                }
+                                _hiddenWindows = null;
+                            }
+
+                            if (_raceStartedByCm) {
+                                (Application.Current.MainWindow as DpiAwareWindow)?.BringToFront();
+                            }
+
+                            /* remove tray icon */
+                            RemoveTrayIcon();
+                            RemoveTrayIconWpf();
+                        }
+                    } catch (Exception e) {
+                        Logging.Error(e);
                     }
-                } catch (Exception e) {
-                    Logging.Error(e);
-                }
+                });
             }
         }
 

@@ -5,6 +5,9 @@ using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
     public interface IRenderableObject : IDisposable {
+        [CanBeNull]
+        string Name { get; }
+
         Matrix ParentMatrix { get; set; }
 
         bool IsEnabled { get; set; }

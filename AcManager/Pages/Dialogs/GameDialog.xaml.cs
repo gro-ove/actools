@@ -5,11 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Selected;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -51,7 +53,21 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            Buttons = new[] { CancelButton };
+            var rhmSettingsButton = new Button {
+                Content = "RHM Settings",
+                Command = RhmService.Instance.ShowSettingsCommand,
+                MinHeight = 21,
+                MinWidth = 65,
+                Margin = new Thickness(4, 0, 0, 0)
+            };
+
+            rhmSettingsButton.SetBinding(VisibilityProperty, new Binding {
+                Source = RhmService.Instance,
+                Path = new PropertyPath(nameof(RhmService.Active)),
+                Converter = new FirstFloor.ModernUI.Windows.Converters.BooleanToVisibilityConverter()
+            });
+
+            Buttons = new[] { rhmSettingsButton, CancelButton };
         }
 
         protected override void OnClosing(CancelEventArgs e) {
@@ -476,5 +492,7 @@ namespace AcManager.Pages.Dialogs {
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void OnClosed(object sender, EventArgs e) {}
     }
 }

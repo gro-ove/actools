@@ -914,6 +914,41 @@ namespace AcTools.Render.Base.Shaders {
         }
 	}
 
+	public class EffectSpecialTrackMap : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePNTG;
+        public InputLayout LayoutPNTG;
+
+		public EffectTechnique TechMain;
+
+		public EffectMatrixVariable FxWorldViewProj { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load("SpecialTrackMap");
+			E = new Effect(device, _b);
+
+			TechMain = E.GetTechniqueByName("Main");
+
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePNTG == null; i++) {
+				InputSignaturePNTG = TechMain.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePNTG == null) throw new System.Exception("input signature (SpecialTrackMap, PNTG, Main) == null");
+			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
+
+			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePNTG.Dispose();
+            LayoutPNTG.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
 	public class EffectSpecialUv : IEffectWrapper {
 		private ShaderBytecode _b;
 		public Effect E;

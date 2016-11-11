@@ -1,17 +1,16 @@
-using System.Reflection;
-using System.Resources;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows.Media;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Content Manager")]
-[assembly: AssemblyDescription("Custom launcher and content manager for Assetto Corsa")]
+[assembly: AssemblyTitle("AcTools.Render.Tests")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AcClub")]
-[assembly: AssemblyProduct("Content Manager")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("AcTools.Render.Tests")]
+[assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,11 +20,7 @@ using System.Windows.Media;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ab00175b-c2d3-49bb-9f90-2ddb27d1bac5")]
-
-// required to support per-monitor DPI awareness in Windows 8.1+
-// see also https://mui.codeplex.com/wikipage?title=Per-monitor%20DPI%20awareness
-[assembly: DisableDpiAwareness]
+[assembly: Guid("ce18da1a-50e8-468c-9b63-21bc5de417ce")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -37,8 +32,5 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.667.12854")]
-[assembly: AssemblyFileVersion("0.7.667.12854")]
-
-[assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 11/9/2016 10:13:30 PM
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

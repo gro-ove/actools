@@ -22,12 +22,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else {
                     popup.Placement = near ? PlacementMode.Bottom : PlacementMode.MousePoint;
                     popup.PlacementTarget = near ? this : null;
-
-                    /*if (popup.Parent != this) {
-                       AddLogicalChild(popup);
-                       AddVisualChild(popup);
-                    }*/
-
                     popup.IsOpen = true;
                     popup.StaysOpen = false;
                 }
@@ -42,6 +36,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return true;
             }
 
+            var command = Command;
+            if (command != null) {
+                command.Execute(null);
+                return true;
+            }
+
             return false;
         }
 
@@ -50,6 +50,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public override void OnApplyTemplate() {
             if (_button != null) {
                 _button.PreviewMouseLeftButtonUp -= OnButtonClick;
+                _button.PreviewMouseLeftButtonDown -= OnButtonDown;
             }
 
             base.OnApplyTemplate();
@@ -57,6 +58,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _button = GetTemplateChild(@"PART_Button") as FrameworkElement;
             if (_button != null) {
                 _button.PreviewMouseLeftButtonUp += OnButtonClick;
+                _button.PreviewMouseLeftButtonDown += OnButtonDown;
+            }
+        }
+
+        private void OnButtonDown(object sender, MouseButtonEventArgs e) {
+            if (Command != null) {
+                e.Handled = true;
             }
         }
 
@@ -105,6 +113,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Source = this
                 });
             }
+        }
+
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(nameof(Command), typeof(ICommand),
+            typeof(ContextMenuButton));
+
+        public ICommand Command {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
         }
     }
 }

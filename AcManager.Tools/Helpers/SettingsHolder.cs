@@ -950,6 +950,35 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _rhmIntegration;
+
+            public bool RhmIntegration {
+                get {
+                    return _rhmIntegration ??
+                            (_rhmIntegration = ValuesStorage.GetBool("Settings.DriveSettings.RhmIntegration", false)).Value;
+                }
+                set {
+                    if (Equals(value, _rhmIntegration)) return;
+                    _rhmIntegration = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmIntegration", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _rhmLocation;
+
+            [CanBeNull]
+            public string RhmLocation {
+                get { return _rhmLocation ?? (_rhmLocation = ValuesStorage.GetString("Settings.DriveSettings.RhmLocation", null)); }
+                set {
+                    value = value?.Trim();
+                    if (Equals(value, _rhmLocation)) return;
+                    _rhmLocation = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmLocation", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

@@ -116,7 +116,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System.Management" />
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -227,6 +226,7 @@
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
+    <Compile Include="GameProperties\RhmService.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
@@ -274,6 +274,7 @@
     <Compile Include="Helpers\Api\Kunos\BookingResult.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\Api\SteamWebProvider.cs" />
+    <Compile Include="Helpers\ChildProcessTracker.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

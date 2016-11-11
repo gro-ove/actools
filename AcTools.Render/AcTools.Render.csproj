@@ -191,12 +191,9 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificSpecial\Kn5MaterialUv.cs" />
-    <Compile Include="Kn5SpecificSpecial\UvMaterialProvider.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackMapRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\UvRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\AmbientShadowKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificSpecial\DepthMaterialProvider.cs" />
-    <Compile Include="Kn5SpecificSpecial\Kn5MaterialDepth.cs" />
     <Compile Include="Kn5Specific\IKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleBase.cs" />
@@ -281,6 +278,7 @@
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
     <Content Include="Shaders\Special\SpecialUv.fx" />
+    <Content Include="Shaders\Special\SpecialTrackMap.fx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Base\Shaders\ShadersTemplate.tt">

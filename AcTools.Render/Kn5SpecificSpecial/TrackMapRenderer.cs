@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
@@ -18,58 +19,79 @@ using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using Debug = System.Diagnostics.Debug;
 using FillMode = SlimDX.Direct3D11.FillMode;
 using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public class UvRenderer : BaseRenderer {
+    public class TrackMapRenderer : BaseRenderer {
         private readonly Kn5 _kn5;
-        private Kn5RenderableList _carNode;
+        private Kn5RenderableList _trackNode;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        public UvRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename)) {}
+        public TrackMapRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename, true)) { }
 
-        public UvRenderer(Kn5 kn5) {
+        public TrackMapRenderer(Kn5 kn5) {
             _kn5 = kn5;
-            Width = 2048;
-            Height = 2048;
         }
 
-        protected override void ResizeInner() {}
+        protected override void ResizeInner() { }
 
         private Kn5MaterialsProvider _materialsProvider;
 
         protected override void InitializeInner() {
-            _materialsProvider = new UvMaterialProvider();
+            _materialsProvider = new TrackMapMaterialProvider();
             DeviceContextHolder.Set(_materialsProvider);
 
             _materialsProvider.SetKn5(_kn5);
-            _carNode = (Kn5RenderableList)Kn5Converter.Convert(_kn5.RootNode, DeviceContextHolder);
+            _trackNode = (Kn5RenderableList)Kn5Converter.Convert(_kn5.RootNode, DeviceContextHolder);
+
+            _trackNode.UpdateBoundingBox();
+            if (_trackNode.BoundingBox.HasValue) {
+                var size = _trackNode.BoundingBox.Value.GetSize();
+
+                var width = size.X + Margin * 2;
+                var height = size.X + Margin * 2;
+            }
         }
 
-        public bool UseAntialiazing = true;
         public bool UseFxaa = false;
         public float Multipler = 1f;
 
-        private void RenderUv() {
-            var effect = DeviceContextHolder.GetEffect<EffectSpecialUv>();
+        public float XOffset, ZOffset,
+            Margin = 2.0f, 
+            ScaleFactor = 1.0f,
+            DrawingSize = 10.0f;
 
-            for (var x = -1f; x <= 1f; x++) {
-                for (var y = -1f; y <= 1f; y++) {
-                    effect.FxOffset.Set(new Vector2(x, y));
-                    _carNode.Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
-                }
-            }
+        private void RenderTrackMap() {
+            if (!_trackNode.BoundingBox.HasValue) return;
+
+            var box = _trackNode.BoundingBox.Value;
+            var camera = new CameraOrtho {
+                Position = new Vector3(box.GetCenter().X, box.Maximum.Y + Margin, box.GetCenter().Z),
+                FarZ = box.GetSize().Y + Margin * 2,
+                Target = box.GetCenter(),
+                Up = new Vector3(0.0f, 0.0f, -1.0f),
+                Width = box.GetSize().X + Margin * 2,
+                Height = box.GetSize().Z + Margin * 2
+            };
+
+            camera.SetLens(1f);
+
+            _trackNode.Draw(DeviceContextHolder, camera, SpecialRenderMode.Simple, n => {
+                if (n is RenderableList) return true;
+                return n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1;
+            });
         }
 
         protected override void DrawInner() {
             using (var rasterizerState = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
-                FillMode = FillMode.Wireframe,
+                FillMode = FillMode.Solid,
                 CullMode = CullMode.None,
-                IsAntialiasedLineEnabled = UseAntialiazing,
+                IsAntialiasedLineEnabled = false,
                 IsFrontCounterclockwise = false,
-                IsDepthClipEnabled = true
+                IsDepthClipEnabled = false
             })) {
                 DeviceContext.OutputMerger.BlendState = null;
                 DeviceContext.Rasterizer.State = rasterizerState;
@@ -82,14 +104,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         DeviceContext.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
                         DeviceContext.OutputMerger.SetTargets(buffer.TargetView);
 
-                        RenderUv();
+                        RenderTrackMap();
 
                         DeviceContext.Rasterizer.State = null;
                         DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, buffer.View, RenderTargetView);
                     }
                 } else {
                     DeviceContext.OutputMerger.SetTargets(RenderTargetView);
-                    RenderUv();
+                    RenderTrackMap();
                 }
             }
         }
@@ -109,7 +131,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                             graphics.SmoothingMode = SmoothingMode.HighQuality;
                             graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                             graphics.DrawImage(image, 0f, 0f, Width * multipler, Height * multipler);
-
                             bitmap.Save(filename, ImageFormat.Png);
                         }
                     }
@@ -117,20 +138,21 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        public void Shot(string outputFile, string textureName) {
+        public void Shot(string outputFile) {
+            Debug.WriteLine("Shot: " + outputFile);
+
             if (!Initialized) {
                 Initialize();
             }
 
             Width = (int)(Width * Multipler);
             Height = (int)(Height * Multipler);
-
-            Kn5MaterialUv.Filter = textureName;
+            
             Draw();
             SaveResultAs(outputFile, 1f / Multipler);
         }
 
-        protected override void OnTick(float dt) {}
+        protected override void OnTick(float dt) { }
 
         public override void Dispose() {
             DisposeHelper.Dispose(ref _materialsProvider);
@@ -138,9 +160,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
     }
 
-    public class UvMaterialProvider : Kn5MaterialsProvider {
+    public class TrackMapMaterialProvider : Kn5MaterialsProvider {
         public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
-            return new Kn5MaterialUv(kn5Material);
+            return new Kn5MaterialTrackMap(kn5Material);
         }
 
         public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
@@ -156,32 +178,28 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
     }
 
-    public class Kn5MaterialUv : IRenderableMaterial {
-        internal static string Filter { get; set; }
+    public class Kn5MaterialTrackMap : IRenderableMaterial {
+        private EffectSpecialTrackMap _effect;
 
-        private EffectSpecialUv _effect;
-        private readonly string[] _textures;
-
-        internal Kn5MaterialUv(Kn5Material material) {
-            _textures = material?.TextureMappings.Where(x => x.Name != "txDetail"
-                    && x.Name != "txNormalDetail").Select(x => x.Texture).ToArray() ?? new string[0];
-        }
+        internal Kn5MaterialTrackMap(Kn5Material material) { }
 
         public void Initialize(DeviceContextHolder contextHolder) {
-            _effect = contextHolder.GetEffect<EffectSpecialUv>();
+            _effect = contextHolder.GetEffect<EffectSpecialTrackMap>();
         }
 
         public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
-            if (!_textures.Contains(Filter)) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
             return true;
         }
 
-        public void SetMatrices(Matrix objectTransform, ICamera camera) { }
+        public void SetMatrices(Matrix objectTransform, ICamera camera) {
+            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
+        }
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            Debug.WriteLine("Here");
             _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 

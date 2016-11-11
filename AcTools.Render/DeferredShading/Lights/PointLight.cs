@@ -20,7 +20,7 @@ namespace AcTools.Render.DeferredShading.Lights {
         private EffectDeferredLight _effect;
 
         private class SphereObject : TrianglesRenderableObject<InputLayouts.VerticeP> {
-            private SphereObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(vertices, indices) { }
+            private SphereObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(null, vertices, indices) { }
 
             public static SphereObject Create(float radius) {
                 var mesh = GeometryGenerator.CreateSphere(radius, 10, 10);

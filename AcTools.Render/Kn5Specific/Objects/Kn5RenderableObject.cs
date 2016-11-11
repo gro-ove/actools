@@ -38,8 +38,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private readonly bool _isTransparent;
 
-        public Kn5RenderableObject(Kn5Node node, DeviceContextHolder holder)
-                : base(Convert(node.Vertices), Convert(node.Indices)) {
+        public Kn5RenderableObject(Kn5Node node, DeviceContextHolder holder) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
 

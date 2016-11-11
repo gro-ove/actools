@@ -32,6 +32,10 @@
             Content="{x:Static c:ControlsStrings.QuickSwitches_DamageUi}" IconData="{StaticResource AccidentIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_DamageUi_Tooltip}" />
 
+    <mui:ModernToggleButton x:Key="WidgetRhm" IsChecked="{Binding RhmIntegration, Source={x:Static t:SettingsHolder.Drive}}" Content="RHM"
+            IconData="{StaticResource PersonIconData}" ToolTip="Real Head Motion integration"
+            MoreCommand="{Binding ShowSettingsCommand, Source={x:Static t:RhmService.Instance}}" />
+
     <mui:ModernToggleButton x:Key="WidgetProximityIndicator" IsChecked="{Binding IsEnabled, Source={x:Static t:AcSettingsHolder.ProximityIndicator}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Nearest}" IconData="{StaticResource ProximityIndicatiorIconData}"
             ToolTip="Show nearest opponents with proximity indicator" />
@@ -110,8 +114,8 @@
                                 TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
                                 FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center" Grid.Row="1"
                                 Margin="{StaticResource LabelMargin}" />
-                        <Path Grid.Row="0" Width="22" Height="{TemplateBinding IconHeight}" Fill="{TemplateBinding Foreground}"
-                                Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True"
+                        <Path Grid.Row="0" Width="22" Height="{TemplateBinding IconHeight}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True"
                                 Data="F1 M 6.33333,1.14441e-005L 6.33333,3.16668C 6.33333,4.91558 4.91557,6.33334 3.16667,6.33334C 1.41776,6.33334 0,4.91558 0,3.16668L 0,1.14441e-005L 6.33333,1.14441e-005 Z M 37.9856,3.8147e-006L 37.9856,3.16667C 37.9856,4.91558 36.5678,6.33334 34.8189,6.33334C 33.07,6.33334 31.6522,4.91558 31.6522,3.16667L 31.6522,3.8147e-006L 37.9856,3.8147e-006 Z">
                             <Path.RenderTransform>
                                 <TranslateTransform Y="8" />

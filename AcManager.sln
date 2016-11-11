@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcStarter", "AcStarter\AcSt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.LapTimes", "AcTools.LapTimes\AcTools.LapTimes.csproj", "{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.Render.Tests", "AcTools.Render.Tests\AcTools.Render.Tests.csproj", "{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -233,6 +235,18 @@ Global
 		{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}.Release|x64.Build.0 = Release|Any CPU
 		{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}.Release|x86.ActiveCfg = Release|Any CPU
 		{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}.Release|x86.Build.0 = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|x64.Build.0 = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|x64.ActiveCfg = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|x64.Build.0 = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE18DA1A-50E8-468C-9B63-21BC5DE417CE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

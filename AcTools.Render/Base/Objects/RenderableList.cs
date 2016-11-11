@@ -4,13 +4,17 @@ using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
     public class RenderableList : List<IRenderableObject>, IRenderableObject {
+        public string Name { get; }
+
         public Matrix Matrix { get; private set; }
 
         private Matrix _parentMatrix = Matrix.Identity;
+
         public Matrix ParentMatrix {
             get { return _parentMatrix; }
             set {
@@ -25,6 +29,7 @@ namespace AcTools.Render.Base.Objects {
         public bool IsEnabled { get; set; } = true;
 
         private Matrix _localMatrix = Matrix.Identity;
+
         public Matrix LocalMatrix {
             get { return _localMatrix; }
             set {
@@ -34,17 +39,19 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public RenderableList(Matrix localMatrix, IEnumerable<IRenderableObject> children) : base(children) {
+        public RenderableList([CanBeNull] string name, Matrix localMatrix, IEnumerable<IRenderableObject> children) : base(children) {
             LocalMatrix = localMatrix;
+            Name = name;
             UpdateMatrix();
         }
 
-        public RenderableList(Matrix localMatrix) {
+        public RenderableList([CanBeNull] string name, Matrix localMatrix) {
             LocalMatrix = localMatrix;
+            Name = name;
             UpdateMatrix();
         }
 
-        public RenderableList() : this(Matrix.Identity) {}
+        public RenderableList() : this(null, Matrix.Identity) {}
 
         private void UpdateMatrix() {
             Matrix = _localMatrix * _parentMatrix;
@@ -75,24 +82,24 @@ namespace AcTools.Render.Base.Objects {
 
             BoundingBox = bb;
         }
-        
+
         public new void Add(IRenderableObject obj) {
             base.Add(obj);
             obj.ParentMatrix = Matrix;
         }
-        
+
         public new void AddRange(IEnumerable<IRenderableObject> objs) {
             foreach (var o in objs) {
                 base.Add(o);
                 o.ParentMatrix = Matrix;
             }
         }
-        
+
         public new void Insert(int index, IRenderableObject obj) {
             base.Insert(index, obj);
             obj.ParentMatrix = Matrix;
         }
-        
+
         public new void InsertRange(int index, IEnumerable<IRenderableObject> objs) {
             foreach (var o in objs) {
                 base.Insert(index++, o);

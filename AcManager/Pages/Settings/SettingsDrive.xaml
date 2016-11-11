@@ -121,6 +121,23 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ChangeCarSkin}" />
             </CheckBox>
 
+            <!--real head motion-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+                <Run Text="Real Head Motion" />
+                <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink>
+            </TextBlock>
+
+            <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
+                <Label Content="RHM integration" />
+            </CheckBox>
+
+            <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+                <Label Content="RHM location:" />
+                <Button Content="Browse" Command="{Binding SelectRhmLocationCommand}" />
+                <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+            </DockPanel>
+
             <!--game-related events-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
