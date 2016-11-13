@@ -119,6 +119,10 @@
       <HintPath>..\Libraries\Magick.NET-6.8-$(ActualPlatform)\Magick.NET-$(ActualPlatform).dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -222,7 +226,6 @@
     <Compile Include="Utils\LogWatcher.cs" />
     <Compile Include="Utils\MathException.cs" />
     <Compile Include="Utils\MathUtils.cs" />
-    <Compile Include="Utils\Matrix.cs" />
     <Compile Include="Utils\Physics\Combinator.cs" />
     <Compile Include="Utils\Physics\ControllerInput.cs" />
     <Compile Include="Utils\Physics\Lut.cs" />

@@ -51,7 +51,7 @@ namespace AcTools.Render.Base.Objects {
             UpdateMatrix();
         }
 
-        public RenderableList() : this(null, Matrix.Identity) {}
+        public RenderableList() : this(null, Matrix.Identity) { }
 
         private void UpdateMatrix() {
             Matrix = _localMatrix * _parentMatrix;

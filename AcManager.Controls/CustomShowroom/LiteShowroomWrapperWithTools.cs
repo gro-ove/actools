@@ -1,50 +1,26 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using System.Windows.Input;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.Controls.CustomShowroom {
     public class LiteShowroomWrapperWithTools : LiteShowroomWrapper {
-        [CanBeNull]
-        private LiteShowroomTools _tools;
-
-        private bool _visibleTools = true;
+        private readonly AttachedHelper _helper;
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
         public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) : base(renderer, car.DisplayName) {
+            _helper = new AttachedHelper(this, new LiteShowroomTools(renderer, car, skinId));
             GoToNormalMode();
 
-            Form.Closed += OnClosed;
             renderer.VisibleUi = false;
-
             Form.Move += OnMove;
-
-            _tools = new LiteShowroomTools(renderer, car, skinId) { Owner = null };
-            ElementHost.EnableModelessKeyboardInterop(_tools);
-            _tools.Show();
-
-            UpdatePosition();
-
-            _tools.Activated += Tools_Activated;
-            _tools.Deactivated += Tools_Deactivated;
-            _tools.Closed += Tools_Closed;
-            _tools.KeyUp += Tools_KeyUp;
-            _tools.LocationChanged += Tools_LocationChanged;
-            _tools.SizeChanged += Tools_SizeChanged;
-
-            Form.Load += OnLoad;
         }
 
         protected override void OnClick() {
@@ -58,6 +34,11 @@ namespace AcManager.Controls.CustomShowroom {
         private const string KeyNormalFullscreen = "_LiteShowroomWrapperWithTools.NormalFullscreen";
         private const string KeyNormalSize = "_LiteShowroomWrapperWithTools.NormalSize";
         private const string KeyNormalPos = "_LiteShowroomWrapperWithTools.NormalPos";
+
+        private const string KeyToolSize = "_LiteShowroomWrapperWithTools.ToolSize";
+        private const string KeyToolPos = "_LiteShowroomWrapperWithTools.ToolPos";
+
+        private bool? _lastVisibleTools;
 
         protected sealed override void GoToNormalMode() {
             _switchingInProgress = true;
@@ -80,14 +61,13 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer.Width = Form.ClientSize.Width;
                 Renderer.Height = Form.ClientSize.Height;
 
-                UpdateVisibility(true);
+                if (_lastVisibleTools.HasValue) {
+                    _helper.Visible = _lastVisibleTools.Value;
+                }
             } finally {
                 _switchingInProgress = false;
             }
         }
-
-        private const string KeyToolSize = "_LiteShowroomWrapperWithTools.ToolSize";
-        private const string KeyToolPos = "_LiteShowroomWrapperWithTools.ToolPos";
 
         protected override void GoToToolMode() {
             _switchingInProgress = true;
@@ -110,7 +90,8 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer.Width = Form.ClientSize.Width;
                 Renderer.Height = Form.ClientSize.Height;
 
-                UpdateVisibility(true);
+                _lastVisibleTools = _helper.Visible;
+                _helper.Visible = false;
             } finally {
                 _switchingInProgress = false;
             }
@@ -137,78 +118,11 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        private int _stickyLocation;
-        private const int StickyLocationsCount = 4;
-        private const int Padding = 10;
-
-        private Point? GetStickyLocation(int index, double w, double h) {
-            switch (index) {
-                case 0:
-                    return new Point(Form.Left + Form.Width - w + Padding, Form.Top + Form.Height - h - Padding);
-
-                case 1:
-                    return new Point(Form.Left - Padding, Form.Top + Form.Height - h - Padding);
-
-                case 2:
-                    return new Point(Form.Left + Form.Width - w + Padding, Form.Top - Padding);
-
-                case 3:
-                    return new Point(Form.Left - Padding, Form.Top - Padding);
-
-                default:
-                    return null;
-            }
-        } 
-
-        private bool _skip;
-
-        private void Tools_LocationChanged(object sender, EventArgs e) {
-            if (_skip || _tools == null) return;
-            
-            var pos = new Point(_tools.Left, _tools.Top);
-            foreach (var i in from i in Enumerable.Range(0, StickyLocationsCount)
-                              let location = GetStickyLocation(i, _tools.Width, _tools.Height)
-                              where location.HasValue
-                              let delta = pos - location.Value
-                              where delta.Length < 20
-                              select i) {
-                _stickyLocation = i;
-                UpdatePosition();
-                return;
-            }
-
-            _stickyLocation = -1;
-        }
-
-        private void Tools_SizeChanged(object sender, SizeChangedEventArgs e) {
-            UpdatePosition(e.NewSize.Width, e.NewSize.Height);
-        }
-
-        private void UpdatePosition(double w, double h) {
-            var location = GetStickyLocation(_stickyLocation, w, h);
-            if (location == null || _tools == null) return;
-
-            _skip = true;
-            _tools.Left = location.Value.X;
-            _tools.Top = location.Value.Y;
-            _skip = false;
-        }
-
-        private void UpdatePosition() {
-            if (_tools == null) return;
-            UpdatePosition(_tools.Width, _tools.Height);
-        }
-
-        private void OnLoad(object sender, EventArgs e) {
-            UpdateVisibility(true);
-        }
-
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
             switch (args.KeyCode) {
                 case Keys.H:
                     if (args.Control && !args.Alt && !args.Shift) {
-                        _visibleTools = !_visibleTools;
-                        UpdateVisibility(true);
+                        _helper.Visible = !_helper.Visible;
                         args.Handled = true;
                     }
                     break;
@@ -230,92 +144,21 @@ namespace AcManager.Controls.CustomShowroom {
             base.OnKeyUp(sender, args);
         }
 
-        private void Tools_KeyUp(object sender, System.Windows.Input.KeyEventArgs e) {
-            if (e.Key == Key.H && Keyboard.Modifiers == ModifierKeys.Control) {
-                _visibleTools = !_visibleTools;
-                UpdateVisibility(true);
-                e.Handled = true;
-            }
+        protected override void OnRender() {
+            if (Renderer == null || Paused && !_helper.IsActive && !Renderer.IsDirty) return;
+            Renderer.Draw();
         }
 
         protected override void OnResize(object sender, EventArgs e) {
-            base.OnResize(sender, e);
-            UpdatePosition();
             Save();
         }
 
-        private void OnMove(object sender, EventArgs e) {
-            UpdatePosition();
+        protected void OnMove(object sender, EventArgs e) {
             Save();
         }
 
         protected override void OnFullscreenChanged() {
-            base.OnFullscreenChanged();
-            UpdatePosition();
             Save();
-        }
-
-        protected override void OnRender() {
-            if (_tools == null || Renderer == null || Paused && !_tools.IsActive && !Renderer.IsDirty) return;
-            Renderer.Draw();
-        }
-
-        private void Tools_Activated(object sender, EventArgs e) {
-            UpdateVisibility(Form.Focused);
-        }
-
-        private void Tools_Deactivated(object sender, EventArgs e) {
-            UpdateVisibility(Form.Focused);
-        }
-
-        private void Tools_Closed(object sender, EventArgs e) {
-            _tools = null;
-        }
-
-        private void OnClosed(object sender, EventArgs e) {
-            if (_tools != null) {
-                _tools.Close();
-                _tools = null;
-            }
-        }
-
-        private bool _updating;
-
-        private async void UpdateVisibility(bool keepFocus) {
-            if (_updating) return;
-
-            _updating = true;
-            await Task.Delay(1);
-
-            if (_tools != null) {
-                var val = !EditMode && _visibleTools && (Form.Focused || _tools.IsActive) ? Visibility.Visible : Visibility.Hidden;
-                if (val != _tools.Visibility) {
-                    _tools.Visibility = val;
-
-                    if (val == Visibility.Visible) {
-                        _tools.Topmost = false;
-                        _tools.Topmost = true;
-                    }
-
-                    if (keepFocus) {
-                        await Task.Delay(1);
-                        Form.Focus();
-                        Form.Activate();
-                    }
-                }
-            }
-
-            _updating = false;
-        }
-
-        protected override void OnGotFocus(object sender, EventArgs e) {
-            base.OnGotFocus(sender, e);
-            UpdateVisibility(true);
-        }
-
-        protected override void OnLostFocus(object sender, EventArgs e) {
-            base.OnLostFocus(sender, e);
-            UpdateVisibility(false);
         }
     }
 }

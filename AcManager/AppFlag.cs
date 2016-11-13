@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Maximum size of generated track map. Default value is 8192, could be upped
+        /// to 16384 (DX11 required), but 16K maps might cause performance issues.
+        /// Example: --track-map-generator-max-size=16384.
+        /// </summary>
+        TrackMapGeneratorMaxSize,
+
+        /// <summary>
         /// Run webserver with real-time updating player stats at specified port. Set to
         /// 0 to disable (default value).
         /// Example: --run-stats-webserver=18081.

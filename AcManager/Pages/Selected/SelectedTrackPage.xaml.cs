@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.About;
 using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
@@ -17,6 +18,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
+using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -154,25 +156,31 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
+            private DelegateCommand _trackMapUpdateCommand;
+
+            public DelegateCommand UpdateMapCommand => _trackMapUpdateCommand ?? (_trackMapUpdateCommand = new DelegateCommand(() => {
+                TrackMapRendererWrapper.Run(SelectedTrackConfiguration);
+            }));
+
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "author":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Author)
-                                ? @"author-" : $"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
+                                ? @"author-" : $@"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
                         break;
 
                     case "country":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Country)
-                                ? @"country-" : $"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
+                                ? @"country-" : $@"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
                         break;
 
                     case "city":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.City)
-                                ? @"city-" : $"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
+                                ? @"city-" : $@"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
                         break;
 
                     case "year":
-                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : @"year-");
+                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $@"year:{SelectedTrackConfiguration.Year}" : @"year-");
                         break;
 
                     case "decade":
@@ -181,7 +189,7 @@ namespace AcManager.Pages.Selected {
                         }
 
                         var start = (int)Math.Floor((SelectedTrackConfiguration.Year ?? 0) / 10d) * 10;
-                        NewFilterTab($"year>{start - 1} & year<{start + 10}");
+                        NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                         break;
                 }
             }

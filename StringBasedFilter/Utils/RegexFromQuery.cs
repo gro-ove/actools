@@ -9,6 +9,7 @@ namespace StringBasedFilter.Utils {
         }
 
         public static Regex Create(string query, bool wholeMatch, bool strictMode) {
+            // TODO: Regex.Escape?
             return new Regex((strictMode || wholeMatch ? @"^" : @"\b") +
                     ConvertationRegex.Replace(query, @"\").Replace("*", ".*").Replace("?", ".") +
                     (strictMode ? @"$" : ""),

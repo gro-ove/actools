@@ -39,6 +39,7 @@ using AcTools;
 using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -230,6 +231,8 @@ namespace AcManager {
 
             _hibernator = new AppHibernator();
             _hibernator.SetListener();
+
+            AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {

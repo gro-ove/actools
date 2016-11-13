@@ -96,10 +96,6 @@ namespace AcTools.Utils {
             return first.Length > second.Length ? Equals(first.Substring(0, second.Length), second) : Equals(first, second);
         }
 
-        public static float[] MatrixInverse(this float[] matrix) {
-            return Matrix.Create(matrix).Invert().ToArray();
-        }
-
         [ThreadStatic]
         private static Random _random;
 

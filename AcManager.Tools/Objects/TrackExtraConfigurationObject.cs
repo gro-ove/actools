@@ -7,13 +7,14 @@ namespace AcManager.Tools.Objects {
     public class TrackExtraLayoutObject : TrackObjectBase {
         private readonly string _location;
 
+        [NotNull]
         public sealed override string LayoutId { get; }
 
         public TrackExtraLayoutObject(IFileAcManager manager, [NotNull] TrackObject parent, bool enabled, string fixedLocation)
                 : base(manager, parent.Id, enabled) {
             _location = fixedLocation;
             MainTrackObject = parent;
-            LayoutId = Path.GetFileName(fixedLocation);
+            LayoutId = Path.GetFileName(fixedLocation) ?? "";
             IdWithLayout = $"{Id}/{LayoutId}";
         }
 
@@ -53,5 +54,7 @@ namespace AcManager.Tools.Objects {
         public override ICommand SaveCommand => MainTrackObject.SaveCommand;
 
         public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
+
+        public override string MapDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
     }
 }

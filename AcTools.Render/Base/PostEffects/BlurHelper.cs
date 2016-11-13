@@ -145,7 +145,6 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechReflectionGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
-        public void Dispose() {
-        }
+        public void Dispose() {}
     }
 }

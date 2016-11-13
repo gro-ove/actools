@@ -314,6 +314,9 @@
     <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
       <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\TrackMapEditorT.xaml.cs">
+      <DependentUpon>TrackMapEditorT.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
@@ -725,6 +728,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\LiveryIconEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\TrackMapEditorT.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

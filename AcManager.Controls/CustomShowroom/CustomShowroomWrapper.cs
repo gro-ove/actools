@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
@@ -96,7 +94,6 @@ namespace AcManager.Controls.CustomShowroom {
                 }
 
                 wrapper.Run(() => _starting = false);
-                
                 GC.Collect();
             } catch (Exception e) {
                 NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);

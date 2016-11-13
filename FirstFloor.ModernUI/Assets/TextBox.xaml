@@ -20,10 +20,10 @@
                         <Border BorderThickness="1" BorderBrush="#FFdc000c" VerticalAlignment="Top">
                             <AdornedElementPlaceholder x:Name="adorner" Margin="-1" />
                         </Border>
-                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="120 0 0 0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
-                                MinHeight="24">
+                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="20 0 0 0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
+                                MinHeight="24" HorizontalAlignment="Right">
                             <TextBlock Text="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" Foreground="White"
-                                    Margin="8 2 8 3" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                    Margin="8 2 8 3" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="200" />
                         </Border>
                     </StackPanel>
                     <ControlTemplate.Triggers>

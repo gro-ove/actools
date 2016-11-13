@@ -53,7 +53,7 @@
                             ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewWithoutShooting_Tooltip}" InputGestureText="Ctrl+Alt+P"
                             Command="{Binding UpdatePreviewDirectCommand}" />
                 </mui:ButtonWithComboBox>
-                <Button Content="{x:Static g:AppStrings.Toolbar_UpdateMap}" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_UpdateMap}" Command="{Binding UpdateMapCommand}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 

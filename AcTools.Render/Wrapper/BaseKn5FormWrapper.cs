@@ -49,7 +49,47 @@ namespace AcTools.Render.Wrapper {
 
         private bool _moved, _moving, _down;
 
-        protected virtual void OnMouseMove(object sender, MouseEventArgs e) {
+        protected virtual void CameraMouseRotate(float dx, float dy) {
+            var size = 180.0f / Math.Min(Form.Height, Form.Width);
+            dx *= size;
+            dy *= size;
+
+            var c = Kn5ObjectRenderer.CameraOrbit;
+            if (c != null) {
+                c.Target += dy * Vector3.Cross(c.Look, c.Right) - dx * c.Right;
+                Kn5ObjectRenderer.AutoRotate = false;
+                Kn5ObjectRenderer.AutoAdjustTarget = false;
+                Renderer.IsDirty = true;
+            } else {
+                var f = Kn5ObjectRenderer.FpsCamera;
+                if (f != null) {
+                    f.Position += dy * Vector3.Cross(f.Look, f.Right) - dx * f.Right;
+                    Renderer.IsDirty = true;
+                }
+            }
+        }
+
+        protected virtual void CameraMouseMove(float dx, float dy) {
+            var size = 180.0f / Math.Min(Form.Height, Form.Width);
+            dx *= size;
+            dy *= size;
+
+            Kn5ObjectRenderer.Camera.Pitch(MathF.ToRadians(dy));
+            Kn5ObjectRenderer.Camera.Yaw(MathF.ToRadians(Kn5ObjectRenderer.UseFpsCamera ? dx : -dx));
+            Kn5ObjectRenderer.AutoRotate = false;
+            Renderer.IsDirty = true;
+        }
+
+        protected virtual void CameraMouseZoom(float dx, float dy) {
+            var size = 9.45f / Math.Min(Form.Height, Form.Width);
+            dy *= size;
+
+            Kn5ObjectRenderer.Camera.Zoom(dy);
+            Kn5ObjectRenderer.AutoRotate = false;
+            Renderer.IsDirty = true;
+        }
+
+        protected void OnMouseMove(object sender, MouseEventArgs e) {
             if (!Form.Focused) {
                 _moving = false;
                 return;
@@ -62,24 +102,11 @@ namespace AcTools.Render.Wrapper {
             }
 
             if (_moving && !_down) {
-                if (e.Button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
-                    var size = 180.0f / Math.Min(Form.Height, Form.Width);
-                    var dx = MathF.ToRadians(size * (e.X - _lastMousePos.X));
-                    var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
+                var dx = e.X - _lastMousePos.X;
+                var dy = e.Y - _lastMousePos.Y;
 
-                    var c = Kn5ObjectRenderer.CameraOrbit;
-                    if (c != null) {
-                        c.Target += dy * Vector3.Cross(c.Look, c.Right) - dx * c.Right;
-                        Kn5ObjectRenderer.AutoRotate = false;
-                        Kn5ObjectRenderer.AutoAdjustTarget = false;
-                        Renderer.IsDirty = true;
-                    } else {
-                        var f = Kn5ObjectRenderer.FpsCamera;
-                        if (f != null) {
-                            f.Position += dy * Vector3.Cross(f.Look, f.Right) - dx * f.Right;
-                            Renderer.IsDirty = true;
-                        }
-                    }
+                if (e.Button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
+                    CameraMouseRotate(dx, dy);
                 } else if (e.Button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
                     if (FormMoving) {
                         Form.Left += e.X - _lastMousePos.X;
@@ -88,20 +115,9 @@ namespace AcTools.Render.Wrapper {
                         return;
                     }
 
-                    var size = 180.0f / Math.Min(Form.Height, Form.Width);
-                    var dx = MathF.ToRadians(size * (e.X - _lastMousePos.X));
-                    var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
-
-                    Kn5ObjectRenderer.Camera.Pitch(dy);
-                    Kn5ObjectRenderer.Camera.Yaw(Kn5ObjectRenderer.UseFpsCamera ? dx : -dx);
-                    Kn5ObjectRenderer.AutoRotate = false;
-                    Renderer.IsDirty = true;
+                    CameraMouseMove(dx, dy);
                 } else if (e.Button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
-                    var size = 180.0f / Math.Min(Form.Height, Form.Width);
-                    var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
-                    Kn5ObjectRenderer.Camera.Zoom(dy * 3.0f);
-                    Kn5ObjectRenderer.AutoRotate = false;
-                    Renderer.IsDirty = true;
+                    CameraMouseZoom(dx, dy);
                 }
             }
 

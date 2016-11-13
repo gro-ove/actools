@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Text;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -240,5 +241,15 @@ namespace AcManager.Tools.Objects {
         public string PreviewImage { get; protected set; }
 
         public string OutlineImage { get; protected set; }
+
+        // public abstract string DataDirectory { get; }
+
+        public abstract string MapDirectory { get; }
+
+        public string DataDirectory => Path.Combine(MapDirectory, @"data");
+
+        public string MapImage => Path.Combine(MapDirectory, @"map.png");
+        
+        public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models-{LayoutId}.ini");
     }
 }
