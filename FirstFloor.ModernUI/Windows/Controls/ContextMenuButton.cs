@@ -1,72 +1,108 @@
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(Menu))]
-    public class ContextMenuButton : Button {
+    public class ContextMenuButton : Control {
         public ContextMenuButton() {
             DefaultStyleKey = typeof(ContextMenuButton);
         }
 
         private bool Open(bool near) {
-            if (Menu != null) {
-                if (near) {
-                    Menu.Placement = PlacementMode.Bottom;
-                    Menu.PlacementTarget = this;
-                } else {
-                    Menu.Placement = PlacementMode.MousePoint;
-                    Menu.PlacementTarget = null;
-                }
+            var menu = Menu;
 
-                Menu.IsOpen = true;
+            var popup = menu as Popup;
+            if (popup != null) {
+                if (popup.IsOpen) {
+                    popup.IsOpen = false;
+                } else {
+                    popup.Placement = near ? PlacementMode.Bottom : PlacementMode.MousePoint;
+                    popup.PlacementTarget = near ? this : null;
+                    popup.IsOpen = true;
+                    popup.StaysOpen = false;
+                }
+                return true;
+            }
+
+            var contextMenu = menu as ContextMenu;
+            if (contextMenu != null) {
+                contextMenu.Placement = near ? PlacementMode.Bottom : PlacementMode.MousePoint;
+                contextMenu.PlacementTarget = near ? this : null;
+                contextMenu.IsOpen = true;
+                return true;
+            }
+
+            var command = Command;
+            if (command != null) {
+                command.Execute(null);
                 return true;
             }
 
             return false;
         }
-        
-        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e) {
+
+        private FrameworkElement _button;
+
+        public override void OnApplyTemplate() {
+            if (_button != null) {
+                _button.PreviewMouseLeftButtonUp -= OnButtonClick;
+                _button.PreviewMouseLeftButtonDown -= OnButtonDown;
+            }
+
+            base.OnApplyTemplate();
+
+            _button = GetTemplateChild(@"PART_Button") as FrameworkElement;
+            if (_button != null) {
+                _button.PreviewMouseLeftButtonUp += OnButtonClick;
+                _button.PreviewMouseLeftButtonDown += OnButtonDown;
+            }
+        }
+
+        private void OnButtonDown(object sender, MouseButtonEventArgs e) {
+            if (Command != null) {
+                e.Handled = true;
+            }
+        }
+
+        private void OnButtonClick(object sender, MouseButtonEventArgs e) {
             if (Open(true)) e.Handled = true;
-            base.OnPreviewMouseLeftButtonUp(e);
+        }
+
+        private void OnContextMenuClick(object sender, MouseButtonEventArgs e) {
+            if (Open(false)) e.Handled = true;
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
             var fe = oldParent as FrameworkElement;
             if (fe != null) {
-                fe.PreviewMouseRightButtonDown -= Parent_PreviewMouseRightButtonDown;
+                fe.PreviewMouseRightButtonUp -= OnContextMenuClick;
             }
 
             fe = Parent as FrameworkElement;
             if (fe != null) {
-                fe.PreviewMouseRightButtonDown += Parent_PreviewMouseRightButtonDown;
+                fe.PreviewMouseRightButtonUp += OnContextMenuClick;
             }
 
             base.OnVisualParentChanged(oldParent);
         }
 
-        private void Parent_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            if (Open(false)) e.Handled = true;
-        }
-
-        public static readonly DependencyProperty MenuProperty = DependencyProperty.Register(nameof(Menu), typeof(ContextMenu),
+        public static readonly DependencyProperty MenuProperty = DependencyProperty.Register(nameof(Menu), typeof(FrameworkElement),
                 typeof(ContextMenuButton), new PropertyMetadata(OnMenuChanged));
 
-        public ContextMenu Menu {
-            get { return (ContextMenu)GetValue(MenuProperty); }
+        public FrameworkElement Menu {
+            get { return (FrameworkElement)GetValue(MenuProperty); }
             set { SetValue(MenuProperty, value); }
         }
 
         private static void OnMenuChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ContextMenuButton)o).OnMenuChanged((ContextMenu)e.OldValue, (ContextMenu)e.NewValue);
+            ((ContextMenuButton)o).OnMenuChanged((FrameworkElement)e.OldValue, (FrameworkElement)e.NewValue);
         }
 
-        private void OnMenuChanged(ContextMenu oldValue, ContextMenu newValue) {
+        private void OnMenuChanged(FrameworkElement oldValue, FrameworkElement newValue) {
             if (oldValue != null) {
                 BindingOperations.ClearBinding(oldValue, DataContextProperty);
             }
@@ -77,6 +113,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Source = this
                 });
             }
+        }
+
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(nameof(Command), typeof(ICommand),
+            typeof(ContextMenuButton));
+
+        public ICommand Command {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
         }
     }
 }

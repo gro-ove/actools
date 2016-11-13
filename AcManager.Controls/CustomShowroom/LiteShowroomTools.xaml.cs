@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
@@ -28,7 +30,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Controls.CustomShowroom {
     public partial class LiteShowroomTools {
         public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) {
-            DataContext = new LiteShowroomToolsViewModel(renderer, car, skinId);
+            DataContext = new ViewModel(renderer, car, skinId);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
@@ -42,7 +44,7 @@ namespace AcManager.Controls.CustomShowroom {
 
         private DispatcherTimer _timer;
 
-        private void LiteShowroomTools_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_timer != null) return;
             _timer = new DispatcherTimer {
                 Interval = TimeSpan.FromMilliseconds(300),
@@ -51,7 +53,7 @@ namespace AcManager.Controls.CustomShowroom {
             _timer.Tick += Timer_Tick;
         }
 
-        private void LiteShowroomTools_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             Model.Renderer = null;
 
             if (_timer == null) return;
@@ -63,9 +65,36 @@ namespace AcManager.Controls.CustomShowroom {
             Model.OnTick();
         }
 
-        public LiteShowroomToolsViewModel Model => (LiteShowroomToolsViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
-        public class LiteShowroomToolsViewModel : NotifyPropertyChanged {
+        public enum Mode {
+            Main,
+            Selected,
+            AmbientShadows,
+            Skin
+        }
+
+        public class ViewModel : NotifyPropertyChanged {
+            private Mode _mode = Mode.Main;
+
+            public Mode Mode {
+                get { return _mode; }
+                set {
+                    if (Equals(value, _mode)) return;
+
+                    if (_mode == Mode.AmbientShadows && Renderer != null) {
+                        Renderer.AmbientShadowHighlight = false;
+                    }
+
+                    if (value == Mode.Skin && SkinItems == null) {
+                        SkinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
+                    }
+
+                    _mode = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private ToolsKn5ObjectRenderer _renderer;
 
             [CanBeNull]
@@ -100,13 +129,14 @@ namespace AcManager.Controls.CustomShowroom {
                 public bool? AmbientShadowFade;
                 public bool LiveReload;
             }
+
             protected ISaveHelper Saveable { set; get; }
 
             protected void SaveLater() {
                 Saveable.SaveLater();
             }
 
-            public LiteShowroomToolsViewModel([NotNull] ToolsKn5ObjectRenderer renderer, CarObject carObject, string skinId) {
+            public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, CarObject carObject, string skinId) {
                 if (renderer == null) throw new ArgumentNullException(nameof(renderer));
 
                 Renderer = renderer;
@@ -164,6 +194,7 @@ namespace AcManager.Controls.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedObject):
+                        Mode = Renderer?.SelectedObject != null ? Mode.Selected : Mode.Main;
                         _viewObjectCommand?.RaiseCanExecuteChanged();
                         break;
 
@@ -182,25 +213,66 @@ namespace AcManager.Controls.CustomShowroom {
 
             public void OnTick() { }
 
-            #region Ambient Shadows
-            private bool _ambientShadowsMode;
+            private DelegateCommand _mainModeCommand;
 
-            public bool AmbientShadowsMode {
-                get { return _ambientShadowsMode; }
+            public DelegateCommand MainModeCommand => _mainModeCommand ?? (_mainModeCommand = new DelegateCommand(() => {
+                Mode = Mode.Main;
+            }));
+
+            #region Skin
+            private IList<PaintShop.PaintableItem> _skinItems;
+
+            public IList<PaintShop.PaintableItem> SkinItems {
+                get { return _skinItems; }
                 set {
-                    if (Equals(value, _ambientShadowsMode)) return;
-                    _ambientShadowsMode = value;
+                    if (Equals(value, _skinItems)) return;
+
+                    if (_skinItems != null) {
+                        foreach (var item in _skinItems) {
+                            item.SetRenderer(null);
+                        }
+                    }
+
+                    _skinItems = value;
                     OnPropertyChanged();
+                    _skinSaveChangesCommand?.RaiseCanExecuteChanged();
+
+                    if (_skinItems != null) {
+                        foreach (var item in _skinItems) {
+                            item.SetRenderer(Renderer);
+                        }
+                    }
                 }
             }
 
+            private DelegateCommand _toggleSkinModeCommand;
+
+            public DelegateCommand ToggleSkinModeCommand => _toggleSkinModeCommand ?? (_toggleSkinModeCommand = new DelegateCommand(() => {
+                Mode = Mode == Mode.Skin ? Mode.Main : Mode.Skin;
+            }));
+
+            private AsyncCommand _skinSaveChangesCommand;
+
+            public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand = new AsyncCommand(async () => {
+                if (Renderer == null) return;
+
+                if (Directory.GetFiles(Skin.Location, "*.dds").Any() &&
+                        ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+
+                foreach (var item in SkinItems.Where(x => x.Enabled)) {
+                    try {
+                        await item.SaveAsync(Skin.Location);
+                    } catch (NotImplementedException) {}
+                }
+            }, () => SkinItems.Any()));
+            #endregion
+
+            #region Ambient Shadows
             private ICommand _toggleAmbientShadowModeCommand;
 
             public ICommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
-                AmbientShadowsMode = !AmbientShadowsMode;
-                if (!AmbientShadowsMode && Renderer != null) {
-                    Renderer.AmbientShadowHighlight = false;
-                }
+                Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
             }));
 
             private static string ToString(Vector3 vec) {
@@ -499,7 +571,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer == null) return;
-                new CarTextureDialog(Skin, Renderer.Kn5, o.TextureName).ShowDialog();
+                new CarTextureDialog(Renderer, Skin, Renderer.Kn5, o.TextureName).ShowDialog();
             }, o => o != null));
             #endregion
         }

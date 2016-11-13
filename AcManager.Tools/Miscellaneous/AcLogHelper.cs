@@ -12,7 +12,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using SharpCompress.Archive.Zip;
+using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools.Miscellaneous {
     public static class Fixes {

@@ -1,6 +1,8 @@
 using System.Windows;
+using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    [ContentProperty(nameof(NonNull))]
     public class ReferenceSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
                 typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));

@@ -17,6 +17,7 @@ namespace AcManager.Tools.Helpers {
             IntValue = value;
         }
 
+        [Localizable(false)]
         public string Value { get; }
 
         public int? IntValue { get; }

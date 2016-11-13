@@ -490,7 +490,7 @@ namespace AcTools.Render.Base.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechCopy, TechOverlay, TechShadow, TechDepth, TechFxaa;
+		public EffectTechnique TechCopy, TechCopyNoAlpha, TechOverlay, TechShadow, TechDepth, TechFxaa;
 
 		public EffectResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
 		public EffectScalarVariable FxSizeMultipler;
@@ -501,6 +501,7 @@ namespace AcTools.Render.Base.Shaders {
 			E = new Effect(device, _b);
 
 			TechCopy = E.GetTechniqueByName("Copy");
+			TechCopyNoAlpha = E.GetTechniqueByName("CopyNoAlpha");
 			TechOverlay = E.GetTechniqueByName("Overlay");
 			TechShadow = E.GetTechniqueByName("Shadow");
 			TechDepth = E.GetTechniqueByName("Depth");
@@ -906,6 +907,60 @@ namespace AcTools.Render.Base.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
+	public class EffectSpecialTrackMap : IEffectWrapper, IEffectScreenSizeWrapper {
+		public const int Gblurradius = 3;
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePNTG, InputSignaturePT;
+        public InputLayout LayoutPNTG, LayoutPT;
+
+		public EffectTechnique TechMain, TechPp, TechFinal, TechFinalCheckers, TechPpHorizontalBlur, TechPpVerticalBlur;
+
+		public EffectMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectMatrixVariable FxWorldInvTranspose { get; private set; }
+		public EffectResourceVariable FxInputMap;
+		public EffectVectorVariable FxScreenSize { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load("SpecialTrackMap");
+			E = new Effect(device, _b);
+
+			TechMain = E.GetTechniqueByName("Main");
+			TechPp = E.GetTechniqueByName("Pp");
+			TechFinal = E.GetTechniqueByName("Final");
+			TechFinalCheckers = E.GetTechniqueByName("FinalCheckers");
+			TechPpHorizontalBlur = E.GetTechniqueByName("PpHorizontalBlur");
+			TechPpVerticalBlur = E.GetTechniqueByName("PpVerticalBlur");
+
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePNTG == null; i++) {
+				InputSignaturePNTG = TechMain.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePNTG == null) throw new System.Exception("input signature (SpecialTrackMap, PNTG, Main) == null");
+			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
+			for (var i = 0; i < TechPp.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechPp.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialTrackMap, PT, Pp) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
+			FxWorldInvTranspose = E.GetVariableByName("gWorldInvTranspose").AsMatrix();
+			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePNTG.Dispose();
+            LayoutPNTG.Dispose();
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();

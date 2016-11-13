@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -71,6 +72,18 @@ namespace AcTools.AcdFile {
                 Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
                 File.WriteAllBytes(destination, entry.Data);
             }
+        }
+
+        public static bool IsAvailable() {
+            try {
+                AcdEncryption.CreateKey(null);
+            } catch (NotImplementedException) {
+                return false;
+            } catch (NullReferenceException) {
+                return true;
+            }
+
+            return true;
         }
     }
 }

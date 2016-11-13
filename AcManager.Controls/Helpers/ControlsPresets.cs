@@ -38,7 +38,7 @@ namespace AcManager.Controls.Helpers {
 
         public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
             public PresetEntry(string filename) {
-                DisplayName = Path.GetFileNameWithoutExtension(filename);
+                DisplayName = Path.GetFileNameWithoutExtension(filename) ?? @"?";
                 Filename = filename;
             }
 
@@ -48,6 +48,10 @@ namespace AcManager.Controls.Helpers {
 
             public string ReadData() {
                 return FileUtils.ReadAllText(Filename);
+            }
+
+            public void SetParent(string baseDirectory) {
+                // TODO
             }
 
             public bool Equals(ISavedPresetEntry other) {

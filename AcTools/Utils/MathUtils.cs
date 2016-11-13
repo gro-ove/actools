@@ -96,21 +96,21 @@ namespace AcTools.Utils {
             return first.Length > second.Length ? Equals(first.Substring(0, second.Length), second) : Equals(first, second);
         }
 
-        public static float[] MatrixInverse(this float[] matrix) {
-            return Matrix.Create(matrix).Invert().ToArray();
-        }
-
         [ThreadStatic]
         private static Random _random;
 
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
 
-        public static int Random(int maxValue) => RandomInstance.Next(maxValue);
+        public static int Random(int maxValueExclusive) => RandomInstance.Next(maxValueExclusive);
 
         public static int Random(int minValueInclusive, int maxValueExclusive) => RandomInstance.Next(minValueInclusive, maxValueExclusive);
 
         public static double Random() => RandomInstance.NextDouble();
 
         public static double Random(double maxValue) => RandomInstance.NextDouble() * maxValue;
+
+        public static TimeSpan Max(TimeSpan a, TimeSpan b) {
+            return a > b ? a : b;
+        }
     }
 }

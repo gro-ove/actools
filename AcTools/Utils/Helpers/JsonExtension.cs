@@ -267,12 +267,35 @@ namespace AcTools.Utils.Helpers {
             writer.WriteValue(value.Value);
         }
 
+        public static void Write(this JsonTextWriter writer, string key, Enum value) {
+            writer.WritePropertyName(key);
+            writer.WriteValue(value);
+        }
+
+        public static void Write(this JsonTextWriter writer, string key, DateTime? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+
+        public static void Write(this JsonTextWriter writer, string key, TimeSpan? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+
         public static void Write(this JsonTextWriter writer, string key, int? value) {
             if (value == null) return;
             writer.WritePropertyName(key);
             writer.WriteValue(value.Value);
         }
-        
+
+        public static void Write(this JsonTextWriter writer, string key, double? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key); 
+            writer.WriteValue(value.Value);
+        }
+
         public static void Write(this JsonTextWriter writer, string key, string value) {
             if (value == null) return;
             writer.WritePropertyName(key);
@@ -297,6 +320,35 @@ namespace AcTools.Utils.Helpers {
                 writer.WriteValue(value[i].ToString(CultureInfo.InvariantCulture));
             }
             writer.WriteEndArray();
+        }
+
+        public static void WriteNonDefault(this JsonTextWriter writer, string key, bool? value) {
+            if (!value.HasValue || Equals(value.Value, default(bool))) return;
+
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+
+        public static void WriteNonDefault(this JsonTextWriter writer, string key, int? value) {
+            if (!value.HasValue || Equals(value.Value, default(int))) return;
+
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+
+        public static void WriteNonDefault(this JsonTextWriter writer, string key, double? value, string format = null) {
+            if (!value.HasValue || Equals(value.Value, default(double))) return;
+
+            if (format == null) {
+                writer.WritePropertyName(key);
+                writer.WriteValue(value.Value);
+            } else {
+                var s = value.Value.ToString(format, CultureInfo.InvariantCulture);
+                if (!Equals(double.Parse(s, CultureInfo.InvariantCulture), 0d)) {
+                    writer.WritePropertyName(key);
+                    writer.WriteRawValue(s);
+                }
+            }
         }
     }
 }

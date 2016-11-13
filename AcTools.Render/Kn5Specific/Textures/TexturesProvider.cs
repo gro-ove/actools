@@ -131,6 +131,15 @@ namespace AcTools.Render.Kn5Specific.Textures {
             return _textures[key] = result;
         }
 
+        [CanBeNull]
+        public IRenderableTexture GetExistingTexture([NotNull] string kn5Filename, string textureName) {
+            if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
+
+            var key = kn5Filename + "//" + textureName;
+            IRenderableTexture texture;
+            return _textures.TryGetValue(key, out texture) ? texture : null;
+        }
+
         private async void LoadOverrideAsync(RenderableTexture texture, string textureName, IOverridedTextureProvider provider,
                 DeviceContextHolder contextHolder) {
             var overrided = await provider.GetOverridedDataAsync(textureName);

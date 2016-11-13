@@ -6,7 +6,8 @@ using System.Windows.Data;
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class EqualToBooleanConverter : IMultiValueConverter {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            var first = values.FirstOrDefault()?.ToString();
+            if (values.Length < 2) return false;
+            var first = values[0]?.ToString();
             return values.Skip(1).All(x => Equals(first, x?.ToString()));
         }
 

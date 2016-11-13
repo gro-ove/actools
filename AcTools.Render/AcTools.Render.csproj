@@ -100,8 +100,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\Packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Magick.NET-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
@@ -178,6 +178,7 @@
     <Compile Include="Base\Utils\MathF.cs" />
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
+    <Compile Include="Base\Utils\TextureReader.cs" />
     <Compile Include="DeferredShading\DeferredShadingRenderer.cs" />
     <Compile Include="DeferredShading\Lights\BaseLight.cs" />
     <Compile Include="DeferredShading\Lights\DirectionalLight.cs" />
@@ -190,12 +191,9 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificSpecial\Kn5MaterialUv.cs" />
-    <Compile Include="Kn5SpecificSpecial\UvMaterialProvider.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackMapRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\UvRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\AmbientShadowKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificSpecial\DepthMaterialProvider.cs" />
-    <Compile Include="Kn5SpecificSpecial\Kn5MaterialDepth.cs" />
     <Compile Include="Kn5Specific\IKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleBase.cs" />
@@ -253,6 +251,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
     <Content Include="Shaders\Deferred\DeferredGSky.fx" />
@@ -279,13 +278,13 @@
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
     <Content Include="Shaders\Special\SpecialUv.fx" />
+    <Content Include="Shaders\Special\SpecialTrackMap.fx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Base\Shaders\ShadersTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ShadersTemplate.cs</LastGenOutput>
     </None>
-    <None Include="Packages.config" />
     <Content Include="Shaders\Includes\Common.fx" />
   </ItemGroup>
   <ItemGroup>

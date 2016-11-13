@@ -62,23 +62,23 @@ namespace AcTools.Utils.Physics {
 
         [CanBeNull]
         private static IReadOnlyList<TurboControllerDescription> ReadControllers(IniFile file) {
-            if (!file.Exists() || file.IsEmptyOrDamaged()) return null;
+            if (file.IsEmptyOrDamaged()) return null;
             return file.GetSections("CONTROLLER").Select(TurboControllerDescription.FromIniSection).ToList();
         }
 
         [NotNull]
         private static IReadOnlyList<TurboDescription> ReadTurbos(IniFile file) {
-            if (!file.Exists() || file.IsEmptyOrDamaged()) return new TurboDescription[0];
+            if (file.IsEmptyOrDamaged()) return new TurboDescription[0];
             return file.GetSections("TURBO").Select(TurboDescription.FromIniSection).ToList();
         }
         
         public static Lut LoadCarTorque(IDataWrapper data, bool considerLimiter = true, int detalization = 100) {
             /* read torque curve and engine params */
             var torqueFile = data.GetLutFile("power.lut");
-            if (!torqueFile.Exists() || torqueFile.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load power.lut", "data/power.lut");
+            if (torqueFile.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load power.lut", "data/power.lut");
 
             var engine = data.GetIniFile("engine.ini");
-            if (!engine.Exists() || engine.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load engine.ini", "data/engine.ini");
+            if (engine.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load engine.ini", "data/engine.ini");
 
             /* prepare turbos and read controllers */
             var turbos = ReadTurbos(engine);
@@ -109,7 +109,7 @@ namespace AcTools.Utils.Physics {
                         break;
                     }
 
-                    if ((i == 0 || p.X > previousRpm) && p.X < rpm) {
+                    if ((i == 0 || p.X > previousRpm) && p.X < rpm && p.X >= 0) {
                         result.Add(new LutPoint(p.X, ConsiderTurbo(turbos, p.X, p.Y)));
                     }
                 }
@@ -124,7 +124,7 @@ namespace AcTools.Utils.Physics {
 
         [Obsolete]
         public static Lut LoadCarTorque(string carDir) {
-            return LoadCarTorque(DataWrapper.FromFile(carDir));
+            return LoadCarTorque(DataWrapper.FromDirectory(carDir));
         }
     }
 }

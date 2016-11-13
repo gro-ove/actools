@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Temporary;
 using AcTools.Windows;
+using JetBrains.Annotations;
 using SlimDX.Windows;
 
 namespace AcTools.Render.Wrapper {
@@ -67,6 +68,7 @@ namespace AcTools.Render.Wrapper {
             Paused = true;
         }
 
+        [CanBeNull]
         private Action _firstFrame;
 
         public void Run(Action firstFrame = null) {
@@ -109,7 +111,10 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
+        public event EventHandler FullscreenChanged;
+
         protected virtual void OnFullscreenChanged() {
+            FullscreenChanged?.Invoke(this, EventArgs.Empty);
             if (_fullscreenEnabled) {
                 Form.FormBorderStyle = FormBorderStyle.None;
                 Form.WindowState = FormWindowState.Maximized;
@@ -123,15 +128,18 @@ namespace AcTools.Render.Wrapper {
             FullscreenEnabled = !FullscreenEnabled;
         }
 
-        protected virtual void OnRender() {
-            Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (Paused && !Renderer.IsDirty) return;
-            Renderer.Draw();
-
+        protected void InvokeFirstFrameCallback() {
             if (_firstFrame != null) {
                 _firstFrame.Invoke();
                 _firstFrame = null;
             }
+        }
+
+        protected virtual void OnRender() {
+            Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+            if (Paused && !Renderer.IsDirty) return;
+            Renderer.Draw();
+            InvokeFirstFrameCallback();
         }
 
         private Timer _toastTimer;

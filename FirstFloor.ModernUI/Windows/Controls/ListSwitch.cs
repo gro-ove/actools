@@ -8,28 +8,28 @@ using System.Windows.Markup;
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(Children))]
     public abstract class ListSwitch : BaseSwitch, IAddChild, IList {
-        private readonly List<UIElement> _uiElements = new List<UIElement>(2);
+        protected readonly List<UIElement> UiElements = new List<UIElement>(2);
 
         public IList Children => this;
 
         public void CopyTo(Array array, int index) {
-            ((IList)_uiElements).CopyTo(array, index);
+            ((IList)UiElements).CopyTo(array, index);
         }
 
-        public virtual int Count => _uiElements.Count;
+        public virtual int Count => UiElements.Count;
 
-        public object SyncRoot => ((IList)_uiElements).SyncRoot;
+        public object SyncRoot => ((IList)UiElements).SyncRoot;
 
-        public bool IsSynchronized => ((IList)_uiElements).IsSynchronized;
+        public bool IsSynchronized => ((IList)UiElements).IsSynchronized;
 
         public void RemoveAt(int index) {
-            _uiElements.RemoveAt(index);
+            UiElements.RemoveAt(index);
         }
 
         public UIElement this[int index] {
-            get { return _uiElements[index]; }
+            get { return UiElements[index]; }
             set {
-                var vc = _uiElements;
+                var vc = UiElements;
                 if (!ReferenceEquals(vc[index], value)) {
                     vc[index] = value;
                     InvalidateMeasure();
@@ -38,31 +38,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public bool Contains(UIElement element) {
-            return _uiElements.Contains(element);
+            return UiElements.Contains(element);
         }
 
         public virtual void Clear() {
-            _uiElements.Clear();
+            UiElements.Clear();
         }
 
         public int Add(UIElement element) {
             InvalidateMeasure();
 
-            _uiElements.Add(element);
-            return _uiElements.Count;
+            UiElements.Add(element);
+            return UiElements.Count;
         }
 
         public int IndexOf(UIElement element) {
-            return _uiElements.IndexOf(element);
+            return UiElements.IndexOf(element);
         }
 
         public void Insert(int index, UIElement element) {
             InvalidateMeasure();
-            _uiElements.Insert(index, element);
+            UiElements.Insert(index, element);
         }
 
         public void Remove(UIElement element) {
-            _uiElements.Remove(element);
+            UiElements.Remove(element);
         }
 
         int IList.Add(object value) {
@@ -95,7 +95,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
-            return _uiElements.GetEnumerator();
+            return UiElements.GetEnumerator();
         }
 
         void IAddChild.AddChild(object value) {
@@ -114,7 +114,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected abstract bool TestChild(UIElement child);
         
         protected override UIElement GetChild() {
-            return _uiElements?.FirstOrDefault(TestChild);
+            return UiElements?.FirstOrDefault(TestChild);
         }
     }
 }

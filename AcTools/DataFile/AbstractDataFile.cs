@@ -132,6 +132,7 @@ namespace AcTools.DataFile {
             return FileUtils.WriteAllBytesAsync(filename, Encoding.UTF8.GetBytes(Stringify()));
         }
 
+        [Obsolete]
         public bool Exists() {
             return File.Exists(SourceFilename);
         }

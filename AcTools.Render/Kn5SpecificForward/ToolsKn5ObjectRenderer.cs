@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcTools.Kn5File;
@@ -8,7 +10,10 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using ImageMagick;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -282,8 +287,75 @@ namespace AcTools.Render.Kn5SpecificForward {
             _previousSelectedFirstObject = null;
         }
 
+        public bool OverrideTexture(string textureName, byte[] textureBytes) {
+            var texture = TexturesProvider.GetExistingTexture(Kn5.OriginalFilename, textureName);
+            texture?.SetProceduralOverride(textureBytes, Device);
+            return texture != null;
+        }
+
+        public bool OverrideTexture(string textureName, Color color) {
+            using (var image = new MagickImage(new MagickColor(color), 4, 4)) {
+                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
+            }
+        }
+
+        public Task SaveTexture(string filename, Color color) {
+            return SaveAndDispose(filename, new MagickImage(new MagickColor(color), 16, 16));
+        }
+
+        public bool OverrideTexture(string textureName, Color color, double alpha) {
+            using (var image = new MagickImage(new MagickColor(color) { A = (ushort)(ushort.MaxValue * alpha) }, 4, 4)) {
+                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
+            }
+        }
+
+        public Task SaveTexture(string filename, Color color, double alpha) {
+            return SaveAndDispose(filename, new MagickImage(new MagickColor(color) { A = (ushort)(ushort.MaxValue * alpha) }, 16, 16));
+        }
+
+        public bool OverrideTextureFlakes(string textureName, Color color) {
+            // TODO: improve renderer so flakes will be visible?
+            return OverrideTexture(textureName, color);
+        }
+
+        public bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular) {
+            using (var image = new MagickImage(Kn5.TexturesData[textureName])) {
+                if (image.Width > 512 || image.Height > 512) {
+                    image.Resize(512, 512);
+                }
+
+                image.BrightnessContrast(reflection, 1d, Channels.Red);
+                image.BrightnessContrast(blur, 1d, Channels.Green);
+                image.BrightnessContrast(specular, 1d, Channels.Blue);
+
+                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
+            }
+        }
+
+        public Task SaveTextureFlakes(string filename, Color color) {
+            var image = new MagickImage(new MagickColor(color) { A = 250 }, 256, 256);
+            image.AddNoise(NoiseType.Poisson, Channels.Alpha);
+            return SaveAndDispose(filename, image);
+        }
+
+        private Task SaveAndDispose(string filename, MagickImage image) {
+            try {
+                if (File.Exists(filename)) {
+                    FileUtils.Recycle(filename);
+                }
+
+                image.SetDefine(MagickFormat.Dds, "compression", "none");
+                image.Quality = 100;
+                var bytes = image.ToByteArray(MagickFormat.Dds);
+                return FileUtils.WriteAllBytesAsync(filename, bytes);
+            } finally {
+                image.Dispose();
+            }
+        }
+
         public override void Dispose() {
             DisposeHelper.Dispose(ref _outlineBuffer);
+            DisposeHelper.Dispose(ref _outlineDepthBuffer);
             base.Dispose();
         }
     }

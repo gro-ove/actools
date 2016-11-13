@@ -21,12 +21,69 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SharpCompress.Common;
-using SharpCompress.Writer;
+using SharpCompress.Writers;
 using StringBasedFilter;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {
+        /// <summary>
+        /// Gets description for ReadMe.txt inside shared archive.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetDescription([CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track) {
+            return car == null
+                    ? (track == null ? ToolsStrings.Common_AcReplay : $"{ToolsStrings.Common_AcReplay} ({track.Name})")
+                    : (track == null
+                            ? $"{ToolsStrings.Common_AcReplay} ({car.DisplayName})"
+                            : $"{ToolsStrings.Common_AcReplay} ({car.DisplayName}, {track.Name})");
+        }
+
+        public static async Task ShareReplay(string name, string filename, [CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track) {
+            UploadResult result;
+
+            try {
+                using (var waiting = new WaitingDialog(ControlsStrings.Common_Uploading)) {
+                    waiting.Report(ControlsStrings.Common_Preparing);
+
+                    var uploader = Uploaders.List.First();
+                    await uploader.SignIn(waiting.CancellationToken);
+
+                    waiting.Report(ControlsStrings.Common_Compressing);
+
+                    byte[] data = null;
+                    await Task.Run(() => {
+                        using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var memory = new MemoryStream()) {
+                            using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                                var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(car, track),
+                                        Path.GetFileName(filename));
+                                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
+                                    writer.Write(@"ReadMe.txt", stream);
+                                }
+
+                                writer.Write(Path.GetFileName(filename), file, new FileInfo(filename).CreationTime);
+                            }
+
+                            data = memory.ToArray();
+                            Logging.Write($"Compressed: {file.Length.ToReadableSize()} to {data.LongLength.ToReadableSize()}");
+                        }
+                    });
+
+                    result = await uploader.Upload(name ?? AppStrings.Replay_DefaultUploadedName,
+                            Path.GetFileNameWithoutExtension(filename) + @".zip",
+                            @"application/zip", GetDescription(car, track), data, waiting,
+                            waiting.CancellationToken);
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);
+                return;
+            }
+
+            SharingHelper.Instance.AddToHistory(SharedEntryType.Replay, name, car?.DisplayName, result);
+            SharingUiHelper.ShowShared(SharedEntryType.Replay, result.Url);
+        }
+
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
             public ViewModel([NotNull] ReplayObject acObject) : base(acObject) { }
 
@@ -105,64 +162,10 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            /// <summary>
-            /// Gets description for ReadMe.txt inside shared archive.
-            /// </summary>
-            /// <returns></returns>
-            private string GetDescription() {
-                return Car == null
-                        ? (Track == null ? ToolsStrings.Common_AcReplay : $"{ToolsStrings.Common_AcReplay} ({Track.DisplayName})")
-                        : (Track == null
-                                ? $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName})"
-                                : $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName}, {Track.DisplayName})");
-            }
-
             private CommandBase _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
-                UploadResult result;
-
-                try {
-                    using (var waiting = new WaitingDialog(ControlsStrings.Common_Uploading)) {
-                        waiting.Report(ControlsStrings.Common_Preparing);
-
-                        var uploader = Uploaders.List.First();
-                        await uploader.SignIn(waiting.CancellationToken);
-
-                        waiting.Report(ControlsStrings.Common_Compressing);
-
-                        byte[] data = null;
-                        await Task.Run(() => {
-                            using (var file = new FileStream(SelectedObject.Location, FileMode.Open, FileAccess.Read, FileShare.Read))
-                            using (var memory = new MemoryStream()) {
-                                using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                    var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(),
-                                            SelectedObject.Id);
-                                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
-                                        writer.Write(@"ReadMe.txt", stream);
-                                    }
-
-                                    writer.Write(SelectedObject.Id, file, SelectedObject.CreationTime);
-                                }
-
-                                data = memory.ToArray();
-                                Logging.Write($"Compressed: {file.Length.ToReadableSize()} to {data.LongLength.ToReadableSize()}");
-                            }
-                        });
-
-                        result = await uploader.Upload(SelectedObject.Name ?? AppStrings.Replay_DefaultUploadedName,
-                                Path.GetFileNameWithoutExtension(SelectedObject.Location) + @".zip",
-                                @"application/zip", GetDescription(), data, waiting,
-                                waiting.CancellationToken);
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);
-                    return;
-                }
-
-                SharingHelper.Instance.AddToHistory(SharedEntryType.Replay, SelectedObject.Name, Car?.DisplayName, result);
-                SharingUiHelper.ShowShared(SharedEntryType.Replay, result.Url);
-            }));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() =>
+                    ShareReplay(SelectedObject.Name, SelectedObject.Location, Car, Track)));
 
             private ICommand _playCommand;
 

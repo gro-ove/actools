@@ -1,6 +1,6 @@
 using System;
+using System.Collections;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Media;
 using JetBrains.Annotations;
 
@@ -10,41 +10,64 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected abstract UIElement GetChild();
 
 
-        private UIElement _activeChild;
+        private UIElement _child;
 
-        private void SetActiveChild(UIElement element) {
-            if (ReferenceEquals(_activeChild, element)) return;
+        private void SetActiveChild(UIElement child) {
+            if (ReferenceEquals(_child, child)) return;
 
-            if (_activeChild != null) {
-                RemoveLogicalChild(_activeChild);
-                RemoveVisualChild(_activeChild);
+            RemoveVisualChild(_child);
+            RemoveLogicalChild(_child);
 
-                var fe = _activeChild as FrameworkElement;
-                if (fe != null) {
-                    BindingOperations.ClearBinding(fe, DataContextProperty);
-                }
-            }
+            _child = child;
 
-            _activeChild = element;
-
-            if (_activeChild != null) {
-                AddLogicalChild(_activeChild);
-                AddVisualChild(_activeChild);
-
-                var fe = _activeChild as FrameworkElement;
-                if (fe != null && fe.DataContext == null) {
-                    fe.SetBinding(DataContextProperty, new Binding {
-                        Path = new PropertyPath(nameof(DataContext)),
-                        Source = this
-                    });
-                }
-            }
+            AddLogicalChild(_child);
+            AddVisualChild(_child);
         }
+
+        private class EmptyEnumerator : IEnumerator {
+            private EmptyEnumerator() {}
+
+            public static IEnumerator Instance => _instance ?? (_instance = new EmptyEnumerator());
+
+            public void Reset() { }
+            
+            public bool MoveNext() { return false; }
+
+            public object Current {
+                get { throw new InvalidOperationException(); }
+            }
+
+            private static IEnumerator _instance;
+        }
+
+        private class SingleChildEnumerator : IEnumerator {
+            internal SingleChildEnumerator(object child) {
+                _child = child;
+                _count = child == null ? 0 : 1;
+            }
+
+            object IEnumerator.Current => _index == 0 ? _child : null;
+
+            bool IEnumerator.MoveNext() {
+                return ++_index < _count;
+            }
+
+            void IEnumerator.Reset() {
+                _index = -1;
+            }
+
+            private int _index = -1;
+            private readonly int _count;
+            private readonly object _child;
+        }
+
+        protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance :
+                new SingleChildEnumerator(_child);
 
         protected override Size MeasureOverride(Size constraint) {
             SetActiveChild(GetChild());
 
-            var e = _activeChild;
+            var e = _child;
             if (e == null) return Size.Empty;
 
             e.Measure(constraint);
@@ -52,14 +75,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override Size ArrangeOverride(Size arrangeBounds) {
-            _activeChild?.Arrange(new Rect(arrangeBounds));
+            _child?.Arrange(new Rect(arrangeBounds));
             return arrangeBounds;
         }
 
-        protected override int VisualChildrenCount => _activeChild != null ? 1 : 0;
+        protected override int VisualChildrenCount => _child != null ? 1 : 0;
 
         protected override Visual GetVisualChild(int index) {
-            var child = _activeChild;
+            var child = _child;
             if (child == null || index != 0) throw new ArgumentOutOfRangeException(nameof(index));
             return child;
         }

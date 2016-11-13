@@ -156,8 +156,8 @@
     <value>No se ha podido iniciar la carrera</value>
   </data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
-    <value>Comprueba que el coche y circuito necesarios estan instalados y disponibles (activos)</value>
-  </data>
+    <value>Comprueba que el coche y circuito necesarios estan instalados y disponibles.</value>
+  <alternative>Comprueba que el coche y circuito necesarios estan instalados y disponibles (activos)</alternative></data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
     <value>No se puede analizar  la solicitud</value>
   </data>
@@ -434,8 +434,8 @@ Author: [b]{3}[/b]</value>
     <value>Assetto Corsa</value>
   </data>
   <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
+    <value>Aplicaciones</value>
+  <alternative>Apps</alternative></data>
   <data name="Main_Fonts" xml:space="preserve">
     <value>Fuentes</value>
   </data>
@@ -443,8 +443,8 @@ Author: [b]{3}[/b]</value>
     <value>Filtros PP</value>
   </data>
   <data name="Main_Weather" xml:space="preserve">
-    <value>Meteorologia</value>
-  </data>
+    <value>Clima</value>
+  <alternative>Meteorologia</alternative></data>
   <data name="Main_Rsr" xml:space="preserve">
     <value>RSR</value>
   </data>
@@ -494,8 +494,8 @@ Author: [b]{3}[/b]</value>
     <value>Varios</value>
   </data>
   <data name="Main_ServerPresets" xml:space="preserve">
-    <value>Controles Predeterminados</value>
-  </data>
+    <value>Ajustes predeterminados</value>
+  <alternative>Controles Predeterminados</alternative></data>
   <data name="Main_ServerRunning" xml:space="preserve">
     <value>Ejecutando</value>
   </data>
@@ -2994,5 +2994,59 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
     <value>Grabar coche fantasma durante el modo hotlap, incluso si esta oculto</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>Actualizar previsualización del showroom</value>
+  </data>
+  <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
+    <value>No se puede actualizar la previsualización del showroom.</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>Usar pista en una sesión de carrera rápida (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>Encontrar información acerca del circuito (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>Copiar valores a otras versiones del circuito.</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>Actualizar previsualización de la pista.</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
+    <value>Sin disparar</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+    <value>Solo seleccionar una imagen existente.</value>
+  </data>
+  <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
+    <value>Nombre de la versión del circuito</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Etiquetas geográficas </value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>Actualizar previsualización del clima (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>Cambiar ID del clima (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
+    <value>Probar clima en la pista (Ctrl+G)</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Compartir clima (Ctrl+RePág)</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Parece vacío?</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Cambia a modo editor si quieres modificar parámetros de otros climas.</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Encender las luces.</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>Ver "readme_weather.txt"</value>
   </data>
 </root>

@@ -14,6 +14,7 @@ namespace AcTools.Render.Base.Utils {
         public static float Abs(float a) {
             return a < 0.0f ? -a : a;
         }
+
         public static float Sin(float rad) {
             return (float)Math.Sin(rad);
         }

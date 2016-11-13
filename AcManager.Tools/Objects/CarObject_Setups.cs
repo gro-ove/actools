@@ -39,7 +39,7 @@ namespace AcManager.Tools.Objects {
         public DataWrapper AcdData {
             get {
                 if (_acdData != null) return _acdData;
-                _acdData = DataWrapper.FromFile(Location);
+                _acdData = DataWrapper.FromDirectory(Location);
                 return _acdData;
             }
         }

@@ -69,9 +69,15 @@
                 IsSnapToTickEnabled="False" />
     </StackPanel>
 
-    <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding FuelConsumption}" Margin="{StaticResource EntryMargin}">
+    <!--<CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding FuelConsumption}" Margin="{StaticResource EntryMargin}">
         <Label Content="{x:Static t:ToolsStrings.Assists_FuelConsumption}" />
-    </CheckBox>
+    </CheckBox>-->
+
+    <StackPanel Grid.Row="3" Grid.Column="1" Margin="{StaticResource EntryMargin}">
+        <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_FuelConsumption}" Value="{Binding FuelConsumption}" Postfix="×" />
+        <Slider Minimum="0" Maximum="5" Value="{Binding FuelConsumption}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
+                IsSnapToTickEnabled="False" />
+    </StackPanel>
 
     <!-- fifth row -->
     <StackPanel Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_MechanicalDamage_Tooltip}">

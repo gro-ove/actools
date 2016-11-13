@@ -348,4 +348,52 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             base.Dispose();
         }
     }
+
+    public class DepthMaterialProvider : Kn5MaterialsProvider {
+        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
+            return new Kn5MaterialDepth();
+        }
+
+        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
+            return new Kn5MaterialDepth();
+        }
+
+        public override IRenderableMaterial CreateSkyMaterial() {
+            return new InvisibleMaterial();
+        }
+
+        public override IRenderableMaterial CreateMirrorMaterial() {
+            return new InvisibleMaterial();
+        }
+    }
+
+    public class Kn5MaterialDepth : IRenderableMaterial {
+        private EffectSimpleMaterial _effect;
+
+        public void Initialize(DeviceContextHolder contextHolder) {
+            _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
+        }
+
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple) return false;
+
+            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+            return true;
+        }
+
+        public void SetMatrices(Matrix objectTransform, ICamera camera) {
+            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
+            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
+            _effect.FxWorld.SetMatrix(objectTransform);
+        }
+
+        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            _effect.TechGl.DrawAllPasses(contextHolder.DeviceContext, indices);
+        }
+
+        public bool IsBlending => false;
+
+        public void Dispose() { }
+    }
 }

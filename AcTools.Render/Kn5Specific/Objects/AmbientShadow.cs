@@ -27,8 +27,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Matrix Transform;
 
-        public AmbientShadow(string filename, Matrix transform)
-                : base(BaseVertices, BaseIndices) {
+        public AmbientShadow(string filename, Matrix transform) : base(null, BaseVertices, BaseIndices) {
             _filename = filename;
             Transform = transform;
         }

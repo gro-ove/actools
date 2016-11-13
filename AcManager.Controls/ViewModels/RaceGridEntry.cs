@@ -1,9 +1,11 @@
 using System;
 using System.Windows.Input;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -12,7 +14,7 @@ namespace AcManager.Controls.ViewModels {
     public class RaceGridPlayerEntry : RaceGridEntry {
         public override bool SpecialEntry => true;
 
-        public override string DisplayName => "You";
+        public override string DisplayName => ToolsStrings.RaceGrid_You;
 
         public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }
@@ -55,6 +57,7 @@ namespace AcManager.Controls.ViewModels {
         public CarSkinObject CarSkin {
             get { return _carSkin; }
             set {
+                Logging.Debug(value?.Id);
                 if (Equals(value, _carSkin)) return;
                 _carSkin = value;
                 OnPropertyChanged();

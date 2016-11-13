@@ -53,7 +53,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
             RootDirectory = rootDirectory ?? Path.GetDirectoryName(kn5.OriginalFilename);
             SkinsDirectory = FileUtils.GetCarSkinsDirectory(RootDirectory);
-            Data = DataWrapper.FromFile(RootDirectory);
+            Data = DataWrapper.FromDirectory(RootDirectory);
 
             MainKn5Filename = FileUtils.GetMainCarFilename(RootDirectory, Data);
             ReloadSkins();

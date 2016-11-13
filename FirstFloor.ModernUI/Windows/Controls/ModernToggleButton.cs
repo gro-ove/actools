@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ModernToggleButton : ModernButton {
@@ -12,6 +13,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected override void OnClick() {
             IsChecked = !IsChecked;
+        }
+
+        public static readonly DependencyProperty MoreCommandProperty = DependencyProperty.Register(nameof(MoreCommand), typeof(ICommand),
+            typeof(ModernToggleButton));
+
+        public ICommand MoreCommand {
+            get { return (ICommand)GetValue(MoreCommandProperty); }
+            set { SetValue(MoreCommandProperty, value); }
         }
     }
 }

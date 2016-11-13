@@ -632,8 +632,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private static TrackObjectBase GetTrack(string informationId) {
-            return TracksManager.Instance.GetById(informationId) ??
-                    (informationId.Contains(@"-") ? TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence(@"-", @"/")) : null);
+            return TracksManager.Instance.GetLayoutByKunosId(informationId);
         }
 
         public int Compare(object x, object y) {
@@ -857,8 +856,8 @@ namespace AcManager.Tools.Managers.Online {
             if (currentItem == null) return "Car isn’t selected";
 
             if (PasswordRequired) {
-                if (WrongPassword) return "Password is invalid";
-                if (string.IsNullOrEmpty(Password)) return "Password is required";
+                if (WrongPassword) return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
+                if (string.IsNullOrEmpty(Password)) return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
             }
 
             if (BookingMode) {

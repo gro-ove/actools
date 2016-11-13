@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace StringBasedFilter {
     public interface ITestEntry {
@@ -7,5 +8,9 @@ namespace StringBasedFilter {
         bool Test(double value);
 
         bool Test(bool value);
+
+        bool Test(TimeSpan value);
+
+        bool Test(DateTime value);
     }
 }

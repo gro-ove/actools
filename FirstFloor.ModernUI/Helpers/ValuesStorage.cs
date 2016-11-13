@@ -10,14 +10,14 @@ namespace FirstFloor.ModernUI.Helpers {
     public static partial class ValuesStorage {
         public static Storage Storage { get; private set; }
 
-        public static void Initialize(string filename, bool disableCompression = false) {
+        public static void Initialize(string filename, string encryptionKey, bool disableCompression = false) {
             Debug.Assert(Storage == null);
-            Storage = new Storage(filename, EncryptionKey, disableCompression);
+            Storage = new Storage(filename, encryptionKey, disableCompression);
         }
 
         public static void Initialize() {
             Debug.Assert(Storage == null);
-            Storage = new Storage(encryptionKey: EncryptionKey);
+            Storage = new Storage();
         }
 
         [CanBeNull, Pure]

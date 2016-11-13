@@ -556,6 +556,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t get a proper list of resolutions.
+        /// </summary>
+        public static string AcSettings_CannotGetResolutions {
+            get {
+                return ResourceManager.GetString("AcSettings_CannotGetResolutions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t save AC settings.
         /// </summary>
         public static string AcSettings_CannotSave {
@@ -1600,6 +1609,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Global:.
+        /// </summary>
+        public static string Common_GlobalHeader {
+            get {
+                return ResourceManager.GetString("Common_GlobalHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Height.
         /// </summary>
         public static string Common_Height {
@@ -2482,11 +2500,56 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arrange way:.
+        /// </summary>
+        public static string Drive_GridArrangeWay {
+            get {
+                return ResourceManager.GetString("Drive_GridArrangeWay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string Drive_GridArrangeWay_Random {
+            get {
+                return ResourceManager.GetString("Drive_GridArrangeWay_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shuffle.
+        /// </summary>
+        public static string Drive_GridArrangeWay_Shuffle {
+            get {
+                return ResourceManager.GetString("Drive_GridArrangeWay_Shuffle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Way to arrange candidates.
+        /// </summary>
+        public static string Drive_GridArrangeWay_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridArrangeWay_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grid building….
         /// </summary>
         public static string Drive_GridBuilding {
             get {
                 return ResourceManager.GetString("Drive_GridBuilding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use skins’ names if available.
+        /// </summary>
+        public static string Drive_GridNamesFromSkins {
+            get {
+                return ResourceManager.GetString("Drive_GridNamesFromSkins", resourceCulture);
             }
         }
         
@@ -3306,9 +3369,36 @@ namespace AcManager.Tools {
         /// <summary>
         ///   Looks up a localized string similar to Random.
         /// </summary>
+        public static string RaceGrid_OpponentNationality_Random {
+            get {
+                return ResourceManager.GetString("RaceGrid_OpponentNationality_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string RaceGrid_OpponentSkin_Random {
+            get {
+                return ResourceManager.GetString("RaceGrid_OpponentSkin_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
         public static string RaceGrid_Random {
             get {
                 return ResourceManager.GetString("RaceGrid_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string RaceGrid_You {
+            get {
+                return ResourceManager.GetString("RaceGrid_You", resourceCulture);
             }
         }
         
@@ -3637,6 +3727,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UI module “CM Helper” installed and activated. Don’t forget to restart AssettoCorsa.exe before racing!.
+        /// </summary>
+        public static string Settings_Starter_UiModule_JustInstalled {
+            get {
+                return ResourceManager.GetString("Settings_Starter_UiModule_JustInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assists preset.
         /// </summary>
         public static string Shared_AssistsSetupPreset {
@@ -3822,6 +3921,42 @@ namespace AcManager.Tools {
         public static string Solving_RestoreFrom_Commentary {
             get {
                 return ResourceManager.GetString("Solving_RestoreFrom_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File is still parsed, but some values might be skipped..
+        /// </summary>
+        public static string SyntaxError_Commentary {
+            get {
+                return ResourceManager.GetString("SyntaxError_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error in packed {0} at {1} line.
+        /// </summary>
+        public static string SyntaxError_Packed {
+            get {
+                return ResourceManager.GetString("SyntaxError_Packed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open File.
+        /// </summary>
+        public static string SyntaxError_Solution {
+            get {
+                return ResourceManager.GetString("SyntaxError_Solution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syntax error in {0} at {1} line.
+        /// </summary>
+        public static string SyntaxError_Unpacked {
+            get {
+                return ResourceManager.GetString("SyntaxError_Unpacked", resourceCulture);
             }
         }
         

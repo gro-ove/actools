@@ -47,6 +47,7 @@ namespace AcTools.Render.Base {
                 if (Equals(_width, value)) return;
                 _width = value;
                 _resized = true;
+                IsDirty = true;
                 OnPropertyChanged();
             }
         }
@@ -57,6 +58,7 @@ namespace AcTools.Render.Base {
                 if (Equals(_height, value)) return;
                 _height = value;
                 _resized = true;
+                IsDirty = true;
                 OnPropertyChanged();
             }
         }
@@ -83,9 +85,8 @@ namespace AcTools.Render.Base {
         private float _previousElapsed;
 
         protected BaseRenderer() {
-#if DEBUG
             Configuration.EnableObjectTracking = false;
-#endif
+            Configuration.DetectDoubleDispose = false;
         }
 
         public bool UseMsaa { get; set; }
@@ -171,7 +172,6 @@ namespace AcTools.Render.Base {
             }
             
             InitializeInner();
-
             Initialized = true;
         }
 

@@ -167,16 +167,13 @@ namespace AcManager.Tools.Managers {
                 case nameof(KunosCareerProgress.Completed):
                     Progress = (double)KunosCareerProgress.Instance.Completed.Length / InnerWrappersList.Count;
                     foreach (var careerObject in LoadedOnly) {
-                        careerObject.LoadProgress();
+                        careerObject.UpdateIsCompletedFlag();
                     }
                     break;
 
                 case nameof(KunosCareerProgress.Entries):
                     foreach (var careerObject in LoadedOnly) {
                         careerObject.LoadProgress();
-                    }
-                    foreach (var eventObject in LoadedOnly.SelectMany(x => x.EventsManager.LoadedOnly)) {
-                        eventObject.LoadProgress();
                     }
                     break;
             }

@@ -50,7 +50,7 @@ namespace AcManager.Controls.Dialogs {
                 waiting = false;
 
                 // ReSharper disable once AccessToModifiedClosure
-                code = await Prompt.ShowAsync(title, description, code, watermark, toolTip, multiline, passwordMode, maxLength, suggestions, cancellation);
+                code = await Prompt.ShowAsync(title, description, code, watermark, toolTip, multiline, passwordMode, false, maxLength, suggestions, cancellation);
                 ready = true;
             };
 

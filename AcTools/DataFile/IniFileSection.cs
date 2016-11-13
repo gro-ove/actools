@@ -107,6 +107,12 @@ namespace AcTools.DataFile {
             return result.Length == 3 ? result : new double[3];
         }
 
+        [NotNull, Pure]
+        public float[] GetVector3F([NotNull, LocalizationRequired(false)] string key) {
+            var result = GetStrings(key).Select(x => (float)FlexibleParser.ParseDouble(x, 0d)).ToArray();
+            return result.Length == 3 ? result : new float[3];
+        }
+
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>

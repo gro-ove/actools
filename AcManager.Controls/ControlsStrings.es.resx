@@ -124,8 +124,8 @@
     <value>Trazada Ideal:</value>
   </data>
   <data name="Assists_Header" xml:space="preserve">
-    <value>Asistencia:</value>
-  </data>
+    <value>Ayudas:</value>
+  <alternative>Asistencia:</alternative></data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
     <value>Cambio Automatico:</value>
   </data>

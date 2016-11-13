@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
@@ -79,6 +80,14 @@ namespace StringBasedFilter.TestEntries {
 
         public bool Test(bool value) {
             return _strAsBool == value;
+        }
+
+        public bool Test(TimeSpan value) {
+            return Test(value.ToString());
+        }
+
+        public bool Test(DateTime value) {
+            return Test(value.ToString(CultureInfo.CurrentUICulture));
         }
     }
 }

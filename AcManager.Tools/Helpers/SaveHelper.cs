@@ -45,12 +45,14 @@ namespace AcManager.Tools.Helpers {
         private readonly Func<T> _save;
         private readonly Action<T> _load;
         private readonly Action _reset;
+        private readonly Func<string, T> _deserialize;
 
-        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset) {
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset, Func<string, T> deserialize = null) {
             _key = key;
             _save = save;
             _load = load;
             _reset = reset;
+            _deserialize = deserialize;
         }
 
         private List<IUpgradeEntry> _upgradeEntries;
@@ -109,6 +111,13 @@ namespace AcManager.Tools.Helpers {
             var obsolete = _upgradeEntries?.FirstOrDefault(x => x.Test(data));
             if (obsolete != null) {
                 obsolete.Load(data);
+            } else if (_deserialize != null) {
+                try {
+                    _load(_deserialize(data));
+                } catch (Exception e) {
+                    Logging.Error(e);
+                    _load(JsonConvert.DeserializeObject<T>(data));
+                }
             } else {
                 _load(JsonConvert.DeserializeObject<T>(data));
             }

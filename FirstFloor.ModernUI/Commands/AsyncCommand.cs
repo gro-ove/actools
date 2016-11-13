@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
@@ -42,6 +43,9 @@ namespace FirstFloor.ModernUI.Commands {
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);
                 }
+            } catch(Exception e) {
+                Logging.Error(e);
+                throw;
             } finally {
                 _inProcess = false;
                 RaiseCanExecuteChanged();
@@ -77,6 +81,9 @@ namespace FirstFloor.ModernUI.Commands {
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);
                 }
+            } catch (Exception e) {
+                Logging.Error(e);
+                throw;
             } finally {
                 _inProcess = false;
                 RaiseCanExecuteChanged();

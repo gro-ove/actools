@@ -86,7 +86,7 @@ namespace AcTools.Windows.Input.Native {
         /// This function does not reset the keyboard’s current state. Any keys that are already pressed when the function is called might interfere with the events that this function generates. To avoid this problem, check the keyboard’s state with the GetAsyncKeyState function and correct as necessary.
         /// </remarks>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint SendInput(uint numberOfInputs, INPUT[] inputs, int sizeOfInputStructure);
+        public static extern uint SendInput(uint numberOfInputs, InputEntry[] inputs, int sizeOfInputStructure);
 
         /// <summary>
         /// The GetMessageExtraInfo function retrieves the extra message information for the current thread. Extra message information is an application- or driver-defined value associated with the current thread’s message queue. 

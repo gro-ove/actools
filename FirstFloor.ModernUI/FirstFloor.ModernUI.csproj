@@ -116,8 +116,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -148,6 +148,7 @@
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\UnavailableCommand.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
@@ -165,6 +166,7 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
     <Compile Include="Windows\Controls\BetterScrollBar.cs" />
@@ -173,11 +175,15 @@
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
+    <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
+    <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
     <Compile Include="Windows\Controls\Switch.cs" />
+    <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
@@ -212,7 +218,6 @@
     <Compile Include="Helpers\TreeViewExtension.cs" />
     <Compile Include="Helpers\UriExtension.cs" />
     <Compile Include="Helpers\UserCancelledException.cs" />
-    <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
     <Compile Include="Helpers\ValuesStorage.cs" />
     <Compile Include="Helpers\WrappingStream.cs" />
     <Compile Include="Localizable\Ordinalizing.cs" />
@@ -366,6 +371,7 @@
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
+    <Compile Include="WrappedCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Assets\Converters.xaml">
@@ -425,6 +431,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\BetterTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\LabeledToggleButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -611,7 +621,7 @@
   <ItemGroup>
     <None Include="Assets\BrokenImage.bin" />
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
-    <None Include="Packages.config" />
+    <None Include="packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />
     <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
     <Resource Include="Effects\Shaders\ColorPickerBlueSliderEffect.ps" />

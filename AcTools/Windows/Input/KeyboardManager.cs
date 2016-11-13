@@ -1,98 +1,46 @@
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace AcTools.Windows.Input {
-    public class KeyboardManager : IDisposable {
-        public event KeyEventHandler KeyUp, KeyDown;
-
+    public class KeyboardManager : KeyboardListener {
         private readonly int _delay;
-
-        private int _hookHandle;
-
         private int _ignoreDown, _ignoreUp;
-        public bool[] Pressed, Unpressed;
+        private bool[] _pressed, _unpressed;
 
         public KeyboardManager(int delay = 20) {
-            Pressed = new bool[256];
             _delay = delay;
+            _pressed = new bool[256];
         }
 
-        private int KeyboardHookProc(int nCode, int wParam, IntPtr lParam) {
-            if (nCode != User32.HC_ACTION) return User32.CallNextHookEx(_hookHandle, nCode, wParam, lParam);
-
-            var keyboardEvent = (User32.KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(User32.KeyboardHookStruct));
-            var virtualKeyCode = keyboardEvent.VirtualKeyCode;
-
-            if (wParam == User32.WM_KEYDOWN || wParam == User32.WM_SYSKEYDOWN) {
-                if (Unpressed != null && virtualKeyCode < 256 && Unpressed[virtualKeyCode]) {
-                    return -1;
-                }
-
-                if (_ignoreDown > 0) {
-                    _ignoreDown--;
-                } else if (KeyDown != null) {
-                    var e = new KeyEventArgs((Keys)virtualKeyCode);
-                    KeyDown(this, e);
-                    if (e.Handled) {
-                        return -1;
-                    }
-
-                    if (virtualKeyCode < 256) {
-                        Pressed[virtualKeyCode] = true;
-                    }
-                }
-            } else if (wParam == User32.WM_KEYUP || wParam == User32.WM_SYSKEYUP) {
-                if (virtualKeyCode < 256) {
-                    Pressed[virtualKeyCode] = false;
-                }
-
-                if (_ignoreUp > 0) {
-                    _ignoreUp--;
-                } else if (KeyUp != null) {
-                    var e = new KeyEventArgs((Keys)virtualKeyCode);
-                    KeyUp(this, e);
-                    if (e.Handled) {
-                        return -1;
-                    }
-                }
+        protected override bool RaiseKeyDown(int virtualKeyCode) {
+            if (_unpressed != null && virtualKeyCode < 256 && _unpressed[virtualKeyCode]) {
+                return true;
             }
 
-            return User32.CallNextHookEx(_hookHandle, nCode, wParam, lParam);
+            if (_ignoreDown > 0) {
+                _ignoreDown--;
+            } else if (base.RaiseKeyDown(virtualKeyCode)) {
+                return true;
+            } else {
+                _pressed[virtualKeyCode] = true;
+            }
+
+            return false;
         }
 
-        private User32.HookProc _hookProc;
-
-        public void Subscribe() {
-            if (_hookHandle != 0) return;
-
-            // ReSharper disable once RedundantDelegateCreation
-            _hookProc = new User32.HookProc(KeyboardHookProc);
-
-            using (var process = Process.GetCurrentProcess()) {
-                using (var module = process.MainModule) {
-                    _hookHandle = User32.SetWindowsHookEx(User32.WH_KEYBOARD_LL, _hookProc,
-                                                          Kernel32.GetModuleHandle(module.ModuleName), 0);
-                }
+        protected override bool RaiseKeyUp(int virtualKeyCode) {
+            if (virtualKeyCode < 256) {
+                _pressed[virtualKeyCode] = false;
             }
 
-            if (_hookHandle == 0) {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (_ignoreUp > 0) {
+                _ignoreUp--;
+            } else {
+                return base.RaiseKeyUp(virtualKeyCode);
             }
-        }
 
-        public void Unsubscribe() {
-            if (_hookHandle == 0) return;
-
-            var result = User32.UnhookWindowsHookEx(_hookHandle);
-            _hookHandle = 0;
-
-            if (result == 0) {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
+            return false;
         }
 
         public void SendWait(params string[] args) {
@@ -126,18 +74,14 @@ namespace AcTools.Windows.Input {
         }
 
         public void UnpressAll() {
-            Unpressed = (bool[])Pressed.Clone();
-            for (var i = 0; i < Pressed.Length; i++) {
-                if (!Pressed[i]) continue;
+            _unpressed = (bool[])_pressed.Clone();
+            for (var i = 0; i < _pressed.Length; i++) {
+                if (!_pressed[i]) continue;
+
                 _ignoreUp++;
-                Pressed[i] = false;
+                _pressed[i] = false;
                 User32.keybd_event((byte)i, 0x45, User32.KEYEVENTF_EXTENDEDKEY | User32.KEYEVENTF_KEYUP, (UIntPtr)0);
             }
         }
-
-        public void Dispose() {
-            Unsubscribe();
-        }
     }
-
 }

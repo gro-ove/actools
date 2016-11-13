@@ -5,6 +5,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -24,7 +25,7 @@ namespace AcTools.Render.Base.Objects {
         private Buffer _verticesBuffer, _indicesBuffer;
         private VertexBufferBinding _verticesBufferBinding;
 
-        public TrianglesRenderableObject(T[] vertices, ushort[] indices) {
+        public TrianglesRenderableObject([CanBeNull] string name, T[] vertices, ushort[] indices) : base(name) {
             Vertices = vertices;
             Indices = indices;
             IndicesCount = Indices.Length;

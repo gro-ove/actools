@@ -4,12 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -27,6 +25,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Profile;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Online;
@@ -34,9 +33,13 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
+using AcTools;
+using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -47,7 +50,7 @@ using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App : FatalErrorMessage.IAppRestartHelper {
+    public partial class App : FatalErrorMessage.IAppRestartHelper, IAppIconProvider, IDisposable {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -56,7 +59,9 @@ namespace AcManager {
                 ValuesStorage.Initialize();
                 CacheStorage.Initialize();
             } else {
-                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"),
+                        InternalUtils.GetValuesStorageEncryptionKey(),
+                        AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
@@ -74,6 +79,8 @@ namespace AcManager {
             LocaleHelper.InitializeAsync().Wait();
             new App().Run();
         }
+
+        private AppHibernator _hibernator;
 
         private App() {
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
@@ -132,6 +139,8 @@ namespace AcManager {
                 Culture = CultureInfo.InvariantCulture
             };
 
+            AcToolsLogging.Logger = (s, m, p, l) => Logging.Write($"{s} (AcTools)", m, p, l);
+
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
@@ -157,6 +166,7 @@ namespace AcManager {
             ServerEntryOld.RegisterFactory(uiFactory);
 
             GameWrapper.RegisterFactory(new DefaultAssistsFactory());
+            LapTimesManager.Instance.SetListener();
 
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
@@ -186,10 +196,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
             PrepareUi();
-            var iconUri = new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico",
-                    UriKind.Absolute);
-            CustomShowroomWrapper.SetDefaultIcon(iconUri);
-            Toast.SetDefaultIcon(iconUri);
+            AppIconService.Initialize(this);
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
@@ -216,17 +223,27 @@ namespace AcManager {
             };
 
             AbstractDataFile.ErrorsCatcher = new DataSyntaxErrorCatcher();
+            AcSharedMemory.Initialize();
+
+            AppArguments.Set(AppFlag.RunStatsWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
+            PlayerStatsManager.Instance.SetListener();
+            RhmService.Instance.SetListener();
+
+            _hibernator = new AppHibernator();
+            _hibernator.SetListener();
+
+            AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
             public void Catch(AbstractDataFile file, int line) {
                 if (file.Mode == AbstractDataFile.StorageMode.AcdFile) {
-                    NonfatalError.NotifyBackground(string.Format("Syntax error in packed {0} at {1} line", file.UnpackedFilename, line),
-                            "File is still parsed, but some values might be skipped.");
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed, file.UnpackedFilename, line),
+                            ToolsStrings.SyntaxError_Commentary);
                 } else {
-                    NonfatalError.NotifyBackground(string.Format("Syntax error in {0} at {1} line", Path.GetFileName(file.SourceFilename), line),
-                            "File is still parsed, but some values might be skipped.", null, new[] {
-                                new INonfatalErrorSolution("Open File", null, token => {
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.SourceFilename), line),
+                            ToolsStrings.SyntaxError_Commentary, null, new[] {
+                                new INonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
                                     WindowsHelper.OpenFile(file.SourceFilename);
                                     return Task.Delay(0, token);
                                 })
@@ -264,47 +281,57 @@ namespace AcManager {
         }
 
         private async void BackgroundInitialization() {
-            await Task.Delay(1000);
-            if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
-                List<ChangelogEntry> changelog;
-                try {
-                    changelog = await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
-                } catch (WebException e) {
-                    NonfatalError.NotifyBackground("Can’t load changelog", ToolsStrings.Common_MakeSureInternetWorks, e);
-                    return;
-                } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t load changelog", e);
-                    return;
+            try {
+                await Task.Delay(1000);
+                if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
+                    NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
                 }
 
-                Logging.Debug("Changelog entries: " + changelog.Count);
-                if (changelog.Any()) {
-                    Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
-                        ModernDialog.ShowMessage(changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                          .JoinToString(Environment.NewLine.RepeatString(2)), "Recent Changes", MessageBoxButton.OK);
-                    });
+                if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
+                    List<ChangelogEntry> changelog;
+                    try {
+                        changelog =
+                                await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
+                    } catch (WebException e) {
+                        NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks, e);
+                        return;
+                    } catch (Exception e) {
+                        NonfatalError.NotifyBackground(AppStrings.Changelog_CannotLoad, e);
+                        return;
+                    }
+
+                    Logging.Debug("Changelog entries: " + changelog.Count);
+                    if (changelog.Any()) {
+                        Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
+                            ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
+                                                              .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                                MessageBoxButton.OK);
+                        });
+                    }
                 }
+
+                await Task.Delay(1500);
+                WeatherSpecificCloudsHelper.Revert();
+                WeatherSpecificTyreSmokeHelper.Revert();
+                WeatherSpecificPpFilterHelper.Revert();
+                CopyFilterToSystemForOculusHelper.Revert();
+
+                await Task.Delay(1500);
+                CustomUriSchemeHelper.EnsureRegistered();
+
+                await Task.Delay(5000);
+                await Task.Run(() => {
+                    foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
+                                      where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
+                                      let info = new FileInfo(file)
+                                      where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
+                                      select info) {
+                        f.Delete();
+                    }
+                });
+            } catch (Exception e) {
+                Logging.Error(e);
             }
-
-            await Task.Delay(1500);
-            WeatherSpecificCloudsHelper.Revert();
-            WeatherSpecificTyreSmokeHelper.Revert();
-            WeatherSpecificPpFilterHelper.Revert();
-            CopyFilterToSystemForOculusHelper.Revert();
-
-            await Task.Delay(1500);
-            CustomUriSchemeHelper.EnsureRegistered();
-
-            await Task.Delay(5000);
-            await Task.Run(() => {
-                foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
-                                  where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
-                                  let info = new FileInfo(file)
-                                  where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
-                                  select info) {
-                    f.Delete();
-                }
-            });
         }
 
         private void BbCodeBlock_ImageClicked(object sender, BbCodeImageEventArgs e) {
@@ -351,14 +378,30 @@ namespace AcManager {
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", ControlsStrings.AssistsPreset_Pro);
         }
 
-        private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
+        private void CurrentDomain_ProcessExit(object sender, EventArgs e) {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
+            RhmService.Instance.Dispose();
+            Dispose();
         }
 
-        public void Restart() {
+        void FatalErrorMessage.IAppRestartHelper.Restart() {
             WindowsHelper.RestartCurrentApplication();
+        }
+
+        Uri IAppIconProvider.GetTrayIcon() {
+            return WindowsVersionHelper.IsWindows10OrGreater ?
+                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIcon.ico", UriKind.Absolute) :
+                    new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/TrayIconWin8.ico", UriKind.Absolute);
+        }
+
+        Uri IAppIconProvider.GetAppIcon() {
+            return new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute);
+        }
+
+        public void Dispose() {
+            DisposeHelper.Dispose(ref _hibernator);
         }
     }
 }

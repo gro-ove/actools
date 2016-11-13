@@ -25,6 +25,7 @@ namespace AcManager.Tools.SemiGui {
             _defaultAssistsFactory = factory;
         }
 
+        public static event EventHandler<GameStartedArgs> Started;
         public static event EventHandler<GameEndedArgs> Ended;
         public static event EventHandler<GameFinishedArgs> Finished;
         public static event EventHandler<GameFinishedArgs> Cancelled;
@@ -150,18 +151,36 @@ namespace AcManager.Tools.SemiGui {
             using (var ui = _uiFactory.Create()) {
                 Logging.Write($"Starting game: {properties.GetDescription()}");
                 ui.Show(properties);
-                
+
+                CancellationTokenSource linked = null;
+
                 try {
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                         if (raceMode) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
+                            Started?.Invoke(null, new GameStartedArgs(properties));
+
+                            if (SettingsHolder.Drive.ContinueOnEscape) {
+                                properties.SetAdditional(new ContinueRaceHelper());
+                            }
                         } else {
                             properties.SetAdditional(new ReplayCommandExecutor(properties));
                         }
 
-                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
+                        var cancellationToken = ui.CancellationToken;
+
+                        if (SettingsHolder.Drive.ImmediateCancel) {
+                            var cancelHelper = new ImmediateCancelHelper();
+                            linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancelHelper.GetCancellationToken());
+                            cancellationToken = linked.Token;
+
+                            properties.SetAdditional(cancelHelper);
+                            properties.SetKeyboardListener = true;
+                        }
+
+                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), cancellationToken);
                     }
 
                     Logging.Write($"Result: {result?.GetDescription() ?? @"<NULL>"}");
@@ -181,7 +200,7 @@ namespace AcManager.Tools.SemiGui {
                         var param = new GameEndedArgs(properties, result);
                         Ended?.Invoke(null, param);
                         /* TODO: should set result to null if param.Cancel is true? */
-                        
+
                         var replayHelper = new ReplayHelper(properties, result);
                         (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
 
@@ -192,12 +211,15 @@ namespace AcManager.Tools.SemiGui {
 
                     return result;
                 } catch (TaskCanceledException) {
-                    ui.OnError(new UserCancelledException());
+                    // ui.OnError(new UserCancelledException());
+                    ui.OnResult(null, null);
                     return null;
                 } catch (Exception e) {
                     Logging.Warning(e);
                     ui.OnError(e);
                     return null;
+                } finally {
+                    linked?.Dispose();
                 }
             }
         }

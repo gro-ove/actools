@@ -1,4 +1,7 @@
-﻿namespace StringBasedFilter.TestEntries {
+﻿using System;
+using System.Globalization;
+
+namespace StringBasedFilter.TestEntries {
     internal class BooleanTestEntry : ITestEntry {
         private readonly bool _value;
 
@@ -18,12 +21,16 @@
             return _value != Equals(value, 0.0);
         }
 
-        public bool Test(object value) {
-            return value != null;
-        }
-
         public bool Test(string value) {
             return _value != string.IsNullOrEmpty(value);
+        }
+
+        public bool Test(TimeSpan value) {
+            return Test(value.ToString());
+        }
+
+        public bool Test(DateTime value) {
+            return Test(value.ToString(CultureInfo.CurrentUICulture));
         }
     }
 }

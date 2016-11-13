@@ -16,7 +16,7 @@ using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using SharpCompress.Common;
-using SharpCompress.Writer;
+using SharpCompress.Writers;
 
 namespace AcManager.Tools.Miscellaneous {
     public class AppReporter {

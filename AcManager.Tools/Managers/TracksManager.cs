@@ -6,6 +6,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
@@ -27,10 +28,48 @@ namespace AcManager.Tools.Managers {
             return base.GetById(id.Contains('/') ? id.Split('/')[0] : id);
         }
 
+        public override Task<TrackObject> GetByIdAsync(string id) {
+            return base.GetByIdAsync(id.Contains('/') ? id.Split('/')[0] : id);
+        }
+
+        /// <summary>
+        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly 
+        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
+        /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
+        /// and yet Kunos managed to select not only the character which could be in directory’s name, but
+        /// also the character actually used by themself in one of their track.
+        /// </summary>
+        /// <param name="id">ID like “ks_nordschleife-nordschleife”.</param>
+        /// <returns>Track layout.</returns>
+        [CanBeNull]
+        public TrackObjectBase GetLayoutByKunosId(string id) {
+            return GetLayoutById(id) ?? (id.Contains(@"-") ? GetLayoutById(id.ReplaceLastOccurrence(@"-", @"/")) : null);
+        }
+
+        /// <summary>
+        /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly 
+        /// tries to find a track by the whole thing for tracks like “trento-bondone”). Weird: there are
+        /// so many perfectly good candidates to be a delimiter in this case (“/”, “:”, “@” to name a few),
+        /// and yet Kunos managed to select not only the character which could be in directory’s name, but
+        /// also the character actually used by themself in one of their track.
+        /// </summary>
+        /// <param name="id">ID like “ks_nordschleife-nordschleife”.</param>
+        /// <returns>Track layout.</returns>
+        [ItemCanBeNull]
+        public async Task<TrackObjectBase> GetLayoutByKunosIdAsync(string id) {
+            return await GetLayoutByIdAsync(id) ?? (id.Contains(@"-") ? await GetLayoutByIdAsync(id.ReplaceLastOccurrence(@"-", @"/")) : null);
+        }
+
         [CanBeNull]
         public TrackObjectBase GetLayoutById(string id) {
             if (!id.Contains('/')) return base.GetById(id);
             return base.GetById(id.Split('/')[0])?.GetLayoutById(id);
+        }
+
+        [ItemCanBeNull]
+        public async Task<TrackObjectBase> GetLayoutByIdAsync(string id) {
+            if (!id.Contains('/')) return await base.GetByIdAsync(id);
+            return (await base.GetByIdAsync(id.Split('/')[0]))?.GetLayoutById(id);
         }
 
         [CanBeNull]

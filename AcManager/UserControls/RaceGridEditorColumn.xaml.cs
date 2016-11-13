@@ -20,10 +20,7 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.UserControls {
-    /// <summary>
-    /// Interaction logic for GridEditorColumn.xaml
-    /// </summary>
-    public partial class RaceGridEditorColumn : INotifyPropertyChanged {
+    public sealed partial class RaceGridEditorColumn : INotifyPropertyChanged {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => {
@@ -242,7 +239,7 @@ namespace AcManager.UserControls {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

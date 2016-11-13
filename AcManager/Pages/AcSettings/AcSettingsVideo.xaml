@@ -34,14 +34,14 @@
                 <DockPanel Visibility="{Binding Video.UseCustomResolution, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Label Content="{x:Static g:AppStrings.AcSettings_Video_CustomResolutionLabel}" />
                     <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding Video.CustomResolution.Width}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                mui:TextBoxAdvancement.SpecialMode="Positive" Width="60" ToolTip="{x:Static t:ToolsStrings.Common_Width}" />
+                        <mui:BetterTextBox Text="{Binding Video.CustomResolution.Width}" Placeholder="{x:Static t:ToolsStrings.Common_Width}" Mode="Positive"
+                                Width="60" ToolTip="{x:Static t:ToolsStrings.Common_Width}" />
                         <TextBlock Text="×" />
-                        <TextBox Text="{Binding Video.CustomResolution.Height}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                mui:TextBoxAdvancement.SpecialMode="Positive" Width="60" ToolTip="{x:Static t:ToolsStrings.Common_Height}" />
+                        <mui:BetterTextBox Text="{Binding Video.CustomResolution.Height}" Placeholder="{x:Static t:ToolsStrings.Common_Height}" Mode="Positive"
+                                Width="60" ToolTip="{x:Static t:ToolsStrings.Common_Height}" />
                         <TextBlock Text=", " />
-                        <TextBox Text="{Binding Video.CustomResolution.Framerate}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                mui:TextBoxAdvancement.SpecialMode="Positive" Width="60" ToolTip="{x:Static g:AppStrings.AcSettings_Video_Framerate}" />
+                        <mui:BetterTextBox Text="{Binding Video.CustomResolution.Framerate}" Placeholder="{x:Static g:AppStrings.AcSettings_Video_Framerate}"
+                                Mode="Positive" Width="60" ToolTip="{x:Static g:AppStrings.AcSettings_Video_Framerate}" />
                         <TextBlock Text=" Hz" />
                     </StackPanel>
                 </DockPanel>
@@ -108,9 +108,9 @@
                     <DockPanel>
                         <Label Content="{x:Static c:ControlsStrings.Common_FilterLabel}" />
                         <Button Command="{Binding ManageFiltersCommand}" Content="{x:Static g:AppStrings.Common_Manage}" />
-                        <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static m:PpFiltersManager.Instance}}"
-                                SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName"
-                                mui:WatermarkService.Watermark="{Binding Video.PostProcessingFilter}" />
+                        <mui:BetterComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static m:PpFiltersManager.Instance}}"
+                                SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName" IsEditable="False"
+                                Placeholder="{Binding Video.PostProcessingFilter}" />
                     </DockPanel>
 
                     <DockPanel>

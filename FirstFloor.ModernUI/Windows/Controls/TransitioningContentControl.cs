@@ -8,7 +8,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Controls;
-using System.Globalization;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -22,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     //[TemplateVisualState(GroupName = PresentationGroup, Name = DefaultTransitionState)]
     [TemplatePart(Name = PreviousContentPresentationSitePartName, Type = typeof(ContentControl))]
     [TemplatePart(Name = CurrentContentPresentationSitePartName, Type = typeof(ContentControl))]
-    public class TransitioningContentControl : ContentControl {
+    public sealed class TransitioningContentControl : ContentControl {
         #region Visual state names
         /// <summary>
         /// The name of the group that holds the presentation states.
@@ -99,11 +98,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Identifies the IsTransitioning dependency property.
         /// </summary>
         public static readonly DependencyProperty IsTransitioningProperty =
-            DependencyProperty.Register(
-                "IsTransitioning",
-                typeof(bool),
-                typeof(TransitioningContentControl),
-                new PropertyMetadata(OnIsTransitioningPropertyChanged));
+                DependencyProperty.Register(
+                        "IsTransitioning",
+                        typeof(bool),
+                        typeof(TransitioningContentControl),
+                        new PropertyMetadata(OnIsTransitioningPropertyChanged));
 
         /// <summary>
         /// IsTransitioningProperty property changed handler.
@@ -111,8 +110,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <param name="d">TransitioningContentControl that changed its IsTransitioning.</param>
         /// <param name="e">Event arguments.</param>
         private static void OnIsTransitioningPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            TransitioningContentControl source = (TransitioningContentControl)d;
-
+            var source = (TransitioningContentControl)d;
             if (!source._allowIsTransitioningWrite) {
                 source.IsTransitioning = (bool)e.OldValue;
                 throw new InvalidOperationException("IsTransitioning property is read-only.");
@@ -157,11 +155,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Identifies the Transition dependency property.
         /// </summary>
         public static readonly DependencyProperty TransitionProperty =
-            DependencyProperty.Register(
-                "Transition",
-                typeof(string),
-                typeof(TransitioningContentControl),
-                new PropertyMetadata(DefaultTransitionState, OnTransitionPropertyChanged));
+                DependencyProperty.Register(
+                        "Transition",
+                        typeof(string),
+                        typeof(TransitioningContentControl),
+                        new PropertyMetadata(DefaultTransitionState, OnTransitionPropertyChanged));
 
         /// <summary>
         /// TransitionProperty property changed handler.
@@ -189,9 +187,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else {
                     // revert to old value
                     source.SetValue(TransitionProperty, oldTransition);
-
-                    throw new ArgumentException(
-                        string.Format(CultureInfo.CurrentCulture, "Transition '{0}' was not defined.", newTransition));
+                    throw new ArgumentException($"Transition '{newTransition}' was not defined.");
                 }
             } else {
                 source.CurrentTransition = newStoryboard;
@@ -213,11 +209,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Identifies the RestartTransitionOnContentChange dependency property.
         /// </summary>
         public static readonly DependencyProperty RestartTransitionOnContentChangeProperty =
-            DependencyProperty.Register(
-                "RestartTransitionOnContentChange",
-                typeof(bool),
-                typeof(TransitioningContentControl),
-                new PropertyMetadata(false, OnRestartTransitionOnContentChangePropertyChanged));
+                DependencyProperty.Register(
+                        "RestartTransitionOnContentChange",
+                        typeof(bool),
+                        typeof(TransitioningContentControl),
+                        new PropertyMetadata(false, OnRestartTransitionOnContentChangePropertyChanged));
 
         /// <summary>
         /// RestartTransitionOnContentChangeProperty property changed handler.
@@ -233,17 +229,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <param name="oldValue">The old value of RestartTransitionOnContentChange.</param>
         /// <param name="newValue">The new value of RestartTransitionOnContentChange.</param>
-        protected virtual void OnRestartTransitionOnContentChangeChanged(bool oldValue, bool newValue) {
-        }
+        private void OnRestartTransitionOnContentChangeChanged(bool oldValue, bool newValue) {}
         #endregion public bool RestartTransitionOnContentChange
 
-        #region Events
-        /// <summary>
-        /// Occurs when the current transition has completed.
-        /// </summary>
-        public event RoutedEventHandler TransitionCompleted;
-        #endregion Events
-        
         /// <summary>
         /// Static constructor
         /// </summary>
@@ -276,9 +264,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var invalidTransition = Transition;
                 // revert to default
                 Transition = DefaultTransitionState;
-
-                throw new ArgumentException(
-                    string.Format(CultureInfo.CurrentCulture, "Transition '{0}' was not defined.", invalidTransition));
+                throw new ArgumentException($"Transition '{invalidTransition}' was not defined.");
             }
 
             VisualStateManager.GoToState(this, NormalState, false);
@@ -320,7 +306,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void OnTransitionCompleted(object sender, EventArgs e) {
             AbortTransition();
-            TransitionCompleted?.Invoke(this, new RoutedEventArgs());
         }
 
         /// <summary>
@@ -343,10 +328,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Storyboard GetStoryboard(string newTransition) {
             var presentationGroup = this.TryGetVisualStateGroup(PresentationGroup);
             return presentationGroup?.States
-                    .OfType<VisualState>()
-                    .Where(state => state.Name == newTransition)
-                    .Select(state => state.Storyboard)
-                    .FirstOrDefault();
+                                     .OfType<VisualState>()
+                                     .Where(state => state.Name == newTransition)
+                                     .Select(state => state.Storyboard)
+                                     .FirstOrDefault();
         }
     }
 }

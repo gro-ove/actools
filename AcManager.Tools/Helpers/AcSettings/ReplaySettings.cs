@@ -20,7 +20,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int MaxSize {
             get { return _maxSize; }
             set {
-                value = value.Clamp(10, 2000);
+                value = value.Clamp(10, 1000);
                 if (Equals(value, _maxSize)) return;
                 _maxSize = value;
                 OnPropertyChanged();

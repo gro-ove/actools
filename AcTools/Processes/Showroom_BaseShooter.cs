@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
+using AcTools.Windows.Input;
 
 namespace AcTools.Processes {
     public partial class Showroom {
@@ -21,15 +22,14 @@ namespace AcTools.Processes {
             private bool _prepared;
 
             private readonly List<IDisposable> _changes = new List<IDisposable>();
-            private readonly KeyboardManager _keyboardManager;
+            private readonly KeyboardListener _keyboard;
 
             protected BaseShotter() {
-                _keyboardManager = new KeyboardManager();
                 try {
-                    _keyboardManager.KeyUp += KeyboardManager_KeyUp;
-                    _keyboardManager.Subscribe();
-                } catch (Exception) {
-                    // ignored
+                    _keyboard = new KeyboardListener();
+                    _keyboard.KeyUp += OnKeyUp;
+                } catch (Exception e) {
+                    AcToolsLogging.Write("Can’t set listener: " + e);
                 }
             }
 
@@ -67,7 +67,7 @@ namespace AcTools.Processes {
                 Directory.CreateDirectory(OutputDirectory);
             }
 
-            private void KeyboardManager_KeyUp(object sender, KeyEventArgs e) {
+            private void OnKeyUp(object sender, KeyEventArgs e) {
                 if (e.KeyCode == Keys.Escape) {
                     Terminate();
                 }
@@ -90,7 +90,7 @@ namespace AcTools.Processes {
 
             public virtual void Dispose() {
                 _changes.DisposeEverything();
-                _keyboardManager.Dispose();
+                _keyboard?.Dispose();
             }
         }
 

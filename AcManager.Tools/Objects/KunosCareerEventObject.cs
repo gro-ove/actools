@@ -101,7 +101,7 @@ namespace AcManager.Tools.Objects {
                 return;
             }
 
-            var takenPlace = entry.EventsResults.ElementAtOrDefault(EventNumber);
+            var takenPlace = entry.EventsResults.GetValueOrDefault(EventNumber);
             if (KunosCareerType == KunosCareerObjectType.SingleEvents) {
                 if (takenPlace > 0 && takenPlace < 4) {
                     takenPlace = 4 - takenPlace;

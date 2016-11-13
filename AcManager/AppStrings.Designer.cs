@@ -2668,6 +2668,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t load changelog.
+        /// </summary>
+        public static string Changelog_CannotLoad {
+            get {
+                return ResourceManager.GetString("Changelog_CannotLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Changes.
+        /// </summary>
+        public static string Changelog_RecentChanges_Title {
+            get {
+                return ResourceManager.GetString("Changelog_RecentChanges_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add To The Library?.
         /// </summary>
         public static string Common_AddToLibrary {
@@ -2758,7 +2776,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Start race (Ctrl+G).
         /// </summary>
         public static string Common_Go_RaceTooltip {
             get {
@@ -4154,6 +4172,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Content Manager is hidden.
+        /// </summary>
+        public static string Hibernate_TrayText {
+            get {
+                return ResourceManager.GetString("Hibernate_TrayText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AI Level:.
         /// </summary>
         public static string KunosCareer_AiLevelLabel {
@@ -5106,6 +5133,24 @@ namespace AcManager {
         public static string Main_UnhandledException {
             get {
                 return ResourceManager.GetString("Main_UnhandledException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save changes to the following items?.
+        /// </summary>
+        public static string Main_UnsavedChanges {
+            get {
+                return ResourceManager.GetString("Main_UnsavedChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsaved Changes.
+        /// </summary>
+        public static string Main_UnsavedChangesHeader {
+            get {
+                return ResourceManager.GetString("Main_UnsavedChangesHeader", resourceCulture);
             }
         }
         
@@ -6336,7 +6381,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Always record ghost in hotlap mode.
         /// </summary>
         public static string Settings_Drive_AlwaysRecordGhost {
             get {
@@ -6345,7 +6390,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Record ghost while hotlapping even if it’s hidden.
         /// </summary>
         public static string Settings_Drive_AlwaysRecordGhost_Tooltip {
             get {
@@ -6453,7 +6498,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Extended Weather.
         /// </summary>
         public static string Settings_Drive_ExtendedWeatherHeader {
             get {
@@ -6642,6 +6687,15 @@ namespace AcManager {
         public static string Settings_Drive_StartImmediately {
             get {
                 return ResourceManager.GetString("Settings_Drive_StartImmediately", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fallback to Official Starter if original launcher isn’t running.
+        /// </summary>
+        public static string Settings_Drive_UiModuleFallback {
+            get {
+                return ResourceManager.GetString("Settings_Drive_UiModuleFallback", resourceCulture);
             }
         }
         
@@ -7510,7 +7564,20 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Used for saving or autosaving replays after the race.
+        ///
+        ///Values for replacement:
+        /// [b][mono]{type}[/mono][/b] — type of race;
+        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
+        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
+        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
+        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id;
+        /// [b][mono]{date}[/mono][/b] — date and time in proper format;
+        /// [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
+        ///
+        ///Modifiers:
+        /// [b][mono]{…:l}[/mono][/b] — lowercase;
+        /// [b][mono]{…:u}[/mono][/b]  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Settings_Replays_NameFormat_Tooltip {
             get {

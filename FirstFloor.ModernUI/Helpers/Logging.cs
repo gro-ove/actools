@@ -71,15 +71,22 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private static readonly object Locker = new object();
 
-        internal static void Write(char c, [CanBeNull] object o, string m, string p, int l) {
-            var s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
-            if (m != null && (s.Length == 0 || s[0] != '[')) {
-                if (p != null) {
-                    p = Path.GetFileNameWithoutExtension(p);
-                    if (p.EndsWith(".xaml")) p = p.Substring(0, p.Length - 5);
-                }
+        private static readonly object HereMessage = new object();
 
-                s = $"[{p}:{l}] {m}(): {s}";
+        internal static void Write(char c, [CanBeNull] object o, string m, string p, int l) {
+            if (p != null) {
+                p = Path.GetFileNameWithoutExtension(p);
+                if (p.EndsWith(".xaml")) p = p.Substring(0, p.Length - 5);
+            }
+
+            string s;
+            if (ReferenceEquals(HereMessage, o)) {
+                s = $"[{p}:{l}] {m}()";
+            } else {
+                s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
+                if (m != null && (s.Length == 0 || s[0] != '[')) {
+                    s = $"[{p}:{l}] {m}(): {s}";
+                }
             }
 
             var n = $"{Time()}: {c} {s}";
@@ -89,19 +96,23 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static void Write(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        public static void Write(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('→', s, m, p, l);
         }
 
-        public static void Debug(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        public static void Debug(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('…', s, m, p, l);
         }
 
-        public static void Warning(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        public static void Here([CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            Write('⊕', HereMessage, m, p, l);
+        }
+
+        public static void Warning(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('⚠', s, m, p, l);
         }
 
-        public static void Error(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        public static void Error(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('×', s, m, p, l);
         }
     }

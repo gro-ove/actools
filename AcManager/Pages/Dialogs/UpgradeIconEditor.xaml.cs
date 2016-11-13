@@ -75,7 +75,9 @@ namespace AcManager.Pages.Dialogs {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            ApplyFile(files[0]);
+            if (files?.Length > 1 && files[0] != null) {
+                ApplyFile(files[0]);
+            }
         }
 
         private void ApplyFile(string filename) {

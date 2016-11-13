@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using SharpCompress.Archive.Zip;
+using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools.Miscellaneous {
     [Localizable(false)]

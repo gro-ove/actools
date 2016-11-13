@@ -10,12 +10,6 @@ namespace AcManager.Controls.Helpers {
         public static bool OptionFallbackMode = false;
 
         private static bool _winToasterIsNotAvailable;
-        private static Uri _defaultIcon;
-
-        public static void SetDefaultIcon(Uri iconUri) {
-            _defaultIcon = iconUri;
-        }
-
         private static Action _defaultAction;
 
         public static void SetDefaultAction(Action defaultAction) {
@@ -29,10 +23,7 @@ namespace AcManager.Controls.Helpers {
         /// <param name="message">Ex.: “This and that. Without dot in the end”</param>
         /// <param name="click">Click action</param>
         public static void Show(string title, string message, Action click = null) {
-            if (_defaultIcon == null) return;
-
-            Logging.Write($"Toast: “{title}”, “{message}”");
-            Show(title, message, _defaultIcon, click ?? _defaultAction);
+            Show(title, message, AppIconService.GetAppIconUri(), click ?? _defaultAction);
         }
 
         /// <summary>
@@ -47,8 +38,8 @@ namespace AcManager.Controls.Helpers {
                 try {
                     ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
                     return;
-                } catch (Exception e) {
-                    Logging.Warning("Win8 Toaster is not available: " + e);
+                } catch {
+                    Logging.Warning("Win8 Toaster is not available");
                     _winToasterIsNotAvailable = true;
                 }
             }
@@ -56,27 +47,21 @@ namespace AcManager.Controls.Helpers {
             ShowFallback(title, message, icon, click);
         }
 
-        private static Icon _fallbackIcon;
-
         private static void ShowFallback(string title, string message, [NotNull] Uri icon, Action click) {
             try {
-                if (_fallbackIcon == null) {
-                    using (var iconStream = Application.GetResourceStream(icon)?.Stream) {
-                        _fallbackIcon = iconStream == null ? null : new Icon(iconStream);
-                    }
-                }
-
                 var text = title + Environment.NewLine + message;
                 using (var notifyIcon = new NotifyIcon {
-                    Icon = _fallbackIcon,
+                    Icon = AppIconService.GetAppIcon(),
                     Text = text.Length > 63 ? text.Substring(0, 63) : text
                 }) {
                     notifyIcon.Visible = true;
+
                     if (click != null) {
                         notifyIcon.BalloonTipClicked += (sender, args) => {
                             Application.Current.Dispatcher.Invoke(click);
                         };
                     }
+
                     notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);
                     notifyIcon.Visible = false;
                 }

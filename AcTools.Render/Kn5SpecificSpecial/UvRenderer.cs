@@ -2,12 +2,15 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Utils;
@@ -16,6 +19,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using FillMode = SlimDX.Direct3D11.FillMode;
+using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class UvRenderer : BaseRenderer {
@@ -132,5 +136,57 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _materialsProvider);
             base.Dispose();
         }
+    }
+
+    public class UvMaterialProvider : Kn5MaterialsProvider {
+        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
+            return new Kn5MaterialUv(kn5Material);
+        }
+
+        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
+            return new InvisibleMaterial();
+        }
+
+        public override IRenderableMaterial CreateSkyMaterial() {
+            return new InvisibleMaterial();
+        }
+
+        public override IRenderableMaterial CreateMirrorMaterial() {
+            return new InvisibleMaterial();
+        }
+    }
+
+    public class Kn5MaterialUv : IRenderableMaterial {
+        internal static string Filter { get; set; }
+
+        private EffectSpecialUv _effect;
+        private readonly string[] _textures;
+
+        internal Kn5MaterialUv(Kn5Material material) {
+            _textures = material?.TextureMappings.Where(x => x.Name != "txDetail"
+                    && x.Name != "txNormalDetail").Select(x => x.Texture).ToArray() ?? new string[0];
+        }
+
+        public void Initialize(DeviceContextHolder contextHolder) {
+            _effect = contextHolder.GetEffect<EffectSpecialUv>();
+        }
+
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (mode != SpecialRenderMode.Simple) return false;
+            if (!_textures.Contains(Filter)) return false;
+            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+            return true;
+        }
+
+        public void SetMatrices(Matrix objectTransform, ICamera camera) { }
+
+        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
+        }
+
+        public bool IsBlending => false;
+
+        public void Dispose() { }
     }
 }

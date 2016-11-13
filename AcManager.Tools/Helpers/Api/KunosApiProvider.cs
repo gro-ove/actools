@@ -18,8 +18,8 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using SharpCompress.Compressor;
-using SharpCompress.Compressor.Deflate;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
 
 namespace AcManager.Tools.Helpers.Api {
     public partial class KunosApiProvider {

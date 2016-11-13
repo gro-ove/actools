@@ -57,7 +57,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
         protected override Vector3 ReflectionCubemapPosition => CameraOrbit?.Target ?? Vector3.Zero;
 
         public Kn5ObjectRenderer(string mainKn5Filename, params string[] additionalKn5Filenames) {
-            _kn5 = new[] { mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(Kn5.FromFile).ToArray();
+            _kn5 = new[] { mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(x => Kn5.FromFile(x)).ToArray();
             _carHelper = new CarHelper(_kn5.FirstOrDefault());
 
             AmbientLower = Vector3.Normalize(new Vector3(114f, 124f, 147f));

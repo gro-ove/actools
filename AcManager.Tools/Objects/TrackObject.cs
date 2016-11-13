@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
                     InitializeLocationsInner(_layoutLocation);
 
                     LayoutId = information.SimpleMainLayout ? null : Path.GetFileName(_layoutLocation);
-                    IdWithLayout = information.SimpleMainLayout ? Id : $"{Id}/{LayoutId}";
+                    IdWithLayout = information.SimpleMainLayout ? Id : $@"{Id}/{LayoutId}";
                     MultiLayouts = new BetterObservableCollection<TrackObjectBase>(
                             information.AdditionalLayouts.Select(x => {
                                 var c = new TrackExtraLayoutObject(manager, this, enabled, x);
@@ -288,5 +288,7 @@ namespace AcManager.Tools.Objects {
                 $"{_commonName} ({MultiLayouts.Count})" : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;
+
+        public override string MapDirectory => LayoutId == null ? Location : Path.Combine(Location, LayoutId);
     }
 }

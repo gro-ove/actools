@@ -1,62 +1,111 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.SemiGui {
     public class ReplayHelper : NotifyPropertyChanged {
-        public bool IsReplayAvailable { get; }
+        public bool IsAvailable { get; }
 
-        public readonly string OriginalReplayFilename;
+        public readonly string OriginalFilename;
 
-        [CanBeNull]
-        public readonly string RenamedReplayFilename;
+        [NotNull]
+        public string RenamedFilename { get; private set; }
 
-        internal ReplayHelper(Game.StartProperties startProperties, Game.Result result) {
-            OriginalReplayFilename = Path.Combine(FileUtils.GetReplaysDirectory(), ReplayObject.PreviousReplayName);
+        [NotNull]
+        public string Name {
+            get { return _name; }
+            set {
+                if (Equals(_name, value)) return;
 
-            var replayName = GetReplayName(startProperties, result);
-            RenamedReplayFilename = replayName == null ? null : FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), replayName));
+                if (SettingsHolder.Drive.AutoAddReplaysExtension && !value.EndsWith(ReplayObject.ReplayExtension,
+                        StringComparison.OrdinalIgnoreCase)) {
+                    value += ReplayObject.ReplayExtension;
+                }
 
-            IsReplayAvailable = replayName != null && File.Exists(OriginalReplayFilename);
-            if (IsReplayAvailable && SettingsHolder.Drive.AutoSaveReplays) {
-                IsReplayRenamed = true;
+                var renamed = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), value));
+
+                if (IsRenamed) {
+                    try {
+                        File.Move(RenamedFilename, renamed);
+                    } catch (Exception e) {
+                        NonfatalError.Notify(ToolsStrings.ReplayHelper_CannotSaveReplay, e);
+                        return;
+                    }
+                }
+
+                RenamedFilename = renamed;
+                _name = value.ApartFromLast(ReplayObject.ReplayExtension);
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(RenamedFilename));
+
+                if (IsRenamed) {
+                    OnPropertyChanged(nameof(Filename));
+                }
             }
         }
 
-        private bool _isReplayRenamed;
+        public string Filename => IsRenamed ? RenamedFilename : OriginalFilename;
 
-        public bool IsReplayRenamed {
-            get { return _isReplayRenamed; }
+        internal ReplayHelper(Game.StartProperties startProperties, Game.Result result) {
+            OriginalFilename = Path.Combine(FileUtils.GetReplaysDirectory(), ReplayObject.PreviousReplayName);
+            RenamedFilename = FileUtils.EnsureUnique(OriginalFilename);
+            Name = GetReplayName(startProperties, result);
+
+            IsAvailable = File.Exists(OriginalFilename);
+            if (IsAvailable && SettingsHolder.Drive.AutoSaveReplays) {
+                IsRenamed = true;
+            }
+        }
+
+        private bool _isRenamed;
+        private string _name;
+
+        public bool IsRenamed {
+            get { return _isRenamed; }
             set {
-                if (!IsReplayAvailable || RenamedReplayFilename == null || Equals(_isReplayRenamed, value)) {
+                if (!IsAvailable || Equals(_isRenamed, value)) {
                     Logging.Warning("Cannot change state");
                     return;
                 }
 
                 try {
                     if (value) {
-                        File.Move(OriginalReplayFilename, RenamedReplayFilename);
+                        File.Move(OriginalFilename, RenamedFilename);
                     } else {
-                        File.Move(RenamedReplayFilename, OriginalReplayFilename);
+                        File.Move(RenamedFilename, OriginalFilename);
                     }
 
-                    _isReplayRenamed = value;
+                    _isRenamed = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(Filename));
                 } catch (Exception e) {
                     NonfatalError.Notify(value ? ToolsStrings.ReplayHelper_CannotSaveReplay : ToolsStrings.ReplayHelper_CannotUnsaveReplay, e);
                 }
             }
         }
 
-        [CanBeNull]
+        public void Rename() {
+            IsRenamed = !IsRenamed;
+        }
+
+        public Task Play() {
+            return GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                Filename = Filename
+            }));
+        }
+
+        [NotNull]
         private static string GetReplayName([CanBeNull] Game.StartProperties startProperties, [CanBeNull] Game.Result result) {
-            if (startProperties == null) return null;
+            if (startProperties == null) return $"_autosave_{DateTime.Now.ToMillisecondsTimestamp()}.acreplay";
 
             var s = SettingsHolder.Drive.ReplaysNameFormat;
             if (string.IsNullOrEmpty(s)) {

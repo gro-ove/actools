@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using AcTools.DataFile;
+using AcTools.Utils;
+using SlimDX;
 
 namespace AcTools.Kn5File {
     public partial class Kn5 {
-        public static Kn5 FromFile(string filename, bool skipTextures) {
+        public static Kn5 FromFile(string filename, bool skipTextures = false) {
             if (!File.Exists(filename)) {
                 throw new FileNotFoundException(filename);
             }
@@ -27,7 +31,43 @@ namespace AcTools.Kn5File {
             return kn5;
         }
 
-        public static Kn5 FromStream(Stream entry, bool skipTextures) {
+        public void Combine(Kn5 other) {
+            RootNode.Children.Add(other.RootNode);
+        }
+
+        private float[] CalculateMatrix(float[] position, float[] rotation) {
+            var m = Matrix.Translation(position[0], position[1], position[2]) * Matrix.RotationYawPitchRoll(rotation[0], rotation[1], rotation[2]);
+            return m.ToArray();
+        }
+
+        public void Combine(Kn5 other, float[] position, float[] rotation) {
+            if (position.Any(x => !Equals(x, 0f)) || rotation.Any(x => !Equals(x, 0f))) {
+                other.RootNode.Transform = CalculateMatrix(position, rotation);
+            }
+
+            Combine(other);
+        }
+
+        public static Kn5 FromModelsIniFile(string filename, bool skipTextures = false) {
+            if (!File.Exists(filename)) {
+                throw new FileNotFoundException(filename);
+            }
+
+            var result = CreateEmpty();
+            var directory = Path.GetDirectoryName(filename) ?? "";
+            foreach (var section in new IniFile(filename).GetSections("MODEL").Select(x => new {
+                Filename = Path.Combine(directory, x.GetNonEmpty("FILE") ?? ""),
+                Position = x.GetVector3F("POSITION"),
+                Rotation = x.GetVector3F("ROTATION")
+            }).Where(x => File.Exists(x.Filename))) {
+                var kn5 = FromFile(section.Filename, skipTextures);
+                result.Combine(kn5, section.Position, section.Rotation);
+            }
+
+            return result;
+        }
+
+        public static Kn5 FromStream(Stream entry, bool skipTextures = false) {
             var kn5 = new Kn5(string.Empty);
 
             using (var reader = new Kn5Reader(entry)) {
@@ -44,14 +84,6 @@ namespace AcTools.Kn5File {
             }
 
             return kn5;
-        }
-
-        public static Kn5 FromFile(string filename) {
-            return FromFile(filename, false);
-        }
-
-        public static Kn5 FromStream(Stream filename) {
-            return FromStream(filename, false);
         }
 
         private void FromFile_Header(Kn5Reader reader) {

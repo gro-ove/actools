@@ -107,8 +107,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -119,11 +119,16 @@
       <HintPath>..\Libraries\Magick.NET-6.8-$(ActualPlatform)\Magick.NET-$(ActualPlatform).dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -139,6 +144,7 @@
     <Compile Include="AcdFile\AcdWriter.cs" />
     <Compile Include="AcdFile\AcdReader.cs" />
     <Compile Include="AcToolsInformation.cs" />
+    <Compile Include="AcToolsLogging.cs" />
     <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
@@ -156,6 +162,7 @@
     <Compile Include="Kn5File\Kn5_ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5_ExportFbx.cs" />
     <Compile Include="Kn5File\Kn5_FromJson.cs" />
+    <Compile Include="Processes\AcMousePretender.cs" />
     <Compile Include="Processes\AssistState.cs" />
     <Compile Include="Processes\Game.cs" />
     <Compile Include="Processes\Game_Result.cs" />
@@ -214,13 +221,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Processes\Showroom.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
-    <Compile Include="Utils\KeyboardManager.cs" />
     <Compile Include="Utils\DataFixer.cs" />
     <Compile Include="Utils\Kn5Fixer.cs" />
     <Compile Include="Utils\LogWatcher.cs" />
     <Compile Include="Utils\MathException.cs" />
     <Compile Include="Utils\MathUtils.cs" />
-    <Compile Include="Utils\Matrix.cs" />
     <Compile Include="Utils\Physics\Combinator.cs" />
     <Compile Include="Utils\Physics\ControllerInput.cs" />
     <Compile Include="Utils\Physics\Lut.cs" />
@@ -235,18 +240,20 @@
     <Compile Include="Windows\Input\IMouseSimulator.cs" />
     <Compile Include="Windows\Input\InputBuilder.cs" />
     <Compile Include="Windows\Input\InputSimulator.cs" />
+    <Compile Include="Windows\Input\KeyboardListener.cs" />
     <Compile Include="Windows\Input\KeyboardManager.cs" />
+    <Compile Include="Windows\Input\KeyboardSilencer.cs" />
     <Compile Include="Windows\Input\KeyboardSimulator.cs" />
     <Compile Include="Windows\Input\MouseButton.cs" />
     <Compile Include="Windows\Input\MouseSimulator.cs" />
-    <Compile Include="Windows\Input\Native\HARDWAREINPUT.cs" />
-    <Compile Include="Windows\Input\Native\INPUT.cs" />
+    <Compile Include="Windows\Input\Native\HardwareInputEntry.cs" />
+    <Compile Include="Windows\Input\Native\InputEntry.cs" />
     <Compile Include="Windows\Input\Native\InputType.cs" />
-    <Compile Include="Windows\Input\Native\KEYBDINPUT.cs" />
+    <Compile Include="Windows\Input\Native\KeyboardInputEntry.cs" />
     <Compile Include="Windows\Input\Native\KeyboardFlag.cs" />
     <Compile Include="Windows\Input\Native\MouseFlag.cs" />
-    <Compile Include="Windows\Input\Native\MOUSEINPUT.cs" />
-    <Compile Include="Windows\Input\Native\MOUSEKEYBDHARDWAREINPUT.cs" />
+    <Compile Include="Windows\Input\Native\MountInputEntry.cs" />
+    <Compile Include="Windows\Input\Native\AnyInputEntry.cs" />
     <Compile Include="Windows\Input\Native\NativeMethods.cs" />
     <Compile Include="Windows\Input\Native\VirtualKeyCode.cs" />
     <Compile Include="Windows\Input\Native\XButton.cs" />
@@ -258,7 +265,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -267,6 +273,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\logo_ac_app.png" />
   </ItemGroup>
   <ItemGroup>

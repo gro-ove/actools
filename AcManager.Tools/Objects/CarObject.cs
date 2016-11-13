@@ -55,7 +55,7 @@ namespace AcManager.Tools.Objects {
 
         public override string DisplayName => Name == null ? Id :
                 SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !AcStringValues.GetYearFromName(Name).HasValue
-                        ? $"{Name} '{Year % 100:D2}" : Name;
+                        ? $@"{Name} '{Year % 100:D2}" : Name;
 
         public override int? Year {
             get { return base.Year; }
@@ -165,6 +165,7 @@ namespace AcManager.Tools.Objects {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
             } else if (FileUtils.IsAffected(filename, Path.Combine(Location, "data.acd"))) {
+                // TODO: data directory?
                 UpdateAcdData();
             }
 

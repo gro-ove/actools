@@ -425,13 +425,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (AdornerContent != null) {
                 if (_adornerLayer == null) {
-                    _adornerLayer = AvoidUsingScrollContentPresenter ? GetAdornerLayer(this) : AdornerLayer.GetAdornerLayer(this);
+                    _adornerLayer = AvoidUsingScrollContentPresenter ? (GetAdornerLayer(this) ?? AdornerLayer.GetAdornerLayer(this)) :
+                            AdornerLayer.GetAdornerLayer(this);
                 }
 
                 if (_adornerLayer != null) {
-                    _adorner = new FrameworkElementAdorner(AdornerContent, this, HorizontalAdornerPlacement, VerticalAdornerPlacement, AdornerOffsetX, AdornerOffsetY);
+                    _adorner = new FrameworkElementAdorner(AdornerContent, this, HorizontalAdornerPlacement, VerticalAdornerPlacement,
+                            AdornerOffsetX, AdornerOffsetY);
                     _adornerLayer.Add(_adorner);
-
                     UpdateAdornerDataContext();
                 }
 

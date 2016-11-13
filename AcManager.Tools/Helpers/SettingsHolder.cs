@@ -472,7 +472,7 @@ namespace AcManager.Tools.Helpers {
 
                     if (value == UiModuleStarterType && ModuleStarter.TryToInstallModule() && ModuleStarter.IsAssettoCorsaRunning) {
                         Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-                            ModernDialog.ShowMessage("UI module “CM Helper” installed and activated. Don’t forget to restart AssettoCorsa.exe before racing!");
+                            ModernDialog.ShowMessage(ToolsStrings.Settings_Starter_UiModule_JustInstalled);
                         }));
                     }
                 }
@@ -503,6 +503,30 @@ namespace AcManager.Tools.Helpers {
                 SseStarterType,
                 NaiveStarterType
             });
+
+            private bool? _watchForSharedMemory;
+
+            public bool WatchForSharedMemory {
+                get { return _watchForSharedMemory ?? (_watchForSharedMemory = ValuesStorage.GetBool("Settings.DriveSettings.WatchForSharedMemory", true)).Value; }
+                set {
+                    if (Equals(value, _watchForSharedMemory)) return;
+                    _watchForSharedMemory = value;
+                    ValuesStorage.Set("Settings.DriveSettings.WatchForSharedMemory", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _hideWhileRacing;
+
+            public bool HideWhileRacing {
+                get { return _hideWhileRacing ?? (_hideWhileRacing = ValuesStorage.GetBool("Settings.DriveSettings.HideWhileRacing", true)).Value; }
+                set {
+                    if (Equals(value, _hideWhileRacing)) return;
+                    _hideWhileRacing = value;
+                    ValuesStorage.Set("Settings.DriveSettings.HideWhileRacing", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _copyFilterToSystemForOculus;
 
@@ -591,6 +615,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _immediateCancel)) return;
                     _immediateCancel = value;
                     ValuesStorage.Set("Settings.DriveSettings.ImmediateCancel", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _continueOnEscape;
+
+            public bool ContinueOnEscape {
+                get { return _continueOnEscape ?? (_continueOnEscape = ValuesStorage.GetBool("Settings.DriveSettings.ContinueOnEscape", false)).Value; }
+                set {
+                    if (Equals(value, _continueOnEscape)) return;
+                    _continueOnEscape = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ContinueOnEscape", value);
                     OnPropertyChanged();
                 }
             }
@@ -765,6 +801,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveUseSkinNames;
+
+            public bool QuickDriveUseSkinNames {
+                get { return _quickDriveUseSkinNames ?? (_quickDriveUseSkinNames = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveUseSkinNames", true)).Value; }
+                set {
+                    if (Equals(value, _quickDriveUseSkinNames)) return;
+                    _quickDriveUseSkinNames = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveUseSkinNames", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _alwaysRecordGhost;
 
             public bool AlwaysRecordGhost {
@@ -899,6 +947,35 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _weatherSpecificTyreSmoke)) return;
                     _weatherSpecificTyreSmoke = value;
                     ValuesStorage.Set("Settings.DriveSettings.WeatherSpecificTyreSmoke", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _rhmIntegration;
+
+            public bool RhmIntegration {
+                get {
+                    return _rhmIntegration ??
+                            (_rhmIntegration = ValuesStorage.GetBool("Settings.DriveSettings.RhmIntegration", false)).Value;
+                }
+                set {
+                    if (Equals(value, _rhmIntegration)) return;
+                    _rhmIntegration = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmIntegration", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _rhmLocation;
+
+            [CanBeNull]
+            public string RhmLocation {
+                get { return _rhmLocation ?? (_rhmLocation = ValuesStorage.GetString("Settings.DriveSettings.RhmLocation", null)); }
+                set {
+                    value = value?.Trim();
+                    if (Equals(value, _rhmLocation)) return;
+                    _rhmLocation = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmLocation", value);
                     OnPropertyChanged();
                 }
             }

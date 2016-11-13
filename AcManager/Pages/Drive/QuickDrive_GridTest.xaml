@@ -49,7 +49,7 @@
                 <StackPanel.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
-                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeRandomly, Mode=TwoWay}" />
+                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeRandom, Mode=TwoWay}" />
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
                                 ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}"
                                 IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse, Mode=TwoWay}" />

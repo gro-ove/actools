@@ -16,6 +16,8 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="NonTransparent" TargetType="mui:ModernButton" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
@@ -54,7 +56,7 @@
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
+            <DataTemplate x:Key="Detailed.SkinDataTemplateOld" DataType="{x:Type c:RaceGridEntry}">
                 <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
                     <DockPanel.InputBindings>
                         <MouseBinding Command="{Binding RandomSkinCommand}" Gesture="MiddleClick" />
@@ -74,7 +76,8 @@
                                     Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1" />
                         </Border>
                     </Button>
-                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}" Placeholder="Random" />
+                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
@@ -91,12 +94,140 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
 
+            <DataTemplate x:Key="Detailed.SkinDataTemplatePopup" DataType="{x:Type c:RaceGridEntry}">
+                <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
+                    <DockPanel.InputBindings>
+                        <MouseBinding Command="{Binding RandomSkinCommand}" Gesture="MiddleClick" />
+                    </DockPanel.InputBindings>
+                    <mui:ContextMenuButton DockPanel.Dock="Right">
+                        <c:ModernPopup mui:PopupHelper.Group="1">
+                            <DockPanel MaxWidth="240">
+                                <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding RandomSkinCommand}" Content="Random" />
+                                <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                        ScrollViewer.CanContentScroll="True" Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
+                                        VerticalAlignment="Top" BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling"
+                                                    IsVirtualizing="True" ScrollUnit="Pixel" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </DockPanel>
+                        </c:ModernPopup>
+                    </mui:ContextMenuButton>
+                    <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
+                            ClearOnChange="True" />
+                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
+                </DockPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
+                        <Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
+                        <Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
+                <DataTemplate.Resources>
+                    <CollectionViewSource x:Key="SkinsList" Source="{Binding Car.SkinsEnabledWrappersList}" />
+                </DataTemplate.Resources>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
+                        <!--<Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
+                        <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+                <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
+                    <DockPanel.InputBindings>
+                        <MouseBinding Command="{Binding RandomSkinCommand}" Gesture="MiddleClick" />
+                    </DockPanel.InputBindings>
+
+                    <!--<mui:BetterComboBox ItemsSource="{Binding Car.SkinsEnabledWrappersList}" SelectedItem="{Binding CarSkinWrapper, Mode=TwoWay}"
+                            IsEditable="False" Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}"
+                            Style="{StaticResource BetterComboBox.Borderless.White}" PreviewMouseDown="OpponentSkinCell_OnMouseDown">
+                        -->
+                    <!--<mui:BetterComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <x:Null />
+                                <CollectionContainer Collection="{Binding Source={StaticResource SkinsList}}" />
+                            </CompositeCollection>
+                        </mui:BetterComboBox.ItemsSource>-->
+                    <!--
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Height="18">
+                                    <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding Value.LiveryImage}" Width="18" Height="18" />
+                                    <TextBlock Text="{Binding Value.DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </mui:BetterComboBox>-->
+
+                    <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="True"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" ItemsSource="{Binding Car.SkinsActualList}"
+                            IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Height="18">
+                                    <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                    <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
+                                </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                                        <Setter TargetName="Image" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="Text" Property="Text" Value="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </mui:BetterComboBox>
+
+                    <!--<mui:ContextMenuButton DockPanel.Dock="Right">
+                        <c:ModernPopup mui:PopupHelper.Group="1">
+                            <DockPanel MaxWidth="240">
+                                <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding RandomSkinCommand}" Content="Random" />
+                                <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                        ScrollViewer.CanContentScroll="True" Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
+                                        VerticalAlignment="Top" BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling"
+                                                    IsVirtualizing="True" ScrollUnit="Pixel" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </DockPanel>
+                        </c:ModernPopup>
+                    </mui:ContextMenuButton>
+                    <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
+                            ClearOnChange="True" />
+                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />-->
+                </DockPanel>
+            </DataTemplate>
+
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">
                 <mui:Cell>
-                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
-                            Style="{StaticResource Borderless.White}" />
+                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
                 </mui:Cell>
                 <DataTemplate.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Value="True" />
+                            <Condition Binding="{Binding Name, Converter={StaticResource NullOrWhiteSpaceToBooleanConverter}}" Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter TargetName="TextBox" Property="Placeholder"
+                                    Value="{Binding CarSkin.DriverName, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}, FallbackValue='Skin Name'}" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
@@ -105,8 +236,13 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
-                        Style="{StaticResource Borderless.White}" />
+                <DockPanel>
+                    <TextBlock
+                            Text="{Binding CarSkin.DisplayName, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}, FallbackValue='Skin Name'}" />
+                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentNationality_Random}" Style="{StaticResource Borderless.White}"
+                            Visibility="Hidden" />
+                </DockPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
@@ -177,8 +313,26 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Style="{StaticResource LabelWithPadding}"
-                    Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
+            <DockPanel>
+                <mui:ContextMenuButton DockPanel.Dock="Right">
+                    <c:ModernPopup Padding="8">
+                        <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                            <DockPanel IsEnabled="{Binding Mode.CandidatesMode}">
+                                <Label Content="{x:Static t:ToolsStrings.Drive_GridArrangeWay}" ToolTip="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Tooltip}" />
+                                <mui:LabeledToggleButton LabelChecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Shuffle}"
+                                        LabelUnchecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Random}" IsChecked="{Binding ShuffleCandidates}" />
+                            </DockPanel>
+
+                            <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
+                            <CheckBox IsChecked="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Margin="0">
+                                <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
+                            </CheckBox>
+                        </StackPanel>
+                    </c:ModernPopup>
+                </mui:ContextMenuButton>
+                <TextBlock Style="{StaticResource LabelWithPadding}"
+                        Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
+            </DockPanel>
 
             <mui:ModernToggleButton x:Name="AddCarButton" Grid.Column="1" IconData="{StaticResource AddIconData}"
                     ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" HorizontalAlignment="Right" Margin="0 0 4 0"
@@ -191,7 +345,7 @@
 
             <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="SelectCarPopup" Placement="Custom" Padding="8"
                     IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
-                    Opened="SelectCarPopup_OnOpened">
+                    Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
                 <Grid Width="320" DataContext="{x:Reference This}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -225,7 +379,7 @@
             </c:ModernPopup>
             <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="DetailsPopup" Placement="Custom" Padding="8"
                     IsOpen="{Binding IsChecked, ElementName=DetailsButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
-                    Opened="SelectCarPopup_OnOpened">
+                    Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
                 <Grid Width="600" DataContext="{x:Reference This}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="400" />
@@ -234,9 +388,9 @@
                     <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.FilteredView}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
                             Drop="ItemsControl_OnDrop" MinRowHeight="20">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car"
+                            <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
                                     CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin"
+                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"
                                     CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
                             <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
                                     CellTemplate="{StaticResource Detailed.NameDataTemplate}" />

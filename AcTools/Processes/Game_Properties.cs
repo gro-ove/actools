@@ -480,7 +480,7 @@ namespace AcTools.Processes {
             public bool AutoClutch;
             public bool VisualDamage;
             public double Damage;
-            public bool FuelConsumption;
+            public double FuelConsumption;
             public double TyreWearMultipler;
             public bool TyreBlankets;
             public double SlipSteamMultipler;

@@ -3,15 +3,15 @@ using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class AudioSettings : IniSettings {
-        public SettingEntry[] Latencies { get; } = {
+        /*public SettingEntry[] Latencies { get; } = {
             new SettingEntry(0, ToolsStrings.AcSettings_Quality_Normal),
             new SettingEntry(1, ToolsStrings.AcSettings_Quality_Low),
             new SettingEntry(2, ToolsStrings.AcSettings_Quality_VeryLow)
-        };
+        };*/
 
         internal AudioSettings() : base("audio") { }
 
-        private SettingEntry _latency;
+        /*private SettingEntry _latency;
 
         public SettingEntry Latency {
             get { return _latency; }
@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 _latency = value;
                 OnPropertyChanged();
             }
-        }
+        }*/
 
         private int _skidsEntryPoint;
 
@@ -156,7 +156,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             LevelDirtBottom = Ini["LEVELS"].GetDouble("DIRT_BOTTOM", 1.0) * 100d;
             LevelUi = Ini["LEVELS"].GetDouble("UISOUNDS", 0.7) * 100d;
 
-            Latency = Ini["SETTINGS"].GetEntry("LATENCY", Latencies, 1);
+            // Latency = Ini["SETTINGS"].GetEntry("LATENCY", Latencies, 1);
             SkidsEntryPoint = Ini["SKIDS"].GetInt("ENTRY_POINT", 100);
         }
 
@@ -171,7 +171,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["LEVELS"].Set("DIRT_BOTTOM", LevelDirtBottom / 100d);
             Ini["LEVELS"].Set("UISOUNDS", LevelUi / 100d);
 
-            Ini["SETTINGS"].Set("LATENCY", Latency);
+            // Ini["SETTINGS"].Set("LATENCY", Latency);
             Ini["SKIDS"].Set("ENTRY_POINT", SkidsEntryPoint);
         }
     }

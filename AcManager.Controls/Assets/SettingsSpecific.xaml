@@ -19,7 +19,7 @@
 
     <Style x:Key="SettingsPanel" TargetType="{x:Type StackPanel}">
         <Setter Property="Margin" Value="0 0 20 20" />
-        <Setter Property="MinWidth" Value="300" />
+        <Setter Property="MinWidth" Value="240" />
 
         <Style.Resources>
             <Style TargetType="{x:Type DockPanel}">
@@ -43,6 +43,12 @@
                     </Style>
 
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Margin" Value="8 0 0 0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="DockPanel.Dock" Value="Right" />
+                    </Style>
+
+                    <Style TargetType="{x:Type mui:LabeledToggleButton}" BasedOn="{StaticResource {x:Type mui:LabeledToggleButton}}">
                         <Setter Property="Margin" Value="8 0 0 0" />
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="DockPanel.Dock" Value="Right" />

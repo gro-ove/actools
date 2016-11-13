@@ -19,7 +19,7 @@ namespace AcManager.Tools.Starters {
         public static string BackupFilename => LauncherFilename.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
 
         public static bool IsPatched(string filename) {
-            return File.Exists(filename) && FileVersionInfo.GetVersionInfo(filename).FileDescription.Contains("(Patched for CM)");
+            return File.Exists(filename) && FileVersionInfo.GetVersionInfo(filename).FileDescription.Contains(@"(Patched for CM)");
         }
 
         private static bool IsPatched() {

@@ -35,7 +35,8 @@ namespace AcTools.Render.Base.Cameras {
             };
         }
 
-        public override void SetLens(float aspect) {
+        // ReSharper disable once OptionalParameterHierarchyMismatch
+        public override void SetLens(float aspect = 0f) {
             Proj = Matrix.OrthoLH(Width, Height, NearZ, FarZ);
             UpdateViewMatrix();
         }
@@ -46,9 +47,18 @@ namespace AcTools.Render.Base.Cameras {
             Up = up;
         }
 
-        public override void Strafe(float d) {}
+        public void Move(Vector3 d) {
+            Target += d;
+            Position += d;
+        }
 
-        public override void Walk(float d) {}
+        public override void Strafe(float d) {
+            Move(Right * d);
+        }
+
+        public override void Walk(float d) {
+            Move(Up * d);
+        }
 
         public override void Pitch(float angle) {}
 

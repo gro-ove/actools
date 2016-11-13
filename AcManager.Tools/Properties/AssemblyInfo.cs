@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Markup;
 
@@ -33,8 +34,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.176")]
-[assembly: AssemblyFileVersion("1.0.1.176")]
+[assembly: AssemblyVersion("1.0.1.438")]
+[assembly: AssemblyFileVersion("1.0.1.438")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcManagersNew")]
@@ -47,7 +48,12 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.AcSettings")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers.DirectInput")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Objects")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Profile")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.GameProperties")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 10/15/2016 11:08:14 PM
+
+// For testing
+[assembly: InternalsVisibleTo("AcManager.Tools.Tests")]
+// Modified at: 11/13/2016 1:55:10 PM

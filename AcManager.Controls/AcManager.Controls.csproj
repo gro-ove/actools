@@ -108,8 +108,8 @@
       <HintPath>..\Packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\Packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MoonSharp.Interpreter">
@@ -174,7 +174,16 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
+    <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
+    <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
+    <Compile Include="CustomShowroom\AttachedHelper.cs" />
+    <Compile Include="CustomShowroom\PaintShop.cs" />
+    <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
+      <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
+    <Compile Include="Helpers\AppIconService.cs" />
     <Compile Include="Helpers\AppShortcut.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
@@ -194,6 +203,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="StatEntry.cs" />
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
@@ -336,6 +346,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomShowroom\TrackMapRendererTools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\CarOpenInShowroomDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -377,6 +391,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\AcToolBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\StatEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

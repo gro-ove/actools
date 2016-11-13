@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
             try {
                 OnCollectionChanged(sender, notify);
             } catch (InvalidOperationException ex) {
-                Logging.Error(ex);
+                Logging.Warning(ex);
             }
 
             return true;

@@ -6,7 +6,7 @@ using AcTools.Render.Base.Shadows;
 namespace AcTools.Render.Base {
     public abstract class SceneRenderer : BaseRenderer, IReflectionDraw, IShadowsDraw {
         public readonly RenderableList Scene;
-
+        
         public BaseCamera Camera { get; protected set; }
 
         protected SceneRenderer() {
@@ -18,11 +18,11 @@ namespace AcTools.Render.Base {
         }
 
         protected override void ResizeInner() {
-            Camera.SetLens(AspectRatio);
+            Camera?.SetLens(AspectRatio);
         }
 
         protected virtual void DrawPrepare() {
-            Camera.UpdateViewMatrix();
+            Camera?.UpdateViewMatrix();
         }
 
         protected override void DrawInner() {

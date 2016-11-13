@@ -29,10 +29,10 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
-using SharpCompress.Reader;
+using SharpCompress.Readers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
-using ZipArchive = SharpCompress.Archive.Zip.ZipArchive;
 
 namespace AcManager.Tools {
     public class ArgumentsHandler {
@@ -446,7 +446,10 @@ namespace AcManager.Tools {
                                 try {
                                     while (reader.MoveToNextEntry()) {
                                         if (!reader.Entry.IsDirectory) {
-                                            reader.WriteEntryToDirectory(directory, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                                            reader.WriteEntryToDirectory(directory, new ExtractionOptions {
+                                                ExtractFullPath = true,
+                                                Overwrite = true
+                                            });
                                             written++;
                                         }
                                     }

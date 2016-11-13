@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using SharpCompress.Archive;
-using SharpCompress.Archive.Rar;
-using SharpCompress.Archive.Zip;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
-using SharpCompress.Writer;
+using SharpCompress.Readers;
+using SharpCompress.Writers;
 
 namespace AcManager.Tools.ContentInstallation {
     public static class SharpCompressExtension {
@@ -25,9 +26,9 @@ namespace AcManager.Tools.ContentInstallation {
 
             switch (archive.Type) {
                 case ArchiveType.Rar:
-                    return RarArchive.Open(filename, Options.None, password);
+                    return RarArchive.Open(filename, new ReaderOptions { Password = password });
                 case ArchiveType.Zip:
-                    return ZipArchive.Open(filename, Options.None, password);
+                    return ZipArchive.Open(filename, new ReaderOptions { Password = password });
                 case ArchiveType.Tar:
                 case ArchiveType.SevenZip:
                 case ArchiveType.GZip:

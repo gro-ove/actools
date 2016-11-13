@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 #if LOCALIZABLE
 using System.Globalization;
 #endif
@@ -16,7 +17,6 @@ using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
-using AcManager.Tools.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager {
@@ -185,10 +185,39 @@ namespace AcManager {
             return result;
         }
 
+        private string ExtractUnmanaged(string id) {
+            var size = _references?.GetString(id + "//size");
+            if (size == null) {
+                throw new Exception($"Assembly {id} is missing");
+            }
+
+            var sizeLong = long.Parse(size, CultureInfo.InvariantCulture);
+            var name = id + ".dll";
+            var filename = Path.Combine(_temporaryDirectory, name);
+
+            var existing = new FileInfo(filename);
+            if (existing.Exists && existing.Length == sizeLong) {
+                if (_logFilename != null) {
+                    Log("Already extracted: " + filename);
+                }
+
+                return filename;
+            }
+
+            var bytes = GetData(id);
+            if (bytes == null) throw new Exception($"Data for {id} is missing");
+
+            Log("Writing, " + bytes.Length + " bytes");
+            File.WriteAllBytes(filename, bytes);
+            return filename;
+        }
+
         [NotNull]
         private string ExtractToFile(string id) {
             var hash = _references?.GetString(id + "//hash");
-            if (hash == null) throw new Exception($"Checksum for {id} is missing");
+            if (hash == null) {
+                throw new Exception($"Assembly {id} is missing");
+            }
 
 #if LOCALIZABLE
             _first = false;
@@ -297,6 +326,24 @@ namespace AcManager {
             } finally {
                 _ignore = false;
             }
+        }
+
+        private bool _pathAdded;
+
+        public void PrepareUnmanaged(string id) {
+            if (_references == null) return;
+
+            if (!_pathAdded) {
+                AddPathDirectory(_temporaryDirectory);
+                _pathAdded = true;
+            }
+
+            ExtractUnmanaged(id);
+        }
+        
+        private static void AddPathDirectory(params string[] directories) {
+            var path = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty).Split(new[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            Environment.SetEnvironmentVariable(@"PATH", string.Join(Path.PathSeparator.ToString(CultureInfo.InvariantCulture), path.Union(directories)));
         }
     }
 }

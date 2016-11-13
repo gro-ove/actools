@@ -10,7 +10,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public readonly Kn5Node OriginalNode;
 
         public Kn5RenderableList(Kn5Node node, DeviceContextHolder holder)
-                : base(Kn5RenderableObject.FlipByX ? node.Transform.ToMatrixFixX() : node.Transform.ToMatrix(),
+                : base(node.Name, Kn5RenderableObject.FlipByX ? node.Transform.ToMatrixFixX() : node.Transform.ToMatrix(),
                         node.Children.Select(x => Kn5Converter.Convert(x, holder))) {
             OriginalNode = node;
             if (IsEnabled && (!OriginalNode.Active || OriginalNode.Name == "COCKPIT_LR" || OriginalNode.Name == "STEER_LR" ||

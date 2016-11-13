@@ -14,13 +14,16 @@ namespace AcManager.Tools.Data {
         /// Starts from 0.
         /// </summary>
         internal readonly int SelectedEvent;
-        internal readonly IReadOnlyList<int> EventsResults;
+        
+        [NotNull]
+        internal readonly IReadOnlyDictionary<int, int> EventsResults;
         internal readonly int? Points;
 
         /// <summary>
         /// Starts with 0, of course.
         /// </summary>
-        internal readonly IReadOnlyList<int> AiPoints;
+        [NotNull]
+        internal readonly IReadOnlyDictionary<int, int> AiPoints;
 
         /// <summary>
         /// New instance.
@@ -30,12 +33,12 @@ namespace AcManager.Tools.Data {
         /// <param name="points"></param>
         /// <param name="aiPoints"></param>
         /// <param name="lastSelectedTimestamp">Milliseconds</param>
-        internal KunosCareerProgressEntry(int selectedEvent, [CanBeNull] IEnumerable<int> eventsResults, int? points, [CanBeNull] IEnumerable<int> aiPoints,
-                long? lastSelectedTimestamp = null) {
+        internal KunosCareerProgressEntry(int selectedEvent, [CanBeNull] IReadOnlyDictionary<int, int> eventsResults, int? points,
+                [CanBeNull] IReadOnlyDictionary<int, int> aiPoints, long? lastSelectedTimestamp = null) {
             SelectedEvent = selectedEvent;
-            EventsResults = eventsResults?.ToIReadOnlyListIfItsNot() ?? new int[0];
+            EventsResults = eventsResults ?? new Dictionary<int, int>(0);
             Points = points;
-            AiPoints = aiPoints?.ToIReadOnlyListIfItsNot() ?? new int[0];
+            AiPoints = aiPoints ?? new Dictionary<int, int>(0);
             LastSelectedTimestamp = lastSelectedTimestamp ?? DateTime.Now.ToMillisecondsTimestamp();
         }
     }

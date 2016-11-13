@@ -161,12 +161,16 @@
       <HintPath>..\Libraries\Awesomium-x86\Awesomium.Windows.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\Packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\Packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
@@ -185,8 +189,8 @@
       <HintPath>..\Packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.12.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Packages\SharpCompress.0.12.4\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -231,6 +235,8 @@
     </Compile>
     <Compile Include="AppArguments.cs" />
     <Compile Include="AppFlag.cs" />
+    <Compile Include="AppHibernator.TaskbarIcon.cs" />
+    <Compile Include="AppHibernator.cs" />
     <Compile Include="AppStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -308,8 +314,20 @@
     <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
       <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\TrackMapEditorT.xaml.cs">
+      <DependentUpon>TrackMapEditorT.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Miscellaneous\PlayerStats.xaml.cs">
+      <DependentUpon>PlayerStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Miscellaneous\LapTimes_List.xaml.cs">
+      <DependentUpon>LapTimes_List.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
+      <DependentUpon>LapTimes_Table.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
     <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
@@ -713,9 +731,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\TrackMapEditorT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Drive\QuickDrive_Drag.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Miscellaneous\PlayerStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Miscellaneous\LapTimes_List.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SelectionLists\TrackCountries.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1216,6 +1250,10 @@
       <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
       <Name>AcManager.Controls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
+      <Project>{38a04388-fc0c-4e96-bed5-1dc5c6c0b18f}</Project>
+      <Name>AcTools.LapTimes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
       <Name>AcTools.Render</Name>
@@ -1432,6 +1470,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="About\ImportantTips\Custom Weather’s Clouds.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icons\TrayIcon.ico" />
+    <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

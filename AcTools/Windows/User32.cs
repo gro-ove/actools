@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -8,6 +9,29 @@ using System.Windows.Forms;
 
 namespace AcTools.Windows {
     public static class User32 {
+        public delegate bool EnumThreadDelegate(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumThreadWindows(int dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
+
+        public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32.Dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumChildWindows(IntPtr parentHandle, Win32Callback callback, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
+        
+        [DllImport("user32.dll")]
+        public static extern bool IsZoomed(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr AttachThreadInput(IntPtr idAttach, IntPtr idAttachTo, int fAttach);
+
         public delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
 
         [DllImport("user32.dll")]
@@ -61,6 +85,7 @@ namespace AcTools.Windows {
         public struct COPYDATASTRUCT {
             public int cbData;
             public IntPtr dwData;
+
             [MarshalAs(UnmanagedType.LPStr)]
             public string lpData;
         }
@@ -75,6 +100,9 @@ namespace AcTools.Windows {
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, WindowShowStyle nCmdShow);
+
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindowAsync(IntPtr hWnd, WindowShowStyle nCmdShow);
 
         public enum WindowShowStyle : uint {
             Hide = 0,
@@ -109,10 +137,10 @@ namespace AcTools.Windows {
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsIconic(IntPtr hWnd);
 
-        public const uint WM_KEYDOWN = 0x100;
-        public const uint WM_KEYUP = 0x101;
-        public const uint WM_SYSCOMMAND = 0x018;
-        public const uint SC_CLOSE = 0x053;
+        public const int WM_KEYDOWN = 0x100;
+        public const int WM_KEYUP = 0x101;
+        public const int WM_SYSCOMMAND = 0x018;
+        public const int SC_CLOSE = 0x053;
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -122,6 +150,12 @@ namespace AcTools.Windows {
 
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr PostMessage(HandleRef hwnd, int msg, int wparam, int lparam);
 
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
@@ -164,16 +198,16 @@ namespace AcTools.Windows {
         }
 
         public const int WH_KEYBOARD_LL = 13,
-                            WH_KEYBOARD = 2,
-                            WM_SYSKEYDOWN = 0x104,
-                            WM_SYSKEYUP = 0x105;
+                WH_KEYBOARD = 2,
+                WM_SYSKEYDOWN = 0x104,
+                WM_SYSKEYUP = 0x105;
 
         public const byte VK_SHIFT = 0x10,
-                            VK_CAPITAL = 0x14,
-                            VK_NUMLOCK = 0x90;
+                VK_CAPITAL = 0x14,
+                VK_NUMLOCK = 0x90;
 
         public const int KEYEVENTF_EXTENDEDKEY = 0x1,
-                            KEYEVENTF_KEYUP = 0x2;
+                KEYEVENTF_KEYUP = 0x2;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
@@ -189,7 +223,11 @@ namespace AcTools.Windows {
 
         [StructLayout(LayoutKind.Sequential)]
         public struct KeyboardHookStruct {
-            public int VirtualKeyCode, ScanCode, Flags, Time, ExtraInfo;
+            public int VirtualKeyCode;
+            public int ScanCode;
+            public int Flags;
+            public int Time;
+            public int ExtraInfo;
         }
 
         public delegate int HookProc(int nCode, int wParam, IntPtr lParam);
@@ -229,6 +267,7 @@ namespace AcTools.Windows {
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x20)]
             public string dmDeviceName;
+
             public short dmSpecVersion;
             public short dmDriverVersion;
             public short dmSize;
@@ -246,6 +285,7 @@ namespace AcTools.Windows {
 
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 0x20)]
             public string dmFormName;
+
             public short dmLogPixels;
             public int dmBitsPerPel;
             public int dmPelsWidth;
@@ -260,6 +300,14 @@ namespace AcTools.Windows {
             public int dmReserved2;
             public int dmPanningWidth;
             public int dmPanningHeight;
+        }
+
+        private const uint WM_GETTEXT = 0x000D;
+
+        public static string GetText(IntPtr handle) {
+            var message = new StringBuilder(1000);
+            SendMessage(handle, WM_GETTEXT, message.Capacity, message);
+            return message.ToString();
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
@@ -7,10 +6,6 @@ namespace FirstFloor.ModernUI.Commands {
     public class DelegateCommand : CommandExt {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
-
-        public static DelegateCommand Create(Action execute, Func<bool> canExecute = null, bool isAutomaticRequeryDisabled = false) {
-            return new DelegateCommand(execute, canExecute, isAutomaticRequeryDisabled);
-        }
 
         public DelegateCommand([NotNull] Action execute, Func<bool> canExecute = null, bool isAutomaticRequeryDisabled = false)
                 : base(canExecute == null, isAutomaticRequeryDisabled) {

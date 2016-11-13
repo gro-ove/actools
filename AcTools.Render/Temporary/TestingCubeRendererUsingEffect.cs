@@ -26,7 +26,7 @@ namespace AcTools.Render.Temporary {
                 new TestingCube()
             });
 
-            _box2s = new RenderableList(Matrix.RotationX(90.5f) * Matrix.Translation(0.0f, 0.0f, 3.0f)) {new TestingCube()};
+            _box2s = new RenderableList(null, Matrix.RotationX(90.5f) * Matrix.Translation(0.0f, 0.0f, 3.0f)) {new TestingCube()};
             Scene.Add(_box2 = new RenderableList {
                 new TestingCube(),
                 _box2s

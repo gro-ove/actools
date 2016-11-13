@@ -5,9 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
+using AcManager.Pages.Selected;
 using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -15,9 +19,11 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
@@ -47,7 +53,21 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            Buttons = new[] { CancelButton };
+            var rhmSettingsButton = new Button {
+                Content = "RHM Settings",
+                Command = RhmService.Instance.ShowSettingsCommand,
+                MinHeight = 21,
+                MinWidth = 65,
+                Margin = new Thickness(4, 0, 0, 0)
+            };
+
+            rhmSettingsButton.SetBinding(VisibilityProperty, new Binding {
+                Source = RhmService.Instance,
+                Path = new PropertyPath(nameof(RhmService.Active)),
+                Converter = new FirstFloor.ModernUI.Windows.Converters.BooleanToVisibilityConverter()
+            });
+
+            Buttons = new[] { rhmSettingsButton, CancelButton };
         }
 
         protected override void OnClosing(CancelEventArgs e) {
@@ -269,7 +289,9 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
+            /* save replay button * /
+            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ?
+                    AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
 
             var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
                 if (replayHelper == null) {
@@ -279,6 +301,7 @@ namespace AcManager.Pages.Dialogs {
 
                 replayHelper.IsReplayRenamed = !replayHelper.IsReplayRenamed;
             });
+
             if (replayHelper == null) {
                 saveReplayButton.IsEnabled = false;
             } else {
@@ -287,6 +310,54 @@ namespace AcManager.Pages.Dialogs {
                         saveReplayButton.Content = buttonText();
                     }
                 };
+            }
+
+            /* save replay alt button */
+            ButtonWithComboBox saveReplayButton;
+            if (replayHelper != null) {
+                Func<string> buttonText = () => replayHelper.IsRenamed ?
+                        AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
+                Func<string> saveAsText = () => string.Format(replayHelper.IsRenamed ? "Saved as “{0}”" : "Save as “{0}”",
+                        replayHelper.Name);
+
+                saveReplayButton = new ButtonWithComboBox {
+                    Margin = new Thickness(4, 0, 0, 0),
+                    MinHeight = 21,
+                    MinWidth = 65,
+                    Content = ToolsStrings.Shared_Replay,
+                    Command = new AsyncCommand(replayHelper.Play),
+                    MenuItems = {
+                        new MenuItem { Header = saveAsText(), Command = new DelegateCommand(() => {
+                            var newName = Prompt.Show("Save replay as:", "Replay Name", replayHelper.Name, "?", required: true);
+                            if (!string.IsNullOrWhiteSpace(newName)) {
+                                replayHelper.Name = newName;
+                            }
+
+                            replayHelper.IsRenamed = true;
+                        }) },
+                        new MenuItem { Header = buttonText(), Command = new DelegateCommand(replayHelper.Rename) },
+                        new Separator(),
+                        new MenuItem {
+                            Header = "Share Replay",
+                            Command = new AsyncCommand(() => {
+                                var car = _properties?.BasicProperties?.CarId == null ? null :
+                                        CarsManager.Instance.GetById(_properties.BasicProperties.CarId);
+                                var track = _properties?.BasicProperties?.TrackId == null ? null :
+                                        TracksManager.Instance.GetById(_properties.BasicProperties.TrackId);
+                                return SelectedReplayPage.ShareReplay(replayHelper.Name, replayHelper.Filename, car, track);
+                            })
+                        },
+                    }
+                };
+                
+                replayHelper.PropertyChanged += (sender, args) => {
+                    if (args.PropertyName == nameof(ReplayHelper.IsRenamed)) {
+                        ((MenuItem)saveReplayButton.MenuItems[0]).Header = saveAsText();
+                        ((MenuItem)saveReplayButton.MenuItems[1]).Header = buttonText();
+                    }
+                };
+            } else {
+                saveReplayButton = null;
             }
 
             var tryAgainButton = CreateExtraDialogButton(AppStrings.RaceResult_TryAgain, () => {
@@ -421,5 +492,7 @@ namespace AcManager.Pages.Dialogs {
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
             e.Handled = true;
         }
+
+        private void OnClosed(object sender, EventArgs e) {}
     }
 }

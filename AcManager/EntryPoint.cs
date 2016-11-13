@@ -82,7 +82,7 @@ namespace AcManager {
                 ApplicationDataDirectory = Path.GetFullPath(data);
             } else {
                 var exe = Assembly.GetEntryAssembly().Location;
-                ApplicationDataDirectory = Path.GetFileName(exe).IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
+                ApplicationDataDirectory = Path.GetFileName(exe)?.IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
                         ? Path.Combine(Path.GetDirectoryName(exe) ?? Path.GetFullPath("."), "Data")
                         : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager");
             }
@@ -92,7 +92,11 @@ namespace AcManager {
 
             var logFilename = AppArguments.GetBool(AppFlag.LogPacked) ? GetLogName("Packed Log") : null;
             AppArguments.Set(AppFlag.DirectAssembliesLoading, ref PackedHelper.OptionDirectLoading);
-            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename).Handler;
+
+            var packedHelper = new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename);
+            packedHelper.PrepareUnmanaged("LevelDB");
+            AppDomain.CurrentDomain.AssemblyResolve += packedHelper.Handler;
+
             MainInner(a);
         }
 
@@ -150,7 +154,7 @@ namespace AcManager {
             }
         }
 
-        public static IEnumerable<string> ReceiveSomeData() {
+        private static IEnumerable<string> ReceiveSomeData() {
             if (!File.Exists(CommunicationFilename)) return new string[] { };
 
             try {

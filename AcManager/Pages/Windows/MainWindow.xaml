@@ -1,13 +1,13 @@
 ﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-        Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
-        FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded"
-        Unloaded="OnUnloaded" Closing="OnClosing" Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown"
-        PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp" PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown"
-        d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
-        AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
+        IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
+        Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
+        Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
+        AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
+        LocationAndSizeKey="MainWindow_LS" x:Name="Window">
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>
@@ -35,6 +35,11 @@
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Lan}" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
         <!--TODO-->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
+
+        <!--lap times-->
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Recent Lap Times" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Lap Times Grid" Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
@@ -85,6 +90,7 @@
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkDrive_OnDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
+        <mui:TitleLink Content="Profile" GroupKey="profile" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
         <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkCars_OnDrop"

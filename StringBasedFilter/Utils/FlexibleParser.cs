@@ -55,5 +55,10 @@ namespace StringBasedFilter.Utils {
             value = 0.0;
             return false;
         }
+
+        public static double? TryParseDouble(string s) {
+            double d;
+            return TryParseDouble(s, out d) ? d : 0d;
+        }
     }
 }

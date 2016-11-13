@@ -168,7 +168,7 @@ namespace AcManager.Tools.Objects {
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;
-            return or != null ? CreationTime.CompareTo(or.CreationTime) : base.CompareTo(o);
+            return or != null ? CreationDateTime.CompareTo(or.CreationDateTime) : base.CompareTo(o);
         }
 
         #region Simple Properties

@@ -8,6 +8,9 @@ using Microsoft.Win32.SafeHandles;
 
 namespace AcTools.Windows {
     public static class Kernel32 {
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr LoadLibrary(string lpFileName);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class MEMORYSTATUSEX {
             public uint dwLength;

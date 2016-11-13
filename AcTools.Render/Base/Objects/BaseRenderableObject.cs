@@ -1,9 +1,16 @@
 ﻿using System;
 using AcTools.Render.Base.Cameras;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
     public abstract class BaseRenderableObject : IRenderableObject {
+        public string Name { get; }
+
+        protected BaseRenderableObject([CanBeNull] string name) {
+            Name = name;
+        }
+
         private bool _initialized;
 
         public virtual Matrix ParentMatrix { get; set; }
