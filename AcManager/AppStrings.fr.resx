@@ -138,4 +138,61 @@
   <data name="Select_All" xml:space="preserve">
     <value>Tout</value>
   </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Course rapide</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Carrière</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>Défis</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Capture d'écran</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Ralentis</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Voitures</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>Circuits</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>Divers</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>En cours d'execution</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>Pseudo</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>Nationalité</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>Pseudo en ligne</value>
+  </data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+    <value>Course rapide</value>
+  </data>
 </root>

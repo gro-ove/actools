@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -122,5 +122,602 @@
   </data>
   <data name="SearchEngine_Google" xml:space="preserve">
     <value>Google</value>
+  </data>
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+    <value>Spiel kann nicht starten</value>
+  </data>
+  <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
+    <value>Originaler Spiel-Starter fehlt, Bitte Starter wechseln</value>
+  </data>
+  <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
+    <value>Bitte originalen Spiel-Starter zur ersetzen und wieder probieren (oder Spiel-Starter wechseln</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Programm nicht aktualisierbar </value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Zugriff verweigert</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Programm kann nicht aktualisiert werden aufgrund fehlender Berechtigungen. Bitte manuell aktualisieren.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Kann neue Version nicht laden</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Stelle sicher, dass eine Internetverbindung besteht und das Programm Schreibzugriff auf den Ordner hat.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Programm kann nicht aktualisiert werden aufgrund fehlender Berechtigungen.</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Neue Version kann nicht geladen werden.</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Aktualisierung fehlgeschlagen</value>
+  </data>
+  <data name="Shared_CarSetup" xml:space="preserve">
+    <value>Auto Setup</value>
+  </data>
+  <data name="Shared_ControlsPreset" xml:space="preserve">
+    <value>Voreinstellung Steuerung</value>
+  </data>
+  <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
+    <value>Voreinstellung Force Feedback </value>
+  </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Voreinstellung Fahrhilfen</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Wiederholung</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Wetter</value>
+  </data>
+  <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
+    <value>Prüfe ob CM aktuell ist.</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Kann nicht deaktiviert werden.</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Nicht mehr gültig</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Daten nicht ladbar</value>
+  </data>
+  <data name="Online_Server_CarIsMissing" xml:space="preserve">
+    <value>Auto {0} fehlt.</value>
+  </data>
+  <data name="Online_Server_CarsAreMissing" xml:space="preserve">
+    <value>Autos {0} fehlen.</value>
+  </data>
+  <data name="Online_Server_TrackIsMissing" xml:space="preserve">
+    <value>Strecke {0} fehlt.</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Serverinformation nicht aktualisierbar</value>
+  </data>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Nicht implementiert</value>
+  </data>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Server nicht erreichbar (Ping fehlgeschlagen)</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Server nicht erreichbar</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>Autos stimmen nicht überein</value>
+  </data>
+  <data name="Online_Server_UnhandledError" xml:space="preserve">
+    <value>Interner Fehler: {0}.</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Plugin nicht installierbar</value>
+  </data>
+  <data name="Common_CannotDo_Title" xml:space="preserve">
+    <value>Nicht machbar</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Verzeichnis nicht definiert</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Verzeichnis fehlt</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>Verzeichnis {0} fehlt</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>Datei "{0}" fehlt</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>ID ist falsch</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Objekt nicht entfernbar</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Platz ist besetzt</value>
+  </data>
+  <data name="Replay_CannotRenameReplays" xml:space="preserve">
+    <value>Wiederholung umbenennen nicht möglich</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>Schriftart</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>Ausstellungsraum</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>Strecke</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>Wetter</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>Datei nicht gefunden</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Passwort benötigt</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Passwort ungültig</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Alles aktualisieren</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Name fehlt</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>Markenname fehlt</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Pfad "ui" fehlt</value>
+  </data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>Benötigter Inhalt fehlt</value>
+  </data>
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+    <value>Benötigte Strecke "{0}" fehlt</value>
+  </data>
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+    <value>Benötigtes Auto "{0}" fehlt</value>
+  </data>
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+    <value>Benötigtes Wetter "{0}" fehlt</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Basismodell fehlt</value>
+  </data>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>Markensymbol fehlt</value>
+  </data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Upgrade-Symbol fehlt</value>
+  </data>
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+    <value>Modell (KN5-Datei) fehlt</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Auto "{0}" fehlt</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>Strecke "{0}" fehlt</value>
+  </data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>Name darf keine Symbole wie "[" oder "]" enthalten</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Horizont (Tief)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Horizont (Hoch)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Himmel (Tief)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Himmel (Hoch)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Sonne (Tief)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Sonne (Hoch)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
+    <value>Umgebung (Tief)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
+    <value>Umgebung (Hoch)</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Objekt kann nicht geklont werden</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Überprüfe ob ausreichend Speicherplatz vorhanden ist.</value>
+  </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>PS</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Leistung</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Drehmoment</value>
+  </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Grafik-Voreinstellungen</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Breite</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Länge</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Exportiere…</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Ziel</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Entpacken nicht möglich</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Meisterschaft</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>Einzel-Event</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Basismodell fehlt</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Subpixel</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ideal</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Daten nicht lesbar</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>ID nicht aus Pfad abrufbar</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>ID fehlt</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Auto-ID fehlt</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Höhe</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Radius</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Nummer</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Geschwindigkeit</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Sehr niedrig</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Wochenende</value>
+  </data>
+  <data name="Common_UndefinedError" xml:space="preserve">
+    <value>Undefinierter Fehler</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Neues Auto {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Neue Strecke {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Neuer Ausstellungsraum {0}</value>
+  </data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>Neue Schriftart {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>Neues Wetter {0}</value>
+  </data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>Neue Version für Auto {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>Neue Version für Strecke {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>Neue Version für Ausstellungsraum {0}</value>
+  </data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>Neue Version für Schriftart {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>Neue Version für Wetter {0}</value>
+  </data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>Eine andere ID wählen.</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Einheiten:</value>
+  </data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>Zeitabstände zu Gegner anzeigen</value>
+  </data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>Schadenanzeige (GUI)</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Rangliste anzeigen</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Virtuellen Rückspiegel anzeigen</value>
+  </data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>Fahrernamen anzeigen</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>App-Überlappung im Spiel erlauben</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Kamera:</value>
+  </data>
+  <data name="AcSettings_View_LockCamera" xml:space="preserve">
+    <value>Bordkamera auf Horizont fixieren</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Blickgeschwindigkeit</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Blickrichtung</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Hochgeschwindigkeitsschütteln</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-Kräfte</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Gesperrt</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Lateral</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Vertikal</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Longitudinal</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Ansicht:</value>
+  </data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Fahrerarme ausblenden</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Lenkrad ausblenden</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Lenkrad feststellen</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Lenkrad begrenzen</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Virtuellen Lenkradeinschlag begrenzen</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
+    <value>Breitengrad:</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
+    <value>Längengrad:</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
+    <value>Empfohlenes Format: “…° N” or “…° S”</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
+    <value>Empfohlenes Format: “…° W” or “…° E”</value>
+  </data>
+  <data name="TrackGeoTags_FindIt" xml:space="preserve">
+    <value>Finde es</value>
+  </data>
+  <data name="OrdinalizingSubject_Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>In Verarbeitung</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>Alle {0}</value>
+  </data>
+  <data name="Settings_Period_Startup" xml:space="preserve">
+    <value>Nur beim Start</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>Nur beim Öffnen</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Ungültiges Format</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Antiblockiersystem</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Automatischer Gasstoß</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Synchronisiert Drehzahl automatisch beim Runterschalten</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automatische Kupplung</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Kupplung wird beim Schalten automatisch betätigt</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Automatische Schaltung</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Nicht mit Automatikgetriebe verwechseln</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Benzinverbrauch</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideallinie</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Ideallinie anzeigen</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mechanische Schäden</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Windschatteneffekt</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Multiplikator für Windschatteneffekt</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Stabilitätskontrolle</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Unrealistisch, aber hilft vielleicht wenn man gerade erst beginnt zu fahren oder driften</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Fahrhilfen</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Traktionskontrolle:</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Traktion beim Beschleunigen optimiert</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Reifenheizdecken</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Wärmt Reifen in der Box vor</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Reifenverschleiß</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Multiplikator für Reifenverschleiß</value>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>Platz</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>Punkt</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Weitermachen</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manuell</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Gefiltert nach…</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Gleiches Auto</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Gleiche Gruppe</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Neues Auto zur Liste hinzufügen</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Startaufstellung bilden…</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Ausgewählte Autos aus Liste entfernen</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Startaufstellungstyp</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Aus</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Serienausrüstung</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>An</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Boxen</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Durchfahrt</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Track Day</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>Startaufstellung nicht aktualisierbar</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Syntaxfehler: {0}</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Zufällig</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Modifizierte Version des Original-Launcher, überflüssig seit AC 1.7 Update</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>1/min</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Einreichen</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Datei öffnen</value>
   </data>
 </root>
