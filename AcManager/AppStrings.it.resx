@@ -121,10 +121,12 @@
     <value>IP:</value>
   </data>
   <data name="Main_UnhandledException" xml:space="preserve">
-    <value>Unhandled exception:
+    <value>Eccezione non gestita:
 
 {0}</value>
-  </data>
+  <alternative>Unhandled exception:
+
+{0}</alternative></data>
   <data name="App_DataUpdated" xml:space="preserve">
     <value>Dati aggiornati</value>
   </data>
@@ -135,8 +137,8 @@
     <value>Nuova Versione</value>
   </data>
   <data name="App_DataUpdated_Details" xml:space="preserve">
-    <value>Attuale versione: {0}</value>
-  </data>
+    <value>Versione attuale: {0}</value>
+  <alternative>Attuale versione: {0}</alternative></data>
   <data name="App_LocaleUpdated_Details" xml:space="preserve">
     <value>Riavvia l'app per applicare i cambiamenti</value>
   </data>
@@ -150,23 +152,23 @@
     <value>Non posso avviare la Gara</value>
   </data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
-    <value>Accertati che le auto e i tracciati siano installati e disponibili.</value>
-  </data>
+    <value>Accertati che l'auto ed il tracciato richiesti siano installati e disponibili.</value>
+  <alternative>Accertati che le auto e i tracciati siano installati e disponibili.</alternative></data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
     <value>Non posso analizzare la richiesta</value>
   </data>
   <data name="Arguments_CannotProcessRequest" xml:space="preserve">
-    <value>Non posso processare la richiesta</value>
-  </data>
+    <value>Non posso elaborare la richiesta</value>
+  <alternative>Non posso processare la richiesta</alternative></data>
   <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
-    <value>Controlla i dati.</value>
-  </data>
+    <value>Accertati che i dati siano corretti. </value>
+  <alternative>Controlla i dati.</alternative></data>
   <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
     <value>RSR è cambiato.</value>
   </data>
   <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
-    <value>RSR returned file in unsupported format.</value>
-  </data>
+    <value>RSR ha fornito un file in un formato non supportato.</value>
+  <alternative>RSR returned file in unsupported format.</alternative></data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
     <value>Salva come Generico</value>
   </data>
@@ -185,11 +187,11 @@ Autore: [b]{3}[/b]</value>
     <value>Per</value>
   </data>
   <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
-    <value>Would you like to apply this preset or to save it for later?</value>
-  </data>
+    <value>Vuoi applicare questa combinazione o preferisci salvarla per dopo? </value>
+  <alternative>Would you like to apply this preset or to save it for later?</alternative></data>
   <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
-    <value>Would you like to apply this preset?</value>
-  </data>
+    <value>Vuoi applicare questa combinazione</value>
+  <alternative>Would you like to apply this preset?</alternative></data>
   <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
     <value>Applica &amp; Salva</value>
   </data>
@@ -654,5 +656,11 @@ Autore: [b]{3}[/b]</value>
   </data>
   <data name="Controls_Turbo" xml:space="preserve">
     <value>Turbo:</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager aggiornato</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Fai click per visualizzare i cambiamenti recenti</value>
   </data>
 </root>

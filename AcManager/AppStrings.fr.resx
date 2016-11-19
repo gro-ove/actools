@@ -121,8 +121,8 @@
     <value>IP:</value>
   </data>
   <data name="Main_Weather" xml:space="preserve">
-    <value>Méteo</value>
-  </data>
+    <value>Météo</value>
+  <alternative>Méteo</alternative></data>
   <data name="Online_ServersFormat" xml:space="preserve">
     <value>{0} serveur</value>
   </data>
@@ -137,5 +137,443 @@
   </data>
   <data name="Select_All" xml:space="preserve">
     <value>Tout</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager a été mise à jour</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Nouvelle Version</value>
+  </data>
+  <data name="App_DataUpdated_Details" xml:space="preserve">
+    <value>Version actuelle: {0}</value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>Impossible de démarrer la course</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Nom: [b]{0}[/b] {1}: [b]{2}[/b] Auteur: [b]{3}[/b]</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Appliquer et Sauvegarder</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Sauvegarder et Appliquer</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Appliquer uniquement</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Appliquer</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Sauvegarder uniquement</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>Impossible d'installer les réglages</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>Essayer de restaurer le fichier JSON</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Impossible de restaurer le JSON endommagé</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Nouveau Nom</value>
+  </data>
+  <data name="Solution_Enable" xml:space="preserve">
+    <value>Activer</value>
+  </data>
+  <data name="Solution_FixName" xml:space="preserve">
+    <value>Corriger le nom</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Activer {0}</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Serveur</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>Conduire</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Média</value>
+  </data>
+  <data name="Main_Content" xml:space="preserve">
+    <value>Contenu</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value> À Propos</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_Fonts" xml:space="preserve">
+    <value>Polices</value>
+  </data>
+  <data name="Main_PpFilters" xml:space="preserve">
+    <value>Filtres PP</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Course rapide</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Carrière</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>Défis</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>Solo</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Capture d'écran</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Ralentis</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Voitures</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>Circuits</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>Divers</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>En cours d'execution</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>Couleur:</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Thème:</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Redémarrer</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Voitures:</value>
+  </data>
+  <data name="Settings_Content_FontsHeader" xml:space="preserve">
+    <value>Polices:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>Utiliser le MSAA</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>Utiliser le FXAA</value>
+  </data>
+  <data name="Settings_Drive_32bit" xml:space="preserve">
+    <value>Utiliser la version 32-bit</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>Pseudo:</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>Nom:</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>Nationalité:</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>Pseudo en ligne:</value>
+  </data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+    <value>Course rapide:</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Mise à jour Auto:</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>Version de l'application:</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>Serveur:</value>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>Général:</value>
+  </data>
+  <data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>Paramètres AC:</value>
+  </data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Qualité:</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+    <value>Taille maximum</value>
+  </data>
+  <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
+    <value>Taille maximum (recommander): {0} MB</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+    <value>Dossier:</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>Mise à jour</value>
+  </data>
+  <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
+    <value>Historique:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
+    <value>Cible</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Dossier</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>Conduire</value>
+  </data>
+  <data name="Toolbar_CarSetups" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Filter_ByAuthor" xml:space="preserve">
+    <value>Filtrer par Auteur(s)</value>
+  </data>
+  <data name="Filter_ByTag" xml:space="preserve">
+    <value>Filtrer par Tag(s)</value>
+  </data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+    <value>Filtrer par marque</value>
+  </data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+    <value>Filtrer par Pays</value>
+  </data>
+  <data name="Filter_ByClass" xml:space="preserve">
+    <value>Filtrer par Catégorie</value>
+  </data>
+  <data name="Filter_ByYear" xml:space="preserve">
+    <value>Filtrer par Année</value>
+  </data>
+  <data name="Filter_ByDriver" xml:space="preserve">
+    <value>Filtrer par Nom du Pilote</value>
+  </data>
+  <data name="Filter_ByTeam" xml:space="preserve">
+    <value>Filtrer par Équipe</value>
+  </data>
+  <data name="Filter_ByNumber" xml:space="preserve">
+    <value>Filtrer par Numéro</value>
+  </data>
+  <data name="Filter_ByPriority" xml:space="preserve">
+    <value>Filtrer par Priorité</value>
+  </data>
+  <data name="Filter_ByAge" xml:space="preserve">
+    <value>Filtrer par Âge</value>
+  </data>
+  <data name="Filter_BySize" xml:space="preserve">
+    <value>Filtrer par Taille</value>
+  </data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+    <value>Filtrer par Météo</value>
+  </data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+    <value>Filtrer par Circuit</value>
+  </data>
+  <data name="Filter_ByCar" xml:space="preserve">
+    <value>Filtrer par Voiture</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Désactiver</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Activer</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>Trouvé des informations</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews" xml:space="preserve">
+    <value>Mettre à jour l'Aperçu</value>
+  </data>
+  <data name="Toolbar_ReplaceSound" xml:space="preserve">
+    <value>Remplacer le son</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Désactiver (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Activer (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
+    <value>Mode Manuel</value>
+  </data>
+  <data name="Toolbar_UpdatePreview" xml:space="preserve">
+    <value>Mettre à jour l'Aperçu</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Partager</value>
+  </data>
+  <data name="Common_Test" xml:space="preserve">
+    <value>Essayer</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+    <value>Dupliquer</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Circuit:</value>
+  </data>
+  <data name="Toolbar_DeleteJson" xml:space="preserve">
+    <value>Supprimer le fichier JSON</value>
+  </data>
+  <data name="Toolbar_CreateJson" xml:space="preserve">
+    <value>Créer le fichier JSON</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Go !</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>Équipe:</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>Pilote:</value>
+  </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Numéro:</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>Priorité:</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Taille:</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Météo:</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Désactiver le son </value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Activer le son</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>Copier les valeurs</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Ville:</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Nuages:</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Couleur</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Brouillard:</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Luminosité</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Voiture</value>
+  </data>
+  <data name="KunosCareer_TimeLabel" xml:space="preserve">
+    <value>Temps:</value>
+  </data>
+  <data name="KunosCareer_WeatherLabel" xml:space="preserve">
+    <value>Météo:</value>
+  </data>
+  <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
+    <value>Température:</value>
+  </data>
+  <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
+    <value>Position de départ:</value>
+  </data>
+  <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
+    <value>Adversaires:</value>
+  </data>
+  <data name="KunosCareer_LapsLabel" xml:space="preserve">
+    <value>Tours:</value>
+  </data>
+  <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
+    <value>Niveau de l'IA:</value>
+  </data>
+  <data name="Online_FilterEmpty_Short" xml:space="preserve">
+    <value>Vide</value>
+  </data>
+  <data name="Online_FilterFull_Short" xml:space="preserve">
+    <value>Plein</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>Mot de passe:</value>
+  </data>
+  <data name="Online_Sorting_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Drive_WeatherLabel" xml:space="preserve">
+    <value>Météo:</value>
+  </data>
+  <data name="Drive_TrackStateLabel" xml:space="preserve">
+    <value>Circuit:</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>Obtenir une nouvelle clé</value>
+  </data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>Merci !</value>
+  </data>
+  <data name="Dialog_CarSetupsFormat" xml:space="preserve">
+    <value>{0} Réglages</value>
+  </data>
+  <data name="Main_Setups" xml:space="preserve">
+    <value>Réglages</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>Couple:</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Poids:</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Vitesse Max:</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Accélération:</value>
+  </data>
+  <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
+    <value>Ration P/P</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Erreur:</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,5 +119,194 @@
   </resheader>
   <data name="Theme_Nordschleife" xml:space="preserve">
     <value>Nordschleife</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Ideallinie</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Fahrhilfen</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Automatische Schaltung</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Automatische Kupplung</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Automatischer Gasstoß:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Stabilitätskontrolle:</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Treibstoff:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Reifenverschleiß:</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Marke:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Land:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Klassifizierung:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Jahr:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Basismodell:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Spezifikationen:</value>
+  </data>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>Autor, Version und URL</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>In Ausstellungsraum öffnen</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>Voreinstellungen</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>Geo-Daten:</value>
+  </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>{Fehler}:</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>Voreinstellung speichern</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>Aktuelle Einstellungen als Voreinstellung speichern (Strg+S)</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Ungespeichert</value>
+  </data>
+  <data name="QuickSwitches_Header" xml:space="preserve">
+    <value>Schnellumschalter</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Lenkrad ausblenden</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Lenkrad ausblenden</value>
+  </data>
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
+    <value>Lenkrad fixieren</value>
+  </data>
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
+    <value>Kamera fixieren</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Spiegel</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Namen</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>Rangliste</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>Schaden (UI)</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Vollbild</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>Endwickler-Apps</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>Freie Kamera</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Online-Name</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>Belichtung</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>Blickwinkel</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>Lenkrad fixieren</value>
+  </data>
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+    <value>Innenansicht an Horizont ausrichten</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>Virtuellen Rückspiegel anzeigen</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>Fahrernamen anzeigen</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>Rangliste anzeigen</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>Schaden anzeigen</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>Vollbildmodus (zum Beispiel: Nvidia Shadowplay funktioniert nicht ohne Vollbild)</value>
+  </data>
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+    <value>Endwickler-Apps aktivieren</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Freie Kamera aktivieren (im Spiel F7 drücken)</value>
+  </data>
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+    <value>Online anderen Namen nutzen</value>
+  </data>
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+    <value>Zwischen UI Voreinstellungen umschalten</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>Helligkeitseinstellung</value>
+  </data>
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+    <value>Blickwinkel (vertikaler Winkel)</value>
+  </data>
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
+    <value>Arme ausblenden</value>
+  </data>
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+    <value>Fahrerarme ausblenden</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Hell</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>Modern</value>
+  </data>
+  <data name="Animation_Fade" xml:space="preserve">
+    <value>Verblassen</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Hoch</value>
+  </data>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>Runter</value>
+  </data>
+  <data name="Common_AreYouSure" xml:space="preserve">
+    <value>Bist du sicher?</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>Teilen als</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>Ist alles OK?</value>
   </data>
 </root>
