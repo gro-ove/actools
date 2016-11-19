@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="Online_OnLoaded" Unloaded="Online_OnUnloaded"
-        SizeChanged="Online_OnSizeChanged" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        SizeChanged="OnSizeChanged" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"
         d:DataContext="{d:DesignInstance dr:Online+OnlineViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
@@ -11,8 +11,10 @@
 
     <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Manager.Status}">
         <!-- loading -->
-        <ProgressBar mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                Height="4" Margin="20 0 20 0" />
+        <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" Margin="20 0 20 8">
+            <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="0 0 0 8" />
+            <TextBlock TextAlignment="Left" Style="{StaticResource Small}" Text="{Binding Manager.LoadingState}" />
+        </StackPanel>
 
         <!-- error -->
         <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -63,7 +65,7 @@
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{x:Static g:AppStrings.Online_Pinged}">
                                         <Binding Path="Manager.Pinged" />
-                                        <Binding Path="Manager.WrappersList.Count" Converter="{StaticResource PluralizingConverter}"
+                                        <Binding Path="Manager.List.Count" Converter="{StaticResource PluralizingConverter}"
                                                 ConverterParameter="{x:Static g:AppStrings.Online_ServersFormat}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
@@ -73,8 +75,8 @@
                 </TextBlock>
 
                 <ProgressBar Visibility="{Binding Manager.PingingInProcess, Converter={StaticResource BooleanToVisibilityConverter}}" Minimum="0"
-                        Maximum="{Binding Manager.WrappersList.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False" Grid.Row="2"
-                        VerticalAlignment="Bottom" Margin="2" Height="2" />
+                        Maximum="{Binding Manager.List.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False" Grid.Row="2" VerticalAlignment="Bottom"
+                        Margin="2" Height="2" />
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}"
                         Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -122,10 +124,8 @@
                     </StackPanel>
                 </DockPanel>
 
-                <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.VirtualizationMode="Recycling" IsSynchronizedWithCurrentItem="True" ItemTemplate="{StaticResource SimpleListItem}"
-                        VirtualizingStackPanel.CacheLength="1,1" VirtualizingStackPanel.CacheLengthUnit="Page" VirtualizingStackPanel.ScrollUnit="Pixel"
-                        Style="{StaticResource VirtualizingListBox}" />
+                <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"
+                        ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}" Style="{StaticResource VirtualizingListBox}" />
             </Grid>
 
             <Rectangle Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"

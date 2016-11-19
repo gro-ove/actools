@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager {
     [Localizable(false)]
@@ -101,7 +103,7 @@ namespace AcManager {
             var value = Get(flag);
             if (value == null) return;
             if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
-                option = 0;
+                Logging.Error($"Can’t parse option value: “{value}”");
             }
         }
 
@@ -109,7 +111,7 @@ namespace AcManager {
             var value = Get(flag);
             if (value == null) return;
             if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
-                option = 0d;
+                Logging.Error($"Can’t parse option value: “{value}”");
             }
         }
 
@@ -117,6 +119,44 @@ namespace AcManager {
             var value = Get(flag);
             if (value == null) return;
             option = value;
+        }
+
+        private static bool TryParse(string value, ref TimeSpan timeSpan) {
+            var p = value.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+            double? result;
+            switch (p.Length) {
+                case 0:
+                    return false;
+                case 1:
+                    result = FlexibleParser.TryParseDouble(p[0]);
+                    break;
+                case 2:
+                    result = FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1]);
+                    break;
+                case 3:
+                    result = (FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1])) * 60 +
+                            FlexibleParser.TryParseDouble(p[2]);
+                    break;
+                default:
+                    result = ((FlexibleParser.TryParseDouble(p[0]) * 24 + FlexibleParser.TryParseDouble(p[1])) * 60 +
+                            FlexibleParser.TryParseDouble(p[2])) * 60 + FlexibleParser.TryParseDouble(p[3]);
+                    break;
+            }
+
+            if (result.HasValue) {
+                timeSpan = TimeSpan.FromSeconds(result.Value);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static void Set(AppFlag flag, ref TimeSpan option) {
+            var value = Get(flag);
+            if (value == null) return;
+            if (!TryParse(value, ref option)) {
+                Logging.Error($"Can’t parse option value: “{value}”");
+            }
         }
     }
 }

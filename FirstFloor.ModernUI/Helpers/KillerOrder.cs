@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -12,6 +14,9 @@ namespace FirstFloor.ModernUI.Helpers {
     }
 
     public class KillerOrder : IDisposable {
+        public static bool OptionUseDispatcher = false;
+        public static TimeSpan OptionInterval = TimeSpan.FromMilliseconds(100d);
+
         public readonly object Victim;
         public readonly TimeSpan Timeout;
         public DateTime KillAfter;
@@ -25,11 +30,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return new KillerOrder<T>(victim, timeout);
         }
 
-        public KillerOrder(object victim, TimeSpan timeout) {
+        protected KillerOrder(object victim, TimeSpan timeout) {
             Victim = victim;
             Timeout = timeout;
             KillAfter = DateTime.Now + timeout;
-
             Register(this);
         }
 
@@ -74,25 +78,31 @@ namespace FirstFloor.ModernUI.Helpers {
         private static readonly object StaticLock = new object();
 
         private static List<KillerOrder> _sockets;
-        private static DispatcherTimer _timer;
+        private static DispatcherTimer _dispatcherTimer;
+        private static Timer _timer;
 
         private static void Register(KillerOrder order) {
             lock (StaticLock) {
                 if (_sockets == null) {
-                    _sockets = new List<KillerOrder>(2000);
-                    _timer = new DispatcherTimer {
-                        Interval = TimeSpan.FromMilliseconds(100d),
-                        IsEnabled = true
-                    };
+                    _sockets = new List<KillerOrder>();
 
-                    _timer.Tick += Timer_Tick;
+                    if (OptionUseDispatcher) {
+                        _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                            Interval = OptionInterval,
+                            IsEnabled = true
+                        };
+
+                        _dispatcherTimer.Tick += OnDispatcherTick;
+                    } else {
+                        _timer = new Timer(OnTick, null, OptionInterval, System.Threading.Timeout.InfiniteTimeSpan);
+                    }
                 }
 
                 _sockets.Add(order);
             }
         }
 
-        private static void Timer_Tick(object sender, EventArgs e) {
+        private static void InvokeKill(bool sync) {
             lock (StaticLock) {
                 if (_sockets.Count == 0) return;
 
@@ -112,10 +122,23 @@ namespace FirstFloor.ModernUI.Helpers {
                 if (list != null) {
                     foreach (var tuple in list) {
                         _sockets.Remove(tuple);
-                        tuple.Kill();
+                        if (sync) {
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)tuple.Kill);
+                        } else {
+                            tuple.Kill();
+                        }
                     }
                 }
             }
+        }
+
+        private static void OnTick(object state) {
+            InvokeKill(true);
+            _timer.Change(OptionInterval, System.Threading.Timeout.InfiniteTimeSpan);
+        }
+
+        private static void OnDispatcherTick(object sender, EventArgs e) {
+            InvokeKill(false);
         }
     }
 }

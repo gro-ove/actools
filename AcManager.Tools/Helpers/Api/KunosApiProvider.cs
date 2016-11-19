@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows;
 using AcManager.Internal;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Processes;
@@ -28,7 +29,11 @@ namespace AcManager.Tools.Helpers.Api {
         public static bool OptionForceDisabledCache = false;
         public static bool OptionIgnoreSystemProxy = false;
         
-        public static int OptionWebRequestTimeout = 10000;
+        public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
+
+        // actual server should be able to respond in two seconds, otherwise there is no sense
+        // in communicating with it
+        public static TimeSpan OptionDirectRequestTimeout = TimeSpan.FromSeconds(2d);
 
         public static int ServersNumber => InternalUtils.KunosServersNumber;
 
@@ -43,38 +48,46 @@ namespace AcManager.Tools.Helpers.Api {
         private static HttpRequestCachePolicy _cachePolicy;
 
         [ItemNotNull]
-        private static Task<string> LoadAsync(string uri) {
-            return OptionUseWebClient ? LoadUsingClientAsync(uri) : LoadUsingRequestAsync(uri);
+        private static Task<string> LoadAsync(string uri, TimeSpan? timeout = null) {
+            if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
+            return OptionUseWebClient ? LoadUsingClientAsync(uri, timeout.Value) : LoadUsingRequestAsync(uri, timeout.Value);
         }
 
         [NotNull]
-        private static string Load(string uri) {
-            return OptionUseWebClient ? LoadUsingClient(uri) : LoadUsingRequest(uri);
+        private static string Load(string uri, TimeSpan? timeout = null) {
+            if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
+            return OptionUseWebClient ? LoadUsingClient(uri, timeout.Value) : LoadUsingRequest(uri, timeout.Value);
         }
 
         private class TimeoutyWebClient : WebClient {
+            private readonly TimeSpan _timeout;
+
+            public TimeoutyWebClient(TimeSpan? timeout = null) {
+                _timeout = timeout ?? OptionWebRequestTimeout;
+            }
+
             protected override WebRequest GetWebRequest(Uri uri) {
                 var w = base.GetWebRequest(uri);
                 if (w == null) return null;
-                w.Timeout = OptionWebRequestTimeout;
+                w.Timeout = (int)_timeout.TotalMilliseconds;
                 return w;
             }
         }
 
         [ItemNotNull]
-        private static async Task<string> LoadUsingClientAsync(string uri) {
-            using (var order = KillerOrder.Create(new WebClient {
+        private static async Task<string> LoadUsingClientAsync(string uri, TimeSpan timeout) {
+            using (var order = KillerOrder.Create(new TimeoutyWebClient(timeout) {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
                 }
-            }, OptionWebRequestTimeout)) {
+            }, timeout)) {
                 return await order.Victim.DownloadStringTaskAsync(uri);
             }
         }
 
         [NotNull]
-        private static string LoadUsingClient(string uri) {
-            using (var client = new TimeoutyWebClient {
+        private static string LoadUsingClient(string uri, TimeSpan timeout) {
+            using (var client = new TimeoutyWebClient(timeout) {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
                 }
@@ -84,8 +97,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemNotNull]
-        private static async Task<string> LoadUsingRequestAsync(string uri) {
-            using (var order = KillerOrder.Create((HttpWebRequest)WebRequest.Create(uri), OptionWebRequestTimeout)) {
+        private static async Task<string> LoadUsingRequestAsync(string uri, TimeSpan timeout) {
+            using (var order = KillerOrder.Create((HttpWebRequest)WebRequest.Create(uri), timeout)) {
                 var request = order.Victim;
                 request.Method = "GET";
                 request.UserAgent = InternalUtils.GetKunosUserAgent();
@@ -100,11 +113,11 @@ namespace AcManager.Tools.Helpers.Api {
                             (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
                 }
 
-                request.Timeout = OptionWebRequestTimeout;
+                request.Timeout = (int)timeout.TotalMilliseconds;
 
                 string result;
                 using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
-                    if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"StatusCode = {response.StatusCode}");
+                    if (response.StatusCode != HttpStatusCode.OK) throw new Exception($@"StatusCode = {response.StatusCode}");
 
                     using (var stream = response.GetResponseStream()) {
                         if (stream == null) throw new Exception(@"ResponseStream = null");
@@ -136,7 +149,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [NotNull]
-        private static string LoadUsingRequest(string uri) {
+        private static string LoadUsingRequest(string uri, TimeSpan timeout) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
@@ -151,14 +164,14 @@ namespace AcManager.Tools.Helpers.Api {
                         (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
             }
 
-            request.ContinueTimeout = OptionWebRequestTimeout;
-            request.ReadWriteTimeout = OptionWebRequestTimeout;
-            request.Timeout = OptionWebRequestTimeout;
+            request.ContinueTimeout = (int)timeout.TotalMilliseconds;
+            request.ReadWriteTimeout = (int)timeout.TotalMilliseconds;
+            request.Timeout = (int)timeout.TotalMilliseconds;
 
             string result;
             using (var response = (HttpWebResponse)request.GetResponse()) {
                 if (response.StatusCode != HttpStatusCode.OK) {
-                    throw new Exception($"StatusCode = {response.StatusCode}");
+                    throw new Exception($@"StatusCode = {response.StatusCode}");
                 }
 
                 using (var stream = response.GetResponseStream()) {
@@ -191,7 +204,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [NotNull]
-        private static ServerInformation[] LoadListUsingRequest(string uri) {
+        private static ServerInformation[] LoadListUsingRequest(string uri, TimeSpan timeout) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
@@ -206,14 +219,14 @@ namespace AcManager.Tools.Helpers.Api {
                         (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
             }
 
-            request.ContinueTimeout = OptionWebRequestTimeout;
-            request.ReadWriteTimeout = OptionWebRequestTimeout;
-            request.Timeout = OptionWebRequestTimeout;
+            request.ContinueTimeout = (int)timeout.TotalMilliseconds;
+            request.ReadWriteTimeout = (int)timeout.TotalMilliseconds;
+            request.Timeout = (int)timeout.TotalMilliseconds;
 
             ServerInformation[] result;
             using (var response = (HttpWebResponse)request.GetResponse()) {
                 if (response.StatusCode != HttpStatusCode.OK) {
-                    throw new Exception($"StatusCode = {response.StatusCode}");
+                    throw new Exception($@"StatusCode = {response.StatusCode}");
                 }
 
                 using (var stream = response.GetResponseStream()) {
@@ -235,15 +248,21 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformation[] TryToGetList() {
+        public static ServerInformation[] TryToGetList(IProgress<int> progress = null) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
+                if (progress != null) {
+                    Application.Current.Dispatcher.Invoke(() => {
+                        progress?.Report(i);
+                    });
+                }
+
                 var uri = ServerUri;
-                var requestUri = $"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
+                var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var parsed = LoadListUsingRequest(requestUri);
+                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout);
                     var loadTime = watch.Elapsed;
                     Logging.Write($"List (loading+parsing): {loadTime.TotalMilliseconds:F1} ms");
                     return parsed;
@@ -264,9 +283,9 @@ namespace AcManager.Tools.Helpers.Api {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
             while (ServerUri != null) {
-                var requestUri = $"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
+                var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
                 try {
-                    var result = JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri));
+                    var result = JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionWebRequestTimeout));
                     if (result.Ip == string.Empty) {
                         result.Ip = ip;
                     }
@@ -330,10 +349,10 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public static async Task<ServerInformation> TryToGetInformationDirectAsync(string ip, int portC) {
-            var requestUri = $"http://{ip}:{portC}/INFO";
+            var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
-                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri)), ip);
+                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -345,10 +364,10 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerInformation TryToGetInformationDirect(string ip, int portC) {
-            var requestUri = $"http://{ip}:{portC}/INFO";
+            var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
-                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri)), ip);
+                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionDirectRequestTimeout)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -361,10 +380,10 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemCanBeNull]
         public static async Task<ServerActualInformation> TryToGetCurrentInformationAsync(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
-            var requestUri = $"http://{ip}:{portC}/JSON|{steamId}";
+            var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
 
             try {
-                return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri));
+                return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout));
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -377,10 +396,10 @@ namespace AcManager.Tools.Helpers.Api {
         [CanBeNull]
         public static ServerActualInformation TryToGetCurrentInformation(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
-            var requestUri = $"http://{ip}:{portC}/JSON|{steamId}";
+            var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
 
             try {
-                return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri));
+                return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri, OptionDirectRequestTimeout));
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -394,10 +413,10 @@ namespace AcManager.Tools.Helpers.Api {
         public static BookingResult TryToBook(string ip, int portC, string password, string carId, string skinId, string driverName, string teamName) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var arguments = new[] { carId, skinId, driverName, teamName, steamId, password }.Select(x => x ?? "").JoinToString('|');
-            var requestUri = $"http://{ip}:{portC}/SUB|{HttpUtility.UrlEncode(arguments)}";
+            var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlEncode(arguments)}";
             
             try {
-                var response = Load(requestUri);
+                var response = Load(requestUri, OptionDirectRequestTimeout);
                 var split = response.Split(',');
                 switch (split[0]) {
                     case "OK":
@@ -433,10 +452,11 @@ namespace AcManager.Tools.Helpers.Api {
         [CanBeNull]
         public static void TryToUnbook(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
-            var requestUri = $"http://{ip}:{portC}/UNSUB|{HttpUtility.UrlEncode(steamId)}";
+            var requestUri = $@"http://{ip}:{portC}/UNSUB|{HttpUtility.UrlEncode(steamId)}";
             
             try {
-                Load(requestUri);
+                // using much bigger timeout to increase chances of unbooking from bad servers
+                Load(requestUri, TimeSpan.FromSeconds(30));
             } catch (WebException e) {
                 Logging.Warning($"Cannot unbook: {requestUri}, {e.Message}");
             } catch (Exception e) {

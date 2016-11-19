@@ -196,10 +196,20 @@ namespace AcManager {
         LanPollTimeout,
 
         /// <summary>
-        /// Timeout for web requests for online requests (ms). Default value: 3000.
-        /// Example: --web-request-timeout=5000.
+        /// Timeout for online requests sent to Kunos servers (time interval or seconds).
+        /// Default value: 10.
+        /// Example: --web-request-timeout=00:05.
         /// </summary>
         WebRequestTimeout,
+
+        /// <summary>
+        /// Timeout for online requests sent to actual race servers, by default smaller
+        /// because there is little to none sence in dealing with server which can’t respond
+        /// in two seconds (time interval or seconds).
+        /// Default value: 2.
+        /// Example: --direct-request-timeout=00:05.
+        /// </summary>
+        DirectRequestTimeout,
 
         /// <summary>
         /// Less responsible UI, but could be a little bit faster.

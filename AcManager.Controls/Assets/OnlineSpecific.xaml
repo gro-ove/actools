@@ -13,37 +13,45 @@
 
     <!--car & track previews-->
     <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarOrOnlyCarIdEntry}">
-        <Grid>
-            <StackPanel Margin="4 8" Visibility="{Binding CarExists, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
-                <u:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
-            </StackPanel>
-            <DockPanel Margin="4" Visibility="{Binding CarExists, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
-                        DockPanel.Dock="Left" Margin="0 0 4 0" />
-                <TextBlock>
-                    <Run Text="{x:Static c:ControlsStrings.Online_CarIsMissingLabel}" />
-                    <Run Text="{Binding CarId, Mode=OneWay}" FontWeight="Bold" />
-                </TextBlock>
-            </DockPanel>
-        </Grid>
+        <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
+            <mui:BooleanSwitch.True>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
+                    <u:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                </StackPanel>
+            </mui:BooleanSwitch.True>
+            <mui:BooleanSwitch.False>
+                <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
+                            DockPanel.Dock="Left" Margin="0 0 4 0" />
+                    <TextBlock>
+                        <Run Text="{x:Static c:ControlsStrings.Online_CarIsMissingLabel}" />
+                        <Run Text="{Binding CarId, Mode=OneWay}" FontWeight="Bold" />
+                    </TextBlock>
+                </DockPanel>
+            </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
     </ToolTip>
 
     <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}">
-        <Grid>
-            <StackPanel Margin="4 8" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
-                <u:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
-            </StackPanel>
-            <DockPanel Margin="4" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}">
-                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
-                        DockPanel.Dock="Left" Margin="0 0 4 0" />
-                <TextBlock>
-                    <Run Text="{x:Static c:ControlsStrings.Online_TrackIsMissingLabel}" />
-                    <Run Text="{Binding TrackId, Mode=OneWay}" FontWeight="Bold" />
-                </TextBlock>
-            </DockPanel>
-        </Grid>
+        <mui:ReferenceSwitch Value="{Binding Track}" Margin="4">
+            <mui:ReferenceSwitch.NonNull>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.Name}" Margin="0 0 0 4" />
+                    <u:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
+                </StackPanel>
+            </mui:ReferenceSwitch.NonNull>
+            <mui:ReferenceSwitch.Null>
+                <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
+                            Margin="0 0 4 0" />
+                    <TextBlock>
+                        <Run Text="{x:Static c:ControlsStrings.Online_TrackIsMissingLabel}" />
+                        <Run Text="{Binding TrackId, Mode=OneWay}" FontWeight="Bold" />
+                    </TextBlock>
+                </DockPanel>
+            </mui:ReferenceSwitch.Null>
+        </mui:ReferenceSwitch>
     </ToolTip>
 
     <!--online-->
@@ -57,28 +65,27 @@
     </DataTemplate>
 
     <!--tooltips for clients-->
-    <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}">
-        <StackPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" Margin="4">
+    <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}"
+            Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
+        <StackPanel Margin="4">
             <TextBlock Text="{x:Static c:ControlsStrings.Online_DriversOnlineLabel}" Style="{StaticResource Label}" />
             <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="480" MaxWidth="450"
                     ItemTemplate="{StaticResource OnlineDriverEntry}" ItemsPanel="{StaticResource WrapItemsPanel}" />
         </StackPanel>
     </ToolTip>
 
+    <ToolTip x:Key="SessionItemTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+Session}">
+        <StackPanel>
+            <TextBlock Text="{Binding DisplayType}" HorizontalAlignment="Left" Style="{StaticResource Heading2}" />
+            <TextBlock Text="{Binding DisplayDuration}" HorizontalAlignment="Left" Margin="0 4 0 0" />
+        </StackPanel>
+    </ToolTip>
+
     <!--session block-->
     <DataTemplate x:Key="SessionItem" DataType="{x:Type t:ServerEntry+Session}">
         <TextBlock Text="{Binding DisplayTypeShort}" x:Name="TextBlock" Foreground="{DynamicResource ButtonText}" Style="{StaticResource Label}"
-                Background="{DynamicResource ButtonBackground}" Height="20" Width="20" TextAlignment="Center" Padding="0 2 0 0">
-            <TextBlock.ToolTip>
-                <ToolTip>
-                    <StackPanel>
-                        <TextBlock Text="{Binding DisplayType}" HorizontalAlignment="Left" Style="{StaticResource Heading2}" />
-                        <TextBlock Text="{Binding DisplayDuration}" HorizontalAlignment="Left" Margin="0 4 0 0" />
-                    </StackPanel>
-                </ToolTip>
-            </TextBlock.ToolTip>
-                </TextBlock>
-
+                Background="{DynamicResource ButtonBackground}" Height="20" Width="20" TextAlignment="Center" Padding="0 2 0 0"
+                ToolTip="{StaticResource SessionItemTooltip}" />
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding IsActive}" Value="True">
                 <Setter TargetName="TextBlock" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
@@ -249,8 +256,135 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <!-- heavy version (optimized?) -->
+    <Style TargetType="c:OnlineListBoxDetailedItem">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:OnlineListBoxDetailedItem">
+                    <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
+                        <!--optional lock icon-->
+                        <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="8 1 0 2" />
+
+                        <!--first row-->
+                        <mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
+                            <mui:BooleanSwitch.True>
+                                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                        VerticalAlignment="Center">
+                                    <Path.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
+                                            <mui:BbCodeBlock x:Name="ErrorMessageGroup" Margin="4" />
+                                        </StackPanel>
+                                    </Path.ToolTip>
+                                </Path>
+                            </mui:BooleanSwitch.True>
+                            <mui:BooleanSwitch.False>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="PingText" Style="{StaticResource Small}" />
+                                    <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                                </StackPanel>
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
+                        <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="Transparent" Margin="0 0 40 30" Padding="4 0" />
+                        <Image x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                RenderOptions.BitmapScalingMode="LowQuality">
+                            <Image.ToolTip>
+                                <TextBlock x:Name="CountryName" />
+                            </Image.ToolTip>
+                        </Image>
+                        <TextBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" Margin="22 2 130 32" />
+
+                        <!--second row-->
+                        <Rectangle Fill="#11888888" Margin="20 30 0 0" />
+                        <TextBlock x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
+                        <StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="146 30 0 0" />
+                        <StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="240 30 0 0" />
+                    </mui:Cell>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DetailedPlusItem" TargetType="c:OnlineListBoxDetailedItem">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="c:OnlineListBoxDetailedItem">
+                    <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
+                        <!--optional lock icon-->
+                        <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="8 1 0 2" />
+
+                        <!--first row-->
+                        <mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
+                            <mui:BooleanSwitch.True>
+                                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                        VerticalAlignment="Center">
+                                    <Path.ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
+                                            <mui:BbCodeBlock x:Name="ErrorMessageGroup" Margin="4" />
+                                        </StackPanel>
+                                    </Path.ToolTip>
+                                </Path>
+                            </mui:BooleanSwitch.True>
+                            <mui:BooleanSwitch.False>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="PingText" Style="{StaticResource Small}" />
+                                    <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                                </StackPanel>
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
+                        <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="Transparent" Margin="0 0 40 30" />
+                        <Image x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                RenderOptions.BitmapScalingMode="LowQuality">
+                            <Image.ToolTip>
+                                <TextBlock x:Name="CountryName" />
+                            </Image.ToolTip>
+                        </Image>
+                        <TextBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" Margin="22 2 130 32" />
+
+                        <!--second row-->
+                        <Rectangle Fill="#11888888" Margin="20 30 0 0" />
+                        <TextBlock x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
+                        <TextBlock x:Name="TimeLeftText" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="146 30 0 3"
+                                TextAlignment="Right" />
+                        <StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />
+                        <StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />
+                    </mui:Cell>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- heavy version (custom) -->
     <DataTemplate x:Key="DetailedListItem" DataType="{x:Type t:ServerEntry}">
+        <c:OnlineListBoxDetailedItem Server="{Binding}">
+            <c:OnlineListBoxDetailedItem.CacheMode>
+                <BitmapCache EnableClearType="True" />
+            </c:OnlineListBoxDetailedItem.CacheMode>
+        </c:OnlineListBoxDetailedItem>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DetailedPlusListItem" DataType="{x:Type t:ServerEntry}">
+        <c:OnlineListBoxDetailedItem Style="{StaticResource DetailedPlusItem}" Server="{Binding}">
+            <c:OnlineListBoxDetailedItem.CacheMode>
+                <BitmapCache EnableClearType="True" />
+            </c:OnlineListBoxDetailedItem.CacheMode>
+        </c:OnlineListBoxDetailedItem>
+    </DataTemplate>
+
+    <!-- heavy version (optimized?) -->
+    <DataTemplate x:Key="DetailedListItem.Opt" DataType="{x:Type t:ServerEntry}">
         <DockPanel ContextMenu="{StaticResource ListItemContextMenu}" Height="60">
             <mui:BooleanSwitch DockPanel.Dock="Left" Value="{Binding PasswordRequired}" Width="22">
                 <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform"
@@ -321,8 +455,8 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <!-- heavy version+ -->
-    <DataTemplate x:Key="DetailedPlusListItem" DataType="{x:Type t:ServerEntry}">
+    <!-- heavy version+ (grid) -->
+    <DataTemplate x:Key="DetailedPlusListItem.Grid" DataType="{x:Type t:ServerEntry}">
         <Grid ContextMenu="{StaticResource ListItemContextMenu}" Height="60">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="22" />

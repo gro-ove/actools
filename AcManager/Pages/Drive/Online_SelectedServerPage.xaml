@@ -83,9 +83,10 @@
             </StackPanel>
 
             <!-- loading -->
-            <Border mui:Switch.When="{x:Static t:ServerStatus.Loading}">
-                <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Border>
+            <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Loading}" VerticalAlignment="Center">
+                <ProgressBar Maximum="1" Value="{Binding UpdateProgress}" Margin="8 0 8 8" Height="4" />
+                <TextBlock TextAlignment="Center" Style="{StaticResource Small}" Text="{Binding UpdateProgressMessage}" />
+            </StackPanel>
 
             <!-- content -->
             <DockPanel mui:Switch.When="{x:Static t:ServerStatus.Ready}">

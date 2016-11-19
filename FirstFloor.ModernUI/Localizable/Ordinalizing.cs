@@ -173,7 +173,7 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "ru":
                     return RuPostfix(v, s);
                 default:
-                    return v.ToString();
+                    return "";
             }
         }
 

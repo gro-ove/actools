@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
@@ -173,5 +174,88 @@ namespace FirstFloor.ModernUI.Presentation {
                 Initialize();
             }
         }
+
+        private class InnerFixedList : IList {
+            private readonly LinkCollection _links;
+
+            public InnerFixedList(LinkCollection links) {
+                _links = links;
+            }
+
+            public IEnumerator GetEnumerator() {
+                return _links.Skip(1).Take(Count).GetEnumerator();
+            }
+
+            public void CopyTo(Array array, int index) {
+                _links.Skip(1).Take(Count).ToArray().CopyTo(array, index);
+            }
+
+            public int Count { get; private set; }
+
+            public object SyncRoot { get; } = new object();
+
+            public bool IsSynchronized => false;
+
+            public int Add(object value) {
+                _links.Insert(Count + 1, (Link)value);
+                return Count++;
+            }
+
+            public bool Contains(object value) {
+                return _links.Skip(1).Take(Count).Contains(value);
+            }
+
+            public void Clear() {
+                while (Count > 0) {
+                    RemoveAt(0);
+                }
+            }
+
+            public int IndexOf(object value) {
+                var r = 0;
+                foreach (var source in _links.Skip(1).Take(Count)) {
+                    if (ReferenceEquals(source, value)) return r;
+                    r++;
+                }
+                return -1;
+            }
+
+            public void Insert(int index, object value) {
+                if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
+                _links.Insert(index + 1, (Link)value);
+            }
+
+            public void Remove(object value) {
+                if (Contains(value)) {
+                    _links.Remove((Link)value);
+                    Count--;
+                }
+            }
+
+            public void RemoveAt(int index) {
+                if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
+                _links.RemoveAt(index + 1);
+                Count--;
+            }
+
+            public object this[int index] {
+                get {
+                    if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
+                    return _links[index + 1];
+                }
+                set {
+                    if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
+                    _links[index + 1] = (Link)value;
+                }
+            }
+
+            public bool IsReadOnly => false;
+
+            public bool IsFixedSize => false;
+        }
+
+        private InnerFixedList _fixedLinks;
+
+        public IList FixedLinks => _fixedLinks ?? (_fixedLinks = new InnerFixedList(Links));
     }
 }

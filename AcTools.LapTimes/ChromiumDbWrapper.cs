@@ -26,7 +26,14 @@ namespace AcTools.LapTimes {
         }
 
         public IEnumerable<Dictionary<string, string>> GetData() {
-            return GetBytesData().Select(ParseBits);
+            return GetBytesData().Select(x => {
+                try {
+                    return ParseBits(x);
+                } catch (Exception e) {
+                    AcToolsLogging.Write("ERROR: " + e);
+                    return null;
+                }
+            }).Where(x => x != null);
         }
 
         public void Dispose() {

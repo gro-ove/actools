@@ -36,8 +36,13 @@ namespace AcManager.Pages.Drive {
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
-            return _entryOld.Status == ServerStatus.Unloaded ? _entryOld.Update(ServerEntry.UpdateMode.Normal) :
-                    Task.Delay(0, cancellationToken);
+            if (_entryOld.Status == ServerStatus.Unloaded) {
+                _entryOld.Update(ServerEntry.UpdateMode.Normal).Forget();
+            }
+
+            return Task.Delay(0, cancellationToken);
+            //return _entryOld.Status == ServerStatus.Unloaded ? _entryOld.Update(ServerEntry.UpdateMode.Normal) :
+            //        Task.Delay(0, cancellationToken);
         }
 
         public void Load() {

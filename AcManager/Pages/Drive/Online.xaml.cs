@@ -7,10 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
+using AcManager.Controls;
 using JetBrains.Annotations;
-using AcManager.Controls.ViewModels;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
@@ -20,6 +21,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Media;
 using StringBasedFilter;
 using Prompt = AcManager.Controls.Dialogs.Prompt;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
@@ -47,11 +49,10 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             DataContext = new OnlineViewModel(_type, _manager, _filter);
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.Manager.RefreshListCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
+                new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
             });
             InitializeComponent();
-
             ResizingStuff();
         }
 
@@ -132,14 +133,14 @@ namespace AcManager.Pages.Drive {
                             ListMode.Simple;
         }
 
-        private void Online_OnSizeChanged(object sender, SizeChangedEventArgs e) {
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             ResizingStuff();
         }
 
         private bool _loaded;
         private TaskbarProgress _taskbarProgress;
 
-        private void Online_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
 
@@ -152,9 +153,40 @@ namespace AcManager.Pages.Drive {
                 IsEnabled = true
             };
             _timer.Tick += Timer_Tick;
+
+            var scrollViewer = ServersListBox.FindVisualChild<ScrollViewer>();
+            var viewer = scrollViewer?.FindVisualChild<Thumb>();
+
+            if (viewer != null) {
+                scrollViewer.ScrollChanged += OnScrollChanged;
+                viewer.DragStarted += OnScrollStarted;
+                viewer.DragCompleted += OnScrollCompleted;
+            }
         }
 
-        private void Online_OnUnloaded(object sender, RoutedEventArgs e) {
+        private bool _scrolling;
+
+        private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+                child.SetScrolling(_scrolling);
+            }
+        }
+
+        private void OnScrollStarted(object sender, DragStartedEventArgs e) {
+            _scrolling = true;
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+                child.SetScrolling(true);
+            }
+        }
+
+        private void OnScrollCompleted(object sender, DragCompletedEventArgs e) {
+            _scrolling = false;
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+                child.SetScrolling(false);
+            }
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
 
@@ -206,12 +238,12 @@ namespace AcManager.Pages.Drive {
             }
 
             public override string ToString() {
-                return $"<{First}>+<{Second}>";
+                return $@"<{First}>+<{Second}>";
             }
         }
 
         public class OnlineViewModel : NotifyPropertyChanged, IComparer {
-            public readonly string Key;
+            public string Key { get; }
 
             public OnlineManagerType Type { get; set; }
 
@@ -296,7 +328,7 @@ namespace AcManager.Pages.Drive {
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter) {
                 ListFilter = GetFilter(filter);
-                Key = type + @"_" + typeof(ServerEntry).Name + @"_" + ListFilter?.Source;
+                Key = $@".Online:{type}:{typeof(ServerEntry).Name}:{ListFilter?.Source}";
                 MainList = new BetterListCollectionView(manager.List);
 
                 Type = type;
@@ -315,9 +347,8 @@ namespace AcManager.Pages.Drive {
             public void Load() {
                 if (_loaded) return;
                 _loaded = true;
-
-                var list = Manager.List;
-                list.ItemPropertyChanged += List_ItemPropertyChanged;
+                
+                Manager.List.ItemPropertyChanged += List_ItemPropertyChanged;
 
                 // list.CollectionChanged += List_CollectionChanged;
                 // _list.CollectionReady += List_CollectionReady;
@@ -327,15 +358,24 @@ namespace AcManager.Pages.Drive {
                     MainList.CustomSort = SortingComparer;
                 }
 
-                // LoadCurrent();
-                // _oldNumber = _mainList.Count;
+                LoadCurrent();
                 MainList.CurrentChanged += OnCurrentChanged;
 
-
-                // CurrentChanged();
-
                 _pingingSource = new CancellationTokenSource();
-                // Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
+                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
+            }
+
+            private void LoadCurrent() {
+                var current = ValuesStorage.GetString(Key);
+
+                if (current != null) {
+                    var selected = Manager.GetById(current);
+                    MainList.MoveCurrentTo(selected);
+                } else {
+                    MainList.MoveCurrentToFirst();
+                }
+
+                CurrentChanged();
             }
 
             private void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -358,6 +398,8 @@ namespace AcManager.Pages.Drive {
             public void Unload() {
                 if (!_loaded) return;
                 _loaded = false;
+
+                Manager.List.ItemPropertyChanged -= List_ItemPropertyChanged;
 
                 if (_pingingSource != null) {
                     _pingingSource.Cancel();
@@ -519,17 +561,17 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _refreshCommand;
 
             public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async () => {
-                /*if (_pingingSource != null) {
+                if (_pingingSource != null) {
                     _pingingSource.Cancel();
                     _disposeMe.Add(_pingingSource);
                     _pingingSource = null;
                 }
 
-                await Manager.RefreshListCommand.ExecuteAsync();
+                await Manager.ReloadCommand.ExecuteAsync();
                 Manager.StopPinging();
 
                 _pingingSource = new CancellationTokenSource();
-                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();*/
+                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
             }));
 
             protected void OnCurrentChanged(object sender, EventArgs e) {
@@ -542,6 +584,7 @@ namespace AcManager.Pages.Drive {
                 if (currentId == null) return;
 
                 SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Mode={0}&Id={1}", Type, currentId);
+                ValuesStorage.Set(Key, currentId);
             }
 
             private bool _filterBooking;

@@ -194,6 +194,7 @@
     <Compile Include="Helpers\ToastWin8Helper.cs" />
     <Compile Include="IPresetsPreviewProvider.cs" />
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
+    <Compile Include="OnlineListBoxDetailedItem.cs" />
     <Compile Include="Presentation\DependencyObjectExtension.cs" />
     <Compile Include="QuickSwitches\QuickSwitchComboBox.cs" />
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
@@ -205,6 +206,9 @@
     </Compile>
     <Compile Include="StatEntry.cs" />
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
+    <Compile Include="UserControls\OnlineListBoxDetailedItemUc.xaml.cs">
+      <DependentUpon>OnlineListBoxDetailedItemUc.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
@@ -426,6 +430,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ModernPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\OnlineListBoxDetailedItemUc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

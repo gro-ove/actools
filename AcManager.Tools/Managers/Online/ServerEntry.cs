@@ -98,7 +98,7 @@ namespace AcManager.Tools.Managers.Online {
             public bool IsAvailable => Total == 0 || Available > 0;
 
             public override string DisplayName {
-                get { return Total == 0 ? CarObject.DisplayName : $"{CarObject.DisplayName} ({Available}/{Total})"; }
+                get { return Total == 0 ? CarObject.DisplayName : $@"{CarObject.DisplayName} ({Available}/{Total})"; }
                 set { }
             }
 
@@ -226,7 +226,13 @@ namespace AcManager.Tools.Managers.Online {
 
         private void SetSomeProperties(ServerInformation information) {
             PreviousUpdateTime = DateTime.Now;
-            DisplayName = Regex.Replace(information.Name.Trim(), @"\s+", " ");
+
+            var newDisplayName = Regex.Replace(information.Name.Trim(), @"\s+", " ");
+            if (DisplayName != null && Regex.IsMatch(newDisplayName, @"^AA+") && !Regex.IsMatch(DisplayName, @"^AA+")) {
+                DisplayName = Regex.Replace(newDisplayName, @"^AA+\s*", "");
+            } else {
+                DisplayName = newDisplayName;
+            }
 
             {
                 var country = information.Country.FirstOrDefault() ?? "";
@@ -260,7 +266,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
-            Time = $"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
+            Time = $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
 
             Sessions = information.SessionTypes.Select((x, i) => new Session {
@@ -330,7 +336,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private const string PasswordStorageKeyBase = "__smt_pw";
 
-        private string PasswordStorageKey => $"{PasswordStorageKeyBase}_{Id}";
+        private string PasswordStorageKey => $@"{PasswordStorageKeyBase}_{Id}";
 
         private string _password;
 
@@ -530,7 +536,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public string DisplayClients => $"{CurrentDriversCount}/{Capacity}";
+        public string DisplayClients => $@"{CurrentDriversCount}/{Capacity}";
 
         private long? _ping;
 
@@ -679,7 +685,29 @@ namespace AcManager.Tools.Managers.Online {
             return UpdateInner(mode, background);
         }
 
-        private async Task UpdateInner(UpdateMode mode, bool background = false) {
+        private double _updateProgress;
+
+        public double UpdateProgress {
+            get { return _updateProgress; }
+            set {
+                if (Equals(value, _updateProgress)) return;
+                _updateProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _updateProgressMessage;
+
+        public string UpdateProgressMessage {
+            get { return _updateProgressMessage; }
+            set {
+                if (Equals(value, _updateProgressMessage)) return;
+                _updateProgressMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async Task UpdateInner(UpdateMode mode, bool background) {
             var errorMessage = "";
 
             try {
@@ -700,6 +728,8 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (mode == UpdateMode.Full) {
+                    UpdateProgress = 0.1;
+                    UpdateProgressMessage = "Loading actual server information…";
                     var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly
                             ? KunosApiProvider.TryToGetInformationDirect(Ip, PortC) : KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
@@ -711,6 +741,8 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
 
+                UpdateProgress = 0.2;
+                UpdateProgressMessage = "Pinging server…";
                 var pair = SettingsHolder.Online.ThreadsPing
                         ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
                         : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout);
@@ -722,6 +754,8 @@ namespace AcManager.Tools.Managers.Online {
                     return;
                 }
 
+                UpdateProgress = 0.3;
+                UpdateProgressMessage = "Loading players list…";
                 var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortC);
                 if (information == null) {
                     errorMessage = ToolsStrings.Online_Server_Unavailable;
@@ -744,9 +778,15 @@ namespace AcManager.Tools.Managers.Online {
 
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
+                    UpdateProgress = 0.4;
+                    UpdateProgressMessage = "Loading cars…";
                     await Task.Delay(50);
                     carObjects = new List<CarObject>(CarsOrTheirIds.Count);
+
+                    var i = 0;
                     foreach (var carOrOnlyCarIdEntry in CarsOrTheirIds.Select(x => x.CarObjectWrapper).Where(x => x != null)) {
+                        UpdateProgress = 0.4 + 0.2 * i++ / CarsOrTheirIds.Count;
+                        UpdateProgressMessage = $"Loading cars ({carOrOnlyCarIdEntry.Id})…";
                         var loaded = await carOrOnlyCarIdEntry.LoadedAsync();
                         carObjects.Add((CarObject)loaded);
                     }
@@ -755,10 +795,17 @@ namespace AcManager.Tools.Managers.Online {
                                   where x.CarObjectWrapper != null
                                   select (CarObject)x.CarObjectWrapper.Value).ToList();
                 }
-
-                foreach (var carObject in carObjects.Where(carObject => carObjects.Any(x => !x.SkinsManager.IsLoaded))) {
-                    await Task.Delay(50);
-                    await carObject.SkinsManager.EnsureLoadedAsync();
+                
+                {
+                    var i = 0;
+                    var l = carObjects.Count(x => !x.SkinsManager.IsLoaded);
+                    foreach (var carObject in carObjects.Where(x => !x.SkinsManager.IsLoaded)) {
+                        UpdateProgress = 0.6 + 0.2 * i++ / l;
+                        
+                        UpdateProgressMessage = $"Loading {carObject.DisplayName} skins…";
+                        await Task.Delay(50);
+                        await carObject.SkinsManager.EnsureLoadedAsync();
+                    }
                 }
 
                 List<CarEntry> cars;
@@ -822,11 +869,12 @@ namespace AcManager.Tools.Managers.Online {
                     LoadSelectedCar();
                 }
             } catch (InformativeException e) {
-                errorMessage = $"{e.Message}.";
+                errorMessage = $@"{e.Message}.";
             } catch (Exception e) {
                 errorMessage = string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message);
                 Logging.Warning("UpdateInner(): " + e);
             } finally {
+                UpdateProgressMessage = null;
                 ErrorMessage = errorMessage;
                 if (!string.IsNullOrWhiteSpace(errorMessage)) {
                     Status = ServerStatus.Error;
@@ -1091,6 +1139,10 @@ namespace AcManager.Tools.Managers.Online {
 
         public static void RegisterFactory(IAnyFactory<IBookingUi> factory) {
             _factory = factory;
+        }
+
+        public override string ToString() {
+            return Id;
         }
     }
 }

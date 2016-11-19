@@ -15,6 +15,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Size _viewportSize;
         private Point _offset;
         private ItemsControl _itemsControl;
+        private IRecyclingItemContainerGenerator _itemsGenerator;
         private readonly Dictionary<UIElement, Rect> _childLayouts = new Dictionary<UIElement, Rect>();
 
         public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(nameof(Orientation), typeof(Orientation),
@@ -33,7 +34,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static readonly DependencyProperty VirtualItemIndexProperty =
                 DependencyProperty.RegisterAttached("VirtualItemIndex", typeof(int), typeof(VirtualizingTilePanel), new PropertyMetadata(-1));
-        private IRecyclingItemContainerGenerator _itemsGenerator;
 
         private bool _isInMeasure;
 
@@ -459,7 +459,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var tooLarge = (bottomChild - topChild) > (bottomView - topView);
             return offBottom || offTop ? (offBottom && !tooLarge || offTop && tooLarge ? topChild : bottomChild - (bottomView - topView)) : topView;
         }
-
 
         public ItemLayoutInfo GetVisibleItemsRange() {
             return GetLayoutInfo(_viewportSize, _itemWidth, _itemHeight, GetExtentInfo(_viewportSize));
