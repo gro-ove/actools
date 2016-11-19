@@ -39,14 +39,12 @@
                     <StackPanel>
                         <DockPanel ToolTip="Preferable temperature diapason in Celsius, example: “10-15,17-20,22”">
                             <Label Content="Temperature diapason:" />
-                            <TextBox Text="{Binding SelectedObject.TemperatureDiapason}" mui:WatermarkService.Watermark="?"
-                                    mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                            <mui:BetterTextBox Text="{Binding SelectedObject.TemperatureDiapason}" Placeholder="?" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Preferable time diapason in 24-hour format, example: “10:30-11:00,11:30-15:25”">
                             <Label Content="Time diapason:" />
-                            <TextBox Text="{Binding SelectedObject.TimeDiapason}" mui:WatermarkService.Watermark="?"
-                                    mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                            <mui:BetterTextBox Text="{Binding SelectedObject.TimeDiapason}" Placeholder="?" />
                         </DockPanel>
 
                         <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using AcManager.Tools.Managers;
@@ -80,7 +81,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public override bool Equals(object obj) {
-                return obj is ResolutionEntry && Equals((ResolutionEntry)obj);
+                var a = obj as ResolutionEntry;
+                return a != null && Equals(a);
             }
 
             public override int GetHashCode() {
@@ -207,7 +209,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static bool InitializeAcVideoModes() {
             if (!_acVideoModesInitialized) {
                 if (!AcRootDirectory.Instance.IsReady) return false;
-                Kernel32.SetDllDirectory(AcRootDirectory.Instance.Value);
+
+                var libDirectory = Kernel32.GetDllDirectory();
+                Logging.Debug($"Libs directory: {libDirectory}");
+
+                if (libDirectory == null) {
+                    Kernel32.SetDllDirectory(AcRootDirectory.Instance.Value);
+                } else {
+                    var lib = new FileInfo(Path.Combine(AcRootDirectory.Instance.RequireValue, "acVideoModes.dll"));
+                    var destination = new FileInfo(Path.Combine(libDirectory, lib.Name));
+                    if (lib.Exists && (!destination.Exists || lib.LastWriteTime > destination.LastWriteTime)) {
+                        lib.CopyTo(destination.FullName, true);
+                        Logging.Debug("Lib copied");
+                    }
+                }
+
                 _acVideoModesInitialized = true;
             }
 

@@ -12,6 +12,9 @@
     <mui:ModernToggleButton x:Key="WidgetHideSteeringWheel" IsChecked="{Binding HideSteeringWheel, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_HideWheel}" IconData="{StaticResource HideIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideWheel_Tooltip}" />
+    <mui:ModernToggleButton x:Key="WidgetHideDriver" IsChecked="{Binding HideDriver, Source={x:Static t:AcSettingsHolder.System}}"
+            Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" IconData="{StaticResource HideIconData}"
+            ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}" />
     <mui:ModernToggleButton x:Key="WidgetLockSteeringWheel" IsChecked="{Binding LockSteeringWheel, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_LockWheel}" IconData="{StaticResource LockIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_LockWheel_Tooltip}" />

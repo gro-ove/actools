@@ -252,6 +252,7 @@
     <Compile Include="Helpers\AcSettings\ProximityIndicatorSettings.cs" />
     <Compile Include="Helpers\AcSettings\ReplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GraphicsSettings.cs" />
+    <Compile Include="Helpers\AcSettings\SessionInfoSettings.cs" />
     <Compile Include="Helpers\AcSettings\SystemSettings.cs" />
     <Compile Include="Helpers\AcSettings\ControlsSettings.cs" />
     <Compile Include="Helpers\AcSettings\SkidmarksSettings.cs" />

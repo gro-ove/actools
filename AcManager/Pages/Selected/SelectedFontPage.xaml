@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="SelectedFontPage_OnLoaded">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}"
             IconMouseDown="AcObjectBase_OnIconMouseDown">
@@ -49,8 +50,9 @@
 
             <StackPanel Margin="8 12 8 0">
                 <TextBlock Text="{x:Static g:AppStrings.AcObject_FontUsedInLabel}" Style="{StaticResource Label}" Margin="0 12 0 0" />
-                <TextBlock Text="{Binding SelectedObject.UsingsCarsIds, Converter={x:Static selected:SelectedFontPage.UsingsConverter}, IsAsync=True}"
-                        attached:WatermarkService.Watermark="?" Margin="0 4 0 0" TextWrapping="Wrap" FontWeight="Bold" />
+                <mui:PlaceholderTextBlock
+                        Text="{Binding SelectedObject.UsingsCarsIds, Converter={x:Static selected:SelectedFontPage.UsingsConverter}, IsAsync=True}"
+                        Placeholder="?" Margin="0 4 0 0" TextWrapping="Wrap" FontWeight="Bold" />
                 <TextBlock TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0"
                         Text="{Binding Manager.LastUsingsRescan, StringFormat={x:Static g:AppStrings.AcObject_FontLastScannedFormat}, TargetNullValue={x:Static g:AppStrings.AcObject_FontLastScannedNever}}" />
                 <Button Margin="0 4 0 0" Command="{Binding UsingsRescanCommand}" Content="{x:Static g:AppStrings.AcObject_UsingsRescan}" />

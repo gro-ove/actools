@@ -228,6 +228,12 @@
   <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
     <value>Hide steering wheel</value>
   </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Hide driver</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Hide driver model</value>
+  </data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
     <value>Lock wheel</value>
   </data>
