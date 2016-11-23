@@ -1,11 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using AcManager.Tools.Helpers;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using ContextMenuEventArgs = Awesomium.Core.ContextMenuEventArgs;
 
 namespace AcManager.Controls.Helpers {
     public class ResourceInterceptor : IResourceInterceptor {
@@ -15,6 +22,7 @@ namespace AcManager.Controls.Helpers {
                 https?://(?:
                     googleads\.g\.doubleclick\.net/ |
                     apis\.google\.com/se/0/_/\+1 |
+                    pagead2\.googlesyndication\.com/pagead |
                     staticxx\.facebook\.com/connect |
                     syndication\.twitter\.com/i/jot |
                     platform\.twitter\.com/widgets |
@@ -43,7 +51,55 @@ namespace AcManager.Controls.Helpers {
         static BetterWebControl() {
             WebCore.ResourceInterceptor = new ResourceInterceptor();
         }
-    
+
+        protected override void OnShowContextMenu(ContextMenuEventArgs e) {
+            var menu = new ContextMenu {
+                Items = {
+                    new MenuItem { Command = NavigationCommands.BrowseBack },
+                    new MenuItem { Command = NavigationCommands.BrowseForward },
+                    new MenuItem { Command = NavigationCommands.Refresh },
+                    new Separator(),
+                    new MenuItem { Command = ApplicationCommands.SelectAll }
+                }
+            };
+
+            if (e.Info.HasLinkURL) {
+                menu.Items.Insert(0, new MenuItem {
+                    Header = "Open Link In Default Browser",
+                    Command = new DelegateCommand<Uri>(WindowsHelper.ViewInBrowser),
+                    CommandParameter = e.Info.LinkURL
+                });
+                menu.Items.Insert(1, new Separator());
+            }
+
+            /*var openLinkInNewTab = new MenuItem();
+            openLinkInNewTab.Header = "Open Link In New Tab";
+            openLinkInNewTab.PreviewMouseLeftButtonDown += openLinkInNewTab_PreviewMouseLeftButtonDown;*/
+            
+
+
+            /*if (e.Info.HasLinkURL) {
+
+                e.Handled = true;
+                menu.Items.Add(new Separator());
+                menu.Items.Add(openLinkInNewTab);
+                menu.IsOpen = true;
+            }
+            */
+
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
+
+        //public BetterWebControl() {
+        //    Loaded += OnLoaded;
+        //}
+
+        //private void OnLoaded(object sender, RoutedEventArgs e) {
+        //    Logging.Debug(ContextMenu);
+        //    ContextMenu.Style = FindResource(@"ContextMenuStyle") as Style;
+        //}
+
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),
                 typeof(BetterWebControl), new PropertyMetadata(OnUserAgentChanged));
 

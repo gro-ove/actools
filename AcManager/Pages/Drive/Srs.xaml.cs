@@ -20,12 +20,13 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
@@ -58,6 +59,12 @@ namespace AcManager.Pages.Drive {
                 PortHttp = portHttp;
                 Password = string.IsNullOrWhiteSpace(password) ? null : password;
                 DisplayName = string.IsNullOrWhiteSpace(name) ? null : name;
+
+                /*if (Ip == null) {
+                    Ip = "85.114.140.51";
+                    Port = 9601;
+                    PortHttp = 8082;
+                }*/
             }
         }
 
@@ -108,6 +115,8 @@ namespace AcManager.Pages.Drive {
                 Server = null;
                 Player = null;
                 CarId = null;
+                CarSkin = null;
+                TrackId = null;
                 StartTime = null;
                 QuitUrl = null;
             }
@@ -129,10 +138,12 @@ namespace AcManager.Pages.Drive {
 
             private PlayerInformation _player;
 
+            [CanBeNull]
             public PlayerInformation Player {
                 get { return _player; }
                 set {
                     if (Equals(value, _player)) return;
+                    Logging.Debug(value?.DisplayName);
                     _player = value;
                     OnPropertyChanged();
                     _goCommand?.RaiseCanExecuteChanged();
@@ -142,6 +153,7 @@ namespace AcManager.Pages.Drive {
 
             private ServerInformation _server;
 
+            [CanBeNull]
             public ServerInformation Server {
                 get { return _server; }
                 set {
@@ -179,7 +191,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public TimeSpan? LeftTime => _startTime.HasValue ? _startTime - DateTime.Now : null;
+            public TimeSpan? LeftTime => !_startTime.HasValue ? null : _startTime > DateTime.Now ? _startTime - DateTime.Now : TimeSpan.Zero;
 
             public void OnTick() {
                 if (_startTime.HasValue) {
@@ -205,10 +217,12 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            [CanBeNull]
             public CarObject Car { get; private set; }
 
             private CarSkinObject _carSkin;
 
+            [CanBeNull]
             public CarSkinObject CarSkin {
                 get { return _carSkin; }
                 set {
@@ -217,6 +231,23 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                 }
             }
+
+            private string _trackId;
+
+            public string TrackId {
+                get { return _trackId; }
+                set {
+                    if (Equals(value, _trackId)) return;
+                    _trackId = value;
+                    OnPropertyChanged();
+
+                    Track = string.IsNullOrWhiteSpace(value) ? null : TracksManager.Instance.GetLayoutByKunosId(value);
+                    OnPropertyChanged(nameof(Track));
+                }
+            }
+
+            [CanBeNull]
+            public TrackObjectBase Track { get; private set; }
 
             public async Task<bool> Go() {
                 if (Server?.Ip == null || Player == null || CarId == null) return false;
@@ -227,6 +258,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     var anyTrack = TracksManager.Instance.GetDefault();
+                    Logging.Debug(Server.DisplayName);
                     await GameWrapper.StartAsync(new Game.StartProperties {
                         BasicProperties = new Game.BasicProperties {
                             CarId = CarId,
@@ -244,9 +276,9 @@ namespace AcManager.Pages.Drive {
                         },
                         AdditionalPropertieses = {
                             new SrsMark {
-                                Name = Player.DisplayName,
-                                Team = Player.Team,
-                                Nationality = Player.Nationality
+                                Name = Player.DisplayName ?? "",
+                                Team = Player.Team ?? "",
+                                Nationality = Player.Nationality ?? ""
                             }
                         }
                     });
@@ -271,8 +303,6 @@ namespace AcManager.Pages.Drive {
 
         public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new AsyncCommand(async () => {
             WebBrowser.Navigate(Model.QuitUrl);
-            await Task.Delay(500);
-            WebBrowser.Navigate(Model.StartPage);
             await Task.Delay(500);
         }, () => Model.CanQuit));
 
@@ -311,14 +341,14 @@ namespace AcManager.Pages.Drive {
                         var liveries = new StringBuilder();
                         foreach (var x in skins) {
                             liveries.Append(
-                                    $"<img data-skin-id='{HttpUtility.HtmlEncode(x.Id)}' width=24 style='margin-left:2px' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(x.LiveryImage))}'>");
+                                    $@"<img data-skin-id='{HttpUtility.HtmlEncode(x.Id)}' width=24 style='margin-left:2px' src='{await Associated.GetImageUrlAsync(x.LiveryImage)}'>");
                         }
 
                         Associated.Execute($@"
-document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(skin.PreviewImage))}'>"";
-document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(car.LogoIcon))}'>"";
+document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='{await Associated.GetImageUrlAsync(skin.PreviewImage)}'>"";
+document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='{await Associated.GetImageUrlAsync(car.LogoIcon)}'>"";
 document.querySelector('[id^=""{id}3""]').innerHTML = ""{liveries}"";
-document.querySelector('[id^=""{id}4""]').innerHTML = ""{HttpUtility.HtmlEncode(skin.Id)}"";
+document.querySelector('[id^=""{id}4""]').textContent = {JsonConvert.SerializeObject(skin.Id)};
 
 var l = document.querySelectorAll('[id^=""{id}3""] img');
 for (var i = 0; i < l.length; i++){{
@@ -344,22 +374,80 @@ for (var i = 0; i < l.length; i++){{
                 var skin = await car.SkinsManager.GetByIdAsync(skinId);
                 if (skin == null) return;
 
-                Associated.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = 'data:image/png;base64,{
-                        Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(skin.PreviewImage))}';");
+                Associated.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = '{await Associated.GetImageUrlAsync(skin.PreviewImage)}';");
+            }
+
+            public void SetParam(string key, string value) {
+                switch (key) {
+                    case "REMOTE/REQUESTED_CAR":
+                        _model.CarId = value;
+                        break;
+                    case "CAR_0/SKIN":
+                        _model.CarSkin = _model.Car == null ? null :
+                                (string.IsNullOrWhiteSpace(value) ? null : _model.Car.GetSkinById(value)) ?? _model.Car.SelectedSkin;
+                        break;
+                    case "REMOTE/SERVER_IP":
+                        if (value != _model.Server?.Ip) {
+                            _model.Server = new ServerInformation(value, _model.Server?.Port, _model.Server?.PortHttp, _model.Server?.Password,
+                                    _model.Server?.DisplayName);
+                        }
+                        break;
+                    case "REMOTE/SERVER_PORT":
+                        var port = FlexibleParser.TryParseInt(value);
+                        if (port != _model.Server?.Port) {
+                            _model.Server = new ServerInformation(_model.Server?.Ip, port, _model.Server?.PortHttp, _model.Server?.Password,
+                                    _model.Server?.DisplayName);
+                        }
+                        break;
+                    case "REMOTE/SERVER_HTTP_PORT":
+                        var portHttp = FlexibleParser.TryParseInt(value);
+                        if (portHttp != _model.Server?.PortHttp) {
+                            _model.Server = new ServerInformation(_model.Server?.Ip, _model.Server?.Port, portHttp,
+                                    _model.Server?.Password, _model.Server?.DisplayName);
+                        }
+                        break;
+                    case "REMOTE/PASSWORD":
+                        if (value != _model.Server?.Password) {
+                            _model.Server = new ServerInformation(_model.Server?.Ip, _model.Server?.Port, _model.Server?.PortHttp, value,
+                                    _model.Server?.DisplayName);
+                        }
+                        break;
+                    case "REMOTE/SERVER_NAME":
+                        if (value != _model.Server?.DisplayName) {
+                            _model.Server = new ServerInformation(_model.Server?.Ip, _model.Server?.Port, _model.Server?.PortHttp, _model.Server?.Password,
+                                    value);
+                        }
+                        break;
+                    case "REMOTE/NAME":
+                        Logging.Debug(value);
+                        if (value != _model.Player?.DisplayName) {
+                            _model.Player = new PlayerInformation(value, _model.Player?.Team, _model.Player?.Nationality);
+                        }
+                        break;
+                    case "REMOTE/TEAM":
+                        if (value != _model.Player?.Team) {
+                            _model.Player = new PlayerInformation(_model.Player?.DisplayName, value, _model.Player?.Nationality);
+                        }
+                        break;
+                    case "CAR_0/NATIONALITY":
+                        if (value != _model.Player?.Nationality) {
+                            _model.Player = new PlayerInformation(_model.Player?.DisplayName, _model.Player?.Team, value);
+                        }
+                        break;
+                }
             }
 
             public void SetParams(string json) {
-                Logging.Write("SetParams(): " + json);
-
                 if (json == null) {
                     _model.Reset();
                     return;
                 }
 
                 var obj = JObject.Parse(json);
-                var carId = obj.GetStringValueOnly("REMOTE/REQUESTED_CAR");
+                _model.CarId = obj.GetStringValueOnly("REMOTE/REQUESTED_CAR");
+                _model.TrackId = obj.GetStringValueOnly("track");
+
                 var carSkinId = obj.GetStringValueOnly("CAR_0/SKIN");
-                _model.CarId = carId;
                 _model.CarSkin = _model.Car == null ? null :
                         (string.IsNullOrWhiteSpace(carSkinId) ? null : _model.Car.GetSkinById(carSkinId)) ?? _model.Car.SelectedSkin;
 
@@ -369,15 +457,54 @@ for (var i = 0; i < l.length; i++){{
                         obj.GetIntValueOnly("REMOTE/SERVER_HTTP_PORT"),
                         obj.GetStringValueOnly("REMOTE/PASSWORD"),
                         obj.GetStringValueOnly("REMOTE/SERVER_NAME"));
+                Logging.Debug(obj.GetStringValueOnly("REMOTE/NAME"));
                 _model.Player = new PlayerInformation(
                         obj.GetStringValueOnly("REMOTE/NAME"),
                         obj.GetStringValueOnly("REMOTE/TEAM"),
                         obj.GetStringValueOnly("CAR_0/NATIONALITY"));
-
+                
                 var secondsLeft = obj.GetIntValueOnly("time");
                 _model.StartTime = secondsLeft.HasValue ? DateTime.Now + TimeSpan.FromSeconds(secondsLeft.Value) : (DateTime?)null;
 
                 _model.QuitUrl = obj.GetStringValueOnly("quit");
+                UpdateWaitingPage();
+            }
+
+            public async void UpdateWaitingPage() {
+                Associated?.Execute($@"
+document.getElementById('{_model.CarId}1').innerHTML = '<img id=""mclaren_mp412c_gt3"" src=""{
+                        await Associated.GetImageUrlAsync(_model.CarSkin?.PreviewImage)}"" height=""200"">';
+document.getElementById('{_model.CarId}2').innerHTML = '<img style=""margin-top:145px;float:left"" src=""{
+                        await Associated.GetImageUrlAsync(_model.Car?.LogoIcon)}"" width=""48"">';
+document.getElementById('{_model.CarId}3').innerHTML = '<img style=""margin-left:300px;margin-right:10px;margin-top:160px;float:left"" src=""{
+                        await Associated.GetImageUrlAsync(_model.CarSkin?.LiveryImage)}"" width=""32"">';
+document.getElementById('{_model.CarId}6').textContent = {
+                        JsonConvert.SerializeObject(_model.Car?.DisplayName ?? @"?")};
+document.getElementById('{_model.CarId}7').textContent = {
+                        JsonConvert.SerializeObject(_model.Track?.Name ?? @"?")};
+document.getElementById('{_model.CarId}4').innerHTML = '<img src=""{
+                        await Associated.GetImageUrlAsync(_model.Track?.PreviewImage)}"" width=""355"">';
+document.getElementById('{_model.CarId}5').innerHTML = '<img src=""{
+                        await Associated.GetImageUrlAsync(_model.Track?.OutlineImage)}"" height=""192"">';");
+            }
+
+            public string GetCarName(string carId) {
+                return CarsManager.Instance.GetById(carId)?.DisplayName;
+            }
+
+            public void GetCarNameCallback(string carId, string callbackName) {
+                Associated?.Execute($@"{callbackName}({JsonConvert.SerializeObject(CarsManager.Instance.GetById(carId)?.DisplayName)})");
+            }
+
+            public bool ContentExists(string trackId, string carIdsJson) {
+                return TracksManager.Instance.GetLayoutByKunosId(trackId) != null &&
+                        JArray.Parse(carIdsJson).Select(x => x?.ToString() ?? "").All(x => CarsManager.Instance.GetWrapperById(x) != null);
+            }
+
+            public void ContentExistsCallback(string trackId, string carIdsJson, string callbackName) {
+                var result = TracksManager.Instance.GetLayoutByKunosId(trackId) != null &&
+                        JArray.Parse(carIdsJson).Select(x => x?.ToString() ?? "").All(x => CarsManager.Instance.GetWrapperById(x) != null);
+                Associated?.Execute($@"{callbackName}({(result ? @"true" : @"false")})");
             }
 
             public void Go() {
@@ -392,40 +519,34 @@ for (var i = 0; i < l.length; i++){{
                                   .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
         }
 
-        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
-            var uri = e.Url;
-            if (uri.StartsWith(@"http://www.simracingsystem.com/select.php?", StringComparison.OrdinalIgnoreCase)) {
-                WebBrowser.Execute(@"
-var s = document.createElement('style');
-s.innerHTML = '#content { display: none !important }';
-s.setAttribute('id', '__cm_style_tmp');
-document.head.appendChild(s);");
-
-                WebBrowser.Execute(@"
+        private void SrsCommon() {
+            WebBrowser.Execute($@"
+/* Set user Steam ID */
 var g = document.getElementById('gui');
-if (g){
-    g.innerHTML = '" + (SteamIdHelper.Instance.Value ?? "") + @"';
-    window.external.Log('GUID set: ' + g.innerHTML);
+if (g){{
+    g.innerHTML = {JsonConvert.SerializeObject(SteamIdHelper.Instance.Value ?? "")};
+}} else {{
+    window.external.Log('Nothing to set GUID to (' + location + ')');
+}}
 
-    var s = document.getElementById('__cm_style_tmp');
-    if (s) s.parentNode.removeChild(s);
-} else {
-    window.external.Log('Nothing to set GUID to!');
-}
+/* Modify labels */
+var t = document.querySelector('#shoutbox input.text');
+if (t){{
+    t.setAttribute('placeholder', 'Join the chat');
+}}", true);
+        }
 
-var a = [];
-var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
-for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
-window.external.SetCars(JSON.stringify(a));", true);
-            } else if (Regex.IsMatch(uri, @"http://(?:www\.)simracingsystem\.com/race\d*\.php", RegexOptions.IgnoreCase)) {
-                Logging.Write("WebBrowser_OnPageLoaded(): " + uri);
-                WebBrowser.Execute(@"
+        private void SrsMainOld() {
+            /* Old SRS (let’s keep it for now just in case) */
+            WebBrowser.Execute(@"
+/* User is not registered to any race yet, hide params */
 var b = document.querySelector('[onclick*=""REMOTE/REQUESTED_CAR""]');
 if (!b){
     window.external.SetParams(null);
     return;
 }
 
+/* Set next race params */
 var o = {};
 b.getAttribute('onclick').replace(/\/\/setsetting\/race\?(\w+\/\w+)=([^']*)/g, function(_, k, v){ o[k] = v == '' ? null : v; });
 
@@ -445,6 +566,122 @@ b.removeAttribute('onclick');
 b.addEventListener('click', function (){
     window.external.Go();
 }, false)", true);
+        }
+
+        private void SrsMain() {
+            /* Updated SRS (21/11/2016) */
+            WebBrowser.Execute(@"
+/* Test if content is available and fix register buttons in events list */
+[].forEach.call(document.querySelectorAll('input[id^=""btn""][value=""""]'), function(e){
+    var s = e.parentNode.childNodes[[].indexOf.call(e.parentNode.childNodes, e) + 1].innerHTML;
+    var t = /top\.__AC\.findTrack\('([^']+)'/.test(s) && RegExp.$1 || null;
+    var c = []; s.replace(/top\.__AC\.findCar\('([^']+)'/g, function(_, i){ c.push(i); });
+    e.value = window.external.ContentExists(t, JSON.stringify(c)) ? 'Register' : 'Missing';
+});
+
+/* Set next race params */
+var o = {}, found = false;
+
+/* Take quit URL from its button */
+try {
+    var quitButton = document.querySelector('input[onclick*=""unregsrs.php""]');
+    var quitUrl = location.host + '/' + quitButton.getAttribute('onclick').match(/'(?:\.\/)?([^']*unregsrs[^']+)'/)[1];
+    quitButton.onclick = function(){ location = '//' + quitUrl; };
+    o['quit'] = quitUrl;
+} catch(e){}
+
+/* Go through every script tag and analyze stuff */
+[].forEach.call(document.querySelectorAll('script'), function(e){
+    var s = e.innerHTML;
+    if (s.indexOf('top.__AC.findTrack(') !== -1){
+        o['track'] = /top\.__AC\.findTrack\('([^']+)'/.test(s) ? RegExp.$1 : null;
+        o['car'] = /top\.__AC\.Cars\.(\w+)/.test(s) ? RegExp.$1 : null;
+    }
+
+    if (s.indexOf('new Countdown(') !== -1 && /\s+time:(\d+),/.test(s)){
+        o['time'] = +RegExp.$1;
+    }
+
+    if (/\$\('#mainbuttondiv'\).load\('([^']+)'/.test(s)){
+        $.ajax(RegExp.$1).done(function(r){ 
+            r.replace(/\/\/setsetting\/race\?(\w+\/\w+)=([^']*)/g, function(_, k, v){ o[k] = v == '' ? null : v; });
+            window.external.SetParams(JSON.stringify(o));
+        });
+        found = true;
+    }
+});
+
+if (!found){
+    window.external.SetParams(null);
+}
+
+/* Catch all $.get requests */
+if (!$._get_orig) $._get_orig = $.get;
+$.get = function(p){ 
+    var s = p.split('?');
+    switch (s[0]){
+        case 'ac://start/':
+            window.external.Go();
+            break;
+        case 'ac://setsetting/race':
+            if (/^(\w+\/\w+)=([\s\S]*)$/.test(s[1])){
+                window.external.SetParam(RegExp.$1, RegExp.$2);
+            }
+            break;
+        default:
+            $._get_orig.apply($, arguments);
+            break;
+    }
+};
+
+/* Modify car’s block until data will arrive (outside) */
+if (o['car']){
+    var e = document.querySelector('#' + o['car'] + '4');
+    if (e) e.textContent = 'Please, wait…';
+}
+
+/* Set car names */
+/*[].forEach.call(document.querySelectorAll('#regdriversupdate td:nth-child(3)'), function(e){
+    e.textContent = window.external.GetCarName(e.textContent.trim());
+});*/", true);
+        }
+
+        private void SrsSelectCar() {
+            WebBrowser.Execute(@"
+/* Fix cars list */
+var a = [];
+var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
+for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
+window.external.SetCars(JSON.stringify(a));", true);
+        }
+
+        private async void SrsUnregister() {
+            await Task.Delay(300);
+            WebBrowser.Navigate(Model.StartPage);
+            Model.Reset();
+        }
+
+        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
+            var uri = e.Url;
+
+            SrsCommon();
+
+            var query = Regex.Match(uri, @"/(\w+?)\d*\.php", RegexOptions.IgnoreCase);
+            var page = query.Success ? query.Groups[1].Value.ToLowerInvariant() : null;
+            Logging.Debug(page);
+
+            switch (page) {
+                case "select":
+                    SrsSelectCar();
+                    break;
+
+                case "unregsrs":
+                    SrsUnregister();
+                    break;
+
+                case "race":
+                    SrsMain();
+                    break;
             }
 
             WebBrowser.UserStyle = SettingsHolder.Live.SrsCustomStyle && uri.StartsWith(@"http://www.simracingsystem.com")

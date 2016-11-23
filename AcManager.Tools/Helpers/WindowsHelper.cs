@@ -47,6 +47,11 @@ namespace AcManager.Tools.Helpers {
         }
 
         [Localizable(false)]
+        public static void ViewInBrowser([CanBeNull] Uri url) {
+            ViewInBrowser(url?.AbsoluteUri);
+        }
+
+        [Localizable(false)]
         public static void OpenFile([NotNull] string filename) {
             Process.Start(filename);
         }

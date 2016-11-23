@@ -44,6 +44,19 @@
                         <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                     </DockPanel>
 
+                    <DockPanel Margin="20 0 0 0" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                            Background="Transparent">
+                        <DockPanel.ToolTip>
+                            <StackPanel Margin="4 8">
+                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
+                                <c:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
+                            </StackPanel>
+                        </DockPanel.ToolTip>
+                        <mui:BetterImage Filename="{Binding Track.OutlineImage}" Height="16" Margin="0 0 4 0"
+                                c:ImageViewerService.Image="{Binding Track.PreviewImage}" DockPanel.Dock="Left" />
+                        <TextBlock Text="{Binding Track.Name}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
+                    </DockPanel>
+
                     <DockPanel Margin="20 0 0 0" DataContext="{Binding Player}"
                             Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Background="Transparent">
                         <DockPanel.ToolTip>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -142,14 +143,16 @@ namespace AcTools.Processes {
                 var section = file["REMOTE"];
                 section.Set("SERVER_IP", ServerIp);
                 section.Set("SERVER_PORT", ServerPort);
-
-                /*if (ServerName != null) {
-                    raceSection.Set("SERVER_NAME", ServerName);
+                
+                if (ServerName != null) {
+                    if (!Regex.IsMatch(ServerName, @"^[\w -]+$")) {
+                        AcToolsLogging.Write($"(Warning) For safety reasons, can’t set server name to “{ServerName}”");
+                    } else {
+                        section.Set("SERVER_NAME", ServerName);
+                    }
                 } else {
-                    raceSection.Remove("SERVER_NAME");
-                }*/
-
-                section.Remove("SERVER_NAME");
+                    section.Remove("SERVER_NAME");
+                }
 
                 if (ServerHttpPort.HasValue) {
                     section.Set("SERVER_HTTP_PORT", ServerHttpPort);

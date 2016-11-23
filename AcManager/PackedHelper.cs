@@ -199,6 +199,7 @@ namespace AcManager {
 
             var existing = new FileInfo(filename);
             if (existing.Exists && existing.Length == sizeLong) {
+                // BUG: never happens?
                 if (_logFilename != null) {
                     Log("Already extracted: " + filename);
                 }
@@ -209,7 +210,7 @@ namespace AcManager {
             var bytes = GetData(id);
             if (bytes == null) throw new Exception($"Data for {id} is missing");
 
-            Log("Writing, " + bytes.Length + " bytes");
+            Log("Writing, " + bytes.Length + " bytes (saved: " + sizeLong + ")");
             File.WriteAllBytes(filename, bytes);
             return filename;
         }
@@ -330,12 +331,12 @@ namespace AcManager {
             }
         }
 
-        private bool _pathAdded;
+        // private bool _pathAdded;
 
         public void PrepareUnmanaged(string id) {
             if (_references == null) return;
 
-            Log("PREPARE UNMANAGED: " + id);
+            // Log("PREPARE UNMANAGED: " + id);
             
             /*if (!_pathAdded) {
                 SetDllDirectory(_temporaryDirectory);

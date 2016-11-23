@@ -32,6 +32,11 @@ namespace AcManager.Controls.UserControls {
             Logging.Write("" + message);
         }
 
+        public void OnError(string error, string url, int line, int column) {
+            Logging.Warning($"[{url}:{line}:{column}] {error}");
+            Associated?.OnError(error, url, line, column);
+        }
+
         public void Alert(string message) {
             ModernDialog.ShowMessage(message);
         }

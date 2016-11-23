@@ -1,10 +1,13 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls {
@@ -49,7 +52,7 @@ namespace AcManager.Controls.UserControls {
 
         public void ModifyPage() {
             Execute(@"window.__cm_loaded = true;
-window.onerror = function(err, url, lineNumber){ window.external.Log('error: `' + err + '` script: `' + url + '` line: ' + lineNumber); };
+window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };
 document.addEventListener('mousedown', function(e){ 
     var t = e.target;
     if (t.tagName != 'A' || !t.href) return;
@@ -68,8 +71,16 @@ document.addEventListener('mousedown', function(e){
 }, false);");
         }
 
+        private bool _errorHappened;
+
+        public void OnError(string error, string url, int line, int column) {
+            _errorHappened = true;
+        }
+
         public void Execute(string js) {
+            if (_inner.Source == null) return;
             try {
+                _errorHappened = false;
                 _inner.InvokeScript(@"eval", js);
             } catch (InvalidOperationException e) {
                 Logging.Warning("InvalidOperationException: " + e.Message);
@@ -78,6 +89,12 @@ document.addEventListener('mousedown', function(e){
             } catch (Exception e) {
                 Logging.Warning(e);
             }
+
+            if (_errorHappened) {
+                Logging.Debug("error happened while invoking: " + js);
+            }
+
+            _errorHappened = false;
         }
 
         public void Navigate(string url) {
@@ -132,6 +149,10 @@ document.addEventListener('mousedown', function(e){
 
         private void OnTick(object sender, EventArgs e) {
             Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
+        }
+
+        public async Task<string> GetImageUrlAsync(string filename) {
+            return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
         }
     }
 }

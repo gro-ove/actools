@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Managers.Plugins;
@@ -18,6 +19,15 @@ namespace AcManager.Controls.UserControls {
 
             InitializeComponent();
             Children.Add(child);
+        }
+
+        [ItemCanBeNull]
+        public Task<string> GetImageUrlAsync([CanBeNull] string filename) {
+            return _something.GetImageUrlAsync(filename);
+        }
+
+        public void OnError(string error, string url, int line, int column) {
+            _something.OnError(error, url, line, column);
         }
 
         private void OnNavigated(object sender, PageLoadedEventArgs e) {
@@ -103,33 +113,33 @@ namespace AcManager.Controls.UserControls {
                 jsPart = splitted[1];
             }
 
-            Execute(@"
+            Execute($@"
 var s = document.getElementById('__cm_style');
-if (s) s.parentNode.removeChild(s);
+if (s && s.parentNode) s.parentNode.removeChild(s);
 s = document.createElement('style');
 s.id = '__cm_style';
-s.innerHTML = '" + (userStyle.Replace("\r", "").Replace("\n", "\\n").Replace("'", "\\'")) + @"';
-if (document.body){
+s.innerHTML = '{userStyle.Replace("\r", "").Replace("\n", "\\n").Replace("'", "\\'")}';
+if (document.body){{
     document.body.appendChild(s);
-    " + (jsPart ?? "") + @"
-} else {
+    {jsPart ?? ""}
+}} else if (document.head){{
     var p = document.createElement('style');
-    p.innerHTML = 'body{display:none!important}html{background:black!important}'
+    p.innerHTML = 'body{{display:none!important}}html{{background:black!important}}'
     document.head.appendChild(p);
 
-    function onload(){
-        if (s.parentNode == document.head){
+    function onload(){{
+        if (s.parentNode == document.head){{
             document.head.removeChild(p);
             document.head.removeChild(s);
             document.body.appendChild(s);
-            " + (jsPart ?? "") + @"
-        }
-    }
+            {jsPart ?? ""}
+        }}
+    }}
 
     document.head.appendChild(s);
     document.addEventListener('DOMContentLoaded', onload, false);
     window.addEventListener('load', onload, false);
-}");
+}}");
         }
 
         public static readonly DependencyProperty StartPageProperty = DependencyProperty.Register(nameof(StartPage), typeof(string),

@@ -85,6 +85,7 @@ namespace AcManager.Tools.SemiGui {
             if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
                 var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);
                 if (filter.Test(online.ServerName)) {
+                    Logging.Write("Looks like this is a SRS server, let’s use SRS name");
                     properties.SetAdditional(new SrsMark {
                         Name = SrsMark.GetName(),
                         Nationality = "",

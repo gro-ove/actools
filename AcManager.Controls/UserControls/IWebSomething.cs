@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using JetBrains.Annotations;
 
@@ -32,5 +33,10 @@ namespace AcManager.Controls.UserControls {
         void OnLoaded();
 
         void OnUnloaded();
+
+        void OnError(string error, string url, int line, int column);
+
+        [ItemCanBeNull]
+        Task<string> GetImageUrlAsync([CanBeNull] string filename);
     }
 }

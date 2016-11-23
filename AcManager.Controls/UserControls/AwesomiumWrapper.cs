@@ -1,7 +1,10 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using Awesomium.Core;
 using FirstFloor.ModernUI.Helpers;
 
@@ -28,43 +31,29 @@ namespace AcManager.Controls.UserControls {
                         UserAgent = DefaultUserAgent,
                         ReduceMemoryUsageOnNavigation = true,
                         LogLevel = LogLevel.None,
-                        // RemoteDebuggingHost = "127.0.0.1",
-                        // RemoteDebuggingPort = 45451,
-                        AdditionalOptions = new [] {
+#if DEBUG
+                        RemoteDebuggingHost = @"127.0.0.1",
+                        RemoteDebuggingPort = 45451,
+#endif
+                        AdditionalOptions = new[] {
                             @"disable-desktop-notifications"
                         },
                         CustomCSS = @"
-::-webkit-scrollbar {
-    width: 8px !important;
-}
-
-::-webkit-scrollbar-track {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #000 !important;
-}
-
-::-webkit-scrollbar-thumb {
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #333 !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #444 !important;
-}
-
-::-webkit-scrollbar-thumb:active {
-    background: #666 !important;
-}"
+::-webkit-scrollbar { width: 8px!important; height: 8px!important; }
+::-webkit-scrollbar-track { box-shadow: none!important; border-radius: 0!important; background: #000!important; }
+::-webkit-scrollbar-corner { background: #000 !important; }
+::-webkit-scrollbar-thumb { border: none !important; box-shadow: none !important; border-radius: 0 !important; background: #333 !important; }
+::-webkit-scrollbar-thumb:hover { background: #444 !important; }
+::-webkit-scrollbar-thumb:active { background: #666 !important; }"
                     });
                 }
 
                 _session = WebCore.CreateWebSession(FilesStorage.Instance.GetTemporaryFilename(@"Awesomium"), new WebPreferences {
                     EnableGPUAcceleration = true,
                     WebGL = true,
-                    SmoothScrolling = false
+                    SmoothScrolling = false,
+                    FileAccessFromFileURL = true,
+                    UniversalAccessFromFileURL = true
                 });
             }
 
@@ -72,7 +61,7 @@ namespace AcManager.Controls.UserControls {
                 WebSession = _session,
                 UserAgent = DefaultUserAgent
             };
-            
+
             _inner.DocumentReady += OnDocumentReady;
             return _inner;
         }
@@ -101,7 +90,7 @@ namespace AcManager.Controls.UserControls {
 
         public void ModifyPage() {
             Execute(@"window.__cm_loaded = true;
-window.onerror = function(err, url, lineNumber){ window.external.Log('error: `' + err + '` script: `' + url + '` line: ' + lineNumber); };
+window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };
 document.addEventListener('mousedown', function(e){ 
     var t = e.target;
     if (t.tagName != 'A' || !t.href) return;
@@ -119,9 +108,10 @@ document.addEventListener('mousedown', function(e){
     }
 }, false);");
         }
-
+        
         public void Execute(string js) {
             try {
+                js = $@"(function(){{ try {{ {js} }} catch(e){{ window.external.OnError(e ? '' + (e.stack || e) : '?', '<execute>', -1, -1); }} }})()";
                 _inner.ExecuteJavascript(js);
             } catch (Exception e) {
                 Logging.Warning("Execute(): " + e);
@@ -165,5 +155,16 @@ document.addEventListener('mousedown', function(e){
         public void OnLoaded() {}
 
         public void OnUnloaded() {}
+
+        public void OnError(string error, string url, int line, int column) { }
+
+        public async Task<string> GetImageUrlAsync(string filename) {
+            return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
+        }
+
+        // Weirdly, doesn’t work?
+        public Task<string> GetImageUrlAsyncDirect(string filename) {
+            return Task.FromResult(filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri);
+        }
     }
 }
