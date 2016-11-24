@@ -22,6 +22,9 @@
         <mui:ModernButton Margin="8 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
                 IconData="F1 M 22,30L 47.75,30L 36.75,19L 48.25,19L 62.25,33L 47.25,48L 36.75,48L 47.75,37L 29,37L 29,59L 22,59L 22,30 Z"
                 ToolTip="{x:Static mui:UiStrings.Go}" DockPanel.Dock="Right" Command="NavigationCommands.GoToPage" />
-        <TextBox x:Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
+        <mui:Cell>
+            <TextBox x:Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
+            <ProgressBar x:Name="ProgressBar" Height="4" VerticalAlignment="Center" Width="80" HorizontalAlignment="Right" Margin="8 0" IsIndeterminate="True" />
+        </mui:Cell>
     </DockPanel>
 </DockPanel>

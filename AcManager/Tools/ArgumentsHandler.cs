@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,11 +31,17 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
 using SharpCompress.Readers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools {
+    internal static class NameValueCollectionExtension {
+        public static bool GetFlag(this NameValueCollection collection, [Localizable(false)] string key) {
+            return collection.Keys.OfType<string>().Contains(key) &&
+                    Regex.IsMatch(collection.Get(key) ?? @"on", @"^(1|yes|ok|on|true)$", RegexOptions.IgnoreCase);
+        }
+    }
+
     public class ArgumentsHandler {
         public async Task<ArgumentHandleResult> ProcessArgument(string argument) {
             if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
@@ -175,6 +182,9 @@ namespace AcManager.Tools {
                     case "setsteamid":
                         return ArgumentHandleResult.Ignore; // TODO?
 
+                    case "race/online":
+                        return await ProgressRaceOnline(custom.Params);
+
                     case "loadgooglespreadsheetslocale":
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"));
 
@@ -200,17 +210,87 @@ namespace AcManager.Tools {
             }
         }
 
+        public async Task<ArgumentHandleResult> ProgressRaceOnline(NameValueCollection p) {
+            /* required arguments */
+            var ip = p.Get(@"ip");
+            var port = FlexibleParser.TryParseInt(p.Get(@"port"));
+            var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
+            var carId = p.Get(@"car");
+
+            /* optional arguments */
+            var allowWithoutSteamId = p.GetFlag("allowWithoutSteamId");
+            var carSkinId = p.Get(@"skin");
+            var trackId = p.Get(@"track");
+            var name = p.Get(@"name");
+            var nationality = p.Get(@"nationality");
+            var password = p.Get(@"password");
+
+            if (string.IsNullOrWhiteSpace(ip)) {
+                throw new InformativeException("IP is missing");
+            }
+
+            if (!port.HasValue) {
+                throw new InformativeException("Port is missing or is in invalid format");
+            }
+
+            if (!httpPort.HasValue) {
+                throw new InformativeException("HTTP port is missing or is in invalid format");
+            }
+
+            if (string.IsNullOrWhiteSpace(carId)) {
+                throw new InformativeException("Car ID is missing");
+            }
+
+            var car = CarsManager.Instance.GetById(carId);
+            if (car == null) {
+                throw new InformativeException("Car is missing");
+            }
+
+            if (!string.IsNullOrWhiteSpace(carSkinId) && car.GetSkinById(carSkinId) == null) {
+                throw new InformativeException("Car skin is missing");
+            }
+
+            var track = string.IsNullOrWhiteSpace(trackId) ? null : TracksManager.Instance.GetLayoutByKunosId(trackId);
+            if (!string.IsNullOrWhiteSpace(trackId) && track == null) {
+                throw new InformativeException("Track is missing");
+            }
+
+
+            if (!SteamIdHelper.Instance.IsReady && !allowWithoutSteamId) {
+                throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
+            }
+
+            await GameWrapper.StartAsync(new Game.StartProperties {
+                BasicProperties = new Game.BasicProperties {
+                    CarId = carId,
+                    TrackId = track?.MainTrackObject.Id ?? @"imola",
+                    TrackConfigurationId = track?.LayoutId,
+                    CarSkinId = carSkinId,
+                    DriverName = name,
+                    DriverNationality = nationality
+                },
+                ModeProperties = new Game.OnlineProperties {
+                    Guid = SteamIdHelper.Instance.Value,
+                    ServerIp = ip,
+                    ServerPort = port.Value,
+                    ServerHttpPort = httpPort.Value,
+                    Password = password,
+                    RequestedCar = carId
+                }
+            });
+
+            return ArgumentHandleResult.Successful;
+        }
+
         public async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale) {
             if (string.IsNullOrWhiteSpace(id)) {
-                Logging.Warning("ID is missing");
-                return ArgumentHandleResult.FailedShow;
+                throw new InformativeException("ID is missing");
             }
 
             var url = $"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
             var path = await LoadRemoveFileTo(url, LocaleHelper.GetGoogleSheetsFilename());
             if (string.IsNullOrWhiteSpace(path)) {
-                Logging.Warning("Can’t load file");
-                return ArgumentHandleResult.FailedShow;
+                throw new InformativeException("Can’t load file");
             }
 
             SettingsHolder.Locale.LoadUnpacked = true;

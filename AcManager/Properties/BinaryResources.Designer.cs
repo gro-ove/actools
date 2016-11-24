@@ -112,44 +112,42 @@ namespace AcManager.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to body {
-        ///background:#000!important;
+        ///  background: #000 !important;
         ///}
         ///
-        ///body,#cntdwn,.driver_profile {
-        ///color:#FFF!important;
+        ///body, #cntdwn, .driver_profile {
+        ///  color: #FFF !important;
         ///}
         ///
         ///* {
-        ///font-family:Segoe UI, sans-serif!important;
+        ///  font-family: Segoe UI, sans-serif !important;
         ///}
         ///
         ///a {
-        ///color:#E20035!important;
+        ///  color: #E20035 !important;
         ///}
         ///
         ///#page {
-        ///background:#333!important;
+        ///  background: #333 !important;
         ///}
         ///
-        ///h1,h2 {
-        ///font-weight:100!important;
-        ///font-family:Segoe UI Light, Segoe UI, sans-serif!important;
+        ///h1, h2 {
+        ///  font-weight: 100 !important;
+        ///  font-family: Segoe UI Light, Segoe UI, sans-serif !important;
         ///}
         ///
         ///.margin_top_0 {
-        ///margin-top:20px!important;
+        ///  margin-top: 20px !important;
         ///}
         ///
         ///.dd {
-        ///font-size:12px;
+        ///  font-size: 12px;
         ///}
         ///
-        ///#track_msdd,#car_msdd {
-        ///width:300px!important;
+        ///#track_msdd, #car_msdd {
+        ///  width: 300px !important;
         ///}
-        ///
-        ///#car_msdd ~ .submit_button {
-        ///margin-left: [rest of string was truncated]&quot;;.
+        ///        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RsrStyle {
             get {
@@ -178,19 +176,21 @@ namespace AcManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #content &gt; div &gt; div + div,.header .logo,.header .mainmenu,.newmenucenter,.menu.bottom_links,#footer .lower,.newmenu + .wrapper,div[id^=Box_jbeeb_] {
-        ///display:none!important;
+        ///   Looks up a localized string similar to #content &gt; div &gt; div + div, .header .logo, .header .mainmenu, .newmenucenter, .menu.bottom_links, #footer .lower, .newmenu + .__wrapper, div[id^=Box_jbeeb_], .myannouncement, #shoutbox .head {
+        ///  display: none!important
         ///}
-        ///
-        ///.unav &gt; li &gt; ul li ul, .unav li &gt;ul li, .unav &gt; li &gt; .fulldrop, .unav &gt; li &gt; .coldrop, .unav &gt; li &gt; ul, .unav &gt; li, .nav2 &gt; li &gt; ul li ul, .nav2 li &gt;ul li, .nav2 &gt; li &gt; .fulldrop, .nav2 &gt; li &gt; .coldrop, .nav2 &gt; li &gt; ul, .nav2 &gt; li {
-        ///transition:none;
-        ///-webkit-transition:none;
+        ///#shoutbox {
+        ///	margin-bottom: 0!important;
+        ///  background: #333!important;
         ///}
-        ///
-        ///html {
-        ///background:#000;
-        ///height:100%;
-        ///text-ali [rest of string was truncated]&quot;;.
+        ///#shoutbox .panel { border-top: none !important; }
+        ///#shoutbox input.text {
+        ///	background: #111;
+        ///  color: inherit;
+        ///  font-family: inherit;
+        ///  box-shadow: none !important;
+        ///}
+        ///#shoutbox .body { display: block !imp [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SrsStyle {
             get {

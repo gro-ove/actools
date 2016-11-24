@@ -13,6 +13,8 @@ namespace AcManager.Pages.AcSettings {
 
             public ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
 
+            public SessionInfoSettings SessionInfo => AcSettingsHolder.SessionInfo;
+
             public SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
 
             public SystemSettings System => AcSettingsHolder.System;

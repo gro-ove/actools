@@ -43,6 +43,7 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}" />
     <Style x:Key="{x:Type c:InheritingContextMenu}" TargetType="{x:Type c:InheritingContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}" />
 
     <c:InheritingContextMenu x:Key="TextBoxContextMenu">

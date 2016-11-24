@@ -29,6 +29,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static string ToInvariantString(this char o) {
+            return o.ToString(CultureInfo.InvariantCulture);
+        }
+
+        [Pure]
         public static string ToInvariantString(this ushort o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }

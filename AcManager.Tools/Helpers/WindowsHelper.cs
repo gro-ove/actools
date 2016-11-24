@@ -42,8 +42,13 @@ namespace AcManager.Tools.Helpers {
 
         [Localizable(false)]
         public static void ViewInBrowser([CanBeNull] string url) {
-            if (url == null) return;
+            if (string.IsNullOrWhiteSpace(url)) return;
             Process.Start(url);
+        }
+
+        [Localizable(false)]
+        public static void ViewInBrowser([CanBeNull] Uri url) {
+            ViewInBrowser(url?.AbsoluteUri);
         }
 
         [Localizable(false)]

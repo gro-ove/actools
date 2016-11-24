@@ -1135,4 +1135,28 @@
   <data name="CarParentIsMissing" xml:space="preserve">
     <value>Car’s parent is missing</value>
   </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Impossible de dupliquer l'objet</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Puissance</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Couple</value>
+  </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Paramètres vidéo prédéfini</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Largeur</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Hauteur</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Attention </value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Temps</value>
+  </data>
 </root>

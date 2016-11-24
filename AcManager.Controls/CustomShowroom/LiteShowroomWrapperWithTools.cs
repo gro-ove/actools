@@ -150,6 +150,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnResize(object sender, EventArgs e) {
+            base.OnResize(sender, e);
             Save();
         }
 
@@ -158,6 +159,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnFullscreenChanged() {
+            base.OnFullscreenChanged();
             Save();
         }
     }

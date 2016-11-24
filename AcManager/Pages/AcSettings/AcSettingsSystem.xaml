@@ -32,6 +32,11 @@
                 <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}"
+                    mui:NewMarkService.New="True">
+                <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
+            </CheckBox>
+
             <Grid Margin="0 20 0 8">
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">
@@ -46,6 +51,47 @@
             <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
                 <Label Content="{x:Static AcManager:AppStrings.AcSettings_ProximityIndicator_ShowNearestOpponents}" />
             </CheckBox>
+
+            <!--session information-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Session information" mui:NewMarkService.New="True" />
+
+            <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
+                <CheckBox IsChecked="{Binding SessionInfo.Practice}">
+                    <Label Content="Practice" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding SessionInfo.Qualify}">
+                    <Label Content="Qualification" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding SessionInfo.Race}">
+                    <Label Content="Race" />
+                </CheckBox>
+            </mui:SpacingUniformGrid>
+
+            <mui:SpacingUniformGrid Columns="2" Rows="2" VerticalSpacing="8" HorizontalSpacing="8">
+                <DockPanel>
+                    <Label Content="Text color:" />
+                    <mui:ColorPicker Color="{Binding SessionInfo.ForegroundColor}" />
+                </DockPanel>
+                <DockPanel>
+                    <mui:ValueLabel Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
+                            Postfix="%" Mode="Number" Content="Text opacity" />
+                    <Slider Minimum="0" Maximum="100"
+                            Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            TickFrequency="10" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Background color:" />
+                    <mui:ColorPicker Color="{Binding SessionInfo.BackgroundColor}" />
+                </DockPanel>
+                <DockPanel>
+                    <mui:ValueLabel Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
+                            Postfix="%" Mode="Number" Content="Background opacity" />
+                    <Slider Minimum="0" Maximum="100"
+                            Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            TickFrequency="10" TickPlacement="BottomRight" />
+                </DockPanel>
+            </mui:SpacingUniformGrid>
 
             <!--skidmarks-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:AppStrings.AcSettings_Skidmarks}" />
@@ -88,7 +134,7 @@
                 <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <!--ghost DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}"  -->
+            <!--ghost-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:AppStrings.AcSettings_GhostCar}" />
 
             <DockPanel>

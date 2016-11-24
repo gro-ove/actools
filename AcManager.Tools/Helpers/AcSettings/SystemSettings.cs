@@ -97,6 +97,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private bool _hideDriver;
+
+        public bool HideDriver {
+            get { return _hideDriver; }
+            set {
+                if (Equals(value, _hideDriver)) return;
+                _hideDriver = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _allowFreeCamera;
 
         public bool AllowFreeCamera {
@@ -187,6 +198,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             DeveloperApps = Ini["AC_APPS"].GetBool("ENABLE_DEV_APPS", false);
             AllowFreeCamera = Ini["CAMERA"].GetBool("ALLOW_FREE_CAMERA", false);
             Logging = !Ini["LOG"].GetBool("SUPPRESS", false);
+            HideDriver = Ini["DRIVER"].GetBool("HIDE", false);
             ScreenshotFormat = Ini["SCREENSHOT"].GetEntry("FORMAT", ScreenshotFormats);
             MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", MirrorsFieldOfViewDefault);
             MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", MirrorsFarPlaneDefault);
@@ -199,6 +211,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["AC_APPS"].Set("ENABLE_DEV_APPS", DeveloperApps);
             Ini["CAMERA"].Set("ALLOW_FREE_CAMERA", AllowFreeCamera);
             Ini["LOG"].Set("SUPPRESS", !Logging);
+            Ini["DRIVER"].Set("HIDE", HideDriver);
             Ini["SCREENSHOT"].Set("FORMAT", ScreenshotFormat);
             Ini["MIRRORS"].Set("FOV", MirrorsFieldOfView);
             Ini["MIRRORS"].Set("FAR_PLANE", MirrorsFarPlane);

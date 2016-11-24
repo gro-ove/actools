@@ -7,6 +7,6 @@ namespace AcManager.Tools {
             return ToolsStrings.ResourceManager.GetString(key, CultureInfo.CurrentUICulture);
         }
 
-        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key)) { }
+        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key) ?? key) { }
     }
 }

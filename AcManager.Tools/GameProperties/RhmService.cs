@@ -104,7 +104,10 @@ namespace AcManager.Tools.GameProperties {
             if (SettingsHolder.Drive.RhmLocation == null) return false;
 
             try {
-                _process = Process.Start(SettingsHolder.Drive.RhmLocation);
+                _process = Process.Start(new ProcessStartInfo {
+                    FileName = SettingsHolder.Drive.RhmLocation,
+                    WorkingDirectory = Path.GetDirectoryName(SettingsHolder.Drive.RhmLocation) ?? ""
+                });
                 if (_process == null) throw new Exception(@"Process=NULL");
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t start RHM", e);

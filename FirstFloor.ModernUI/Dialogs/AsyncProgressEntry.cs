@@ -6,6 +6,11 @@ namespace FirstFloor.ModernUI.Dialogs {
         public double? Progress;
 
         public static readonly AsyncProgressEntry Indetermitate = new AsyncProgressEntry("", 0d);
+        public static readonly AsyncProgressEntry Ready = new AsyncProgressEntry("", 1d);
+
+        public bool IsIndeterminate => Message == "" && Equals(Progress, 0d);
+
+        public bool IsReady => Equals(Progress, 1d);
 
         public AsyncProgressEntry(string message, double? progress) {
             Message = message;

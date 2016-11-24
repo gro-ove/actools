@@ -1988,6 +1988,24 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide driver.
+        /// </summary>
+        public static string QuickSwitches_HideDriver {
+            get {
+                return ResourceManager.GetString("QuickSwitches_HideDriver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide driver model.
+        /// </summary>
+        public static string QuickSwitches_HideDriver_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickSwitches_HideDriver_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide wheel.
         /// </summary>
         public static string QuickSwitches_HideWheel {

@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AcManager.Tools</RootNamespace>
     <AssemblyName>AcManager.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -252,6 +253,7 @@
     <Compile Include="Helpers\AcSettings\ProximityIndicatorSettings.cs" />
     <Compile Include="Helpers\AcSettings\ReplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GraphicsSettings.cs" />
+    <Compile Include="Helpers\AcSettings\SessionInfoSettings.cs" />
     <Compile Include="Helpers\AcSettings\SystemSettings.cs" />
     <Compile Include="Helpers\AcSettings\ControlsSettings.cs" />
     <Compile Include="Helpers\AcSettings\SkidmarksSettings.cs" />

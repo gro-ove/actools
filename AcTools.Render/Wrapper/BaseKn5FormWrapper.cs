@@ -49,8 +49,8 @@ namespace AcTools.Render.Wrapper {
 
         private bool _moved, _moving, _down;
 
-        protected virtual void CameraMouseRotate(float dx, float dy) {
-            var size = 180.0f / Math.Min(Form.Height, Form.Width);
+        protected virtual void CameraMousePan(float dx, float dy) {
+            var size = 4.0f / Math.Min(Form.Height, Form.Width);
             dx *= size;
             dy *= size;
 
@@ -69,7 +69,7 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        protected virtual void CameraMouseMove(float dx, float dy) {
+        protected virtual void CameraMouseRotate(float dx, float dy) {
             var size = 180.0f / Math.Min(Form.Height, Form.Width);
             dx *= size;
             dy *= size;
@@ -81,7 +81,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected virtual void CameraMouseZoom(float dx, float dy) {
-            var size = 9.45f / Math.Min(Form.Height, Form.Width);
+            var size = 9.0f / Math.Min(Form.Height, Form.Width);
             dy *= size;
 
             Kn5ObjectRenderer.Camera.Zoom(dy);
@@ -106,7 +106,7 @@ namespace AcTools.Render.Wrapper {
                 var dy = e.Y - _lastMousePos.Y;
 
                 if (e.Button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
-                    CameraMouseRotate(dx, dy);
+                    CameraMousePan(dx, dy);
                 } else if (e.Button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
                     if (FormMoving) {
                         Form.Left += e.X - _lastMousePos.X;
@@ -115,7 +115,7 @@ namespace AcTools.Render.Wrapper {
                         return;
                     }
 
-                    CameraMouseMove(dx, dy);
+                    CameraMouseRotate(dx, dy);
                 } else if (e.Button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
                     CameraMouseZoom(dx, dy);
                 }

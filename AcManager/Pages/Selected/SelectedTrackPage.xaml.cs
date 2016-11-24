@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,10 +14,10 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.GameProperties;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
-using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -40,7 +39,7 @@ namespace AcManager.Pages.Selected {
 
             public TrackObjectBase SelectedTrackConfiguration {
                 get { return _selectedTrackConfiguration; }
-                private set {
+                set {
                     if (Equals(value, _selectedTrackConfiguration)) return;
                     _selectedTrackConfiguration = value;
                     OnPropertyChanged();
@@ -159,7 +158,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _trackMapUpdateCommand;
 
             public DelegateCommand UpdateMapCommand => _trackMapUpdateCommand ?? (_trackMapUpdateCommand = new DelegateCommand(() => {
-                TrackMapRendererWrapper.Run(SelectedTrackConfiguration);
+                TrackMapRendererWrapper.Run(SelectedTrackConfiguration).Forget();
             }));
 
             protected override void FilterExec(string type) {

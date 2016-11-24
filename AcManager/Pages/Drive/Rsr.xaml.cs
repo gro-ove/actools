@@ -38,6 +38,7 @@ namespace AcManager.Pages.Drive {
             });
             InitializeComponent();
             WebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            WebBrowser.StyleProvider = new StyleProvider();
         }
 
         public static Task<bool> RunAsync(string eventId) {
@@ -263,15 +264,24 @@ namespace AcManager.Pages.Drive {
             }
 
             public void SetEventId(string value) {
-                _model.EventId = value;
+                Sync(() => {
+                    _model.EventId = value;
+                });
             }
         }
 
-        private string GetCustomStyle() {
-            var color = AppAppearanceManager.Instance.AccentColor;
-            return BinaryResources.RsrStyle
-                                  .Replace(@"#E20035", color.ToHexString())
-                                  .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
+        private class StyleProvider : ICustomStyleProvider {
+            private string GetCustomStyle() {
+                var color = AppAppearanceManager.Instance.AccentColor;
+                return BinaryResources.RsrStyle
+                                      .Replace(@"#E20035", color.ToHexString())
+                                      .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
+            }
+
+            public string GetStyle(string url) {
+                return SettingsHolder.Live.RsrCustomStyle && url.StartsWith(@"http://www.radiators-champ.com/RSRLiveTiming/") ?
+                        GetCustomStyle() : null;
+            }
         }
 
         private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
@@ -288,9 +298,6 @@ namespace AcManager.Pages.Drive {
                     Model.EventId = null;
                 }
             }
-
-            WebBrowser.UserStyle = SettingsHolder.Live.RsrCustomStyle && uri.StartsWith(@"http://www.radiators-champ.com/RSRLiveTiming/")
-                    ? GetCustomStyle() : null;
 
             if (uri.Contains(@"page=setups")) {
                 WebBrowser.Execute(@"

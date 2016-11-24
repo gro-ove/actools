@@ -93,8 +93,7 @@ namespace AcTools.Utils.Helpers {
 
         private static string DequoteString([LocalizationRequired(false)] string s) {
             return (_dequoteStringRegex ?? (_dequoteStringRegex =
-                    new Regex(@"^\s*['""]|['""]\s*$|\\(?="")", RegexOptions.Compiled)
-                    )).Replace(s, "");
+                    new Regex(@"^\s*['""]|['""]\s*$|\\(?="")", RegexOptions.Compiled))).Replace(s, "");
         }
 
         public static JObject TryToRestore([LocalizationRequired(false)] string damagedJson, JObjectRestorationScheme scheme) {

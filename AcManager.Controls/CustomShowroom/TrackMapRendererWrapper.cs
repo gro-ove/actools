@@ -29,7 +29,7 @@ namespace AcManager.Controls.CustomShowroom {
             InvokeFirstFrameCallback();
         }
 
-        protected override void CameraMouseMove(float dx, float dy) {
+        protected override void CameraMouseRotate(float dx, float dy) {
             var camera = Renderer.CameraOrtho;
             if (camera != null) {
                 camera.Move(new Vector3(dx * camera.Width / Renderer.Width, 0f, -dy * camera.Height / Renderer.Height));
@@ -38,7 +38,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        protected override void CameraMouseRotate(float dx, float dy) {
+        protected override void CameraMousePan(float dx, float dy) {
             var camera = Renderer.CameraOrtho;
             if (camera != null) {
                 camera.Move(new Vector3(dx * camera.Width / Renderer.Width, 0f, -dy * camera.Height / Renderer.Height));

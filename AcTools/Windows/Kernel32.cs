@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
+using JetBrains.Annotations;
 using Microsoft.Win32.SafeHandles;
 
 // ReSharper disable InconsistentNaming
@@ -110,5 +111,17 @@ namespace AcTools.Windows {
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetDllDirectory(string lpPathName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetDllDirectory(int nBufferLength, StringBuilder lpPathName);
+
+        [CanBeNull]
+        public static string GetDllDirectory() {
+            var sb = new StringBuilder(500);
+            if (GetDllDirectory(sb.Capacity, sb) == 0) {
+                return null;
+            }
+            return sb.ToString();
+        }
     }
 }

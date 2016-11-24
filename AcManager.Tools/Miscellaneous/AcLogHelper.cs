@@ -77,7 +77,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             public string GetDescription() {
-                return string.Format(Type.GetDescription(), Arguments);
+                return string.Format(Type.GetDescription() ?? Type.ToString(), Arguments);
             }
 
             private INonfatalErrorSolution _solution;
@@ -87,10 +87,10 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public enum WhatsGoingOnType {
-            [LocalizedDescription("PasswordIsInvalid")]
+            [LocalizedDescription("LogHelper_PasswordIsInvalid")]
             OnlineWrongPassword,
 
-            [LocalizedDescription("CannotConnectToRemoteServer")]
+            [LocalizedDescription("LogHelper_CannotConnectToRemoteServer")]
             OnlineConnectionFailed,
 
             [LocalizedDescription("LogHelper_SuspensionIsMissing")]

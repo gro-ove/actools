@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
@@ -68,6 +69,7 @@ namespace AcManager {
             _logFilename = logFilename;
             _temporaryDirectory = Path.Combine(Path.GetTempPath(), appId + "_libs");
             Directory.CreateDirectory(_temporaryDirectory);
+            SetDllDirectory(_temporaryDirectory);
 
             Log(null);
             Handler = HandlerImpl;
@@ -197,6 +199,7 @@ namespace AcManager {
 
             var existing = new FileInfo(filename);
             if (existing.Exists && existing.Length == sizeLong) {
+                // BUG: never happens?
                 if (_logFilename != null) {
                     Log("Already extracted: " + filename);
                 }
@@ -207,7 +210,7 @@ namespace AcManager {
             var bytes = GetData(id);
             if (bytes == null) throw new Exception($"Data for {id} is missing");
 
-            Log("Writing, " + bytes.Length + " bytes");
+            Log("Writing, " + bytes.Length + " bytes (saved: " + sizeLong + ")");
             File.WriteAllBytes(filename, bytes);
             return filename;
         }
@@ -328,22 +331,52 @@ namespace AcManager {
             }
         }
 
-        private bool _pathAdded;
+        // private bool _pathAdded;
 
         public void PrepareUnmanaged(string id) {
             if (_references == null) return;
 
-            if (!_pathAdded) {
+            // Log("PREPARE UNMANAGED: " + id);
+            
+            /*if (!_pathAdded) {
+                SetDllDirectory(_temporaryDirectory);
                 AddPathDirectory(_temporaryDirectory);
                 _pathAdded = true;
-            }
+            }*/
 
             ExtractUnmanaged(id);
         }
-        
-        private static void AddPathDirectory(params string[] directories) {
-            var path = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty).Split(new[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries);
-            Environment.SetEnvironmentVariable(@"PATH", string.Join(Path.PathSeparator.ToString(CultureInfo.InvariantCulture), path.Union(directories)));
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetDllDirectory(string lpPathName);
+
+        /*private void AddDllDirectory(string directory) {
+            AddDllDirectoryHelper.Add(directory);
+            Log("AddDllDirectory: " + directory);
         }
+
+        private void AddPathDirectory(string directory) {
+            try {
+                AddDllDirectory(directory);
+            } catch (Exception e) {
+                Log(e.ToString());
+                Log("COMPATIBILITY MODE WITH PATH VARIABLE WILL BE USED");
+
+                var path = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty).Split(new[] { Path.PathSeparator },
+                        StringSplitOptions.RemoveEmptyEntries);
+                Environment.SetEnvironmentVariable(@"PATH", string.Join(Path.PathSeparator.ToString(CultureInfo.InvariantCulture), path.Union(new[] { directory })));
+            }
+        }*/
     }
+
+    /*internal static class AddDllDirectoryHelper {
+        [DllImport(@"kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern int AddDllDirectory([MarshalAs(UnmanagedType.LPWStr)] string lpPathName);
+
+        internal static void Add(string directory) {
+            if (AddDllDirectory(directory) == 0) {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+        }
+    }*/
 }

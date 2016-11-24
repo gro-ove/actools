@@ -14,7 +14,6 @@ namespace AcManager.Tools.GameProperties {
             file["CAR_0"].Set("DRIVER_NAME", Name);
             file["CAR_0"].Set("NATIONALITY", Nationality);
             file["CAR_0"].Set("SETUP", "");
-            file["CAR_0"].Set("SKIN", "");
             file["CAR_0"].Remove(@"AI_LEVEL");
         }
 

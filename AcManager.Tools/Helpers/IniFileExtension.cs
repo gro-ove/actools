@@ -62,5 +62,9 @@ namespace AcManager.Tools.Helpers {
         public static void Set(this IniFileSection section, [LocalizationRequired(false)] string key, Color entry) {
             section.Set(key, $"{entry.R.ToInvariantString()},{entry.G.ToInvariantString()},{entry.B.ToInvariantString()}");
         }
+
+        public static void Set(this IniFileSection section, [LocalizationRequired(false)] string key, Color entry, double multipler) {
+            section.Set(key, $"{entry.R.ToInvariantString()},{entry.G.ToInvariantString()},{entry.B.ToInvariantString()},{multipler.ToInvariantString()}");
+        }
     }
 }

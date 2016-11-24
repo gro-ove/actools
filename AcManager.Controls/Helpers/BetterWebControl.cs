@@ -1,33 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
+using AcManager.Controls.UserControls;
+using AcManager.Tools.Helpers;
 using Awesomium.Core;
 using Awesomium.Windows.Controls;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using ContextMenuEventArgs = Awesomium.Core.ContextMenuEventArgs;
 
 namespace AcManager.Controls.Helpers {
     public class ResourceInterceptor : IResourceInterceptor {
         public static string UserAgent { get; internal set; }
 
-        private static readonly Regex FilterRegex = new Regex(@"^
-                https?://(?:
-                    googleads\.g\.doubleclick\.net/ |
-                    apis\.google\.com/se/0/_/\+1 |
-                    staticxx\.facebook\.com/connect |
-                    syndication\.twitter\.com/i/jot |
-                    platform\.twitter\.com/widgets |
-                    www\.youtube\.com/subscribe_embed |
-                    www\.facebook\.com/connect/ping |
-                    www\.facebook\.com/plugins/like\.php )",
-                RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
-
-        public virtual bool OnFilterNavigation(NavigationRequest request) {
-#if DEBUG
-            // Logging.Write("OnFilterNavigation(): " + request.Url.OriginalString);
-#endif
-            return FilterRegex.IsMatch(request.Url.OriginalString.ToLowerInvariant());
+        public bool OnFilterNavigation(NavigationRequest request) {
+            return RequestsFiltering.ShouldBeBlocked(request.Url.OriginalString.ToLowerInvariant());
         }
 
         public ResourceResponse OnRequest(ResourceRequest request) {
@@ -39,11 +30,93 @@ namespace AcManager.Controls.Helpers {
         }
     }
 
+    internal static class InsertRangeExtension {
+        public static void InsertRange<T>(this IList collection, int index, params T[] range) {
+            for (var i = 0; i < range.Length; i++) {
+                collection.Insert(index + i, range[i]);
+            }
+        }
+    }
+
     public class BetterWebControl : WebControl {
         static BetterWebControl() {
             WebCore.ResourceInterceptor = new ResourceInterceptor();
         }
-    
+
+        public void Navigate(string url) {
+            try {
+                Source = new Uri(url, UriKind.RelativeOrAbsolute);
+            } catch (Exception e) {
+                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
+                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
+                    url = @"http://" + url;
+                    try {
+                        Source = new Uri(url, UriKind.RelativeOrAbsolute);
+                    } catch (Exception ex) {
+                        Logging.Write("Navigation failed: " + ex);
+                    }
+                } else {
+                    Logging.Write("Navigation failed: " + e);
+                }
+            }
+        }
+
+        protected override void OnShowContextMenu(ContextMenuEventArgs e) {
+            var menu = new ContextMenu {
+                Items = {
+                    new MenuItem {
+                        Header = "Back",
+                        Command = new DelegateCommand(GoBack, CanGoBack)
+                    },
+                    new MenuItem {
+                        Header = "Forward",
+                        Command = new DelegateCommand(GoForward, CanGoForward)
+                    },
+                    new MenuItem {
+                        Header = "Refresh",
+                        Command = new DelegateCommand(() => Reload(true))
+                    },
+                    new Separator(),
+                    new MenuItem {
+                        Header = "Select All",
+                        Command = new DelegateCommand(SelectAll)
+                    },
+                    new MenuItem {
+                        Header = "Open Page In Default Browser",
+                        Command = new DelegateCommand<Uri>(WindowsHelper.ViewInBrowser),
+                        CommandParameter = e.Info.PageURL
+                    },
+                }
+            };
+
+            if (e.Info.HasSelection) {
+                menu.Items.InsertRange<Control>(0, new MenuItem {
+                    Header = "Copy",
+                    Command = new DelegateCommand(Copy),
+                }, new Separator());
+            }
+
+            if (e.Info.HasLinkURL) {
+                menu.Items.InsertRange<Control>(0, new MenuItem {
+                    Header = "Open Link",
+                    Command = new DelegateCommand<Uri>(u => {
+                        Navigate(u.ToString());
+                    }),
+                    CommandParameter = e.Info.LinkURL
+                }, new MenuItem {
+                    Header = "Open Link In Default Browser",
+                    Command = new DelegateCommand<Uri>(WindowsHelper.ViewInBrowser),
+                    CommandParameter = e.Info.LinkURL
+                }, new MenuItem {
+                    Header = "Copy Link Address",
+                    Command = new DelegateCommand(CopyLinkAddress),
+                }, new Separator());
+            }
+
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
+
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),
                 typeof(BetterWebControl), new PropertyMetadata(OnUserAgentChanged));
 

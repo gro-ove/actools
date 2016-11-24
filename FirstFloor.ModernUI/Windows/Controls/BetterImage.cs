@@ -285,7 +285,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (string.IsNullOrEmpty(filename)) {
                 return new BitmapEntry();
             }
-            
+
             try {
                 return LoadBitmapSourceFromBytes(await ReadAllBytesAsync(filename), decodeWidth, decodeHeight);
             } catch (Exception) {
@@ -452,7 +452,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             InvalidateMeasure();
             InvalidateVisual();
         }
-        
+
         private async void ReloadImageAsync() {
             var loading = ++_loading;
             _broken = false;
@@ -482,7 +482,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var innerDecodeWidth = InnerDecodeWidth;
             var innerDecodeHeight = InnerDecodeHeight;
-            
+
             UpdateLoaded();
             if (RecentlyLoaded.Count < 2 || data.Length < 1000) {
                 _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
@@ -573,7 +573,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (stretch != Stretch.Uniform && stretch != Stretch.UniformToFill && stretch != Stretch.Fill || unlimitedWidth && unlimitedHeight) {
                 return new Size(1d, 1d);
             }
-            
+
             var scaleX = Equals(contentSize.Width, 0d) ? 0.0 : availableSize.Width / contentSize.Width;
             var scaleY = Equals(contentSize.Height, 0d) ? 0.0 : availableSize.Height / contentSize.Height;
             if (unlimitedWidth) {

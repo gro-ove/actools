@@ -149,6 +149,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static ProximityIndicatorSettings ProximityIndicator => _proximityIndicator ?? (_proximityIndicator = new ProximityIndicatorSettings());
 
 
+        private static SessionInfoSettings _sessionInfo;
+        public static SessionInfoSettings SessionInfo => _sessionInfo ?? (_sessionInfo = new SessionInfoSettings());
+
+
         private static ReplaySettings _replay;
         public static ReplaySettings Replay => _replay ?? (_replay = new ReplaySettings());
 

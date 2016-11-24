@@ -1,9 +1,15 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using Awesomium.Core;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     internal class AwesomiumWrapper : IWebSomething {
@@ -11,15 +17,18 @@ namespace AcManager.Controls.UserControls {
         public static readonly string DefaultUserAgent;
 
         static AwesomiumWrapper() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
+            var windows = $@"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             DefaultUserAgent =
-                    $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
+                    $@"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
         #endregion
 
         private static WebSession _session;
 
         private BetterWebControl _inner;
+
+        [CanBeNull]
+        private ICustomStyleProvider _styleProvider;
 
         public FrameworkElement Initialize() {
             if (_session == null) {
@@ -28,43 +37,29 @@ namespace AcManager.Controls.UserControls {
                         UserAgent = DefaultUserAgent,
                         ReduceMemoryUsageOnNavigation = true,
                         LogLevel = LogLevel.None,
-                        // RemoteDebuggingHost = "127.0.0.1",
-                        // RemoteDebuggingPort = 45451,
-                        AdditionalOptions = new [] {
+#if DEBUG
+                        RemoteDebuggingHost = @"127.0.0.1",
+                        RemoteDebuggingPort = 45451,
+#endif
+                        AdditionalOptions = new[] {
                             @"disable-desktop-notifications"
                         },
                         CustomCSS = @"
-::-webkit-scrollbar {
-    width: 8px !important;
-}
-
-::-webkit-scrollbar-track {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #000 !important;
-}
-
-::-webkit-scrollbar-thumb {
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    background: #333 !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #444 !important;
-}
-
-::-webkit-scrollbar-thumb:active {
-    background: #666 !important;
-}"
+::-webkit-scrollbar { width: 8px!important; height: 8px!important; }
+::-webkit-scrollbar-track { box-shadow: none!important; border-radius: 0!important; background: #000!important; }
+::-webkit-scrollbar-corner { background: #000 !important; }
+::-webkit-scrollbar-thumb { border: none !important; box-shadow: none !important; border-radius: 0 !important; background: #333 !important; }
+::-webkit-scrollbar-thumb:hover { background: #444 !important; }
+::-webkit-scrollbar-thumb:active { background: #666 !important; }"
                     });
                 }
 
                 _session = WebCore.CreateWebSession(FilesStorage.Instance.GetTemporaryFilename(@"Awesomium"), new WebPreferences {
                     EnableGPUAcceleration = true,
                     WebGL = true,
-                    SmoothScrolling = false
+                    SmoothScrolling = false,
+                    FileAccessFromFileURL = true,
+                    UniversalAccessFromFileURL = true
                 });
             }
 
@@ -72,19 +67,40 @@ namespace AcManager.Controls.UserControls {
                 WebSession = _session,
                 UserAgent = DefaultUserAgent
             };
-            
+
+            _inner.LoadingFrame += OnLoadingFrame;
+            _inner.LoadingFrameComplete += OnLoadingFrameComplete;
+            _inner.LoadingFrameFailed += OnLoadingFrameComplete;
             _inner.DocumentReady += OnDocumentReady;
             return _inner;
+        }
+
+        public event EventHandler<PageLoadingEventArgs> Navigating;
+
+        public event EventHandler<PageLoadedEventArgs> Navigated;
+
+        private void OnLoadingFrame(object sender, LoadingFrameEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Indetermitate);
+        }
+
+        private void OnLoadingFrameComplete(object sender, FrameEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Ready);
         }
 
         private void OnDocumentReady(object sender, DocumentReadyEventArgs e) {
             if (e.ReadyState == DocumentReadyState.Ready && _inner.IsDocumentReady) {
                 if (_inner.ExecuteJavascriptWithResult(@"window.__cm_loaded").IsBoolean) return;
+
+                ModifyPage();
+
+                var userCss = _styleProvider?.ToScript(_inner.Source.OriginalString);
+                if (userCss != null) {
+                    Execute(userCss);
+                }
+
                 Navigated?.Invoke(this, new PageLoadedEventArgs(_inner.Source.OriginalString));
             }
         }
-
-        public event EventHandler<PageLoadedEventArgs> Navigated;
 
         public string GetUrl() {
             return _inner.Source.OriginalString;
@@ -99,9 +115,13 @@ namespace AcManager.Controls.UserControls {
             _inner.UserAgent = userAgent;
         }
 
+        public void SetStyleProvider(ICustomStyleProvider provider) {
+            _styleProvider = provider;
+        }
+
         public void ModifyPage() {
             Execute(@"window.__cm_loaded = true;
-window.onerror = function(err, url, lineNumber){ window.external.Log('error: `' + err + '` script: `' + url + '` line: ' + lineNumber); };
+window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };
 document.addEventListener('mousedown', function(e){ 
     var t = e.target;
     if (t.tagName != 'A' || !t.href) return;
@@ -122,6 +142,7 @@ document.addEventListener('mousedown', function(e){
 
         public void Execute(string js) {
             try {
+                js = $@"(function(){{ try {{ {js} }} catch(e){{ window.external.OnError(e ? '' + (e.stack || e) : '?', '<execute>', -1, -1); }} }})()";
                 _inner.ExecuteJavascript(js);
             } catch (Exception e) {
                 Logging.Warning("Execute(): " + e);
@@ -129,41 +150,40 @@ document.addEventListener('mousedown', function(e){
         }
 
         public void Navigate(string url) {
-            try {
-                _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
-            } catch (Exception e) {
-                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
-                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
-                    url = @"http://" + url;
-                    try {
-                        _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
-                    } catch (Exception ex) {
-                        Logging.Write("Navigation failed: " + ex);
-                    }
-                } else {
-                    Logging.Write("Navigation failed: " + e);
-                }
+            if (Equals(url, GetUrl())) {
+                _inner.Reload(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
+                return;
             }
+
+            _inner.Navigate(url);
         }
 
-        public void GoBack() {
+        private DelegateCommand _goBackCommand;
+
+        public ICommand BackCommand => _goBackCommand ?? (_goBackCommand = new DelegateCommand(() => {
             _inner.GoBack();
-        }
+        }, () => _inner.CanGoBack()));
 
-        public bool CanGoBack() {
-            return _inner.CanGoBack();
-        }
+        private DelegateCommand _goForwardCommand;
 
-        public void GoForward() {
+        public ICommand ForwardCommand => _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() => {
             _inner.GoForward();
-        }
+        }, () => _inner.CanGoForward()));
 
-        public bool CanGoForward() {
-            return _inner.CanGoForward();
-        }
+        private DelegateCommand<bool?> _refreshCommand;
+
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => {
+            _inner.Reload(noCache == true);
+        }));
 
         public void OnLoaded() {}
 
         public void OnUnloaded() {}
+
+        public void OnError(string error, string url, int line, int column) {}
+
+        public async Task<string> GetImageUrlAsync(string filename) {
+            return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
+        }
     }
 }
