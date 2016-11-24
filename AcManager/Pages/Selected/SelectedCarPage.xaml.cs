@@ -182,7 +182,7 @@ namespace AcManager.Pages.Selected {
             #region Presets
             public HierarchicalItemsView ShowroomPresets {
                 get { return _showroomPresets; }
-                private set {
+                set {
                     if (Equals(value, _showroomPresets)) return;
                     _showroomPresets = value;
                     OnPropertyChanged();
@@ -191,7 +191,7 @@ namespace AcManager.Pages.Selected {
 
             public HierarchicalItemsView UpdatePreviewsPresets {
                 get { return _updatePreviewsPresets; }
-                private set {
+                set {
                     if (Equals(value, _updatePreviewsPresets)) return;
                     _updatePreviewsPresets = value;
                     OnPropertyChanged();
@@ -200,7 +200,7 @@ namespace AcManager.Pages.Selected {
 
             public HierarchicalItemsView QuickDrivePresets {
                 get { return _quickDrivePresets; }
-                private set {
+                set {
                     if (Equals(value, _quickDrivePresets)) return;
                     _quickDrivePresets = value;
                     OnPropertyChanged();

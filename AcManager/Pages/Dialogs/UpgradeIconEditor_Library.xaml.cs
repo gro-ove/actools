@@ -21,7 +21,7 @@ namespace AcManager.Pages.Dialogs {
 
         public ObservableCollection<FilesStorage.ContentEntry> Icons {
             get { return _icons; }
-            private set {
+            set {
                 if (Equals(value, _icons)) return;
                 _icons = value;
                 OnPropertyChanged();
@@ -30,7 +30,7 @@ namespace AcManager.Pages.Dialogs {
 
         public FilesStorage.ContentEntry Selected {
             get { return _selected; }
-            private set {
+            set {
                 if (Equals(value, _selected)) return;
                 _selected = value;
                 OnPropertyChanged();

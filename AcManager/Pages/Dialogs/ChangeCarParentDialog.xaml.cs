@@ -22,7 +22,7 @@ namespace AcManager.Pages.Dialogs {
 
         public string Filter {
             get { return _filter; }
-            private set {
+            set {
                 if (value == _filter) return;
                 _filter = value;
                 UpdateFilter();
