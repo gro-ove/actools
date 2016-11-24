@@ -188,6 +188,7 @@ namespace AcManager {
             PluginsWrappers.Initialize(
                     new MagickPluginWrapper(),
                     new AwesomiumPluginWrapper(),
+                    new CefSharpPluginWrapper(),
                     new StarterPlus());
 
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));

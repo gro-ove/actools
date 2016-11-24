@@ -314,7 +314,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ICommand _exitCommand;
 
         public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new DelegateCommand(() => {
-            Environment.Exit(1);
+            if (Application.Current != null) {
+                Application.Current.Shutdown();
+            } else {
+                Environment.Exit(0);
+            }
         }));
 
         private static IAppRestartHelper _restartHelper;

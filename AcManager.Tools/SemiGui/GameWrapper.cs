@@ -81,6 +81,11 @@ namespace AcManager.Tools.SemiGui {
         private static void PrepareRaceDriverName(Game.StartProperties properties) {
             if (properties.HasAdditional<SrsMark>()) return;
 
+            if (properties.BasicProperties?.DriverName != null) {
+                properties.SetAdditional(new DriverName(properties.BasicProperties.DriverName, properties.BasicProperties.DriverNationality));
+                return;
+            }
+
             var online = properties.ModeProperties as Game.OnlineProperties;
             if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
                 var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);

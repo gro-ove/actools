@@ -26,7 +26,7 @@ namespace AcManager.Tools.Helpers {
                 key.SetValue("", title, RegistryValueKind.String);
 
                 using (var iconKey = key.CreateSubKey(@"DefaultIcon", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                    iconKey?.SetValue("", $"{MainExecutingFile.Location},{iconId}", RegistryValueKind.String);
+                    iconKey?.SetValue("", $@"{MainExecutingFile.Location},{iconId}", RegistryValueKind.String);
                 }
 
                 using (var commandKey = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
@@ -36,7 +36,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         private static void RegisterExtension(string ext, string description) {
-            var className = $"{ClassName}{ext.ToLowerInvariant()}";
+            var className = $@"{ClassName}{ext.ToLowerInvariant()}";
             RegisterClass(className, description, false, 1);
 
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext,

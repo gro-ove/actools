@@ -2,11 +2,14 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using Awesomium.Core;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     internal class AwesomiumWrapper : IWebSomething {
@@ -14,15 +17,18 @@ namespace AcManager.Controls.UserControls {
         public static readonly string DefaultUserAgent;
 
         static AwesomiumWrapper() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
+            var windows = $@"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             DefaultUserAgent =
-                    $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
+                    $@"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
         #endregion
 
         private static WebSession _session;
 
         private BetterWebControl _inner;
+
+        [CanBeNull]
+        private ICustomStyleProvider _styleProvider;
 
         public FrameworkElement Initialize() {
             if (_session == null) {
@@ -62,18 +68,39 @@ namespace AcManager.Controls.UserControls {
                 UserAgent = DefaultUserAgent
             };
 
+            _inner.LoadingFrame += OnLoadingFrame;
+            _inner.LoadingFrameComplete += OnLoadingFrameComplete;
+            _inner.LoadingFrameFailed += OnLoadingFrameComplete;
             _inner.DocumentReady += OnDocumentReady;
             return _inner;
+        }
+
+        public event EventHandler<PageLoadingEventArgs> Navigating;
+
+        public event EventHandler<PageLoadedEventArgs> Navigated;
+
+        private void OnLoadingFrame(object sender, LoadingFrameEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Indetermitate);
+        }
+
+        private void OnLoadingFrameComplete(object sender, FrameEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Ready);
         }
 
         private void OnDocumentReady(object sender, DocumentReadyEventArgs e) {
             if (e.ReadyState == DocumentReadyState.Ready && _inner.IsDocumentReady) {
                 if (_inner.ExecuteJavascriptWithResult(@"window.__cm_loaded").IsBoolean) return;
+
+                ModifyPage();
+
+                var userCss = _styleProvider?.ToScript(_inner.Source.OriginalString);
+                if (userCss != null) {
+                    Execute(userCss);
+                }
+
                 Navigated?.Invoke(this, new PageLoadedEventArgs(_inner.Source.OriginalString));
             }
         }
-
-        public event EventHandler<PageLoadedEventArgs> Navigated;
 
         public string GetUrl() {
             return _inner.Source.OriginalString;
@@ -86,6 +113,10 @@ namespace AcManager.Controls.UserControls {
         public void SetUserAgent(string userAgent) {
             WebConfig.Default.UserAgent = userAgent;
             _inner.UserAgent = userAgent;
+        }
+
+        public void SetStyleProvider(ICustomStyleProvider provider) {
+            _styleProvider = provider;
         }
 
         public void ModifyPage() {
@@ -108,7 +139,7 @@ document.addEventListener('mousedown', function(e){
     }
 }, false);");
         }
-        
+
         public void Execute(string js) {
             try {
                 js = $@"(function(){{ try {{ {js} }} catch(e){{ window.external.OnError(e ? '' + (e.stack || e) : '?', '<execute>', -1, -1); }} }})()";
@@ -119,52 +150,40 @@ document.addEventListener('mousedown', function(e){
         }
 
         public void Navigate(string url) {
-            try {
-                _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
-            } catch (Exception e) {
-                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
-                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
-                    url = @"http://" + url;
-                    try {
-                        _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
-                    } catch (Exception ex) {
-                        Logging.Write("Navigation failed: " + ex);
-                    }
-                } else {
-                    Logging.Write("Navigation failed: " + e);
-                }
+            if (Equals(url, GetUrl())) {
+                _inner.Reload(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
+                return;
             }
+
+            _inner.Navigate(url);
         }
 
-        public void GoBack() {
+        private DelegateCommand _goBackCommand;
+
+        public ICommand BackCommand => _goBackCommand ?? (_goBackCommand = new DelegateCommand(() => {
             _inner.GoBack();
-        }
+        }, () => _inner.CanGoBack()));
 
-        public bool CanGoBack() {
-            return _inner.CanGoBack();
-        }
+        private DelegateCommand _goForwardCommand;
 
-        public void GoForward() {
+        public ICommand ForwardCommand => _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() => {
             _inner.GoForward();
-        }
+        }, () => _inner.CanGoForward()));
 
-        public bool CanGoForward() {
-            return _inner.CanGoForward();
-        }
+        private DelegateCommand<bool?> _refreshCommand;
+
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => {
+            _inner.Reload(noCache == true);
+        }));
 
         public void OnLoaded() {}
 
         public void OnUnloaded() {}
 
-        public void OnError(string error, string url, int line, int column) { }
+        public void OnError(string error, string url, int line, int column) {}
 
         public async Task<string> GetImageUrlAsync(string filename) {
             return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
-        }
-
-        // Weirdly, doesn’t work?
-        public Task<string> GetImageUrlAsyncDirect(string filename) {
-            return Task.FromResult(filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri);
         }
     }
 }

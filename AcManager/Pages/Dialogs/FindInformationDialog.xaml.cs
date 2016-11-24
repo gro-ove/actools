@@ -38,7 +38,9 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void Update(string selected) {
-                _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
+                Sync(() => {
+                    _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
+                });
             }
         }
 

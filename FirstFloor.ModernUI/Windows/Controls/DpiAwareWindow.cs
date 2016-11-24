@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
@@ -59,6 +60,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (Application.Current != null && !ReferenceEquals(Application.Current.MainWindow, this)) {
                 Owner = Application.Current.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
                         ?? (Application.Current.MainWindow.IsVisible ? Application.Current.MainWindow : null);
+            }
+
+            foreach (var gesture in NavigationCommands.BrowseBack.InputGestures.OfType<KeyGesture>()
+                                                      .Where(x => x?.Key == Key.Back && x.Modifiers == ModifierKeys.None)
+                                                      .ToList()) {
+                NavigationCommands.BrowseBack.InputGestures.Remove(gesture);
             }
         }
 

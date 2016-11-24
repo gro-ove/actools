@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -11,14 +10,24 @@ namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
         private readonly IWebSomething _something;
 
+        private static IWebSomething GetSomething() {
+            if (PluginsManager.Instance.IsPluginEnabled("CefSharp")) return new CefSharpWrapper();
+            if (PluginsManager.Instance.IsPluginEnabled("Awesomium")) return new AwesomiumWrapper();
+            return new WebBrowserWrapper();
+        }
+
         public WebBlock() {
-            _something = PluginsManager.Instance.IsPluginEnabled("Awesomium") ?
-                    (IWebSomething)new AwesomiumWrapper() : new WebBrowserWrapper();
+            _something = GetSomething();
+            _something.Navigating += OnProgressChanged;
             _something.Navigated += OnNavigated;
             var child = _something.Initialize();
 
             InitializeComponent();
             Children.Add(child);
+        }
+
+        private void OnProgressChanged(object sender, PageLoadingEventArgs e) {
+            ProgressBar.Visibility = e.Progress.IsReady ? Visibility.Collapsed : Visibility.Visible;
         }
 
         [ItemCanBeNull]
@@ -31,8 +40,9 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnNavigated(object sender, PageLoadedEventArgs e) {
+            CommandManager.InvalidateRequerySuggested();
             UrlTextBox.Text = e.Url;
-            ModifyPage();
+            PageLoaded?.Invoke(this, new PageLoadedEventArgs(_something.GetUrl()));
 
             if (SaveKey != null && e.Url.StartsWith(@"http", StringComparison.OrdinalIgnoreCase)) {
                 ValuesStorage.Set(SaveKey, e.Url);
@@ -75,21 +85,21 @@ namespace AcManager.Controls.UserControls {
             _something.SetUserAgent(newValue);
         }
 
-        public static readonly DependencyProperty UserStyleProperty = DependencyProperty.Register(nameof(UserStyle), typeof(string),
-                typeof(WebBlock), new PropertyMetadata(OnUserStyleChanged));
+        public static readonly DependencyProperty StyleProviderProperty = DependencyProperty.Register(nameof(StyleProvider), typeof(ICustomStyleProvider),
+                typeof(WebBlock), new PropertyMetadata(OnStyleProviderChanged));
 
         [CanBeNull]
-        public string UserStyle {
-            get { return (string)GetValue(UserStyleProperty); }
-            set { SetValue(UserStyleProperty, value); }
+        public ICustomStyleProvider StyleProvider {
+            get { return (ICustomStyleProvider)GetValue(StyleProviderProperty); }
+            set { SetValue(StyleProviderProperty, value); }
         }
 
-        private static void OnUserStyleChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((WebBlock)o).OnUserStyleChanged((string)e.NewValue);
+        private static void OnStyleProviderChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((WebBlock)o).OnStyleProviderChanged((ICustomStyleProvider)e.NewValue);
         }
 
-        private void OnUserStyleChanged(string newValue) {
-            SetUserStyle(newValue);
+        private void OnStyleProviderChanged(ICustomStyleProvider newValue) {
+            _something.SetStyleProvider(newValue);
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
@@ -99,47 +109,6 @@ namespace AcManager.Controls.UserControls {
         public string SaveKey {
             get { return (string)GetValue(SaveKeyProperty); }
             set { SetValue(SaveKeyProperty, value); }
-        }
-
-        [Localizable(false)]
-        private void SetUserStyle([CanBeNull] string userStyle) {
-            if (string.IsNullOrWhiteSpace(userStyle)) return;
-
-            const string jsMark = "/* JS part:";
-            string jsPart = null;
-            if (userStyle.Contains(jsMark)) {
-                var splitted = userStyle.Split(new[] { jsMark }, StringSplitOptions.None);
-                userStyle = splitted[0];
-                jsPart = splitted[1];
-            }
-
-            Execute($@"
-var s = document.getElementById('__cm_style');
-if (s && s.parentNode) s.parentNode.removeChild(s);
-s = document.createElement('style');
-s.id = '__cm_style';
-s.innerHTML = '{userStyle.Replace("\r", "").Replace("\n", "\\n").Replace("'", "\\'")}';
-if (document.body){{
-    document.body.appendChild(s);
-    {jsPart ?? ""}
-}} else if (document.head){{
-    var p = document.createElement('style');
-    p.innerHTML = 'body{{display:none!important}}html{{background:black!important}}'
-    document.head.appendChild(p);
-
-    function onload(){{
-        if (s.parentNode == document.head){{
-            document.head.removeChild(p);
-            document.head.removeChild(s);
-            document.body.appendChild(s);
-            {jsPart ?? ""}
-        }}
-    }}
-
-    document.head.appendChild(s);
-    document.addEventListener('DOMContentLoaded', onload, false);
-    window.addEventListener('load', onload, false);
-}}");
         }
 
         public static readonly DependencyProperty StartPageProperty = DependencyProperty.Register(nameof(StartPage), typeof(string),
@@ -165,6 +134,10 @@ if (document.body){{
             _something.Navigate(url ?? @"about:blank");
         }
 
+        public void RefreshPage() {
+            _something.RefreshCommand.Execute(null);
+        }
+
         public event EventHandler<PageLoadedEventArgs> PageLoaded;
 
         private void UrlTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
@@ -180,27 +153,20 @@ if (document.body){{
             }
         }
 
-        internal void ModifyPage() {
-            CommandManager.InvalidateRequerySuggested();
-            _something.ModifyPage();
-            SetUserStyle(UserStyle);
-            PageLoaded?.Invoke(this, new PageLoadedEventArgs(_something.GetUrl()));
-        }
-
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = _something?.CanGoBack() == true;
+            e.CanExecute = _something?.BackCommand.CanExecute(null) == true;
         }
 
         private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e) {
-            _something.GoBack();
+            _something.BackCommand.Execute(null);
         }
 
         private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = _something?.CanGoForward() == true;
+            e.CanExecute = _something?.ForwardCommand.CanExecute(null) == true;
         }
 
         private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e) {
-            _something.GoForward();
+            _something.ForwardCommand.Execute(null);
         }
 
         private void GoToPage_CanExecute(object sender, CanExecuteRoutedEventArgs e) {

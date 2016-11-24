@@ -4,11 +4,15 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     internal class WebBrowserWrapper : IWebSomething {
@@ -23,31 +27,41 @@ namespace AcManager.Controls.UserControls {
 
         private WebBrowser _inner;
 
+        [CanBeNull]
+        private ICustomStyleProvider _styleProvider;
+
         public FrameworkElement Initialize() {
             WebBrowserHelper.SetUserAgent(DefaultUserAgent);
 
             _inner = new WebBrowser();
             _inner.Navigated += OnNavigated;
+            _inner.LoadCompleted += OnLoadCompleted;
+            _inner.Navigating += OnNavigating;
             return _inner;
+        }
+
+        public event EventHandler<PageLoadingEventArgs> Navigating;
+
+        public event EventHandler<PageLoadedEventArgs> Navigated;
+
+        private void OnNavigating(object sender, NavigatingCancelEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Indetermitate);
+        }
+
+        private void OnLoadCompleted(object sender, NavigationEventArgs e) {
+            Navigating?.Invoke(this, PageLoadingEventArgs.Ready);
         }
 
         private void OnNavigated(object sender, NavigationEventArgs e) {
             WebBrowserHelper.SetSilent(_inner, true);
+            ModifyPage();
+
+            var userCss = _styleProvider?.ToScript(e.Uri.OriginalString);
+            if (userCss != null) {
+                Execute(userCss);
+            }
+
             Navigated?.Invoke(this, new PageLoadedEventArgs(e.Uri.OriginalString));
-        }
-
-        public event EventHandler<PageLoadedEventArgs> Navigated;
-
-        public string GetUrl() {
-            return _inner.Source.OriginalString;
-        }
-
-        public void SetScriptProvider(ScriptProviderBase provider) {
-            _inner.ObjectForScripting = provider;
-        }
-
-        public void SetUserAgent(string userAgent) {
-            WebBrowserHelper.SetUserAgent(userAgent);
         }
 
         public void ModifyPage() {
@@ -71,17 +85,33 @@ document.addEventListener('mousedown', function(e){
 }, false);");
         }
 
+        public string GetUrl() {
+            return _inner.Source?.OriginalString ?? "";
+        }
+
+        public void SetScriptProvider(ScriptProviderBase provider) {
+            _inner.ObjectForScripting = provider;
+        }
+
+        public void SetUserAgent(string userAgent) {
+            WebBrowserHelper.SetUserAgent(userAgent);
+        }
+
+        public void SetStyleProvider(ICustomStyleProvider provider) {
+            _styleProvider = provider;
+        }
+
         private bool _errorHappened;
 
         public void OnError(string error, string url, int line, int column) {
             _errorHappened = true;
         }
 
-        public void Execute(string js) {
-            if (_inner.Source == null) return;
+        public object Execute(string js) {
+            if (_inner.Source == null) return null;
             try {
                 _errorHappened = false;
-                _inner.InvokeScript(@"eval", js);
+                return _inner.InvokeScript(@"eval", js);
             } catch (InvalidOperationException e) {
                 Logging.Warning("InvalidOperationException: " + e.Message);
             } catch (COMException e) {
@@ -95,9 +125,19 @@ document.addEventListener('mousedown', function(e){
             }
 
             _errorHappened = false;
+            return null;
+        }
+
+        void IWebSomething.Execute(string js) {
+            Execute(js);
         }
 
         public void Navigate(string url) {
+            if (Equals(url, GetUrl())) {
+                _inner.Refresh(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
+                return;
+            }
+
             try {
                 _inner.Navigate(url);
             } catch (Exception e) {
@@ -115,21 +155,23 @@ document.addEventListener('mousedown', function(e){
             }
         }
 
-        public void GoBack() {
+        private DelegateCommand _goBackCommand;
+
+        public ICommand BackCommand => _goBackCommand ?? (_goBackCommand = new DelegateCommand(() => {
             _inner.GoBack();
-        }
+        }, () => _inner.CanGoBack));
 
-        public bool CanGoBack() {
-            return _inner.CanGoBack;
-        }
+        private DelegateCommand _goForwardCommand;
 
-        public void GoForward() {
+        public ICommand ForwardCommand => _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() => {
             _inner.GoForward();
-        }
+        }, () => _inner.CanGoForward));
 
-        public bool CanGoForward() {
-            return _inner.CanGoForward;
-        }
+        private DelegateCommand<bool?> _refreshCommand;
+
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => {
+            _inner.Refresh(noCache == true);
+        }));
 
         private DispatcherTimer _timer;
 
@@ -148,7 +190,8 @@ document.addEventListener('mousedown', function(e){
         }
 
         private void OnTick(object sender, EventArgs e) {
-            Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
+            Logging.Debug(Execute(@"!window.__cm_loaded"));
+            // Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
         }
 
         public async Task<string> GetImageUrlAsync(string filename) {

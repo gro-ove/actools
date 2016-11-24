@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -59,7 +60,7 @@ namespace AcManager.Controls.Helpers {
             _awesomiumPath = directoryPath;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAwesomium;
 
-            Logging.Write("Initialize(): " + directoryPath);
+            Logging.Write(directoryPath);
         }
 
         /// <summary>
@@ -69,10 +70,12 @@ namespace AcManager.Controls.Helpers {
             _awesomiumPath = null;
             AppDomain.CurrentDomain.AssemblyResolve -= ResolveAwesomium;
         }
-        
+
         private static Assembly ResolveAwesomium(object sender, ResolveEventArgs args) {
             var unresolved = args.Name.ToLower();
-            var resourcesDll = Resources.SingleOrDefault(item => unresolved.StartsWith(item));
+            var resourcesDll = Resources.FirstOrDefault(item => unresolved.StartsWith(item));
+
+            Logging.Debug(unresolved);
 
             if (!string.IsNullOrEmpty(resourcesDll)) {
                 var resourceId = CultureInfo.CurrentUICulture.IetfLanguageTag;
