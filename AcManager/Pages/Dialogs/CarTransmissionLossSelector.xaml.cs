@@ -12,7 +12,7 @@ namespace AcManager.Pages.Dialogs {
 
         public int Value {
             get { return _value; }
-            private set {
+            set {
                 value = value.Clamp(0, 100);
                 if (value == _value) return;
                 _value = value;

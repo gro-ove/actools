@@ -234,7 +234,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public CarObject Car {
                 get { return _car; }
-                private set {
+                set {
                     if (Equals(value, _car)) return;
                     _car = value;
                     OnPropertyChanged();
@@ -256,7 +256,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public CarSkinObject CarSkin {
                 get { return _carSkin; }
-                private set {
+                set {
                     if (Equals(value, _carSkin)) return;
                     _carSkin = value;
                     OnPropertyChanged();
@@ -279,7 +279,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public TrackObjectBase Track {
                 get { return _track; }
-                private set {
+                set {
                     if (Equals(value, _track)) return;
                     _track = value;
                     OnPropertyChanged();

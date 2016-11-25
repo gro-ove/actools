@@ -107,7 +107,7 @@ namespace AcManager.Controls {
                 return _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.PresetableKey)
                         ?? string.Empty;
             }
-            private set {
+            set {
                 if (Equals(value, _selectedPresetFilename)) return;
                 _selectedPresetFilename = value;
                 if (_presetable != null) {

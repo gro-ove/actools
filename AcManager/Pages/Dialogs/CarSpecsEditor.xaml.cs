@@ -26,7 +26,7 @@ namespace AcManager.Pages.Dialogs {
 
         public GraphData TorqueGraph {
             get { return _torqueGraph; }
-            private set {
+            set {
                 if (Equals(value, _torqueGraph)) return;
                 _torqueGraph = value;
                 OnPropertyChanged();
@@ -35,7 +35,7 @@ namespace AcManager.Pages.Dialogs {
 
         public GraphData PowerGraph {
             get { return _powerGraph; }
-            private set {
+            set {
                 if (Equals(value, _powerGraph)) return;
                 _powerGraph = value;
                 OnPropertyChanged();

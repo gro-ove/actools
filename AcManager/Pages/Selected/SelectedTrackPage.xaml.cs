@@ -65,7 +65,7 @@ namespace AcManager.Pages.Selected {
 
             public HierarchicalItemsView QuickDrivePresets {
                 get { return _quickDrivePresets; }
-                private set {
+                set {
                     if (Equals(value, _quickDrivePresets)) return;
                     _quickDrivePresets = value;
                     OnPropertyChanged();

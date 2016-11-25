@@ -81,7 +81,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool IsValueAcceptable {
                 get { return _isValueAcceptable; }
-                private set {
+                set {
                     if (value == _isValueAcceptable) return;
                     _isValueAcceptable = value;
 
