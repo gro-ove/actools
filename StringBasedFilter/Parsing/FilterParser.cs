@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace StringBasedFilter.Parsing {
     internal class FilterParser {
@@ -8,6 +8,8 @@ namespace StringBasedFilter.Parsing {
 
         private int _pos;
         private string _filter;
+
+        [ItemCanBeNull]
         private List<string> _properties;
 
         internal FilterTreeNode Parse(string filter, out string[] properies) {
@@ -15,7 +17,7 @@ namespace StringBasedFilter.Parsing {
             _filter = filter;
             _properties = new List<string>();
             var result = NextNode();
-            properies = _properties.Distinct().ToArray();
+            properies = _properties.ToArray();
             return result;
         }
 
@@ -108,7 +110,7 @@ namespace StringBasedFilter.Parsing {
                 node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), StrictMode, out s);
             }
 
-            if (s != null) {
+            if (!_properties.Contains(s)) {
                 _properties.Add(s);
             }
 

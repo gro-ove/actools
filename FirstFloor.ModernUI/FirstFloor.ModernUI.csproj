@@ -184,7 +184,6 @@
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
     <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
     <Compile Include="Windows\Controls\Switch.cs" />
-    <Compile Include="Windows\Controls\VirtualizingStackPanelFixed.cs" />
     <Compile Include="Windows\Controls\SpacingUniformGrid.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />

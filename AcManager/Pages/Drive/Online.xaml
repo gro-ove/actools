@@ -3,8 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
-        SizeChanged="OnSizeChanged" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"
-        d:DataContext="{d:DesignInstance dr:Online+OnlineViewModel}">
+        SizeChanged="OnSizeChanged" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" d:DataContext="{d:DesignInstance dr:Online+OnlineViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
     </UserControl.Resources>
@@ -36,66 +35,76 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="40" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="2" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}"
-                        Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
-                    <TextBlock.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Online_SortByName}" Command="{Binding ChangeSortingCommand}" CommandParameter="{x:Null}"
-                                    IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Null}, Mode=OneWay}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Online_SortByDrivers}" Command="{Binding ChangeSortingCommand}" CommandParameter="drivers"
-                                    IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='drivers', Mode=OneWay}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Online_SortByCapacity}" Command="{Binding ChangeSortingCommand}"
-                                    CommandParameter="capacity"
-                                    IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='capacity', Mode=OneWay}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Online_SortByCarsNumber}" Command="{Binding ChangeSortingCommand}" CommandParameter="cars"
-                                    IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='cars', Mode=OneWay}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Online_SortByPing}" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
-                                    IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='ping', Mode=OneWay}" />
-                            <Separator />
-                            <MenuItem Header="{x:Static g:AppStrings.Toolbar_Reload}" InputGestureText="Ctrl+R" Command="{Binding RefreshCommand}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Online_AddByIp}" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}" />
-                        </ContextMenu>
-                    </TextBlock.ContextMenu>
-                    <TextBlock.ToolTip>
-                        <ToolTip>
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{x:Static g:AppStrings.Online_Pinged}">
-                                        <Binding Path="Manager.Pinged" />
-                                        <Binding Path="Manager.List.Count" Converter="{StaticResource PluralizingConverter}"
-                                                ConverterParameter="{x:Static g:AppStrings.Online_ServersFormat}" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </ToolTip>
-                    </TextBlock.ToolTip>
-                </TextBlock>
+                <mui:Cell Grid.Row="2" Background="Transparent">
+                    <DockPanel Margin="{StaticResource StatusMargin}">
+                        <mui:ContextMenuButton VerticalAlignment="Center" DockPanel.Dock="Right">
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static g:AppStrings.Online_SortByName}" Command="{Binding ChangeSortingCommand}"
+                                        CommandParameter="{x:Null}"
+                                        IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Null}, Mode=OneWay}" />
+                                <MenuItem Header="{x:Static g:AppStrings.Online_SortByDrivers}" Command="{Binding ChangeSortingCommand}"
+                                        CommandParameter="drivers"
+                                        IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='drivers', Mode=OneWay}" />
+                                <MenuItem Header="{x:Static g:AppStrings.Online_SortByCapacity}" Command="{Binding ChangeSortingCommand}"
+                                        CommandParameter="capacity"
+                                        IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='capacity', Mode=OneWay}" />
+                                <MenuItem Header="{x:Static g:AppStrings.Online_SortByCarsNumber}" Command="{Binding ChangeSortingCommand}"
+                                        CommandParameter="cars"
+                                        IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='cars', Mode=OneWay}" />
+                                <MenuItem Header="{x:Static g:AppStrings.Online_SortByPing}" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
+                                        IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='ping', Mode=OneWay}" />
+                                <Separator />
+                                <MenuItem Header="{x:Static g:AppStrings.Toolbar_Reload}" InputGestureText="Ctrl+R" Command="{Binding RefreshCommand}" />
+                                <MenuItem Header="{x:Static g:AppStrings.Online_AddByIp}" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}" />
+                            </ContextMenu>
+                        </mui:ContextMenuButton>
 
-                <ProgressBar Visibility="{Binding Manager.PingingInProcess, Converter={StaticResource BooleanToVisibilityConverter}}" Minimum="0"
-                        Maximum="{Binding Manager.List.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False" Grid.Row="2" VerticalAlignment="Bottom"
-                        Margin="2" Height="2" />
+                        <mui:BooleanSwitch Value="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}}" VerticalAlignment="Center"
+                                DockPanel.Dock="Right" Margin="4 0">
+                            <mui:BooleanSwitch.True>
+                                <StackPanel Orientation="Horizontal">
+                                    <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
+                                            ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" />
+                                    <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
+                                            ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" />
+                                    <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
+                                            ToolTip="{x:Static g:AppStrings.Online_FilterFull}" />
+                                    <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
+                                            ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" />
+                                    <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}" IsChecked="{Binding FilterMissing}"
+                                            ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
+                                </StackPanel>
+                            </mui:BooleanSwitch.True>
+                            <mui:BooleanSwitch.False>
+                                <StackPanel Orientation="Horizontal">
+                                    <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}" />
+                                </StackPanel>
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}"
-                        Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" />
-                    <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" />
-                    <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterFull}" />
-                    <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" />
-                    <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}" IsChecked="{Binding FilterMissing}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
-                </StackPanel>
+                        <TextBlock Foreground="{DynamicResource WindowTextReadOnly}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
+                            <TextBlock.ToolTip>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{x:Static g:AppStrings.Online_Pinged}">
+                                            <Binding Path="Manager.Pinged" />
+                                            <Binding Path="Manager.List.Count" Converter="{StaticResource PluralizingConverter}"
+                                                    ConverterParameter="{x:Static g:AppStrings.Online_ServersFormat}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                    </DockPanel>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}"
-                        Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                    <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}" />
-                </StackPanel>
+                    <ProgressBar Visibility="{Binding Manager.PingingInProcess, Converter={StaticResource BooleanToVisibilityConverter}}" Minimum="0"
+                            Maximum="{Binding Manager.List.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False" VerticalAlignment="Bottom"
+                            Margin="2" Height="2" />
+                </mui:Cell>
 
                 <DockPanel Grid.Row="0" x:Name="BigButtons"
                         Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
@@ -120,12 +129,14 @@
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16"
                             Visibility="{Binding ActualWidth, ElementName=BigButtons, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=430}">
                         <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
-                        <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}" DisplayMemberPath="DisplayName" />
+                        <ComboBox Width="120" ItemsSource="{x:Static dr:Online.SortingModes}" SelectedItem="{Binding SortingMode}"
+                                DisplayMemberPath="DisplayName" />
                     </StackPanel>
                 </DockPanel>
 
                 <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"
-                        ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}" Style="{StaticResource VirtualizingListBox}" />
+                        ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}" Style="{StaticResource VirtualizingListBox}"
+                         SelectionChanged="ServersListBox_OnSelectionChanged" />
             </Grid>
 
             <Rectangle Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"

@@ -7,12 +7,12 @@ namespace StringBasedFilter {
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        string ParameterFromKey([CanBeNull]string key);
+        string ParameterFromKey([CanBeNull] string key);
 
-        bool Test([NotNull]T obj, [CanBeNull]string key, [NotNull]ITestEntry value);
+        bool Test([NotNull] T obj, [CanBeNull] string key, [NotNull] ITestEntry value);
     }
 
     public interface IParentTester<in T> : ITester<T> {
-        bool TestChild([NotNull]T obj, [CanBeNull]string key, [NotNull]IFilter filter);
+        bool TestChild([NotNull] T obj, [CanBeNull] string key, [NotNull] IFilter filter);
     }
 }

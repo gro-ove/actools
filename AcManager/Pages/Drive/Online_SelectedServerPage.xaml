@@ -93,6 +93,7 @@
                 <StackPanel DockPanel.Dock="Top">
                     <!-- server's name -->
                     <TextBox Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
+                    <TextBox Text="{Binding DisplayName}" Style="{StaticResource TextBoxAsTextBlock.Heading2}" TextWrapping="NoWrap" />
 
                     <!-- ip, ping -->
                     <DockPanel Margin="0 4 0 20">

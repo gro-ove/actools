@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using JetBrains.Annotations;
 
@@ -10,6 +11,28 @@ namespace FirstFloor.ModernUI.Windows.Media {
     /// Provides addition visual tree helper methods.
     /// </summary>
     public static class VisualTreeHelperEx {
+        [Pure]
+        public static bool IsUserVisible(this FrameworkElement element, FrameworkElement container) {
+            if (element.IsVisible != true) return false;
+            var bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
+            var rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+            return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
+        }
+
+        [Pure]
+        public static IEnumerable<T> GetVisibleItemsFromListbox<T>(this ItemsControl listBox) {
+            var any = false;
+            foreach (var item in listBox.Items.OfType<T>()) {
+                var container = listBox.ItemContainerGenerator.ContainerFromItem(item);
+                if (container != null && IsUserVisible((ListBoxItem)container, listBox)) {
+                    any = true;
+                    yield return item;
+                } else if (any) {
+                    break;
+                }
+            }
+        }
+
         [Pure]
         public static IEnumerable<T> FindVisualChildren<T>([NotNull] this DependencyObject depObj) where T : DependencyObject {
             if (depObj == null) throw new ArgumentNullException(nameof(depObj));

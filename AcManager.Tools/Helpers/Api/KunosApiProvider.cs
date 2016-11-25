@@ -384,6 +384,10 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout));
+            } catch (WebException e) when(e.Message.Contains(@"The request was canceled")) { 
+                // TODO: Won’t work on localized version, but does it really matter?
+                Logging.Warning($"Server didn’t respond in given time: {requestUri}");
+                return null;
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;

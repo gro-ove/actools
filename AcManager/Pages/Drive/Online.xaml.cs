@@ -60,26 +60,6 @@ namespace AcManager.Pages.Drive {
 
         private OnlineViewModel Model => (OnlineViewModel)DataContext;
 
-        private static bool IsUserVisible(FrameworkElement element, FrameworkElement container) {
-            if (element.IsVisible != true) return false;
-            var bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
-            var rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
-            return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
-        }
-
-        private IEnumerable<T> GetVisibleItemsFromListbox<T>(ItemsControl listBox) {
-            var any = false;
-            foreach (var item in listBox.Items.OfType<T>()) {
-                var container = listBox.ItemContainerGenerator.ContainerFromItem(item);
-                if (container != null && IsUserVisible((ListBoxItem)container, ServersListBox)) {
-                    any = true;
-                    yield return item;
-                } else if (any) {
-                    break;
-                }
-            }
-        }
-
         private int _timerTick;
 
         private void Timer_Tick(object sender, EventArgs e) {
@@ -94,7 +74,7 @@ namespace AcManager.Pages.Drive {
             }
 
             if (SimpleListMode != ListMode.DetailedPlus) return;
-            foreach (var item in GetVisibleItemsFromListbox<ServerEntry>(ServersListBox)) {
+            foreach (var item in ServersListBox.GetVisibleItemsFromListbox<ServerEntry>()) {
                 item?.OnTick();
             }
         }
@@ -242,7 +222,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public class OnlineViewModel : NotifyPropertyChanged, IComparer {
+        public class OnlineViewModel : NotifyPropertyChanged {
             public string Key { get; }
 
             public OnlineManagerType Type { get; set; }
@@ -339,8 +319,7 @@ namespace AcManager.Pages.Drive {
                 ServerCombinedFilter.Second = CreateQuickFilter();
             }
 
-            private CancellationTokenSource _pingingSource;
-            private readonly List<IDisposable> _disposeMe = new List<IDisposable>();
+            // private readonly List<IDisposable> _disposeMe = new List<IDisposable>();
 
             private bool _loaded;
 
@@ -355,14 +334,31 @@ namespace AcManager.Pages.Drive {
 
                 using (MainList.DeferRefresh()) {
                     MainList.Filter = FilterTest;
-                    MainList.CustomSort = SortingComparer;
+                    MainList.CustomSort = Sorting;
                 }
 
                 LoadCurrent();
                 MainList.CurrentChanged += OnCurrentChanged;
 
-                _pingingSource = new CancellationTokenSource();
-                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
+                StartPinging().Forget();
+            }
+
+            private CancellationTokenSource _currentPinging;
+
+            private async Task StartPinging() {
+                StopPinging();
+                using (var cancellation = new CancellationTokenSource()) {
+                    _currentPinging = cancellation;
+                    await Manager.PingEverything(ListFilter, cancellation.Token);
+                    if (ReferenceEquals(_currentPinging, cancellation)) {
+                        _currentPinging = null;
+                    }
+                }
+            }
+
+            private void StopPinging() {
+                _currentPinging?.Cancel();
+                _currentPinging = null;
             }
 
             private void LoadCurrent() {
@@ -378,15 +374,31 @@ namespace AcManager.Pages.Drive {
                 CurrentChanged();
             }
 
+            private object _testMeLater;
+
             private void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (_sorting?.IsAffectedBy(e.PropertyName) == true) {
-                    // _list.RefreshFilter((ServerEntry)sender);
-                    return;
-                }
+                if (!_loaded) return;
 
                 if (ListFilter.IsAffectedBy(e.PropertyName)) {
-                    // RefreshFilter((ServerEntry)sender);
-                    // MainListUpdated();
+                    var server = (ServerEntry)sender;
+                    var willBeVisible = ListFilter.Test(server);
+                    var wasVisible = MainList.Contains(sender);
+
+                    if (willBeVisible && ReferenceEquals(_testMeLater, sender)) {
+                        _testMeLater = null;
+                    } else if (willBeVisible != wasVisible) {
+                        if (wasVisible && ReferenceEquals(sender, MainList.CurrentItem)) {
+                            _testMeLater = sender;
+                        } else {
+                            _testMeLater = null;
+                            MainList.Refresh(sender);
+                        }
+                        return;
+                    }
+                }
+
+                if (Sorting.IsAffectedBy(e.PropertyName)) {
+                    MainList.Refresh(sender);
                 }
             }
 
@@ -398,94 +410,24 @@ namespace AcManager.Pages.Drive {
             public void Unload() {
                 if (!_loaded) return;
                 _loaded = false;
-
+                
                 Manager.List.ItemPropertyChanged -= List_ItemPropertyChanged;
-
-                if (_pingingSource != null) {
-                    _pingingSource.Cancel();
-                    _pingingSource.Dispose();
-                    _pingingSource = null;
-                }
-
-                _disposeMe.DisposeEverything();
-                // base.Unload();
+                StopPinging();
             }
-
-            [NotNull]
-            public IComparer SortingComparer => (IComparer)_sorting ?? this;
 
             private ServerEntrySorter _sorting;
 
-            [CanBeNull]
+            [NotNull]
             public ServerEntrySorter Sorting {
+                get { return _sorting; }
                 set {
                     if (Equals(value, _sorting)) return;
                     _sorting = value;
                     OnPropertyChanged();
 
                     if (_loaded) {
-                        MainList.CustomSort = SortingComparer;
+                        MainList.CustomSort = value;
                     }
-                }
-            }
-
-            public abstract class ServerEntrySorter : IComparer {
-                int IComparer.Compare(object x, object y) {
-                    var xs = x as ServerEntry;
-                    var ys = y as ServerEntry;
-                    if (xs == null) return ys == null ? 0 : 1;
-                    if (ys == null) return -1;
-
-                    return Compare(xs, ys);
-                }
-
-                public abstract int Compare(ServerEntry x, ServerEntry y);
-
-                public abstract bool IsAffectedBy(string propertyName);
-            }
-
-            private class SortingDriversCount : ServerEntrySorter {
-                public override int Compare(ServerEntry x, ServerEntry y) {
-                    var dif = -x.CurrentDriversCount.CompareTo(y.CurrentDriversCount);
-                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
-                }
-
-                public override bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.CurrentDriversCount);
-                }
-            }
-
-            private class SortingCapacityCount : ServerEntrySorter {
-                public override int Compare(ServerEntry x, ServerEntry y) {
-                    var dif = -x.Capacity.CompareTo(y.Capacity);
-                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
-                }
-
-                public override bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.Capacity);
-                }
-            }
-
-            private class SortingCarsNumberCount : ServerEntrySorter {
-                public override int Compare(ServerEntry x, ServerEntry y) {
-                    var dif = -x.CarIds.Length.CompareTo(y.CarIds.Length);
-                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
-                }
-
-                public override bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.CarIds);
-                }
-            }
-
-            private class SortingPing : ServerEntrySorter {
-                public override int Compare(ServerEntry x, ServerEntry y) {
-                    const long maxPing = 999999;
-                    var dif = (x.Ping ?? maxPing).CompareTo(y.Ping ?? maxPing);
-                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
-                }
-
-                public override bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.Ping);
                 }
             }
 
@@ -497,41 +439,13 @@ namespace AcManager.Pages.Drive {
                     if (!SortingModes.Contains(value)) value = SortingModes[0];
                     if (Equals(value, _sortingMode)) return;
 
-                    switch (value.Value) {
-                        case "drivers":
-                            Sorting = new SortingDriversCount();
-                            break;
-
-                        case "capacity":
-                            Sorting = new SortingCapacityCount();
-                            break;
-
-                        case "cars":
-                            Sorting = new SortingCarsNumberCount();
-                            break;
-
-                        case "ping":
-                            Sorting = new SortingPing();
-                            break;
-
-                        default:
-                            Sorting = null;
-                            break;
-                    }
-
                     _sortingMode = value;
                     OnPropertyChanged();
                     LimitedStorage.Set(LimitedSpace.OnlineSorting, Key, _sortingMode.Id);
+
+                    Sorting = GetSorter(value.Value);
                 }
             }
-
-            public SettingEntry[] SortingModes { get; } = {
-                new SettingEntry(null, AppStrings.Online_Sorting_Name),
-                new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
-                new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
-                new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
-                new SettingEntry("ping", AppStrings.Online_Sorting_Ping),
-            };
 
             private CommandBase _changeSortingCommand;
 
@@ -561,17 +475,8 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _refreshCommand;
 
             public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async () => {
-                if (_pingingSource != null) {
-                    _pingingSource.Cancel();
-                    _disposeMe.Add(_pingingSource);
-                    _pingingSource = null;
-                }
-
                 await Manager.ReloadCommand.ExecuteAsync();
-                Manager.StopPinging();
-
-                _pingingSource = new CancellationTokenSource();
-                Manager.PingEverything(ListFilter, _pingingSource.Token).Forget();
+                StartPinging().Forget();
             }));
 
             protected void OnCurrentChanged(object sender, EventArgs e) {
@@ -585,6 +490,11 @@ namespace AcManager.Pages.Drive {
 
                 SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Mode={0}&Id={1}", Type, currentId);
                 ValuesStorage.Set(Key, currentId);
+
+                if (_testMeLater != null) {
+                    MainList.Refresh(_testMeLater);
+                    _testMeLater = null;
+                }
             }
 
             private bool _filterBooking;
@@ -646,9 +556,14 @@ namespace AcManager.Pages.Drive {
                     UpdateQuickFilter();
                 }
             }
+        }
 
-            public int Compare(object x, object y) {
-                return string.Compare((x as ServerEntry)?.DisplayName, (y as ServerEntry)?.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+        private void ServersListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (SettingsHolder.Content.ScrollAutomatically) {
+                var listBox = (ListBox)sender;
+                if (listBox.SelectedItem != null) {
+                    listBox.ScrollIntoView(listBox.SelectedItem);
+                }
             }
         }
     }

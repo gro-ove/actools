@@ -7,7 +7,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class ServerEntryTester : IParentTester<ServerEntry> {
-        public static ServerEntryTester Instance = new ServerEntryTester();
+        public static readonly ServerEntryTester Instance = new ServerEntryTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
@@ -65,6 +65,7 @@ namespace AcManager.Tools.Filters {
                     return nameof(ServerEntry.SessionEnd);
 
                 case "name":
+                case null:
                     return nameof(ServerEntry.DisplayName);
             }
 

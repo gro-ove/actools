@@ -8,8 +8,12 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
     public class BetterListCollectionView : ListCollectionView, IWeakEventListener {
+        private IList _internalList;
+
         public BetterListCollectionView([NotNull] IList list)
                 : base(list) {
+            _internalList = list;
+
             var changed = list as INotifyCollectionChanged;
             if (changed == null) return;
 
@@ -28,6 +32,14 @@ namespace FirstFloor.ModernUI {
             }
 
             return true;
+        }
+
+        public void Refresh([NotNull] object obj) {
+            if (_internalList.Contains(obj)) {
+                OnCollectionChanged(_internalList, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj));
+            } else {
+                Logging.Error(obj);
+            }
         }
     }
 }

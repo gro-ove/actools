@@ -318,6 +318,7 @@
     <Compile Include="Pages\Dialogs\TrackMapEditorT.xaml.cs">
       <DependentUpon>TrackMapEditorT.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\Online.SortingModes.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>

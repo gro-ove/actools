@@ -15,6 +15,9 @@ namespace AcManager.Tools.Filters {
 
                 case "enabled":
                     return nameof(AcObjectNew.Enabled);
+
+                case null:
+                    return nameof(AcObjectNew.DisplayName);
             }
 
             return null;

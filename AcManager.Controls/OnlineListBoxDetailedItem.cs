@@ -4,9 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Threading;
 using AcManager.Controls.Converters;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -19,7 +17,10 @@ using JetBrains.Annotations;
 namespace AcManager.Controls {
     public class OnlineListBoxDetailedItem : Control {
         // TODO: add option
-        public static int OptionCarsPoolSize = 10;
+        public static int OptionCarsLimit = 10;
+
+        private const int CarsPoolSize = 50;
+        private const int SessionsPoolSize = 20;
 
         private Brush _buttonText;
         private Brush _buttonTextPressed;
@@ -71,7 +72,6 @@ namespace AcManager.Controls {
             }
         }
 
-        private const int SessionsPoolSize = 6;
         private static readonly List<TextBlock> SessionsPool = new List<TextBlock>(SessionsPoolSize);
 
         private void UpdateSession(TextBlock child, ServerEntry.Session session) {
@@ -94,6 +94,8 @@ namespace AcManager.Controls {
             }
         }
 
+        private static Style _labelStyle;
+
         private void UpdateSessions(ServerEntry n) {
             var children = _sessionsPanel.Children;
             for (var i = children.Count - n.Sessions.Count; i > 0; i--) {
@@ -114,10 +116,13 @@ namespace AcManager.Controls {
                         child = SessionsPool[last];
                         SessionsPool.RemoveAt(last);
                     } else {
-                        /* Foreground="{DynamicResource ButtonText}" Style="{StaticResource Label}" Background="{DynamicResource ButtonBackground}" Height="20" Width="20" TextAlignment="Center" Padding="0 2 0 0" */
+                        if (_labelStyle == null) {
+                            _labelStyle = (Style)FindResource(@"Label");
+                        }
+
                         child = new TextBlock {
                             TextAlignment = TextAlignment.Center,
-                            Style = (Style)FindResource(@"Label"),
+                            Style = _labelStyle,
                             Padding = new Thickness(0, 2, 0, 0),
                             Height = 20d,
                             Width = 20d
@@ -131,7 +136,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private static readonly List<TextBlockBindable> CarsPool = new List<TextBlockBindable>(OptionCarsPoolSize);
+        private static readonly List<TextBlockBindable> CarsPool = new List<TextBlockBindable>(CarsPoolSize);
 
         private class TextBlockBindable : TextBlock {
             internal CarDisplayNameBind Bind;
@@ -205,16 +210,18 @@ namespace AcManager.Controls {
             }
         }
 
+        private static Style _smallStyle;
+
         private void UpdateCars(ServerEntry n) {
             var children = _carsPanel.Children;
-            var carsCount = Math.Min(n.CarsOrTheirIds.Count, OptionCarsPoolSize);
+            var carsCount = Math.Min(n.CarsOrTheirIds.Count, OptionCarsLimit);
 
             for (var i = children.Count - carsCount; i > 0; i--) {
                 var last = children.Count - 1;
                 var child = (TextBlockBindable)children[last];
                 DisposeHelper.Dispose(ref child.Bind);
 
-                if (CarsPool.Count < OptionCarsPoolSize) {
+                if (CarsPool.Count < CarsPoolSize) {
                     CarsPool.Add(child);
                 }
                 children.RemoveAt(last);
@@ -230,8 +237,12 @@ namespace AcManager.Controls {
                         child = CarsPool[last];
                         CarsPool.RemoveAt(last);
                     } else {
+                        if (_smallStyle == null) {
+                            _smallStyle = (Style)FindResource(@"Small");
+                        }
+
                         child = new TextBlockBindable {
-                            Style = (Style)FindResource(@"Small"),
+                            Style = _smallStyle,
                             Margin = new Thickness(4, 0, 4, 0),
                             Padding = new Thickness(2),
                             Height = 20d
