@@ -183,7 +183,7 @@ namespace AcManager.Tools.Managers {
 
         public double Progress {
             get { return _progress; }
-            private set {
+            set {
                 if (Equals(value, _progress)) return;
                 _progress = value;
                 OnPropertyChanged();

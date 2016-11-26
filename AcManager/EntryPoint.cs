@@ -93,7 +93,7 @@ namespace AcManager {
             var logFilename = AppArguments.GetBool(AppFlag.LogPacked) ? GetLogName("Packed Log") : null;
             AppArguments.Set(AppFlag.DirectAssembliesLoading, ref PackedHelper.OptionDirectLoading);
 
-            var packedHelper = new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename);
+            var packedHelper = new PackedHelper("AcTools_ContentManager", "Libs", logFilename);
             packedHelper.PrepareUnmanaged("LevelDB");
             AppDomain.CurrentDomain.AssemblyResolve += packedHelper.Handler;
 

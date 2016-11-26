@@ -185,7 +185,6 @@
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
-    <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />

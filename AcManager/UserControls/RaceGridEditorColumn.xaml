@@ -357,7 +357,7 @@
                         <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="160"
                                 Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                             <mui:BetterImage.ToolTip>
-                                <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" />
+                                <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
                             </mui:BetterImage.ToolTip>
                         </mui:BetterImage>
 

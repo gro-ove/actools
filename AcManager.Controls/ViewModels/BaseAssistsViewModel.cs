@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Windows.Data;
@@ -7,10 +8,13 @@ using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
@@ -276,14 +280,18 @@ namespace AcManager.Controls.ViewModels {
         #region Saveable
         public class BoolToDoubleConverter : JsonConverter {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-                writer.WriteValue((double)value);
+                JToken.FromObject(value, serializer).WriteTo(writer);
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+                Logging.Debug(objectType);
+                Logging.Debug(reader.TokenType);
+                Logging.Debug(existingValue);
                 return reader.TokenType == JsonToken.Boolean ? ((bool)reader.Value ? 1d : 0d) : reader.Value.AsDouble();
             }
 
             public override bool CanConvert(Type objectType) {
+                Logging.Debug(objectType);
                 return objectType == typeof(double);
             }
         }
@@ -302,8 +310,10 @@ namespace AcManager.Controls.ViewModels {
             public double Damage;
             public double TyreWear;
 
-            [JsonConverter(typeof(BoolToDoubleConverter))]
-            public double FuelConsumption;
+            [DefaultValue(1d),
+             JsonConverter(typeof(BoolToDoubleConverter)),
+             JsonProperty(@"FuelConsumption", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+            public double FuelConsumption = 1d;
             public bool TyreBlankets;
 
             public string Serialize() {
@@ -323,6 +333,8 @@ namespace AcManager.Controls.ViewModels {
                 w.Write(nameof(VisualDamage), VisualDamage);
                 w.Write(nameof(Damage), Damage);
                 w.Write(nameof(TyreWear), TyreWear);
+                w.Write(nameof(FuelConsumption), FuelConsumption);
+                w.Write(nameof(TyreBlankets), TyreBlankets);
                 w.WriteEndObject();
 
                 return s.ToString();

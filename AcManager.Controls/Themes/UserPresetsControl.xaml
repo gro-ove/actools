@@ -24,7 +24,7 @@
                         </Grid.ColumnDefinitions>
                         <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
                             <mui:HierarchicalComboBox.SelectedContent>
-                                <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis"
+                                <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis" FontStyle="Normal"
                                         Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
                             </mui:HierarchicalComboBox.SelectedContent>
                         </mui:HierarchicalComboBox>

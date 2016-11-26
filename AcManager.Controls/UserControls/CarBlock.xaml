@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:t="http://acstuff.ru/app/tools"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl" MaxWidth="540">
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

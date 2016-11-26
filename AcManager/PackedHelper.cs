@@ -279,9 +279,9 @@ namespace AcManager {
             if (_cached.TryGetValue(id, out result)) return result;
             
             if (string.Equals(id, "System.Web", StringComparison.OrdinalIgnoreCase)) {
-                if (MessageBox.Show("Looks like you don’t have .NET 4 installed. Would you like to install it?", "Error",
+                if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to install it?", "Error",
                         MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {
-                    Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=17718");
+                    Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=42642");
                 }
 
                 Environment.Exit(10);
@@ -331,52 +331,15 @@ namespace AcManager {
             }
         }
 
-        // private bool _pathAdded;
-
         public void PrepareUnmanaged(string id) {
             if (_references == null) return;
 
-            // Log("PREPARE UNMANAGED: " + id);
-            
-            /*if (!_pathAdded) {
-                SetDllDirectory(_temporaryDirectory);
-                AddPathDirectory(_temporaryDirectory);
-                _pathAdded = true;
-            }*/
-
-            ExtractUnmanaged(id);
+            try {
+                ExtractUnmanaged(id);
+            } catch (MissingManifestResourceException) {}
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetDllDirectory(string lpPathName);
-
-        /*private void AddDllDirectory(string directory) {
-            AddDllDirectoryHelper.Add(directory);
-            Log("AddDllDirectory: " + directory);
-        }
-
-        private void AddPathDirectory(string directory) {
-            try {
-                AddDllDirectory(directory);
-            } catch (Exception e) {
-                Log(e.ToString());
-                Log("COMPATIBILITY MODE WITH PATH VARIABLE WILL BE USED");
-
-                var path = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty).Split(new[] { Path.PathSeparator },
-                        StringSplitOptions.RemoveEmptyEntries);
-                Environment.SetEnvironmentVariable(@"PATH", string.Join(Path.PathSeparator.ToString(CultureInfo.InvariantCulture), path.Union(new[] { directory })));
-            }
-        }*/
     }
-
-    /*internal static class AddDllDirectoryHelper {
-        [DllImport(@"kernel32.dll", CharSet = CharSet.Unicode)]
-        private static extern int AddDllDirectory([MarshalAs(UnmanagedType.LPWStr)] string lpPathName);
-
-        internal static void Add(string directory) {
-            if (AddDllDirectory(directory) == 0) {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
-        }
-    }*/
 }

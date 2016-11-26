@@ -130,7 +130,7 @@ namespace AcManager.Tools.Data {
 
         internal IReadOnlyDictionary<string, KunosCareerProgressEntry> Entries {
             get { return _entries; }
-            private set {
+            set {
                 if (Equals(value, _entries)) return;
                 _entries = (Dictionary<string, KunosCareerProgressEntry>)value;
                 OnPropertyChanged();

@@ -307,11 +307,8 @@ namespace AcManager.Controls.ViewModels {
         private ICommand _savePresetCommand;
 
         public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new DelegateCommand(() => {
-            string resultFilename;
-            if (!PresetsManager.Instance.SavePresetUsingDialog(PresetableCategory,
-                                                               ExportToPresetData(),
-                                                               null, // TODO
-                                                               out resultFilename)) return;
+            PresetsManager.Instance.SavePresetUsingDialog(PresetableKey, PresetableCategory,
+                    ExportToPresetData(), null /* TODO */);
         }));
 
         private ICommand _shareCommand;
@@ -1115,7 +1112,7 @@ namespace AcManager.Controls.ViewModels {
                 }
                 
                 aiLevels = aiLevelsInner.Take(opponentsNumber).ToList();
-                Logging.Debug("AI levels: " + aiLevels.Select(x => $"{x}%").JoinToString(", "));
+                Logging.Debug("AI levels: " + aiLevels.Select(x => $@"{x}%").JoinToString(@", "));
             }
 
             IEnumerable<RaceGridEntry> final;
@@ -1179,7 +1176,7 @@ namespace AcManager.Controls.ViewModels {
                 return new Game.AiCar {
                     AiLevel = level,
                     CarId = entry.Car.Id,
-                    DriverName = AiLevelInDriverName ? $"{name} ({level}%)" : name,
+                    DriverName = AiLevelInDriverName ? $@"{name} ({level}%)" : name,
                     Nationality = nationality,
                     Setup = "",
                     SkinId = skinId

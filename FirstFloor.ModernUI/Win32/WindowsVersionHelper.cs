@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 
 // ReSharper disable InconsistentNaming
@@ -327,7 +329,7 @@ namespace FirstFloor.ModernUI.Win32 {
         /// <returns>True if the the running OS matches, or is greater
         /// than, the specified version information; otherwise, false.
         /// </returns>
-        internal static bool IsWindowsVersionOrGreater(uint majorVersion, uint minorVersion, ushort servicePackMajor) {
+        private static bool IsWindowsVersionOrGreater(uint majorVersion, uint minorVersion, ushort servicePackMajor) {
             var osvi = new OsVersionInfoEx();
             osvi.OSVersionInfoSize = (uint)Marshal.SizeOf(osvi);
             osvi.MajorVersion = majorVersion;
@@ -374,10 +376,23 @@ namespace FirstFloor.ModernUI.Win32 {
                             entry.MajorVersion, entry.MinorVersion,
                             entry.ServicePackMajor);
                 }
-
+                
                 return entry.MatchesOrGreater.Value;
             } catch (KeyNotFoundException e) {
                 throw new ArgumentException(UiStrings.UnknownOS, e);
+            } catch (MissingMethodException) {
+                if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to install it?", "Error",
+                        MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {
+                    Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=42642");
+                }
+
+                if (Application.Current != null) {
+                    Application.Current.Shutdown(10);
+                } else {
+                    Environment.Exit(10);
+                }
+
+                return false;
             }
         }
         #endregion
