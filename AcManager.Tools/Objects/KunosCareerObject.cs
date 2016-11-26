@@ -750,9 +750,9 @@ namespace AcManager.Tools.Objects {
             return c == null ? base.CompareTo(o) : AlphanumComparatorFast.Compare(Id, c.Id);
         }
 
-        private CommandBase _championshipResetCommand;
+        private DelegateCommand _championshipResetCommand;
 
-        public ICommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
+        public DelegateCommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
             KunosCareerProgress.Instance.UpdateEntry(Id, new KunosCareerProgressEntry(0, null, 0, null), true);
             KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.ApartFrom(Id).ToArray();
         }, () => Type == KunosCareerObjectType.Championship && IsStarted));

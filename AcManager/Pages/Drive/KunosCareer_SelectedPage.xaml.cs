@@ -172,7 +172,7 @@ namespace AcManager.Pages.Drive {
         private void ResetButton_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             if (ModernDialog.ShowMessage(AppStrings.KunosCareer_ResetProgress_Message, AppStrings.KunosCareer_ResetProgress_Title,
                     MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-            Model.AcObject.ChampionshipResetCommand.Execute(null);
+            Model.AcObject.ChampionshipResetCommand.Execute();
         }
 
         private void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
