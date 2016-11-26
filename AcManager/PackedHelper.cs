@@ -1,4 +1,5 @@
 ﻿// #define LOCALIZABLE
+// #define UNSAFE_XOR
 
 using System;
 using System.Collections.Generic;
@@ -120,10 +121,41 @@ namespace AcManager {
             return result;
         }
 
+#if UNSAFE_XOR
+        private static unsafe void Xor(byte[] data, byte[] key) {
+            int i, k;
+            fixed (byte* bd = data, bk = key) {
+                ulong* ld = (ulong*)bd, lk = (ulong*)bk;
+                int td = data.Length / 8, tk = key.Length / 8;
+                for (i = 0, k = 0; i < td; i++, k++) {
+                    ld[i] ^= lk[k == tk ? (k = 0) : k];
+                }
+            }
+
+            for (i *= 8, k *= 8; i < data.Length; i++, k++) {
+                if (k == key.Length) k = 0;
+                data[i] ^= key[k];
+            }
+        }
+#else
+        private static void Xor(byte[] data, byte[] key) {
+	        int dataLength = data.Length, keyLength = key.Length;
+	        for (int i = 0, k = 0; i < dataLength; i++, k++) {
+		        if (k == keyLength) k = 0;
+		        data[i] ^= key[k];
+	        }
+        }
+#endif
+
         [NotNull]
         private byte[] GetData(string id) {
             var bytes = _references?.GetObject(id) as byte[];
             if (bytes == null) throw new Exception("Data is missing");
+
+            var key = _references.GetObject(id + "//encrypted") as byte[];
+            if (key != null) {
+                Xor(bytes, key);
+            }
 
             if (_references.GetObject(id + "//compressed/lzf") as bool? == true) {
                 bytes = DecompressLzfSmart(bytes);
