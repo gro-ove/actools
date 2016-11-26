@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -454,8 +454,8 @@
     <value>Salvar configurações actuais como pré-definição (Ctrl+S)</value>
   </data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Não-gravado</value>
-  </data>
+    <value>Desgravado</value>
+  <alternative>Não-gravado</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Esconder volante</value>
   </data>
@@ -757,5 +757,8 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>Tornar Independente</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Claro</value>
   </data>
 </root>

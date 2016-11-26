@@ -138,8 +138,8 @@
     <value>{0} carro</value>
   </data>
   <data name="Settings_General_ValuesNumber" xml:space="preserve">
-    <value>{0} entrada</value>
-  </data>
+    <value>{0} entradas</value>
+  <alternative>{0} entrada</alternative></data>
   <data name="List_PpFilters" xml:space="preserve">
     <value>{0} filtro</value>
   </data>
@@ -419,8 +419,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Avisar acerca de alterações não gravadas</value>
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
-    <value>aparência</value>
-  </data>
+    <value>Aparência</value>
+  <alternative>aparência</alternative></data>
   <data name="Arguments_Shared_Apply" xml:space="preserve">
     <value>Aplicar</value>
   </data>
@@ -2120,8 +2120,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Lembrar palavras-passe</value>
   </data>
   <data name="Settings_General" xml:space="preserve">
-    <value>geral</value>
-  </data>
+    <value>Geral</value>
+  <alternative>geral</alternative></data>
   <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
     <value>Qualidade:</value>
   </data>
@@ -2261,7 +2261,9 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Nome: [b]{0}[/b]
 {1}: [b]{2}[/b]
 Autor: [b]{3}[/b]</value>
-  </data>
+  <alternative>Nome: [b]{0}[/b]
+{1}: [b]{2}[/b]
+Autor: [b]{3}[/b]</alternative></data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Para</value>
   </data>
@@ -2294,5 +2296,82 @@ Autor: [b]{3}[/b]</value>
   </data>
   <data name="Solution_ChangeParent_Details" xml:space="preserve">
     <value>Seleccionar novo parente a partir da lista de carros</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Correndo</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
+    <value>Não esqueça, há um atalho de teclado para todos os botões</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
+    <value>Fazer download das pré-visualizações de salões de exposição comuns</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
+    <value>Por exemplo, ao desactivar</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
+    <value>Adicionar “site:wikipedia.org” por omissão</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
+    <value>Duvido que tenha tempo para as actualizar todas</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
+    <value>Um símbolo que será usado para um ícone</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>Showroom Leve</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
+    <value>Desactirvar se for necessária a máxima performance</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>Ainda piora a imagem, se quiser a minha opinião</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>Poderá alterná-lo a qualquer momento ao premir F</value>
+  </data>
+  <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
+    <value>Permitir mudança do nível da AI</value>
+  </data>
+  <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
+    <value>Permitir a mudança da skin do carro</value>
+  </data>
+  <data name="Settings_Drive_EventsHeader" xml:space="preserve">
+    <value>Eventos relacionados com o AC:</value>
+  </data>
+  <data name="Settings_Replays_LoadInformation" xml:space="preserve">
+    <value>Carregar informação sobre repetições</value>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>Ler repetição (Crtl+G)</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Passar para o Modo de Edição se desejar modicar os outros parâmetros do clima.</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>Teste do coeficiente de temperatura:</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Reservações</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>Por favor não partilhe a chave, pois poderá ser revogada!</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>Lamentamos, mas a sua chave foi comprometida e revogada. Gostaria de nos contactar para obter outra?</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>A app será reiniciada, mas não deverá demorar. Obrigado novamente pelo seu suporte!
+
+[i]Por favor não partilhe a sua chave, pois poderá ficar comprometida.[/i]</value>
+  </data>
+  <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
+    <value>Certifique-se que o ficheiro do emblema da marca está disponível para escrita.</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>Alterações recentes</value>
+  </data>
+  <data name="RaceGrid_DetailedSettings" xml:space="preserve">
+    <value>Definições detalhadas</value>
   </data>
 </root>
