@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -557,8 +557,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Corte</value>
   </data>
   <data name="App_DataUpdated" xml:space="preserve">
-    <value>Dados uploadados</value>
-  </data>
+    <value>Dados Actualizados</value>
+  <alternative>Dados uploadados</alternative></data>
   <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
     <value>Versão dos Dados:</value>
   </data>
@@ -2009,8 +2009,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Mídia</value>
   </data>
   <data name="App_LocaleUpdated" xml:space="preserve">
-    <value>Localização Uploadada</value>
-  </data>
+    <value>Localização Actualizada</value>
+  <alternative>Localização Uploadada</alternative></data>
   <data name="App_LocaleUpdated_Details" xml:space="preserve">
     <value>Reiniciar a aplicação para ver as alterações</value>
   </data>
@@ -2048,8 +2048,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Inserir um novo nome de marca:</value>
   </data>
   <data name="Common_NewBrandName" xml:space="preserve">
-    <value>Novo Nome de Marca:</value>
-  </data>
+    <value>Novo Nome de Marca</value>
+  <alternative>Novo Nome de Marca:</alternative></data>
   <data name="Solution_RemoveObject" xml:space="preserve">
     <value>Remover Objecto</value>
   </data>
@@ -2244,5 +2244,55 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   </data>
   <data name="KunosCareer_LeftToEarn" xml:space="preserve">
     <value>Por conquistar:</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager Actualizado</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Premir para visualizar as alterações mais recentes</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>Não é possível interpretar o pedido</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>O RSR devolveu um ficheiro num formato não suportado.</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Nome: [b]{0}[/b]
+{1}: [b]{2}[/b]
+Autor: [b]{3}[/b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>Deseja aplicar esta pré-definição ou salvá-la para mais tarde?</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>Tipo ainda não suportado: “{0}”</value>
+  </data>
+  <data name="RsrStarter_GettingInformation" xml:space="preserve">
+    <value>Obtendo informação sobre o evento...</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>A App irá tentar ler as propriedades conhecidas a patir do ficheiro JSON corrompido (cuidado, poderá ocorrer perda de dados)</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Não é possível recuperar o JSON corrompido</value>
+  </data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+    <value>Definir apenas uma nova marca</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>Definir nome da marca com base no nome do carro</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>O novo nome da marca será: “{0}”</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>O objecto será removido para o Recycle Bin</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>Seleccionar novo parente a partir da lista de carros</value>
   </data>
 </root>
