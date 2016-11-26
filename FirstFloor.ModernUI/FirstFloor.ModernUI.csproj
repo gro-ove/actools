@@ -335,7 +335,6 @@
     <Compile Include="Windows\Converters\MoreConverter.cs" />
     <Compile Include="Windows\Converters\NullToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\OrdinalizingConverter.cs" />
-    <Compile Include="Windows\Converters\OrdinalizingPostfixConverter.cs" />
     <Compile Include="Windows\Converters\PercentageConverter.cs" />
     <Compile Include="Windows\Converters\PluralizingConverter.cs" />
     <Compile Include="Localizable\PluralizingDictionary.cs" />

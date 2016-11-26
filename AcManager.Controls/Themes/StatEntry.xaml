@@ -21,7 +21,7 @@
                                                 Text="{Binding Value.DisplayName}" Foreground="White" Style="{StaticResource Small}" TextAlignment="Center"
                                                 TextTrimming="CharacterEllipsis" />
                                         <mui:Cell.ToolTip>
-                                            <userControls:CarBlock Car="{Binding Value}" SelectSkin="False" ShowSkinsAndPreview="False" />
+                                            <userControls:CarBlock Car="{Binding Value}" SelectSkin="False" ShowSkinsAndPreview="False" Width="512" MaxHeight="320" />
                                         </mui:Cell.ToolTip>
                                     </mui:Cell>
                                 </mui:ReferenceSwitch.NonNull>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} dia</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} horas</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minutos</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} mês</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} segundos</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} semana</value>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}º</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>Sistema operativo desconhecido</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Retroceder</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Retorno do Navegador</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Favoritos do Navegador</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Avançar do Navegador</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Procurar do Navegador</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Stop do Navegador</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Baixar Volume</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Cortar Volume</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Aumentar Volume</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Encerrar</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>Ficheiros DDS &amp; TIFF|*.dds;*.tif;*.tiff|Ficheiros de Imagem|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Primeiro</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Segundo</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Terceiro</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Quarto</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Quinto</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Sexto</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Sétimo</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Oitavo</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Nono</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Décimo</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Décimo primeiro</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Décimo segundo</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Décimo terceiro</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Décimo quarto</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Décimo quinto</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Décimo sexto</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Décimo sétimo</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Décimo oitavo</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Décimo nono</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Vigésimo</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Vigésimo primeiro</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Vigésimo segundo</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Vigésimo terceiro</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Vigésimo quarto</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Vigésimo quinto</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Vigésimo sexto</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Vigésimo sétimo</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Vigésimo oitavo</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Vigésimo nono</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Trigésimo</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Trigésimo primeiro</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>LIMITADO</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>NOVO</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Seleccione uma cor</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Mostrar palavra-passe</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Ocultar palavra-passe</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Pista Seguinte</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Pista Anterior</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Lançar Aplicação Favorita 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Lançar Aplicação Favorita 2</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Lançar Correio</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Seleccionar Mídia</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Home do Navegador</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Menu Contextual</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (Direita)</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (Esquerda)</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Direito)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt Gr (Esquerdo)</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Sugestões</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Fonte</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Seleccione uma cor</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Seta Cima</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Direito)</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Esquerdo)</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Seta Direita</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Teclado Numérico</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Seta Esquerda</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Seta Baixo</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (Esquerdo)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (Direito)</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>A nova versão {0} está pronta a ser instalada</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>Tipo de token desconhecido</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Token inesperado</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maximizar</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimizar</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Lançar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Avançar</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Por favor aguarde...</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+</root>

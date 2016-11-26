@@ -186,7 +186,7 @@ namespace AcManager.Tools {
                         return await ProgressRaceOnline(custom.Params);
 
                     case "loadgooglespreadsheetslocale":
-                        return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"));
+                        return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
 
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
@@ -282,12 +282,12 @@ namespace AcManager.Tools {
             return ArgumentHandleResult.Successful;
         }
 
-        public async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale) {
+        public async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale, bool around) {
             if (string.IsNullOrWhiteSpace(id)) {
                 throw new InformativeException("ID is missing");
             }
 
-            var url = $"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
+            var url = around ? $@"http://acstuff.ru/u/around?id={id}" : $@"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
             var path = await LoadRemoveFileTo(url, LocaleHelper.GetGoogleSheetsFilename());
             if (string.IsNullOrWhiteSpace(path)) {
                 throw new InformativeException("Can’t load file");

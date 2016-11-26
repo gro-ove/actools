@@ -37,10 +37,16 @@ namespace AcManager.Tools.Profile {
         private void OnRaceFinished(object sender, GameEndedArgs e) {
             var basic = e.StartProperties.BasicProperties;
             var bestLap = e.Result?.GetExtraByType<Game.ResultExtraBestLap>();
-            if (basic?.CarId == null || basic.TrackId == null || bestLap == null ||
-                    bestLap.IsCancelled) return;
+            var time = basic?.CarId == null || basic.TrackId == null || bestLap == null ||
+                    bestLap.IsCancelled ? null : bestLap?.Time;
 
-            var time = SettingsHolder.Drive.WatchForSharedMemory ? PlayerStatsManager.Instance.Last?.BestLap : bestLap.Time;
+            if (SettingsHolder.Drive.WatchForSharedMemory) {
+                var sharedTime = PlayerStatsManager.Instance.Last?.BestLap;
+                if (sharedTime.HasValue) {
+                    time = sharedTime.Value;
+                }
+            }
+            
             if (time.HasValue) {
                 AddEntry(new LapTimeEntry(SourceId,
                         basic.CarId, basic.TrackId, basic.TrackConfigurationId,

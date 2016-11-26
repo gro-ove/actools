@@ -1566,4 +1566,34 @@
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
     <value>无法获得可用分辨率列表</value>
   </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>界面模块“CM Helper”已经安装并被激活。在开始赛事之前请不要忘记重启AssettoCorsa.exe!</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>随机涂装</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>随机国籍</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>发车顺序:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>均匀选车乱序发车</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>随机选车乱序发车</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>参赛车辆发车顺序</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>使用车辆涂装名</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>全局:</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>你</value>
+  </data>
 </root>

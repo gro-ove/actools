@@ -41,9 +41,9 @@
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />-->
 
         <!--lap times-->
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Recent Lap Times" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Lap Times Grid" Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
@@ -94,7 +94,7 @@
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkDrive_OnDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
-        <mui:TitleLink Content="Profile" GroupKey="profile" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
+        <mui:TitleLink Content="{x:Static g:AppStrings.Main_Profile}" GroupKey="profile" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
         <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkCars_OnDrop"
@@ -107,7 +107,7 @@
         <mui:TitleLink Content="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 
-    <Grid>
+    <mui:Cell>
         <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
                 VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
                 Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}" x:Name="Popup"
@@ -126,18 +126,5 @@
                 </DockPanel>
             </Border>
         </Popup>
-
-        <!--failed attempt to add animated background (MediaElement just doesn't work)-->
-        <!--<StackPanel Background="DarkSlateGray">
-            <TextBlock Text="{Binding Position, StringFormat='{}Position: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding Source, StringFormat='{}Source: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding BufferingProgress, StringFormat='{}BufferingProgress: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding NaturalDuration, StringFormat='{}NaturalDuration: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding NaturalVideoWidth, StringFormat='{}NaturalVideoWidth: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding DownloadProgress, StringFormat='{}DownloadProgress: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding HasVideo, StringFormat='{}HasVideo: {0}', ElementName=MediaElement}" />
-            <TextBlock Text="{Binding HasAudio, StringFormat='{}HasAudio: {0}', ElementName=MediaElement}" />
-            <MediaElement x:Name="MediaElement" LoadedBehavior="Play" Width="300" Height="200" Stretch="Uniform" />
-        </StackPanel>-->
-    </Grid>
+    </mui:Cell>
 </mui:ModernWindow>

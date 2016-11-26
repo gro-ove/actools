@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
-    <value>Can’t run the game</value>
+    <value>Can’t run the race</value>
   </data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
     <value>Original launcher is missing; please, change starter.</value>
@@ -133,7 +133,7 @@
     <value>Can’t Run</value>
   </data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
-    <value>Can’t use Official Starter: game is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it.</value>
+    <value>Can’t use Official Starter: your version of AC is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it.</value>
   </data>
   <data name="NotSupported" xml:space="preserve">
     <value>Not Supported</value>
@@ -1555,13 +1555,13 @@
     <value>UI Module</value>
   </data>
   <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
-    <value>Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time</value>
+    <value>Adds a special UI module in original launcher which listens to some orders and runs the race; use it if you need to use both CM and original launcher at the same time</value>
   </data>
   <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
     <value>Modified version of original launcher, obsolete since 1.7 release</value>
   </data>
   <data name="Settings_Starter_Sse_Description" xml:space="preserve">
-    <value>Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments</value>
+    <value>Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments</value>
   </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Just tries to run acs.exe directly; in most cases will fail</value>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -51,9 +52,10 @@ namespace AcManager.Tools.Managers.Presets {
                                        .Where(x => filesList.All(y => x.Filename != y.Filename))).OrderBy(x => x.Filename);
         }
 
-        public bool SavePresetUsingDialog(string category, string data, string filename, out string resultFilename) {
+        public static event EventHandler<PresetSavedEventArgs> PresetSaved;
+
+        public bool SavePresetUsingDialog(string key, string category, string data, string filename) {
             if (data == null) {
-                resultFilename = null;
                 return false;
             }
 
@@ -71,25 +73,33 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             if (dialog.ShowDialog() != true) {
-                resultFilename = null;
                 return false;
             }
 
             filename = dialog.FileName;
-
             if (!filename.StartsWith(presetsDirectory)) {
                 if (ModernDialog.ShowMessage(ToolsStrings.Presets_ChooseFileInInitialDirectory,
                                              ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                    SavePresetUsingDialog(category, data, filename, out resultFilename);
-                } else {
-                    resultFilename = null;
-                    return false;
+                    return SavePresetUsingDialog(key, category, data, filename);
                 }
+                
+                return false;
             }
-
-            resultFilename = filename;
+            
             File.WriteAllText(filename, data);
+            PresetSaved?.Invoke(this, new PresetSavedEventArgs(key, filename));
             return true;
+        }
+    }
+
+    public class PresetSavedEventArgs : EventArgs {
+        public string Key { get; }
+
+        public string Filename { get; }
+
+        public PresetSavedEventArgs(string key, string filename) {
+            Key = key;
+            Filename = filename;
         }
     }
 }

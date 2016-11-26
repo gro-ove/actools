@@ -53,7 +53,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public JObject JsonObject {
             get { return _jsonObject; }
-            private set {
+            set {
                 if (_jsonObject == value) return;
 
                 _jsonObject = value;

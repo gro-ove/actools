@@ -22,10 +22,6 @@ namespace FirstFloor.ModernUI.Helpers {
             return Ordinalizing.ConvertShort(value, subject);
         }
 
-        public static string ToOrdinalPostfix(this int value, string subject, CultureInfo culture = null) {
-            return Ordinalizing.ConvertPostfix(value, subject);
-        }
-
         public static string ToReadableTime(this long seconds) {
             return ToReadableTime(TimeSpan.FromSeconds(seconds));
         }

@@ -152,30 +152,22 @@ namespace FirstFloor.ModernUI.Localizable {
             return BaseLong(v);
         }
         #endregion
-        #endregion
 
-        /// <summary>
-        /// Postfix version: “1” → “st”, “2” → “nd”, …
-        /// </summary>
-        /// <param name="v">Integer.</param>
-        /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
-        /// <returns>Localized string</returns>
-        public static string ConvertPostfix(int v, string s) {
-            if (v < 0) v = -v;
-
-            var culture = CultureInfo.CurrentUICulture;
-            if (culture.Name.Length < 2) return v.ToString();
-            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
-                case "en":
-                    return EnPostfix(v, s);
-                case "es":
-                    return EsPostfix(v, s);
-                case "ru":
-                    return RuPostfix(v, s);
+        #region Chinese (Simplified)
+        private static string ZhCnPostfix(int v, string s) {
+            switch (s) {
+                case "车手":
+                    return "名";
                 default:
                     return "";
             }
         }
+
+        private static string ZhCnLong(int v, string s) {
+            return BaseLong(v);
+        }
+        #endregion
+        #endregion
 
         /// <summary>
         /// Short version: “1” → “1st”, “2” → “2nd”, …
@@ -184,7 +176,21 @@ namespace FirstFloor.ModernUI.Localizable {
         /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
         /// <returns>Localized string</returns>
         public static string ConvertShort(int v, string s) {
-            return v < 0 ? $"-{v}{ConvertPostfix(-v, s)}" : $"{v}{ConvertPostfix(v, s)}";
+            var culture = CultureInfo.CurrentUICulture;
+            if (culture.Name.Length < 2) return string.Empty;
+            switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
+                case "en":
+                    return $"{v}{EnPostfix(Math.Abs(v), s)}";
+                case "es":
+                    return $"{v}{EsPostfix(Math.Abs(v), s)}";
+                case "ru":
+                    return $"{v}{RuPostfix(Math.Abs(v), s)}";
+                case "zh":
+                    return $"第{v}{ZhCnPostfix(Math.Abs(v), s)}";
+                default:
+                    return v.ToString(culture);
+            }
+
         }
 
         /// <summary>
@@ -287,6 +293,9 @@ namespace FirstFloor.ModernUI.Localizable {
                     break;
                 case "ru":
                     result = RuLong(v, s);
+                    break;
+                case "zh":
+                    result = ZhCnLong(v, s);
                     break;
                 default:
                     result = BaseLong(v);

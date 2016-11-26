@@ -16,6 +16,17 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls {
     public class UserPresetsControl : Control, IHierarchicalItemPreviewProvider {
+        internal class ChangedPresetEventArgs : EventArgs {
+            public string Key { get; }
+
+            public string Value { get; }
+
+            public ChangedPresetEventArgs(string key, string value) {
+                Key = key;
+                Value = value;
+            }
+        }
+        
         public static bool OptionSmartChangedHandling = true;
 
         private static readonly Dictionary<string, WeakReference<UserPresetsControl>> Instances =
@@ -87,17 +98,26 @@ namespace AcManager.Controls {
             if (_loaded) return;
             _loaded = true;
             PresetSelected += UserPresetsControl_PresetSelected;
+            PresetsManager.PresetSaved += UserPresetsControl_PresetSaved;
         }
 
         private void UserPresetsControl_Unloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
             PresetSelected -= UserPresetsControl_PresetSelected;
+            PresetsManager.PresetSaved -= UserPresetsControl_PresetSaved;
         }
 
         private void UserPresetsControl_PresetSelected(object sender, ChangedPresetEventArgs args) {
             if (ReferenceEquals(sender, this) || _presetable == null || _presetable.PresetableKey != args.Key) return;
             SwitchTo(args.Value);
+        }
+
+        private void UserPresetsControl_PresetSaved(object sender, PresetSavedEventArgs args) {
+            if (_presetable == null || _presetable.PresetableKey != args.Key) return;
+            _currentUserPresetData = null;
+            SelectedPresetFilename = args.Filename;
+            SetChanged(false);
         }
 
         private string _selectedPresetFilename;
@@ -175,15 +195,8 @@ namespace AcManager.Controls {
 
         public void SaveExecute() {
             if (_presetable == null) return;
-
-            var entry = CurrentUserPreset;
-            string resultFilename;
-            if (!PresetsManager.Instance.SavePresetUsingDialog(_presetable.PresetableCategory,
-                                                               _presetable.ExportToPresetData(),
-                                                               entry?.Filename,
-                                                               out resultFilename)) return;
-            SelectedPresetFilename = resultFilename;
-            SetChanged(false);
+            PresetsManager.Instance.SavePresetUsingDialog(_presetable.PresetableKey, _presetable.PresetableCategory,
+                    _presetable.ExportToPresetData(), CurrentUserPreset?.Filename);
         }
 
         public void SwitchToNext() {
@@ -328,15 +341,19 @@ namespace AcManager.Controls {
 
         private void SetChanged(bool? value = null) {
             if (_presetable == null || Changed == value) return;
-
+            
             if (value == true && _comboBox != null) {
                 _comboBox.SelectedItem = null;
             }
 
-            SetValue(ChangedPropertyKey, value ?? ValuesStorage.GetBool("__userpresets_c_" + _presetable.PresetableKey));
+            var key = $@"__userpresets_c_{_presetable.PresetableKey}";
             if (value.HasValue) {
-                ValuesStorage.Set("__userpresets_c_" + _presetable.PresetableKey, value.Value);
+                ValuesStorage.Set(key, value.Value);
+            } else {
+                value = ValuesStorage.GetBool(key);
             }
+            
+            SetValue(ChangedPropertyKey, value.Value);
         }
 
         private string _currentUserPresetData;

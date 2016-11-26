@@ -148,7 +148,7 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "ru":
                     return Ru(s, culture);
                 default:
-                    return s;
+                    return CapitalizeFirst(s, culture);
             }
         }
     }

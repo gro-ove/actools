@@ -137,6 +137,7 @@ namespace AcManager {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
                 Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Include,
                 Culture = CultureInfo.InvariantCulture
             };
 

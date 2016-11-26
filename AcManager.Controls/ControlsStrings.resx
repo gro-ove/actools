@@ -298,7 +298,7 @@
     <value>Enable developer apps</value>
   </data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Enable free camera (press F7 in-game)</value>
+    <value>Enable free camera (press F7 on track)</value>
   </data>
   <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
     <value>Use different name online</value>

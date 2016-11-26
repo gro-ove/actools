@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
-    public abstract class CommandBase : ICommand {
+    public abstract class CommandBase : ICommand, INotifyPropertyChanged {
         public readonly bool AlwaysCanExecute;
         public readonly bool IsAutomaticRequeryDisabled;
 
@@ -16,8 +19,11 @@ namespace FirstFloor.ModernUI.Commands {
         private List<WeakReference> _canExecuteChangedHandlers;
 
         public void RaiseCanExecuteChanged() {
+            OnPropertyChanged(nameof(IsAbleToExecute));
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
+
+        public bool IsAbleToExecute => AlwaysCanExecute || CanExecuteOverride(null);
 
         protected abstract bool CanExecuteOverride(object parameter);
 
@@ -50,6 +56,13 @@ namespace FirstFloor.ModernUI.Commands {
                     }
                 }
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
