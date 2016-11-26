@@ -54,8 +54,8 @@
                         <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
                             <DockPanel
                                     IsEnabled="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠1'}">
-                                <Label Content="AI arrange order:" ToolTip="Set to Ascending if you want smartest bot to start in the end of starting grid" />
-                                <mui:LabeledToggleButton LabelChecked="Ascending" LabelUnchecked="Descending"
+                                <Label Content="{x:Static g:AppStrings.Drive_AiArrangeOrder}" ToolTip="{x:Static g:AppStrings.Drive_AiArrangeOrder_Tooltip}" />
+                                <mui:LabeledToggleButton LabelChecked="{x:Static mui:UiStrings.Common_Ascending}" LabelUnchecked="{x:Static mui:UiStrings.Common_Descending}"
                                         IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse}" />
                             </DockPanel>
 

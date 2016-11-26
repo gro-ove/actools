@@ -346,7 +346,7 @@ namespace AcManager.Tools.Profile {
                 if (CarId == null) {
                     CarId = info.CarModel;
                     TrackId = string.IsNullOrWhiteSpace(info.TrackConfiguration) ? info.Track :
-                            $"{info.Track}/{info.TrackConfiguration}";
+                            $@"{info.Track}/{info.TrackConfiguration}";
                     Penalties = info.PenaltiesEnabled == 1;
                 }
 

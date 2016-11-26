@@ -3514,4 +3514,22 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Main_UnsavedChanges" xml:space="preserve">
     <value>Save changes to the following items?</value>
   </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>AI arrange order:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>Set to Ascending if you want smartest bot to start in the end of starting grid</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>Recent Lap Times</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>Lap Times Grid</value>
+  </data>
 </root>

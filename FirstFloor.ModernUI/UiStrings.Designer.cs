@@ -97,6 +97,24 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        public static string Common_Ascending {
+            get {
+                return ResourceManager.GetString("Common_Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        public static string Common_Descending {
+            get {
+                return ResourceManager.GetString("Common_Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops!.
         /// </summary>
         public static string Common_Oops {

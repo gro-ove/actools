@@ -3524,6 +3524,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AI arrange order:.
+        /// </summary>
+        public static string Drive_AiArrangeOrder {
+            get {
+                return ResourceManager.GetString("Drive_AiArrangeOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set to Ascending if you want smartest bot to start in the end of starting grid.
+        /// </summary>
+        public static string Drive_AiArrangeOrder_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_AiArrangeOrder_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AI cars loading….
         /// </summary>
         public static string Drive_AiCarsLoading {
@@ -4901,6 +4919,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lap Times Grid.
+        /// </summary>
+        public static string Main_LapTimesGrid {
+            get {
+                return ResourceManager.GetString("Main_LapTimesGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Live.
         /// </summary>
         public static string Main_Live {
@@ -4982,11 +5009,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string Main_Profile {
+            get {
+                return ResourceManager.GetString("Main_Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick.
         /// </summary>
         public static string Main_QuickDrive {
             get {
                 return ResourceManager.GetString("Main_QuickDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Lap Times.
+        /// </summary>
+        public static string Main_RecentLapTimes {
+            get {
+                return ResourceManager.GetString("Main_RecentLapTimes", resourceCulture);
             }
         }
         
@@ -5104,6 +5149,15 @@ namespace AcManager {
         public static string Main_Srs {
             get {
                 return ResourceManager.GetString("Main_Srs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stats.
+        /// </summary>
+        public static string Main_Stats {
+            get {
+                return ResourceManager.GetString("Main_Stats", resourceCulture);
             }
         }
         
@@ -5560,7 +5614,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launching game….
+        ///   Looks up a localized string similar to Starting session….
         /// </summary>
         public static string Race_LaunchingGame {
             get {
@@ -6471,7 +6525,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game-related events:.
+        ///   Looks up a localized string similar to AC-related events:.
         /// </summary>
         public static string Settings_Drive_EventsHeader {
             get {
@@ -7474,7 +7528,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically add “.acreplay” extension to new replays made by game.
+        ///   Looks up a localized string similar to Automatically add “.acreplay” extension to new replays made by AC.
         /// </summary>
         public static string Settings_Replays_AddExtension_Tooltip {
             get {

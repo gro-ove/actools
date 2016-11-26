@@ -606,4 +606,10 @@
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
     <value>Share Race Grid</value>
   </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Ascending</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Descending</value>
+  </data>
 </root>
