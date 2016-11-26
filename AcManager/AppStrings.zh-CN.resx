@@ -3251,8 +3251,8 @@
     <value>“--force-locale” 标志位设置!</value>
   </data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
-    <value>在修改之后不要忘记重启程序</value>
-  </data>
+    <value>在更改语言之后不要忘记重启程序</value>
+  <alternative>在修改之后不要忘记重启程序</alternative></data>
   <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
     <value>重置联赛进程</value>
   </data>
@@ -3429,5 +3429,17 @@
   </data>
   <data name="Changelog_RecentChanges_Title" xml:space="preserve">
     <value>最近更新</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>Content Manager已隐藏</value>
+  </data>
+  <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
+    <value>如果原生启动器无法启动游戏，尝试使用官方启动器</value>
+  </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>未保存的更改</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>是否保存对以下项目的更改？</value>
   </data>
 </root>

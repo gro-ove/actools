@@ -309,4 +309,34 @@
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
     <value>Ist alles OK?</value>
   </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} Fehler</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Video nicht abspielbar</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Stadt:</value>
+  </data>
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
+    <value>Eingebaute Voreinstellungen</value>
+  </data>
+  <data name="Controls_UserPresets" xml:space="preserve">
+    <value>Benutzer-Voreinstellungen</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>Eingabemethode: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>Geräte: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>Gerät: [b]{0}[/b]</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>Name eintragen oder Feld leer lassen:</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Teile…</value>
+  </data>
 </root>

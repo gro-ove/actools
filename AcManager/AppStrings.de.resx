@@ -1285,4 +1285,463 @@ Autor: [b]{3}[/b]</value>
   <data name="Hibernate_TrayText" xml:space="preserve">
     <value>Content Manager ist versteckt</value>
   </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>RSR hat Datei in nicht unterstütztem Format zurückgegeben</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>Neues Basismodell aus Autoliste wählen</value>
+  </data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+    <value>Emblem {0} wählen</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Allgemein machen</value>
+  </data>
+  <data name="Solution_FixName" xml:space="preserve">
+    <value>Name reparieren</value>
+  </data>
+  <data name="Solution_FixName_Details" xml:space="preserve">
+    <value>Ungültige Symbole entfernen</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>Wiederholung in den Papierkorb verschieben</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>Neue Vorschau durch Einstellungen wählen</value>
+  </data>
+  <data name="Solution_GeneratePreview_Details" xml:space="preserve">
+    <value>Neue Vorschau nach aktueller Voreinstellung erstellen</value>
+  </data>
+  <data name="Solution_MakeGeneric_Details" xml:space="preserve">
+    <value>In allgemeinen Ordner verschieben</value>
+  </data>
+  <data name="Solution_FindTrack_Details" xml:space="preserve">
+    <value>Versuche die Strecke online zu finden</value>
+  </data>
+  <data name="Solution_Enable_Details" xml:space="preserve">
+    <value>Verschiebe Schriftart von "fonts-off" nach "fonts"</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Aktiviere {0}</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
+    <value>Neues Upgrade-Symbol wählen oder mit Editor erstellen</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (einfacher Modus)</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Jetzt mit offizieller Unterstützung!</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>Neuer Starter ist bereit, kein Patch mehr nötig</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
+    <value>Seit Version 1.7 besteht durch Kunos offizielle Unterstützung für alternative Launcher. Im Prinzip ein Starter+, aber CM muss nun nicht mehr AssettoCorsa.exe ersetzen und funktioniert großartig. Soll in den offiziellen Starter Modus gewechselt werden?</value>
+  </data>
+  <data name="Main_CannotProcessArgument" xml:space="preserve">
+    <value>Kann Eintrag nicht verarbeiten</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Thema:</value>
+  </data>
+  <data name="Settings_Appearance_SmallFont" xml:space="preserve">
+    <value>Kleine Schrift</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
+    <value>Aufklapp-Werkzeugleiste</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
+    <value>Nicht vergessen, es gibt Tastaturkürzel für jede Taste</value>
+  </data>
+  <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
+    <value>Informationssuche:</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
+    <value>Wikipedia als Standard nutzen</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
+    <value>Vorschau von üblichen Ausstellungsräumen runterladen</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
+    <value>Überstrahlung nutzen</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
+    <value>Versucht ein Auto in der Bildmitte zu halten soweit wie möglich (ohne komplexe Berechnungen)</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
+    <value>Nutze die linke Maustaste zum Schwenken und die Rechte zum rotieren </value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>Macht meiner Meinung nach das Bild schlechter</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>Kann mit F jederzeit umgeschaltet werden</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>Spielstarter</value>
+  </data>
+  <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
+    <value>Kunos Karriere:</value>
+  </data>
+  <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
+    <value>Erlaube KI Stärke zu ändern</value>
+  </data>
+  <data name="Settings_Drive_EventsHeader" xml:space="preserve">
+    <value>Spielrelevante Ereignisse</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
+    <value>Automatisch Bildschirmfotos vom BMP- ins JPEG-Format konvertieren beim Beenden</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
+    <value>Ich empfehle Magick.NET vorher zu aktivieren — für eine höhere Qualität</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds_Tooltip" xml:space="preserve">
+    <value>Natürlich nur temporär</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>App Schlüssel:</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Automatische Aktualisierung:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>Nach Aktualisierung suche:</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
+    <value>Testzugang:</value>
+  </data>
+  <data name="Settings_General_TestingAccess" xml:space="preserve">
+    <value>Nicht geteste Aktualisierungen erlauben</value>
+  </data>
+  <data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} Eintrag</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
+    <value>Soll der Pfad geändert werden? Programm wird neugestartet.</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot" xml:space="preserve">
+    <value>Pfad auf AC-Stammordner ändern</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>RSR Live Zeitnahme Tab aktivieren</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR Name:</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>Anderen Namen verwenden wenn RSR aktiv ist</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>Automatisch RSR App anzeigen oder verstecken wenn gestartetes Rennen nicht RSR verbunden ist</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>Sim Racing System (SRS) Tab aktivieren</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Maske für SRS Server:</value>
+  </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>Passwort merken</value>
+  </data>
+  <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
+    <value>Verbindung:</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>Server:</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
+    <value>Server-Information direkt laden</value>
+  </data>
+  <data name="Settings_Online_PingingHeader" xml:space="preserve">
+    <value>Anpingen:</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>LAN:</value>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>Generell</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>Teilen</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>Erscheinung</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
+    <value>Kurven neuberechnen mit Daten &amp; Leistung/Drehmoment-Werten</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
+    <value>Kurven neuberechnen nur mit Daten</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>Ausstellungsraum fehlt. Optionen öffnen?</value>
+  </data>
+  <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
+    <value>Filter fehlt. Optionen öffnen?</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>Ein Fehler ist aufgetreten.</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>Abgebrochen</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>Aktualisiere jetzt:  {0} ({1}/{2})</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Basismodell wählen</value>
+  </data>
+  <data name="Common_SelectImageForPreview" xml:space="preserve">
+    <value>Bild für Vorschau wählen</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Kann Wetter nicht teilen</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>Datei “{0}” fehlt.</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Dateien sind zu groß. Erlaubt ist {0}.</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>Rennen abgebrochen</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Fehler:</value>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>Runden:</value>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>Schnellste Runde:</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Schnellste Runde</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Noch mal versuchen</value>
+  </data>
+  <data name="RaceResult_SaveReplay" xml:space="preserve">
+    <value>Wiederholung speichern</value>
+  </data>
+  <data name="Common_MoreInformationInMainLog" xml:space="preserve">
+    <value>Mehr Informationen in Main Log.log.</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>Initialisieren…</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>Vorbereiten…</value>
+  </data>
+  <data name="Race_LaunchingGame" xml:space="preserve">
+    <value>Starte Spiel…</value>
+  </data>
+  <data name="Race_Waiting" xml:space="preserve">
+    <value>Warte auf Rennende…</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>Theoretisch:</value>
+  </data>
+  <data name="CropImage_Title" xml:space="preserve">
+    <value>Bild beschneiden</value>
+  </data>
+  <data name="CropImage_Skip" xml:space="preserve">
+    <value>Nicht beschneiden</value>
+  </data>
+  <data name="AdditionalContent_Title" xml:space="preserve">
+    <value>Zusätzliche Inhalte installieren</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>Nichts gefunden</value>
+  </data>
+  <data name="AdditionalContent_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+  <data name="AdditionalContent_PathFormat" xml:space="preserve">
+    <value>Pfad: {0}</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>Kann Inhalt aus Datei nicht installieren</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
+    <value>Archiv ist verschlüsselt. Passwort eingeben:</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>Passwort benötigt</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>Passwort ungültig, erneut versuche:</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Passwort ist ungültig</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>Entpacken nicht möglich</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>Vielleicht ist das Archiv beschädigt oder das Passwort falsch.</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>Installiere {0}…</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>Installieren von {0} nicht möglich</value>
+  </data>
+  <data name="LiveryIcon_ResultLabel" xml:space="preserve">
+    <value>Ergebnis:</value>
+  </data>
+  <data name="LiveryIcon_StyleLabel" xml:space="preserve">
+    <value>Stil:</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>Form:</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>Farbe:</value>
+  </data>
+  <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
+    <value>Zweitfarbe:</value>
+  </data>
+  <data name="LiveryIcon_TertiaryColorLabel" xml:space="preserve">
+    <value>Drittfarb:</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>Nummer:</value>
+  </data>
+  <data name="LiveryIcon_NumberValue" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>Schriftfarbe:</value>
+  </data>
+  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
+    <value>Solide</value>
+  </data>
+  <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
+    <value>Glänzend</value>
+  </data>
+  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
+    <value>Miura</value>
+  </data>
+  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
+    <value>Tesla</value>
+  </data>
+  <data name="Select_Brands" xml:space="preserve">
+    <value>Marken</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>Länder</value>
+  </data>
+  <data name="CreateShowroom_Title" xml:space="preserve">
+    <value>Neuen Ausstellungsraum erstellen</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>Panorama:</value>
+  </data>
+  <data name="CreateShowroom_InShadow" xml:space="preserve">
+    <value>Im Schatten</value>
+  </data>
+  <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
+    <value>Panorama-Datei wählen</value>
+  </data>
+  <data name="CreateShowroom_CannotCreate" xml:space="preserve">
+    <value>Kann neuen Ausstellungsraum nicht erstellen</value>
+  </data>
+  <data name="UpgradeIcon_Title" xml:space="preserve">
+    <value>Upgrade-Symbol</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Bibliothek</value>
+  </data>
+  <data name="UpgradeIcon_SelectNew" xml:space="preserve">
+    <value>Neues Upgrade-Symbol wählen</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange" xml:space="preserve">
+    <value>Neues Upgrade-Symbol nicht erstellbar</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="VersionInfo_Title" xml:space="preserve">
+    <value>Versionsinformationen</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
+    <value>Latenz:</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>Reifen</value>
+  </data>
+  <data name="AcSettings_Audio_Engine" xml:space="preserve">
+    <value>Motor</value>
+  </data>
+  <data name="AcSettings_Audio_Surface" xml:space="preserve">
+    <value>Oberfläche</value>
+  </data>
+  <data name="AcSettings_Audio_Wind" xml:space="preserve">
+    <value>Wind</value>
+  </data>
+  <data name="AcSettings_Audio_Opponents" xml:space="preserve">
+    <value>Gegner</value>
+  </data>
+  <data name="Controls_InputMethodLabel" xml:space="preserve">
+    <value>Eingabemethode:</value>
+  </data>
+  <data name="Controls_DetectedControllersHeader" xml:space="preserve">
+    <value>Erkannte Controller:</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
+    <value>Vor ungespeicherten Änderungen warnen</value>
+  </data>
+  <data name="Controls_SharePreset" xml:space="preserve">
+    <value>Voreinstellung teilen</value>
+  </data>
+  <data name="Controls_ShareFfbOnly" xml:space="preserve">
+    <value>Nur FFB-Einstellungen teilen</value>
+  </data>
+  <data name="Controls_SharePreset_Tooltip" xml:space="preserve">
+    <value>Nur Grundeinstellungen, ohne Experimentelle</value>
+  </data>
+  <data name="Controls_ShareFfbOnly_Tooltip" xml:space="preserve">
+    <value>Einschließlich experimentale FFB-Einstellungen</value>
+  </data>
+  <data name="Controls_ApplyToAll" xml:space="preserve">
+    <value>Nein, auf alle anwenden</value>
+  </data>
+  <data name="Controls_RemoveOld" xml:space="preserve">
+    <value>Ja, alte entfernen</value>
+  </data>
+  <data name="Controls_AlreadyUsed" xml:space="preserve">
+    <value>Bereits benutzt</value>
+  </data>
+  <data name="Controls_SharedFfbOnly" xml:space="preserve">
+    <value>{0} (nur FFB)</value>
+  </data>
+  <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
+    <value>Erweiterte Wetter:</value>
+  </data>
+  <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
+    <value>PP-Filter wird später zurückgesetzt</value>
+  </data>
 </root>
