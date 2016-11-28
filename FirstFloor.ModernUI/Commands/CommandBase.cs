@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
@@ -30,7 +31,7 @@ namespace FirstFloor.ModernUI.Commands {
         protected abstract void ExecuteOverride(object parameter);
 
         bool ICommand.CanExecute(object parameter) {
-            return AlwaysCanExecute || CanExecuteOverride(parameter);
+            return CanExecuteOverride(parameter);
         }
 
         void ICommand.Execute(object parameter) {
@@ -93,24 +94,97 @@ namespace FirstFloor.ModernUI.Commands {
     }
 
     public abstract class CommandExt<T> : CommandBase {
+        public bool XamlCompatible { get; set; } = true;
+
         protected CommandExt(bool alwaysCanExecute, bool isAutomaticRequeryDisabled) : base(alwaysCanExecute, isAutomaticRequeryDisabled) {}
 
-        protected sealed override void ExecuteOverride(object parameter) {
-            if (parameter is T || (parameter == null && (!typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) != null))) {
-                ExecuteOverride((T)parameter);
-                return;
+        private bool ConvertXamlCompatible([NotNull] object parameter, out T result) {
+            if (typeof(T) == typeof(string)) {
+                /* we don’t need to check on null or if it’s already a string — those
+                 * cases would be solved before, by Convert() */
+                result = (T)(object)parameter.ToString();
+                return true;
             }
 
-            Logging.Error($"Invalid type: {parameter?.GetType().Name ?? "<NULL>"} (required: {typeof(T)})");
+            var type = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+            var asString = parameter as string ?? parameter.ToString();
+            if (type == typeof(bool)) {
+                bool value;
+                if (bool.TryParse(asString, out value)) {
+                    result = (T)(object)value;
+                    return true;
+                }
+            } else if (typeof(T) == typeof(int)) {
+                int value;
+                if (int.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                    result = (T)(object)value;
+                    return true;
+                }
+            } else if(typeof(T) == typeof(double)) {
+                double value;
+                if (double.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                    result = (T)(object)value;
+                    return true;
+                }
+            } else if (typeof(T) == typeof(long)) {
+                long value;
+                if (long.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                    result = (T)(object)value;
+                    return true;
+                }
+            } else if(typeof(T) == typeof(float)) {
+                float value;
+                if (float.TryParse(asString, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                    result = (T)(object)value;
+                    return true;
+                }
+            }
+
+            result = default(T);
+            return false;
+        }
+
+        private bool Convert(object value, out T result) {
+            if (value is T) {
+                result = (T)value;
+                return true;
+            }
+
+            if (value == null) {
+                /* nulls are appropriate only for non-value or nullable types */
+                if (typeof(T).IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null) {
+                    result = default(T);
+                    return false;
+                }
+
+                result = (T)(object)null;
+                return true;
+            }
+
+            if (XamlCompatible && ConvertXamlCompatible(value, out result)) {
+                return true;
+            }
+
+            result = default(T);
+            return false;
+        }
+
+        protected sealed override void ExecuteOverride(object parameter) {
+            T value;
+            if (Convert(parameter, out value)) {
+                ExecuteOverride(value);
+            } else {
+                Logging.Error($"Invalid type: {parameter?.GetType().Name ?? @"<NULL>"} (required: {typeof(T)})");
+            }
         }
 
         protected sealed override bool CanExecuteOverride(object parameter) {
-            if (AlwaysCanExecute) return true;
-            if (parameter is T || (parameter == null && (!typeof(T).IsValueType || Nullable.GetUnderlyingType(typeof(T)) != null))) {
-                return CanExecuteOverride((T)parameter);
+            T value;
+            if (Convert(parameter, out value)) {
+                return AlwaysCanExecute || CanExecuteOverride(value);
             }
 
-            Logging.Error($"Invalid type: {parameter?.GetType().Name ?? "<NULL>"} (required: {typeof(T)})");
+            Logging.Error($"Invalid type: {parameter?.GetType().Name ?? @"<NULL>"} (required: {typeof(T)})");
             return false;
         }
 
