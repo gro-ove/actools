@@ -25,7 +25,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
-    public class ServerEntry : Displayable, IComparer, IWithId {
+    public partial class ServerEntry : Displayable, IComparer, IWithId {
         public class Session {
             public bool IsActive { get; set; }
 
@@ -207,13 +207,13 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool IsUnavailable { get; }
 
-        public ServerEntry([NotNull] ServerInformation information, bool? forceIsLan = null) {
+        public ServerEntry([NotNull] ServerInformation information) {
             if (information == null) throw new ArgumentNullException(nameof(information));
 
             Id = information.GetUniqueId();
             OriginalInformation = information;
 
-            IsLan = forceIsLan ?? information.IsLan;
+            IsLan = information.IsLan;
 
             Ip = information.Ip;
             Port = information.Port;
@@ -221,6 +221,11 @@ namespace AcManager.Tools.Managers.Online {
             PortT = information.PortT;
 
             Ping = null;
+            SetSomeProperties(information);
+        }
+
+        public void Update(ServerInformation information) {
+            // TODO?
             SetSomeProperties(information);
         }
 
@@ -649,7 +654,7 @@ namespace AcManager.Tools.Managers.Online {
             if (car) return string.Format(ToolsStrings.Online_Server_MissingCarBbCode, id);
 
             id = Regex.Replace(id, @"-([^-]+)$", "/$1");
-            if (!id.Contains(@"/")) id = $"{id}/{id}";
+            if (!id.Contains(@"/")) id = $@"{id}/{id}";
             return string.Format(ToolsStrings.Online_Server_MissingTrackBbCode, id);
         }
 
@@ -723,15 +728,14 @@ namespace AcManager.Tools.Managers.Online {
                 SetMissingCarErrorIfNeeded(ref errorMessage);
                 if (!string.IsNullOrWhiteSpace(errorMessage)) return;
 
-                if (!IsLan && SteamIdHelper.Instance.Value == null) {
+                if (OriginsFromKunos && SteamIdHelper.Instance.Value == null) {
                     throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
                 }
 
                 if (mode == UpdateMode.Full) {
                     UpdateProgress = 0.1;
                     UpdateProgressMessage = "Loading actual server information…";
-                    var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly
-                            ? KunosApiProvider.TryToGetInformationDirect(Ip, PortC) : KunosApiProvider.TryToGetInformation(Ip, Port));
+                    var newInformation = await GetInformation();
                     if (newInformation == null) {
                         errorMessage = ToolsStrings.Online_Server_CannotRefresh;
                         return;

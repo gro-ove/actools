@@ -253,8 +253,9 @@ namespace AcManager.Tools.Helpers.Api {
 
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 if (progress != null) {
+                    var j = i;
                     Application.Current.Dispatcher.Invoke(() => {
-                        progress?.Report(i);
+                        progress.Report(j);
                     });
                 }
 
@@ -263,19 +264,29 @@ namespace AcManager.Tools.Helpers.Api {
                 try {
                     var watch = Stopwatch.StartNew();
                     var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout);
-                    var loadTime = watch.Elapsed;
-                    Logging.Write($"List (loading+parsing): {loadTime.TotalMilliseconds:F1} ms");
+                    Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                     return parsed;
-                } catch (WebException e) {
-                    Logging.Warning($"Cannot get servers list: {requestUri}, {e.Message}");
                 } catch (Exception e) {
-                    Logging.Warning($"Cannot get servers list: {requestUri}\n{e}");
+                    Logging.Warning(e.Message);
                 }
 
                 NextServer();
             }
 
             return null;
+        }
+
+        [CanBeNull]
+        public static ServerInformation[] TryToGetMinoratingList() {
+            try {
+                var watch = Stopwatch.StartNew();
+                var parsed = LoadListUsingRequest(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout);
+                Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
+                return parsed;
+            } catch (Exception e) {
+                Logging.Warning(e.Message);
+                return null;
+            }
         }
 
         [CanBeNull]

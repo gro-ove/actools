@@ -25,11 +25,13 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks, int limit) {
+        public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
             var list = new List<Task<T>>(limit);
             var result = new List<T>();
 
             foreach (var task in tasks) {
+                if (cancellation.IsCancellationRequested) return result;
+
                 list.Add(task);
                 if (list.Count != limit) continue;
 

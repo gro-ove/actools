@@ -43,7 +43,7 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "y":
                 case "year":
-                    return value.Test(obj.Year ?? 0);
+                    return obj.Year.HasValue && value.Test(obj.Year.Value);
 
                 case "new":
                     return value.Test(obj.IsNew);

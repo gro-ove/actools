@@ -9,6 +9,10 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api.Kunos {
+    public class MinoratingServerInformation : ServerInformation {
+        
+    }
+
     [Localizable(false)]
     public class ServerInformation {
         public string GetUniqueId() {

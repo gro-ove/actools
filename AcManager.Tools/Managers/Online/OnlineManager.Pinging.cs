@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -9,7 +8,7 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Managers.Online {
-    public abstract partial class BaseOnlineManager {
+    public partial class OnlineManager {
         private int _pinged;
 
         public int Pinged {

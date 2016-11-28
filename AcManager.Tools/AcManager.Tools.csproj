@@ -309,8 +309,14 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
-    <Compile Include="Managers\Online\BaseOnlineManager.Pinging.cs" />
-    <Compile Include="Managers\Online\BaseOnlineManager.cs" />
+    <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
+    <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />
+    <Compile Include="Managers\Online\OnlineManager.cs" />
+    <Compile Include="Managers\Online\IOnlineSource.cs" />
+    <Compile Include="Managers\Online\KunosOnlineSource.cs" />
+    <Compile Include="Managers\Online\OnlineSourceWrapper.cs" />
+    <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
+    <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />
     <Compile Include="Profile\LapTimeWrapped.cs" />
@@ -318,7 +324,7 @@
     <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Managers\CarSetupsDirectories.cs" />
     <Compile Include="Managers\CarSetupsManager.cs" />
-    <Compile Include="Managers\Online\OnlineManager.cs" />
+    <Compile Include="Managers\Online\OnlineManagerStatus.cs" />
     <Compile Include="Managers\Online\ServerEntry.cs" />
     <Compile Include="Managers\ServerPresetsManager.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />

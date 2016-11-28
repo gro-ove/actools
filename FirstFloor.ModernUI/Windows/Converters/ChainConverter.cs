@@ -6,8 +6,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    [ContentProperty(nameof(Converters))]
-    [ContentWrapper(typeof(ValueConverterCollection))]
+    [ContentProperty(nameof(Converters)), ContentWrapper(typeof(ValueConverterCollection))]
     public class ChainConverter : IValueConverter {
         public ValueConverterCollection Converters { get; } = new ValueConverterCollection();
 

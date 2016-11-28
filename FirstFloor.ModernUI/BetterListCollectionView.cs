@@ -35,11 +35,8 @@ namespace FirstFloor.ModernUI {
         }
 
         public void Refresh([NotNull] object obj) {
-            if (_internalList.Contains(obj)) {
-                OnCollectionChanged(_internalList, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, obj, obj));
-            } else {
-                Logging.Error(obj);
-            }
+            EditItem(obj);
+            CommitEdit();
         }
     }
 }

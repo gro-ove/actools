@@ -34,4 +34,7 @@
     <c:ToUpperConverter x:Key="ToUpperConverter" />
     <c:ToUpperSpecialConverter x:Key="ToUpperSpecialConverter" />
     <c:UriToCachedImageConverter x:Key="UriToCachedImageConverter" />
+
+    <c:AndConverter x:Key="AndConverter" />
+    <c:OrConverter x:Key="OrConverter" />
 </ResourceDictionary>

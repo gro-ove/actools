@@ -29,11 +29,11 @@
         </mui:LinkGroup>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" Source="/Pages/Drive/Online.xaml">
             <mui:LinkGroupFilterable.FixedLinks>
-                <mui:Link DisplayName="MINORATING" Source="/Pages/Drive/Online.xaml?Filter=minorating@" />
-                <mui:Link DisplayName="RECENT" Source="/Pages/Drive/Online.xaml?Filter=recent@" />
-                <mui:Link DisplayName="FAVORITES" Source="/Pages/Drive/Online.xaml?Filter=favorites@" />
-                <mui:Link DisplayName="MY LIST #2" Source="/Pages/Drive/Online.xaml?Filter=my list #2@" />
-                <mui:Link DisplayName="LAN" Source="/Pages/Drive/Online.xaml?Filter=lan@" />
+                <mui:Link DisplayName="MINORATING" Source="/Pages/Drive/Online.xaml?Filter=@minorating" />
+                <mui:Link DisplayName="RECENT" Source="/Pages/Drive/Online.xaml?Filter=@recent" />
+                <mui:Link DisplayName="FAVORITES" Source="/Pages/Drive/Online.xaml?Filter=@favorites" />
+                <mui:Link DisplayName="MY LIST #2" Source="/Pages/Drive/Online.xaml?Filter=@my list #2" />
+                <mui:Link DisplayName="LAN" Source="/Pages/Drive/Online.xaml?Filter=@lan" />
             </mui:LinkGroupFilterable.FixedLinks>
         </mui:LinkGroupFilterable>
         <!--<mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Lan}" Source="/Pages/Drive/Online.xaml?Mode=Lan" />

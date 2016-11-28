@@ -120,7 +120,7 @@ namespace FirstFloor.ModernUI {
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             if (CollectionChanged == null) return;
             using (BlockReentrancy()) {
-                CollectionChanged(this, e);
+                CollectionChanged.Invoke(this, e);
             }
         }
 

@@ -7,15 +7,13 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
     public static class UriExtension {
-        [Pure]
-        [NotNull]
+        [Pure, NotNull]
         public static Uri FromFilenameSafe(string filename) {
             return new Uri(filename.Replace("%", "%25"));
             // return new Uri(filename);
         }
 
-        [Pure]
-        [NotNull]
+        [Pure, NotNull]
         public static string Format(string uri, params object[] args) {
             return string.Format(uri, args.Select(x => {
                 if (x == null || x is double || x is float || x is int) return x;
@@ -29,14 +27,12 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="uri">Basic string</param>
         /// <param name="args">Arguments (will be escaped)</param>
         /// <returns>Relative URI</returns>
-        [Pure]
-        [NotNull]
+        [Pure, NotNull, StringFormatMethod("uri")]
         public static Uri Create(string uri, params object[] args) {
             return new Uri(Format(uri, args), UriKind.Relative);
         }
 
-        [Pure]
-        [NotNull]
+        [Pure, NotNull]
         public static Uri AddQueryParam(this Uri uri, Dictionary<string, object> dictionary) {
             if (dictionary == null) return uri;
 
@@ -47,8 +43,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, UriKind.Relative);
         }
 
-        [Pure]
-        [NotNull]
+        [Pure, NotNull]
         public static Uri AddQueryParam(this Uri uri, string key, object value) {
             if (value == null) return uri;
 
@@ -57,8 +52,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, UriKind.Relative);
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static string GetQueryParam(this Uri uri, [Localizable(false)] string key) {
             key = key + "=";
             return (from s in uri.ToString().Split('?', '&')

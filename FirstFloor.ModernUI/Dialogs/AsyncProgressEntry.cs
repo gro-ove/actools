@@ -1,12 +1,20 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Dialogs {
-    public struct AsyncProgressEntry {
-        public string Message;
-        public double? Progress;
+    public struct AsyncProgressEntry : INotifyPropertyChanged {
+        public string Message { get; }
+
+        public double? Progress { get; }
 
         public static readonly AsyncProgressEntry Indetermitate = new AsyncProgressEntry("", 0d);
         public static readonly AsyncProgressEntry Ready = new AsyncProgressEntry("", 1d);
+
+        public static AsyncProgressEntry FromStringIndetermitate(string message) {
+            return new AsyncProgressEntry(message, 0d);
+        }
 
         public bool IsIndeterminate => Message == "" && Equals(Progress, 0d);
 
@@ -36,5 +44,17 @@ namespace FirstFloor.ModernUI.Dialogs {
                     : new AsyncProgressEntry(string.Format(UiStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
                             (double)sentBytes / totalBytes);
         }
+
+        public override string ToString() {
+            return $@"{(Message ?? @"<NULL>")} ({Progress*100:F1}%)";
+        }
+
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
+            add { }
+            remove { }
+        }
+
+        [NotifyPropertyChangedInvocator]
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {}
     }
 }

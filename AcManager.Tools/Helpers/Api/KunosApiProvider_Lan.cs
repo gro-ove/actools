@@ -4,11 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Api {
     public static class StringsHelper {
@@ -70,61 +74,80 @@ namespace AcManager.Tools.Helpers.Api {
                    select address.GetBroadcastAddress(mask);
         }
 
-        public static ServerInformation[] TryToGetLanList(IEnumerable<int> ports) {
-            var result = new List<ServerInformation>();
-            Parallel.ForEach(
-                    GetBroadcastAddresses()
-                    .SelectMany(x => ports.Select(y => new {
-                        BroadcastIp = x,
-                        Port = y
-                    })),
-                    (entry, ipLoopState) => {
-                        var found = BroadcastPing(entry.BroadcastIp, entry.Port);
-                        if (found == null) return;
-
-                        try {
-                            var information = TryToGetInformationDirect(found.Ip, found.Port);
-                            if (information == null) return;
-
-                            Logging.Write($"[LAN SERVERS] Found: {information.Name} ({found.Ip}:{found.Port})");
-                            information.IsLan = true;
-                            result.Add(information);
-                        } catch (Exception e) {
-                            Logging.Write("[LAN SERVERS] Error: " + e);
-                        }
-                    });
-            return result.ToArray();
+        private class Progress {
+            public int Total;
+            public int Current;
         }
 
-        public static ServerInformation[] TryToGetLanList() {
-            return TryToGetLanList(SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason());
+        private static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress) {
+            var addresses = GetBroadcastAddresses().ToList();
+
+            // ReSharper disable PossibleMultipleEnumeration
+            if (progress != null) {
+                progress.Total = ports.Count() * addresses.Count;
+                progress.Current = 0;
+            }
+
+            var entries = addresses.SelectMany(x => ports.Select(y => new {
+                BroadcastIp = x,
+                Port = y
+            }));
+            // ReSharper enable PossibleMultipleEnumeration
+
+            Parallel.ForEach(entries, (entry, ipLoopState) => {
+                var found = BroadcastPing(entry.BroadcastIp, entry.Port);
+                if (found != null) {
+                    try {
+                        var information = TryToGetInformationDirect(found.Ip, found.Port);
+                        if (information == null) return;
+
+                        information.IsLan = true;
+                        Application.Current.Dispatcher.InvokeAsync(() => foundCallback(information));
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }
+
+                if (progress != null) {
+                    Interlocked.Increment(ref progress.Current);
+                }
+            });
         }
 
         public static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports) {
-            Parallel.ForEach(
-                    GetBroadcastAddresses()
-                    .SelectMany(x => ports.Select(y => new {
-                        BroadcastIp = x,
-                        Port = y
-                    })),
-                    (entry, ipLoopState) => {
-                        var found = BroadcastPing(entry.BroadcastIp, entry.Port);
-                        if (found == null) return;
-
-                        try {
-                            var information = TryToGetInformationDirect(found.Ip, found.Port);
-                            if (information == null) return;
-
-                            information.IsLan = true;
-                            Application.Current.Dispatcher.InvokeAsync(() => foundCallback(information));
-                        } catch (Exception e) {
-                            Logging.Write("[LAN SERVERS] Error: " + e);
-                        }
-                    });
+            TryToGetLanList(foundCallback, ports, null);
         }
 
         public static void TryToGetLanList(Action<ServerInformation> foundCallback) {
-            TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason());
+            TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), null);
+        }
+
+        public static async Task TryToGetLanListAsync(Action<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var holder = progress == null ? null : new Progress();
+
+            DispatcherTimer timer = null;
+            if (holder != null) {
+                timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                    Interval = TimeSpan.FromSeconds(0.1),
+                    IsEnabled = true
+                };
+
+                timer.Tick += (sender, args) => {
+                    progress.Report(new AsyncProgressEntry($"Scanned {holder.Current} of {holder.Total}", holder.Current, holder.Total));
+                };
+            }
+
+            await Task.Run(() => {
+                TryToGetLanList(i => {
+                    if (cancellation.IsCancellationRequested) return;
+                    foundCallback(i);
+                }, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), holder);
+            }, cancellation);
+
+            if (holder != null) {
+                timer.IsEnabled = false;
+            }
         }
     }
 }

@@ -16,28 +16,23 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Drive {
     public partial class Online_SelectedServerPage : ILoadableContent, IParametrizedUriContent {
-        private OnlineManagerType _type;
-        private BaseOnlineManager _managerOld;
-        private ServerEntry _entryOld;
+        private ServerEntry _entry;
 
         public void OnUri(Uri uri) {
-            _type = uri.GetQueryParamEnum<OnlineManagerType>("Mode");
-            _managerOld = BaseOnlineManager.ManagerByMode(_type);
-
             var id = uri.GetQueryParam("Id");
             if (id == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
 
-            _entryOld = _managerOld.GetById(id);
-            if (_entryOld == null) {
+            _entry = OnlineManager.Instance.GetById(id);
+            if (_entry == null) {
                 throw new Exception(string.Format(AppStrings.Online_ServerWithIdIsMissing, id));
             }
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
-            if (_entryOld.Status == ServerStatus.Unloaded) {
-                _entryOld.Update(ServerEntry.UpdateMode.Normal).Forget();
+            if (_entry.Status == ServerStatus.Unloaded) {
+                _entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
 
             return Task.Delay(0, cancellationToken);
@@ -46,13 +41,13 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Load() {
-            if (_entryOld.Status == ServerStatus.Unloaded) {
-                _entryOld.Update(ServerEntry.UpdateMode.Normal).Forget();
+            if (_entry.Status == ServerStatus.Unloaded) {
+                _entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
         }
 
         public void Initialize() {
-            DataContext = new ViewModel(_entryOld);
+            DataContext = new ViewModel(_entry);
             InitializeComponent();
 
             if (Model.EntryOld == null) return;
