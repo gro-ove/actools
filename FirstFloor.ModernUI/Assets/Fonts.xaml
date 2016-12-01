@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <FontFamily x:Key="DefaultFont">Segoe UI</FontFamily>
-    <FontFamily x:Key="LightFont">Segoe UI Light</FontFamily>
+    <!--<FontFamily x:Key="DefaultFont">Courier New</FontFamily>-->
     <FontFamily x:Key="CondensedFont">/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed</FontFamily>
+    <FontFamily x:Key="FixedFont">Consolas</FontFamily>
 </ResourceDictionary>

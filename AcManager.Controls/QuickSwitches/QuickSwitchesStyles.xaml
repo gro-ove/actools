@@ -5,6 +5,7 @@
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesIconData.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -14,7 +15,6 @@
     <Thickness x:Key="LabelMargin">0 0 0 4</Thickness>
     <sys:Double x:Key="IconSize">24</sys:Double>
     <sys:Double x:Key="FontSize">11</sys:Double>
-    <FontFamily x:Key="FontFamily">/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed</FontFamily>
     <FontWeight x:Key="FontWeight">Bold</FontWeight>
 
     <Style TargetType="mui:ModernToggleButton">
@@ -45,8 +45,8 @@
                                 <mui:ContextMenuButton x:Name="PART_MoreButton" Command="{TemplateBinding MoreCommand}" DockPanel.Dock="Right" />
                                 <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
                                         TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
-                                        FontFamily="{StaticResource FontFamily}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
-                                        Margin="4 0 0 0">
+                                        FontFamily="{StaticResource CondensedFont}" FontWeight="{StaticResource FontWeight}"
+                                        FontSize="{StaticResource FontSize}" Margin="4 0 0 0">
                                 </TextBlock>
                                 <DockPanel.RenderTransform>
                                     <TransformGroup>
@@ -125,7 +125,7 @@
                 <ControlTemplate TargetType="mui:ModernButton">
                     <DockPanel Margin="{TemplateBinding Padding}">
                         <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
+                                TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource CondensedFont}"
                                 FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center"
                                 DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" />
                         <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
@@ -212,7 +212,7 @@
                                     HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
                             <TextBlock x:Name="PART_Text" IsHitTestVisible="False" DataContext="{TemplateBinding SelectionBoxItem}"
                                     Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"
-                                    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource FontFamily}"
+                                    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource CondensedFont}"
                                     FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" Margin="0 0 11 0" />
                         </mui:Cell>
                         <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}"
@@ -246,7 +246,8 @@
                                 InnerMargin="8 6 -2 0" HorizontalContentAlignment="Center" FixedMode="False">
                             <mui:HierarchicalComboBox.SelectedContent>
                                 <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis" TextAlignment="Center"
-                                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
+                                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource CondensedFont}"
+                                        FontSize="{StaticResource FontSize}"
                                         Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}" />
                             </mui:HierarchicalComboBox.SelectedContent>
                         </mui:HierarchicalComboBox>
@@ -335,7 +336,7 @@
 
                             <TextBlock x:Name="PART_Text" DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
                                     TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
-                                    FontFamily="{StaticResource FontFamily}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
+                                    FontFamily="{StaticResource CondensedFont}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
                                     Grid.Row="1" HorizontalAlignment="Center" Margin="{StaticResource LabelMargin}">
                                 <TextBlock.RenderTransform>
                                     <TransformGroup>
@@ -345,7 +346,7 @@
                             </TextBlock>
                             <TextBlock x:Name="PART_DisplayValue" DataContext="{TemplateBinding DisplayValue}"
                                     Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"
-                                    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource FontFamily}"
+                                    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource CondensedFont}"
                                     FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" Opacity="0" Grid.Row="1"
                                     HorizontalAlignment="Center" Margin="{StaticResource LabelMargin}">
                                 <TextBlock.RenderTransform>

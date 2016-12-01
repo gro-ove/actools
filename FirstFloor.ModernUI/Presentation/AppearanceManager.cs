@@ -25,6 +25,10 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public void Initialize() {
+            /*Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
+                [@"DefaultFont"] = new FontFamily(@"Courier New"),
+                [@"LightFont"] = new FontFamily(@"Impact"),
+            });*/
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
                 Source = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative)
             });

@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="CodeStyle" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
                 <Setter Property="FontSize" Value="40" />
                 <Setter Property="FontWeight" Value="UltraLight" />
                 <Setter Property="Foreground" Value="White" />

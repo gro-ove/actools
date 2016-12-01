@@ -69,7 +69,7 @@
             <mui:HierarchicalComboBox.SelectedContent>
                 <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" DataContext="{x:Static t:AcSettingsHolder.Controls}"
                         Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}, Converter={StaticResource ToUpperConverter}}"
-                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}">
+                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Style.Triggers>
@@ -114,7 +114,7 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
+                                TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource CondensedFont}"
                                 FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center" Grid.Row="1"
                                 Margin="{StaticResource LabelMargin}" />
                         <Path Grid.Row="0" Width="22" Height="{TemplateBinding IconHeight}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"

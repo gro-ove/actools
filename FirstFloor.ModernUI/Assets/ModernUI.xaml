@@ -9,6 +9,7 @@
         <ResourceDictionary Source="ContextMenu.xaml" />
         <ResourceDictionary Source="DataGrid.xaml" />
         <ResourceDictionary Source="DatePicker.xaml" />
+        <ResourceDictionary Source="Fonts.xaml" />
         <ResourceDictionary Source="GridSplitter.xaml" />
         <ResourceDictionary Source="Hyperlink.xaml" />
         <ResourceDictionary Source="Label.xaml" />
@@ -46,12 +47,8 @@
     <SolidColorBrush x:Key="Error" Color="{DynamicResource ErrorColor}" />
 
     <!-- font settings -->
-    <FontFamily x:Key="DefaultFontFamily">Segoe UI</FontFamily>
     <sys:Double x:Key="DefaultFontSize">13</sys:Double>
-
-    <FontFamily x:Key="FixedFontFamily">Consolas</FontFamily>
     <sys:Double x:Key="FixedFontSize">13.333</sys:Double>
-
     <sys:Double x:Key="SmallFontSize">11</sys:Double>
     <sys:Double x:Key="ModernSubMenuFontSize">11</sys:Double>
 

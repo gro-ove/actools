@@ -6,12 +6,13 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ModernSubMenuItemBase" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="Foreground" Value="{DynamicResource SubMenuText}" />
         <Setter Property="FontSize" Value="{DynamicResource ModernSubMenuFontSize}" />
         <Setter Property="Margin" Value="0 0 12 0" />
@@ -157,12 +158,9 @@
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="FontFamily" Value="Segoe UI Light" />
                                     <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-                                    <Setter Property="FontSize" Value="23" />
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                                     <Setter Property="VerticalContentAlignment" Value="Center" />
-                                    <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
                                     <Setter Property="Margin" Value="0 0 12 0" />
                                     <Setter Property="Template">
                                         <Setter.Value>
@@ -171,7 +169,7 @@
                                                         Text="{Binding DisplayName, Converter={StaticResource ToLowerConverter}}"
                                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Style="{StaticResource Title}" />
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Foreground" Value="{DynamicResource MenuTextHover}" />

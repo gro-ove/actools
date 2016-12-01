@@ -4,11 +4,12 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ModernTabLinkItem" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
@@ -83,7 +84,7 @@
                                                 Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
-                                                    <Setter Property="FontFamily" Value="Segoe UI" />
+                                                    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
                                                     <Setter Property="FontSize" Value="15" />
                                                     <Setter Property="HorizontalAlignment" Value="Right" />
                                                     <Setter Property="TextTrimming" Value="CharacterEllipsis" />

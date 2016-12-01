@@ -2,14 +2,17 @@
         xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <Style TargetType="c:BbCodeBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style TargetType="c:SelectableBbCodeBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="ContextMenu" Value="{StaticResource TextBoxReadOnlyContextMenu}" />
         <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />
         <Setter Property="AllowDrop" Value="True" />

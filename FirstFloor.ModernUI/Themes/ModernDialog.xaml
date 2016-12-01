@@ -5,11 +5,12 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="c:ModernDialog">
         <Setter Property="BackgroundContent" Value="{DynamicResource DialogBackgroundContent}" />
-        <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
         <Setter Property="MaxWidth" Value="640" />
@@ -50,7 +51,7 @@
                                                         Filename="{TemplateBinding IconSource}"
                                                         Visibility="{TemplateBinding IconSource, Converter={StaticResource ExistToVisibilityConverter}}" />
                                                 <TextBlock DataContext="{TemplateBinding Title}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                                        FontFamily="Segoe UI" FontSize="24" TextOptions.TextFormattingMode="Ideal"
+                                                        FontFamily="{StaticResource DefaultFont}" FontSize="24" TextOptions.TextFormattingMode="Ideal"
                                                         TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
 

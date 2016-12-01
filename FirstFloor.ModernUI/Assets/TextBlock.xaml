@@ -26,8 +26,9 @@
     </Style>
 
     <Style x:Key="Title" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource LightFont}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="23" />
+        <Setter Property="FontWeight" Value="UltraLight" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
 
@@ -51,7 +52,7 @@
     </Style>
 
     <Style x:Key="Fixed" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource FixedFontFamily}" />
+        <Setter Property="FontFamily" Value="{StaticResource FixedFont}" />
         <Setter Property="FontSize" Value="{DynamicResource FixedFontSize}" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>

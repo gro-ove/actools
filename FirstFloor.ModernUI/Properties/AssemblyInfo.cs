@@ -66,4 +66,6 @@ using System.Runtime.CompilerServices;
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
 
 // For testing
+#if DEBUG
 [assembly: InternalsVisibleTo("FirstFloor.ModernUI.Tests")]
+#endif

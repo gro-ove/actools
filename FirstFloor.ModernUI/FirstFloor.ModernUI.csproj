@@ -405,6 +405,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Marks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

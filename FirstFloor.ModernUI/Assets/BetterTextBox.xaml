@@ -168,18 +168,18 @@
     </Style>
 
     <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed" />
+        <Setter Property="FontFamily" Value="{StaticResource CondensedFont}" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="Borderless.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
     </Style>
 
     <Style x:Key="Borderless.Heading2" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="16" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
@@ -199,7 +199,7 @@
     </Style>
 
     <Style x:Key="Borderless.White.Small" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless.White}">
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
     </Style>
 

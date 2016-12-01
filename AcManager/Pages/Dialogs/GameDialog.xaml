@@ -169,7 +169,7 @@
 
                 <Style x:Key="ModernTabLinkItem" TargetType="ListBoxItem">
                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
                     <Setter Property="FontSize" Value="15" />
                     <Setter Property="FontWeight" Value="Bold" />
                     <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />

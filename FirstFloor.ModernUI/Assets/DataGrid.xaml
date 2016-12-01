@@ -4,6 +4,7 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/FancyScroll.xaml" />
+        <ResourceDictionary Source="Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type DataGrid}, ResourceId=DataGridSelectAllButtonStyle}" TargetType="{x:Type Button}"
@@ -80,6 +81,11 @@
 
     <!--<Style x:Key="{x:Type DataGridRow}" TargetType="{x:Type DataGridRow}">-->
     <Style x:Key="{x:Type DataGridRow}" TargetType="{x:Type DataGridRow}">
+        <Setter Property="CacheMode">
+            <Setter.Value>
+                <BitmapCache EnableClearType="True" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
@@ -174,7 +180,7 @@
         <Setter Property="Foreground" Value="{DynamicResource DataGridHeaderForeground}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
         <Setter Property="Padding" Value="4 3 4 3" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -403,8 +409,8 @@
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
         <Setter Property="VirtualizingStackPanel.IsVirtualizingWhenGrouping" Value="True" />
         <Setter Property="VirtualizingStackPanel.ScrollUnit" Value="Pixel" />
-        <Setter Property="VirtualizingStackPanel.CacheLengthUnit" Value="Page" />
-        <Setter Property="VirtualizingStackPanel.CacheLength" Value="1,1" />
+        <Setter Property="VirtualizingStackPanel.CacheLengthUnit" Value="Item" />
+        <Setter Property="VirtualizingStackPanel.CacheLength" Value="5,5" />
 
         <!--scrolling-->
         <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />

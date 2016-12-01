@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SystemButtonBase" TargetType="ButtonBase">
@@ -124,7 +125,7 @@
         <Setter Property="Foreground" Value="{DynamicResource LinkButtonText}" />
         <Setter Property="Width" Value="NaN" />
         <Setter Property="Height" Value="NaN" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Template">
@@ -159,6 +160,7 @@
         <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
         <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -242,7 +244,6 @@
 
     <Style x:Key="Go.Button" BasedOn="{StaticResource Go.BaseButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>
 
