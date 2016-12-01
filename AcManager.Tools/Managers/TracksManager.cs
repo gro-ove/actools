@@ -42,7 +42,7 @@ namespace AcManager.Tools.Managers {
         /// <param name="id">ID like “ks_nordschleife-nordschleife”.</param>
         /// <returns>Track layout.</returns>
         [CanBeNull]
-        public TrackObjectBase GetLayoutByKunosId(string id) {
+        public TrackObjectBase GetLayoutByKunosId([NotNull] string id) {
             return GetLayoutById(id) ?? (id.Contains(@"-") ? GetLayoutById(id.ReplaceLastOccurrence(@"-", @"/")) : null);
         }
 
@@ -56,18 +56,18 @@ namespace AcManager.Tools.Managers {
         /// <param name="id">ID like “ks_nordschleife-nordschleife”.</param>
         /// <returns>Track layout.</returns>
         [ItemCanBeNull]
-        public async Task<TrackObjectBase> GetLayoutByKunosIdAsync(string id) {
+        public async Task<TrackObjectBase> GetLayoutByKunosIdAsync([NotNull] string id) {
             return await GetLayoutByIdAsync(id) ?? (id.Contains(@"-") ? await GetLayoutByIdAsync(id.ReplaceLastOccurrence(@"-", @"/")) : null);
         }
 
         [CanBeNull]
-        public TrackObjectBase GetLayoutById(string id) {
+        public TrackObjectBase GetLayoutById([NotNull] string id) {
             if (!id.Contains('/')) return base.GetById(id);
             return base.GetById(id.Split('/')[0])?.GetLayoutById(id);
         }
 
         [ItemCanBeNull]
-        public async Task<TrackObjectBase> GetLayoutByIdAsync(string id) {
+        public async Task<TrackObjectBase> GetLayoutByIdAsync([NotNull] string id) {
             if (!id.Contains('/')) return await base.GetByIdAsync(id);
             return (await base.GetByIdAsync(id.Split('/')[0]))?.GetLayoutById(id);
         }

@@ -71,6 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             // ContentSource = DefaultContentSource;
         }
 
+        public event EventHandler<NavigatingCancelEventArgs> FrameNavigating;
         public event EventHandler<NavigationEventArgs> FrameNavigated;
         private ModernMenu _menu;
         private ModernFrame _frame;
@@ -87,12 +88,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             base.OnApplyTemplate();
             
             if (_frame != null) {
+                _frame.Navigating -= Frame_Navigating;
                 _frame.Navigated -= Frame_Navigated;
             }
 
             _frame = GetTemplateChild("ContentFrame") as ModernFrame;
 
             if (_frame != null) {
+                _frame.Navigating += Frame_Navigating;
                 _frame.Navigated += Frame_Navigated;
             }
 
@@ -101,6 +104,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
             FrameNavigated?.Invoke(this, navigationEventArgs);
+        }
+
+        private void Frame_Navigating(object sender, NavigatingCancelEventArgs navigationEventArgs) {
+            FrameNavigating?.Invoke(this, navigationEventArgs);
         }
 
         private void OnCanNavigateTitleLink(object sender, CanExecuteRoutedEventArgs e) {

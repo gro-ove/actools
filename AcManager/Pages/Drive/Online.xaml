@@ -31,6 +31,8 @@
     <DockPanel>
         <Border DockPanel.Dock="Top" Padding="4" Background="DarkSlateGray">
             <StackPanel>
+                <TextBlock Text="{Binding Manager.PingingInProcess, StringFormat='{}Manager.PingingInProcess: {0}'}" />
+                <TextBlock Text="{Binding Manager.Pinged, StringFormat='{}Manager.Pinged: {0}'}" />
                 <TextBlock Text="{Binding Pack.Status, StringFormat='{}Pack.Status: {0}'}" />
                 <TextBlock Text="{Binding Pack.BackgroundLoading, StringFormat='{}Pack.BackgroundLoading: {0}'}" />
 
@@ -55,11 +57,15 @@
             </StackPanel>
 
             <!-- error -->
-            <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 40" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
-                <mui:BbCodeBlock BbCode="{Binding Manager.ErrorMessage}" Margin="20" />
-                <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 20 0"
-                        Visibility="{Binding Manager.ErrorFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <StackPanel Margin="0 20" DataContext="{Binding Pack.Error}">
+                    <mui:BbCodeBlock BbCode="{Binding Message}" />
+                    <mui:BbCodeBlock BbCode="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
+                            Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                </StackPanel>
+                <Button Command="{Binding RefreshCommand}" CommandParameter="True" Content="{x:Static c:ControlsStrings.Common_TryAgain}"
+                        Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
             </StackPanel>
 
             <!-- loaded -->

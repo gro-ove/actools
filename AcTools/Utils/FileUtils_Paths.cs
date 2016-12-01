@@ -180,6 +180,7 @@ namespace AcTools.Utils {
         /// <param name="filename">Ex.: C:\Windows\System32\explorer.exe</param>
         /// <param name="directory">Ex.: C:\Windows</param>
         /// <returns>System32\explorer.exe</returns>
+        [NotNull]
         public static string GetRelativePath([NotNull] string filename, [NotNull] string directory) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             if (directory == null) throw new ArgumentNullException(nameof(directory));

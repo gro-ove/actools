@@ -64,7 +64,7 @@ namespace AcManager.Tools.Managers.Online {
                     throw new Exception(ToolsStrings.Online_CannotAccessServer);
                 }
 
-                AddToSavedList(information.Ip, information.PortC);
+                AddToSavedList(information.Ip, information.PortHttp);
                 CreateAndAddEntry(information);
             } else {
                 // assume address is [HOSTNAME]
@@ -117,7 +117,7 @@ namespace AcManager.Tools.Managers.Online {
                 Logging.Warning("Recent add error: " + e);
             }
 
-            AddToRecentList(information.Ip, information.PortC);
+            AddToRecentList(information.Ip, information.PortHttp);
         }
 
         private IEnumerable<string> FilterList(IEnumerable<string> list) {

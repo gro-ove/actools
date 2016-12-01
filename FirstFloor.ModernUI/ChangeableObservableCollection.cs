@@ -180,19 +180,28 @@ namespace FirstFloor.ModernUI {
 
             var list = range.ToList();
             if (list.Count > 3 && list.Count > Count) {
-                foreach (var item in list) {
-                    Subscribe(item);
-                    Items.Add(item);
-                }
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                _AddRangeDirect(list);
             } else {
                 foreach (var item in list) {
                     Add(item);
                 }
             }
+        }
+
+        /// <summary>
+        /// Don’t use it unless you have clear understanding how it differs from AddRange()!
+        /// Will call Reset event afterwards, so don’t use it for small collections.
+        /// </summary>
+        /// <param name="range">Range.</param>
+        public void _AddRangeDirect(IEnumerable<T> range) {
+            foreach (var item in range) {
+                Subscribe(item);
+                Items.Add(item);
+            }
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private void ReplaceEverythingBy([NotNull] IList<T> list) {

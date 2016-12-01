@@ -219,9 +219,6 @@
     </Compile>
     <Compile Include="StatEntry.cs" />
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
-    <Compile Include="UserControls\OnlineListBoxDetailedItemUc.xaml.cs">
-      <DependentUpon>OnlineListBoxDetailedItemUc.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\CefSharpWrapper.cs" />
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
@@ -444,10 +441,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ModernPopup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\OnlineListBoxDetailedItemUc.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

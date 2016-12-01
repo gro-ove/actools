@@ -39,6 +39,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
+using FirstFloor.ModernUI.Windows.Navigation;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
@@ -78,11 +79,12 @@ namespace AcManager.Pages.Windows {
 
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(new NavigateCommand(this, AppStrings.Main_About), new KeyGesture(Key.F1, ModifierKeys.Alt)),
-                new InputBinding(new NavigateCommand(this, AppStrings.Main_Drive), new KeyGesture(Key.F1)),
-                new InputBinding(new NavigateCommand(this, AppStrings.Main_Media), new KeyGesture(Key.F2)),
-                new InputBinding(new NavigateCommand(this, AppStrings.Main_Content), new KeyGesture(Key.F3)),
-                new InputBinding(new NavigateCommand(this, AppStrings.Main_Settings), new KeyGesture(Key.F4))
+                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F1, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F1, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
+                new InputBinding(new NavigateCommand(this, "profile"), new KeyGesture(Key.F2)),
+                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F3)),
+                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F4)),
             });
             InitializeComponent();
 
@@ -110,6 +112,26 @@ namespace AcManager.Pages.Windows {
             }
 
             EntryPoint.HandleSecondInstanceMessages(this, HandleMessagesAsync);
+
+            _defaultOnlineGroupCount = OnlineGroup.FixedLinks.Count;
+            FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
+        }
+
+        private readonly int _defaultOnlineGroupCount;
+
+        private void OnOnlineSourcesUpdate(object sender, EventArgs e) {
+            var list = OnlineGroup.FixedLinks;
+
+            for (var i = list.Count - 1; i >= _defaultOnlineGroupCount; i--) {
+                list.RemoveAt(i);
+            }
+
+            foreach (var source in FileBasedOnlineSources.Instance.GetSources().OrderBy(x => x.DisplayName)) {
+                list.Add(new Link {
+                    DisplayName = source.DisplayName,
+                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}", source.Key)
+                });
+            }
         }
 
         private async void HandleMessagesAsync(IEnumerable<string> data) {
@@ -171,50 +193,34 @@ namespace AcManager.Pages.Windows {
         }
 
         /// <summary>
-        /// Temporary fix.
+        /// Temporary (?) fix.
         /// </summary>
         private static void OnlineLinkChanged(object sender, LinkChangedEventArgs e) {
-            var group = (LinkGroupFilterable)sender;
-            var type = group.Source.GetQueryParamEnum<OnlineManagerType>(@"Mode");
-
-            var oldKey = type + @"_" + typeof(ServerEntryOld).Name + @"_" + e.OldValue;
-            var newKey = type + @"_" + typeof(ServerEntryOld).Name + @"_" + e.NewValue;
-            LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
-            LimitedStorage.Move(LimitedSpace.OnlineSorting, oldKey, newKey);
-            LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, oldKey, newKey);
+            Online.OnLinkChanged(e);
         }
 
         /// <summary>
-        /// Temporary fix to keep selected object while editing current filter.
+        /// Temporary (?) fix to keep selected object while editing current filter.
         /// </summary>
         private static void ContentLinkChanged(object sender, LinkChangedEventArgs e) {
-            var group = (LinkGroupFilterable)sender;
-
-            Type type;
-            switch (group.DisplayName) {
+            switch (((LinkGroupFilterable)sender).DisplayName) {
                 case "cars":
-                    type = typeof(CarObject);
+                    AcListPageViewModel<CarObject>.OnLinkChanged(e);
                     break;
                 case "tracks":
-                    type = typeof(TrackObject);
+                    AcListPageViewModel<TrackObject>.OnLinkChanged(e);
                     break;
                 case "showrooms":
-                    type = typeof(ShowroomObject);
+                    AcListPageViewModel<ShowroomObject>.OnLinkChanged(e);
                     break;
-                default:
-                    return;
             }
-
-            var oldKey = @"Content_" + type.Name + @"_" + e.OldValue;
-            var newKey = @"Content_" + type.Name + @"_" + e.NewValue;
-            LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
         }
 
         private class NavigateCommand : CommandExt {
             private readonly MainWindow _window;
             private readonly string _key;
 
-            public NavigateCommand(MainWindow window, string key) : base(true, false) {
+            public NavigateCommand(MainWindow window, [Localizable(false)] string key) : base(true, false) {
                 _window = window;
                 _key = key;
             }
@@ -396,9 +402,10 @@ namespace AcManager.Pages.Windows {
         private void OnClosing(object sender, CancelEventArgs e) {
             var unsaved = Superintendent.Instance.UnsavedChanges();
             if (unsaved.Count == 0) return;
-            
+
             var result = ModernDialog.ShowMessage(
-                    $"{AppStrings.Main_UnsavedChanges}\n\n{unsaved.Select(x => $" • {x}").JoinToString(Environment.NewLine)}",
+                    $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
+                            unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
                     AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes) {
                 Superintendent.Instance.SaveAll();
@@ -460,7 +467,7 @@ namespace AcManager.Pages.Windows {
                 case Key.OemTilde:
                     ToggleQuickSwitches();
                     break;
-
+                    
                 default:
                     var k = e.SystemKey - Key.D1;
                     if (k < 0 || k > 9) return;
@@ -592,6 +599,16 @@ namespace AcManager.Pages.Windows {
 
             QuickDrive.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
             e.Effects = DragDropEffects.Copy;
+        }
+
+        private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
+            if (e.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase)) {
+                // Absolutely useless piece of code all by itself, but this way we’re sure OnlineManager
+                // is initialized before list of servers will be rendered.
+                if (OnlineManager.Instance == null) {
+                    Logging.Unexpected();
+                }
+            }
         }
     }
 }

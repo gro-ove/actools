@@ -15,6 +15,7 @@ using CefSharp;
 using CefSharp.Wpf;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using LogSeverity = CefSharp.LogSeverity;
 
 namespace AcManager.Controls.UserControls {
@@ -94,8 +95,10 @@ namespace AcManager.Controls.UserControls {
     }
 
     internal class RequestHandler : IRequestHandler {
+        [CanBeNull]
         internal string UserAgent { get; set; }
 
+        [CanBeNull]
         internal ICustomStyleProvider StyleProvider { get; set; }
 
         public bool OnBeforeBrowse(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool isRedirect) {
@@ -128,10 +131,12 @@ namespace AcManager.Controls.UserControls {
 
                 return CefReturnValue.Cancel;
             }
-            
-            var headers = request.Headers;
-            headers[@"User-Agent"] = UserAgent;
-            request.Headers = headers;
+
+            if (UserAgent != null) {
+                var headers = request.Headers;
+                headers[@"User-Agent"] = UserAgent;
+                request.Headers = headers;
+            }
 
             return CefReturnValue.Continue;
         }
@@ -166,9 +171,8 @@ namespace AcManager.Controls.UserControls {
         }
 
         public IResponseFilter GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response) {
-            if (response.MimeType == @"text/html") {
+            if (response.MimeType == @"text/html" && StyleProvider != null) {
                 var css = StyleProvider.GetStyle(request.Url);
-
                 return ReplaceResponseFilter.CreateCustomCss(@"
 ::-webkit-scrollbar { width: 8px!important; height: 8px!important; }
 ::-webkit-scrollbar-track { box-shadow: none!important; border-radius: 0!important; background: #000!important; }

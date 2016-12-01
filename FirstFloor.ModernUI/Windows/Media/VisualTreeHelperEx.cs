@@ -195,5 +195,26 @@ namespace FirstFloor.ModernUI.Windows.Media {
             var element = reference.InputHitTest(point) as DependencyObject;
             return element == null ? null : element as T ?? GetParent<T>(element);
         }
+
+        /// <summary>
+        /// Works faster if value the same — for example, usual VerifyAccess() won’t be called.
+        /// </summary>
+        /// <param name="element">Element.</param>
+        /// <param name="visible">Visible or collapsed.</param>
+        public static void SetVisibility([CanBeNull] this UIElement element, bool visible) {
+            SetVisibility(element, visible ? Visibility.Visible : Visibility.Collapsed);
+        }
+
+        /// <summary>
+        /// Works faster if value the same — for example, usual VerifyAccess() won’t be called.
+        /// </summary>
+        /// <param name="element">Element.</param>
+        /// <param name="visibility">Visibility.</param>
+        public static void SetVisibility([CanBeNull] this UIElement element, Visibility visibility) {
+            if (element == null) return;
+            if (element.Visibility != visibility) {
+                element.Visibility = visibility;
+            }
+        }
     }
 }

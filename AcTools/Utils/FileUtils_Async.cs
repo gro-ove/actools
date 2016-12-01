@@ -1,11 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public partial class FileUtils {
+        [ItemNotNull]
+        public static async Task<string> ReadAllTextAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
+            var bytes = await ReadAllBytesAsync(filename, cancellation);
+            if (cancellation.IsCancellationRequested) return string.Empty;
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        [ItemNotNull]
+        public static async Task<string[]> ReadAllLinesAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
+            var lines = new List<string>();
+            using (var sr = new StreamReader(filename, Encoding.UTF8)) {
+                string line;
+                while ((line = await sr.ReadLineAsync()) != null) {
+                    if (cancellation.IsCancellationRequested) return new string[0];
+                    lines.Add(line);
+                }
+            }
+
+            return lines.ToArray();
+        }
+
         [ItemNotNull]
         public static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {

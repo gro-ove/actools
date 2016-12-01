@@ -27,7 +27,7 @@ namespace AcManager.Tools.Helpers.Api {
         public static bool OptionSaveResponses = false;
         public static bool OptionUseWebClient = false;
         public static bool OptionForceDisabledCache = false;
-        public static bool OptionIgnoreSystemProxy = false;
+        public static bool OptionNoProxy = false;
         
         public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
 
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Helpers.Api {
                 request.UserAgent = InternalUtils.GetKunosUserAgent();
                 request.Headers.Add("Accept-Encoding", "gzip");
 
-                if (OptionIgnoreSystemProxy) {
+                if (OptionNoProxy) {
                     request.Proxy = null;
                 }
 
@@ -155,7 +155,7 @@ namespace AcManager.Tools.Helpers.Api {
             request.UserAgent = InternalUtils.GetKunosUserAgent();
             request.Headers.Add("Accept-Encoding", "gzip");
 
-            if (OptionIgnoreSystemProxy) {
+            if (OptionNoProxy) {
                 request.Proxy = null;
             }
 
@@ -202,15 +202,15 @@ namespace AcManager.Tools.Helpers.Api {
             }
             return result;
         }
-
+        
         [NotNull]
-        private static ServerInformation[] LoadListUsingRequest(string uri, TimeSpan timeout) {
+        private static T[] LoadListUsingRequest<T>(string uri, TimeSpan timeout, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
             request.Headers.Add("Accept-Encoding", "gzip");
 
-            if (OptionIgnoreSystemProxy) {
+            if (OptionNoProxy) {
                 request.Proxy = null;
             }
 
@@ -223,7 +223,7 @@ namespace AcManager.Tools.Helpers.Api {
             request.ReadWriteTimeout = (int)timeout.TotalMilliseconds;
             request.Timeout = (int)timeout.TotalMilliseconds;
 
-            ServerInformation[] result;
+            T[] result;
             using (var response = (HttpWebResponse)request.GetResponse()) {
                 if (response.StatusCode != HttpStatusCode.OK) {
                     throw new Exception($@"StatusCode = {response.StatusCode}");
@@ -236,10 +236,10 @@ namespace AcManager.Tools.Helpers.Api {
 
                     if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
                         using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                            result = ServerInformation.DeserializeSafe(deflateStream);
+                            result = deserializationFn(deflateStream);
                         }
                     } else {
-                        result = ServerInformation.DeserializeSafe(stream);
+                        result = deserializationFn(stream);
                     }
                 }
             }
@@ -263,7 +263,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout);
+                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout, ServerInformation.Deserialize);
                     Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (Exception e) {
@@ -277,10 +277,10 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformation[] TryToGetMinoratingList() {
+        public static MinoratingServerInformation[] TryToGetMinoratingList() {
             try {
                 var watch = Stopwatch.StartNew();
-                var parsed = LoadListUsingRequest(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout);
+                var parsed = LoadListUsingRequest(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
                 Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                 return parsed;
             } catch (Exception e) {
@@ -339,10 +339,12 @@ namespace AcManager.Tools.Helpers.Api {
 
             result.L = true;
 
-            for (var i = 0; i < result.Durations.Length; i++) {
-                if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race &&
-                        result.Durations[i] < 60) {
-                    result.Durations[i] *= 60;
+            if (result.Durations != null && result.SessionTypes != null) {
+                for (var i = 0; i < result.Durations.Length; i++) {
+                    if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race &&
+                            result.Durations[i] < 60) {
+                        result.Durations[i] *= 60;
+                    }
                 }
             }
 
@@ -463,8 +465,7 @@ namespace AcManager.Tools.Helpers.Api {
                 return null;
             }
         }
-
-        [CanBeNull]
+        
         public static void TryToUnbook(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portC}/UNSUB|{HttpUtility.UrlEncode(steamId)}";

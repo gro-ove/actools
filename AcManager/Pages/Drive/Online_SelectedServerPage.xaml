@@ -63,7 +63,7 @@
                         <TextBox.Text>
                             <MultiBinding StringFormat="{}{0}:{1}">
                                 <Binding Path="Ip" Mode="OneWay" />
-                                <Binding Path="PortC" Mode="OneWay" />
+                                <Binding Path="PortHttp" Mode="OneWay" />
                             </MultiBinding>
                         </TextBox.Text>
                     </TextBox>
@@ -106,7 +106,7 @@
                             <TextBox.Text>
                                 <MultiBinding StringFormat="{}{0}:{1}">
                                     <Binding Path="Ip" Mode="OneWay" />
-                                    <Binding Path="PortC" Mode="OneWay" />
+                                    <Binding Path="PortHttp" Mode="OneWay" />
                                 </MultiBinding>
                             </TextBox.Text>
                         </TextBox>

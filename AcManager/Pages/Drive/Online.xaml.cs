@@ -28,42 +28,9 @@ using Prompt = AcManager.Controls.Dialogs.Prompt;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
-    public partial class Online : ILoadableContent, IParametrizedUriContent {
-        private SourcesPack _sourcesPack;
-
-        [CanBeNull]
-        private string _filter;
-
-        [CanBeNull]
-        private string[] _sources;
-
+    public partial class Online : IParametrizedUriContent {
         public void OnUri(Uri uri) {
-            var filterParam = uri.GetQueryParam("Filter");
-            if (filterParam != null) {
-                var splitIndex = filterParam.LastIndexOf('@');
-                if (splitIndex != -1) {
-                    _sources = filterParam.Substring(splitIndex + 1).Split(',').Select(x => x.Trim().ToLowerInvariant())
-                                          .Distinct().ToArray();
-                    _filter = splitIndex == 0 ? null : filterParam.Substring(0, splitIndex);
-                } else {
-                    _filter = filterParam;
-                }
-            }
-
-            _sourcesPack = OnlineManager.Instance.GetSourcesPack(_sources);
-        }
-
-        public Task LoadAsync(CancellationToken cancellationToken) {
-            _sourcesPack.EnsureLoadedAsync(cancellationToken).Forget();
-            return Task.Delay(0, cancellationToken);
-        }
-
-        public void Load() {
-            _sourcesPack.EnsureLoadedAsync(default(CancellationToken)).Forget();
-        }
-
-        public void Initialize() {
-            DataContext = new OnlineViewModel(_sourcesPack, _filter, _sources);
+            DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"));
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
@@ -238,6 +205,16 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private static string GetKey(string value) {
+            return $@"Online.{value}";
+        }
+
+        public static void OnLinkChanged(LinkChangedEventArgs e) {
+            LimitedStorage.Move(LimitedSpace.SelectedEntry, GetKey(e.OldValue), GetKey(e.NewValue));
+            LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, GetKey(e.OldValue), GetKey(e.NewValue));
+            LimitedStorage.Move(LimitedSpace.OnlineSorting, GetKey(e.OldValue), GetKey(e.NewValue));
+        }
+
         public class OnlineViewModel : NotifyPropertyChanged {
             public string Key { get; }
 
@@ -249,12 +226,6 @@ namespace AcManager.Pages.Drive {
 
             [NotNull]
             public readonly CombinedFilter<ServerEntry> ListFilter;
-
-            /*protected override void FilteredNumberChanged(int oldValue, int newValue) {
-                if (oldValue == 0 || newValue == 0) {
-                    OnPropertyChanged(nameof(ShowList));
-                }
-            }*/
 
             private void LoadQuickFilter() {
                 var loaded = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, Key);
@@ -361,7 +332,7 @@ namespace AcManager.Pages.Drive {
             }
 
             [NotNull]
-            private static CombinedFilter<ServerEntry> GetFilter(string filterString, string[] sources) {
+            private static CombinedFilter<ServerEntry> GetFilter([CanBeNull] string filterString, [CanBeNull] string[] sources) {
                 IFilter<ServerEntry> sourcesTester;
                 if (sources == null || sources.Length == 0) {
                     sourcesTester = new ServerSourceTester(KunosOnlineSource.Key);
@@ -385,11 +356,26 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
-            public OnlineViewModel(SourcesPack pack, string filter, string[] sources) {
-                ListFilter = GetFilter(filter, sources);
-                Key = $@".Online:{ListFilter.Source}";
+            public OnlineViewModel([CanBeNull] string filterParam) {
+                string[] sources = null;
+                string filter = null;
 
-                Pack = pack;
+                if (filterParam != null) {
+                    var splitIndex = filterParam.LastIndexOf('@');
+                    if (splitIndex != -1) {
+                        sources = filterParam.Substring(splitIndex + 1).Split(',').Select(x => x.Trim().ToLowerInvariant())
+                                              .Distinct().ToArray();
+                        filter = splitIndex == 0 ? null : filterParam.Substring(0, splitIndex);
+                    } else {
+                        filter = filterParam;
+                    }
+                }
+
+                Pack = OnlineManager.Instance.GetSourcesPack(sources);
+
+                ListFilter = GetFilter(filter, sources);
+                Key = GetKey(filterParam);
+                
                 Manager = OnlineManager.Instance;
                 MainList = new BetterListCollectionView(Manager.List) {
                     IsLiveFiltering = true,
@@ -419,6 +405,8 @@ namespace AcManager.Pages.Drive {
 
                 if (Pack.Status == OnlineManagerStatus.Ready) {
                     StartPinging().Forget();
+                } else {
+                    StartLoading().Forget();
                 }
 
                 Pack.Ready += Pack_Ready;
@@ -429,6 +417,7 @@ namespace AcManager.Pages.Drive {
                 _loaded = false;
 
                 Manager.List.ItemPropertyChanged -= List_ItemPropertyChanged;
+                StopLoading();
                 StopPinging();
 
                 Pack.Ready -= Pack_Ready;
@@ -439,9 +428,36 @@ namespace AcManager.Pages.Drive {
                 StartPinging().Forget();
             }
 
+            private CancellationTokenSource _currentLoading;
+
+            private async Task StartLoading() {
+                var cancellation = new CancellationTokenSource();
+                try {
+                    _currentLoading = cancellation;
+                    await Pack.EnsureLoadedAsync(cancellation.Token);
+                } finally {
+                    if (Equals(_currentLoading, cancellation)) {
+                        _currentLoading = null;
+                    }
+
+                    cancellation.Dispose();
+                }
+            }
+
+            private void StopLoading() {
+                if (_currentLoading != null) {
+                    _currentLoading.Cancel();
+                    _currentLoading = null;
+                }
+            }
+
             private CancellationTokenSource _currentPinging;
 
             private async Task StartPinging() {
+                // Just a little delay to make sure sources pack is loaded
+                await Task.Delay(TimeSpan.FromMilliseconds(100));
+
+                StopLoading();
                 StopPinging();
 
                 var cancellation = new CancellationTokenSource();
@@ -567,12 +583,12 @@ namespace AcManager.Pages.Drive {
                 }
             }, () => Manager is RecentManagerOld));
 
-            private AsyncCommand _refreshCommand;
+            private AsyncCommand<bool?> _refreshCommand;
 
-            public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async () => {
+            public AsyncCommand<bool?> RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand<bool?>(async nonReadyOnly => {
                 // StopPinging();
                 // why pinging doesn’t crash when collection is getting updated?
-                await Pack.ReloadAsync();
+                await Pack.ReloadAsync(nonReadyOnly ?? false);
             }));
 
             protected void OnCurrentChanged(object sender, EventArgs e) {

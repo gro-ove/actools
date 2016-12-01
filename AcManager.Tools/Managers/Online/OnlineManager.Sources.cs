@@ -21,6 +21,10 @@ namespace AcManager.Tools.Managers.Online {
             Register(KunosOnlineSource.Instance);
             Register(LanOnlineSource.Instance);
             Register(MinoratingOnlineSource.Instance);
+
+            FileBasedOnlineSources.Instance.Initialize();
+            Register(FileBasedOnlineSources.RecentInstance);
+            Register(FileBasedOnlineSources.FavoritesInstance);
         }
 
         private readonly Dictionary<string, OnlineSourceWrapper> _wrappers = new Dictionary<string, OnlineSourceWrapper>(10);
@@ -35,9 +39,7 @@ namespace AcManager.Tools.Managers.Online {
             OnlineSourceWrapper result;
             if (_wrappers.TryGetValue(key, out result)) return result;
 
-            var source = GetSource(key);
-            if (source == null) return null;
-
+            var source = GetSource(key) ?? FileBasedOnlineSources.Instance.GetSource(key);
             result = new OnlineSourceWrapper(List, source);
             _wrappers[key] = result;
             return result;

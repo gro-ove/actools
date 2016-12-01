@@ -219,8 +219,8 @@ namespace AcManager.Tools.Managers.Online {
 
             Ip = information.Ip;
             Port = information.Port;
-            PortC = information.PortC;
-            PortT = information.PortT;
+            PortC = information.PortHttp;
+            PortT = information.PortRace;
 
             Ping = null;
             SetSomeProperties(information);
@@ -312,8 +312,8 @@ namespace AcManager.Tools.Managers.Online {
         private bool UpdateValuesFrom(ServerInformation information) {
             if (Ip != information.Ip ||
                     Port != information.Port ||
-                    PortC != information.PortC ||
-                    PortT != information.PortT) return false;
+                    PortC != information.PortHttp ||
+                    PortT != information.PortRace) return false;
             SetSomeProperties(information);
             return true;
         }

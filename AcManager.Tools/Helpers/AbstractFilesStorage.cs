@@ -3,14 +3,14 @@ using System.IO;
 
 namespace AcManager.Tools.Helpers {
     public class AbstractFilesStorage : AbstractSubdirectoryWatcherProvider {
-        private readonly string _path;
+        protected string RootDirectory { get; }
 
         protected AbstractFilesStorage(string path) {
-            _path = path;
+            RootDirectory = path;
         }
 
         public string Combine(params string[] parts) {
-            return parts.Length == 0 ? _path : Path.Combine(_path, Path.Combine(parts));
+            return parts.Length == 0 ? RootDirectory : Path.Combine(RootDirectory, Path.Combine(parts));
         }
 
         public string EnsureDirectory(params string[] parts) {
@@ -36,7 +36,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         protected override string GetSubdirectoryFilename(string name) {
-            return Path.Combine(_path, name);
+            return name == null ? RootDirectory : Path.Combine(RootDirectory, name);
         }
     }
 }

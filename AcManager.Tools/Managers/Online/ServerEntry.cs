@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -184,28 +183,67 @@ namespace AcManager.Tools.Managers.Online {
 
         public string Id { get; }
 
+        /// <summary>
+        /// IP-address, non-changeable.
+        /// </summary>
         public string Ip { get; }
 
-        /// <summary>
-        /// As a query argument for //aclobby1.grecian.net/lobby.ashx/…
-        /// </summary>
-        public int Port { get; }
+        private int _portHttp;
 
         /// <summary>
-        /// For json-requests directly to launcher server
+        /// For json-requests directly to launcher server, non-changeable.
         /// </summary>
-        public int PortC { get; }
+        public int PortHttp {
+            get { return _portHttp; }
+            private set {
+                if (Equals(value, _portHttp)) return;
+                _portHttp = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _port;
 
         /// <summary>
-        /// For race.ini & acs.exe
+        /// As a query argument for //aclobby1.grecian.net/lobby.ashx/….
         /// </summary>
-        public int PortT { get; }
+        public int Port {
+            get { return _port; }
+            private set {
+                if (Equals(value, _port)) return;
+                _port = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _portRace;
+
+        /// <summary>
+        /// For race.ini & acs.exe.
+        /// </summary>
+        public int PortRace {
+            get { return _portRace; }
+            private set {
+                if (Equals(value, _portRace)) return;
+                _portRace = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isFullyLoaded;
+
+        public bool IsFullyLoaded {
+            get { return _isFullyLoaded; }
+            set {
+                if (Equals(value, _isFullyLoaded)) return;
+                _isFullyLoaded = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsLan { get; }
 
         public readonly ServerInformation OriginalInformation;
-
-        public bool IsUnavailable { get; }
 
         public ServerEntry([NotNull] ServerInformation information) {
             if (information == null) throw new ArgumentNullException(nameof(information));
@@ -213,39 +251,45 @@ namespace AcManager.Tools.Managers.Online {
             Id = information.GetUniqueId();
             OriginalInformation = information;
 
-            IsLan = information.IsLan;
-
             Ip = information.Ip;
-            Port = information.Port;
-            PortC = information.PortC;
-            PortT = information.PortT;
+            PortHttp = information.PortHttp;
+            IsLan = information.IsLan;
 
             Ping = null;
             SetSomeProperties(information);
         }
 
-        public void Update(ServerInformation information) {
-            // TODO?
-            SetSomeProperties(information);
+        private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
+        private static readonly Regex SortingCheatsRegex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
+        private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
+
+        private static string CleanUp(string name, [CanBeNull] string oldName) {
+            name = name.Trim();
+            name = SpacesCollapseRegex.Replace(name, " ");
+            if (SettingsHolder.Online.FixNames) {
+                name = SortingCheatsRegex.Replace(name, "");
+            } else if (oldName != null && SimpleCleanUpRegex.IsMatch(name) && !SimpleCleanUpRegex.IsMatch(oldName)) {
+                name = SimpleCleanUpRegex.Replace(name, "");
+            }
+            return name;
         }
 
         private void SetSomeProperties(ServerInformation information) {
-            PreviousUpdateTime = DateTime.Now;
+            IsFullyLoaded = information.IsFullyLoaded;
 
-            var newDisplayName = Regex.Replace(information.Name.Trim(), @"\s+", " ");
-            if (DisplayName != null && Regex.IsMatch(newDisplayName, @"^AA+") && !Regex.IsMatch(DisplayName, @"^AA+")) {
-                DisplayName = Regex.Replace(newDisplayName, @"^AA+\s*", "");
-            } else {
-                DisplayName = newDisplayName;
-            }
+            Port = information.Port;
+            PortRace = information.PortRace;
+
+            PreviousUpdateTime = DateTime.Now;
+            DisplayName = information.Name == null ? Id : CleanUp(information.Name, DisplayName);
 
             {
-                var country = information.Country.FirstOrDefault() ?? "";
+                var country = information.Country?.FirstOrDefault() ?? "";
                 Country = Country != null && country == @"na" ? Country : country;
             }
 
             {
-                var countryId = information.Country.ElementAtOrDefault(1) ?? "";
+                var countryId = information.Country?.ElementAtOrDefault(1) ?? "";
                 CountryId = CountryId != null && countryId == @"na" ? CountryId : countryId;
             }
 
@@ -258,15 +302,26 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             CarIds = information.CarIds;
-            CarsOrTheirIds = CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
+            CarsOrTheirIds = CarIds?.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
             TrackId = information.TrackId;
-            Track = GetTrack(TrackId);
+            Track = TrackId == null ? null : GetTrack(TrackId);
 
-            var errorMessage = "";
-            var error = SetMissingCarErrorIfNeeded(ref errorMessage);
-            error = SetMissingTrackErrorIfNeeded(ref errorMessage) || error;
+            string errorMessage = null;
+            bool error;
+
+            if (IsFullyLoaded) {
+                error = SetMissingCarErrorIfNeeded(ref errorMessage);
+                error |= SetMissingTrackErrorIfNeeded(ref errorMessage);
+            } else {
+                error = false;
+                errorMessage = "Information’s missing";
+            }
+
             if (error) {
                 Status = ServerStatus.Error;
+                ErrorMessage = errorMessage;
+            } else if (Status == ServerStatus.Error){
+                Status = ServerStatus.Unloaded;
                 ErrorMessage = errorMessage;
             }
 
@@ -274,9 +329,9 @@ namespace AcManager.Tools.Managers.Online {
             Time = $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
 
-            Sessions = information.SessionTypes.Select((x, i) => new Session {
+            Sessions = information.SessionTypes?.Select((x, i) => new Session {
                 IsActive = x == information.Session,
-                Duration = information.Durations[i],
+                Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
                 Type = (Game.SessionType)x
             }).ToList();
 
@@ -284,6 +339,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private bool SetMissingCarErrorIfNeeded(ref string errorMessage) {
+            if (!IsFullyLoaded || CarsOrTheirIds == null) return false;
+
             var list = CarsOrTheirIds.Where(x => !x.CarExists).Select(x => x.CarId).ToList();
             if (!list.Any()) return false;
             errorMessage += (list.Count == 1
@@ -293,7 +350,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private bool SetMissingTrackErrorIfNeeded(ref string errorMessage) {
-            if (Track != null) return false;
+            if (!IsFullyLoaded || Track != null) return false;
             errorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + Environment.NewLine;
             return true;
         }
@@ -315,11 +372,17 @@ namespace AcManager.Tools.Managers.Online {
         /// <param name="information"></param>
         /// <returns>True if update is possible and was done, false if 
         /// changes require to recreate whole ServerEntry</returns>
-        private bool UpdateValuesFrom(ServerInformation information) {
-            if (Ip != information.Ip ||
-                    Port != information.Port ||
-                    PortC != information.PortC ||
-                    PortT != information.PortT) return false;
+        public bool UpdateValues(ServerInformation information) {
+            if (Ip != information.Ip) {
+                Logging.Warning($"Can’t update server: IP changed (from {Ip} to {information.Ip})");
+                return false;
+            }
+
+            if (PortHttp != information.PortHttp) {
+                Logging.Warning($"Can’t update server: main port changed (from {PortHttp} to {information.PortHttp})");
+                return false;
+            }
+
             SetSomeProperties(information);
             return true;
         }
@@ -521,6 +584,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private string _errorMessage;
 
+        [CanBeNull]
         public string ErrorMessage {
             get { return _errorMessage; }
             set {
@@ -568,6 +632,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private string _trackId;
 
+        [CanBeNull]
         public string TrackId {
             get { return _trackId; }
             set {
@@ -579,6 +644,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private string[] _carIds;
 
+        [CanBeNull]
         public string[] CarIds {
             get { return _carIds; }
             set {
@@ -603,6 +669,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private List<CarOrOnlyCarIdEntry> _carsOrTheirIds;
 
+        [CanBeNull]
         public List<CarOrOnlyCarIdEntry> CarsOrTheirIds {
             get { return _carsOrTheirIds; }
             set {
@@ -638,11 +705,11 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private static AcItemWrapper GetCarWrapper(string informationId) {
+        private static AcItemWrapper GetCarWrapper([NotNull] string informationId) {
             return CarsManager.Instance.GetWrapperById(informationId);
         }
 
-        private static TrackObjectBase GetTrack(string informationId) {
+        private static TrackObjectBase GetTrack([NotNull] string informationId) {
             return TracksManager.Instance.GetLayoutByKunosId(informationId);
         }
 
@@ -663,14 +730,14 @@ namespace AcManager.Tools.Managers.Online {
 
         private List<Session> _sessions;
 
-        [NotNull]
+        [CanBeNull]
         public List<Session> Sessions {
-            get { return _sessions ?? (_sessions = new List<Session>(0)); }
+            get { return _sessions; }
             set {
                 if (Equals(value, _sessions)) return;
                 _sessions = value;
                 OnPropertyChanged();
-                CurrentSessionType = Sessions.FirstOrDefault(x => x.IsActive)?.Type;
+                CurrentSessionType = Sessions?.FirstOrDefault(x => x.IsActive)?.Type;
                 _joinCommand?.RaiseCanExecuteChanged();
             }
         }
@@ -724,6 +791,23 @@ namespace AcManager.Tools.Managers.Online {
                     IsAvailable = false;
                 }
 
+                var informationUpdated = false;
+                if (!IsFullyLoaded) {
+                    UpdateProgress = 0.1;
+                    UpdateProgressMessage = "Loading actual server information…";
+
+                    var newInformation = await GetInformation();
+                    if (newInformation == null) {
+                        errorMessage = "Can’t get any server information";
+                        return;
+                    } else if (!UpdateValues(newInformation)) {
+                        errorMessage = ToolsStrings.Online_Server_NotImplemented;
+                        return;
+                    }
+
+                    informationUpdated = true;
+                }
+
                 SetMissingTrackErrorIfNeeded(ref errorMessage);
                 SetMissingCarErrorIfNeeded(ref errorMessage);
                 if (!string.IsNullOrWhiteSpace(errorMessage)) return;
@@ -733,19 +817,21 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (mode == UpdateMode.Full) {
-                    UpdateProgress = 0.1;
+                    UpdateProgress = 0.2;
                     UpdateProgressMessage = "Loading actual server information…";
-                    var newInformation = await GetInformation();
+                    var newInformation = await GetInformation(informationUpdated);
                     if (newInformation == null) {
-                        errorMessage = ToolsStrings.Online_Server_CannotRefresh;
-                        return;
-                    } else if (!UpdateValuesFrom(newInformation)) {
+                        if (!informationUpdated) {
+                            errorMessage = ToolsStrings.Online_Server_CannotRefresh;
+                            return;
+                        }
+                    } else if (!UpdateValues(newInformation)) {
                         errorMessage = ToolsStrings.Online_Server_NotImplemented;
                         return;
                     }
                 }
 
-                UpdateProgress = 0.2;
+                UpdateProgress = 0.3;
                 UpdateProgressMessage = "Pinging server…";
                 var pair = SettingsHolder.Online.ThreadsPing
                         ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
@@ -758,9 +844,9 @@ namespace AcManager.Tools.Managers.Online {
                     return;
                 }
 
-                UpdateProgress = 0.3;
+                UpdateProgress = 0.4;
                 UpdateProgressMessage = "Loading players list…";
-                var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortC);
+                var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortHttp);
                 if (information == null) {
                     errorMessage = ToolsStrings.Online_Server_Unavailable;
                     return;
@@ -778,18 +864,24 @@ namespace AcManager.Tools.Managers.Online {
                     OnPropertyChanged(nameof(CurrentDrivers));
                 }
 
+                if (CarsOrTheirIds == null) {
+                    // This is not supposed to happen
+                    errorMessage = "Data is still missing";
+                    return;
+                }
+
                 // CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
 
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
-                    UpdateProgress = 0.4;
+                    UpdateProgress = 0.5;
                     UpdateProgressMessage = "Loading cars…";
                     await Task.Delay(50);
                     carObjects = new List<CarObject>(CarsOrTheirIds.Count);
 
                     var i = 0;
                     foreach (var carOrOnlyCarIdEntry in CarsOrTheirIds.Select(x => x.CarObjectWrapper).Where(x => x != null)) {
-                        UpdateProgress = 0.4 + 0.2 * i++ / CarsOrTheirIds.Count;
+                        UpdateProgress = 0.5 + 0.2 * i++ / CarsOrTheirIds.Count;
                         UpdateProgressMessage = $"Loading cars ({carOrOnlyCarIdEntry.Id})…";
                         var loaded = await carOrOnlyCarIdEntry.LoadedAsync();
                         carObjects.Add((CarObject)loaded);
@@ -804,7 +896,7 @@ namespace AcManager.Tools.Managers.Online {
                     var i = 0;
                     var l = carObjects.Count(x => !x.SkinsManager.IsLoaded);
                     foreach (var carObject in carObjects.Where(x => !x.SkinsManager.IsLoaded)) {
-                        UpdateProgress = 0.6 + 0.2 * i++ / l;
+                        UpdateProgress = 0.7 + 0.2 * i++ / l;
                         
                         UpdateProgressMessage = $"Loading {carObject.DisplayName} skins…";
                         await Task.Delay(50);
@@ -902,6 +994,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string GetNonAvailableReason() {
+            if (!IsFullyLoaded || Sessions == null) return "Can’t get any information";
             if (Status != ServerStatus.Ready) return "CM isn’t ready";
 
             var currentItem = CarsView?.CurrentItem as CarEntry;
@@ -1028,7 +1121,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!IsBooked) return;
             IsBooked = false;
-            await Task.Run(() => KunosApiProvider.TryToUnbook(Ip, PortC));
+            await Task.Run(() => KunosApiProvider.TryToUnbook(Ip, PortHttp));
         }
 
         private void PrepareBookingUi() {
@@ -1062,7 +1155,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public async Task<bool> RebookSkin() {
-            if (!IsBooked || !BookingMode || BookingTimeLeft < TimeSpan.FromSeconds(2)) {
+            if (!IsBooked || !BookingMode || BookingTimeLeft < TimeSpan.FromSeconds(2) || CarIds == null) {
                 return false;
             }
 
@@ -1074,7 +1167,7 @@ namespace AcManager.Tools.Managers.Online {
 
             PrepareBookingUi();
 
-            var result = await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortC, Password, correctId, carEntry.AvailableSkin?.Id,
+            var result = await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
                     DriverName.GetOnline(), ""));
             if (result?.IsSuccessful != true) return false;
 
@@ -1084,7 +1177,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private async Task Join(object o) {
             var carEntry = CarsView?.CurrentItem as CarEntry;
-            if (carEntry == null) return;
+            if (carEntry == null || CarIds == null) return;
 
             var carId = carEntry.CarObject.Id;
             var correctId = CarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
@@ -1096,7 +1189,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 PrepareBookingUi();
-                ProcessBookingResponse(await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortC, Password, correctId, carEntry.AvailableSkin?.Id,
+                ProcessBookingResponse(await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortHttp, Password, correctId, carEntry.AvailableSkin?.Id,
                         DriverName.GetOnline(), "")));
                 return;
             }
@@ -1114,8 +1207,8 @@ namespace AcManager.Tools.Managers.Online {
                 RequestedCar = correctId,
                 ServerIp = Ip,
                 ServerName = DisplayName,
-                ServerPort = PortT,
-                ServerHttpPort = PortC,
+                ServerPort = PortRace,
+                ServerHttpPort = PortHttp,
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password
             });
@@ -1131,13 +1224,6 @@ namespace AcManager.Tools.Managers.Online {
         public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand(() => {
             Update(UpdateMode.Full).Forget();
         }));
-
-        [CanBeNull]
-        public static ServerEntryOld FromAddress(IOnlineManager manager, [NotNull] string address) {
-            if (address == null) throw new ArgumentNullException(nameof(address));
-            var information = KunosApiProvider.TryToGetInformationDirect(address);
-            return information == null ? null : new ServerEntryOld(manager, information, true);
-        }
 
         private static IAnyFactory<IBookingUi> _factory;
 

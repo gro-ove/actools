@@ -274,6 +274,7 @@
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\IpGeoProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\BookingResult.cs" />
+    <Compile Include="Helpers\Api\Kunos\MinoratingServerInformation.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\Api\SteamWebProvider.cs" />
     <Compile Include="Helpers\ChildProcessTracker.cs" />

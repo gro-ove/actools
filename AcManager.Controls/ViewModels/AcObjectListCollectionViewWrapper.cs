@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -10,9 +11,13 @@ namespace AcManager.Controls.ViewModels {
     public class AcObjectListCollectionViewWrapper<T> : BaseAcObjectListCollectionViewWrapper<T> where T : AcObjectNew {
         public readonly string Key;
 
+        protected static string GetKey(string basePart, string filter) {
+            return basePart + @"_" + typeof(T).Name + @"_" + filter;
+        }
+
         public AcObjectListCollectionViewWrapper([NotNull] IAcManagerNew list, IFilter<T> listFilter, [Localizable(false)] string key, bool allowNonSelected)
                 : base(list, listFilter, allowNonSelected) {
-            Key = key + @"_" + typeof(T).Name + @"_" + listFilter?.Source;
+            Key = GetKey(key, listFilter?.Source);
         }
 
         protected override string LoadCurrentId() {

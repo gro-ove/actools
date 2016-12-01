@@ -5,9 +5,9 @@
         IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
         Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
         Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
-        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
-        AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
-        LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
+        d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
+        AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window">
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>
@@ -27,22 +27,19 @@
                 <mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" Source="/Pages/Drive/Online.xaml">
+        <mui:LinkGroupFilterable x:Name="OnlineGroup" IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
+                Source="/Pages/Drive/Online.xaml">
             <mui:LinkGroupFilterable.FixedLinks>
-                <mui:Link DisplayName="MINORATING" Source="/Pages/Drive/Online.xaml?Filter=@minorating" />
-                <mui:Link DisplayName="RECENT" Source="/Pages/Drive/Online.xaml?Filter=@recent" />
-                <mui:Link DisplayName="FAVORITES" Source="/Pages/Drive/Online.xaml?Filter=@favorites" />
-                <mui:Link DisplayName="MY LIST #2" Source="/Pages/Drive/Online.xaml?Filter=@my list #2" />
+                <mui:Link DisplayName="Kunos" Source="/Pages/Drive/Online.xaml?Filter=@kunos" />
+                <mui:Link DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating" />
                 <mui:Link DisplayName="LAN" Source="/Pages/Drive/Online.xaml?Filter=@lan" />
             </mui:LinkGroupFilterable.FixedLinks>
         </mui:LinkGroupFilterable>
-        <!--<mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Lan}" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
-        --><!--TODO--><!--
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />-->
 
         <!--lap times-->
         <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
+                Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
         <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
 
         <!--media-->

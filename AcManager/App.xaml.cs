@@ -71,7 +71,7 @@ namespace AcManager {
                 Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
-            if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
+            if (AppArguments.GetBool(AppFlag.NoProxy, true)) {
                 WebRequest.DefaultWebProxy = null;
             }
 
@@ -89,7 +89,18 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.ForceSteamId, ref SteamIdHelper.OptionForceValue);
             
-            AppArguments.Set(AppFlag.IgnoreSystemProxy, ref KunosApiProvider.OptionIgnoreSystemProxy);
+            AppArguments.Set(AppFlag.NoProxy, ref KunosApiProvider.OptionNoProxy);
+
+            var proxy = AppArguments.Get(AppFlag.Proxy);
+            if (!string.IsNullOrWhiteSpace(proxy)) {
+                try {
+                    var s = proxy.Split(':');
+                    WebRequest.DefaultWebProxy = new WebProxy(s[0], FlexibleParser.ParseInt(s.ElementAtOrDefault(1), 1080));
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
             AppArguments.Set(AppFlag.ScanPingTimeout, ref RecentManagerOld.OptionScanPingTimeout);
             AppArguments.Set(AppFlag.LanSocketTimeout, ref KunosApiProvider.OptionLanSocketTimeout);
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);

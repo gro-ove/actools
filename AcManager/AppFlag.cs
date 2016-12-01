@@ -256,11 +256,18 @@ namespace AcManager {
         KunosCareerIgnoreSkippedEvents,
 
         /// <summary>
-        /// Ignore system proxy settings (from IE). Disabled by default, could work faster if 
-        /// enabled.
-        /// Example: --ignore-system-proxy.
+        /// Set per-app proxy settings, not compatible with “--no-proxy”. Disabled by default (app will
+        /// use proxy from IE settings, but then, again, not if “--no-proxy” was set).
+        /// Example: --proxy=127.0.0.1:12345.
         /// </summary>
-        IgnoreSystemProxy,
+        Proxy,
+
+        /// <summary>
+        /// Ignore system (or custom) proxy settings (from IE). Disabled by default, could work faster if 
+        /// enabled.
+        /// Example: --no-proxy.
+        /// </summary>
+        NoProxy,
 
         /// <summary>
         /// When started using command line args, don’t show main window.

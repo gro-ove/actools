@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Helpers {
             // return new Uri(filename);
         }
 
-        [Pure, NotNull]
+        [Pure, NotNull, StringFormatMethod("uri")]
         public static string Format(string uri, params object[] args) {
             return string.Format(uri, args.Select(x => {
                 if (x == null || x is double || x is float || x is int) return x;

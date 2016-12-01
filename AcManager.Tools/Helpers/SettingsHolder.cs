@@ -155,6 +155,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _fixNames;
+
+            public bool FixNames {
+                get { return _fixNames ?? (_fixNames = ValuesStorage.GetBool("Settings.OnlineSettings.FixNames", true)).Value; }
+                set {
+                    if (Equals(value, _fixNames)) return;
+                    _fixNames = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.FixNames", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _serverPresetsManaging;
 
             public bool ServerPresetsManaging {

@@ -12,6 +12,20 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private string KeyRecentlyClosed => ".lgf.rc_" + _source;
 
+        private bool _addAllLink = true;
+
+        /// <summary>
+        /// Set it before setting Source!
+        /// </summary>
+        public bool AddAllLink {
+            get { return _addAllLink; }
+            set {
+                if (Equals(value, _addAllLink)) return;
+                _addAllLink = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _initialized;
 
         public override void Initialize() {
@@ -19,10 +33,12 @@ namespace FirstFloor.ModernUI.Presentation {
             _initialized = true;
 
             Links.Clear();
-            Links.Add(new Link {
-                DisplayName = UiStrings.FiltersLinkAll,
-                Source = _source
-            });
+            if (AddAllLink) {
+                Links.Add(new Link {
+                    DisplayName = UiStrings.FiltersLinkAll,
+                    Source = _source
+                });
+            }
 
             foreach (var link in from x in ValuesStorage.GetStringList(KeyGroup)
                                  where !string.IsNullOrWhiteSpace(x)
@@ -32,34 +48,35 @@ namespace FirstFloor.ModernUI.Presentation {
                 link.Close += Link_Close;
             }
 
-            var source = ValuesStorage.GetString(KeySelected);
-            _selectedLink = Links.FirstOrDefault(x => x.DisplayName == source) ?? Links.FirstOrDefault();
-
             var rightLink = new LinkInputEmpty(Source);
             Links.Add(rightLink);
             rightLink.NewLink += Link_NewLink;
 
             RecentlyClosedQueue.AddRange(ValuesStorage.GetStringList(KeyRecentlyClosed));
+            LoadSelected();
+        }
+
+        private void LoadSelected() {
+            var source = ValuesStorage.GetString(KeySelected);
+            SetSelected(Links.FirstOrDefault(x => x.DisplayName == source) ?? Links.FirstOrDefault(), false);
+        }
+
+        private void SetSelected(Link value, bool save) {
+            if (_selectedLink == value) return;
+            if (_selectedLink != null) {
+                PreviousSelectedQueue.Remove(value);
+                PreviousSelectedQueue.Enqueue(value);
+            }
+
+            _selectedLink = value;
+            OnPropertyChanged(nameof(SelectedLink));
         }
 
         private Link _selectedLink;
 
         public override Link SelectedLink {
             get { return _selectedLink; }
-            set {
-                if (_selectedLink == value) return;
-                if (_selectedLink != null) {
-                    PreviousSelectedQueue.Remove(value);
-                    PreviousSelectedQueue.Enqueue(value);
-                }
-
-                _selectedLink = value;
-                OnPropertyChanged();
-
-                if (value?.Source != null) {
-                    ValuesStorage.Set(KeySelected, value.DisplayName);
-                }
-            }
+            set { SetSelected(value, true); }
         }
 
         private void SaveLinks() {
@@ -176,18 +193,22 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private class InnerFixedList : IList {
-            private readonly LinkCollection _links;
+            private readonly LinkGroupFilterable _parent;
+            private readonly int _skip;
 
-            public InnerFixedList(LinkCollection links) {
-                _links = links;
+            private LinkCollection Links => _parent.Links;
+
+            public InnerFixedList(LinkGroupFilterable parent, bool noAll) {
+                _parent = parent;
+                _skip = noAll ? 0 : 1;
             }
 
             public IEnumerator GetEnumerator() {
-                return _links.Skip(1).Take(Count).GetEnumerator();
+                return (_skip > 0 ? Links.Skip(_skip) : Links).Take(Count).GetEnumerator();
             }
 
             public void CopyTo(Array array, int index) {
-                _links.Skip(1).Take(Count).ToArray().CopyTo(array, index);
+                (_skip > 0 ? Links.Skip(_skip) : Links).Take(Count).ToArray().CopyTo(array, index);
             }
 
             public int Count { get; private set; }
@@ -197,12 +218,13 @@ namespace FirstFloor.ModernUI.Presentation {
             public bool IsSynchronized => false;
 
             public int Add(object value) {
-                _links.Insert(Count + 1, (Link)value);
+                Links.Insert(Count + _skip, (Link)value);
+                _parent.LoadSelected();
                 return Count++;
             }
 
             public bool Contains(object value) {
-                return _links.Skip(1).Take(Count).Contains(value);
+                return (_skip > 0 ? Links.Skip(_skip) : Links).Take(Count).Contains(value);
             }
 
             public void Clear() {
@@ -213,7 +235,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
             public int IndexOf(object value) {
                 var r = 0;
-                foreach (var source in _links.Skip(1).Take(Count)) {
+                foreach (var source in (_skip > 0 ? Links.Skip(_skip) : Links).Take(Count)) {
                     if (ReferenceEquals(source, value)) return r;
                     r++;
                 }
@@ -222,30 +244,30 @@ namespace FirstFloor.ModernUI.Presentation {
 
             public void Insert(int index, object value) {
                 if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
-                _links.Insert(index + 1, (Link)value);
+                Links.Insert(index + _skip, (Link)value);
             }
 
             public void Remove(object value) {
                 if (Contains(value)) {
-                    _links.Remove((Link)value);
+                    Links.Remove((Link)value);
                     Count--;
                 }
             }
 
             public void RemoveAt(int index) {
                 if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
-                _links.RemoveAt(index + 1);
+                Links.RemoveAt(index + _skip);
                 Count--;
             }
 
             public object this[int index] {
                 get {
                     if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
-                    return _links[index + 1];
+                    return Links[index + _skip];
                 }
                 set {
                     if (index < 0 || index > Count) throw new ArgumentOutOfRangeException(nameof(index));
-                    _links[index + 1] = (Link)value;
+                    Links[index + _skip] = (Link)value;
                 }
             }
 
@@ -256,6 +278,6 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private InnerFixedList _fixedLinks;
 
-        public IList FixedLinks => _fixedLinks ?? (_fixedLinks = new InnerFixedList(Links));
+        public IList FixedLinks => _fixedLinks ?? (_fixedLinks = new InnerFixedList(this, !AddAllLink));
     }
 }

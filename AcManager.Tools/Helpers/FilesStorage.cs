@@ -213,7 +213,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         protected override string GetSubdirectoryFilename(string name) {
-            return Path.Combine(DataUserDirName, name);
+            return name == null ? DataUserDirName : Path.Combine(DataUserDirName, name);
         }
     }
 }

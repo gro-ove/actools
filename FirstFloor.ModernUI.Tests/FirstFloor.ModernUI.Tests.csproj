@@ -115,6 +115,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommandsTest.cs" />
     <Compile Include="LocalizableTest.cs" />
     <Compile Include="LzfTest.cs" />
     <Compile Include="ValuesStorageTest.cs" />

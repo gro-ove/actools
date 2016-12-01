@@ -96,6 +96,9 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        // I have a small .tmLanguage file for highlighting those logs, feel free to contact me if you need it
+        // or use this version: https://gist.github.com/gro-ove/4bf9e15c0e27aed7fef1309f9c544efb
+
         public static void Write(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('→', s, m, p, l);
         }
@@ -114,6 +117,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public static void Error(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('×', s, m, p, l);
+        }
+
+        public static void Unexpected(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            Write('☠', s, m, p, l);
         }
     }
 }

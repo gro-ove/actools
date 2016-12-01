@@ -8,12 +8,23 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public class SourcesPack : NotifyPropertyChanged, IDisposable {
         public static int OptionConcurrency = 4;
 
         private readonly OnlineSourceWrapper[] _sources;
+
+        public SourcesPack(IEnumerable<OnlineSourceWrapper> sources) {
+            _sources = sources.ToArray();
+            UpdateStatus();
+
+            foreach (var source in _sources) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(source, nameof(INotifyPropertyChanged.PropertyChanged),
+                        SourceWrapper_PropertyChanged);
+            }
+        }
 
         public IReadOnlyList<OnlineSourceWrapper> SourceWrappers => _sources;
 
@@ -45,8 +56,20 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private ErrorInformation _error;
+
+        [CanBeNull]
+        public ErrorInformation Error {
+            get { return _error; }
+            set {
+                if (Equals(value, _error)) return;
+                _error = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void UpdateStatus() {
-            var error = false;
+            ErrorInformation error = null;
             var waiting = false;
             var loading = false;
             var background = false;
@@ -61,7 +84,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
                         break;
                     case OnlineManagerStatus.Error:
-                        error = true;
+                        error = source.Error;
                         break;
                     case OnlineManagerStatus.Waiting:
                         waiting = true;
@@ -73,19 +96,11 @@ namespace AcManager.Tools.Managers.Online {
                 Status = OnlineManagerStatus.Loading;
                 BackgroundLoading = false;
             } else {
-                Status = error ? OnlineManagerStatus.Error : waiting ? OnlineManagerStatus.Waiting : OnlineManagerStatus.Ready;
+                Status = error != null ? OnlineManagerStatus.Error : waiting ? OnlineManagerStatus.Waiting : OnlineManagerStatus.Ready;
                 BackgroundLoading = background;
             }
-        }
 
-        public SourcesPack(IEnumerable<OnlineSourceWrapper> sources) {
-            _sources = sources.ToArray();
-            UpdateStatus();
-
-            foreach (var source in _sources) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(source, nameof(INotifyPropertyChanged.PropertyChanged),
-                        SourceWrapper_PropertyChanged);
-            }
+            Error = error;
         }
 
         public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
@@ -114,16 +129,17 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <returns>True if data was reloaded, false if reloading isn’t possible at the moment (for example,
         /// when loading is still in process)</returns>
-        public async Task<bool> ReloadAsync(CancellationToken cancellation = default(CancellationToken)) {
-            if (Status != OnlineManagerStatus.Ready) {
+        public async Task<bool> ReloadAsync(bool nonReadyOnly = false, CancellationToken cancellation = default(CancellationToken)) {
+            if (Status == OnlineManagerStatus.Loading) {
                 return false;
             }
 
-            foreach (var source in _sources.Where(x => x.IsBackgroundLoadable)) {
+            var filter = nonReadyOnly ? (Func<OnlineSourceWrapper, bool>)(x => x.Status != OnlineManagerStatus.Ready) : x => true;
+            foreach (var source in _sources.Where(x => x.IsBackgroundLoadable).Where(filter)) {
                 source.ReloadAsync(cancellation).Forget();
             }
 
-            return (await _sources.Where(x => !x.IsBackgroundLoadable).Select(x => x.ReloadAsync(cancellation))
+            return (await _sources.Where(x => !x.IsBackgroundLoadable).Where(filter).Select(x => x.ReloadAsync(cancellation))
                                   .WhenAll(OptionConcurrency, cancellation)).All(x => x);
         }
 

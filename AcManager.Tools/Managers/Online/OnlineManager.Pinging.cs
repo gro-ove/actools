@@ -33,8 +33,10 @@ namespace AcManager.Tools.Managers.Online {
         public async Task PingEverything([CanBeNull] IFilter<ServerEntry> priorityFilter, CancellationToken cancellationToken = default(CancellationToken)) {
             StopPinging();
 
-            using (var cancellation = new CancellationTokenSource())
-            using (var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancellation.Token)) {
+            var cancellation = new CancellationTokenSource();
+            var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cancellation.Token);
+
+            try {
                 _currentPinging = cancellation;
                 OnPropertyChanged(nameof(PingingInProcess));
 
@@ -50,16 +52,18 @@ namespace AcManager.Tools.Managers.Online {
                         Pinged++;
                     }
                 }).WhenAll(SettingsHolder.Online.PingConcurrency, linked.Token);
-                if (linked.IsCancellationRequested) return;
 
-                if (Pinged > 0) {
+                if (!linked.IsCancellationRequested && Pinged > 0) {
                     Logging.Write($"Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
                 }
-
+            } finally {
                 if (ReferenceEquals(_currentPinging, cancellation)) {
                     _currentPinging = null;
                     OnPropertyChanged(nameof(PingingInProcess));
                 }
+
+                linked.Dispose();
+                cancellation.Dispose();
             }
         }
     }

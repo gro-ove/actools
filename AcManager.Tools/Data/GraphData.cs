@@ -44,7 +44,7 @@ namespace AcManager.Tools.Data {
             var values = new Lut();
             if (obj == null) return values;
 
-            foreach (var entry in obj.OfType<JArray>()) {
+            foreach (var entry in obj.OfType<JArray>().Where(x => x.Count == 2)) {
                 double x, y;
                 if (FlexibleParser.TryParseDouble(Convert.ToString(entry[0], CultureInfo.InvariantCulture), out x) &&
                         FlexibleParser.TryParseDouble(Convert.ToString(entry[1], CultureInfo.InvariantCulture), out y)) {

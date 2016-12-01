@@ -18,6 +18,8 @@ namespace FirstFloor.ModernUI.Presentation {
         public const string KeyFormattingMode = "FormattingMode";
         public const string KeyFixedFontSize = "FixedFontSize";
         public const string KeySubMenuFontSize = "ModernSubMenuFontSize";
+
+        public event EventHandler ThemeChange;
         
         private AppearanceManager() {
         }
@@ -52,6 +54,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
 
                 OnPropertyChanged(nameof(ThemeSource));
+                ThemeChange?.Invoke(this, EventArgs.Empty);
             }
         }
 

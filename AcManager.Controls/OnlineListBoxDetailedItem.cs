@@ -1,17 +1,23 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using AcManager.Controls.Converters;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -22,23 +28,52 @@ namespace AcManager.Controls {
         private const int CarsPoolSize = 50;
         private const int SessionsPoolSize = 20;
 
-        private Brush _buttonText;
-        private Brush _buttonTextPressed;
-        private Brush _buttonBackground;
-        private Brush _buttonBackgroundPressed;
+        private Brush _blockText;
+        private Brush _blockTextActive;
+        private Brush _blockBackground;
+        private Brush _blockBackgroundActive;
+        private Brush _goBrush;
+        private Brush _errorBrush;
+
+        private static Style _labelStyle;
 
         private void InitializeBrushes() {
-            if (_buttonText != null) return;
+            if (_blockText != null) return;
 
-            _buttonText = (Brush)FindResource(@"ButtonText");
-            _buttonTextPressed = (Brush)FindResource(@"ButtonTextPressed");
+            _blockText = (Brush)FindResource(@"ButtonText");
+            _blockTextActive = (Brush)FindResource(@"ButtonTextPressed");
+            _blockBackground = (Brush)FindResource(@"ButtonBackground");
+            _blockBackgroundActive = (Brush)FindResource(@"ButtonBackgroundPressed");
+            _goBrush = new SolidColorBrush((Color)FindResource(@"GoColor"));
+            _errorBrush = new SolidColorBrush((Color)FindResource(@"ErrorColor"));
 
-            _buttonBackground = (Brush)FindResource(@"ButtonBackground");
-            _buttonBackgroundPressed = (Brush)FindResource(@"ButtonBackgroundPressed");
+            if (_labelStyle == null) {
+                _labelStyle = (Style)FindResource(@"Label");
+            }
         }
 
         static OnlineListBoxDetailedItem() {
+            AppearanceManager.Current.ThemeChange += OnThemeChange;
             DefaultStyleKeyProperty.OverrideMetadata(typeof(OnlineListBoxDetailedItem), new FrameworkPropertyMetadata(typeof(OnlineListBoxDetailedItem)));
+        }
+
+        private static void OnThemeChange(object sender, EventArgs e) {
+            CarsPool.Clear();
+            SessionsPool.Clear();
+        }
+
+        private Inline _errorIcon;
+
+        private Inline GetErrorIconInline() {
+            return _errorIcon?.Parent != null ? (Inline)FindResource(@"WarningIconInline") :
+                    _errorIcon ?? (_errorIcon = (Inline)FindResource(@"WarningIconInline"));
+        }
+
+        private Inline _minoratingIcon;
+
+        private Inline GetMinoratingIconInline() {
+            return _minoratingIcon?.Parent != null ? (Inline)FindResource(@"MinoratingIconInline") :
+                    _minoratingIcon ?? (_minoratingIcon = (Inline)FindResource(@"MinoratingIconInline"));
         }
 
         public static readonly DependencyProperty ServerProperty = DependencyProperty.Register(nameof(Server), typeof(ServerEntry),
@@ -57,18 +92,51 @@ namespace AcManager.Controls {
             }
         }
 
-        private void UpdateTrack(ServerEntry n) {
-            InitializeBrushes();
+        private void UpdateName(ServerEntry n) {
+            if (n.OriginsFrom(MinoratingOnlineSource.Key)) {
+                var inlines = _nameText.Inlines;
 
-            if (n.Track != null) {
-                _trackNameText.Foreground = _buttonText;
-                _trackNameText.Background = _buttonBackground;
-                _trackNameText.Text = n.Track.Name;
-                // ((ToolTip)TrackNameText.ToolTip).DataContext = n.Track;
+                /*if (inlines.Count == 2) {
+                    ((Run)((IList)inlines)[1]).Text = n.DisplayName;
+                } else {*/
+                    inlines.Clear();
+                    inlines.AddRange(new Inline[] {
+                        GetMinoratingIconInline(),
+                        new Run { Text = n.DisplayName }
+                    });
+                //}
             } else {
-                _trackNameText.Foreground = _buttonTextPressed;
-                _trackNameText.Background = _buttonBackgroundPressed;
-                _trackNameText.Text = n.TrackId;
+                _nameText.Text = n.DisplayName;
+            }
+        }
+
+        private TrackObjectBase _bindedTrack;
+
+        private void UpdateTrack(ServerEntry n) {
+            if (_bindedTrack != null) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(_bindedTrack, nameof(INotifyPropertyChanged.PropertyChanged),
+                        BindedTrack_PropertyChanged);
+            }
+
+            _bindedTrack = n.Track;
+            if (_bindedTrack != null) {
+                _trackNameText.Text = _bindedTrack.Name;
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(_bindedTrack, nameof(INotifyPropertyChanged.PropertyChanged),
+                        BindedTrack_PropertyChanged);
+            } else if (n.TrackId != null) {
+                _trackNameText.Inlines.Clear();
+                _trackNameText.Inlines.AddRange(new Inline[] {
+                    GetErrorIconInline(),
+                    new Run { Text = n.TrackId }
+                });
+            } else {
+                _trackNameText.Text = "No information";
+            }
+        }
+
+        private void BindedTrack_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(TrackObjectBase.Name) && _bindedTrack != null) {
+                _trackNameText.Text = _bindedTrack.Name;
             }
         }
 
@@ -76,7 +144,6 @@ namespace AcManager.Controls {
 
         private void UpdateSession(TextBlock child, ServerEntry.Session session) {
             if (ReferenceEquals(child.DataContext, session)) return;
-            InitializeBrushes();
 
             if (_scrolling) {
                 _sessionsTooltipsSet = false;
@@ -86,19 +153,20 @@ namespace AcManager.Controls {
             child.DataContext = session;
             child.Text = session.DisplayTypeShort;
             if (session.IsActive) {
-                child.Foreground = _buttonTextPressed;
-                child.Background = _buttonBackgroundPressed;
+                child.Foreground = _blockTextActive;
+                child.Background = _blockBackgroundActive;
             } else {
-                child.Foreground = _buttonText;
-                child.Background = _buttonBackground;
+                child.Foreground = _blockText;
+                child.Background = _blockBackground;
             }
         }
 
-        private static Style _labelStyle;
-
         private void UpdateSessions(ServerEntry n) {
+            InitializeBrushes();
+
+            var array = n.Sessions;
             var children = _sessionsPanel.Children;
-            for (var i = children.Count - n.Sessions.Count; i > 0; i--) {
+            for (var i = children.Count - array?.Count ?? children.Count; i > 0; i--) {
                 var last = children.Count - 1;
                 if (SessionsPool.Count < SessionsPoolSize) {
                     SessionsPool.Add((TextBlock)children[last]);
@@ -106,7 +174,8 @@ namespace AcManager.Controls {
                 children.RemoveAt(last);
             }
 
-            for (var i = 0; i < n.Sessions.Count; i++) {
+            if (array == null) return;
+            for (var i = 0; i < array.Count; i++) {
                 TextBlock child;
                 if (i < children.Count) {
                     child = (TextBlock)children[i];
@@ -116,10 +185,6 @@ namespace AcManager.Controls {
                         child = SessionsPool[last];
                         SessionsPool.RemoveAt(last);
                     } else {
-                        if (_labelStyle == null) {
-                            _labelStyle = (Style)FindResource(@"Label");
-                        }
-
                         child = new TextBlock {
                             TextAlignment = TextAlignment.Center,
                             Style = _labelStyle,
@@ -132,7 +197,7 @@ namespace AcManager.Controls {
                     children.Add(child);
                 }
 
-                UpdateSession(child, n.Sessions[i]);
+                UpdateSession(child, array[i]);
             }
         }
 
@@ -200,21 +265,23 @@ namespace AcManager.Controls {
             child.DataContext = car;
             var wrapper = car.CarObjectWrapper;
             if (wrapper != null) {
-                child.Foreground = _buttonText;
-                child.Background = _buttonBackground;
                 child.Tag = new CarDisplayNameBind(child, wrapper);
             } else {
-                child.Foreground = _buttonTextPressed;
-                child.Background = _buttonBackgroundPressed;
-                child.Text = car.CarId;
+                child.Inlines.Clear();
+                child.Inlines.AddRange(new Inline[] {
+                    GetErrorIconInline(),
+                    new Run { Text = car.CarId }
+                });
             }
         }
 
         private static Style _smallStyle;
 
         private void UpdateCars(ServerEntry n) {
+            var array = n.CarsOrTheirIds;
+
             var children = _carsPanel.Children;
-            var carsCount = Math.Min(n.CarsOrTheirIds.Count, OptionCarsLimit);
+            var carsCount = Math.Min(array?.Count ?? 0, OptionCarsLimit);
 
             for (var i = children.Count - carsCount; i > 0; i--) {
                 var last = children.Count - 1;
@@ -227,6 +294,7 @@ namespace AcManager.Controls {
                 children.RemoveAt(last);
             }
 
+            if (array == null) return;
             for (var i = 0; i < carsCount; i++) {
                 TextBlockBindable child;
                 if (i < children.Count) {
@@ -245,15 +313,40 @@ namespace AcManager.Controls {
                             Style = _smallStyle,
                             Margin = new Thickness(4, 0, 4, 0),
                             Padding = new Thickness(2),
-                            Height = 20d
+                            Height = 20d,
+                            Foreground = _blockText,
+                            Background = _blockBackground
                         };
                     }
 
                     children.Add(child);
                 }
 
-                UpdateCar(child, n.CarsOrTheirIds[i]);
+                UpdateCar(child, array[i]);
             }
+        }
+
+        private void UpdateFullyLoaded(ServerEntry n) {
+            if (_passwordIcon == null) return;
+
+            var loaded = n.IsFullyLoaded;
+            var visibility = loaded ? Visibility.Visible : Visibility.Collapsed;
+            if (visibility == _countryFlagImage.Visibility) return;
+
+            _nameText.FontStyle = loaded ? FontStyles.Normal : FontStyles.Italic;
+            _countryName.Visibility = visibility;
+            _countryFlagImage.Visibility = visibility;
+            _pingText.Visibility = visibility;
+            _clientsText.Visibility = visibility;
+            _passwordIcon.Visibility = visibility;
+
+            if (_timeLeftText != null) {
+                _timeLeftText.Visibility = visibility;
+            }
+        }
+
+        private void UpdateErrorFlag(ServerEntry n) {
+            _hasErrorsGroup.Value = n.HasErrors || !n.IsFullyLoaded;
         }
 
         private void Update(ServerEntry n) {
@@ -268,8 +361,6 @@ namespace AcManager.Controls {
             }
 
             _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
-            _hasErrorsGroup.Value = n.HasErrors;
-            _nameText.Text = n.DisplayName;
             _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
             _countryName.Text = n.Country;
             _pingText.Text = n.Ping?.ToString() ?? @"?";
@@ -280,9 +371,12 @@ namespace AcManager.Controls {
                 _timeLeftText.Text = n.DisplayTimeLeft;
             }
 
+            UpdateName(n);
             UpdateTrack(n);
             UpdateSessions(n);
             UpdateCars(n);
+            UpdateFullyLoaded(n);
+            UpdateErrorFlag(n);
         }
 
         [CanBeNull]
@@ -291,6 +385,8 @@ namespace AcManager.Controls {
         private BbCodeBlock _errorMessageGroup;
         private TextBlock _pingText;
         private TextBlock _clientsText;
+
+        [CanBeNull]
         private TextBlock _timeLeftText;
         private Image _countryFlagImage;
         private TextBlock _nameText;
@@ -429,14 +525,15 @@ namespace AcManager.Controls {
 
             var n = (ServerEntry)sender;
             switch (e.PropertyName) {
+                case nameof(ServerEntry.Origins):
                 case nameof(ServerEntry.DisplayName):
-                    _nameText.Text = n.DisplayName;
+                    UpdateName(n);
                     break;
                 case nameof(ServerEntry.PasswordRequired):
                     _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
                     break;
                 case nameof(ServerEntry.HasErrors):
-                    _hasErrorsGroup.Value = n.HasErrors;
+                    UpdateErrorFlag(n);
                     break;
                 case nameof(ServerEntry.CountryId):
                     _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
@@ -467,6 +564,10 @@ namespace AcManager.Controls {
                     break;
                 case nameof(ServerEntry.CarsOrTheirIds):
                     UpdateCars(n);
+                    break;
+                case nameof(ServerEntry.IsFullyLoaded):
+                    UpdateErrorFlag(n);
+                    UpdateFullyLoaded(n);
                     break;
             }
         }

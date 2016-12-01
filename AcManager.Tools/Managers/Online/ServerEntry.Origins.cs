@@ -71,14 +71,18 @@ namespace AcManager.Tools.Managers.Online {
             return false;
         }
 
-        private Task<ServerInformation> GetInformation() {
-            if (!SettingsHolder.Online.LoadServerInformationDirectly) {
+        private Task<ServerInformation> GetInformation(bool nonDirectOnly = false) {
+            if (!SettingsHolder.Online.LoadServerInformationDirectly && IsFullyLoaded) {
                 if (OriginsFromKunos) {
-                    return Task.Run(() => KunosApiProvider.TryToGetInformation(Ip, PortC));
+                    return Task.Run(() => KunosApiProvider.TryToGetInformation(Ip, Port));
                 }
             }
 
-            return KunosApiProvider.TryToGetInformationDirectAsync(Ip, PortC);
+            if (!nonDirectOnly) {
+                return KunosApiProvider.TryToGetInformationDirectAsync(Ip, PortHttp);
+            } else {
+                return null;
+            }
         }
 
         #region Kunos-specific

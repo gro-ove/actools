@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public abstract class AbstractSubdirectoryWatcherProvider : IDisposable {
@@ -93,18 +94,29 @@ namespace AcManager.Tools.Helpers {
                 _watchers = new Dictionary<string, ContentWatcher>();
             }
 
-            var nameCombined = Path.Combine(name);
+            string key;
+            string local;
 
-            if (_watchers.ContainsKey(nameCombined)) return _watchers[nameCombined];
+            if (name.Length == 0) {
+                key = "";
+                local = null;
+            } else {
+                key = Path.Combine(name);
+                local = key;
+            }
 
-            var directory = GetSubdirectoryFilename(nameCombined);
+            ContentWatcher result;
+            if (_watchers.TryGetValue(key, out result)) return result;
+
+            var directory = GetSubdirectoryFilename(local);
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
             }
-            _watchers[nameCombined] = new ContentWatcher(directory);
-            return _watchers[nameCombined];
+
+            _watchers[key] = new ContentWatcher(directory);
+            return _watchers[key];
         }
 
-        protected abstract string GetSubdirectoryFilename(string name);
+        protected abstract string GetSubdirectoryFilename([CanBeNull] string name);
     }
 }
