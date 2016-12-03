@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -9,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
@@ -29,8 +27,30 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : IParametrizedUriContent {
+        private OnlineItem.OriginIcon _hideIcon;
+
+        private void SetHideIcon() {
+            var sources = Model.Pack.SourceWrappers;
+            switch (sources.Count == 1 ? sources[0].Id : null) {
+                case MinoratingOnlineSource.Key:
+                    _hideIcon = OnlineItem.OriginIcon.Minorating;
+                    break;
+                case LanOnlineSource.Key:
+                    _hideIcon = OnlineItem.OriginIcon.Lan;
+                    break;
+                case FileBasedOnlineSources.FavoritesKey:
+                    _hideIcon = OnlineItem.OriginIcon.Favorite;
+                    break;
+                case FileBasedOnlineSources.RecentKey:
+                    _hideIcon = OnlineItem.OriginIcon.Recent;
+                    break;
+            }
+        }
+
         public void OnUri(Uri uri) {
             DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"));
+            SetHideIcon();
+
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
@@ -63,13 +83,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public enum ListMode {
-            [Description("SimpleListItem")]
             Simple,
-
-            [Description("DetailedListItem")]
             Detailed,
-
-            [Description("DetailedPlusListItem")]
             DetailedPlus
         }
 
@@ -80,10 +95,28 @@ namespace AcManager.Pages.Drive {
             set {
                 if (Equals(value, _simpleListMode)) return;
 
-                ServersListBox.ItemTemplate = FindResource(value.GetDescription()) as DataTemplate;
+                if (value == ListMode.Simple) {
+                    ServersListBox.ItemTemplate = (DataTemplate)FindResource(@"SimpleListItem");
+                } else {
+                    var factory = new FrameworkElementFactory(typeof(OnlineItem));
+                    factory.SetBinding(OnlineItem.ServerProperty, new Binding());
+
+                    if (value == ListMode.DetailedPlus) {
+                        factory.SetValue(StyleProperty, FindResource(@"OnlineItem.Plus"));
+                    }
+
+                    if (_hideIcon != OnlineItem.OriginIcon.None) {
+                        factory.SetValue(OnlineItem.HideIconProperty, _hideIcon);
+                    }
+
+                    ServersListBox.ItemTemplate = new DataTemplate(typeof(OnlineItem)) {
+                        VisualTree = factory
+                    };
+                }
+                
                 if (value == ListMode.Simple || _simpleListMode == ListMode.Simple) {
                     ServersListBox.ItemContainerStyle =
-                            FindResource(value == ListMode.Simple ? @"SimpledListItemContainer" : @"DetailedListItemContainer") as Style;
+                            (Style)FindResource(value == ListMode.Simple ? @"SimpledListItemContainer" : @"DetailedListItemContainer");
                 }
 
                 _simpleListMode = value;
@@ -130,21 +163,21 @@ namespace AcManager.Pages.Drive {
         private bool _scrolling;
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
                 child.SetScrolling(_scrolling);
             }
         }
 
         private void OnScrollStarted(object sender, DragStartedEventArgs e) {
             _scrolling = true;
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
                 child.SetScrolling(true);
             }
         }
 
         private void OnScrollCompleted(object sender, DragCompletedEventArgs e) {
             _scrolling = false;
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineListBoxDetailedItem>()) {
+            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
                 child.SetScrolling(false);
             }
         }
@@ -206,12 +239,12 @@ namespace AcManager.Pages.Drive {
         }
 
         private static string GetKey(string value) {
-            return $@"Online.{value}";
+            return value;
         }
 
         public static void OnLinkChanged(LinkChangedEventArgs e) {
-            LimitedStorage.Move(LimitedSpace.SelectedEntry, GetKey(e.OldValue), GetKey(e.NewValue));
             LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, GetKey(e.OldValue), GetKey(e.NewValue));
+            LimitedStorage.Move(LimitedSpace.OnlineSelected, GetKey(e.OldValue), GetKey(e.NewValue));
             LimitedStorage.Move(LimitedSpace.OnlineSorting, GetKey(e.OldValue), GetKey(e.NewValue));
         }
 
@@ -336,7 +369,7 @@ namespace AcManager.Pages.Drive {
                 IFilter<ServerEntry> sourcesTester;
                 if (sources == null || sources.Length == 0) {
                     sourcesTester = new ServerSourceTester(KunosOnlineSource.Key);
-                } else if (sources.Contains(@"*")) {
+                } else if (sources.Contains(@"*") || sources.Contains(@"all")) {
                     sourcesTester = null;
                 } else if (sources.Length == 1) {
                     sourcesTester = new ServerSourceTester(sources[0]);
@@ -364,13 +397,13 @@ namespace AcManager.Pages.Drive {
                     var splitIndex = filterParam.LastIndexOf('@');
                     if (splitIndex != -1) {
                         sources = filterParam.Substring(splitIndex + 1).Split(',').Select(x => x.Trim().ToLowerInvariant())
-                                              .Distinct().ToArray();
+                                             .Distinct().ToArray();
                         filter = splitIndex == 0 ? null : filterParam.Substring(0, splitIndex);
                     } else {
                         filter = filterParam;
                     }
                 }
-
+                
                 Pack = OnlineManager.Instance.GetSourcesPack(sources);
 
                 ListFilter = GetFilter(filter, sources);
@@ -424,8 +457,8 @@ namespace AcManager.Pages.Drive {
             }
 
             private void Pack_Ready(object sender, EventArgs e) {
-                Logging.Here();
                 StartPinging().Forget();
+                LoadCurrent();
             }
 
             private CancellationTokenSource _currentLoading;
@@ -481,16 +514,19 @@ namespace AcManager.Pages.Drive {
             }
 
             private void LoadCurrent() {
-                var current = ValuesStorage.GetString(Key);
-
+                var current = LimitedStorage.Get(LimitedSpace.OnlineSelected, Key);
                 if (current != null) {
                     var selected = Manager.GetById(current);
-                    MainList.MoveCurrentTo(selected);
+                    if (selected != null) {
+                        MainList.MoveCurrentTo(selected);
+                    } else {
+                        MainList.MoveCurrentToFirst();
+                    }
                 } else {
                     MainList.MoveCurrentToFirst();
                 }
-
-                CurrentChanged();
+                
+                CurrentChanged(false);
             }
 
             private object _testMeLater;
@@ -593,15 +629,18 @@ namespace AcManager.Pages.Drive {
 
             protected void OnCurrentChanged(object sender, EventArgs e) {
                 // base.OnCurrentChanged(sender, e);
-                CurrentChanged();
+                CurrentChanged(true);
             }
 
-            private void CurrentChanged() {
+            private void CurrentChanged(bool save) {
                 var currentId = ((ServerEntry)MainList.CurrentItem)?.Id;
                 if (currentId == null) return;
 
                 SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Id={0}", currentId);
-                ValuesStorage.Set(Key, currentId);
+
+                if (save) {
+                    LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, currentId);
+                }
 
                 if (_testMeLater != null) {
                     MainList.Refresh(_testMeLater);

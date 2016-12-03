@@ -5,7 +5,7 @@
         IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
         Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
         Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
-        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
+        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating" mui:ModernMenu.Initialize="OnMainMenuInitialize"
         d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
         AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window">
     <mui:ModernWindow.Resources>

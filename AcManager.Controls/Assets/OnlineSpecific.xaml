@@ -11,6 +11,35 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <!--icons-->
+    <InlineUIContainer x:Key="WarningIconInline" x:Shared="False">
+        <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Width="12" Height="12" Stretch="Fill" Margin="0 2 4 -2" />
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="MinoratingIconInline" x:Shared="False">
+        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
+            <Path Data="{StaticResource MinoratingIconData}" Fill="#FF0000" Width="21" Height="10" Stretch="Uniform" />
+        </Border>
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="LanIconInline" x:Shared="False">
+        <Border Padding="4 3 4 5" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
+            <TextBlock Foreground="#00FFFF" Height="10" Text="LAN" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
+        </Border>
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="FavoriteIconInline" x:Shared="False">
+        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
+            <Path Data="{StaticResource StarIconData}" Fill="#FFFF00" Width="10" Height="10" Stretch="Uniform" />
+        </Border>
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="RecentIconInline" x:Shared="False">
+        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
+            <Path Data="{StaticResource RedoPointIconData}" Fill="#00FF00" Width="10" Height="10" Stretch="Uniform" />
+        </Border>
+    </InlineUIContainer>
+
     <!--car & track previews-->
     <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarOrOnlyCarIdEntry}">
         <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
@@ -174,27 +203,16 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <InlineUIContainer x:Key="WarningIconInline" x:Shared="False">
-        <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Width="12" Height="12" Stretch="Fill" Margin="0 2 4 -2" />
-    </InlineUIContainer>
-
-    <InlineUIContainer x:Key="MinoratingIconInline" x:Shared="False">
-        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <Path Data="{StaticResource MinoratingIconData}" Fill="{DynamicResource Accent}" Width="21" Height="10" Stretch="Uniform" />
-        </Border>
-    </InlineUIContainer>
-
-    <InlineUIContainer x:Key="LanIconInline" x:Shared="False">
-        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <TextBlock Foreground="{DynamicResource Accent}" Height="10" Text="LAN" FontSize="11" FontFamily="{StaticResource Condensed}" />
-        </Border>
-    </InlineUIContainer>
-
-    <Style TargetType="c:OnlineListBoxDetailedItem">
+    <Style TargetType="c:OnlineItem">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="CacheMode">
+            <Setter.Value>
+                <BitmapCache EnableClearType="True" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="c:OnlineListBoxDetailedItem">
+                <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
                         <!--optional lock icon-->
                         <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
@@ -244,11 +262,10 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DetailedPlusItem" TargetType="c:OnlineListBoxDetailedItem">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Style x:Key="OnlineItem.Plus" TargetType="c:OnlineItem" BasedOn="{StaticResource {x:Type c:OnlineItem}}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="c:OnlineListBoxDetailedItem">
+                <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
                         <!--optional lock icon-->
                         <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
@@ -301,20 +318,12 @@
     </Style>
 
     <!-- heavy version (custom) -->
-    <DataTemplate x:Key="DetailedListItem" DataType="{x:Type t:ServerEntry}">
-        <c:OnlineListBoxDetailedItem Server="{Binding}">
-            <c:OnlineListBoxDetailedItem.CacheMode>
-                <BitmapCache EnableClearType="True" />
-            </c:OnlineListBoxDetailedItem.CacheMode>
-        </c:OnlineListBoxDetailedItem>
+    <DataTemplate x:Key="DetailedListItem" DataType="{x:Type t:ServerEntry}" x:Shared="False">
+        <c:OnlineItem Server="{Binding}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="DetailedPlusListItem" DataType="{x:Type t:ServerEntry}">
-        <c:OnlineListBoxDetailedItem Style="{StaticResource DetailedPlusItem}" Server="{Binding}">
-            <c:OnlineListBoxDetailedItem.CacheMode>
-                <BitmapCache EnableClearType="True" />
-            </c:OnlineListBoxDetailedItem.CacheMode>
-        </c:OnlineListBoxDetailedItem>
+    <DataTemplate x:Key="DetailedListItem.Plus" DataType="{x:Type t:ServerEntry}" x:Shared="False">
+        <c:OnlineItem Style="{StaticResource OnlineItem.Plus}" Server="{Binding}" />
     </DataTemplate>
 
     <Style x:Key="SimpledListItemContainer" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}" />

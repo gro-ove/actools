@@ -24,7 +24,8 @@ namespace AcManager.Pages.Drive {
 
         private class SortingName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                return string.Compare(x?.DisplayName, y?.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+                if (x.IsFavorited ^ y.IsFavorited) return x.IsFavorited ? -1 : 1;
+                return string.Compare(x.DisplayName, y.DisplayName, StringComparison.CurrentCultureIgnoreCase);
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -56,7 +57,7 @@ namespace AcManager.Pages.Drive {
 
         private class SortingCarsNumberCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                var dif = -x.CarIds.Length.CompareTo(y.CarIds.Length);
+                var dif = -(x.CarIds?.Length ?? 0).CompareTo(y.CarIds?.Length ?? 0);
                 return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
             }
 

@@ -9,12 +9,12 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Dictionary<string, IOnlineSource> Sources = new Dictionary<string, IOnlineSource>(10);
 
         public static void Register(IOnlineSource source) {
-            if (Sources.ContainsKey(source.Key)) {
-                Logging.Warning($"Source “{source.Key}” already registered");
+            if (Sources.ContainsKey(source.Id)) {
+                Logging.Warning($"Source “{source.Id}” already registered");
                 return;
             }
 
-            Sources[source.Key] = source;
+            Sources[source.Id] = source;
         }
 
         static OnlineManager() {
@@ -27,6 +27,8 @@ namespace AcManager.Tools.Managers.Online {
             Register(FileBasedOnlineSources.FavoritesInstance);
         }
 
+        public static void EnsureInitialized() { }
+
         private readonly Dictionary<string, OnlineSourceWrapper> _wrappers = new Dictionary<string, OnlineSourceWrapper>(10);
 
         [CanBeNull]
@@ -35,7 +37,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         [CanBeNull]
-        private OnlineSourceWrapper GetWrappedSource(string key) {
+        public OnlineSourceWrapper GetWrappedSource(string key) {
             OnlineSourceWrapper result;
             if (_wrappers.TryGetValue(key, out result)) return result;
 
@@ -50,7 +52,7 @@ namespace AcManager.Tools.Managers.Online {
                 return GetSourcesPack(KunosOnlineSource.Key);
             }
 
-            if (keys.Contains(@"*")) {
+            if (keys.Contains(@"*") || keys.Contains(@"all")) {
                 return new SourcesPack(Sources.Keys.Select(GetWrappedSource));
             }
 

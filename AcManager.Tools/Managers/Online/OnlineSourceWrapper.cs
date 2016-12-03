@@ -49,7 +49,9 @@ namespace AcManager.Tools.Managers.Online {
         }
     }
 
-    public class OnlineSourceWrapper : NotifyPropertyChanged, IProgress<AsyncProgressEntry> {
+    public class OnlineSourceWrapper : NotifyPropertyChanged, IProgress<AsyncProgressEntry>, IWithId {
+        public string Id => _source.Id;
+
         public static bool OptionWeakListening = true;
 
         private readonly IList<ServerEntry> _list;
@@ -113,7 +115,9 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool IsBackgroundLoadable => _source is IOnlineBackgroundSource;
 
-        public string Key => _source.Key;
+        public string Key => _source.Id;
+
+        public string DisplayName => _source.DisplayName;
 
         private Task _loadingTask;
         private bool _reloadAfterwards;
@@ -156,7 +160,7 @@ namespace AcManager.Tools.Managers.Online {
             var count = _list.Count;
             for (var i = count - 1; i >= 0; i--) {
                 var entry = _list[i];
-                if (entry.RemoveOrigin(_source.Key)) {
+                if (entry.RemoveOrigin(_source.Id)) {
                     _list.RemoveAt(i);
                 }
             }

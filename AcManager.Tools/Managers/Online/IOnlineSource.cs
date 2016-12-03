@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
@@ -10,12 +11,7 @@ namespace AcManager.Tools.Managers.Online {
     /// <summary>
     /// Online servers’ source.
     /// </summary>
-    public interface IOnlineSource {
-        /// <summary>
-        /// Identification key (should be human-readable).
-        /// </summary>
-        string Key { get; }
-
+    public interface IOnlineSource : IWithId {
         /// <summary>
         /// Name which will be shown to user.
         /// </summary>

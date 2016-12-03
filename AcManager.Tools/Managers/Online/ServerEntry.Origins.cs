@@ -26,6 +26,9 @@ namespace AcManager.Tools.Managers.Online {
                     case MinoratingOnlineSource.Key:
                         OriginsFromMinorating = true;
                         break;
+                    case FileBasedOnlineSources.FavoritesKey:
+                        IsFavorited = true;
+                        break;
                 }
             }
         }
@@ -48,6 +51,9 @@ namespace AcManager.Tools.Managers.Online {
                         break;
                     case MinoratingOnlineSource.Key:
                         OriginsFromMinorating = false;
+                        break;
+                    case FileBasedOnlineSources.FavoritesKey:
+                        IsFavorited = false;
                         break;
                 }
             }
@@ -119,6 +125,19 @@ namespace AcManager.Tools.Managers.Online {
             set {
                 if (Equals(value, _originsFromMinorating)) return;
                 _originsFromMinorating = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Favorites-related
+        private bool _isFavorited;
+
+        public bool IsFavorited {
+            get { return _isFavorited; }
+            set {
+                if (Equals(value, _isFavorited)) return;
+                _isFavorited = value;
                 OnPropertyChanged();
             }
         }

@@ -30,6 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ModernFrame), new PropertyMetadata(OnSourceChanged));
 
         public event EventHandler<FragmentNavigationEventArgs> FragmentNavigation;
+        // TODO: rework using bubbling?
         public event EventHandler<NavigatingCancelEventArgs> Navigating;
         public event EventHandler<NavigationEventArgs> Navigated;
         public event EventHandler<NavigationFailedEventArgs> NavigationFailed;

@@ -40,6 +40,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
@@ -129,7 +130,7 @@ namespace AcManager.Pages.Windows {
             foreach (var source in FileBasedOnlineSources.Instance.GetSources().OrderBy(x => x.DisplayName)) {
                 list.Add(new Link {
                     DisplayName = source.DisplayName,
-                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}", source.Key)
+                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}", source.Id)
                 });
             }
         }
@@ -601,14 +602,19 @@ namespace AcManager.Pages.Windows {
             e.Effects = DragDropEffects.Copy;
         }
 
-        private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
-            if (e.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase)) {
-                // Absolutely useless piece of code all by itself, but this way we’re sure OnlineManager
-                // is initialized before list of servers will be rendered.
-                if (OnlineManager.Instance == null) {
-                    Logging.Unexpected();
-                }
+        private void MakeSureOnlineIsReady([CanBeNull] Uri uri) {
+            Logging.Debug(uri);
+            if (uri?.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase) == true) {
+                OnlineManager.EnsureInitialized();
             }
+        }
+
+        private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
+            MakeSureOnlineIsReady(e.Source);
+        }
+
+        private void OnMainMenuInitialize(object sender, ModernMenu.InitializeEventArgs e) {
+            MakeSureOnlineIsReady(e.LoadedUri);
         }
     }
 }

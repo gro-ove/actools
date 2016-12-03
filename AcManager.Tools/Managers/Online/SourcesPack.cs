@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
-using FirstFloor.ModernUI.Helpers;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -103,6 +103,11 @@ namespace AcManager.Tools.Managers.Online {
             Error = error;
         }
 
+        private static readonly string[] ForceSources = {
+            FileBasedOnlineSources.FavoritesKey,
+            FileBasedOnlineSources.RecentKey
+        };
+
         public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
             if (Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error) {
                 return Task.Delay(0, cancellation);
@@ -113,6 +118,8 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             return _sources.Where(x => !x.IsBackgroundLoadable).Select(x => x.EnsureLoadedAsync(cancellation))
+                           .Concat(ForceSources.Select(x => _sources.GetByIdOrDefault(x) != null
+                                   ? null : OnlineManager.Instance.GetWrappedSource(x)?.EnsureLoadedAsync(cancellation)).NonNull())
                            .WhenAll(OptionConcurrency, cancellation);
         }
 

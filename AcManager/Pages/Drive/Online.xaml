@@ -9,7 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <ContextMenu x:Key="StatusContextMenu">
                 <MenuItem Header="{x:Static g:AppStrings.Online_SortByName}" Command="{Binding ChangeSortingCommand}" CommandParameter="{x:Null}"
                         IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Null}, Mode=OneWay}" />
@@ -28,81 +28,106 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Padding="4" Background="DarkSlateGray">
-            <StackPanel>
-                <TextBlock Text="{Binding Manager.PingingInProcess, StringFormat='{}Manager.PingingInProcess: {0}'}" />
-                <TextBlock Text="{Binding Manager.Pinged, StringFormat='{}Manager.Pinged: {0}'}" />
-                <TextBlock Text="{Binding Pack.Status, StringFormat='{}Pack.Status: {0}'}" />
-                <TextBlock Text="{Binding Pack.BackgroundLoading, StringFormat='{}Pack.BackgroundLoading: {0}'}" />
+    <mui:Cell>
+        <ToggleButton x:Name="ToggleButton" Content="…" Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" />
 
-                <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
-                                <TextBlock Style="{StaticResource Small}" Text="{Binding Key, StringFormat='{}Key: {0}'}" />
-                                <TextBlock Style="{StaticResource Small}" Text="{Binding Status, StringFormat='{}Status: {0}'}" />
-                                <TextBlock Style="{StaticResource Small}" Text="{Binding LoadingProgress, StringFormat='{}LoadingProgress: {0}'}" />
-                            </mui:SpacingUniformGrid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </Border>
+        <DockPanel>
+            <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                <StackPanel TextBlock.FontSize="11" Margin="8 8 40 8">
+                    <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" TextBlock.FontSize="11">
+                        <TextBlock Text="{Binding Manager.PingingInProcess, StringFormat='{}PingingInProcess: {0}'}" />
+                        <TextBlock Text="{Binding Manager.Pinged, StringFormat='{}Pinged: {0}'}" />
+                        <TextBlock Text="{Binding Pack.Status, StringFormat='{}Pack.Status: {0}'}" />
+                        <TextBlock Text="{Binding Pack.BackgroundLoading, StringFormat='{}Pack.BackgroundLoading: {0}'}" />
+                    </mui:SpacingUniformGrid>
 
-        <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Pack.Status}">
-            <!-- loading -->
-            <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" Margin="20 0 20 8">
-                <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="0 0 0 8" />
-            </StackPanel>
-
-            <!-- error -->
-            <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 40" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
-                <StackPanel Margin="0 20" DataContext="{Binding Pack.Error}">
-                    <mui:BbCodeBlock BbCode="{Binding Message}" />
-                    <mui:BbCodeBlock BbCode="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
-                            Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" TextBlock.FontSize="11">
+                                    <TextBlock Text="{Binding Key, StringFormat='{}Key: {0}'}" />
+                                    <TextBlock Text="{Binding Status, StringFormat='{}Status: {0}'}" />
+                                    <TextBlock Text="{Binding LoadingProgress, StringFormat='{}LoadingProgress: {0}'}" />
+                                </mui:SpacingUniformGrid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
-                <Button Command="{Binding RefreshCommand}" CommandParameter="True" Content="{x:Static c:ControlsStrings.Common_TryAgain}"
-                        Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-            </StackPanel>
+            </mui:Cell>
 
-            <!-- loaded -->
-            <mui:Cell mui:Switch.When="{x:Static t:OnlineManagerStatus.Ready}">
-                <mui:BooleanSwitch>
-                    <mui:BooleanSwitch.Value>
-                        <MultiBinding Converter="{StaticResource AndConverter}">
-                            <Binding Path="MainList.Count" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="0" />
-                            <Binding Path="SelectedSource" Converter="{StaticResource NullToBooleanConverter}" />
-                        </MultiBinding>
-                    </mui:BooleanSwitch.Value>
+            <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Pack.Status}">
+                <!-- loading -->
+                <mui:Cell mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" Margin="20">
+                    <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0 0 0 8">
+                                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" Margin="0 0 0 4" />
+                                    <TextBlock x:Name="Message" Text="{Binding LoadingProgress.Message}" Style="{StaticResource Small}" Margin="0 0 0 4" />
+                                    <ProgressBar x:Name="ProgressBar" Maximum="1" Width="200" Height="4" Value="{Binding LoadingProgress.Progress, Mode=OneWay}"
+                                            IsIndeterminate="{Binding LoadingProgress.IsIndeterminate}" />
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding LoadingProgress.IsReady}" Value="True">
+                                        <Setter TargetName="ProgressBar" Property="IsIndeterminate" Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding LoadingProgress.Message}" Value="{x:Null}">
+                                        <Setter TargetName="Message" Property="Visibility" Value="Hidden" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </mui:Cell>
 
-                    <!--empty-->
-                    <mui:BooleanSwitch.True>
-                        <StackPanel mui:Switch.When="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
-                            <StackPanel Orientation="Horizontal" Margin="8 16 0 0">
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
-                                        IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
-                                        Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
-                                        IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
-                                        Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
-                                        IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
-                                        Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
-                                        IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
-                                        Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
-                                        IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
-                                        Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                                <Separator />
-                                <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}"
-                                        Command="{Binding RefreshCommand}" Content="Refresh" />
-                            </StackPanel>
-                            <!--<Button Margin="0 8 0 0" Command="{Binding AddNewServerCommand}"
+                <!-- error -->
+                <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
+                    <StackPanel Margin="0 20" DataContext="{Binding Pack.Error}">
+                        <mui:BbCodeBlock BbCode="{Binding Message}" />
+                        <mui:BbCodeBlock BbCode="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
+                                Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    </StackPanel>
+                    <Button Command="{Binding RefreshCommand}" CommandParameter="True" Content="{x:Static c:ControlsStrings.Common_TryAgain}"
+                            Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                </StackPanel>
+
+                <!-- loaded -->
+                <mui:Cell mui:Switch.When="{x:Static t:OnlineManagerStatus.Ready}">
+                    <mui:BooleanSwitch>
+                        <mui:BooleanSwitch.Value>
+                            <MultiBinding Converter="{StaticResource AndConverter}">
+                                <Binding Path="MainList.Count" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="0" />
+                                <Binding Path="SelectedSource" Converter="{StaticResource NullToBooleanConverter}" />
+                            </MultiBinding>
+                        </mui:BooleanSwitch.Value>
+
+                        <!--empty-->
+                        <mui:BooleanSwitch.True>
+                            <StackPanel mui:Switch.When="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Margin="8 16 0 0">
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
+                                            IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
+                                            Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
+                                            IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
+                                            Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
+                                            IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
+                                            Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
+                                            IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
+                                            Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
+                                            IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
+                                            Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
+                                    <Separator />
+                                    <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}"
+                                            Command="{Binding RefreshCommand}" Content="Refresh" />
+                                </StackPanel>
+                                <!--<Button Margin="0 8 0 0" Command="{Binding AddNewServerCommand}"
                                 Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:OnlineManagerType.Recent}}">
                                 <DockPanel IsHitTestVisible="False">
                                     <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
@@ -111,118 +136,121 @@
                                     <TextBlock Text="{x:Static g:AppStrings.Online_AddNewServer}" />
                                 </DockPanel>
                             </Button>-->
-                        </StackPanel>
-                    </mui:BooleanSwitch.True>
+                            </StackPanel>
+                        </mui:BooleanSwitch.True>
 
-                    <!-- list -->
-                    <mui:BooleanSwitch.False>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="9" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <!-- list -->
+                        <mui:BooleanSwitch.False>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="9" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Column="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition />
-                                    <RowDefinition Height="40" />
-                                </Grid.RowDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                        <RowDefinition Height="40" />
+                                    </Grid.RowDefinitions>
 
-                                <mui:Cell Grid.Row="2" Background="Transparent">
-                                    <DockPanel Margin="{StaticResource StatusMargin}">
-                                        <mui:ContextMenuButton VerticalAlignment="Center" DockPanel.Dock="Right" Menu="{StaticResource StatusContextMenu}" />
+                                    <mui:Cell Grid.Row="2" Background="Transparent">
+                                        <DockPanel Margin="{StaticResource StatusMargin}">
+                                            <mui:ContextMenuButton VerticalAlignment="Center" DockPanel.Dock="Right" Menu="{StaticResource StatusContextMenu}" />
 
-                                        <mui:BooleanSwitch Value="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}}" VerticalAlignment="Center"
-                                                DockPanel.Dock="Right" Margin="4 0">
-                                            <mui:BooleanSwitch.True>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
-                                                            ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" />
-                                                    <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
-                                                            ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" />
-                                                    <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
-                                                            ToolTip="{x:Static g:AppStrings.Online_FilterFull}" />
-                                                    <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                                                            ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" />
-                                                    <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}" IsChecked="{Binding FilterMissing}"
-                                                            ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
-                                                </StackPanel>
-                                            </mui:BooleanSwitch.True>
-                                            <mui:BooleanSwitch.False>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}"
-                                                            Command="{Binding RefreshCommand}" />
-                                                </StackPanel>
-                                            </mui:BooleanSwitch.False>
-                                        </mui:BooleanSwitch>
+                                            <mui:BooleanSwitch Value="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}}" VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right" Margin="4 0">
+                                                <mui:BooleanSwitch.True>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}"
+                                                                IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" />
+                                                        <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
+                                                                ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" />
+                                                        <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
+                                                                ToolTip="{x:Static g:AppStrings.Online_FilterFull}" />
+                                                        <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
+                                                                ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" />
+                                                        <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}"
+                                                                IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
+                                                    </StackPanel>
+                                                </mui:BooleanSwitch.True>
+                                                <mui:BooleanSwitch.False>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}"
+                                                                Command="{Binding RefreshCommand}" />
+                                                    </StackPanel>
+                                                </mui:BooleanSwitch.False>
+                                            </mui:BooleanSwitch>
 
-                                        <TextBlock Foreground="{DynamicResource WindowTextReadOnly}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
-                                                Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
-                                            <TextBlock.ToolTip>
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{x:Static g:AppStrings.Online_Pinged}">
-                                                            <Binding Path="Manager.Pinged" />
-                                                            <Binding Path="Manager.List.Count" Converter="{StaticResource PluralizingConverter}"
-                                                                    ConverterParameter="{x:Static g:AppStrings.Online_ServersFormat}" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </TextBlock.ToolTip>
-                                    </TextBlock>
+                                            <TextBlock Foreground="{DynamicResource WindowTextReadOnly}" TextTrimming="CharacterEllipsis"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
+                                                <TextBlock.ToolTip>
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{x:Static g:AppStrings.Online_Pinged}">
+                                                                <Binding Path="Manager.Pinged" />
+                                                                <Binding Path="Manager.List.Count" Converter="{StaticResource PluralizingConverter}"
+                                                                        ConverterParameter="{x:Static g:AppStrings.Online_ServersFormat}" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DockPanel>
+
+                                        <ProgressBar Visibility="{Binding Manager.PingingInProcess, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Minimum="0" Maximum="{Binding Manager.List.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False"
+                                                VerticalAlignment="Bottom" Margin="2" Height="2" />
+                                    </mui:Cell>
+
+                                    <DockPanel Grid.Row="0" x:Name="BigButtons"
+                                            Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                                        <StackPanel Orientation="Horizontal" Margin="16 0 0 16" DockPanel.Dock="Left">
+                                            <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
+                                                    IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
+                                                    Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
+                                            <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
+                                                    IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
+                                                    Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
+                                            <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
+                                                    IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
+                                                    Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
+                                            <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
+                                                    IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
+                                                    Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
+                                            <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
+                                                    IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
+                                                    Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
+                                        </StackPanel>
+
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16"
+                                                Visibility="{Binding ActualWidth, ElementName=BigButtons, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=430}">
+                                            <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
+                                            <ComboBox Width="120" ItemsSource="{x:Static dr:Online.SortingModes}" SelectedItem="{Binding SortingMode}"
+                                                    DisplayMemberPath="DisplayName" />
+                                        </StackPanel>
                                     </DockPanel>
 
-                                    <ProgressBar Visibility="{Binding Manager.PingingInProcess, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            Minimum="0" Maximum="{Binding Manager.List.Count}" Value="{Binding Manager.Pinged}" IsHitTestVisible="False"
-                                            VerticalAlignment="Bottom" Margin="2" Height="2" />
-                                </mui:Cell>
+                                    <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"
+                                            ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}"
+                                            Style="{StaticResource VirtualizingListBox}" SelectionChanged="ServersListBox_OnSelectionChanged" />
+                                </Grid>
 
-                                <DockPanel Grid.Row="0" x:Name="BigButtons"
-                                        Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <StackPanel Orientation="Horizontal" Margin="16 0 0 16" DockPanel.Dock="Left">
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
-                                                IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
-                                                Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
-                                                IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
-                                                Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
-                                                IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
-                                                Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
-                                                IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
-                                                Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
-                                                IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
-                                                Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                                    </StackPanel>
-
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16"
-                                            Visibility="{Binding ActualWidth, ElementName=BigButtons, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=430}">
-                                        <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
-                                        <ComboBox Width="120" ItemsSource="{x:Static dr:Online.SortingModes}" SelectedItem="{Binding SortingMode}"
-                                                DisplayMemberPath="DisplayName" />
-                                    </StackPanel>
-                                </DockPanel>
-
-                                <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"
-                                        ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}"
-                                        Style="{StaticResource VirtualizingListBox}" SelectionChanged="ServersListBox_OnSelectionChanged" />
+                                <Rectangle
+                                        Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                        Fill="{DynamicResource SeparatorBackground}" Grid.Column="1" Width="1" HorizontalAlignment="Center"
+                                        VerticalAlignment="Stretch" />
+                                <mui:ModernFrame Grid.Column="2" Source="{Binding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
                             </Grid>
+                        </mui:BooleanSwitch.False>
+                    </mui:BooleanSwitch>
 
-                            <Rectangle Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                                    Fill="{DynamicResource SeparatorBackground}" Grid.Column="1" Width="1" HorizontalAlignment="Center"
-                                    VerticalAlignment="Stretch" />
-                            <mui:ModernFrame Grid.Column="2" Source="{Binding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
-                        </Grid>
-                    </mui:BooleanSwitch.False>
-                </mui:BooleanSwitch>
-
-                <ProgressBar IsIndeterminate="True" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                        Visibility="{Binding Pack.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" />
-            </mui:Cell>
-        </mui:Switch>
-    </DockPanel>
+                    <ProgressBar IsIndeterminate="True" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            Visibility="{Binding Pack.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" />
+                </mui:Cell>
+            </mui:Switch>
+        </DockPanel>
+    </mui:Cell>
 </UserControl>

@@ -39,7 +39,7 @@ namespace FirstFloor.ModernUI.Helpers {
             var query = string.Join("&", from param in dictionary
                                          where param.Value != null
                                          select param.Key + "=" + Uri.EscapeDataString(param.Value.ToString()));
-            var uriAsString = uri.ToString();
+            var uriAsString = uri.OriginalString;
             return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, UriKind.Relative);
         }
 
@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Helpers {
             if (value == null) return uri;
 
             var query = key + "=" + Uri.EscapeDataString(value.ToString());
-            var uriAsString = uri.ToString();
+            var uriAsString = uri.OriginalString;
             return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, UriKind.Relative);
         }
 

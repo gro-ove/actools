@@ -9,6 +9,7 @@ using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ModernMenu : Control {
@@ -36,6 +37,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public static readonly RoutedEvent InitializeEvent = EventManager.RegisterRoutedEvent(nameof(Initialize), RoutingStrategy.Bubble,
+                typeof(EventHandler<InitializeEventArgs>), typeof(ModernMenu));
+        
+        public event EventHandler<InitializeEventArgs> Initialize {
+            add { AddHandler(InitializeEvent, value); }
+            remove { RemoveHandler(InitializeEvent, value); }
+        }
+
+        public class InitializeEventArgs : RoutedEventArgs {
+            public InitializeEventArgs(RoutedEvent routedEvent, Uri loadedUri) : base(routedEvent) {
+                LoadedUri = loadedUri;
+            }
+
+            [CanBeNull]
+            public Uri LoadedUri { get; }
+        }
+
         private bool _initialized;
 
         public override void EndInit() {
@@ -49,6 +67,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var uri = ValuesStorage.GetUri($"{SaveKey}_link");
+            RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
+
             if (!SelectUriIfLinkExists(uri)) {
                 SelectUriIfLinkExists(DefaultSource);
             }
@@ -235,7 +255,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var selected = (from g in LinkGroups
                             from l in g.Links
-                            where l.Source == uri
+                            where l.Source?.ToString() == uri.ToString()
                             select l).FirstOrDefault();
             if (selected == null) return false;
             

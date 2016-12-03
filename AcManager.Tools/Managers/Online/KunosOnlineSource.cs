@@ -11,20 +11,16 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
-    public class KunosOnlineSource : Displayable, IOnlineListSource {
+    public class KunosOnlineSource : IOnlineListSource {
         public const string Key = @"kunos";
         public static readonly KunosOnlineSource Instance = new KunosOnlineSource();
 
-        string IOnlineSource.Key => Key;
+        string IWithId.Id => Key;
 
-        public override string DisplayName {
-            get { return "Kunos"; }
-            set { }
-        }
+        public string DisplayName => "Kunos";
 
         event EventHandler IOnlineSource.Obsolete {
             add { }
@@ -45,8 +41,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public async Task LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            Logging.Here();
-
             if (SteamIdHelper.Instance.Value == null) {
                 throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
@@ -62,16 +56,13 @@ namespace AcManager.Tools.Managers.Online {
         }
     }
 
-    public class MinoratingOnlineSource : Displayable, IOnlineListSource {
+    public class MinoratingOnlineSource : IOnlineListSource {
         public const string Key = @"minorating";
         public static readonly MinoratingOnlineSource Instance = new MinoratingOnlineSource();
 
-        string IOnlineSource.Key => Key;
+        string IWithId.Id => Key;
 
-        public override string DisplayName {
-            get { return "Minorating"; }
-            set { }
-        }
+        public string DisplayName => "Minorating";
 
         event EventHandler IOnlineSource.Obsolete {
             add { }
@@ -79,8 +70,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public async Task LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            Logging.Here();
-
             var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
             if (cancellation.IsCancellationRequested) return;
 
@@ -92,26 +81,20 @@ namespace AcManager.Tools.Managers.Online {
         }
     }
 
-    public class LanOnlineSource : Displayable, IOnlineBackgroundSource {
+    public class LanOnlineSource : IOnlineBackgroundSource {
         public const string Key = @"lan";
         public static readonly LanOnlineSource Instance = new LanOnlineSource();
 
-        string IOnlineSource.Key => Key;
+        string IWithId.Id => Key;
 
-        public override string DisplayName {
-            get { return "LAN"; }
-            set { }
-        }
+        public string DisplayName => "LAN";
 
         event EventHandler IOnlineSource.Obsolete {
             add { }
             remove { }
         }
 
-        public bool IsBackgroundLoadable => true;
-
         public Task LoadAsync(Action<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            Logging.Here();
             return KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
         }
     }
@@ -220,16 +203,18 @@ namespace AcManager.Tools.Managers.Online {
             Rescan();
         }
 
-        private sealed class Source : Displayable, IOnlineListSource {
+        private sealed class Source : IOnlineListSource {
             internal readonly string Filename;
 
             public Source(string filename, string local) {
-                Key = local;
+                Id = local;
                 Filename = filename;
                 DisplayName = Path.GetFileNameWithoutExtension(filename);
             }
 
-            public string Key { get; }
+            public string Id { get; }
+
+            public string DisplayName { get; }
 
             private DateTime? _lastDateTime;
 

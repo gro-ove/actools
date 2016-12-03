@@ -70,6 +70,10 @@ namespace FirstFloor.ModernUI.Presentation {
 
             _selectedLink = value;
             OnPropertyChanged(nameof(SelectedLink));
+            
+            if (save && value?.Source != null) {
+                ValuesStorage.Set(KeySelected, value.DisplayName);
+            }
         }
 
         private Link _selectedLink;

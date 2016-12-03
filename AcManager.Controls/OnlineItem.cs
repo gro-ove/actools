@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using AcManager.Controls.Converters;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -17,11 +15,10 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    public class OnlineListBoxDetailedItem : Control {
+    public class OnlineItem : Control {
         // TODO: add option
         public static int OptionCarsLimit = 10;
 
@@ -32,8 +29,6 @@ namespace AcManager.Controls {
         private Brush _blockTextActive;
         private Brush _blockBackground;
         private Brush _blockBackgroundActive;
-        private Brush _goBrush;
-        private Brush _errorBrush;
 
         private static Style _labelStyle;
 
@@ -44,17 +39,15 @@ namespace AcManager.Controls {
             _blockTextActive = (Brush)FindResource(@"ButtonTextPressed");
             _blockBackground = (Brush)FindResource(@"ButtonBackground");
             _blockBackgroundActive = (Brush)FindResource(@"ButtonBackgroundPressed");
-            _goBrush = new SolidColorBrush((Color)FindResource(@"GoColor"));
-            _errorBrush = new SolidColorBrush((Color)FindResource(@"ErrorColor"));
 
             if (_labelStyle == null) {
                 _labelStyle = (Style)FindResource(@"Label");
             }
         }
 
-        static OnlineListBoxDetailedItem() {
+        static OnlineItem() {
             AppearanceManager.Current.ThemeChange += OnThemeChange;
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(OnlineListBoxDetailedItem), new FrameworkPropertyMetadata(typeof(OnlineListBoxDetailedItem)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(OnlineItem), new FrameworkPropertyMetadata(typeof(OnlineItem)));
         }
 
         private static void OnThemeChange(object sender, EventArgs e) {
@@ -65,19 +58,44 @@ namespace AcManager.Controls {
         private Inline _errorIcon;
 
         private Inline GetErrorIconInline() {
-            return _errorIcon?.Parent != null ? (Inline)FindResource(@"WarningIconInline") :
-                    _errorIcon ?? (_errorIcon = (Inline)FindResource(@"WarningIconInline"));
+            return _errorIcon?.Parent != null ? (Inline)TryFindResource(@"WarningIconInline") :
+                    _errorIcon ?? (_errorIcon = (Inline)TryFindResource(@"WarningIconInline"));
+        }
+
+        public static readonly DependencyProperty HideIconProperty = DependencyProperty.Register(nameof(HideIcon), typeof(OriginIcon),
+                typeof(OnlineItem), new PropertyMetadata(OriginIcon.None));
+
+        public OriginIcon HideIcon {
+            get { return (OriginIcon)GetValue(HideIconProperty); }
+            set { SetValue(HideIconProperty, value); }
         }
 
         private Inline _minoratingIcon;
 
         private Inline GetMinoratingIconInline() {
-            return _minoratingIcon?.Parent != null ? (Inline)FindResource(@"MinoratingIconInline") :
-                    _minoratingIcon ?? (_minoratingIcon = (Inline)FindResource(@"MinoratingIconInline"));
+            return _minoratingIcon ?? (_minoratingIcon = (Inline)TryFindResource(@"MinoratingIconInline"));
+        }
+
+        private Inline _lanIcon;
+
+        private Inline GetLanIconInline() {
+            return _lanIcon ?? (_lanIcon = (Inline)TryFindResource(@"LanIconInline"));
+        }
+
+        private Inline _favoritesIcon;
+
+        private Inline GetFavoritesIconInline() {
+            return _favoritesIcon ?? (_favoritesIcon = (Inline)TryFindResource(@"FavoriteIconInline"));
+        }
+
+        private Inline _recentIcon;
+
+        private Inline GetRecentIconInline() {
+            return _recentIcon ?? (_recentIcon = (Inline)TryFindResource(@"RecentIconInline"));
         }
 
         public static readonly DependencyProperty ServerProperty = DependencyProperty.Register(nameof(Server), typeof(ServerEntry),
-                typeof(OnlineListBoxDetailedItem), new PropertyMetadata(OnServerChanged));
+                typeof(OnlineItem), new PropertyMetadata(OnServerChanged));
 
         public ServerEntry Server {
             get { return (ServerEntry)GetValue(ServerProperty); }
@@ -86,27 +104,58 @@ namespace AcManager.Controls {
 
         private static void OnServerChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             try {
-                ((OnlineListBoxDetailedItem)o).OnServerChanged((ServerEntry)e.OldValue, (ServerEntry)e.NewValue);
+                ((OnlineItem)o).OnServerChanged((ServerEntry)e.OldValue, (ServerEntry)e.NewValue);
             } catch (Exception ex) {
                 Logging.Error(ex);
             }
         }
 
-        private void UpdateName(ServerEntry n) {
-            if (n.OriginsFrom(MinoratingOnlineSource.Key)) {
-                var inlines = _nameText.Inlines;
+        [Flags]
+        public enum OriginIcon {
+            None = 0,
+            Favorite = 1,
+            Lan = 2,
+            Minorating = 4,
+            Recent = 8
+        }
 
-                /*if (inlines.Count == 2) {
-                    ((Run)((IList)inlines)[1]).Text = n.DisplayName;
-                } else {*/
-                    inlines.Clear();
-                    inlines.AddRange(new Inline[] {
-                        GetMinoratingIconInline(),
-                        new Run { Text = n.DisplayName }
-                    });
-                //}
+        private OriginIcon _originState;
+
+        private void UpdateName(ServerEntry n) {
+            var inlines = _nameText.Inlines;
+
+            var state = OriginIcon.None;
+
+            var favorites = n.OriginsFrom(FileBasedOnlineSources.FavoritesKey);
+            var lan = n.OriginsFrom(LanOnlineSource.Key);
+            var minorating = n.OriginsFrom(MinoratingOnlineSource.Key);
+            var recent = n.OriginsFrom(FileBasedOnlineSources.RecentKey);
+
+            if (favorites) state |= OriginIcon.Favorite;
+            if (lan) state |= OriginIcon.Lan;
+            if (minorating) state |= OriginIcon.Minorating;
+            if (recent) state |= OriginIcon.Recent;
+
+            state &= ~HideIcon;
+
+            if (_originState == state) {
+                var last = inlines.LastInline as Run;
+                if (last != null) {
+                    ((Run)inlines.LastInline).Text = n.DisplayName;
+                } else {
+                    _nameText.Text = n.DisplayName;
+                }
             } else {
-                _nameText.Text = n.DisplayName;
+                _originState = state;
+
+                inlines.Clear();
+                inlines.AddRange(new[] {
+                    state.HasFlag(OriginIcon.Favorite) ? GetFavoritesIconInline() : null,
+                    state.HasFlag(OriginIcon.Lan) ? GetLanIconInline() : null,
+                    state.HasFlag(OriginIcon.Minorating) ? GetMinoratingIconInline() : null,
+                    state.HasFlag(OriginIcon.Recent) ? GetRecentIconInline() : null,
+                    new Run { Text = n.DisplayName }
+                }.NonNull());
             }
         }
 
@@ -125,10 +174,10 @@ namespace AcManager.Controls {
                         BindedTrack_PropertyChanged);
             } else if (n.TrackId != null) {
                 _trackNameText.Inlines.Clear();
-                _trackNameText.Inlines.AddRange(new Inline[] {
+                _trackNameText.Inlines.AddRange(new [] {
                     GetErrorIconInline(),
                     new Run { Text = n.TrackId }
-                });
+                }.NonNull());
             } else {
                 _trackNameText.Text = "No information";
             }
@@ -268,10 +317,10 @@ namespace AcManager.Controls {
                 child.Tag = new CarDisplayNameBind(child, wrapper);
             } else {
                 child.Inlines.Clear();
-                child.Inlines.AddRange(new Inline[] {
+                child.Inlines.AddRange(new [] {
                     GetErrorIconInline(),
                     new Run { Text = car.CarId }
-                });
+                }.NonNull());
             }
         }
 
