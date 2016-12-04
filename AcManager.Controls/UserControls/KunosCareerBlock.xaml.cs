@@ -24,12 +24,12 @@ namespace AcManager.Controls.UserControls {
             if (career == null) return;
 
             if (File.Exists(career.StartVideo)) {
-                if (VideoViewer.IsSupported()) {
+                //if (VideoViewer.IsSupported()) {
                     var videoViewer = new VideoViewer(career.StartVideo, career.Name);
                     videoViewer.ShowDialog();
-                } else {
-                    NonfatalError.Notify(ControlsStrings.Video_CannotPlay, ControlsStrings.Video_CannotPlay_Commentary);
-                }
+                //} else {
+                //    NonfatalError.Notify(ControlsStrings.Video_CannotPlay, ControlsStrings.Video_CannotPlay_Commentary);
+                //}
             }
             
             new KunosCareerIntro(career).ShowDialog();

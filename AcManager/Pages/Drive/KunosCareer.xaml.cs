@@ -41,7 +41,7 @@ namespace AcManager.Pages.Drive {
             if (!KunosCareerManager.Instance.ShowIntro) return;
 
             var startVideo = Path.Combine(FileUtils.GetKunosCareerDirectory(AcRootDirectory.Instance.Value), "start.ogv");
-            if (!File.Exists(startVideo) || !VideoViewer.IsSupported()) return;
+            if (!File.Exists(startVideo)/* || !VideoViewer.IsSupported()*/) return;
 
             new VideoViewer(startVideo, AppStrings.KunosCareer_Title).ShowDialog();
             KunosCareerManager.Instance.ShowIntro = false;

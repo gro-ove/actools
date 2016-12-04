@@ -295,6 +295,7 @@ namespace AcManager.Pages.Windows {
 
         private HwndSourceHook _hook;
         private bool _loaded;
+        private DynamicBackground _dynamicBackground;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
@@ -314,18 +315,20 @@ namespace AcManager.Pages.Windows {
                 var animatedBackground = Regex.IsMatch(background, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
                         background : null;
                 var staticBackground = animatedBackground == null ? background : Regex.Replace(background, @"\.\w+$", @".jpg");
-                
+
+                _dynamicBackground = new DynamicBackground {
+                    Width = 1280,
+                    Height = 720,
+                    Animated = animatedBackground,
+                    Static = staticBackground
+                };
+
                 BackgroundContent = new Viewbox {
                     Stretch = Stretch.UniformToFill,
                     Opacity = AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5),
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Child = new DynamicBackground {
-                        Width = 1280,
-                        Height = 720,
-                        Animated = animatedBackground,
-                        Static = staticBackground
-                    }
+                    Child = _dynamicBackground
                 };
             }
         }
@@ -393,6 +396,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnClosed(object sender, EventArgs e) {
+            _dynamicBackground.Dispose();
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 WindowsHelper.RestartCurrentApplication();
             } else {
@@ -603,7 +607,6 @@ namespace AcManager.Pages.Windows {
         }
 
         private void MakeSureOnlineIsReady([CanBeNull] Uri uri) {
-            Logging.Debug(uri);
             if (uri?.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase) == true) {
                 OnlineManager.EnsureInitialized();
             }

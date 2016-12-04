@@ -65,13 +65,12 @@ namespace AcManager.Pages.Drive {
             if (acObject.LastSelectedTimestamp != 0) return;
 
             if (File.Exists(acObject.StartVideo)) {
-                if (VideoViewer.IsSupported()) {
+                //if (VideoViewer.IsSupported()) {
                     new VideoViewer(acObject.StartVideo, acObject.Name).ShowDialog();
-                }
-
-                new KunosCareerIntro(acObject).ShowDialog();
+                //}
             }
 
+            new KunosCareerIntro(acObject).ShowDialog();
             acObject.LastSelectedTimestamp = DateTime.Now.ToMillisecondsTimestamp();
         }
 

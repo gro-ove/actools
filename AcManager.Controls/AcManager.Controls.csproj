@@ -223,6 +223,7 @@
     <Compile Include="StatEntry.cs" />
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\CefSharpWrapper.cs" />
+    <Compile Include="Video\IVideoPlayer.cs" />
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
@@ -232,6 +233,7 @@
     <Compile Include="UserControls\DynamicBackground.xaml.cs">
       <DependentUpon>DynamicBackground.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Video\VlcPlayer.cs" />
     <Compile Include="UserControls\WebBlock.xaml.cs">
       <DependentUpon>WebBlock.xaml</DependentUpon>
     </Compile>
@@ -281,6 +283,7 @@
       <DependentUpon>CarBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\WebBrowserWrapper.cs" />
+    <Compile Include="Video\WindowsMediaPlayer.cs" />
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
@@ -522,6 +525,7 @@
   <ItemGroup>
     <Resource Include="Assets\Background.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>

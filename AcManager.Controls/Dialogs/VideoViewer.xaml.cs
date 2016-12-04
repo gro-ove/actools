@@ -1,70 +1,31 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Managers.Plugins;
-using FirstFloor.ModernUI.Helpers;
-using MediaState = xZune.Vlc.Interop.Media.MediaState;
+using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Dialogs {
     public partial class VideoViewer {
-        public string Filename { get; }
-
-        public VideoViewer(string filename, string title = null) {
-            DataContext = this;
-            Filename = filename;
+        public VideoViewer([NotNull] string filename, string title = null) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
+            
             Title = title ?? Path.GetFileName(filename);
+            DataContext = new ViewModel(filename);
             InitializeComponent();
             Buttons = new Button[] { };
         }
 
-        private bool _loaded;
-        private void VideoViewer_OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
-            _loaded = true;
+        public class ViewModel : NotifyPropertyChanged {
+            public string Filename { get; set; }
 
-            try {
-                Logging.Write("Initialization: " + PluginsManager.Instance.GetPluginDirectory("VLC"));
-                Player.Initialize(PluginsManager.Instance.GetPluginDirectory("VLC"), @"--ignore-config", @"--no-video-title", @"--no-sub-autodetect-file");
-                Logging.Write("Player.BeginStop()");
-                Player.BeginStop(Stopped);
-            } catch (Exception ex) {
-                NonfatalError.NotifyBackground(ControlsStrings.VideoViewer_CannotPlay, ControlsStrings.VideoViewer_CannotPlay_Commentary, ex);
-                Close();
-            }
-        }
-
-        private void Stopped() {
-            try {
-                Logging.Write("Player.LoadMedia()");
-                Player.LoadMedia(Filename);
-                Logging.Write("Player.Play()");
-                Player.Play();
-                Player.StateChanged += Player_StateChanged;
-            } catch (Exception e) {
-                NonfatalError.NotifyBackground(ControlsStrings.VideoViewer_CannotPlay, ControlsStrings.VideoViewer_CannotPlay_Commentary, e);
-                Close();
-            }
-        }
-
-        private void Player_StateChanged(object sender, xZune.Vlc.ObjectEventArgs<MediaState> e) {
-            if (Player.State == MediaState.Ended) {
-                Application.Current.Dispatcher.Invoke(Close);
+            public ViewModel([NotNull] string filename) {
+                Filename = filename;
             }
         }
 
         private void VideoViewer_OnClosed(object sender, EventArgs e) {
-            try {
-                Player.Dispose();
-                Logging.Write("Disposed");
-            } catch (Exception ex) {
-                Logging.Write("Dispose exception: " + ex);
-            }
-        }
-
-        public static bool IsSupported() {
-            return PluginsManager.Instance.IsPluginEnabled("VLC");
+            Player.Dispose();
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
@@ -81,6 +42,10 @@ namespace AcManager.Controls.Dialogs {
         }
 
         private void CloseButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            Close();
+        }
+
+        private void Player_OnEnded(object sender, EventArgs e) {
             Close();
         }
     }
