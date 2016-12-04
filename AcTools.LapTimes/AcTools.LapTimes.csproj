@@ -106,6 +106,7 @@
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55B65FB4-92CB-42EF-B4BF-F287810986E1}</Project>
       <Name>AcTools</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

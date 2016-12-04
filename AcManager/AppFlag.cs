@@ -301,6 +301,14 @@ namespace AcManager {
         BackgroundOpacity,
 
         /// <summary>
+        /// For animated background, VLC plugin will be used. If this flag isn’t set (by default),
+        /// default Windows approach will be used (so video will be played using Windows Media Player).
+        /// I highly recommend not to use VLC because it’s not very reliable and fast (C#-library isn’t very
+        /// good), but don’t forget to enable Windows Media Player and install required codecs first.
+        /// </summary>
+        UseVlcForAnimatedBackground,
+
+        /// <summary>
         /// Scan …\AppData\Local\AcTools Content Manager\Themes for custom themes and add them
         /// to themes list.
         /// Example: --custom-themes.

@@ -64,7 +64,7 @@
                         <Path Fill="{TemplateBinding Background}" SnapsToDevicePixels="True" Stretch="Fill" Width="4" HorizontalAlignment="Left"
                                 Data="F1 M 30,22L 50,37L 50,38L 30,53L 30,22 Z" />
                         <Path Fill="{TemplateBinding Background}" SnapsToDevicePixels="True" Stretch="Fill" Width="4" HorizontalAlignment="Right"
-                                Data="F1 M 30,22L 50,37L 50,38L 30,53L 30,22 Z" />
+                                Data="F1 M 50,22L 30,37L 30,38L 50,53L 50,22 Z" />
                     </c:Cell>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">

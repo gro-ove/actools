@@ -23,7 +23,7 @@ namespace AcManager.Controls {
         public static int OptionCarsLimit = 10;
 
         private const int CarsPoolSize = 50;
-        private const int SessionsPoolSize = 20;
+        private const int SessionsPoolSize = 15;
 
         private Brush _blockText;
         private Brush _blockTextActive;
