@@ -32,7 +32,7 @@
         <ToggleButton x:Name="ToggleButton" Content="…" Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" />
 
         <DockPanel>
-            <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 0 20 8">
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel TextBlock.FontSize="11" Margin="8 8 40 8">
                     <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" TextBlock.FontSize="11">
@@ -59,21 +59,22 @@
             <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Pack.Status}">
                 <!-- loading -->
                 <mui:Cell mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" Margin="20">
-                    <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="0 0 0 8">
-                                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" Margin="0 0 0 4" />
-                                    <TextBlock x:Name="Message" Text="{Binding LoadingProgress.Message}" Style="{StaticResource Small}" Margin="0 0 0 4" />
+                                <DockPanel Margin="0 0 0 8" Width="200">
                                     <ProgressBar x:Name="ProgressBar" Maximum="1" Width="200" Height="4" Value="{Binding LoadingProgress.Progress, Mode=OneWay}"
-                                            IsIndeterminate="{Binding LoadingProgress.IsIndeterminate}" />
-                                </StackPanel>
+                                            IsIndeterminate="{Binding LoadingProgress.IsIndeterminate}" DockPanel.Dock="Bottom" />
+                                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" Margin="0 0 8 4" DockPanel.Dock="Left" />
+                                    <TextBlock x:Name="Message" Text="{Binding LoadingProgress.Message}" Style="{StaticResource Small}" Margin="0 0 0 6"
+                                            TextAlignment="Right" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" />
+                                </DockPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding LoadingProgress.IsReady}" Value="True">
                                         <Setter TargetName="ProgressBar" Property="IsIndeterminate" Value="False" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding LoadingProgress.Message}" Value="{x:Null}">
-                                        <Setter TargetName="Message" Property="Visibility" Value="Hidden" />
+                                        <Setter TargetName="Message" Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>

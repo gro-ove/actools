@@ -43,7 +43,20 @@ namespace AcManager.Tools.Managers {
         /// <returns>Track layout.</returns>
         [CanBeNull]
         public TrackObjectBase GetLayoutByKunosId([NotNull] string id) {
-            return GetLayoutById(id) ?? (id.Contains(@"-") ? GetLayoutById(id.ReplaceLastOccurrence(@"-", @"/")) : null);
+            var layout = GetLayoutById(id);
+            if (layout != null) return layout;
+
+            var index = id.LastIndexOf('-');
+            if (index == -1) return null;
+
+            while (index != -1 && index > 0 && index < id.Length - 1) {
+                var candidate = GetLayoutById(id.Substring(0, index) + '/' + id.Substring(index + 1));
+                if (candidate != null) return candidate;
+
+                index = id.LastIndexOf('-', index - 1);
+            }
+
+            return null;
         }
 
         /// <summary>

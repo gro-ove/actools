@@ -138,11 +138,13 @@ namespace AcManager.Tools.Managers.Online {
         public async Task<bool> ReloadAsync(CancellationToken cancellation = default(CancellationToken)) {
             if (Status == OnlineManagerStatus.Loading) {
                 _reloadAfterwards = true;
+
                 if (_loadingTask == null) {
                     Logging.Unexpected();
                     return false;
                 }
 
+                _cancellation = cancellation;
                 await _loadingTask;
             } else {
                 await LoadAsync(cancellation);
@@ -209,42 +211,58 @@ namespace AcManager.Tools.Managers.Online {
             target._AddRangeDirect(newEntries);
         }
 
-        private Task GetLoadInnerTask(CancellationToken cancellation) {
+        private Task<bool> GetLoadInnerTask(CancellationToken cancellation) {
             var list = _source as IOnlineListSource;
             if (list != null) {
-                return list.LoadAsync(x => {
-                    if (cancellation.IsCancellationRequested) return;
-                    Add(x);
-                }, this, cancellation);
+                return list.LoadAsync(Add, this, cancellation);
             }
 
             var background = _source as IOnlineBackgroundSource;
             if (background != null) {
-                return background.LoadAsync(x => {
-                    if (cancellation.IsCancellationRequested) return;
-                    Add(x);
-                }, this, cancellation);
+                return background.LoadAsync(Add, this, cancellation);
             }
 
             throw new NotSupportedException($@"Not supported type: {_source.GetType().Name}");
         }
 
+        /* TODO: I need to rework the way cancellation works.
+         * Case: two tabs, A and B, both shown servers from one source. First is active.
+         * Then, while loading is still active, user switches to second. First gets cancelled.
+         * Here, _cancellation will be updated (see LoadAsync() function), but cancellation token
+         * used by LoadAsync() of IOnlineSource will still remain the same.
+         * 
+         * So, IOnlineSource will terminate loading and return “false” anyway causing OnlineSourceWrapper
+         * to go into OnlineManagerStatus.Waiting mode.
+         * 
+         * Possible solutions:
+         * • Remove CancellationToken from LoadAsync(), but it will cause a problem with uncancellable
+         *   LAN scanning;
+         * • Reload stuff again and again every time (even then list just was loaded already), but might be 
+         *   the best way if there will be some sort of short-living cache in IOnlineSource.
+         * • Wrap CancellationToken in some helper class making it replaceable on-fly.
+         */
+
         private CancellationToken? _cancellation;
 
         private async Task LoadAsyncInner() {
+            Logging.Warning($"({_source.GetType().Name}) <STATUS: {Status}>");
+
             _reloadAfterwards = false;
             Status = OnlineManagerStatus.Loading;
 
             try {
                 CleanUp();
-                await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
+                var ready = await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
 
                 while (_reloadAfterwards) {
+                    Logging.Warning("<RELOAD AFTERWARDS>");
+
                     CleanUp();
-                    await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
+                    ready = await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
                 }
 
-                Status = OnlineManagerStatus.Ready;
+                Logging.Warning($"({_source.GetType().Name}) <READY: {ready}, STATUS: {Status}>");
+                Status = ready ? OnlineManagerStatus.Ready : OnlineManagerStatus.Waiting;
             } catch (InformativeException e) {
                 Error = new ErrorInformation(e);
             } catch (Exception e) {
@@ -252,8 +270,13 @@ namespace AcManager.Tools.Managers.Online {
             } finally {
                 _loadingTask = null;
                 _cancellation = null;
-                _cancellation = default(CancellationToken);
             }
         }
     }
 }
+ 
+ 
+ 
+ 
+ 
+ 

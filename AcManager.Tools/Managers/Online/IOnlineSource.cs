@@ -30,8 +30,8 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Throws exceptions.
         /// </summary>
-        /// <returns>Task.</returns>
-        Task LoadAsync([NotNull] Action<ServerInformation> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        /// <returns>True if data is loaded and source can be marked as Ready.</returns>
+        Task<bool> LoadAsync([NotNull] Action<ServerInformation> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Throws exceptions.
         /// </summary>
-        /// <returns>Task.</returns>
-        Task LoadAsync([NotNull] Action<IEnumerable<ServerInformation>> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        /// <returns>True if data is loaded and source can be marked as Ready.</returns>
+        Task<bool> LoadAsync([NotNull] Action<IEnumerable<ServerInformation>> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 }

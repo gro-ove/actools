@@ -40,19 +40,20 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public async Task LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             if (SteamIdHelper.Instance.Value == null) {
                 throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
 
             var data = await Task.Run(() => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress)), cancellation);
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
             callback(data);
+            return true;
         }
     }
 
@@ -69,15 +70,16 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public async Task LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
             callback(data);
+            return true;
         }
     }
 
@@ -94,8 +96,9 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public Task LoadAsync(Action<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            return KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
+        public async Task<bool> LoadAsync(Action<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
+            return !cancellation.IsCancellationRequested;
         }
     }
 
@@ -220,22 +223,23 @@ namespace AcManager.Tools.Managers.Online {
 
             public event EventHandler Obsolete;
 
-            public async Task LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 var fileInfo = new FileInfo(Filename);
                 if (!fileInfo.Exists) {
                     _lastDateTime = default(DateTime);
 
                     // should throw an exception?
-                    return;
+                    return true;
                 }
 
                 _lastDateTime = fileInfo.LastWriteTimeUtc;
 
                 var lines = await FileUtils.ReadAllLinesAsync(Filename, cancellation);
-                if (cancellation.IsCancellationRequested) return;
+                if (cancellation.IsCancellationRequested) return false;
 
                 callback(lines.Select(x => x.Trim()).Where(x => x.Length > 0 && !x.StartsWith(@"#")).Distinct()
                               .Select(ServerInformation.FromAddress).NonNull());
+                return true;
             }
 
             public void CheckIfChanged() {

@@ -52,7 +52,7 @@ namespace AcManager.Pages.Drive {
             SetHideIcon();
 
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
             });
             InitializeComponent();
