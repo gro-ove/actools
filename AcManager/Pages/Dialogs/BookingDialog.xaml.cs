@@ -39,7 +39,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
 
                 if (!_ignoreSkinChange) {
-                    var carEntry = ServerEntry.CarsView?.CurrentItem as ServerEntryOld.CarEntry;
+                    var carEntry = ServerEntry.CarsView?.CurrentItem as ServerEntry.CarEntry;
                     if (carEntry == null) return;
 
                     carEntry.AvailableSkin = value;

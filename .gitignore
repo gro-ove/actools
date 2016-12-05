@@ -94,3 +94,4 @@ AcManager.Tools/Helpers/Api/CmHelpersProvider_Consts.cs
 # Libraries
 Libraries/*
 Libraries.zip
+*.vspx

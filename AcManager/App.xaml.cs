@@ -102,7 +102,7 @@ namespace AcManager {
                 }
             }
 
-            AppArguments.Set(AppFlag.ScanPingTimeout, ref RecentManagerOld.OptionScanPingTimeout);
+            // TODO: AppArguments.Set(AppFlag.ScanPingTimeout, ref RecentManagerOld.OptionScanPingTimeout);
             AppArguments.Set(AppFlag.LanSocketTimeout, ref KunosApiProvider.OptionLanSocketTimeout);
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);
             AppArguments.Set(AppFlag.WebRequestTimeout, ref KunosApiProvider.OptionWebRequestTimeout);
@@ -177,7 +177,7 @@ namespace AcManager {
 
             var uiFactory = new GameWrapperUiFactory();
             GameWrapper.RegisterFactory(uiFactory);
-            ServerEntryOld.RegisterFactory(uiFactory);
+            ServerEntry.RegisterFactory(uiFactory);
 
             GameWrapper.RegisterFactory(new DefaultAssistsFactory());
             LapTimesManager.Instance.SetListener();

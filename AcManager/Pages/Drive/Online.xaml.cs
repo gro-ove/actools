@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,9 +25,10 @@ using FirstFloor.ModernUI.Windows.Media;
 using StringBasedFilter;
 using Prompt = AcManager.Controls.Dialogs.Prompt;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
+using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
-    public partial class Online : IParametrizedUriContent {
+    public partial class Online : IParametrizedUriContent, IContent {
         private OnlineItem.OriginIcon _hideIcon;
 
         private void SetHideIcon() {
@@ -132,34 +134,8 @@ namespace AcManager.Pages.Drive {
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             ResizingStuff();
         }
-
-        private bool _loaded;
+        
         private TaskbarProgress _taskbarProgress;
-
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
-            _loaded = true;
-
-            Model.Manager.PropertyChanged += Manager_PropertyChanged;
-            Model.Load();
-
-            _taskbarProgress = new TaskbarProgress();
-            _timer = new DispatcherTimer {
-                Interval = TimeSpan.FromSeconds(1),
-                IsEnabled = true
-            };
-            _timer.Tick += Timer_Tick;
-
-            var scrollViewer = ServersListBox.FindVisualChild<ScrollViewer>();
-            var viewer = scrollViewer?.FindVisualChild<Thumb>();
-
-            if (viewer != null) {
-                scrollViewer.ScrollChanged += OnScrollChanged;
-                viewer.DragStarted += OnScrollStarted;
-                viewer.DragCompleted += OnScrollCompleted;
-            }
-        }
-
         private bool _scrolling;
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
@@ -180,36 +156,6 @@ namespace AcManager.Pages.Drive {
             foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
                 child.SetScrolling(false);
             }
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (!_loaded) return;
-            _loaded = false;
-
-            Model.Manager.PropertyChanged -= Manager_PropertyChanged;
-            Model.Unload();
-
-            _taskbarProgress?.Dispose();
-            _timer?.Stop();
-        }
-
-        private void Manager_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            /*switch (e.PropertyName) {
-                case nameof(BaseOnlineManager.BackgroundLoading):
-                    _taskbarProgress.Set(Model.Manager.BackgroundLoading ? TaskbarState.Indeterminate : TaskbarState.NoProgress);
-                    break;
-
-                case nameof(BaseOnlineManager.PingingInProcess):
-                    _taskbarProgress.Set(Model.Manager.PingingInProcess ? TaskbarState.Normal : TaskbarState.NoProgress);
-                    break;
-
-                case nameof(BaseOnlineManager.Pinged):
-                    if (Model.Manager.PingingInProcess) {
-                        _taskbarProgress.Set(TaskbarState.Normal);
-                        _taskbarProgress.Set(Model.Manager.Pinged, Model.Manager.WrappersList.Count);
-                    }
-                    break;
-            }*/
         }
 
         public class CombinedFilter<T> : IFilter<T> {
@@ -390,6 +336,8 @@ namespace AcManager.Pages.Drive {
             }
 
             public OnlineViewModel([CanBeNull] string filterParam) {
+                Logging.Debug(filterParam);
+
                 string[] sources = null;
                 string filter = null;
 
@@ -405,15 +353,11 @@ namespace AcManager.Pages.Drive {
                 }
                 
                 Pack = OnlineManager.Instance.GetSourcesPack(sources);
-
                 ListFilter = GetFilter(filter, sources);
                 Key = GetKey(filterParam);
                 
                 Manager = OnlineManager.Instance;
-                MainList = new BetterListCollectionView(Manager.List) {
-                    IsLiveFiltering = true,
-                    IsLiveSorting = true
-                };
+                MainList = new BetterListCollectionView(Manager.List);
 
                 LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
@@ -423,7 +367,7 @@ namespace AcManager.Pages.Drive {
             private bool _loaded;
 
             public void Load() {
-                if (_loaded) return;
+                Debug.Assert(!_loaded);
                 _loaded = true;
                 
                 Manager.List.ItemPropertyChanged += List_ItemPropertyChanged;
@@ -436,17 +380,22 @@ namespace AcManager.Pages.Drive {
                 LoadCurrent();
                 MainList.CurrentChanged += OnCurrentChanged;
 
+                if (!Pack.LoadingComplete) {
+                    // In case pack is basically ready, but there is still something loads in background,
+                    // we need to use StartLoading() anyway — current loading process will be cancelled,
+                    // if there is no “listeners”
+                    StartLoading().Forget();
+                }
+
                 if (Pack.Status == OnlineManagerStatus.Ready) {
                     StartPinging().Forget();
-                } else {
-                    StartLoading().Forget();
                 }
 
                 Pack.Ready += Pack_Ready;
             }
 
             public void Unload() {
-                if (!_loaded) return;
+                Debug.Assert(_loaded);
                 _loaded = false;
 
                 Manager.List.ItemPropertyChanged -= List_ItemPropertyChanged;
@@ -454,6 +403,7 @@ namespace AcManager.Pages.Drive {
                 StopPinging();
 
                 Pack.Ready -= Pack_Ready;
+                Pack.Dispose();
             }
 
             private void Pack_Ready(object sender, EventArgs e) {
@@ -467,6 +417,7 @@ namespace AcManager.Pages.Drive {
                 var cancellation = new CancellationTokenSource();
                 try {
                     _currentLoading = cancellation;
+                    Logging.Write($"({Pack.SourceWrappers.Select(x => x.Id).JoinToString(", ")}) customerId: {cancellation.GetHashCode()}");
                     await Pack.EnsureLoadedAsync(cancellation.Token);
                 } finally {
                     if (Equals(_currentLoading, cancellation)) {
@@ -489,8 +440,6 @@ namespace AcManager.Pages.Drive {
             private async Task StartPinging() {
                 // Just a little delay to make sure sources pack is loaded
                 await Task.Delay(TimeSpan.FromMilliseconds(100));
-
-                StopLoading();
                 StopPinging();
 
                 var cancellation = new CancellationTokenSource();
@@ -603,7 +552,7 @@ namespace AcManager.Pages.Drive {
             private ICommand _addNewServerCommand;
 
             public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new DelegateCommand(async () => {
-                var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
+                /*var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
                         @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
                 if (address == null) return;
 
@@ -616,8 +565,8 @@ namespace AcManager.Pages.Drive {
                     } catch (Exception e) {
                         NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);
                     }
-                }
-            }, () => Manager is RecentManagerOld));
+                }*/
+            }, () => false /* Manager is RecentManagerOld*/));
 
             private AsyncCommand<bool?> _refreshCommand;
 
@@ -636,7 +585,7 @@ namespace AcManager.Pages.Drive {
                 var currentId = ((ServerEntry)MainList.CurrentItem)?.Id;
                 if (currentId == null) return;
 
-                SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Id={0}", currentId);
+                // SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Id={0}", currentId);
 
                 if (save) {
                     LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, currentId);
@@ -717,5 +666,40 @@ namespace AcManager.Pages.Drive {
                 }
             }
         }
+
+        public void OnFragmentNavigation(FragmentNavigationEventArgs e) {}
+
+        public void OnNavigatedFrom(NavigationEventArgs e) {
+            Logging.Here();
+
+            Model.Unload();
+
+            _taskbarProgress?.Dispose();
+            _timer?.Stop();
+        }
+
+        public void OnNavigatedTo(NavigationEventArgs e) {
+            Logging.Here();
+
+            Model.Load();
+
+            _taskbarProgress = new TaskbarProgress();
+            _timer = new DispatcherTimer {
+                Interval = TimeSpan.FromSeconds(1),
+                IsEnabled = true
+            };
+            _timer.Tick += Timer_Tick;
+
+            var scrollViewer = ServersListBox.FindVisualChild<ScrollViewer>();
+            var viewer = scrollViewer?.FindVisualChild<Thumb>();
+
+            if (viewer != null) {
+                scrollViewer.ScrollChanged += OnScrollChanged;
+                viewer.DragStarted += OnScrollStarted;
+                viewer.DragCompleted += OnScrollCompleted;
+            }
+        }
+
+        public void OnNavigatingFrom(NavigatingCancelEventArgs e) {}
     }
 }

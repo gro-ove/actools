@@ -31,14 +31,31 @@ namespace AcManager.Tools.Lists {
     public interface IAcObjectList : IBaseAcObjectObservableCollection, IList { }
 
     public class AcWrapperObservableCollection : ChangeableObservableCollection<AcItemWrapper>, IAcWrapperObservableCollection, IAcObjectList {
+        /// <summary>
+        /// TODO: Change everything? For example, use binary search instead? Or just eliminate internal list and use Dictionary only?
+        /// </summary>
+        private readonly Dictionary<string, AcItemWrapper> _index = new Dictionary<string, AcItemWrapper>(50);
+
         protected override void Subscribe(AcItemWrapper item) {
             item.ValueChanged += Item_ValueChanged;
             item.Value.PropertyChanged += Item_PropertyChanged;
+            _index[item.Id.ToLowerInvariant()] = item;
         }
 
         protected override void Unsubscribe(AcItemWrapper item) {
             item.ValueChanged -= Item_ValueChanged;
             item.Value.PropertyChanged -= Item_PropertyChanged;
+            _index.Remove(item.Id.ToLowerInvariant());
+        }
+
+        public AcItemWrapper GetById(string id) {
+            return _index[id.ToLowerInvariant()];
+        }
+
+        [CanBeNull]
+        public AcItemWrapper GetByIdOrDefault(string id) {
+            AcItemWrapper result;
+            return _index.TryGetValue(id.ToLowerInvariant(), out result) ? result : null;
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {

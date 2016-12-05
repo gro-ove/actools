@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
@@ -77,6 +78,10 @@ namespace AcManager.Tools.Managers.Online {
                     _status = value;
                     LoadingProgress = AsyncProgressEntry.Ready;
                     OnPropertyChanged();
+
+                    if (value == OnlineManagerStatus.Loading) {
+                        LoadingProgress = AsyncProgressEntry.Indetermitate;
+                    }
                 }
 
                 if (value != OnlineManagerStatus.Error) {
@@ -119,43 +124,8 @@ namespace AcManager.Tools.Managers.Online {
 
         public string DisplayName => _source.DisplayName;
 
-        private Task _loadingTask;
-        private bool _reloadAfterwards;
-
         private void OnSourceObsolete(object sender, EventArgs e) {
-            if (Status == OnlineManagerStatus.Loading) {
-                _reloadAfterwards = true;
-            } else {
-                ReloadAsync().Forget();
-            }
-        }
-
-        public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
-            return Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error ? Task.Delay(0, cancellation) :
-                    LoadAsync(cancellation);
-        }
-
-        public async Task<bool> ReloadAsync(CancellationToken cancellation = default(CancellationToken)) {
-            if (Status == OnlineManagerStatus.Loading) {
-                _reloadAfterwards = true;
-
-                if (_loadingTask == null) {
-                    Logging.Unexpected();
-                    return false;
-                }
-
-                _cancellation = cancellation;
-                await _loadingTask;
-            } else {
-                await LoadAsync(cancellation);
-            }
-
-            return true;
-        }
-
-        private Task LoadAsync(CancellationToken cancellation) {
-            _cancellation = cancellation;
-            return _loadingTask ?? (_loadingTask = LoadAsyncInner());
+            ReloadAsync().Forget();
         }
 
         private void CleanUp() {
@@ -211,6 +181,108 @@ namespace AcManager.Tools.Managers.Online {
             target._AddRangeDirect(newEntries);
         }
 
+        public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
+            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+            return Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error ? Task.Delay(0, cancellation) :
+                    LoadAsync(cancellation);
+        }
+
+        public Task ReloadAsync(CancellationToken cancellation = default(CancellationToken)) {
+            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+            return Status == OnlineManagerStatus.Loading ? ReloadLater(cancellation) : LoadAsync(cancellation);
+        }
+        
+        private Task _loadingTask;
+        private bool _reloadAfterwards;
+
+        private Task ReloadLater(CancellationToken cancellation) {
+            Logging.Debug(_source.Id);
+
+            if (_loadingTask == null) {
+                Logging.Unexpected();
+                return Task.Delay(0, cancellation);
+            }
+
+            RegisterCustomer(cancellation);
+            _reloadAfterwards = true;
+            return _loadingTask;
+        }
+
+        // During loading, sudden cancellation might occur, but then immediately loading might
+        // be started again. To avoid unnecessary lost of almost loaded data, we’ll put all
+        // those requests in a special list and will use a local CancellationTokenSource instead.
+        // When request will get cancelled, we’ll remove it from that list, wait for a while (for
+        // new requests) and then check if the list is empty. If it is, cancellation will be
+        // cancelled properly.
+
+        private Task LoadAsync(CancellationToken cancellation) {
+            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+            RegisterCustomer(cancellation);
+            return _cancellationSource?.IsCancellationRequested == false ? _loadingTask : (_loadingTask = LoadAsyncInner());
+        }
+
+        private readonly List<int> _customers = new List<int>();
+        private CancellationTokenSource _cancellationSource;
+
+        private void RegisterCustomer(CancellationToken cancellation) {
+            var customerId = cancellation.GetHashCode();
+            Logging.Write($"({_source.Id}) customerId: {customerId}; {_customers.Count}");
+            _customers.Add(customerId);
+            cancellation.Register(() => {
+                OnCancelled(customerId).Forget();
+            });
+        }
+
+        private async Task OnCancelled(int customerId) {
+            Logging.Write($"({_source.Id}) customerId: {customerId}; {_customers.Count}");
+            if (!_customers.Remove(customerId) || _customers.Count != 0) return;
+
+            await Task.Delay(200);
+            if (_customers.Count == 0) {
+                Logging.Warning(_cancellationSource.GetHashCode());
+                _cancellationSource?.Cancel();
+            }
+        }
+
+        private async Task LoadAsyncInner() {
+            _reloadAfterwards = false;
+            Status = OnlineManagerStatus.Loading;
+
+            var cancellationSource = new CancellationTokenSource();
+            _cancellationSource = cancellationSource;
+            Logging.Warning(_cancellationSource.GetHashCode());
+
+            try {
+                CleanUp();
+                var ready = await GetLoadInnerTask(cancellationSource.Token);
+
+                while (_reloadAfterwards && !cancellationSource.IsCancellationRequested) {
+                    CleanUp();
+                    ready = await GetLoadInnerTask(cancellationSource.Token);
+                }
+
+                // new LoadAsyncInner() might be started, if this one is cancelled
+                if (_cancellationSource == cancellationSource) {
+                    // GetLoadInnerTask() returns “false”, if loading was cancelled before all servers
+                    // were loaded and ready to be added to the list. In this case, we need to revert state
+                    // to Waiting so source will be properly loaded later.
+                    Status = ready ? OnlineManagerStatus.Ready : OnlineManagerStatus.Waiting;
+                }
+            } catch (InformativeException e) {
+                Error = new ErrorInformation(e);
+            } catch (Exception e) {
+                Error = new ErrorInformation(e);
+            } finally {
+                if (_cancellationSource == cancellationSource) {
+                    _cancellationSource = null;
+                    _loadingTask = null;
+                    _customers.Clear();
+                }
+
+                cancellationSource.Dispose();
+            }
+        }
+
         private Task<bool> GetLoadInnerTask(CancellationToken cancellation) {
             var list = _source as IOnlineListSource;
             if (list != null) {
@@ -223,54 +295,6 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             throw new NotSupportedException($@"Not supported type: {_source.GetType().Name}");
-        }
-
-        /* TODO: I need to rework the way cancellation works.
-         * Case: two tabs, A and B, both shown servers from one source. First is active.
-         * Then, while loading is still active, user switches to second. First gets cancelled.
-         * Here, _cancellation will be updated (see LoadAsync() function), but cancellation token
-         * used by LoadAsync() of IOnlineSource will still remain the same.
-         * 
-         * So, IOnlineSource will terminate loading and return “false” anyway causing OnlineSourceWrapper
-         * to go into OnlineManagerStatus.Waiting mode.
-         * 
-         * Possible solutions:
-         * • Remove CancellationToken from LoadAsync(), but it will cause a problem with uncancellable
-         *   LAN scanning;
-         * • Reload stuff again and again every time (even then list just was loaded already), but might be 
-         *   the best way if there will be some sort of short-living cache in IOnlineSource.
-         * • Wrap CancellationToken in some helper class making it replaceable on-fly.
-         */
-
-        private CancellationToken? _cancellation;
-
-        private async Task LoadAsyncInner() {
-            Logging.Warning($"({_source.GetType().Name}) <STATUS: {Status}>");
-
-            _reloadAfterwards = false;
-            Status = OnlineManagerStatus.Loading;
-
-            try {
-                CleanUp();
-                var ready = await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
-
-                while (_reloadAfterwards) {
-                    Logging.Warning("<RELOAD AFTERWARDS>");
-
-                    CleanUp();
-                    ready = await GetLoadInnerTask(_cancellation ?? default(CancellationToken));
-                }
-
-                Logging.Warning($"({_source.GetType().Name}) <READY: {ready}, STATUS: {Status}>");
-                Status = ready ? OnlineManagerStatus.Ready : OnlineManagerStatus.Waiting;
-            } catch (InformativeException e) {
-                Error = new ErrorInformation(e);
-            } catch (Exception e) {
-                Error = new ErrorInformation(e);
-            } finally {
-                _loadingTask = null;
-                _cancellation = null;
-            }
         }
     }
 }

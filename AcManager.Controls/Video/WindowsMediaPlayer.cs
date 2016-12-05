@@ -44,8 +44,7 @@ namespace AcManager.Controls.Video {
                 _mediaPlayer.Source = value;
 
                 if (_active) {
-                    _mediaPlayer.Position = TimeSpan.Zero;
-                    _mediaPlayer.Play();
+                    ResetAndPlay();
                 } else {
                     _mediaPlayer.Stop();
                 }
@@ -67,8 +66,7 @@ namespace AcManager.Controls.Video {
         private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e) {
             Ended?.Invoke(this, EventArgs.Empty);
             if (_active && IsLooped) {
-                _mediaPlayer.Position = TimeSpan.Zero;
-                _mediaPlayer.Play();
+                ResetAndPlay();
             }
         }
 
@@ -84,10 +82,14 @@ namespace AcManager.Controls.Video {
             }
         }
 
-        public void Play() {
-            _active = true;
+        private void ResetAndPlay() {
             _mediaPlayer.Position = TimeSpan.Zero;
             _mediaPlayer.Play();
+        }
+
+        public void Play() {
+            _active = true;
+            ResetAndPlay();
 
             if (_mediaPlayer.HasVideo) {
                 Started?.Invoke(this, EventArgs.Empty);
@@ -96,7 +98,7 @@ namespace AcManager.Controls.Video {
 
         public void Stop() {
             _active = false;
-            _mediaPlayer.Stop();
+            _mediaPlayer.Pause();
         }
 
         public event EventHandler Started;

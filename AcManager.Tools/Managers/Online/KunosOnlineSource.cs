@@ -46,12 +46,13 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var data = await Task.Run(() => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress)), cancellation);
-            if (cancellation.IsCancellationRequested) return false;
+            // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
             }
 
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Applying list…"));
             callback(data);
             return true;
         }
@@ -72,7 +73,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
-            if (cancellation.IsCancellationRequested) return false;
+            // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {
                 throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
@@ -80,25 +81,6 @@ namespace AcManager.Tools.Managers.Online {
 
             callback(data);
             return true;
-        }
-    }
-
-    public class LanOnlineSource : IOnlineBackgroundSource {
-        public const string Key = @"lan";
-        public static readonly LanOnlineSource Instance = new LanOnlineSource();
-
-        string IWithId.Id => Key;
-
-        public string DisplayName => "LAN";
-
-        event EventHandler IOnlineSource.Obsolete {
-            add { }
-            remove { }
-        }
-
-        public async Task<bool> LoadAsync(Action<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
-            return !cancellation.IsCancellationRequested;
         }
     }
 
@@ -154,7 +136,6 @@ namespace AcManager.Tools.Managers.Online {
 
         private void Rescan() {
             if (!Directory.Exists(RootDirectory)) {
-                Logging.Debug("Sources directory missing");
                 foreach (var source in _sources) {
                     _missing[source.Key] = new WeakReference<Source>(source.Value);
                     source.Value.CheckIfChanged();
@@ -174,7 +155,6 @@ namespace AcManager.Tools.Managers.Online {
                 WeakReference<Source> removed;
 
                 if (_missing.TryGetValue(key, out removed) && removed.TryGetTarget(out source)) {
-                    Logging.Debug("Missing source re-created");
                     _missing.Remove(key);
                     _sources[key] = source;
                     source.CheckIfChanged();
@@ -182,7 +162,6 @@ namespace AcManager.Tools.Managers.Online {
                 } else if (_sources.TryGetValue(key, out source)) {
                     source.CheckIfChanged();
                 } else {
-                    Logging.Debug("New source added");
                     source = new Source(filename, key);
                     _sources[key] = source;
                     changed = true;
@@ -190,7 +169,6 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             foreach (var source in _sources.Where(s => !files.Any(x => string.Equals(x, s.Value.Filename, StringComparison.OrdinalIgnoreCase))).ToList()) {
-                Logging.Debug("Existing source missing");
                 _sources.Remove(source.Key);
                 _missing[source.Key] = new WeakReference<Source>(source.Value);
                 source.Value.CheckIfChanged();

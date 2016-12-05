@@ -1051,8 +1051,8 @@ namespace AcManager.Tools.Managers.Online {
         private CommandBase _addToRecentCommand;
 
         public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new DelegateCommand(() => {
-            RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
-        }, () => Status == ServerStatus.Ready && RecentManagerOld.Instance.GetWrapperById(Id) == null));
+            //RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
+        }, () => Status == ServerStatus.Ready /*&& RecentManagerOld.Instance.GetWrapperById(Id) == null*/));
 
         private CommandBase _joinCommand;
 
@@ -1216,7 +1216,7 @@ namespace AcManager.Tools.Managers.Online {
             await GameWrapper.StartAsync(properties);
             var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn>();
             WrongPassword = whatsGoingOn?.Type == AcLogHelper.WhatsGoingOnType.OnlineWrongPassword;
-            if (whatsGoingOn == null) RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
+            // if (whatsGoingOn == null) RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
         }
 
         private ICommand _refreshCommand;

@@ -63,7 +63,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             handler = (sender, args) => {
                 listBox.Loaded -= handler;
                 scrollViewer = listBox.FindVisualChild<ScrollViewer>();
-                Logging.Debug(scrollViewer);
                 ApplyKeyChanged(scrollViewer, e);
             };
             listBox.Loaded += handler;

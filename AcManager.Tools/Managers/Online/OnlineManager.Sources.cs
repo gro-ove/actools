@@ -31,6 +31,8 @@ namespace AcManager.Tools.Managers.Online {
 
         private readonly Dictionary<string, OnlineSourceWrapper> _wrappers = new Dictionary<string, OnlineSourceWrapper>(10);
 
+        public IEnumerable<OnlineSourceWrapper> Wrappers => _wrappers.Values;
+
         [CanBeNull]
         private IOnlineSource GetSource(string key) {
             return Sources.GetValueOrDefault(key);

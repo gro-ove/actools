@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
-        SizeChanged="OnSizeChanged" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" d:DataContext="{d:DesignInstance dr:Online+OnlineViewModel}">
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" SizeChanged="OnSizeChanged"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" d:DataContext="{d:DesignInstance dr:Online+OnlineViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -32,7 +32,8 @@
         <ToggleButton x:Name="ToggleButton" Content="…" Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" />
 
         <DockPanel>
-            <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20 0 20 8">
+            <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Margin="20 0 20 8">
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel TextBlock.FontSize="11" Margin="8 8 40 8">
                     <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" TextBlock.FontSize="11">
@@ -42,13 +43,15 @@
                         <TextBlock Text="{Binding Pack.BackgroundLoading, StringFormat='{}Pack.BackgroundLoading: {0}'}" />
                     </mui:SpacingUniformGrid>
 
-                    <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}">
+                    <ItemsControl ItemsSource="{Binding Wrappers, Source={x:Static t:OnlineManager.Instance}, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" TextBlock.FontSize="11">
                                     <TextBlock Text="{Binding Key, StringFormat='{}Key: {0}'}" />
                                     <TextBlock Text="{Binding Status, StringFormat='{}Status: {0}'}" />
                                     <TextBlock Text="{Binding LoadingProgress, StringFormat='{}LoadingProgress: {0}'}" />
+                                    <TextBlock Text="{Binding Error.Message, StringFormat='{}Error: {0}'}" />
+                                    <TextBlock Text="{Binding Error.IsFatal, StringFormat='{}Error.IsFatal: {0}'}" />
                                 </mui:SpacingUniformGrid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -75,6 +78,11 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding LoadingProgress.Message}" Value="{x:Null}">
                                         <Setter TargetName="Message" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static t:OnlineManagerStatus.Error}">
+                                        <Setter TargetName="ProgressBar" Property="Visibility" Value="Hidden" />
+                                        <Setter TargetName="Message" Property="Visibility" Value="Visible" />
+                                        <Setter TargetName="Message" Property="Text" Value="{Binding Error.Message}" />
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>

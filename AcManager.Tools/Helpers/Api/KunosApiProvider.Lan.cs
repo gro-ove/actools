@@ -79,7 +79,8 @@ namespace AcManager.Tools.Helpers.Api {
             public int Current;
         }
 
-        private static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress) {
+        private static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
+                CancellationToken cancellation) {
             var addresses = GetBroadcastAddresses().ToList();
 
             // ReSharper disable PossibleMultipleEnumeration
@@ -94,59 +95,64 @@ namespace AcManager.Tools.Helpers.Api {
             }));
             // ReSharper enable PossibleMultipleEnumeration
 
-            Parallel.ForEach(entries, (entry, ipLoopState) => {
-                var found = BroadcastPing(entry.BroadcastIp, entry.Port);
-                if (found != null) {
-                    try {
-                        var information = TryToGetInformationDirect(found.Ip, found.Port);
-                        if (information == null) return;
+            try {
+                Parallel.ForEach(entries, new ParallelOptions {
+                    CancellationToken = cancellation
+                }, (entry, ipLoopState) => {
+                    cancellation.ThrowIfCancellationRequested();
 
-                        information.IsLan = true;
-                        Application.Current.Dispatcher.InvokeAsync(() => foundCallback(information));
-                    } catch (Exception e) {
-                        Logging.Warning(e);
+                    var found = BroadcastPing(entry.BroadcastIp, entry.Port);
+                    if (found != null) {
+                        try {
+                            var information = TryToGetInformationDirect(found.Ip, found.Port);
+                            if (information == null) return;
+
+                            information.IsLan = true;
+                            Application.Current.Dispatcher.InvokeAsync(() => foundCallback(information));
+                        } catch (Exception e) {
+                            Logging.Warning(e);
+                        }
                     }
-                }
 
-                if (progress != null) {
-                    Interlocked.Increment(ref progress.Current);
-                }
-            });
+                    if (progress != null) {
+                        Interlocked.Increment(ref progress.Current);
+                    }
+                });
+            } catch (OperationCanceledException) {}
         }
 
         public static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports) {
-            TryToGetLanList(foundCallback, ports, null);
+            TryToGetLanList(foundCallback, ports, null, default(CancellationToken));
         }
 
         public static void TryToGetLanList(Action<ServerInformation> foundCallback) {
-            TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), null);
+            TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), null, default(CancellationToken));
         }
 
         public static async Task TryToGetLanListAsync(Action<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var holder = progress == null ? null : new Progress();
-
             DispatcherTimer timer = null;
-            if (holder != null) {
-                timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
-                    Interval = TimeSpan.FromSeconds(0.1),
-                    IsEnabled = true
-                };
 
-                timer.Tick += (sender, args) => {
-                    progress.Report(new AsyncProgressEntry($"Scanned {holder.Current} of {holder.Total}", holder.Current, holder.Total));
-                };
-            }
+            try {
+                if (holder != null) {
+                    timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                        Interval = TimeSpan.FromSeconds(0.1),
+                        IsEnabled = true
+                    };
 
-            await Task.Run(() => {
-                TryToGetLanList(i => {
-                    if (cancellation.IsCancellationRequested) return;
-                    foundCallback(i);
-                }, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), holder);
-            }, cancellation);
+                    timer.Tick += (sender, args) => {
+                        progress.Report(new AsyncProgressEntry($"Scanned {holder.Current} of {holder.Total}", holder.Current, holder.Total));
+                    };
+                }
 
-            if (holder != null) {
-                timer.IsEnabled = false;
+                await Task.Run(() => {
+                    TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), holder, cancellation);
+                }, cancellation);
+            } finally {
+                if (holder != null && timer != null) {
+                    timer.IsEnabled = false;
+                }
             }
         }
     }

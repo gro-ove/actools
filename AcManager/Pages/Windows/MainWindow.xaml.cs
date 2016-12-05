@@ -396,7 +396,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnClosed(object sender, EventArgs e) {
-            _dynamicBackground.Dispose();
+            _dynamicBackground?.Dispose();
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 WindowsHelper.RestartCurrentApplication();
             } else {

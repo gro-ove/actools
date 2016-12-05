@@ -163,7 +163,6 @@
     <Compile Include="AcErrors\Solutions\Solution.cs" />
     <Compile Include="AcManagersNew\AcItemWrapper.cs" />
     <Compile Include="AcManagersNew\AcManagerFileSpecific.cs" />
-    <Compile Include="AcManagersNew\AsyncScanAcManager.cs" />
     <Compile Include="AcManagersNew\BaseAcManager.cs" />
     <Compile Include="AcManagersNew\FileAcManager.cs" />
     <Compile Include="AcManagersNew\IAcManagerNew.cs" />
@@ -311,6 +310,7 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
     <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />
     <Compile Include="Managers\Online\OnlineManager.cs" />
@@ -334,9 +334,7 @@
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />
     <Compile Include="Managers\FontsManager.cs" />
-    <Compile Include="Managers\Online\LanManagerOld.cs" />
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
-    <Compile Include="Managers\Online\RecentManagerOld.cs" />
     <Compile Include="Managers\Online\ServerStatus.cs" />
     <Compile Include="Managers\Plugins\IPluginWrapper.cs" />
     <Compile Include="Managers\Plugins\PluginsWrappers.cs" />
@@ -394,7 +392,7 @@
     <Compile Include="GameProperties\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />
-    <Compile Include="Helpers\Api\KunosApiProvider_Lan.cs" />
+    <Compile Include="Helpers\Api\KunosApiProvider.Lan.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualInformation.cs" />
@@ -435,9 +433,6 @@
     <Compile Include="Managers\InnerHelpers\IWatchingChangeApplier.cs" />
     <Compile Include="Managers\InnerHelpers\WatchingChange.cs" />
     <Compile Include="Managers\InnerHelpers\WatchingTask.cs" />
-    <Compile Include="Managers\Online\OnlineManagerOld.cs" />
-    <Compile Include="Managers\Online\BaseOnlineManagerOld.cs" />
-    <Compile Include="Managers\Online\ServerEntryOld.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerInformation.cs" />
     <Compile Include="Managers\Presets\PresetsManager.cs" />
     <Compile Include="Managers\PpFiltersManager.cs" />

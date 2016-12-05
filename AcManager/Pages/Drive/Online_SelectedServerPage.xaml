@@ -275,7 +275,7 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type t:ServerEntryOld+CurrentDriver}">
+                                <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
                                     <DockPanel Width="200">
                                         <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True">
                                             <mui:BetterImage.ToolTip>

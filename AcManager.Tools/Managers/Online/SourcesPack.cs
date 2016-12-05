@@ -53,8 +53,14 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _backgroundLoading)) return;
                 _backgroundLoading = value;
                 OnPropertyChanged();
+
+                if (!value && Status == OnlineManagerStatus.Ready) {
+                    Ready?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
+
+        public bool LoadingComplete => Status == OnlineManagerStatus.Ready && !BackgroundLoading;
 
         private ErrorInformation _error;
 
@@ -109,15 +115,11 @@ namespace AcManager.Tools.Managers.Online {
         };
 
         public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
-            if (Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error) {
+            if (LoadingComplete || Status == OnlineManagerStatus.Error) {
                 return Task.Delay(0, cancellation);
             }
 
-            foreach (var source in _sources.Where(x => x.IsBackgroundLoadable)) {
-                source.EnsureLoadedAsync(cancellation).Forget();
-            }
-
-            return _sources.Where(x => !x.IsBackgroundLoadable).Select(x => x.EnsureLoadedAsync(cancellation))
+            return _sources.Select(x => x.EnsureLoadedAsync(cancellation))
                            .Concat(ForceSources.Select(x => _sources.GetByIdOrDefault(x) != null
                                    ? null : OnlineManager.Instance.GetWrappedSource(x)?.EnsureLoadedAsync(cancellation)).NonNull())
                            .WhenAll(OptionConcurrency, cancellation);
@@ -134,25 +136,17 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Reloads data from associated sources.
         /// </summary>
-        /// <returns>True if data was reloaded, false if reloading isn’t possible at the moment (for example,
-        /// when loading is still in process)</returns>
-        public async Task<bool> ReloadAsync(bool nonReadyOnly = false, CancellationToken cancellation = default(CancellationToken)) {
-            if (Status == OnlineManagerStatus.Loading) {
-                return false;
-            }
+        public async Task ReloadAsync(bool nonReadyOnly = false, CancellationToken cancellation = default(CancellationToken)) {
+            if (Status == OnlineManagerStatus.Loading) return;
 
             var filter = nonReadyOnly ? (Func<OnlineSourceWrapper, bool>)(x => x.Status != OnlineManagerStatus.Ready) : x => true;
             foreach (var source in _sources.Where(x => x.IsBackgroundLoadable).Where(filter)) {
                 source.ReloadAsync(cancellation).Forget();
             }
 
-            return (await _sources.Where(x => !x.IsBackgroundLoadable).Where(filter).Select(x => x.ReloadAsync(cancellation))
-                                  .WhenAll(OptionConcurrency, cancellation)).All(x => x);
+            await _sources.Where(x => !x.IsBackgroundLoadable).Where(filter).Select(x => x.ReloadAsync(cancellation))
+                                  .WhenAll(OptionConcurrency, cancellation);
         }
-
-        // private AsyncCommand _reloadCommand;
-
-        // public AsyncCommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new AsyncCommand(ReloadAsync, () => Status != OnlineManagerStatus.Loading));
 
         public void Dispose() {
             foreach (var source in _sources) {

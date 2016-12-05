@@ -25,6 +25,7 @@ namespace AcManager.Tools.AcManagersNew {
     /// Most base version of AcManager, doesn’t have concept of file (so could be used, for example, for online servers).
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    // TODO: Change everything by eliminating AcWrapper at all. What a stupid idea it was. Although it was an improvement.
     public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader, IEnumerable<T> where T : AcObjectNew {
         [NotNull]
         protected readonly AcWrapperObservableCollection InnerWrappersList;
@@ -302,11 +303,14 @@ namespace AcManager.Tools.AcManagersNew {
         
         [CanBeNull]
         public AcItemWrapper GetWrapperById([NotNull] string id) {
-            for (var i = 0; i < WrappersList.Count; i++) {
+            EnsureScanned();
+            return InnerWrappersList.GetByIdOrDefault(id);
+
+            /*for (var i = 0; i < WrappersList.Count; i++) {
                 var x = WrappersList[i];
                 if (x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)) return x;
             }
-            return null;
+            return null;*/
         }
 
         [NotNull]
