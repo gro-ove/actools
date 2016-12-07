@@ -6,8 +6,8 @@ namespace AcManager.Tools.Filters {
         public static ServerPresetObjectTester Instance = new ServerPresetObjectTester();
 
         public static string InnerParameterFromKey(string key) {
-            switch (key) {
-            }
+            //switch (key) {
+            //}
 
             return null;
         }
@@ -21,8 +21,8 @@ namespace AcManager.Tools.Filters {
         }
 
         public bool Test(ServerPresetObject obj, string key, ITestEntry value) {
-            switch (key) {
-            }
+            //switch (key) {
+            //}
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);
         }

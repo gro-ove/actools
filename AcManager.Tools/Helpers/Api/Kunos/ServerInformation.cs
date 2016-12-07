@@ -213,7 +213,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                             entry.PickUp = bool.Parse(reader.Value.ToString());
                             return true;
                         case "l":
+#pragma warning disable 612
                             entry.Lan = bool.Parse(reader.Value.ToString());
+#pragma warning restore 612
                             return true;
                     }
                     break;
