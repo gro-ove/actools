@@ -585,7 +585,7 @@ namespace AcManager.Pages.Drive {
                 var currentId = ((ServerEntry)MainList.CurrentItem)?.Id;
                 if (currentId == null) return;
 
-                SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Id={0}", currentId);
+                SelectedSource = UriExtension.Create("/Pages/Drive/OnlineServer.xaml?Id={0}", currentId);
                 if (save) {
                     LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, currentId);
                 }

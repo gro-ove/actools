@@ -332,12 +332,12 @@ namespace AcManager.Tools.Helpers.Api {
             return true;
         }
 
-        private static ServerInformation PrepareLan(ServerInformation result, string ip) {
+        private static ServerInformation PrepareLoadedDirectly(ServerInformation result, string ip) {
             if (result.Ip == string.Empty) {
                 result.Ip = ip;
             }
 
-            result.L = true;
+            result.LoadedDirectly = true;
 
             if (result.Durations != null && result.SessionTypes != null) {
                 for (var i = 0; i < result.Durations.Length; i++) {
@@ -365,7 +365,7 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
-                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
+                return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
             } catch (WebException e) when (e.Message.Contains(@"The request was canceled")) {
                 // Won’t work on localized version, but does it really matter?
                 // Logging.Write($"Server didn’t respond in given time: {requestUri}");
@@ -384,7 +384,7 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
-                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionDirectRequestTimeout)), ip);
+                return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionDirectRequestTimeout)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;

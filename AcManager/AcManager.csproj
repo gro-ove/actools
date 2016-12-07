@@ -491,8 +491,8 @@
     <Compile Include="Pages\Drive\KunosCareer.xaml.cs">
       <DependentUpon>KunosCareer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Drive\Online_SelectedServerPage.xaml.cs">
-      <DependentUpon>Online_SelectedServerPage.xaml</DependentUpon>
+    <Compile Include="Pages\Drive\OnlineServer.xaml.cs">
+      <DependentUpon>OnlineServer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Lists\CarSkinsListPage.xaml.cs">
       <DependentUpon>CarSkinsListPage.xaml</DependentUpon>
@@ -795,7 +795,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Drive\Online_SelectedServerPage.xaml">
+    <Page Include="Pages\Drive\OnlineServer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

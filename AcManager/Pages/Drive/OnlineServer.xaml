@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="AcManager.Pages.Drive.Online_SelectedServerPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.Drive.OnlineServer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
-        d:DataContext="{d:DesignInstance dr:Online_SelectedServerPage+ViewModel}">
+        d:DataContext="{d:DesignInstance dr:OnlineServer+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,8 +19,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel DataContext="{Binding EntryOld}" Background="Transparent">
-        <c:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
+    <DockPanel Background="Transparent">
+        <c:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown" DataContext="{Binding Entry}">
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Refresh}" ToolTip="{x:Static g:AppStrings.Toolbar_Refresh_OnlineTooltip}"
                         Command="{Binding RefreshCommand}" />
@@ -35,68 +35,72 @@
                         IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
                     <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
                 </c:ModernPopup>
-                <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
-                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Button.ToolTip>
-                        <Grid>
-                            <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}"
-                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <TextBlock Text="{Binding NonAvailableReason, StringFormat='{}{0} (Gtrl+G, Ctrl+Alt+G to connect anyway)'}"
-                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                        </Grid>
-                    </Button.ToolTip>
-                </Button>
-                <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}"
-                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <mui:BooleanSwitch Value="{Binding IsBooked}">
+                    <mui:BooleanSwitch.True>
+                        <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}" />
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                        <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
+                                Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                            <Button.ToolTip>
+                                <mui:BooleanSwitch Value="{Binding IsAvailable}">
+                                    <mui:BooleanSwitch.True>
+                                        <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}" />
+                                    </mui:BooleanSwitch.True>
+                                    <mui:BooleanSwitch.False>
+                                        <TextBlock Text="{Binding NonAvailableReason, StringFormat='{}{0} (Gtrl+G, Ctrl+Alt+G to connect anyway)'}" />
+                                    </mui:BooleanSwitch.False>
+                                </mui:BooleanSwitch>
+                            </Button.ToolTip>
+                        </Button>
+                    </mui:BooleanSwitch.False>
+                </mui:BooleanSwitch>
             </ToolBar>
         </c:AcToolBar>
 
-        <mui:Switch Value="{Binding Status}">
+        <mui:Switch Value="{Binding Entry.Status}">
             <!-- error -->
             <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Error}">
                 <!-- server's name -->
-                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding Entry.DisplayName}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                 <!-- ip, ping -->
-                <DockPanel Margin="0 4 0 0">
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" HorizontalAlignment="Left">
-                        <TextBox.Text>
-                            <MultiBinding StringFormat="{}{0}:{1}">
-                                <Binding Path="Ip" Mode="OneWay" />
-                                <Binding Path="PortHttp" Mode="OneWay" />
-                            </MultiBinding>
-                        </TextBox.Text>
-                    </TextBox>
-                </DockPanel>
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" Margin="0 4 0 0">
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="{}{0}:{1}">
+                            <Binding Path="Entry.Ip" Mode="OneWay" />
+                            <Binding Path="Entry.PortHttp" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
 
                 <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
-                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
-                            DockPanel.Dock="Right" />
-                    <TextBlock
-                            Text="{Binding Source={StaticResource SomeNumber}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.AcObject_ErrorsHeader}}"
-                            Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right" />
+                    <TextBlock Margin="10 2 2 2" Style="{StaticResource Heading2}"
+                            Text="{Binding Source={StaticResource SomeNumber}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.AcObject_ErrorsHeader}}" />
                 </DockPanel>
 
                 <!--<TextBlock Style="{StaticResource Heading1}" Text="Error" />-->
-                <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="40 0 0 12" />
-                <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 0 0" />
+                <mui:BbCodeBlock BbCode="{Binding Entry.ErrorsString}" Margin="40 0 0 12" />
+                <Button Command="{Binding Entry.RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 0 0" />
             </StackPanel>
 
             <!-- loading -->
-            <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Loading}" VerticalAlignment="Center">
-                <ProgressBar Maximum="1" Value="{Binding UpdateProgress}" Margin="8 0 8 8" Height="4" />
-                <TextBlock TextAlignment="Center" Style="{StaticResource Small}" Text="{Binding UpdateProgressMessage}" />
+            <StackPanel mui:Switch.When="{x:Static t:ServerStatus.Loading}" VerticalAlignment="Center" DataContext="{Binding Entry}">
+                <ProgressBar Maximum="1" Value="{Binding UpdateProgress.Progress, Mode=OneWay}" Margin="8 0 8 8" Height="4"
+                        IsIndeterminate="{Binding UpdateProgress.IsIndeterminate}" />
+                <TextBlock TextAlignment="Center" Style="{StaticResource Small}" Text="{Binding UpdateProgress.Message}" />
             </StackPanel>
 
             <!-- content -->
             <DockPanel mui:Switch.When="{x:Static t:ServerStatus.Ready}">
                 <StackPanel DockPanel.Dock="Top">
                     <!-- server's name -->
-                    <TextBox Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
-                    <TextBox Text="{Binding DisplayName}" Style="{StaticResource TextBoxAsTextBlock.Heading2}" TextWrapping="NoWrap" />
+                    <TextBox Text="{Binding Entry.DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
 
                     <!-- ip, ping -->
-                    <DockPanel Margin="0 4 0 20">
+                    <DockPanel Margin="0 4 0 20" DataContext="{Binding Entry}">
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="{Binding Ping, TargetNullValue='?'}" Style="{StaticResource Small}" />
                             <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
@@ -113,7 +117,8 @@
                     </DockPanel>
 
                     <!-- password -->
-                    <DockPanel Margin="0 0 0 20" Visibility="{Binding PasswordRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <DockPanel Margin="0 0 0 20" Visibility="{Binding PasswordRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            DataContext="{Binding Entry}">
                         <StackPanel Orientation="Horizontal" Margin="0 0 16 0" DockPanel.Dock="Left">
                             <Path Data="{StaticResource LockIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}" Stretch="Uniform"
                                     Visibility="Visible" HorizontalAlignment="Left" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}"
@@ -125,15 +130,10 @@
                         <mui:ProperPasswordBox Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBoxAsTextBlock}" />
                     </DockPanel>
 
-                    <!-- track & car -->
-                    <Grid Height="160">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="8" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <mui:Cell ClipToBounds="True" Background="Gray">
+                    <!--track & car-->
+                    <mui:SpacingUniformGrid Height="160" Rows="1" HorizontalSpacing="8">
+                        <!--track block-->
+                        <mui:Cell ClipToBounds="True" Background="#111111" DataContext="{Binding Entry}">
                             <mui:Cell.ToolTip>
                                 <ToolTip>
                                     <StackPanel Margin="4 8">
@@ -149,25 +149,29 @@
                                     IsHitTestVisible="False" />
                         </mui:Cell>
 
-                        <mui:Cell ClipToBounds="True" Background="Gray" Grid.Column="2">
-                            <mui:BetterImage Stretch="UniformToFill" Filename="{Binding SelectedCarEntry.AvailableSkin.PreviewImage}"
-                                    HorizontalAlignment="Center" />
-                            <Border Visibility="{Binding SelectedCarEntry.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
-                                    Background="#111111">
-                                <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_SkinIsMissing}" Foreground="#444444"
-                                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
-                            </Border>
-                            <Border DataContext="{Binding SelectedCarEntry}" Background="Transparent"
-                                    c:ImageViewerService.Image="{Binding AvailableSkin.PreviewImage}">
-                                <Border.ToolTip>
+                        <!--car block-->
+                        <mui:Cell ClipToBounds="True" Background="#111111">
+                            <!--preview-->
+                            <mui:BetterImage DataContext="{Binding Entry.SelectedCarEntry}" Stretch="UniformToFill" Filename="{Binding PreviewImage}"
+                                    c:ImageViewerService.Image="{Binding PreviewImage}" HorizontalAlignment="Center">
+                                <mui:BetterImage.ToolTip>
                                     <StackPanel Margin="4 8">
                                         <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
                                         <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                                     </StackPanel>
-                                </Border.ToolTip>
-                            </Border>
-                            <ComboBox ItemsSource="{Binding CarsView}" Background="#99333333" Foreground="White" Padding="4" VerticalAlignment="Bottom"
-                                    BorderThickness="0" IsSynchronizedWithCurrentItem="True">
+                                </mui:BetterImage.ToolTip>
+                            </mui:BetterImage>
+
+                            <!--not-available thing-->
+                            <!--<Border Visibility="{Binding Entry.SelectedCarEntry.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
+                                    Background="#111111">
+                                <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_SkinIsMissing}" Foreground="#444444"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
+                            </Border>-->
+
+                            <!--selection combobox-->
+                            <ComboBox ItemsSource="{Binding Cars}" SelectedItem="{Binding Entry.SelectedCarEntry}" Background="#99333333" Foreground="White"
+                                    Padding="4" VerticalAlignment="Bottom" BorderThickness="0">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type t:ServerEntry+CarEntry}">
                                         <StackPanel Orientation="Horizontal">
@@ -191,10 +195,11 @@
                             <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Online_AllCarsAreTaken}" Foreground="#888888"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="4" TextWrapping="Wrap" TextAlignment="Center" />
                         </Grid>-->
-                    </Grid>
+                    </mui:SpacingUniformGrid>
 
                     <!--skins list-->
-                    <Border Margin="-2 6 -2 0" Visibility="{Binding BookingMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Margin="-2 6 -2 0" Visibility="{Binding BookingMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            DataContext="{Binding Entry}">
                         <ListBox DataContext="{Binding SelectedCarEntry}" ItemsSource="{Binding CarObject.SkinsActualList}"
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="False"
                                 SelectedItem="{Binding AvailableSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
@@ -208,7 +213,8 @@
                         </ListBox>
                     </Border>
 
-                    <Grid Margin="0 20 0 20">
+                    <!--common properties-->
+                    <Grid Margin="0 20 0 20" DataContext="{Binding Entry}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="80" />
                             <ColumnDefinition Width="*" />
@@ -220,7 +226,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <!-- first row -->
+                        <!--first row-->
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Grid.Column="0" Grid.Row="0"
                                 Style="{StaticResource LabelWithPadding}" />
                         <TextBlock Text="{x:Static g:AppStrings.Online_ClientsLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
@@ -232,7 +238,7 @@
                         </DockPanel>
                         <TextBlock Text="{Binding DisplayClients}" Grid.Column="3" Grid.Row="0" />
 
-                        <!-- second row -->
+                        <!--second row-->
                         <TextBlock Text="{x:Static g:AppStrings.Online_TimeLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
                         <TextBlock Text="{x:Static g:AppStrings.Online_LeftLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
@@ -240,9 +246,9 @@
                         <TextBlock Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
                     </Grid>
 
-                    <!-- sessions list -->
+                    <!--sessions list-->
                     <TextBlock Text="{x:Static g:AppStrings.Online_SessionsLabel}" Style="{StaticResource LabelWithPadding}" />
-                    <ItemsControl ItemsSource="{Binding Sessions}" Margin="20 8 0 20">
+                    <ItemsControl ItemsSource="{Binding Entry.Sessions}" Margin="20 8 0 20">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type t:ServerEntry+Session}">
                                 <DockPanel>
@@ -264,7 +270,8 @@
                 </StackPanel>
 
                 <!-- current drivers list -->
-                <DockPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}">
+                <DockPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}"
+                        DataContext="{Binding Entry}">
                     <TextBlock Text="{x:Static g:AppStrings.Online_DriversOnlineLabel}" Style="{StaticResource LabelWithPadding}" DockPanel.Dock="Top" />
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20 8 0 0">
                         <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"

@@ -52,6 +52,8 @@ namespace AcManager.Tools.Filters {
                     return nameof(ServerEntry.CurrentSessionType);
 
                 case "booking":
+                    return nameof(ServerEntry.BookingMode);
+
                 case "practice":
                 case "qualification":
                 case "race":
@@ -134,7 +136,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.Capacity - obj.CurrentDriversCount);
 
                 case "missing":
-                    return value.Test(obj.Track == null || obj.CarsOrTheirIds.Any(x => !x.CarExists));
+                    return value.Test(obj.TrackId != null && obj.Track == null || obj.Cars?.Any(x => !x.CarExists) == true);
 
                 case "ping":
                     return obj.Ping.HasValue && value.Test((double)obj.Ping);
@@ -146,6 +148,9 @@ namespace AcManager.Tools.Filters {
                 case "errors":
                 case "haserrors":
                     return value.Test(obj.HasErrors);
+
+                case "booking":
+                    return value.Test(obj.BookingMode);
 
                 case "active":
                     return value.Test(obj.CurrentSessionType?.ToString());
@@ -160,10 +165,6 @@ namespace AcManager.Tools.Filters {
 
             Game.SessionType sessionType;
             switch (key) {
-                case "booking":
-                    sessionType = Game.SessionType.Booking;
-                    break;
-
                 case "practice":
                     sessionType = Game.SessionType.Practice;
                     break;
@@ -195,7 +196,7 @@ namespace AcManager.Tools.Filters {
                     return false;
             }
 
-            var session = obj.Sessions.FirstOrDefault(x => x.Type == sessionType);
+            var session = obj.Sessions?.FirstOrDefault(x => x.Type == sessionType);
             return value.Test(session?.Duration / 60d ?? 0d);
         }
 

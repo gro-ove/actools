@@ -197,6 +197,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _pingOnlyOnce;
+
+            public bool PingOnlyOnce {
+                get { return _pingOnlyOnce ?? (_pingOnlyOnce = ValuesStorage.GetBool("Settings.OnlineSettings.PingOnlyOnce", true)).Value; }
+                set {
+                    if (Equals(value, _pingOnlyOnce)) return;
+                    _pingOnlyOnce = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingOnlyOnce", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _pingingWithThreads;
 
             public bool ThreadsPing {
@@ -212,7 +224,7 @@ namespace AcManager.Tools.Helpers {
             private int? _pingingConcurrency;
 
             public int PingConcurrency {
-                get { return _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.GetInt("Settings.OnlineSettings.PingConcurrency", 30)).Value; }
+                get { return _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.GetInt("Settings.OnlineSettings.PingConcurrency", 10)).Value; }
                 set {
                     value = value.Clamp(1, 1000);
                     if (Equals(value, _pingingConcurrency)) return;

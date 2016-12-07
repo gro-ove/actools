@@ -79,21 +79,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
-            var complex = false;
-            for (var i = 1; i < bbCode.Length; i += 2) {
-                if (bbCode[i - 1] == '[' || bbCode[i] == '[') {
-                    complex = true;
-                    break;
-                }
-            }
-
-            if (complex) {
+            if (bbCode.IndexOf('[') != -1) {
                 try {
                     return new BbCodeParser(bbCode, element) {
                         Commands = (navigator ?? DefaultLinkNavigator).Commands
                     }.Parse();
                 } catch (Exception e) {
-                    Logging.Warning(e);
+                    Logging.Error(e);
                 }
             }
 
@@ -101,9 +93,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void Update() {
-            if (!IsLoaded || !_dirty) {
-                return;
-            }
+            if (!IsLoaded || !_dirty) return;
 
             var bbCode = BbCode;
             if (string.IsNullOrWhiteSpace(bbCode)) {

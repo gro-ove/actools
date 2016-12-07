@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
@@ -10,12 +14,16 @@ using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
+using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
+
 namespace AcManager.Pages.Drive {
-    public partial class Online_SelectedServerPage : ILoadableContent, IParametrizedUriContent {
+    public partial class OnlineServer : ILoadableContent, IParametrizedUriContent {
         private ServerEntry _entry;
 
         public void OnUri(Uri uri) {
@@ -31,10 +39,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
-            if (_entry.Status == ServerStatus.Unloaded) {
-                _entry.Update(ServerEntry.UpdateMode.Normal).Forget();
-            }
-
+            Load();
             return Task.Delay(0, cancellationToken);
             //return _entryOld.Status == ServerStatus.Unloaded ? _entryOld.Update(ServerEntry.UpdateMode.Normal) :
             //        Task.Delay(0, cancellationToken);
@@ -50,12 +55,12 @@ namespace AcManager.Pages.Drive {
             DataContext = new ViewModel(_entry);
             InitializeComponent();
 
-            if (Model.EntryOld == null) return;
+            if (Model.Entry == null) return;
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.EntryOld.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
-                new InputBinding(Model.EntryOld.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(Model.EntryOld.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(Model.EntryOld.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
+                new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
                     CommandParameter = ServerEntry.ForceJoin
                 }
             });
@@ -68,7 +73,7 @@ namespace AcManager.Pages.Drive {
         private DateTime _sessionEndedUpdate;
 
         private bool RequiresUpdate() {
-            var entry = Model.EntryOld;
+            var entry = Model.Entry;
             if (entry.Status != ServerStatus.Ready) {
                 return false;
             }
@@ -91,9 +96,9 @@ namespace AcManager.Pages.Drive {
         private void OnTick(object sender, EventArgs e) {
             if (Application.Current.MainWindow?.IsActive != true) return;
 
-            Model.EntryOld.OnTick();
+            Model.Entry.OnTick();
             if (RequiresUpdate()) {
-                Model.EntryOld.Update(ServerEntry.UpdateMode.Full, true).Forget();
+                Model.Entry.Update(ServerEntry.UpdateMode.Full, true).Forget();
             }
         }
 
@@ -105,6 +110,8 @@ namespace AcManager.Pages.Drive {
                 IsEnabled = true
             };
             _timer.Tick += OnTick;
+
+            Model.OnLoaded();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -112,6 +119,8 @@ namespace AcManager.Pages.Drive {
 
             _timer?.Stop();
             _timer = null;
+
+            Model.OnUnloaded();
         }
 
         private async void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
@@ -127,17 +136,48 @@ namespace AcManager.Pages.Drive {
             ToolBar.IsActive = false;
         }
 
-        public class ViewModel : NotifyPropertyChanged {
-            public ServerEntry EntryOld { get; }
+        public class ViewModel : NotifyPropertyChanged, IComparer {
+            public ServerEntry Entry { get; }
 
-            public ViewModel(ServerEntry entryOld) {
-                EntryOld = entryOld;
-                FancyBackgroundManager.Instance.ChangeBackground(EntryOld.Track?.PreviewImage);
+            public BetterObservableCollection<CarEntry> Cars { get; }
+
+            public ViewModel(ServerEntry entry) {
+                Entry = entry;
+                Cars = new BetterObservableCollection<CarEntry>(GetCars());
+                FancyBackgroundManager.Instance.ChangeBackground(Entry.Track?.PreviewImage);
+            }
+
+            private IEnumerable<CarEntry> GetCars() {
+                return (IEnumerable<CarEntry>)Entry.Cars?.OrderBy(x => x.CarObject?.DisplayName) ?? new CarEntry[0];
+            }
+
+            private void UpdateCarsView() {
+                Cars.ReplaceIfDifferBy(GetCars());
+            }
+
+            int IComparer.Compare(object x, object y) {
+                return string.Compare((x as CarEntry)?.CarObject?.DisplayName, (y as CarEntry)?.CarObject?.DisplayName, StringComparison.CurrentCulture);
+            }
+
+            public void OnLoaded() {
+                Entry.PropertyChanged += Entry_PropertyChanged;
+            }
+
+            public void OnUnloaded() {
+                Entry.PropertyChanged -= Entry_PropertyChanged;
+            }
+
+            private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(ServerEntry.Cars):
+                        UpdateCarsView();
+                        break;
+                }
             }
         }
 
         private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var entry = Model.EntryOld;
+            var entry = Model.Entry;
             if (entry.IsBooked && entry.BookingTimeLeft > TimeSpan.FromSeconds(3)) {
                 entry.RebookSkin().Forget();
             }

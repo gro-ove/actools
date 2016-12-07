@@ -57,12 +57,12 @@ namespace AcManager.Pages.Drive {
 
         private class SortingCarsNumberCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                var dif = -(x.CarIds?.Length ?? 0).CompareTo(y.CarIds?.Length ?? 0);
+                var dif = -(x.Cars?.Count ?? 0).CompareTo(y.Cars?.Count ?? 0);
                 return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
-                return propertyName == nameof(ServerEntry.CarIds);
+                return propertyName == nameof(ServerEntry.Cars);
             }
         }
 

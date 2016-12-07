@@ -4,6 +4,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
@@ -69,26 +71,30 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public bool OriginsFrom(string[] sources) {
-            for (var j = 0; j < _origins.Count; j++) {
-                for (var i = 0; i < sources.Length; i++) {
-                    if (sources[i] == _origins[j]) return true;
-                }
+            for (var i = 0; i < sources.Length; i++) {
+                if (OriginsFrom(sources[i])) return true;
             }
             return false;
         }
 
+        [ItemCanBeNull]
+        private Task<ServerInformation> GetInformationDirectly() {
+            return KunosApiProvider.TryToGetInformationDirectAsync(Ip, PortHttp);
+        }
+
+        [ItemCanBeNull]
         private Task<ServerInformation> GetInformation(bool nonDirectOnly = false) {
             if (!SettingsHolder.Online.LoadServerInformationDirectly && IsFullyLoaded) {
                 if (OriginsFromKunos) {
+                    if (SteamIdHelper.Instance.Value == null) {
+                        throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
+                    }
+
                     return Task.Run(() => KunosApiProvider.TryToGetInformation(Ip, Port));
                 }
             }
 
-            if (!nonDirectOnly) {
-                return KunosApiProvider.TryToGetInformationDirectAsync(Ip, PortHttp);
-            } else {
-                return null;
-            }
+            return nonDirectOnly ? null : GetInformationDirectly();
         }
 
         #region Kunos-specific

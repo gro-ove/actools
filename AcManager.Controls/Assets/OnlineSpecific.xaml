@@ -41,7 +41,7 @@
     </InlineUIContainer>
 
     <!--car & track previews-->
-    <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarOrOnlyCarIdEntry}">
+    <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
         <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
             <mui:BooleanSwitch.True>
                 <StackPanel>
@@ -55,7 +55,7 @@
                             DockPanel.Dock="Left" Margin="0 0 4 0" />
                     <TextBlock>
                         <Run Text="{x:Static c:ControlsStrings.Online_CarIsMissingLabel}" />
-                        <Run Text="{Binding CarId, Mode=OneWay}" FontWeight="Bold" />
+                        <Run Text="{Binding Id, Mode=OneWay}" FontWeight="Bold" />
                     </TextBlock>
                 </DockPanel>
             </mui:BooleanSwitch.False>
@@ -124,13 +124,13 @@
     </DataTemplate>
 
     <!--car block-->
-    <DataTemplate x:Key="CarItem" DataType="{x:Type t:ServerEntry+CarOrOnlyCarIdEntry}">
+    <DataTemplate x:Key="CarItem" DataType="{x:Type t:ServerEntry+CarEntry}">
         <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center"
                 ToolTip="{StaticResource CarPreviewTooltip}" Style="{StaticResource Small}" Margin="4 0" Height="20" Padding="2"
                 Background="{DynamicResource ButtonBackground}" />
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding CarExists}" Value="False">
-                <Setter TargetName="TextBlock" Property="Text" Value="{Binding CarId}" />
+                <Setter TargetName="TextBlock" Property="Text" Value="{Binding Id}" />
                 <Setter TargetName="TextBlock" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
                 <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </DataTrigger>
@@ -185,7 +185,7 @@
                 <Path.ToolTip>
                     <StackPanel>
                         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
-                        <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="4" />
+                        <mui:BbCodeBlock BbCode="{Binding Errors}" Margin="4" />
                     </StackPanel>
                 </Path.ToolTip>
             </Path>

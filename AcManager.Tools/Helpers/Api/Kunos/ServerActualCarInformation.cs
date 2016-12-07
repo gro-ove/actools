@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using AcTools.Utils.Helpers;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api.Kunos {
-    public class ServerActualCarInformation {
+    public class ServerActualCarInformation : IWithId {
         [JsonProperty(PropertyName = "Model")]
         public string CarId { get; set; }
 
@@ -22,5 +23,8 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [JsonProperty(PropertyName = "IsEntryList")]
         public bool IsEntryList { get; set; }
+
+        [JsonIgnore]
+        string IWithId.Id => CarId;
     }
 }

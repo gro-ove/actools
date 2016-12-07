@@ -81,11 +81,14 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "lastupdate")]
         public long LastUpdate { get; set; }
 
-        [JsonProperty(PropertyName = "l")]
-        public bool L { get; set; }
+        [JsonProperty(PropertyName = "l"), Obsolete]
+        public bool Lan { get; set; }
 
         [JsonIgnore]
         public bool IsLan { get; set; }
+
+        [JsonIgnore]
+        public bool LoadedDirectly { get; set; }
 
         [JsonIgnore]
         public bool IsFullyLoaded => Name != null && CarIds != null && TrackId != null;
@@ -210,7 +213,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                             entry.PickUp = bool.Parse(reader.Value.ToString());
                             return true;
                         case "l":
-                            entry.L = bool.Parse(reader.Value.ToString());
+                            entry.Lan = bool.Parse(reader.Value.ToString());
                             return true;
                     }
                     break;

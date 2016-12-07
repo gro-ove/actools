@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -10,11 +11,78 @@ using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
+        /// <summary>
+        /// Combined from IP and HTTP port.
+        /// </summary>
+        public string Id { get; }
+
+        /// <summary>
+        /// IP-address, non-changeable.
+        /// </summary>
+        public string Ip { get; }
+
+        private bool _isFullyLoaded;
+
+        /// <summary>
+        /// In most cases “True”, apart from when ServerEntry was created from a file so only IP and
+        /// HTTP port are known.
+        /// </summary>
+        public bool IsFullyLoaded {
+            get { return _isFullyLoaded; }
+            private set {
+                if (Equals(value, _isFullyLoaded)) return;
+                _isFullyLoaded = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _portHttp;
+
+        /// <summary>
+        /// For json-requests directly to launcher server, non-changeable.
+        /// </summary>
+        public int PortHttp {
+            get { return _portHttp; }
+            private set {
+                if (Equals(value, _portHttp)) return;
+                _portHttp = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _port;
+
+        /// <summary>
+        /// As a query argument for //aclobby1.grecian.net/lobby.ashx/….
+        /// </summary>
+        public int Port {
+            get { return _port; }
+            private set {
+                if (Equals(value, _port)) return;
+                _port = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _portRace;
+
+        /// <summary>
+        /// For race.ini & acs.exe.
+        /// </summary>
+        public int PortRace {
+            get { return _portRace; }
+            private set {
+                if (Equals(value, _portRace)) return;
+                _portRace = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _passwordRequired;
 
@@ -231,18 +299,6 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private string[] _carIds;
-
-        [CanBeNull]
-        public string[] CarIds {
-            get { return _carIds; }
-            set {
-                if (Equals(value, _carIds)) return;
-                _carIds = value;
-                OnPropertyChanged();
-            }
-        }
-
         [CanBeNull]
         private TrackObjectBase _track;
 
@@ -256,41 +312,33 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private List<CarOrOnlyCarIdEntry> _carsOrTheirIds;
+        [CanBeNull]
+        private List<CarEntry> _cars;
 
         [CanBeNull]
-        public List<CarOrOnlyCarIdEntry> CarsOrTheirIds {
-            get { return _carsOrTheirIds; }
-            set {
-                if (Equals(value, _carsOrTheirIds)) return;
-                _carsOrTheirIds = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [CanBeNull]
-        private BetterObservableCollection<CarEntry> _cars;
-
-        [CanBeNull]
-        public BetterObservableCollection<CarEntry> Cars {
+        public IReadOnlyList<CarEntry> Cars {
             get { return _cars; }
-            set {
+            private set {
                 if (Equals(value, _cars)) return;
-                _cars = value;
+                _cars = value?.ToListIfItsNot();
                 OnPropertyChanged();
             }
         }
 
-        [CanBeNull]
-        private ListCollectionView _carsView;
+        [NotNull]
+        public BetterObservableCollection<CurrentDriver> CurrentDrivers { get; } = new BetterObservableCollection<CurrentDriver>();
+
+        private List<Session> _sessions;
 
         [CanBeNull]
-        public ListCollectionView CarsView {
-            get { return _carsView; }
+        public List<Session> Sessions {
+            get { return _sessions; }
             set {
-                if (Equals(value, _carsView)) return;
-                _carsView = value;
+                if (Equals(value, _sessions)) return;
+                _sessions = value;
                 OnPropertyChanged();
+                CurrentSessionType = Sessions?.FirstOrDefault(x => x.IsActive)?.Type;
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -300,8 +348,7 @@ namespace AcManager.Tools.Managers.Online {
         public ServerStatus Status {
             get { return _status; }
             set {
-                if (Equals(value, _status))
-                    return;
+                if (Equals(value, _status)) return;
                 _status = value;
                 OnPropertyChanged();
 
@@ -309,56 +356,55 @@ namespace AcManager.Tools.Managers.Online {
                 _addToRecentCommand?.RaiseCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {
-                    HasErrors = value == ServerStatus.Error;
+                    HasErrors = value == ServerStatus.Error || value == ServerStatus.Unloaded;
                 }
             }
         }
 
-        private string _errorMessage;
+        private IReadOnlyList<string> _errors;
 
+        /// <summary>
+        /// Cannot be empty, will be null if there is no errors.
+        /// </summary>
         [CanBeNull]
-        public string ErrorMessage {
-            get { return _errorMessage; }
+        public IReadOnlyList<string> Errors {
+            get { return _errors; }
             set {
-                if (Equals(value, _errorMessage))
-                    return;
-                _errorMessage = value;
+                if (value != null && value.Count == 0) value = null;
+                if (Equals(value, _errors)) return;
+                _errors = value;
+                _errorsString = null;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ErrorsString));
             }
         }
 
-        private bool _hasErrors;
+        private string _errorsString;
 
+        /// <summary>
+        /// Errors, already joined to one string, for optimization purposes.
+        /// </summary>
+        [CanBeNull]
+        public string ErrorsString => _errors == null ? null : (_errorsString ?? (_errorsString = _errors.JoinToString('\n')));
+
+        private bool _hasErrors;
+        
         public bool HasErrors {
             get { return _hasErrors; }
-            set {
-                if (Equals(value, _hasErrors))
-                    return;
+            private set {
+                if (Equals(value, _hasErrors)) return;
                 _hasErrors = value;
                 OnPropertyChanged();
             }
         }
 
-        private double _updateProgress;
+        private AsyncProgressEntry _updateProgress;
 
-        public double UpdateProgress {
+        public AsyncProgressEntry UpdateProgress {
             get { return _updateProgress; }
             set {
-                if (Equals(value, _updateProgress))
-                    return;
+                if (Equals(value, _updateProgress)) return;
                 _updateProgress = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _updateProgressMessage;
-
-        public string UpdateProgressMessage {
-            get { return _updateProgressMessage; }
-            set {
-                if (Equals(value, _updateProgressMessage))
-                    return;
-                _updateProgressMessage = value;
                 OnPropertyChanged();
             }
         }

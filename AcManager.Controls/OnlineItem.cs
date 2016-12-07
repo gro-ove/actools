@@ -301,7 +301,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private void UpdateCar(TextBlockBindable child, ServerEntry.CarOrOnlyCarIdEntry car) {
+        private void UpdateCar(TextBlockBindable child, ServerEntry.CarEntry car) {
             if (ReferenceEquals(child.DataContext, car)) return;
             InitializeBrushes();
 
@@ -319,7 +319,7 @@ namespace AcManager.Controls {
                 child.Inlines.Clear();
                 child.Inlines.AddRange(new [] {
                     GetErrorIconInline(),
-                    new Run { Text = car.CarId }
+                    new Run { Text = car.Id }
                 }.NonNull());
             }
         }
@@ -327,7 +327,7 @@ namespace AcManager.Controls {
         private static Style _smallStyle;
 
         private void UpdateCars(ServerEntry n) {
-            var array = n.CarsOrTheirIds;
+            var array = n.Cars;
 
             var children = _carsPanel.Children;
             var carsCount = Math.Min(array?.Count ?? 0, OptionCarsLimit);
@@ -414,7 +414,7 @@ namespace AcManager.Controls {
             _countryName.Text = n.Country;
             _pingText.Text = n.Ping?.ToString() ?? @"?";
             _clientsText.Text = n.DisplayClients;
-            _errorMessageGroup.BbCode = n.ErrorMessage;
+            _errorMessageGroup.BbCode = n.ErrorsString;
             
             if (_timeLeftText != null) {
                 _timeLeftText.Text = n.DisplayTimeLeft;
@@ -596,8 +596,8 @@ namespace AcManager.Controls {
                 case nameof(ServerEntry.DisplayClients):
                     _clientsText.Text = n.DisplayClients;
                     break;
-                case nameof(ServerEntry.ErrorMessage):
-                    _errorMessageGroup.BbCode = n.ErrorMessage;
+                case nameof(ServerEntry.ErrorsString):
+                    _errorMessageGroup.BbCode = n.ErrorsString;
                     break;
                 case nameof(ServerEntry.DisplayTimeLeft):
                     if (_timeLeftText != null) {
@@ -611,7 +611,7 @@ namespace AcManager.Controls {
                 case nameof(ServerEntry.Sessions):
                     UpdateSessions(n);
                     break;
-                case nameof(ServerEntry.CarsOrTheirIds):
+                case nameof(ServerEntry.Cars):
                     UpdateCars(n);
                     break;
                 case nameof(ServerEntry.IsFullyLoaded):
