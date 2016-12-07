@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools", "AcTools\AcTools.csproj", "{55B65FB4-92CB-42EF-B4BF-F287810986E1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager", "AcManager\AcManager.csproj", "{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools", "AcTools\AcTools.csproj", "{55B65FB4-92CB-42EF-B4BF-F287810986E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.Controls", "AcManager.Controls\AcManager.Controls.csproj", "{B1D477C5-F639-4043-B8A6-82EA950F9890}"
 EndProject
@@ -50,14 +50,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x64.ActiveCfg = Debug|x64
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x64.Build.0 = Debug|x64
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x86.ActiveCfg = Debug|x86
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x86.Build.0 = Debug|x86
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x64.ActiveCfg = Release|x64
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x64.Build.0 = Release|x64
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x86.ActiveCfg = Release|x86
-		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x86.Build.0 = Release|x86
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Debug|x64.ActiveCfg = Debug|x64
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Debug|x64.Build.0 = Debug|x64
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Debug|x86.ActiveCfg = Debug|x86
@@ -66,6 +58,14 @@ Global
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Release|x64.Build.0 = Release|x64
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Release|x86.ActiveCfg = Release|x86
 		{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}.Release|x86.Build.0 = Release|x86
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x64.ActiveCfg = Debug|x64
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x64.Build.0 = Debug|x64
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x86.ActiveCfg = Debug|x86
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Debug|x86.Build.0 = Debug|x86
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x64.ActiveCfg = Release|x64
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x64.Build.0 = Release|x64
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x86.ActiveCfg = Release|x86
+		{55B65FB4-92CB-42EF-B4BF-F287810986E1}.Release|x86.Build.0 = Release|x86
 		{B1D477C5-F639-4043-B8A6-82EA950F9890}.Debug|x64.ActiveCfg = Debug|x64
 		{B1D477C5-F639-4043-B8A6-82EA950F9890}.Debug|x64.Build.0 = Debug|x64
 		{B1D477C5-F639-4043-B8A6-82EA950F9890}.Debug|x86.ActiveCfg = Debug|x86
