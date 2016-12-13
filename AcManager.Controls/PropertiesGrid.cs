@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace AcManager.Controls {
@@ -10,7 +9,7 @@ namespace AcManager.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertiesGrid), new FrameworkPropertyMetadata(typeof(PropertiesGrid)));
         }
 
-        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(UniformGrid),
+        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(PropertiesGrid),
                 new FrameworkPropertyMetadata(2, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int Columns {

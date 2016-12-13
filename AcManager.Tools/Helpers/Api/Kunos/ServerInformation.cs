@@ -32,6 +32,44 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "cport")]
         public int PortHttp { get; set; }
 
+        [CanBeNull, JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Creates new partially entry (will require more data loading later).
+        /// </summary>
+        /// <param name="address">Should be in format [IP]:[HTTP port].</param>
+        /// <returns></returns>
+        [CanBeNull]
+        public static ServerInformation FromAddress(string address) {
+            string ip;
+            int port;
+            return KunosApiProvider.ParseAddress(address, out ip, out port) && port > 0 ? new ServerInformation {
+                Ip = ip,
+                PortHttp = port
+            } : null;
+        }
+
+        /// <summary>
+        /// Creates new partially entry (will require more data loading later).
+        /// </summary>
+        /// <param name="description">Should be in format [IP]:[HTTP port];[Name].</param>
+        /// <returns></returns>
+        [CanBeNull]
+        public static ServerInformation FromDescription(string description) {
+            var splitted = description.Split(new[] { ';' }, 2);
+            var result = FromAddress(splitted[0]);
+
+            if (result != null && !string.IsNullOrWhiteSpace(splitted.ElementAtOrDefault(1))) {
+                result.Name = splitted[1].Trim();
+            }
+
+            return result;
+        }
+    }
+
+    [Localizable(false)]
+    public class ServerInformationComplete : ServerInformation {
         /// <summary>
         /// As a query argument for //aclobby1.grecian.net/lobby.ashx/….
         /// </summary>
@@ -43,9 +81,6 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         /// </summary>
         [JsonProperty(PropertyName = "tport")]
         public int PortRace { get; set; }
-
-        [CanBeNull, JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
 
         [JsonProperty(PropertyName = "clients")]
         public int Clients { get; set; }
@@ -98,46 +133,11 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonIgnore]
         public bool LoadedDirectly { get; set; }
 
-        [JsonIgnore]
-        public bool IsFullyLoaded => Name != null && CarIds != null && TrackId != null;
-
-        /// <summary>
-        /// Creates new partially entry (will require more data loading later).
-        /// </summary>
-        /// <param name="address">Should be in format [IP]:[HTTP port].</param>
-        /// <returns></returns>
-        [CanBeNull]
-        public static ServerInformation FromAddress(string address) {
-            string ip;
-            int port;
-            return KunosApiProvider.ParseAddress(address, out ip, out port) && port > 0 ? new ServerInformation {
-                Ip = ip,
-                PortHttp = port
-            } : null;
-        }
-
-        /// <summary>
-        /// Creates new partially entry (will require more data loading later).
-        /// </summary>
-        /// <param name="description">Should be in format [IP]:[HTTP port];[Name].</param>
-        /// <returns></returns>
-        [CanBeNull]
-        public static ServerInformation FromDescription(string description) {
-            var splitted = description.Split(new[] {  ';' }, 2);
-            var result = FromAddress(splitted[0]);
-
-            if (result != null && !string.IsNullOrWhiteSpace(splitted.ElementAtOrDefault(1))) {
-                result.Name = splitted[1].Trim();
-            }
-
-            return result;
-        }
-
         private const int AverageDataSize = 819200;
         private const int AverageServersCount = 1200;
         private static bool _failed;
 
-        public static ServerInformation[] Deserialize(Stream stream) {
+        public static ServerInformationComplete[] Deserialize(Stream stream) {
             // if parsing failed before, let’s do it the other way
             if (_failed) {
                 return DeserializeSafe(stream);
@@ -158,7 +158,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
             }
         }
 
-        private static ServerInformation[] DeserializeSafe(Stream stream) {
+        private static ServerInformationComplete[] DeserializeSafe(Stream stream) {
             // this is usually a pretty huge list
             using (var memory = new MemoryStream(AverageDataSize)) {
                 stream.CopyTo(memory);
@@ -169,12 +169,12 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                 } catch (Exception e) {
                     Logging.Warning(e);
                     memory.Seek(0, SeekOrigin.Begin);
-                    return JsonConvert.DeserializeObject<ServerInformation[]>(memory.ReadAsString());
+                    return JsonConvert.DeserializeObject<ServerInformationComplete[]>(memory.ReadAsString());
                 }
             }
         }
 
-        protected static bool SetToken(JsonTextReader reader, ref string currentProperty, ServerInformation entry) {
+        protected static bool SetToken(JsonTextReader reader, ref string currentProperty, ServerInformationComplete entry) {
             switch (reader.TokenType) {
                 case JsonToken.PropertyName:
                     currentProperty = reader.Value.ToString();
@@ -274,15 +274,15 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
             return false;
         }
 
-        private static ServerInformation[] DeserializeFast(Stream stream) {
+        private static ServerInformationComplete[] DeserializeFast(Stream stream) {
             var reader = new JsonTextReader(new StreamReader(stream));
 
-            var response = new List<ServerInformation>(AverageServersCount);
+            var response = new List<ServerInformationComplete>(AverageServersCount);
             var currentProperty = string.Empty;
 
             reader.MatchNext(JsonToken.StartArray);
             while (reader.IsMatchNext(JsonToken.StartObject)) {
-                var entry = new ServerInformation();
+                var entry = new ServerInformationComplete();
                 while (reader.Until(JsonToken.EndObject)) {
                     SetToken(reader, ref currentProperty, entry);
                 }

@@ -482,19 +482,23 @@ namespace AcManager.Pages.Drive {
                 if (ListFilter.IsAffectedBy(e.PropertyName)) {
                     var server = (ServerEntry)sender;
                     var willBeVisible = ListFilter.Test(server);
-                    var wasVisible = MainList.Contains(sender);
 
-                    if (willBeVisible && ReferenceEquals(_testMeLater, sender)) {
-                        _testMeLater = null;
-                    } else if (willBeVisible != wasVisible) {
-                        if (wasVisible && ReferenceEquals(sender, MainList.CurrentItem)) {
-                            _testMeLater = sender;
-                        } else {
-                            _testMeLater = null;
-                            MainList.Refresh(sender);
-                        }
+                    Logging.Debug($"{e.PropertyName} ({server.DisplayName}): {willBeVisible}, {ReferenceEquals(_current, server)}");
+
+                    if (ReferenceEquals(_current, server)) {
+                        _testMeLater = willBeVisible ? null : server;
                         return;
                     }
+
+                    var wasVisible = MainList.Contains(sender);
+                    if (willBeVisible != wasVisible) {
+                        MainList.Refresh(sender);
+                        return;
+                    }
+                }
+
+                if (e.PropertyName == nameof(ServerEntry.IsFavorited) || e.PropertyName == nameof(ServerEntry.OriginsString)) {
+                    return;
                 }
 
                 if (Sorting.IsAffectedBy(e.PropertyName)) {
@@ -503,6 +507,8 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool FilterTest(object obj) {
+                if (ReferenceEquals(_testMeLater, obj)) return true;
+
                 var s = obj as ServerEntry;
                 return s != null && ListFilter.Test(s);
             }
@@ -577,19 +583,24 @@ namespace AcManager.Pages.Drive {
                 CurrentChanged(true);
             }
 
+            private ServerEntry _current;
+
             private void CurrentChanged(bool save) {
                 var item = (ServerEntry)MainList.CurrentItem;
-                var currentId = item?.Id;
-                if (currentId == null) return;
+                if (item == null) return;
 
-                _showDetails.Invoke(item);
                 if (save) {
-                    LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, currentId);
+                    LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, item.Id);
                 }
 
+                if (ReferenceEquals(_current, item)) return;
+                _current = item;
+                _showDetails.Invoke(item);
+
                 if (_testMeLater != null) {
-                    MainList.Refresh(_testMeLater);
+                    var testMeLater = _testMeLater;
                     _testMeLater = null;
+                    MainList.Refresh(testMeLater);
                 }
             }
 
@@ -666,8 +677,6 @@ namespace AcManager.Pages.Drive {
         public void OnFragmentNavigation(FragmentNavigationEventArgs e) {}
 
         public void OnNavigatedFrom(NavigationEventArgs e) {
-            Logging.Here();
-
             Model.Unload();
 
             _taskbarProgress?.Dispose();
@@ -675,8 +684,6 @@ namespace AcManager.Pages.Drive {
         }
 
         public void OnNavigatedTo(NavigationEventArgs e) {
-            Logging.Here();
-
             Model.Load();
 
             _taskbarProgress = new TaskbarProgress();

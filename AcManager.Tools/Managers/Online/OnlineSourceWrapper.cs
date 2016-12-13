@@ -284,6 +284,7 @@ namespace AcManager.Tools.Managers.Online {
             if (existing == null) {
                 var entry = new ServerEntry(information);
                 entry.SetOrigin(Key);
+                entry.SetOrigins(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
                 _list.Add(entry);
             } else {
                 existing.SetOrigin(Key);
@@ -296,13 +297,12 @@ namespace AcManager.Tools.Managers.Online {
                 _first = false;
 
                 var newEntries = new List<ServerEntry>((informations as IReadOnlyList<ServerInformation>)?.Count ?? 300);
-                Logging.Debug(newEntries.Capacity);
-
                 foreach (var information in informations) {
                     var existing = _list.GetByIdOrDefault(information.Id);
                     if (existing == null) {
                         var entry = new ServerEntry(information);
                         entry.SetOrigin(Key);
+                        entry.SetOrigins(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
                         newEntries.Add(entry);
                     } else {
                         existing.SetOrigin(Key);

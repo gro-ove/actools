@@ -35,8 +35,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public void UpdateValues([NotNull] ServerInformation information) {
-            if (!information.IsFullyLoaded && IsFullyLoaded) return;
-
             var errors = new List<string>(3);
             var status = UpdateValues(information, errors);
             if (status.HasValue) {
@@ -48,27 +46,35 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Sets properties based on loaded information.
         /// </summary>
-        /// <param name="information">Loaded information.</param>
+        /// <param name="baseInformation">Loaded information.</param>
         /// <param name="errors">Errors will be put here.</param>
         /// <returns>Null if everything is OK, ServerStatus.Error/ServerStatus.Unloaded message otherwise.</returns>
-        private ServerStatus? UpdateValues([NotNull] ServerInformation information, [NotNull] ICollection<string> errors) {
-            if (Ip != information.Ip) {
-                errors.Add($"IP changed (from {Ip} to {information.Ip})");
+        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, [NotNull] ICollection<string> errors) {
+            if (Ip != baseInformation.Ip) {
+                errors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
                 return ServerStatus.Error;
             }
 
-            if (PortHttp != information.PortHttp) {
-                errors.Add($"HTTP port changed (from {PortHttp} to {information.PortHttp})");
+            if (PortHttp != baseInformation.PortHttp) {
+                errors.Add($"HTTP port changed (from {PortHttp} to {baseInformation.PortHttp})");
                 return ServerStatus.Error;
             }
 
-            IsFullyLoaded = information.IsFullyLoaded;
 
+            var information = baseInformation as ServerInformationComplete;
+
+            if (!IsFullyLoaded || information != null) {
+                DisplayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName);
+            }
+
+            if (information == null) {
+                return null;
+            }
+
+            IsFullyLoaded = true;
             Port = information.Port;
             PortRace = information.PortRace;
-
             PreviousUpdateTime = DateTime.Now;
-            DisplayName = information.Name == null ? Id : CleanUp(information.Name, DisplayName);
 
             {
                 var country = information.Country?.FirstOrDefault() ?? "";
@@ -230,8 +236,8 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (mode == UpdateMode.Full) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.2);
-                    
-                    ServerInformation loaded;
+
+                    ServerInformationComplete loaded;
                     try {
                         loaded = await GetInformation(informationUpdated);
                     } catch (WebException e) {

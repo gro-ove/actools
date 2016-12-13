@@ -60,6 +60,12 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        public void SetOrigins(IEnumerable<string> keys) {
+            foreach (var key in keys) {
+                SetOrigin(key);
+            }
+        }
+
         /// <summary>
         /// Remove origin from origins list.
         /// </summary>
@@ -111,7 +117,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <returns></returns>
         [ItemNotNull]
-        private Task<ServerInformation> GetInformationDirectly() {
+        private Task<ServerInformationComplete> GetInformationDirectly() {
             return KunosApiProvider.GetInformationDirectAsync(Ip, PortHttp);
         }
 
@@ -120,7 +126,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <returns></returns>
         [ItemCanBeNull]
-        private Task<ServerInformation> GetInformation(bool nonDirectOnly = false) {
+        private Task<ServerInformationComplete> GetInformation(bool nonDirectOnly = false) {
             if (!SettingsHolder.Online.LoadServerInformationDirectly && IsFullyLoaded) {
                 if (OriginsFromKunos) {
                     if (SteamIdHelper.Instance.Value == null) {

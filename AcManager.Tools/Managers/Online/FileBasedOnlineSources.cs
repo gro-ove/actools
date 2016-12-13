@@ -132,6 +132,11 @@ namespace AcManager.Tools.Managers.Online {
             return incudeAll ? _sources.Keys : _sources.Where(x => x.Value.Information?.Excluded != true).Select(x => x.Key);
         }
 
+        public IEnumerable<string> GetSourceKeys(ServerEntry entry) {
+            return _sources.Where(x => x.Value.Contains(entry)).Select(x => x.Key);
+
+        }
+
         public IEnumerable<IOnlineSource> GetSources() {
             return _sources.Values;
         }
@@ -217,23 +222,73 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private sealed class Source : IOnlineListSource {
+            private const int AverageSymbolsPerServer = 20;
+            private const int MaximumDefaultCapacity = 100000;
+
             internal readonly string Filename;
+
+            private List<ServerInformation> _entries;
 
             public Source(string filename, string local) {
                 Id = local;
                 Filename = filename;
                 DisplayName = Path.GetFileNameWithoutExtension(filename) ?? @"?";
                 Information = new OnlineSourceInformation();
-                UpdateMetaInformation();
+                Reload();
             }
 
-            private void UpdateMetaInformation() {
-                if (File.Exists(Filename)) {
+            internal bool Contains(ServerEntry entry) {
+                return _entries.GetByIdOrDefault(entry.Id) != null;
+            }
+
+            private void Reload() {
+                var fileInfo = new FileInfo(Filename);
+                if (fileInfo.Exists) {
                     using (var sr = new StreamReader(Filename, Encoding.UTF8)) {
                         AssignMetaInformation(sr);
                     }
+
+                    var list = OnlineManager.Instance.List;
+
+                    var actual = new List<ServerInformation>(Math.Min((int)(fileInfo.Length / AverageSymbolsPerServer), MaximumDefaultCapacity));
+                    using (var sr = new StreamReader(Filename, Encoding.UTF8)) {
+                        AssignMetaInformation(sr);
+
+                        string line;
+                        while ((line = sr.ReadLine()) != null) {
+                            var entry = ParseLine(line);
+                            if (entry != null && !actual.Contains(entry, Comparer.ComparerInstance)) {
+                                actual.Add(entry);
+                            }
+                        }
+                    }
+
+                    actual.Capacity = actual.Count;
+
+                    if (_entries == null) {
+                        foreach (var entry in actual) {
+                            list.GetByIdOrDefault(entry.Id)?.SetOrigin(Id);
+                        }
+                    } else {
+                        foreach (var removed in _entries.Where(x => !actual.Contains(x, Comparer.ComparerInstance))) {
+                            list.GetByIdOrDefault(removed.Id)?.RemoveOrigin(Id);
+                        }
+
+                        foreach (var added in actual.Where(x => !_entries.Contains(x, Comparer.ComparerInstance))) {
+                            list.GetByIdOrDefault(added.Id)?.SetOrigin(Id);
+                        }
+                    }
+
+                    _entries = actual;
                 } else {
                     AssignMetaInformation(null);
+                    if (_entries != null) {
+                        var list = OnlineManager.Instance.List;
+                        foreach (var entry in _entries) {
+                            list.GetByIdOrDefault(entry.Id)?.RemoveOrigin(Id);
+                        }
+                        _entries = null;
+                    }
                 }
             }
 
@@ -290,39 +345,9 @@ namespace AcManager.Tools.Managers.Online {
                 Information.Assign(sr == null ? null : ReadMetaInformation(sr));
             }
 
-            private bool _justUpdated;
-
-            public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                _justUpdated = true;
-
-                var fileInfo = new FileInfo(Filename);
-                if (!fileInfo.Exists) {
-                    _lastDateTime = default(DateTime);
-                    AssignMetaInformation(null);
-
-                    // should throw an exception?
-                    return true;
-                }
-
-                _lastDateTime = fileInfo.LastWriteTimeUtc;
-
-                var result = new List<ServerInformation>(Math.Min((int)(fileInfo.Length / 20), 100000));
-                using (var sr = new StreamReader(Filename, Encoding.UTF8)) {
-                    AssignMetaInformation(sr);
-
-                    string line;
-                    while ((line = await sr.ReadLineAsync()) != null) {
-                        if (cancellation.IsCancellationRequested) return false;
-
-                        var entry = ParseLine(line);
-                        if (entry != null && !result.Contains(entry, Comparer.ComparerInstance)) {
-                            result.Add(entry);
-                        }
-                    }
-                }
-
-                callback(result);
-                return true;
+            public Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                callback(_entries);
+                return Task.FromResult(true);
             }
 
             /// <summary>
@@ -333,21 +358,16 @@ namespace AcManager.Tools.Managers.Online {
                 var fileInfo = new FileInfo(Filename);
                 DateTime? value = fileInfo.Exists ? fileInfo.LastWriteTime : default(DateTime);
 
-                if (value == _lastDateTime) {
-                    return false;
+                if (value != _lastDateTime) {
+                    _lastDateTime = value;
+
+                    var hidden = Information?.Hidden == true;
+                    Reload();
+                    Obsolete?.Invoke(this, EventArgs.Empty);
+                    return hidden != (Information?.Hidden == true);
                 }
 
-                _justUpdated = false;
-                var hidden = Information?.Hidden == true;
-
-                Obsolete?.Invoke(this, EventArgs.Empty);
-
-                if (!_justUpdated) {
-                    UpdateMetaInformation();
-                }
-
-                _lastDateTime = value;
-                return hidden != (Information?.Hidden == true);
+                return false;
             }
 
             public void Add(ServerEntry entry) {

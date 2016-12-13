@@ -263,7 +263,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout, ServerInformation.Deserialize);
+                    var parsed = LoadListUsingRequest(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
                     Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (Exception e) {
@@ -308,7 +308,7 @@ namespace AcManager.Tools.Helpers.Api {
             return true;
         }
 
-        private static ServerInformation PrepareLoadedDirectly(ServerInformation result, string ip) {
+        private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
             if (result.Ip == string.Empty) {
                 result.Ip = ip;
             }
@@ -328,13 +328,13 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemNotNull]
-        public static async Task<ServerInformation> GetInformationAsync(string ip, int port) {
+        public static async Task<ServerInformationComplete> GetInformationAsync(string ip, int port) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
             while (ServerUri != null) {
                 var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
                 try {
-                    var result = JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionWebRequestTimeout));
+                    var result = JsonConvert.DeserializeObject<ServerInformationComplete>(await LoadAsync(requestUri, OptionWebRequestTimeout));
                     if (result.Ip == string.Empty) {
                         result.Ip = ip;
                     }
@@ -351,9 +351,9 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemNotNull]
-        public static async Task<ServerInformation> GetInformationDirectAsync(string ip, int portC) {
+        public static async Task<ServerInformationComplete> GetInformationDirectAsync(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
-            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
+            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
         }
 
         [ItemNotNull]
@@ -364,11 +364,11 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformation TryToGetInformationDirect(string ip, int portC) {
+        public static ServerInformationComplete TryToGetInformationDirect(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
-                return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionDirectRequestTimeout)), ip);
+                return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(Load(requestUri, OptionDirectRequestTimeout)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;

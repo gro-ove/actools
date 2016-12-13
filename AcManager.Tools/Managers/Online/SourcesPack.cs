@@ -109,20 +109,9 @@ namespace AcManager.Tools.Managers.Online {
             Error = error;
         }
 
-        private static readonly string[] ForceSources = {
-            FileBasedOnlineSources.FavoritesKey,
-            FileBasedOnlineSources.RecentKey
-        };
-
         public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
-            if (LoadingComplete || Status == OnlineManagerStatus.Error) {
-                return Task.Delay(0, cancellation);
-            }
-
-            return _sources.Select(x => x.EnsureLoadedAsync(cancellation))
-                           .Concat(ForceSources.Select(x => _sources.GetByIdOrDefault(x) != null
-                                   ? null : OnlineManager.Instance.GetWrappedSource(x)?.EnsureLoadedAsync(cancellation)).NonNull())
-                           .WhenAll(OptionConcurrency, cancellation);
+            return LoadingComplete || Status == OnlineManagerStatus.Error ? Task.Delay(0, cancellation) :
+                    _sources.Select(x => x.EnsureLoadedAsync(cancellation)).WhenAll(OptionConcurrency, cancellation);
         }
 
         private void SourceWrapper_PropertyChanged(object sender, PropertyChangedEventArgs e) {

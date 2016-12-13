@@ -14,6 +14,7 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Combined from IP and HTTP port.
         /// </summary>
+        [NotNull]
         public string Id { get; }
 
         /// <summary>

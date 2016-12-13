@@ -33,6 +33,8 @@ using System.Windows.Media.Imaging;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     internal partial class BbCodeParser {
+        public static int OptionReadCachedAsyncThreshold = 20000;
+
         private class Image : System.Windows.Controls.Image {
             private readonly FileCache _cache;
 
@@ -124,10 +126,15 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 var localFile = Path.Combine(_appCacheDirectory, fileName);
                 var memoryStream = new MemoryStream();
 
+                var info = new FileInfo(localFile);
                 FileStream fileStream = null;
-                if (!_isWritingFile.ContainsKey(fileName) && File.Exists(localFile)) {
+                if (!_isWritingFile.ContainsKey(fileName) && info.Exists) {
                     using (fileStream = new FileStream(localFile, FileMode.Open, FileAccess.Read)) {
-                        await fileStream.CopyToAsync(memoryStream);
+                        if (info.Length < OptionReadCachedAsyncThreshold) {
+                            fileStream.CopyTo(memoryStream);
+                        } else {
+                            await fileStream.CopyToAsync(memoryStream);
+                        }
                     }
                     memoryStream.Seek(0, SeekOrigin.Begin);
                     return memoryStream;

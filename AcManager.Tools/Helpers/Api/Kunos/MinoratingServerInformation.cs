@@ -7,7 +7,7 @@ using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api.Kunos {
-    public class MinoratingServerInformation : ServerInformation {
+    public class MinoratingServerInformation : ServerInformationComplete {
         [JsonProperty(PropertyName = "activity")]
         public int Activity { get; set; }
 
