@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -136,7 +130,7 @@ namespace AcManager.Tools.Managers.Online {
         public string Country {
             get { return _country; }
             set {
-                if (value == @"na") value = ToolsStrings.Common_NA;
+                if (value == @"na" || string.IsNullOrWhiteSpace(value)) value = ToolsStrings.Common_NA;
                 if (Equals(value, _country)) return;
                 _country = value;
                 OnPropertyChanged();
@@ -185,17 +179,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public bool IsEmpty => CurrentDriversCount == 0;
-
-        private ServerActualInformation _actualInformation;
-
-        public ServerActualInformation ActualInformation {
-            get { return _actualInformation; }
-            set {
-                if (Equals(value, _actualInformation)) return;
-                _actualInformation = value;
-                OnPropertyChanged();
-            }
-        }
 
         private string _time;
 
@@ -325,15 +308,46 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        [NotNull]
-        public BetterObservableCollection<CurrentDriver> CurrentDrivers { get; } = new BetterObservableCollection<CurrentDriver>();
+        private int _connectedDrivers;
 
-        private List<Session> _sessions;
+        public int ConnectedDrivers {
+            get { return _connectedDrivers; }
+            set {
+                if (Equals(value, _connectedDrivers)) return;
+                _connectedDrivers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isBookedForPlayer;
+
+        public bool IsBookedForPlayer {
+            get { return _isBookedForPlayer; }
+            set {
+                if (Equals(value, _isBookedForPlayer)) return;
+                _isBookedForPlayer = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private IReadOnlyList<CurrentDriver> _currentDrivers;
 
         [CanBeNull]
-        public List<Session> Sessions {
+        public IReadOnlyList<CurrentDriver> CurrentDrivers {
+            get { return _currentDrivers; }
+            private set {
+                if (Equals(value, _currentDrivers)) return;
+                _currentDrivers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private IReadOnlyList<Session> _sessions;
+
+        [CanBeNull]
+        public IReadOnlyList<Session> Sessions {
             get { return _sessions; }
-            set {
+            private set {
                 if (Equals(value, _sessions)) return;
                 _sessions = value;
                 OnPropertyChanged();
@@ -378,14 +392,13 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged(nameof(ErrorsString));
             }
         }
-
-        private string _errorsString;
-
+        
         /// <summary>
         /// Errors, already joined to one string, for optimization purposes.
         /// </summary>
         [CanBeNull]
         public string ErrorsString => _errors == null ? null : (_errorsString ?? (_errorsString = _errors.JoinToString('\n')));
+        private string _errorsString;
 
         private bool _hasErrors;
         

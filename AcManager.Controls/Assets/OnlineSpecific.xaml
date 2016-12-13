@@ -11,32 +11,65 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Thickness x:Key="InlineIconMargin">-2 4 6 -4</Thickness>
+
     <!--icons-->
+    <Border x:Key="BaseIcon" Padding="4 3 4 0" Background="{DynamicResource ButtonBackground}" x:Shared="False">
+        <mui:BbCodeBlock Height="15" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
+    </Border>
+    
+    <Border x:Key="MinoratingIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Minorating server" x:Shared="False">
+        <Path Data="{StaticResource MinoratingIconData}" Fill="#FF0000" Width="21" Height="10" Stretch="Uniform" />
+    </Border>
+
+    <Border x:Key="LanIcon" Padding="4 3 4 0" Background="{DynamicResource ButtonBackground}" ToolTip="Server from LAN" x:Shared="False">
+        <TextBlock Foreground="#00FFFF" Height="15" Text="LAN" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
+    </Border>
+
+    <Border x:Key="KunosIcon" Padding="4 3 4 0" Background="{DynamicResource ButtonBackground}" ToolTip="Server from Kunos list" x:Shared="False">
+        <TextBlock Foreground="#FF7700" Height="15" Text="Kunos" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
+    </Border>
+
+    <Border x:Key="FavoriteIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Favorite server" x:Shared="False">
+        <Path Data="{StaticResource StarIconData}" Fill="#FFFF00" Width="10" Height="10" Stretch="Uniform" />
+    </Border>
+
+    <Border x:Key="RecentIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Recently used server" x:Shared="False">
+        <Path Data="{StaticResource RedoPointIconData}" Fill="#00FF00" Width="10" Height="10" Stretch="Uniform" />
+    </Border>
+
+    <!--inline icons for detailed item-->
     <InlineUIContainer x:Key="WarningIconInline" x:Shared="False">
         <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Width="12" Height="12" Stretch="Fill" Margin="0 2 4 -2" />
     </InlineUIContainer>
 
     <InlineUIContainer x:Key="MinoratingIconInline" x:Shared="False">
-        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <Path Data="{StaticResource MinoratingIconData}" Fill="#FF0000" Width="21" Height="10" Stretch="Uniform" />
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="MinoratingIcon" />
         </Border>
     </InlineUIContainer>
 
     <InlineUIContainer x:Key="LanIconInline" x:Shared="False">
-        <Border Padding="4 3 4 5" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <TextBlock Foreground="#00FFFF" Height="10" Text="LAN" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="LanIcon" />
+        </Border>
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="KunosIconInline" x:Shared="False">
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="KunosIcon" />
         </Border>
     </InlineUIContainer>
 
     <InlineUIContainer x:Key="FavoriteIconInline" x:Shared="False">
-        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <Path Data="{StaticResource StarIconData}" Fill="#FFFF00" Width="10" Height="10" Stretch="Uniform" />
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="FavoriteIcon" />
         </Border>
     </InlineUIContainer>
 
     <InlineUIContainer x:Key="RecentIconInline" x:Shared="False">
-        <Border Padding="4" Background="{DynamicResource ButtonBackground}" Margin="0 4 4 -4">
-            <Path Data="{StaticResource RedoPointIconData}" Fill="#00FF00" Width="10" Height="10" Stretch="Uniform" />
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="RecentIcon" />
         </Border>
     </InlineUIContainer>
 
@@ -248,7 +281,7 @@
                             </Image.ToolTip>
                         </Image>
                         <TextBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap"
-                                TextTrimming="CharacterEllipsis" Margin="22 2 130 32" />
+                                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" />
 
                         <!--second row-->
                         <Rectangle Fill="#11888888" Margin="20 30 0 0" />
@@ -301,7 +334,7 @@
                             </Image.ToolTip>
                         </Image>
                         <TextBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
-                                TextTrimming="CharacterEllipsis" Margin="22 2 130 32" />
+                                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" />
 
                         <!--second row-->
                         <Rectangle Fill="#11888888" Margin="20 30 0 0" />

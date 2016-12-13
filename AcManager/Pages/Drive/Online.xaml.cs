@@ -29,28 +29,15 @@ using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : IParametrizedUriContent, IContent {
-        private OnlineItem.OriginIcon _hideIcon;
+        private string _hideIconSourceId;
 
         private void SetHideIcon() {
             var sources = Model.Pack.SourceWrappers;
-            switch (sources.Count == 1 ? sources[0].Id : null) {
-                case MinoratingOnlineSource.Key:
-                    _hideIcon = OnlineItem.OriginIcon.Minorating;
-                    break;
-                case LanOnlineSource.Key:
-                    _hideIcon = OnlineItem.OriginIcon.Lan;
-                    break;
-                case FileBasedOnlineSources.FavoritesKey:
-                    _hideIcon = OnlineItem.OriginIcon.Favorite;
-                    break;
-                case FileBasedOnlineSources.RecentKey:
-                    _hideIcon = OnlineItem.OriginIcon.Recent;
-                    break;
-            }
+            _hideIconSourceId = sources.Count == 1 ? sources[0].Id : null;
         }
 
         public void OnUri(Uri uri) {
-            DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"));
+            DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"), ShowDetails);
             SetHideIcon();
 
             InputBindings.AddRange(new[] {
@@ -59,6 +46,15 @@ namespace AcManager.Pages.Drive {
             });
             InitializeComponent();
             ResizingStuff();
+        }
+
+        private void ShowDetails(ServerEntry entry) {
+            var opened = Frame.Content as OnlineServer;
+            if (opened != null) {
+                opened.Change(entry);
+            } else {
+                Frame.Source = UriExtension.Create("/Pages/Drive/OnlineServer.xaml?Id={0}", entry.Id);
+            }
         }
 
         private DispatcherTimer _timer;
@@ -106,10 +102,8 @@ namespace AcManager.Pages.Drive {
                     if (value == ListMode.DetailedPlus) {
                         factory.SetValue(StyleProperty, FindResource(@"OnlineItem.Plus"));
                     }
-
-                    if (_hideIcon != OnlineItem.OriginIcon.None) {
-                        factory.SetValue(OnlineItem.HideIconProperty, _hideIcon);
-                    }
+                    
+                    factory.SetValue(OnlineItem.HideSourceIconProperty, _hideIconSourceId);
 
                     ServersListBox.ItemTemplate = new DataTemplate(typeof(OnlineItem)) {
                         VisualTree = factory
@@ -278,7 +272,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 public bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.Origins);
+                    return propertyName == nameof(ServerEntry.OriginsString);
                 }
 
                 public override string ToString() {
@@ -302,7 +296,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 public bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.Origins);
+                    return propertyName == nameof(ServerEntry.OriginsString);
                 }
 
                 public override string ToString() {
@@ -335,8 +329,10 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
-            public OnlineViewModel([CanBeNull] string filterParam) {
-                Logging.Debug(filterParam);
+            private readonly Action<ServerEntry> _showDetails;
+
+            public OnlineViewModel([CanBeNull] string filterParam, Action<ServerEntry> showDetails) {
+                _showDetails = showDetails;
 
                 string[] sources = null;
                 string filter = null;
@@ -582,10 +578,11 @@ namespace AcManager.Pages.Drive {
             }
 
             private void CurrentChanged(bool save) {
-                var currentId = ((ServerEntry)MainList.CurrentItem)?.Id;
+                var item = (ServerEntry)MainList.CurrentItem;
+                var currentId = item?.Id;
                 if (currentId == null) return;
 
-                SelectedSource = UriExtension.Create("/Pages/Drive/OnlineServer.xaml?Id={0}", currentId);
+                _showDetails.Invoke(item);
                 if (save) {
                     LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, currentId);
                 }

@@ -17,19 +17,28 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BetterImage : Control {
         public static bool OptionBackgroundLoading = true;
+        public static long OptionCacheTotalSize = 100 * 1000 * 100;
+        public static long OptionCacheLimitSize = 100 * 1000;
+        public static bool OptionMarkCached = false;
 
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
             public readonly ImageSource BitmapSource;
             public readonly int Width, Height;
+            public readonly DateTime Date;
 
             public int Size => Width * Height;
+
+            public static BitmapEntry Empty => new BitmapEntry();
 
             public BitmapEntry(ImageSource source, int width, int height) {
                 BitmapSource = source;
                 Width = width;
                 Height = height;
+                Date = DateTime.Now;
             }
+
+            public bool IsBroken => BitmapSource == null;
         }
         #endregion
 
@@ -134,7 +143,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var source = newValue as ImageSource;
                 if (newValue == null || source != null) {
                     ++_loading;
-                    _current = source == null ? new BitmapEntry() : new BitmapEntry(source, (int)source.Width, (int)source.Height);
+                    _current = source == null ? BitmapEntry.Empty : new BitmapEntry(source, (int)source.Width, (int)source.Height);
                     InvalidateVisual();
                 } else {
                     Filename = newValue as string;
@@ -154,14 +163,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Loading
         public static BitmapEntry LoadBitmapSource(string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (string.IsNullOrEmpty(filename)) {
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
 
             Uri uri;
             try {
                 uri = new Uri(filename);
             } catch (Exception) {
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
 
             try {
@@ -181,12 +190,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     height = decodeHeight;
                 }
 
-                bi.CreateOptions = uri.Scheme == "http" || uri.Scheme == "https"
-                        ? BitmapCreateOptions.None : BitmapCreateOptions.IgnoreImageCache;
+                var remote = uri.Scheme == "http" || uri.Scheme == "https";
+                bi.CreateOptions = remote ? BitmapCreateOptions.None : BitmapCreateOptions.IgnoreImageCache;
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = uri;
                 bi.EndInit();
-                bi.Freeze();
+
+                if (!remote) {
+                    bi.Freeze();
+                }
 
                 if (decodeWidth <= 0) {
                     width = bi.PixelWidth;
@@ -198,10 +210,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 return new BitmapEntry(bi, width, height);
             } catch (FileNotFoundException) {
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             } catch (Exception e) {
                 Logging.Warning("Loading failed: " + e);
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
         }
 
@@ -274,22 +286,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 Logging.Warning("Loading failed: " + e);
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             } catch (Exception e) {
                 Logging.Warning("Loading failed: " + e);
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
         }
 
         public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (string.IsNullOrEmpty(filename)) {
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
 
             try {
                 return LoadBitmapSourceFromBytes(await ReadAllBytesAsync(filename), decodeWidth, decodeHeight);
             } catch (Exception) {
-                return new BitmapEntry();
+                return BitmapEntry.Empty;
             }
         }
         #endregion
@@ -310,9 +322,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Cache
-        public static int OptionCacheTotalSize = 0; // 500 * 1000 * 10; TODO?
-        public static int OptionCacheLimitSize = 500 * 1000;
-
         private class CacheEntry {
             public string Key;
             public BitmapEntry Value;
@@ -329,7 +338,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static void AddToCache(string filename, BitmapEntry entry) {
+        private void AddToCache(string filename, BitmapEntry entry) {
+            _fromCache = false;
             if (OptionCacheTotalSize == 0 || entry.Size > OptionCacheLimitSize) return;
 
             lock (Cache) {
@@ -366,7 +376,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static BitmapEntry GetCached(string filename) {
             lock (Cache) {
                 var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
-                if (i == -1) return default(BitmapEntry);
+                if (i == -1) return BitmapEntry.Empty;
 
                 var item = Cache[i];
                 if (i > 0) {
@@ -382,9 +392,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Inner control methods
         public int InnerDecodeWidth {
             get {
-                if (DecodeWidth >= 0) return DecodeWidth;
-                if (!double.IsPositiveInfinity(MaxWidth)) return (int)MaxWidth;
-                if (!double.IsNaN(Width)) return (int)Width;
+                var decodeWidth = DecodeWidth;
+                if (decodeWidth >= 0) return decodeWidth;
+
+                var maxWidth = MaxWidth;
+                if (!double.IsPositiveInfinity(maxWidth)) return (int)maxWidth;
+
+                var width = Width;
+                if (!double.IsNaN(width)) return (int)width;
                 return -1;
             }
         }
@@ -394,15 +409,42 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private BitmapEntry _current;
         private int _loading;
         private bool _broken;
+        private bool _fromCache;
 
-        private void ReloadImage() {
+        /// <summary>
+        /// Reloads image.
+        /// </summary>
+        /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
+        private bool ReloadImage() {
             if (OptionCacheTotalSize != 0) {
                 var cached = GetCached(Filename);
-                if (cached.BitmapSource != null) {
-                    _current = cached;
-                    _broken = false;
-                    InvalidateMeasure();
-                    return;
+                if (cached.BitmapSource != null && cached.Width >= InnerDecodeWidth) {
+                    try {
+                        var info = new FileInfo(Filename);
+                        if (!info.Exists) {
+                            _current = BitmapEntry.Empty;
+                            _broken = true;
+                            RemoveFromCache(Filename);
+                            return false;
+                        }
+
+                        if (info.LastWriteTime > cached.Date) {
+                            RemoveFromCache(Filename);
+                        } else {
+                            _current = cached;
+                            _broken = false;
+                            _fromCache = true;
+                            InvalidateMeasure();
+                            InvalidateVisual();
+                            return false;
+                        }
+                    } catch (Exception) {
+                        // If there will be any problems with FileInfo
+                        _current = BitmapEntry.Empty;
+                        _broken = true;
+                        RemoveFromCache(Filename);
+                        return false;
+                    }
                 }
             }
 
@@ -412,16 +454,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else {
                     ReloadImageAsyncOld();
                 }
-            } else {
-                ++_loading;
-                _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
-                _broken = _current.BitmapSource == null;
-                if (!_broken) {
-                    AddToCache(Filename, _current);
-                }
-
-                InvalidateMeasure();
+                return true;
             }
+
+            ++_loading;
+            _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
+            _broken = _current.BitmapSource == null;
+            if (!_broken) {
+                AddToCache(Filename, _current);
+            }
+
+            InvalidateMeasure();
+            return false;
         }
 
         private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
@@ -472,7 +516,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (loading != _loading) return;
             if (data == null) {
-                _current = new BitmapEntry();
+                _current = BitmapEntry.Empty;
                 _broken = true;
 
                 InvalidateMeasure();
@@ -507,7 +551,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (loading != _loading) return;
 
                     _current = current;
-                    _broken = _current.BitmapSource == null;
+                    _broken = _current.IsBroken;
                     if (!_broken) {
                         AddToCache(Filename, _current);
                     }
@@ -519,9 +563,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnFilenameChanged() {
-            ReloadImage();
-            if (DelayedCreation && ClearOnChange) {
-                _current = new BitmapEntry();
+            if (ReloadImage() && ClearOnChange) {
+                _current = BitmapEntry.Empty;
+                _broken = false;
                 InvalidateVisual();
             }
         }
@@ -559,11 +603,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_current.BitmapSource == null && HideBroken) return;
 
             dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
+
             if (_current.BitmapSource != null) {
                 dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
             } else if (ShowBroken && _broken) {
                 dc.DrawImage(BrokenIcon.ImageSource,
                         new Rect(new Point((RenderSize.Width - BrokenIcon.Width) / 2d, (RenderSize.Height - BrokenIcon.Height) / 2d), BrokenIcon.Size));
+            }
+
+            if (OptionMarkCached && _fromCache) {
+                dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 255, 0)), null, new Rect(_offset, _size));
             }
         }
 

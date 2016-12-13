@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -33,6 +29,26 @@ namespace AcManager.Tools.Managers.Online {
             public string DisplayDuration => Type == Game.SessionType.Race ?
                     PluralizingConverter.PluralizeExt((int)Duration, ToolsStrings.Online_Session_LapsDuration) :
                     Duration.ToReadableTime();
+
+            protected bool Equals(Session other) {
+                return IsActive == other.IsActive && Duration == other.Duration && Type == other.Type;
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != GetType()) return false;
+                return Equals((Session)obj);
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = IsActive.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Duration.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (int)Type;
+                    return hashCode;
+                }
+            }
         }
 
         public class CarEntry : Displayable, IWithId {
@@ -54,16 +70,15 @@ namespace AcManager.Tools.Managers.Online {
                 CarExists = carObjectWrapper != null;
             }
 
-            public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) { }
+            public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) {}
 
-            public CarEntry([NotNull] AcItemWrapper carObjectWrapper) : this(carObjectWrapper.Id, carObjectWrapper) { }
+            public CarEntry([NotNull] AcItemWrapper carObjectWrapper) : this(carObjectWrapper.Id, carObjectWrapper) {}
 
             [CanBeNull]
             public CarSkinObject AvailableSkin {
                 get { return _availableSkin; }
                 set {
-                    if (Equals(value, _availableSkin))
-                        return;
+                    if (Equals(value, _availableSkin)) return;
                     _availableSkin = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(PreviewImage));
@@ -81,8 +96,7 @@ namespace AcManager.Tools.Managers.Online {
             public int Total {
                 get { return _total; }
                 set {
-                    if (value == _total)
-                        return;
+                    if (value == _total) return;
                     _total = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsAvailable));
@@ -95,8 +109,7 @@ namespace AcManager.Tools.Managers.Online {
             public int Available {
                 get { return _available; }
                 set {
-                    if (value == _available)
-                        return;
+                    if (value == _available) return;
                     _available = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsAvailable));
@@ -115,8 +128,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             protected bool Equals(CarEntry other) {
-                return Equals(_availableSkin, other._availableSkin) && Id.Equals(other.Id, StringComparison.OrdinalIgnoreCase) && Total == other.Total &&
-                        Available == other.Available;
+                return Id.Equals(other.Id, StringComparison.OrdinalIgnoreCase);
             }
 
             public override bool Equals(object obj) {
@@ -124,24 +136,35 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             public override int GetHashCode() {
-                unchecked {
-                    var hashCode = _availableSkin?.GetHashCode() ?? 0;
-                    hashCode = (hashCode * 397) ^ Id.GetHashCode();
-                    hashCode = (hashCode * 397) ^ Total;
-                    hashCode = (hashCode * 397) ^ Available;
-                    return hashCode;
-                }
+                return Id.GetHashCode();
+            }
+
+            public override string ToString() {
+                return DisplayName;
             }
         }
 
         public class CurrentDriver {
-            public string Name { get; set; }
+            public string Name { get; }
 
-            public string Team { get; set; }
+            public string Team { get; }
 
-            public string CarId { get; set; }
+            public string CarId { get; }
 
-            public string CarSkinId { get; set; }
+            public string CarSkinId { get; }
+
+            public bool IsConnected { get; }
+
+            public bool IsBookedForPlayer { get; }
+
+            public CurrentDriver(ServerActualCarInformation x) {
+                Name = x.DriverName;
+                Team = x.DriverTeam;
+                CarId = x.CarId;
+                CarSkinId = x.CarSkinId;
+                IsConnected = x.IsConnected;
+                IsBookedForPlayer = x.IsRequestedGuid;
+            }
 
             public CarObject Car => _car ?? (_car = CarsManager.Instance.GetById(CarId));
             private CarObject _car;
@@ -150,7 +173,8 @@ namespace AcManager.Tools.Managers.Online {
             private CarSkinObject _carSkin;
 
             protected bool Equals(CurrentDriver other) {
-                return string.Equals(Name, other.Name) && string.Equals(Team, other.Team) && string.Equals(CarId, other.CarId) && string.Equals(CarSkinId, other.CarSkinId);
+                return string.Equals(Name, other.Name) && string.Equals(Team, other.Team) && string.Equals(CarId, other.CarId) &&
+                        string.Equals(CarSkinId, other.CarSkinId) && IsConnected == other.IsConnected && IsBookedForPlayer == other.IsBookedForPlayer;
             }
 
             public override bool Equals(object obj) {
@@ -163,6 +187,8 @@ namespace AcManager.Tools.Managers.Online {
                     hashCode = (hashCode * 397) ^ (Team?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (CarId?.GetHashCode() ?? 0);
                     hashCode = (hashCode * 397) ^ (CarSkinId?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ IsConnected.GetHashCode();
+                    hashCode = (hashCode * 397) ^ IsBookedForPlayer.GetHashCode();
                     return hashCode;
                 }
             }

@@ -111,9 +111,16 @@ namespace AcManager.Controls.Helpers {
 
         private readonly Queue<string> _queue = new Queue<string>();
         private DispatcherTimer _timer;
+        private bool? _hasAnything;
 
         // TODO: Rework behavior
         public void ChangeBackground([CanBeNull] string filename) {
+            if (!_hasAnything.HasValue) {
+                _hasAnything = File.Exists(_cachedFilename);
+            }
+
+            if (!Enabled && _hasAnything.Value) return;
+
             if (filename == null) return;
             _queue.Enqueue(filename);
 

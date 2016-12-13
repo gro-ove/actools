@@ -90,65 +90,6 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Parse value from “12:34” to seconds from “00:00”
-        /// </summary>
-        /// <param name="value">Value in “12:34” (or “12:34:56”) format.</param>
-        /// <param name="totalSeconds">Seconds from “00:00”.</param>
-        /// <returns></returns>
-        public static bool TryParseTime([CanBeNull] string value, out int totalSeconds) {
-            if (value == null) {
-                totalSeconds = 0;
-                return false;
-            }
-
-            var splitted = value.Split(':');
-            if (splitted.Length == 1) {
-                int hours;
-                if (TryParseInt(splitted[0], out hours)) {
-                    totalSeconds = hours * 60 * 60;
-                    return true;
-                }
-            } else if (splitted.Length == 2) {
-                int hours, minutes;
-                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes)) {
-                    totalSeconds = hours * 60 * 60 + minutes * 60;
-                    return true;
-                }
-            } else if (splitted.Length == 3) {
-                int hours, minutes, seconds;
-                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes) && TryParseInt(splitted[2], out seconds)) {
-                    totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
-                    return true;
-                }
-            }
-
-            totalSeconds = 0;
-            return false;
-        }
-
-        public static int? TryParseTime(string s) {
-            int result;
-            return TryParseTime(s, out result) ? result : (int?)null;
-        }
-
-        [CanBeNull]
-        public static string ReplaceDouble([CanBeNull] string s, double value) {
-            if (s == null) {
-                return null;
-            }
-
-            if (_parseDouble == null) {
-                _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?");
-            }
-
-            var match = _parseDouble.Match(s);
-            if (!match.Success) return s;
-
-            return s.Substring(0, match.Index) + value.ToString(CultureInfo.InvariantCulture) +
-                   s.Substring(match.Index + match.Length);
-        }
-
-        /// <summary>
         /// Throws an exception if can’t parse!
         /// </summary>
         /// <param name="s"></param>
@@ -205,6 +146,49 @@ namespace AcTools.Utils.Helpers {
             return TryParseLong(s, out result) ? result : defaultValue;
         }
 
+        #region Time
+        /// <summary>
+        /// Parse value from “12:34” to seconds from “00:00”
+        /// </summary>
+        /// <param name="value">Value in “12:34” (or “12:34:56”) format.</param>
+        /// <param name="totalSeconds">Seconds from “00:00”.</param>
+        /// <returns></returns>
+        public static bool TryParseTime([CanBeNull] string value, out int totalSeconds) {
+            if (value == null) {
+                totalSeconds = 0;
+                return false;
+            }
+
+            var splitted = value.Split(':');
+            if (splitted.Length == 1) {
+                int hours;
+                if (TryParseInt(splitted[0], out hours)) {
+                    totalSeconds = hours * 60 * 60;
+                    return true;
+                }
+            } else if (splitted.Length == 2) {
+                int hours, minutes;
+                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes)) {
+                    totalSeconds = hours * 60 * 60 + minutes * 60;
+                    return true;
+                }
+            } else if (splitted.Length == 3) {
+                int hours, minutes, seconds;
+                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes) && TryParseInt(splitted[2], out seconds)) {
+                    totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
+                    return true;
+                }
+            }
+
+            totalSeconds = 0;
+            return false;
+        }
+
+        public static int? TryParseTime(string s) {
+            int result;
+            return TryParseTime(s, out result) ? result : (int?)null;
+        }
+
         /// <summary>
         /// Throws an exception if can’t parse!
         /// </summary>
@@ -223,5 +207,61 @@ namespace AcTools.Utils.Helpers {
             int result;
             return TryParseTime(s, out result) ? result : defaultValue;
         }
+        #endregion
+
+        #region Boolean
+        public static bool TryParseBool(string s, out bool value) {
+            if (s == null) {
+                value = default(bool);
+                return false;
+            }
+
+            if (s == "1" ||
+                    string.Equals(s, "true", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "yes", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "ok", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "y", StringComparison.OrdinalIgnoreCase)) {
+                value = true;
+                return true;
+            }
+
+            if (s == "0" ||
+                    string.Equals(s, "false", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "none", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "no", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "not", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(s, "n", StringComparison.OrdinalIgnoreCase)) {
+                value = false;
+                return true;
+            }
+
+            value = default(bool);
+            return false;
+        }
+
+        public static bool? TryParseBool(string s) {
+            bool result;
+            return TryParseBool(s, out result) ? result : (bool?)null;
+        }
+
+        /// <summary>
+        /// Throws an exception if can’t parse!
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static bool ParseBool(string s) {
+            bool result;
+            if (!TryParseBool(s, out result)) {
+                throw new FormatException();
+            }
+
+            return result;
+        }
+
+        public static bool ParseBool(string s, bool defaultValue) {
+            bool result;
+            return TryParseBool(s, out result) ? result : defaultValue;
+        }
+        #endregion
     }
 }

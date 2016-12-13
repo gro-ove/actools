@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Helpers.Api.Kunos;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -13,8 +16,9 @@ namespace AcManager.Tools.Managers.Online {
     /// </summary>
     public interface IOnlineSource : IWithId {
         /// <summary>
-        /// Name which will be shown to user.
+        /// Name which will be shown to user. Immutable.
         /// </summary>
+        [NotNull]
         string DisplayName { get; }
 
         /// <summary>

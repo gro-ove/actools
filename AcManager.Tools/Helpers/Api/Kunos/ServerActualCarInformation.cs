@@ -18,6 +18,9 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "IsConnected")]
         public bool IsConnected { get; set; }
 
+        /// <summary>
+        /// True if this slot was booked for a player.
+        /// </summary>
         [JsonProperty(PropertyName = "IsRequestedGUID")]
         public bool IsRequestedGuid { get; set; }
 

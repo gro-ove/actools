@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 using AcManager.Controls.Converters;
@@ -62,12 +63,16 @@ namespace AcManager.Controls {
                     _errorIcon ?? (_errorIcon = (Inline)TryFindResource(@"WarningIconInline"));
         }
 
-        public static readonly DependencyProperty HideIconProperty = DependencyProperty.Register(nameof(HideIcon), typeof(OriginIcon),
-                typeof(OnlineItem), new PropertyMetadata(OriginIcon.None));
+        public static readonly DependencyProperty HideSourceIconProperty = DependencyProperty.Register(nameof(HideSourceIcon), typeof(string),
+                typeof(OnlineItem), new PropertyMetadata(null));
 
-        public OriginIcon HideIcon {
-            get { return (OriginIcon)GetValue(HideIconProperty); }
-            set { SetValue(HideIconProperty, value); }
+        /// <summary>
+        /// ID of the source which icon is should be hidden.
+        /// </summary>
+        [CanBeNull]
+        public string HideSourceIcon {
+            get { return (string)GetValue(HideSourceIconProperty); }
+            set { SetValue(HideSourceIconProperty, value); }
         }
 
         private Inline _minoratingIcon;
@@ -110,35 +115,63 @@ namespace AcManager.Controls {
             }
         }
 
-        [Flags]
-        public enum OriginIcon {
-            None = 0,
-            Favorite = 1,
-            Lan = 2,
-            Minorating = 4,
-            Recent = 8
-        }
+        private string _origins;
+        private string _hideIcon;
 
-        private OriginIcon _originState;
+        [CanBeNull]
+        private Inline GetIcon(string originId) {
+            if (originId == _hideIcon) return null;
+
+            switch (originId) {
+                case FileBasedOnlineSources.FavoritesKey:
+                    return GetFavoritesIconInline();
+                case FileBasedOnlineSources.RecentKey:
+                    return GetRecentIconInline();
+                case MinoratingOnlineSource.Key:
+                    return GetMinoratingIconInline();
+                case LanOnlineSource.Key:
+                    return GetLanIconInline();
+                default:
+                    var information = FileBasedOnlineSources.Instance.GetInformation(originId);
+                    if (information?.Label == null) {
+                        return null;
+                    }
+
+                    var baseIcon = (Decorator)TryFindResource(@"BaseIcon");
+                    if (baseIcon == null) {
+                        return null;
+                    }
+
+                    var text = (BbCodeBlock)baseIcon.Child;
+
+                    // text.Foreground = new SolidColorBrush(information.Color ?? Colors.White);
+                    // text.BbCode = information.Label;
+
+                    text.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
+                        Path = new PropertyPath(nameof(information.Label)),
+                        Source = information
+                    });
+
+                    text.SetBinding(TextBlock.ForegroundProperty, new Binding {
+                        Path = new PropertyPath(nameof(information.Color)),
+                        TargetNullValue = new SolidColorBrush(Colors.White),
+                        Converter = ColorPicker.ColorToBrushConverter,
+                        Source = information
+                    });
+
+                    return new InlineUIContainer {
+                        Child = new Border {
+                            Margin = (Thickness)TryFindResource(@"InlineIconMargin"),
+                            Child = baseIcon
+                        }
+                    };
+            }
+        }
 
         private void UpdateName(ServerEntry n) {
             var inlines = _nameText.Inlines;
 
-            var state = OriginIcon.None;
-
-            var favorites = n.OriginsFrom(FileBasedOnlineSources.FavoritesKey);
-            var lan = n.OriginsFrom(LanOnlineSource.Key);
-            var minorating = n.OriginsFrom(MinoratingOnlineSource.Key);
-            var recent = n.OriginsFrom(FileBasedOnlineSources.RecentKey);
-
-            if (favorites) state |= OriginIcon.Favorite;
-            if (lan) state |= OriginIcon.Lan;
-            if (minorating) state |= OriginIcon.Minorating;
-            if (recent) state |= OriginIcon.Recent;
-
-            state &= ~HideIcon;
-
-            if (_originState == state) {
+            if (n.OriginsString == _origins) {
                 var last = inlines.LastInline as Run;
                 if (last != null) {
                     ((Run)inlines.LastInline).Text = n.DisplayName;
@@ -146,16 +179,22 @@ namespace AcManager.Controls {
                     _nameText.Text = n.DisplayName;
                 }
             } else {
-                _originState = state;
+                _origins = n.OriginsString;
+                _hideIcon = HideSourceIcon;
 
                 inlines.Clear();
-                inlines.AddRange(new[] {
-                    state.HasFlag(OriginIcon.Favorite) ? GetFavoritesIconInline() : null,
-                    state.HasFlag(OriginIcon.Lan) ? GetLanIconInline() : null,
-                    state.HasFlag(OriginIcon.Minorating) ? GetMinoratingIconInline() : null,
-                    state.HasFlag(OriginIcon.Recent) ? GetRecentIconInline() : null,
-                    new Run { Text = n.DisplayName }
-                }.NonNull());
+                inlines.AddRange(n.GetOriginsIds().Select(GetIcon).NonNull().Append(new Run { Text = n.DisplayName }));
+            }
+        }
+
+        private void UpdateCountryFlag(ServerEntry n) {
+            if (HideSourceIcon != LanOnlineSource.Key) {
+                _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
+            } else if (_countryFlagImage.Visibility != Visibility.Hidden) {
+                _countryFlagImage.Visibility = Visibility.Collapsed;
+
+                var margin = _nameText.Margin;
+                _nameText.Margin = new Thickness(margin.Left, margin.Top, margin.Right - 28, margin.Bottom);
             }
         }
 
@@ -383,11 +422,14 @@ namespace AcManager.Controls {
             if (visibility == _countryFlagImage.Visibility) return;
 
             _nameText.FontStyle = loaded ? FontStyles.Normal : FontStyles.Italic;
-            _countryName.Visibility = visibility;
-            _countryFlagImage.Visibility = visibility;
+
+            if (!n.OriginsFromLan) {
+                _countryName.Visibility = visibility;
+                _countryFlagImage.Visibility = visibility;
+            }
+
             _pingText.Visibility = visibility;
             _clientsText.Visibility = visibility;
-            _passwordIcon.Visibility = visibility;
 
             if (_timeLeftText != null) {
                 _timeLeftText.Visibility = visibility;
@@ -410,8 +452,11 @@ namespace AcManager.Controls {
             }
 
             _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
-            _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
-            _countryName.Text = n.Country;
+
+            if (!n.OriginsFromLan) {
+                _countryName.Text = n.Country;
+            }
+
             _pingText.Text = n.Ping?.ToString() ?? @"?";
             _clientsText.Text = n.DisplayClients;
             _errorMessageGroup.BbCode = n.ErrorsString;
@@ -421,6 +466,7 @@ namespace AcManager.Controls {
             }
 
             UpdateName(n);
+            UpdateCountryFlag(n);
             UpdateTrack(n);
             UpdateSessions(n);
             UpdateCars(n);
@@ -574,7 +620,7 @@ namespace AcManager.Controls {
 
             var n = (ServerEntry)sender;
             switch (e.PropertyName) {
-                case nameof(ServerEntry.Origins):
+                case nameof(ServerEntry.OriginsString):
                 case nameof(ServerEntry.DisplayName):
                     UpdateName(n);
                     break;
@@ -585,10 +631,12 @@ namespace AcManager.Controls {
                     UpdateErrorFlag(n);
                     break;
                 case nameof(ServerEntry.CountryId):
-                    _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
+                    UpdateCountryFlag(n);
                     break;
                 case nameof(ServerEntry.Country):
-                    _countryName.Text = n.Country;
+                    if (!n.OriginsFromLan) {
+                        _countryName.Text = n.Country;
+                    }
                     break;
                 case nameof(ServerEntry.Ping):
                     _pingText.Text = n.Ping?.ToString() ?? @"?";

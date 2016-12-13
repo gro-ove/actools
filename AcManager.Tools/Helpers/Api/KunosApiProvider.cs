@@ -289,30 +289,6 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        [CanBeNull]
-        public static ServerInformation TryToGetInformation(string ip, int port) {
-            if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
-
-            while (ServerUri != null) {
-                var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
-                try {
-                    var result = JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri, OptionWebRequestTimeout));
-                    if (result.Ip == string.Empty) {
-                        result.Ip = ip;
-                    }
-                    return result;
-                } catch (WebException e) {
-                    Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
-                } catch (Exception e) {
-                    Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
-                }
-
-                NextServer();
-            }
-
-            return null;
-        }
-
         public static bool ParseAddress(string address, out string ip, out int port) {
             var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
             if (!parsed.Success) {
@@ -351,32 +327,40 @@ namespace AcManager.Tools.Helpers.Api {
             return result;
         }
 
-        [CanBeNull]
-        public static ServerInformation TryToGetInformationDirect([NotNull] string address) {
-            if (address == null) throw new ArgumentNullException(nameof(address));
+        [ItemNotNull]
+        public static async Task<ServerInformation> GetInformationAsync(string ip, int port) {
+            if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
-            string ip;
-            int port;
-            return ParseAddress(address, out ip, out port) && port > 0 ? TryToGetInformationDirect(ip, port) : null;
+            while (ServerUri != null) {
+                var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
+                try {
+                    var result = JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionWebRequestTimeout));
+                    if (result.Ip == string.Empty) {
+                        result.Ip = ip;
+                    }
+                    return result;
+                } catch (WebException) {
+                    NextServer();
+                    if (ServerUri == null) {
+                        throw;
+                    }
+                }
+            }
+
+            throw new Exception("Out of servers");
         }
 
-        [ItemCanBeNull]
-        public static async Task<ServerInformation> TryToGetInformationDirectAsync(string ip, int portC) {
+        [ItemNotNull]
+        public static async Task<ServerInformation> GetInformationDirectAsync(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
+            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
+        }
 
-            try {
-                return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
-            } catch (WebException e) when (e.Message.Contains(@"The request was canceled")) {
-                // Won’t work on localized version, but does it really matter?
-                // Logging.Write($"Server didn’t respond in given time: {requestUri}");
-                return null;
-            } catch (WebException e) {
-                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
-                return null;
-            } catch (Exception e) {
-                Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
-                return null;
-            }
+        [ItemNotNull]
+        public static async Task<ServerCarsInformation> GetCarsInformationAsync(string ip, int portC) {
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
+            var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
+            return JsonConvert.DeserializeObject<ServerCarsInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout));
         }
 
         [CanBeNull]
@@ -394,47 +378,11 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        [ItemCanBeNull]
-        public static async Task<ServerActualInformation> TryToGetCurrentInformationAsync(string ip, int portC) {
-            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
-            var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
-
-            try {
-                return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout));
-            } catch (WebException e) when(e.Message.Contains(@"The request was canceled")) { 
-                // Won’t work on localized version, but does it really matter?
-                // Logging.Write($"Server didn’t respond in given time: {requestUri}");
-                return null;
-            } catch (WebException e) {
-                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
-                return null;
-            } catch (Exception e) {
-                Logging.Warning($"Cannot get actual server information: {requestUri}\n{e}");
-                return null;
-            }
-        }
-
-        [CanBeNull]
-        public static ServerActualInformation TryToGetCurrentInformation(string ip, int portC) {
-            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
-            var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
-
-            try {
-                return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri, OptionDirectRequestTimeout));
-            } catch (WebException e) {
-                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
-                return null;
-            } catch (Exception e) {
-                Logging.Warning($"Cannot get actual server information: {requestUri}\n{e}");
-                return null;
-            }
-        }
-
         [CanBeNull]
         public static BookingResult TryToBook(string ip, int portC, string password, string carId, string skinId, string driverName, string teamName) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var arguments = new[] { carId, skinId, driverName, teamName, steamId, password }.Select(x => x ?? "").JoinToString('|');
-            var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlEncode(arguments)}";
+            var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlPathEncode(arguments)}";
             
             try {
                 var response = Load(requestUri, OptionDirectRequestTimeout);

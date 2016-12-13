@@ -22,7 +22,9 @@ using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace AcManager {
     [Localizable(false)]
-    public class EntryPoint {
+    public static class EntryPoint {
+        private static bool _initialized;
+
         public static string ApplicationDataDirectory { get; private set; }
 
         public static string GetLogName(string id) {
@@ -93,7 +95,7 @@ namespace AcManager {
             var logFilename = AppArguments.GetBool(AppFlag.LogPacked) ? GetLogName("Packed Log") : null;
             AppArguments.Set(AppFlag.DirectAssembliesLoading, ref PackedHelper.OptionDirectLoading);
 
-            var packedHelper = new PackedHelper("AcTools_ContentManager", "Libs", logFilename);
+            var packedHelper = new PackedHelper("AcTools_ContentManager", "References", logFilename);
             packedHelper.PrepareUnmanaged("LevelDB");
             AppDomain.CurrentDomain.AssemblyResolve += packedHelper.Handler;
 
@@ -127,6 +129,7 @@ namespace AcManager {
             using (var mutex = new Mutex(false, mutexId)) {
                 SecondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
+                    _initialized = true;
                     App.CreateAndRun();
                 } else {
                     PassArgsToRunningInstance(args);
@@ -205,6 +208,15 @@ namespace AcManager {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void UnhandledExceptionHandler(Exception e) {
             var text = e?.ToString() ?? @"?";
+
+            if (!_initialized) {
+                try {
+                    MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch (Exception) {
+                    // ignored
+                }
+                Environment.Exit(1);
+            }
 
             if (!LogError(text)) {
                 try {

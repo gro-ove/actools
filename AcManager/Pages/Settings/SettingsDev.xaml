@@ -14,7 +14,9 @@
     <ScrollViewer x:Name="ScrollViewer">
         <StackPanel>
             <!--controls test-->
-            <StackPanel Margin="0 0 0 20" TextBlock.Foreground="Cyan">
+            <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
+
+            <StackPanel Margin="0 20 0 20" TextBlock.Foreground="Cyan">
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel">
                         <Setter Property="Height" Value="24" />

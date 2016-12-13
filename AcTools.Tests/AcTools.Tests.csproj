@@ -71,6 +71,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataWrapperTest.cs" />
+    <Compile Include="SortedListTest.cs" />
     <Compile Include="Temporary.cs" />
     <Compile Include="IniParsingTest.cs" />
     <Compile Include="Kn5ExportTest.cs" />

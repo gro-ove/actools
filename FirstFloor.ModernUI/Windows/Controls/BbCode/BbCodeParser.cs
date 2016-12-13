@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Globalization;
+using System.Text;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
@@ -12,8 +16,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     /// <summary>
     /// Represents the BbCode parser.
     /// </summary>
-    internal class BbCodeParser
-        : Parser<Span> {
+    internal partial class BbCodeParser : Parser<Span> {
+        private static FileCache _imageCache;
 
         // supporting a basic set of BbCode tags
         private const string TagBold = "b";
@@ -33,14 +37,24 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             }
 
             public Span Parent { get; private set; }
+
             public double? FontSize { get; set; }
+
             public FontWeight? FontWeight { get; set; }
+
             public FontStyle? FontStyle { get; set; }
+
             public FontFamily FontFamily { get; set; }
+
             public Brush Foreground { get; set; }
+
             public TextDecorationCollection TextDecorations { get; set; }
+
             public FontVariants? FontVariants { get; set; }
+
             public string NavigateUri { get; set; }
+
+            [CanBeNull]
             public string ImageUri { get; set; }
 
             /// <summary>
@@ -188,41 +202,83 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 span.Inlines.Add(parent);
                             }
                         }
-                        
+
                         {
-                            Uri uri;
-                            string parameter;
-                            string targetName;
+                            string uri;
+                            double maxSize;
+                            bool expand;
+                            FileCache cache;
 
-                            if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out uri, out parameter, out targetName)) {
-                                var bi = new BitmapImage();
-                                bi.BeginInit();
-                                bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                                bi.CacheOption = BitmapCacheOption.OnLoad;
-                                bi.UriSource = uri;
-                                bi.EndInit();
+                            if (context.ImageUri?.StartsWith("emoji://") == true) {
+                                maxSize = 0;
+                                expand = false;
 
-                                double maxSize;
-                                if (!double.TryParse(parameter, out maxSize)) {
-                                    maxSize = double.MaxValue;
+                                var provider = BbCodeBlock.OptionEmojiProvider;
+                                if (provider == null) {
+                                    uri = null;
+                                    cache = null;
+                                } else {
+                                    var emoji = context.ImageUri.Substring(8);
+                                    uri = string.Format(provider, emoji);
+                                    cache = BbCodeBlock.OptionEmojiCacheDirectory == null ? null :
+                                            _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
                                 }
+                            } else {
+                                Uri temporary;
+                                string parameter;
+                                string targetName;
+                                if (NavigationHelper.TryParseUriWithParameters(context.ImageUri, out temporary, out parameter, out targetName)) {
+                                    uri = temporary.OriginalString;
 
-                                var image = new Image {
-                                    Source = bi,
+                                    if (double.TryParse(parameter, out maxSize)) {
+                                        expand = true;
+                                    } else {
+                                        maxSize = double.NaN;
+                                        expand = false;
+                                    }
+
+                                    cache = BbCodeBlock.OptionImageCacheDirectory == null ? null :
+                                            _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionImageCacheDirectory));
+                                } else {
+                                    uri = null;
+                                    maxSize = double.NaN;
+                                    expand = false;
+                                    cache = null;
+                                }
+                            }
+
+                            if (uri != null) {
+                                var image = new Image (cache) {
+                                    ImageUrl = uri,
                                     ToolTip = new ToolTip {
                                         Content = new TextBlock { Text = token.Value }
-                                    },
-                                    MaxWidth = maxSize,
-                                    MaxHeight = maxSize,
-                                    Cursor = Cursors.Hand
+                                    }
                                 };
+                                
+                                if (double.IsNaN(maxSize)) {
+                                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
+                                } else {
+                                    if (Equals(maxSize, 0d)) {
+                                        image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
+                                            Path = new PropertyPath(nameof(TextBlock.FontSize)),
+                                            RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
+                                            Converter = new MultiplyConverter(),
+                                        });
+                                        image.Margin = new Thickness(1, -1, 1, -1);
+                                    } else {
+                                        image.MaxWidth = maxSize;
+                                        image.MaxHeight = maxSize;
+                                    }
+                                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+                                }
 
-                                image.MouseDown += (sender, args) => {
-                                    BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(uri));
-                                };
+                                if (expand) {
+                                    image.Cursor = Cursors.Hand;
+                                    image.MouseDown += (sender, args) => {
+                                        BbCodeBlock.OnImageClicked(new BbCodeImageEventArgs(new Uri(uri, UriKind.RelativeOrAbsolute)));
+                                    };
+                                }
 
-                                RenderOptions.SetBitmapScalingMode(image,
-                                        Equals(maxSize, double.MaxValue) ? BitmapScalingMode.LowQuality : BitmapScalingMode.HighQuality);
                                 var container = new InlineUIContainer { Child = image };
                                 span.Inlines.Add(container);
                                 continue;
@@ -242,6 +298,19 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                     default:
                         throw new ParseException(UiStrings.UnknownTokenType);
                 }
+            }
+        }
+
+        private class MultiplyConverter : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                var v = value.AsDouble();
+                if (v < 15) return v * 1.15;
+                if (v < 20) return v * 1.08;
+                return v;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
             }
         }
 

@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -9,14 +13,32 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
-        private readonly List<string> _origins = new List<string>(2);
+        private class InvariantOriginIdComparer : IComparer<string> {
+            public static readonly InvariantOriginIdComparer Instance = new InvariantOriginIdComparer();
 
-        public string Origins => _origins.JoinToString(',');
+            public int Compare(string x, string y) {
+                return string.Compare(x, y, StringComparison.Ordinal);
+            }
+        }
+
+        /// <summary>
+        /// Sorted list of IDs.
+        /// </summary>
+        private readonly SortedList<string> _origins = new SortedList<string>(4, InvariantOriginIdComparer.Instance);
+
+        private string _originsString;
+
+        public string OriginsString => _originsString ?? (_originsString = _origins.JoinToString(','));
+
+        public IEnumerable<string> GetOriginsIds() {
+            return _origins;
+        }
 
         public void SetOrigin(string key) {
             if (!_origins.Contains(key)) {
+                _originsString = null;
                 _origins.Add(key);
-                OnPropertyChanged(nameof(Origins));
+                OnPropertyChanged(nameof(OriginsString));
 
                 switch (key) {
                     case LanOnlineSource.Key:
@@ -29,7 +51,10 @@ namespace AcManager.Tools.Managers.Online {
                         OriginsFromMinorating = true;
                         break;
                     case FileBasedOnlineSources.FavoritesKey:
-                        IsFavorited = true;
+                        SetIsFavorited(true);
+                        break;
+                    case FileBasedOnlineSources.RecentKey:
+                        WasUsedRecently = true;
                         break;
                 }
             }
@@ -42,7 +67,8 @@ namespace AcManager.Tools.Managers.Online {
         /// <returns>True if it was the only origin and now its list is empty.</returns>
         public bool RemoveOrigin(string key) {
             if (_origins.Remove(key)) {
-                OnPropertyChanged(nameof(Origins));
+                _originsString = null;
+                OnPropertyChanged(nameof(OriginsString));
 
                 switch (key) {
                     case LanOnlineSource.Key:
@@ -55,7 +81,10 @@ namespace AcManager.Tools.Managers.Online {
                         OriginsFromMinorating = false;
                         break;
                     case FileBasedOnlineSources.FavoritesKey:
-                        IsFavorited = false;
+                        SetIsFavorited(false);
+                        break;
+                    case FileBasedOnlineSources.RecentKey:
+                        WasUsedRecently = false;
                         break;
                 }
             }
@@ -77,11 +106,19 @@ namespace AcManager.Tools.Managers.Online {
             return false;
         }
 
-        [ItemCanBeNull]
+        /// <summary>
+        /// Throws an exception.
+        /// </summary>
+        /// <returns></returns>
+        [ItemNotNull]
         private Task<ServerInformation> GetInformationDirectly() {
-            return KunosApiProvider.TryToGetInformationDirectAsync(Ip, PortHttp);
+            return KunosApiProvider.GetInformationDirectAsync(Ip, PortHttp);
         }
 
+        /// <summary>
+        /// Throws an exception.
+        /// </summary>
+        /// <returns></returns>
         [ItemCanBeNull]
         private Task<ServerInformation> GetInformation(bool nonDirectOnly = false) {
             if (!SettingsHolder.Online.LoadServerInformationDirectly && IsFullyLoaded) {
@@ -90,7 +127,7 @@ namespace AcManager.Tools.Managers.Online {
                         throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
                     }
 
-                    return Task.Run(() => KunosApiProvider.TryToGetInformation(Ip, Port));
+                    return KunosApiProvider.GetInformationAsync(Ip, Port);
                 }
             }
 
@@ -102,7 +139,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool OriginsFromKunos {
             get { return _originsFromKunos; }
-            set {
+            private set {
                 if (Equals(value, _originsFromKunos)) return;
                 _originsFromKunos = value;
                 OnPropertyChanged();
@@ -115,7 +152,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool OriginsFromLan {
             get { return _originsFromLan; }
-            set {
+            private set {
                 if (Equals(value, _originsFromLan)) return;
                 _originsFromLan = value;
                 OnPropertyChanged();
@@ -128,7 +165,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool OriginsFromMinorating {
             get { return _originsFromMinorating; }
-            set {
+            private set {
                 if (Equals(value, _originsFromMinorating)) return;
                 _originsFromMinorating = value;
                 OnPropertyChanged();
@@ -136,14 +173,40 @@ namespace AcManager.Tools.Managers.Online {
         }
         #endregion
 
-        #region Favorites-related
+        #region Lists-related
         private bool _isFavorited;
 
         public bool IsFavorited {
             get { return _isFavorited; }
             set {
                 if (Equals(value, _isFavorited)) return;
-                _isFavorited = value;
+                // SetIsFavorited(value);
+
+                if (value) {
+                    FileBasedOnlineSources.AddToList(FileBasedOnlineSources.FavoritesKey, this);
+                } else {
+                    FileBasedOnlineSources.RemoveFromList(FileBasedOnlineSources.FavoritesKey, this);
+                }
+            }
+        }
+
+        /// <summary>
+        /// For internal use.
+        /// </summary>
+        /// <param name="value">New value.</param>
+        private void SetIsFavorited(bool value) {
+            if (Equals(value, _isFavorited)) return;
+            _isFavorited = value;
+            OnPropertyChanged(nameof(IsFavorited));
+        }
+
+        private bool _wasUsedRecently;
+
+        public bool WasUsedRecently {
+            get { return _wasUsedRecently; }
+            private set {
+                if (Equals(value, _wasUsedRecently)) return;
+                _wasUsedRecently = value;
                 OnPropertyChanged();
             }
         }

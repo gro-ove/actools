@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
@@ -61,6 +60,7 @@ namespace AcManager.Tools.Managers.Online {
         public OnlineSourceWrapper([NotNull] IList<ServerEntry> list, [NotNull] IOnlineSource source) {
             _list = list;
             _source = source;
+            IsBackgroundLoadable = _source is IOnlineBackgroundSource;
 
             if (OptionWeakListening) {
                 WeakEventManager<IOnlineSource, EventArgs>.AddHandler(_source, nameof(IOnlineSource.Obsolete), OnSourceObsolete);
@@ -68,6 +68,12 @@ namespace AcManager.Tools.Managers.Online {
                 _source.Obsolete += OnSourceObsolete;
             }
         }
+
+        /// <summary>
+        /// Set it to true if you want for all loaded servers to be unassociated/removed
+        /// before reloading.
+        /// </summary>
+        public bool CleanBeforeReloading { get; set; }
 
         private OnlineManagerStatus _status = OnlineManagerStatus.Waiting;
 
@@ -118,77 +124,44 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public bool IsBackgroundLoadable => _source is IOnlineBackgroundSource;
+        public bool IsBackgroundLoadable { get; }
+
+        private bool _backgroundLoading;
+
+        public bool BackgroundLoading {
+            get { return IsBackgroundLoadable || _backgroundLoading; }
+            set {
+                if (IsBackgroundLoadable || Equals(value, _backgroundLoading)) return;
+                _backgroundLoading = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Key => _source.Id;
 
         public string DisplayName => _source.DisplayName;
 
         private void OnSourceObsolete(object sender, EventArgs e) {
-            ReloadAsync().Forget();
-        }
-
-        private void CleanUp() {
-            var count = _list.Count;
-            for (var i = count - 1; i >= 0; i--) {
-                var entry = _list[i];
-                if (entry.RemoveOrigin(_source.Id)) {
-                    _list.RemoveAt(i);
-                }
-            }
+            ReloadAsync(true).Forget();
         }
 
         public void Report(AsyncProgressEntry value) {
             LoadingProgress = value;
         }
 
-        private void Add(ServerInformation information) {
-            var id = information.GetUniqueId();
-            var existing = _list.GetByIdOrDefault(id);
-            if (existing == null) {
-                var entry = new ServerEntry(information);
-                entry.SetOrigin(Key);
-                _list.Add(entry);
-            } else {
-                existing.SetOrigin(Key);
-                existing.UpdateValues(information);
-            }
-        }
-
-        private void Add(IEnumerable<ServerInformation> informations) {
-            var newEntries = new List<ServerEntry>(300);
-            foreach (var information in informations) {
-                var id = information.GetUniqueId();
-                var existing = _list.GetByIdOrDefault(id);
-                if (existing == null) {
-                    var entry = new ServerEntry(information);
-                    entry.SetOrigin(Key);
-                    newEntries.Add(entry);
-                } else {
-                    existing.SetOrigin(Key);
-                    existing.UpdateValues(information);
-                }
-            }
-            
-            var target = _list as ChangeableObservableCollection<ServerEntry>;
-            if (target == null || newEntries.Count < 10) {
-                foreach (var entry in newEntries) {
-                    _list.Add(entry);
-                }
-                return;
-            }
-            
-            target._AddRangeDirect(newEntries);
-        }
-
         public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
-            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
-            return Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error ? Task.Delay(0, cancellation) :
-                    LoadAsync(cancellation);
+            //Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+            if (Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error) {
+                return Task.Delay(0, cancellation);
+            }
+
+            BackgroundLoading = false;
+            return LoadAsync(cancellation);
         }
 
-        public Task ReloadAsync(CancellationToken cancellation = default(CancellationToken)) {
-            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+        public Task ReloadAsync(bool background, CancellationToken cancellation = default(CancellationToken)) {
+            //Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
+            BackgroundLoading = background;
             return Status == OnlineManagerStatus.Loading ? ReloadLater(cancellation) : LoadAsync(cancellation);
         }
         
@@ -196,7 +169,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _reloadAfterwards;
 
         private Task ReloadLater(CancellationToken cancellation) {
-            Logging.Debug(_source.Id);
+            // Logging.Debug(_source.Id);
 
             if (_loadingTask == null) {
                 Logging.Unexpected();
@@ -216,7 +189,6 @@ namespace AcManager.Tools.Managers.Online {
         // cancelled properly.
 
         private Task LoadAsync(CancellationToken cancellation) {
-            Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
             RegisterCustomer(cancellation);
             return _cancellationSource?.IsCancellationRequested == false ? _loadingTask : (_loadingTask = LoadAsyncInner());
         }
@@ -226,7 +198,6 @@ namespace AcManager.Tools.Managers.Online {
 
         private void RegisterCustomer(CancellationToken cancellation) {
             var customerId = cancellation.GetHashCode();
-            Logging.Write($"({_source.Id}) customerId: {customerId}; {_customers.Count}");
             _customers.Add(customerId);
             cancellation.Register(() => {
                 OnCancelled(customerId).Forget();
@@ -234,12 +205,10 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private async Task OnCancelled(int customerId) {
-            Logging.Write($"({_source.Id}) customerId: {customerId}; {_customers.Count}");
             if (!_customers.Remove(customerId) || _customers.Count != 0) return;
 
             await Task.Delay(200);
             if (_customers.Count == 0) {
-                Logging.Warning(_cancellationSource.GetHashCode());
                 _cancellationSource?.Cancel();
             }
         }
@@ -250,15 +219,12 @@ namespace AcManager.Tools.Managers.Online {
 
             var cancellationSource = new CancellationTokenSource();
             _cancellationSource = cancellationSource;
-            Logging.Warning(_cancellationSource.GetHashCode());
 
             try {
-                CleanUp();
-                var ready = await GetLoadInnerTask(cancellationSource.Token);
-
+                var ready = await GetSourceLoadTask(cancellationSource.Token);
                 while (_reloadAfterwards && !cancellationSource.IsCancellationRequested) {
-                    CleanUp();
-                    ready = await GetLoadInnerTask(cancellationSource.Token);
+                    _reloadAfterwards = false;
+                    ready = await GetSourceLoadTask(cancellationSource.Token);
                 }
 
                 // new LoadAsyncInner() might be started, if this one is cancelled
@@ -283,7 +249,17 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private Task<bool> GetLoadInnerTask(CancellationToken cancellation) {
+        private bool _first = true;
+
+        private void CleanUp() {
+            for (var i = _list.Count - 1; i >= 0; i--) {
+                if (_list[i].RemoveOrigin(_source.Id)) {
+                    _list.RemoveAt(i);
+                }
+            }
+        }
+
+        private Task<bool> GetSourceLoadTask(CancellationToken cancellation) {
             var list = _source as IOnlineListSource;
             if (list != null) {
                 return list.LoadAsync(Add, this, cancellation);
@@ -291,10 +267,78 @@ namespace AcManager.Tools.Managers.Online {
 
             var background = _source as IOnlineBackgroundSource;
             if (background != null) {
+                if (_first) {
+                    _first = false;
+                } else {
+                    CleanUp();
+                }
+
                 return background.LoadAsync(Add, this, cancellation);
             }
 
             throw new NotSupportedException($@"Not supported type: {_source.GetType().Name}");
+        }
+
+        private void Add(ServerInformation information) {
+            var existing = _list.GetByIdOrDefault(information.Id);
+            if (existing == null) {
+                var entry = new ServerEntry(information);
+                entry.SetOrigin(Key);
+                _list.Add(entry);
+            } else {
+                existing.SetOrigin(Key);
+                existing.UpdateValues(information);
+            }
+        }
+
+        private void Add(IEnumerable<ServerInformation> informations) {
+            if (_first) {
+                _first = false;
+
+                var newEntries = new List<ServerEntry>((informations as IReadOnlyList<ServerInformation>)?.Count ?? 300);
+                Logging.Debug(newEntries.Capacity);
+
+                foreach (var information in informations) {
+                    var existing = _list.GetByIdOrDefault(information.Id);
+                    if (existing == null) {
+                        var entry = new ServerEntry(information);
+                        entry.SetOrigin(Key);
+                        newEntries.Add(entry);
+                    } else {
+                        existing.SetOrigin(Key);
+                        existing.UpdateValues(information);
+                    }
+                }
+
+                var target = _list as ChangeableObservableCollection<ServerEntry>;
+                if (target == null || newEntries.Count < 10) {
+                    foreach (var entry in newEntries) {
+                        _list.Add(entry);
+                    }
+                } else {
+                    target._AddRangeDirect(newEntries);
+                }
+            } else {
+                var list = informations.ToIReadOnlyListIfItsNot();
+
+                foreach (var information in list) {
+                    var existing = _list.GetByIdOrDefault(information.Id);
+                    if (existing == null) {
+                        var entry = new ServerEntry(information);
+                        entry.SetOrigin(Key);
+                        _list.Add(entry);
+                    } else {
+                        existing.SetOrigin(Key);
+                        existing.UpdateValues(information);
+                    }
+                }
+
+                for (var i = _list.Count - 1; i >= 0; i--) {
+                    if (list.GetByIdOrDefault(_list[i].Id) == null && _list[i].RemoveOrigin(_source.Id)) {
+                        _list.RemoveAt(i);
+                    }
+                }
+            }
         }
     }
 }

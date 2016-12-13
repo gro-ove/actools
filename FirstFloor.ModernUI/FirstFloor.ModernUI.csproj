@@ -119,11 +119,13 @@
     <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
+    <Compile Include="Windows\Controls\BbCode\BbCodeParser.Image.cs" />
     <Compile Include="Windows\Controls\BetterScrollBar.cs" />
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
     <Compile Include="Windows\Controls\BooleanSwitch.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />
+    <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
@@ -607,13 +609,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>touch -t 201601011200 "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

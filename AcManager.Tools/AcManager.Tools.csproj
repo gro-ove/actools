@@ -264,6 +264,7 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
     <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />
@@ -353,7 +354,7 @@
     <Compile Include="Helpers\Api\KunosApiProvider.Lan.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
-    <Compile Include="Helpers\Api\Kunos\ServerActualInformation.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerCarsInformation.cs" />
     <Compile Include="Helpers\BuildInformation.cs" />
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
     <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
@@ -493,13 +494,7 @@
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>touch -t 201601011200 "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

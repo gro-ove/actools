@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.GameProperties;
@@ -19,50 +18,65 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
-        private string _nonAvailableReason;
+        private IReadOnlyList<string> _naReasons;
 
-        public string NonAvailableReason {
-            get { return _nonAvailableReason; }
+        [CanBeNull]
+        public IReadOnlyList<string> NonAvailableReasons {
+            get { return _naReasons; }
             set {
-                if (Equals(value, _nonAvailableReason))
-                    return;
-                _nonAvailableReason = value;
+                if (Equals(value, _naReasons)) return;
+                _naReasons = value;
                 OnPropertyChanged();
             }
         }
 
-        private string GetNonAvailableReason() {
-            if (!IsFullyLoaded || Sessions == null)
-                return "Can’t get any information";
-            if (Status != ServerStatus.Ready)
-                return "CM isn’t ready";
+        /// <summary>
+        /// Non available reasons, already joined to one string, for optimization purposes.
+        /// </summary>
+        [CanBeNull]
+        public string NonAvailableReasonsString => _naReasons == null ? null : (_naReasonsString ?? (_naReasonsString = _naReasons.JoinToString('\n')));
+        private string _naReasonsString;
 
-            var currentItem = SelectedCarEntry;
-            if (currentItem == null)
-                return "Car isn’t selected";
+        private IEnumerable<string> GetNonAvailableReasons() {
+            if (!IsFullyLoaded || Sessions == null) {
+                yield return "Can’t get any information";
+                yield break;
+            }
+
+            if (Status != ServerStatus.Ready) {
+                yield return "CM isn’t ready";
+            }
 
             if (PasswordRequired) {
-                if (WrongPassword)
-                    return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
-                if (string.IsNullOrEmpty(Password))
-                    return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
+                if (string.IsNullOrEmpty(Password)) {
+                    yield return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
+                } else if (WrongPassword) {
+                    yield return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
+                }
             }
 
-            if (BookingMode) {
-                var currentSession = Sessions.FirstOrDefault(x => x.IsActive);
-                if (currentSession?.Type != Game.SessionType.Booking)
-                    return "Wait for the next booking";
-            } else {
-                if (!currentItem.IsAvailable)
-                    return "Selected car isn’t available";
-            }
+            if (!IsBookedForPlayer) {
+                if (SelectedCarEntry == null) {
+                    yield return "Car isn’t selected";
+                }
 
-            return null;
+                if (CurrentDriversCount == Capacity) {
+                    yield return "No available places left";
+                }
+
+                if (BookingMode && Sessions.FirstOrDefault(x => x.IsActive)?.Type != Game.SessionType.Booking) {
+                    yield return "Wait for the next booking";
+                }
+            }
+            
+            if (!BookingMode && SelectedCarEntry?.IsAvailable != true) {
+                yield return "Selected car isn’t available";
+            }
         }
 
         private void AvailableUpdate() {
-            NonAvailableReason = GetNonAvailableReason();
-            IsAvailable = NonAvailableReason == null;
+            NonAvailableReasons = GetNonAvailableReasons().ToList();
+            IsAvailable = NonAvailableReasons.Count == 0;
         }
 
         private bool _isBooked;
@@ -70,8 +84,7 @@ namespace AcManager.Tools.Managers.Online {
         public bool IsBooked {
             get { return _isBooked; }
             set {
-                if (Equals(value, _isBooked))
-                    return;
+                if (Equals(value, _isBooked)) return;
                 _isBooked = value;
                 OnPropertyChanged();
                 _cancelBookingCommand?.RaiseCanExecuteChanged();
@@ -83,8 +96,7 @@ namespace AcManager.Tools.Managers.Online {
         public DateTime StartTime {
             get { return _startTime; }
             set {
-                if (Equals(value, _startTime))
-                    return;
+                if (Equals(value, _startTime)) return;
                 _startTime = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(BookingTimeLeft));
@@ -96,8 +108,7 @@ namespace AcManager.Tools.Managers.Online {
         public string BookingErrorMessage {
             get { return _bookingErrorMessage; }
             set {
-                if (Equals(value, _bookingErrorMessage))
-                    return;
+                if (Equals(value, _bookingErrorMessage)) return;
                 _bookingErrorMessage = value;
                 OnPropertyChanged();
             }
@@ -113,10 +124,12 @@ namespace AcManager.Tools.Managers.Online {
         private async Task CancelBooking() {
             DisposeHelper.Dispose(ref _ui);
 
-            if (!IsBooked)
-                return;
+            if (!IsBooked) return;
             IsBooked = false;
             await Task.Run(() => KunosApiProvider.TryToUnbook(Ip, PortHttp));
+            if (!_updating) {
+                Update(UpdateMode.Lite, true, true).Forget();
+            }
         }
 
         private void PrepareBookingUi() {
@@ -141,6 +154,10 @@ namespace AcManager.Tools.Managers.Online {
                 StartTime = DateTime.Now + response.Left;
                 BookingErrorMessage = null;
                 IsBooked = response.IsSuccessful;
+
+                if (!_updating) {
+                    Update(UpdateMode.Lite, true, true).Forget();
+                }
             } else {
                 BookingErrorMessage = response.ErrorMessage;
                 IsBooked = false;
@@ -215,7 +232,7 @@ namespace AcManager.Tools.Managers.Online {
                 return;
             }
 
-            if (BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
+            if (!IsBookedForPlayer && BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
                 if (_factory == null) {
                     Logging.Error("Booking: UI factory is missing");
                     return;
@@ -239,7 +256,7 @@ namespace AcManager.Tools.Managers.Online {
             }, null, null, null, new Game.OnlineProperties {
                 RequestedCar = correctId,
                 ServerIp = Ip,
-                ServerName = base.DisplayName,
+                ServerName = DisplayName,
                 ServerPort = PortRace,
                 ServerHttpPort = PortHttp,
                 Guid = SteamIdHelper.Instance.Value,

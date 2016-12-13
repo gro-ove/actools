@@ -1,3 +1,5 @@
+using Windows.Foundation.Metadata;
+
 namespace AcManager {
     /// <summary>
     /// Taken from command line arguments or from Arguments.txt in app’s data
@@ -50,6 +52,29 @@ namespace AcManager {
         /// Example: --load-images-in-background=no.
         /// </summary>
         LoadImagesInBackground,
+
+        /// <summary>
+        /// How much RAM memory will be allocated for caching loaded from disk images, 10 MB
+        /// by default. Feel free to modify if you want, I didn’t really test what values
+        /// would work best here.
+        /// Example: --images-cache-limit=50MB.
+        /// </summary>
+        [FlagDefaultValue("10MB")]
+        ImagesCacheLimit,
+
+        /// <summary>
+        /// Maximum size of a cacheable image, 100 KB by default. Feel free to modify, I didn’t
+        /// really test what values would work best here.
+        /// Example: --images-cache-limit-per-image=1MB.
+        /// </summary>
+        [FlagDefaultValue("100KB")]
+        ImagesCacheLimitPerImage,
+        
+        /// <summary>
+        /// Images loaded from cache will be highlighted. For debugging purposes.
+        /// Example: --images-mask-cached.
+        /// </summary>
+        ImagesMarkCached,
 
         /// <summary>
         /// For internal use.

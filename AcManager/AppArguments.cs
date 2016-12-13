@@ -5,10 +5,28 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
+using System.Windows;
+using JetBrains.Annotations;
 
 namespace AcManager {
+    internal class FlagDefaultValueAttribute : Attribute {
+        public string Value { get; }
+
+        public FlagDefaultValueAttribute([Localizable(false)] string value) {
+            Value = value;
+        }
+
+        [CanBeNull]
+        public static string GetValue(Enum enumVal) {
+            return enumVal.GetType().GetMember(enumVal.ToString())[0]
+                    .GetCustomAttributes(typeof(FlagDefaultValueAttribute), false)
+                    .OfType<FlagDefaultValueAttribute>().FirstOrDefault()?.Value;
+        }
+    }
+
+    /// <summary>
+    /// Can be safely used before references are loaded.
+    /// </summary>
     [Localizable(false)]
     public static class AppArguments {
         private static Regex _regex;
@@ -60,9 +78,10 @@ namespace AcManager {
         public static bool Has(AppFlag flag) {
             return _args != null && _args.ContainsKey(flag);
         }
-
+        
+        [CanBeNull]
         public static string Get(AppFlag flag) {
-            return _args != null && _args.ContainsKey(flag) ? _args[flag] : null;
+            return _args != null && _args.ContainsKey(flag) ? _args[flag] : FlagDefaultValueAttribute.GetValue(flag);
         }
 
         public static bool GetBool(AppFlag flag, bool defaultValue = false) {
@@ -83,7 +102,7 @@ namespace AcManager {
                 }
                 return;
             }
-
+            
             if (value == "1" ||
                     string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase) ||
@@ -103,7 +122,60 @@ namespace AcManager {
             var value = Get(flag);
             if (value == null) return;
             if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
-                Logging.Error($"Can’t parse option value: “{value}”");
+                MessageBox.Show($"Can’t parse option value: “{value}”");
+            }
+        }
+
+        private static bool ParseSize(string size, out long bytes) {
+            var split = -1;
+
+            for (var i = 0; i < size.Length; i++) {
+                if (size[i] >= 'a' && size[i] <= 'z' || size[i] >= 'A' && size[i] <= 'Z') {
+                    split = i;
+                    break;
+                }
+            }
+
+            if (split == -1) {
+                return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
+            }
+
+            double val;
+            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) {
+                bytes = 0;
+                return false;
+            }
+
+            var postfix = size.Substring(split).Trim().ToLower();
+            switch (postfix) {
+                case "b":
+                    bytes = (long)val;
+                    return true;
+                case "kb":
+                    bytes = (long)(1024 * val);
+                    return true;
+                case "mb":
+                    bytes = (long)(1048576 * val);
+                    return true;
+                case "gb":
+                    bytes = (long)(1073741824 * val);
+                    return true;
+                case "tb":
+                    bytes = (long)(1099511627776 * val);
+                    return true;
+                default:
+                    MessageBox.Show($"Unknown postfix: {postfix}");
+                    bytes = (long)val;
+                    return false;
+            }
+        }
+
+        public static void SetSize(AppFlag flag, ref long option) {
+            var value = Get(flag);
+            if (value == null) return;
+
+            if (!ParseSize(value, out option)) {
+                MessageBox.Show($"Can’t parse option value: “{value}”");
             }
         }
 
@@ -111,7 +183,7 @@ namespace AcManager {
             var value = Get(flag);
             if (value == null) return;
             if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
-                Logging.Error($"Can’t parse option value: “{value}”");
+                MessageBox.Show($"Can’t parse option value: “{value}”");
             }
         }
 
@@ -123,39 +195,40 @@ namespace AcManager {
 
         private static bool TryParse(string value, ref TimeSpan timeSpan) {
             var p = value.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-            double? result;
-            switch (p.Length) {
-                case 0:
-                    return false;
-                case 1:
-                    result = FlexibleParser.TryParseDouble(p[0]);
-                    break;
-                case 2:
-                    result = FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1]);
-                    break;
-                case 3:
-                    result = (FlexibleParser.TryParseDouble(p[0]) * 60 + FlexibleParser.TryParseDouble(p[1])) * 60 +
-                            FlexibleParser.TryParseDouble(p[2]);
-                    break;
-                default:
-                    result = ((FlexibleParser.TryParseDouble(p[0]) * 24 + FlexibleParser.TryParseDouble(p[1])) * 60 +
-                            FlexibleParser.TryParseDouble(p[2])) * 60 + FlexibleParser.TryParseDouble(p[3]);
-                    break;
-            }
 
-            if (result.HasValue) {
-                timeSpan = TimeSpan.FromSeconds(result.Value);
+            try {
+                double result;
+                switch (p.Length) {
+                    case 0:
+                        return false;
+                    case 1:
+                        result = double.Parse(p[0], CultureInfo.InvariantCulture);
+                        break;
+                    case 2:
+                        result = double.Parse(p[0], CultureInfo.InvariantCulture) * 60 + double.Parse(p[1], CultureInfo.InvariantCulture);
+                        break;
+                    case 3:
+                        result = (double.Parse(p[0], CultureInfo.InvariantCulture) * 60 + double.Parse(p[1], CultureInfo.InvariantCulture)) * 60 +
+                                double.Parse(p[2], CultureInfo.InvariantCulture);
+                        break;
+                    default:
+                        result = ((double.Parse(p[0], CultureInfo.InvariantCulture) * 24 + double.Parse(p[1], CultureInfo.InvariantCulture)) * 60 +
+                                double.Parse(p[2], CultureInfo.InvariantCulture)) * 60 + double.Parse(p[3], CultureInfo.InvariantCulture);
+                        break;
+                }
+                
+                timeSpan = TimeSpan.FromSeconds(result);
                 return true;
+            } catch (Exception) {
+                return false;
             }
-
-            return false;
         }
 
         public static void Set(AppFlag flag, ref TimeSpan option) {
             var value = Get(flag);
             if (value == null) return;
             if (!TryParse(value, ref option)) {
-                Logging.Error($"Can’t parse option value: “{value}”");
+                MessageBox.Show($"Can’t parse option value: “{value}”");
             }
         }
     }

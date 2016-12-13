@@ -409,6 +409,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnNavigated(IContent oldContent, IContent newContent, NavigationEventArgs e) {
             // invoke IContent.OnNavigatedFrom and OnNavigatedTo
+            var children = (oldContent as FrameworkElement)?.FindVisualChildren<DependencyObject>().OfType<IContent>();
+            if (children != null) {
+                foreach (var child in children) {
+                    child.OnNavigatedFrom(e);
+                }
+            }
+
             oldContent?.OnNavigatedFrom(e);
             newContent?.OnNavigatedTo(e);
 

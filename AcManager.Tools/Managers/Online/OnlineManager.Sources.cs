@@ -55,7 +55,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (keys.Contains(@"*") || keys.Contains(@"all")) {
-                return new SourcesPack(Sources.Keys.Select(GetWrappedSource));
+                return new SourcesPack(Sources.Keys.Union(FileBasedOnlineSources.Instance.GetSourceKeys()).Select(GetWrappedSource));
             }
 
             return new SourcesPack(keys.Select(GetWrappedSource).NonNull());

@@ -30,6 +30,8 @@ namespace AcManager.Tools.SemiGui {
         public static event EventHandler<GameFinishedArgs> Finished;
         public static event EventHandler<GameFinishedArgs> Cancelled;
 
+        public static bool IsInGame { get; private set; }
+
         private class ProgressHandler : IProgress<Game.ProgressState> {
             private readonly IGameUi _ui;
 
@@ -159,6 +161,7 @@ namespace AcManager.Tools.SemiGui {
                 ui.Show(properties);
 
                 CancellationTokenSource linked = null;
+                IsInGame = true;
 
                 try {
                     Game.Result result;
@@ -226,6 +229,7 @@ namespace AcManager.Tools.SemiGui {
                     return null;
                 } finally {
                     linked?.Dispose();
+                    IsInGame = false;
                 }
             }
         }

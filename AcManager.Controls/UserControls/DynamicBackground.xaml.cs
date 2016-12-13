@@ -93,7 +93,9 @@ namespace AcManager.Controls.UserControls {
             _started = false;
             HideVideo();
             await Task.Delay(1000);
-            _player.Stop();
+            if (!_started) {
+                _player.Stop();
+            }
         }
 
         private async void ShowVideo() {

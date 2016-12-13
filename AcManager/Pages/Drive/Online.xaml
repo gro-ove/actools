@@ -29,7 +29,7 @@
     </UserControl.Resources>
 
     <mui:Cell>
-        <ToggleButton x:Name="ToggleButton" Content="…" Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" />
+        <ToggleButton x:Name="ToggleButton" Content="…" Panel.ZIndex="10" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4" Padding="2" />
 
         <DockPanel>
             <mui:Cell DockPanel.Dock="Top" Visibility="{Binding IsChecked, ElementName=ToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -251,7 +251,7 @@
                                         Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
                                         Fill="{DynamicResource SeparatorBackground}" Grid.Column="1" Width="1" HorizontalAlignment="Center"
                                         VerticalAlignment="Stretch" />
-                                <mui:ModernFrame Grid.Column="2" Source="{Binding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
+                                <mui:ModernFrame x:Name="Frame" Grid.Column="2" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
                             </Grid>
                         </mui:BooleanSwitch.False>
                     </mui:BooleanSwitch>

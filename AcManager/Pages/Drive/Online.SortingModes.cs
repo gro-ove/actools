@@ -29,7 +29,7 @@ namespace AcManager.Pages.Drive {
             }
 
             public override bool IsAffectedBy(string propertyName) {
-                return propertyName == nameof(ServerEntry.DisplayName);
+                return propertyName == nameof(ServerEntry.DisplayName) || propertyName == nameof(ServerEntry.IsFavorited);
             }
         }
 
@@ -41,6 +41,17 @@ namespace AcManager.Pages.Drive {
 
             public override bool IsAffectedBy(string propertyName) {
                 return propertyName == nameof(ServerEntry.CurrentDriversCount);
+            }
+        }
+
+        private class SortingConnectedDriversCount : ServerEntrySorter {
+            public override int Compare(ServerEntry x, ServerEntry y) {
+                var dif = -x.ConnectedDrivers.CompareTo(y.ConnectedDrivers);
+                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+            }
+
+            public override bool IsAffectedBy(string propertyName) {
+                return propertyName == nameof(ServerEntry.ConnectedDrivers);
             }
         }
 
@@ -83,6 +94,8 @@ namespace AcManager.Pages.Drive {
             switch (modeKey) {
                 case "drivers":
                     return new SortingDriversCount();
+                case "connected":
+                    return new SortingConnectedDriversCount();
                 case "capacity":
                     return new SortingCapacityCount();
                 case "cars":
@@ -97,6 +110,7 @@ namespace AcManager.Pages.Drive {
         public static SettingEntry[] SortingModes { get; } = {
             new SettingEntry(null, AppStrings.Online_Sorting_Name),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
+            new SettingEntry("connected", "Connected Drivers"),
             new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
             new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
             new SettingEntry("ping", AppStrings.Online_Sorting_Ping)

@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
+    <Compile Include="FavoriteButton.cs" />
     <Compile Include="Helpers\AppIconService.cs" />
     <Compile Include="Helpers\AppShortcut.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
     <Compile Include="OnlineItem.cs" />
     <Compile Include="Presentation\DependencyObjectExtension.cs" />
+    <Compile Include="PropertiesGrid.cs" />
     <Compile Include="QuickSwitches\QuickSwitchComboBox.cs" />
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
     <Compile Include="QuickSwitches\QuickSwitchSlider.cs" />
@@ -369,6 +371,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\FavoriteButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\StatEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -485,6 +491,7 @@
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PostBuildEvent>touch -t 201601011200 "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
 </Project>

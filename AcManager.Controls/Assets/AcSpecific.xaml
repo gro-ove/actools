@@ -15,14 +15,14 @@
         <VisualBrush.Visual>
             <Ellipse Fill="Aqua" Width="8" Height="8">
                 <Ellipse.Triggers>
-                    <EventTrigger RoutedEvent="Rectangle.Loaded">
+                    <EventTrigger RoutedEvent="Ellipse.Loaded">
                         <BeginStoryboard>
                             <Storyboard RepeatBehavior="Forever">
-                                <ColorAnimation From="#ff0000" To="#00ff00" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                <ColorAnimation From="#ff0000" To="#00ff00" Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
                                         Duration="0:0:0.6" />
-                                <ColorAnimation From="#00ff00" To="#0000ff" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                <ColorAnimation From="#00ff00" To="#0000ff" Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" BeginTime="0:0:0.6" />
-                                <ColorAnimation From="#0000ff" To="#ff0000" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                <ColorAnimation From="#0000ff" To="#ff0000" Storyboard.TargetProperty="(Ellipse.Fill).(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" BeginTime="0:0:0.9" />
                             </Storyboard>
                         </BeginStoryboard>

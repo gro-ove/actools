@@ -95,7 +95,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                 Consume();
             }
-
+            
             return new Token(GetMark().Replace("\\[", "["), TokenText);
         }
 

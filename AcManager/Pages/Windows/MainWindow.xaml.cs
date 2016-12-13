@@ -127,7 +127,7 @@ namespace AcManager.Pages.Windows {
                 list.RemoveAt(i);
             }
 
-            foreach (var source in FileBasedOnlineSources.Instance.GetSources().OrderBy(x => x.DisplayName)) {
+            foreach (var source in FileBasedOnlineSources.Instance.GetVisibleSources().OrderBy(x => x.DisplayName)) {
                 list.Add(new Link {
                     DisplayName = source.DisplayName,
                     Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}", source.Id)

@@ -95,15 +95,21 @@ namespace AcManager.Tools.Filters {
                 case "ip":
                     return value.Test(obj.Ip);
 
+                case "id":
+                    return value.Test(obj.Id);
+
+                case "port":
+                    return value.Test(obj.PortHttp);
+
                 case "carid":
-                    return obj.Cars?.Any(x => value.Test(x.CarObject.Id)) == true;
+                    return obj.Cars?.Any(x => value.Test(x.Id)) == true;
 
                 case "car":
-                    return obj.Cars?.Any(x => value.Test(x.CarObject.Id) || value.Test(x.CarObject.Name)) == true;
+                    return obj.Cars?.Any(x => value.Test(x.Id) || value.Test(x.CarObject?.Name)) == true;
 
                 case "a":
                 case "available":
-                    return obj.Cars?.Where(x => x.Available > 0).Any(x => value.Test(x.CarObject.Id) || value.Test(x.CarObject.Name)) == true;
+                    return obj.Cars?.Where(x => x.Available > 0).Any(x => value.Test(x.Id) || value.Test(x.CarObject?.Name)) == true;
 
                 case "driver":
                 case "player":
@@ -204,14 +210,14 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case null:
                 case "car":
-                    return obj.Cars?.Any(x => filter.Test(CarObjectTester.Instance, x.CarObject)) == true;
+                    return obj.Cars?.Any(x => x.CarObject != null && filter.Test(CarObjectTester.Instance, x.CarObject)) == true;
 
                 case "track":
                     return obj.Track != null && filter.Test(TrackBaseObjectTester.Instance, obj.Track);
 
                 case "a":
                 case "available":
-                    return obj.Cars?.Where(x => x.Available > 0).Any(x => filter.Test(CarObjectTester.Instance, x.CarObject)) == true;
+                    return obj.Cars?.Where(x => x.Available > 0).Any(x => x.CarObject != null && filter.Test(CarObjectTester.Instance, x.CarObject)) == true;
             }
 
             return false;

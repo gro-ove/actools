@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Utils.Helpers;
 using SlimDX;

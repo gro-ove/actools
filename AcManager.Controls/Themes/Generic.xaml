@@ -8,11 +8,19 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectHeaderSection.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectListBox.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcToolBar.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/FavoriteButton.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <oxy:ThicknessConverter x:Key="ThicknessConverter" />
 
+    <Style TargetType="{x:Type ac:PropertiesGrid}">
+        <Setter Property="LabelFontFamily" Value="{StaticResource CondensedFont}" />
+        <Setter Property="LabelFontWeight" Value="Bold" />
+        <Setter Property="LabelPadding" Value="8 1 0 0" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+    </Style>
+    
     <Style TargetType="{x:Type ac:CustomTrackerControl}" BasedOn="{StaticResource {x:Type oxy:TrackerControl}}">
         <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />

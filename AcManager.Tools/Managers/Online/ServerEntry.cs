@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,7 +22,7 @@ namespace AcManager.Tools.Managers.Online {
         public ServerEntry([NotNull] ServerInformation information) {
             if (information == null) throw new ArgumentNullException(nameof(information));
 
-            Id = information.GetUniqueId();
+            Id = information.Id;
             Ip = information.Ip;
             PortHttp = information.PortHttp;
 
@@ -34,6 +35,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public void UpdateValues([NotNull] ServerInformation information) {
+            if (!information.IsFullyLoaded && IsFullyLoaded) return;
+
             var errors = new List<string>(3);
             var status = UpdateValues(information, errors);
             if (status.HasValue) {
@@ -87,6 +90,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (information.CarIds != null && Cars?.Select(x => x.Id).SequenceEqual(information.CarIds) != true) {
                 Cars = information.CarIds.Select(x => Cars?.GetByIdOrDefault(x) ?? new CarEntry(x)).ToList();
+                SelectedCarEntry = Cars.FirstOrDefault();
             }
 
             if (TrackId != information.TrackId) {
@@ -116,11 +120,17 @@ namespace AcManager.Tools.Managers.Online {
             Time = $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
 
-            Sessions = information.SessionTypes?.Select((x, i) => new Session {
-                IsActive = x == information.Session,
-                Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
-                Type = (Game.SessionType)x
-            }).ToList();
+            if (information.SessionTypes != null) {
+                var sessions = information.SessionTypes.Select((x, i) => new Session {
+                    IsActive = x == information.Session,
+                    Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
+                    Type = (Game.SessionType)x
+                }).ToList();
+
+                if (Sessions == null || !Sessions.SequenceEqual(sessions)) {
+                    Sessions = sessions;
+                }
+            }
 
             BookingMode = !information.PickUp;
             return result;
@@ -167,20 +177,37 @@ namespace AcManager.Tools.Managers.Online {
             return TracksManager.Instance.GetLayoutByKunosId(informationId);
         }
 
+        private string GetFailedReason(WebException e) {
+            switch (e.Status) {
+                case WebExceptionStatus.RequestCanceled:
+                    return "Server did not respond in given time";
+                case WebExceptionStatus.ConnectFailure:
+                    return "Connect failure.";
+                default:
+                    Logging.Warning(e.Status);
+                    return "Unknown reason";
+            }
+        }
+
         public enum UpdateMode {
             Lite,
             Normal,
             Full
         }
 
+        private bool _updating;
+
         public async Task Update(UpdateMode mode, bool background = false, bool fast = false) {
+            if (_updating) return;
+            _updating = true;
+
+            Logging.Debug(Id);
+
             var errors = new List<string>(3);
 
             try {
                 if (!background) {
-                    CurrentDrivers.Clear();
-                    OnPropertyChanged(nameof(CurrentDrivers));
-
+                    CurrentDrivers = null;
                     Status = ServerStatus.Loading;
                     IsAvailable = false;
                 }
@@ -189,38 +216,46 @@ namespace AcManager.Tools.Managers.Online {
                 if (!IsFullyLoaded) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.1);
 
-                    var newInformation = await GetInformationDirectly();
-                    if (newInformation == null) {
-                        errors.Add(ToolsStrings.Online_Server_Unavailable);
+                    ServerInformation loaded;
+                    try {
+                        loaded = await GetInformationDirectly();
+                    } catch (WebException e) {
+                        errors.Add($"Can’t load any information: {GetFailedReason(e)}.");
                         return;
                     }
 
-                    if (UpdateValues(newInformation, errors) != null) return;
+                    if (UpdateValues(loaded, errors) != null) return;
                     informationUpdated = true;
                 }
 
                 if (mode == UpdateMode.Full) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.2);
+                    
+                    ServerInformation loaded;
+                    try {
+                        loaded = await GetInformation(informationUpdated);
+                    } catch (WebException e) {
+                        errors.Add($"Can’t load information: {GetFailedReason(e)}.");
+                        return;
+                    }
 
-                    var newInformation = await GetInformation(informationUpdated);
-                    if (newInformation == null) {
-                        if (!informationUpdated) {
-                            errors.Add(ToolsStrings.Online_Server_CannotRefresh);
-                            return;
-                        }
-                    } else if (newInformation.Ip == Ip && newInformation.PortHttp == PortHttp || informationUpdated || newInformation.LoadedDirectly) {
-                        // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
-                        // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
-                        // loaded just before that and loaded information wasn’t loaded from it.
-                        if (UpdateValues(newInformation, errors) != null) return;
-                    } else {
-                        var directInformation = await GetInformationDirectly();
-                        if (directInformation == null) {
-                            errors.Add(ToolsStrings.Online_Server_Unavailable);
-                            return;
-                        }
+                    if (loaded != null) {
+                        if (loaded.Ip == Ip && loaded.PortHttp == PortHttp || informationUpdated || loaded.LoadedDirectly) {
+                            // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
+                            // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
+                            // loaded just before that and loaded information wasn’t loaded from it.
+                            if (UpdateValues(loaded, errors) != null) return;
+                        } else {
+                            ServerInformation directlyLoaded;
+                            try {
+                                directlyLoaded = await GetInformationDirectly();
+                            } catch (WebException e) {
+                                errors.Add($"Can’t load new information: {GetFailedReason(e)}.");
+                                return;
+                            }
 
-                        if (UpdateValues(directInformation, errors) != null) return;
+                            if (UpdateValues(directlyLoaded, errors) != null) return;
+                        }
                     }
                 }
 
@@ -239,30 +274,42 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 UpdateProgress = new AsyncProgressEntry("Loading players list…", 0.4);
-                var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortHttp);
-                if (information == null) {
-                    errors.Add(ToolsStrings.Online_Server_Unavailable);
+
+                ServerCarsInformation information;
+                try {
+                    information = await KunosApiProvider.GetCarsInformationAsync(Ip, PortHttp);
+                } catch (WebException e) {
+                    errors.Add($"Can’t load drivers information: {GetFailedReason(e)}.");
                     return;
                 }
 
-                ActualInformation = information;
-                if (CurrentDrivers.ReplaceIfDifferBy(from x in information.Cars
-                                                     where x.IsConnected
-                                                     select new CurrentDriver {
-                                                         Name = x.DriverName,
-                                                         Team = x.DriverTeam,
-                                                         CarId = x.CarId,
-                                                         CarSkinId = x.CarSkinId
-                                                     })) {
-                    OnPropertyChanged(nameof(CurrentDrivers));
+                var currentDrivers = (BookingMode ? information.Cars : information.Cars.Where(x => x.IsConnected))
+                        .Select(x => CurrentDrivers?.FirstOrDefault(y => y.Name == x.DriverName && y.Team == x.DriverTeam &&
+                                y.CarId == x.CarId && y.CarSkinId == x.CarSkinId) ?? new CurrentDriver(x))
+                        .ToList();
+                if (CurrentDrivers == null || !CurrentDrivers.SequenceEqual(currentDrivers)) {
+                    CurrentDrivers = currentDrivers;
+
+                    var count = 0;
+                    var booked = false;
+                    foreach (var x in currentDrivers) {
+                        if (x.IsConnected) count++;
+                        if (x.IsBookedForPlayer) {
+                            booked = true;
+                            SelectedCarEntry = Cars?.GetByIdOrDefault(x.CarId, StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
+
+                    ConnectedDrivers = count;
+                    IsBookedForPlayer = booked;
                 }
 
                 if (Cars == null) {
-                    // This is not supposed to happen
+                    Logging.Unexpected();
                     errors.Add("Data is still missing");
                     return;
                 }
-                
+
                 for (int i = 0, c = Cars.Count; i < c; i++) {
                     var entry = Cars[i];
 
@@ -288,46 +335,37 @@ namespace AcManager.Tools.Managers.Online {
                     }
 
                     /* set next available skin */
-                    if (BookingMode) {
+                    if (CurrentSessionType == Game.SessionType.Booking) {
                         entry.AvailableSkin = car.SelectedSkin;
                     } else {
-                        var group = information.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
-                        if (group.Count == 0) {
-                            // errors.Add(ToolsStrings.Online_Server_CarsDoNotMatch);
-                            return;
+                        var cars = information.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
+                        string availableSkinId;
+
+                        if (BookingMode) {
+                            availableSkinId = cars.FirstOrDefault(x => x.IsRequestedGuid)?.CarSkinId;
+                        } else {
+                            if (cars.Count == 0) {
+                                // errors.Add(ToolsStrings.Online_Server_CarsDoNotMatch);
+                                return;
+                            }
+
+                            entry.Total = cars.Count;
+                            entry.Available = cars.Count(y => !y.IsConnected);
+
+                            availableSkinId = cars.FirstOrDefault(y => !y.IsConnected)?.CarSkinId;
                         }
 
-                        var availableSkinId = group.FirstOrDefault(y => !y.IsConnected)?.CarSkinId;
-
-                        entry.Total = group.Count;
-                        entry.Available = group.Count(y => !y.IsConnected);
                         entry.AvailableSkin = availableSkinId == null
                                 ? null : availableSkinId == string.Empty ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId);
                     }
                 }
 
-                /*var changed = true;
-                if (Cars == null || CarsView == null) {
-                    Cars = new BetterObservableCollection<CarEntry>(cars);
-                    CarsView = new ListCollectionView(Cars) { CustomSort = this };
-                    CarsView.CurrentChanged += SelectedCarChanged;
+                if (IsBookedForPlayer) {
+                    FixedCar = true;
                 } else {
-                    // temporary removing listener to avoid losing selected car
-                    CarsView.CurrentChanged -= SelectedCarChanged;
-                    if (Cars.ReplaceIfDifferBy(cars)) {
-                        OnPropertyChanged(nameof(Cars));
-                    } else {
-                        changed = false;
-                    }
-
-                    CarsView.CurrentChanged += SelectedCarChanged;
-                }*/
-
-                /*if (changed) {
+                    FixedCar = false;
                     LoadSelectedCar();
-                }*/
-
-                LoadSelectedCar();
+                }
             } catch (InformativeException e) {
                 errors.Add($@"{e.Message}.");
             } catch (Exception e) {
@@ -338,30 +376,38 @@ namespace AcManager.Tools.Managers.Online {
                 Errors = errors;
                 Status = errors.Any() ? ServerStatus.Error : ServerStatus.Ready;
                 AvailableUpdate();
+                _updating = false;
             }
         }
 
-        private void LoadSelectedCar() {
+        public void LoadSelectedCar() {
             if (Cars == null) return;
 
             var selected = LimitedStorage.Get(LimitedSpace.OnlineSelectedCar, Id);
-            var firstAvailable = (selected == null ? null : Cars.GetByIdOrDefault(selected)) ??
-                    Cars.FirstOrDefault(x => x.IsAvailable) ?? Cars.FirstOrDefault();
-            SetSelectedCarEntry(firstAvailable);
+            SetSelectedCarEntry(selected == null ? null : Cars.GetByIdOrDefault(selected));
         }
 
+        private bool _fixedCar;
+
+        public bool FixedCar {
+            get { return _fixedCar; }
+            set {
+                if (Equals(value, _fixedCar)) return;
+                _fixedCar = value;
+                OnPropertyChanged();
+            }
+        }
+        
         private CarEntry _selectedCarEntry;
 
         [CanBeNull]
         public CarEntry SelectedCarEntry {
-            get { return _selectedCarEntry ?? Cars?.FirstOrDefault(); }
+            get { return _selectedCarEntry; }
             set {
-                if (Equals(value, _selectedCarEntry)) return;
-                _selectedCarEntry = value;
-                OnPropertyChanged();
-                
-                LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, value?.Id);
-                AvailableUpdate();
+                if (SetSelectedCarEntry(value)) {
+                    LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, value?.Id);
+                    AvailableUpdate();
+                }
             }
         }
 
@@ -369,10 +415,12 @@ namespace AcManager.Tools.Managers.Online {
         /// Without saving.
         /// </summary>
         /// <param name="value">New value.</param>
-        private void SetSelectedCarEntry([CanBeNull] CarEntry value) {
-            if (Equals(value, _selectedCarEntry)) return;
+        private bool SetSelectedCarEntry([CanBeNull] CarEntry value) {
+            if (value == null) value = Cars?.FirstOrDefault(x => x.IsAvailable) ?? Cars?.FirstOrDefault();
+            if (Equals(value, _selectedCarEntry)) return false;
             _selectedCarEntry = value;
             OnPropertyChanged(nameof(SelectedCarEntry));
+            return true;
         }
 
         /*private void SelectedCarChanged(object sender, EventArgs e) {
@@ -394,6 +442,14 @@ namespace AcManager.Tools.Managers.Online {
         public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand(() => {
             Update(UpdateMode.Full).Forget();
         }));
+
+        /// <summary>
+        /// For FileBasedOnlineSources.
+        /// </summary>
+        /// <returns>Description in format [IP]:[HTTP port];[Name]</returns>
+        public string ToDescription() {
+            return DisplayName == null ? Id : $@"{Id};{DisplayName}";
+        }
 
         public override string ToString() {
             return Id;
