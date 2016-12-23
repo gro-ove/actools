@@ -58,12 +58,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnColorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ColorPicker)o).OnColorChanged((Color)e.OldValue, (Color)e.NewValue);
+            ((ColorPicker)o).OnColorChanged((Color)e.NewValue);
         }
 
         private bool _skip;
 
-        private void OnColorChanged(Color oldValue, Color newValue) {
+        private void OnColorChanged(Color newValue) {
             if (_skip) return;
             if (DisplayColor.ToColor() != newValue) {
                 DisplayColor = newValue.ToHexString();
@@ -79,10 +79,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnDisplayColorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ColorPicker)o).OnDisplayColorChanged((string)e.OldValue, (string)e.NewValue);
+            ((ColorPicker)o).OnDisplayColorChanged((string)e.NewValue);
         }
 
-        private void OnDisplayColorChanged(string oldValue, string newValue) {
+        private void OnDisplayColorChanged(string newValue) {
             var color = newValue.ToColor();
             if (color.HasValue) {
                 _skip = true;
@@ -94,7 +94,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private class InnerColorToBrushConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 var c = value as Color?;
-                return c == null ? null : new SolidColorBrush(c.Value);
+                if (c == null) {
+                    return null;
+                }
+
+                var brush = new SolidColorBrush(c.Value);
+                brush.Freeze();
+                return brush;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

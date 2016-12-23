@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers {
     public class SpecialEventsManager : AcManagerNew<SpecialEventObject> {
-        public static Storage ProgressStorage { get; }
+        public static IStorage ProgressStorage { get; }
 
         static SpecialEventsManager() {
             ProgressStorage = new Storage(FilesStorage.Instance.GetFilename("Progress", "Special Challenges.data"));

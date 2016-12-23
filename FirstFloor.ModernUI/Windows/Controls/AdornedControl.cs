@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -7,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum AdornerPlacement {
@@ -242,13 +244,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public AdornedControl() {
             Focusable = false; // By default don't want 'AdornedControl' to be focusable.
-            DataContextChanged += AdornedControl_DataContextChanged;
+            DataContextChanged += OnDataContextChanged;
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
         }
 
         /// <summary>
         /// Event raised when the DataContext of the adorned control changes.
         /// </summary>
-        private void AdornedControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
             UpdateAdornerDataContext();
         }
 
@@ -405,15 +409,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private void ShowOrHideAdornerInternal() {
             if (IsAdornerVisible) {
-                ShowAdornerInternal();
+                _isShown = true;
+                if (_isLoaded) {
+                    ShowAdornerInternal();
+                }
             } else {
+                _isShown = false;
+                if (_isLoaded) {
+                    HideAdornerInternal();
+                }
+            }
+        }
+
+        private bool _isLoaded, _isShown;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_isLoaded) return;
+            _isLoaded = true;
+            if (_isShown) {
+                ShowAdornerInternal();
+            }
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            if (!_isLoaded) return;
+            _isLoaded = false;
+            if (_isShown) {
                 HideAdornerInternal();
             }
         }
 
         public static AdornerLayer GetAdornerLayer(Visual visual) {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
-            return visual.GetParent<AdornerDecorator>()?.AdornerLayer;
+            
+            foreach (var parent in visual.GetParents()) {
+                {
+                    var decorator = parent as AdornerDecorator;
+                    if (decorator != null) return decorator.AdornerLayer;
+                }
+
+                {
+                    var dialog = parent as Window;
+                    if (dialog != null) return dialog.FindVisualChild<AdornerDecorator>()?.AdornerLayer;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -452,11 +493,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             _adorner = null;
             _adornerLayer = null;
-        }
-
-        public override void OnApplyTemplate() {
-            base.OnApplyTemplate();
-            ShowOrHideAdornerInternal();
         }
 
         /// <summary>

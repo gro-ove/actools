@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -57,7 +55,7 @@ namespace AcManager.Pages.Dialogs {
                 CancelButton
             };
 
-            _fixableInputs = new[] {
+            _fixableInputs = new TextBox[] {
                 PowerInput, TorqueInput, WeightInput, AccelerationInput, TopSpeedInput, PwRatioInput
             };
 

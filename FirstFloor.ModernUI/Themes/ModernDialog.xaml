@@ -151,17 +151,15 @@
 
                                         <TextBlock Text="Detailed information:" Style="{StaticResource Light}" Margin="0 0 0 8" />
                                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 20" MaxHeight="200">
-                                            <TextBlock Text="{TemplateBinding StackTrace}" Style="{StaticResource Fixed}" Margin="0 0 0 8" TextWrapping="Wrap"
-                                                    FontSize="11" />
+                                            <TextBlock Text="{TemplateBinding StackTrace}" Style="{StaticResource Monospace}" Margin="0 0 0 8"
+                                                    TextWrapping="Wrap" FontSize="11" />
                                         </ScrollViewer>
 
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <Button Content="Copy To Clipboard" Margin="0 0 4 0"
-                                                    Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                            <Button Content="Restart" Margin="0 0 4 0"
-                                                    Command="{Binding RestartCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <c:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                            <Button Content="Copy To Clipboard" Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            <Button Content="Restart" Command="{Binding RestartCommand, RelativeSource={RelativeSource TemplatedParent}}" />
                                             <Button Content="Close" Command="{Binding ExitCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        </StackPanel>
+                                        </c:SpacingStackPanel>
                                     </StackPanel>
                                 </c:Cell>
                             </AdornerDecorator>

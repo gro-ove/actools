@@ -94,9 +94,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private const string PasswordStorageKeyBase = "__smt_pw";
-
-        private string PasswordStorageKey => $@"{PasswordStorageKeyBase}_{Id}";
+        private string KeyPasswordStorage => $@"__smt_pw_{Id}";
 
         private string _password;
 
@@ -105,7 +103,7 @@ namespace AcManager.Tools.Managers.Online {
             set {
                 if (Equals(value, _password)) return;
                 _password = value;
-                ValuesStorage.SetEncrypted(PasswordStorageKey, value);
+                ValuesStorage.SetEncrypted(KeyPasswordStorage, value);
                 OnPropertyChanged();
 
                 _wrongPassword = false;
@@ -339,6 +337,18 @@ namespace AcManager.Tools.Managers.Online {
             private set {
                 if (Equals(value, _currentDrivers)) return;
                 _currentDrivers = value;
+                HasFriends = value?.Any(x => x.Tags.Contains(DriverTag.FriendTag)) == true;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _hasFriends;
+
+        public bool HasFriends {
+            get { return _hasFriends; }
+            set {
+                if (Equals(value, _hasFriends)) return;
+                _hasFriends = value;
                 OnPropertyChanged();
             }
         }
@@ -423,5 +433,33 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
         #endregion
+
+        private string KeyLastConnected => $@"{Id}lastConnected";
+
+        private bool _lastConnectedLoaded;
+        private DateTime? _lastConnected;
+
+        public DateTime? LastConnected {
+            get {
+                if (!_lastConnectedLoaded) {
+                    _lastConnectedLoaded = true;
+                    _lastConnected = StatsStorage.GetDateTime(KeyLastConnected);
+                    Logging.Debug(StatsStorage.GetString(KeyLastConnected));
+                    Logging.Debug(_lastConnected);
+                }
+
+                return _lastConnected;
+            }
+            set {
+                if (Equals(value, LastConnected)) return;
+                _lastConnected = value;
+                if (value.HasValue) {
+                    StatsStorage.Set(KeyLastConnected, value.Value);
+                } else {
+                    StatsStorage.Remove(KeyLastConnected);
+                }
+                OnPropertyChanged();
+            }
+        }
     }
 }

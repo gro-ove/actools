@@ -275,6 +275,7 @@
     <Compile Include="Managers\Online\ServerEntry.Properties.cs" />
     <Compile Include="Managers\Online\ServerEntry.Classes.cs" />
     <Compile Include="Managers\Online\ServerEntry.Join.cs" />
+    <Compile Include="Managers\Online\ServerEntry.Stats.cs" />
     <Compile Include="Managers\Online\ServerEntry.Utils.cs" />
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />

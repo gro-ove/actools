@@ -82,13 +82,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void PickerButton_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             var picker = ColorPicker.GetLastOpened();
-            if (picker != null) {
+            if (picker?.Popup != null) {
                 picker.Popup.StaysOpen = true;
             }
 
             Color = ScreenColorPickerDialog.Pick() ?? Color;
 
-            if (picker != null) {
+            if (picker?.Popup != null) {
                 picker.Popup.Focus();
                 picker.Popup.StaysOpen = false;
             }

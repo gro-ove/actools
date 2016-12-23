@@ -28,7 +28,7 @@
 
                 <!--first column, showroom & filter-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterComboBox IsReadOnly="True" Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
@@ -39,18 +39,18 @@
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterComboBox IsReadOnly="True" Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
                 </StackPanel>
 
                 <!--second column, camera position-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_CameraPositionLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_CameraPositionLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraPosition}" />
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="1">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_LookAtLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_LookAtLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraLookAt}" />
                 </StackPanel>
             </Grid>
@@ -112,12 +112,12 @@
                 </Grid>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterTextBox Margin="5 0 5 0" Text="{Binding CameraFov}" Mode="Number" Placeholder="?" />
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
-                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_ExposureLabel}" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Margin="0 0 0 4" Text="{x:Static g:AppStrings.CarPreviews_ExposureLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterTextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" Mode="Number" Placeholder="?" />
                 </StackPanel>
             </Grid>

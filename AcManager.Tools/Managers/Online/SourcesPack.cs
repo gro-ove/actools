@@ -16,7 +16,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private readonly OnlineSourceWrapper[] _sources;
 
-        public SourcesPack(IEnumerable<OnlineSourceWrapper> sources) {
+        internal SourcesPack(IEnumerable<OnlineSourceWrapper> sources) {
             _sources = sources.ToArray();
             UpdateStatus();
 

@@ -57,7 +57,6 @@ namespace AcManager.Controls.ViewModels {
         public CarSkinObject CarSkin {
             get { return _carSkin; }
             set {
-                Logging.Debug(value?.Id);
                 if (Equals(value, _carSkin)) return;
                 _carSkin = value;
                 OnPropertyChanged();

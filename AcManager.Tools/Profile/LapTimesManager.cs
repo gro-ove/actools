@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
-using AcManager.Tools.SharedMemory;
 using AcTools.LapTimes;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -37,20 +36,38 @@ namespace AcManager.Tools.Profile {
         private void OnRaceFinished(object sender, GameEndedArgs e) {
             var basic = e.StartProperties.BasicProperties;
             var bestLap = e.Result?.GetExtraByType<Game.ResultExtraBestLap>();
-            var time = basic?.CarId == null || basic.TrackId == null || bestLap == null ||
-                    bestLap.IsCancelled ? null : bestLap?.Time;
+
+            var carId = basic?.CarId;
+            var trackId = basic?.TrackId;
+
+            if (trackId != null && basic.TrackConfigurationId != null) {
+                trackId = $@"{trackId}/{basic.TrackConfigurationId}";
+            }
+
+            var time = carId == null || trackId == null || bestLap == null ||
+                    bestLap.IsCancelled ? (TimeSpan?)null : bestLap.Time;
 
             if (SettingsHolder.Drive.WatchForSharedMemory) {
-                var sharedTime = PlayerStatsManager.Instance.Last?.BestLap;
-                if (sharedTime.HasValue) {
-                    time = sharedTime.Value;
+                var last = PlayerStatsManager.Instance.Last;
+
+                if (last != null) {
+                    if (carId == null) {
+                        carId = last.CarId;
+                    }
+
+                    if (trackId == null) {
+                        trackId = last.TrackId;
+                    }
+
+                    var sharedTime = last.BestLap;
+                    if (sharedTime.HasValue) {
+                        time = sharedTime.Value;
+                    }
                 }
             }
             
-            if (time.HasValue) {
-                AddEntry(new LapTimeEntry(SourceId,
-                        basic.CarId, basic.TrackId, basic.TrackConfigurationId,
-                        DateTime.Now, time.Value));
+            if (time.HasValue && carId != null && trackId != null) {
+                AddEntry(new LapTimeEntry(SourceId, carId, trackId, DateTime.Now, time.Value));
             }
         }
 

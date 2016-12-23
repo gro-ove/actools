@@ -9,6 +9,7 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
@@ -263,10 +264,16 @@ namespace AcManager.Tools.Managers.Online {
                 Password = Password
             });
 
+            var now = DateTime.Now;
             await GameWrapper.StartAsync(properties);
             var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn>();
             WrongPassword = whatsGoingOn?.Type == AcLogHelper.WhatsGoingOnType.OnlineWrongPassword;
-            // if (whatsGoingOn == null) RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
+
+            if (whatsGoingOn == null) {
+                LastConnected = now;
+                FileBasedOnlineSources.AddRecent(this).Forget();
+                UpdateStats();
+            }
         }
 
         private static IAnyFactory<IBookingUi> _factory;

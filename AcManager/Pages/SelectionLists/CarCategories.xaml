@@ -15,7 +15,7 @@
                 <Grid Width="100" Height="100" ToolTip="{Binding Description}" Background="Transparent"
                         PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown">
                     <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" DecodeHeight="68" ClearOnChange="True" />
-                    <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
+                    <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
                             VerticalAlignment="Bottom" />
                 </Grid>
             </DataTemplate>

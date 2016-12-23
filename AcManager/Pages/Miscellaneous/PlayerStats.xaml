@@ -59,7 +59,7 @@
                             CarId="{Binding Stats.MaxDistancePerCarCarId}"
                             Visibility="{Binding Stats.MaxDistancePerCarSame, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
-                    <c:StatEntry Title="Favorite track" ValueUnits="km" Value="{Binding Stats.MaxDistancePerTrackKm, StringFormat='{}{0:F1}'}"
+                    <c:StatEntry Title="Favourite track" ValueUnits="km" Value="{Binding Stats.MaxDistancePerTrackKm, StringFormat='{}{0:F1}'}"
                             TrackId="{Binding Stats.MaxDistancePerTrackTrackId}"
                             Visibility="{Binding Stats.MaxDistancePerTrackSame, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 

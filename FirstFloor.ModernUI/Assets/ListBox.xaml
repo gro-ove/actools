@@ -169,7 +169,10 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
+                            CacheLengthUnit="{TemplateBinding VirtualizingPanel.CacheLengthUnit}" ScrollUnit="{TemplateBinding VirtualizingPanel.ScrollUnit}"
+                            VirtualizationMode="{TemplateBinding VirtualizingPanel.VirtualizationMode}"
+                            IsVirtualizing="{TemplateBinding VirtualizingPanel.IsVirtualizing}" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

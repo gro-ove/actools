@@ -284,14 +284,10 @@ namespace AcManager.Controls.ViewModels {
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-                Logging.Debug(objectType);
-                Logging.Debug(reader.TokenType);
-                Logging.Debug(existingValue);
                 return reader.TokenType == JsonToken.Boolean ? ((bool)reader.Value ? 1d : 0d) : reader.Value.AsDouble();
             }
 
             public override bool CanConvert(Type objectType) {
-                Logging.Debug(objectType);
                 return objectType == typeof(double);
             }
         }

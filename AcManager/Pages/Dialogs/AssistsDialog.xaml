@@ -46,12 +46,12 @@
 
         <!-- third row -->
         <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="{x:Static t:ToolsStrings.Assists_TractionControlLabel_Tooltip}">
-            <TextBlock Text="{x:Static t:ToolsStrings.Assists_TractionControlLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static t:ToolsStrings.Assists_TractionControlLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding TractionControl}" ItemsSource="{Binding AssistStates}" />
         </StackPanel>
 
         <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="{x:Static t:ToolsStrings.Assists_AbsLabel_Tooltip}">
-            <TextBlock Text="{x:Static t:ToolsStrings.Assists_AbsLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static t:ToolsStrings.Assists_AbsLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding Abs}" ItemsSource="{Binding AssistStates}" />
         </StackPanel>
 

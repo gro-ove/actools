@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -24,7 +25,7 @@ namespace AcManager.Tools.Managers.Online {
 
             FileBasedOnlineSources.Instance.Initialize();
             Register(FileBasedOnlineSources.RecentInstance);
-            Register(FileBasedOnlineSources.FavoritesInstance);
+            Register(FileBasedOnlineSources.FavouritesInstance);
         }
 
         public static void EnsureInitialized() { }
@@ -55,7 +56,13 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (keys.Contains(@"*") || keys.Contains(@"all")) {
-                return new SourcesPack(Sources.Keys.Union(FileBasedOnlineSources.Instance.GetSourceKeys()).Select(GetWrappedSource));
+                var enumerable = Sources.Keys.Union(FileBasedOnlineSources.Instance.GetSourceKeys());
+
+                if (!SettingsHolder.Online.IntegrateMinorating) {
+                    enumerable = enumerable.ApartFrom(MinoratingOnlineSource.Key);
+                }
+
+                return new SourcesPack(enumerable.Select(GetWrappedSource));
             }
 
             return new SourcesPack(keys.Select(GetWrappedSource).NonNull());

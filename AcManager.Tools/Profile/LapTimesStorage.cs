@@ -67,12 +67,12 @@ namespace AcManager.Tools.Profile {
 
         public void Set([NotNull] LapTimeEntry entry) {
             if (entry == null) throw new ArgumentNullException(nameof(entry));
-            Set(GetKey(entry.CarId, entry.TrackAcId), Pack(entry));
+            this.Set(GetKey(entry.CarId, entry.TrackAcId), Pack(entry));
         }
 
         [CanBeNull]
         public IReadOnlyList<LapTimeEntry> GetCachedLapTimesList(ILapTimesReader reader) {
-            var lastUpdated = GetDateTime(KeyLastUpdated);
+            var lastUpdated = this.GetDateTime(KeyLastUpdated);
             return lastUpdated.HasValue && reader.GetLastModified() < lastUpdated.Value ?
                     GetLapTimes().ToList() : null;
         }
@@ -86,7 +86,7 @@ namespace AcManager.Tools.Profile {
                 Set(entry);
             }
 
-            Set(KeyLastUpdated, reader.GetLastModified());
+            this.Set(KeyLastUpdated, reader.GetLastModified());
             return list;
         }
 

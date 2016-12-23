@@ -20,12 +20,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty MenuItemsProperty = DependencyProperty.Register("MenuItems", typeof(IList),
                 typeof(ButtonWithComboBox));
 
-        public string ButtonToolTip {
-            get { return (string)GetValue(ButtonToolTipProperty); }
+        public object ButtonToolTip {
+            get { return (object)GetValue(ButtonToolTipProperty); }
             set { SetValue(ButtonToolTipProperty, value); }
         }
 
-        public static readonly DependencyProperty ButtonToolTipProperty = DependencyProperty.Register("ButtonToolTip", typeof(string),
+        public static readonly DependencyProperty ButtonToolTipProperty = DependencyProperty.Register("ButtonToolTip", typeof(object),
                 typeof(ButtonWithComboBox));
     }
 }

@@ -8,9 +8,9 @@ namespace FirstFloor.ModernUI.Commands {
         private readonly Func<Task> _execute;
         private readonly Func<bool> _canExecute;
         private bool _inProcess;
-        private readonly int _additionalDelay;
+        private readonly TimeSpan _additionalDelay;
         
-        public AsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute, int additionalDelay = 0, bool isAutomaticRequeryDisabled = false)
+        public AsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute, TimeSpan additionalDelay = default(TimeSpan), bool isAutomaticRequeryDisabled = false)
                 : base(canExecute == null, isAutomaticRequeryDisabled) {
             if (execute == null) throw new ArgumentNullException(nameof(execute));
             _execute = execute;
@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Commands {
             _additionalDelay = additionalDelay;
         }
 
-        public AsyncCommand([NotNull] Func<Task> execute, int additionalDelay = 0, bool isAutomaticRequeryDisabled = false)
+        public AsyncCommand([NotNull] Func<Task> execute, TimeSpan additionalDelay = default(TimeSpan), bool isAutomaticRequeryDisabled = false)
                 : this(execute, null, additionalDelay, isAutomaticRequeryDisabled) {}
 
         protected override bool CanExecuteOverride() {
@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Commands {
 
                 await ExecuteInner();
 
-                if (_additionalDelay != 0) {
+                if (_additionalDelay != TimeSpan.Zero) {
                     await Task.Delay(_additionalDelay);
                 }
             } catch(Exception e) {

@@ -33,7 +33,7 @@
                             </StackPanel>
                             <StackPanel x:Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
                                     IsEnabled="{Binding IsChecked, ElementName=InstallEntry}">
-                                <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_WhatToUpdateLabel}" Style="{StaticResource LabelWithPadding}" />
+                                <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_WhatToUpdateLabel}" Style="{StaticResource Label.Padding}" />
                                 <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />
                             </StackPanel>
                         </Grid>

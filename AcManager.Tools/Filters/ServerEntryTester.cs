@@ -69,6 +69,18 @@ namespace AcManager.Tools.Filters {
                 case "name":
                 case null:
                     return nameof(ServerEntry.DisplayName);
+
+                case "friend":
+                case "friends":
+                    return nameof(ServerEntry.HasFriends);
+
+                case "connected":
+                case "lastconnected":
+                    return nameof(ServerEntry.LastConnected);
+                    
+                case "sessionscount":
+                case "connectedtimes":
+                    return nameof(ServerEntry.SessionsCount);
             }
 
             return null;
@@ -167,6 +179,18 @@ namespace AcManager.Tools.Filters {
 
                 case "ended":
                     return value.Test(obj.SessionEnd <= DateTime.Now);
+
+                case "friend":
+                case "friends":
+                    return value.Test(obj.HasFriends);
+
+                case "connected":
+                case "lastconnected":
+                    return obj.LastConnected.HasValue && value.Test(obj.LastConnected.Value);
+
+                case "sessionscount":
+                case "connectedtimes":
+                    return value.Test(obj.SessionsCount);
             }
 
             Game.SessionType sessionType;

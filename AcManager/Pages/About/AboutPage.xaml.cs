@@ -66,7 +66,7 @@ namespace AcManager.Pages.About {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.About_ReportAnIssue_CannotSend, e);
                 }
-            }, () => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
+            }, () => (DateTime.Now - ValuesStorage.GetDateTime(KeyLogsSentTime, default(DateTime))).TotalSeconds > 3d, TimeSpan.FromSeconds(3)));
         }
     }
 }

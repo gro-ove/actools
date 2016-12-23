@@ -31,9 +31,9 @@ namespace AcManager.Tools.Helpers.Api {
         
         public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
 
-        // actual server should be able to respond in two seconds, otherwise there is no sense
+        // actual server should be able to respond in four seconds, otherwise there is no sense
         // in communicating with it
-        public static TimeSpan OptionDirectRequestTimeout = TimeSpan.FromSeconds(2d);
+        public static TimeSpan OptionDirectRequestTimeout = TimeSpan.FromSeconds(4d);
 
         public static int ServersNumber => InternalUtils.KunosServersNumber;
 
@@ -289,6 +289,14 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        /// <summary>
+        /// Parse address from almost any format (such as IP:port, or just IP, or domain name), with or
+        /// without any protocol prefix ahead of it.
+        /// </summary>
+        /// <param name="address">Address in almost any format.</param>
+        /// <param name="ip">IP-address.</param>
+        /// <param name="port">Port or -1 if port is missing.</param>
+        /// <returns>True if parsing is successful.</returns>
         public static bool ParseAddress(string address, out string ip, out int port) {
             var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
             if (!parsed.Success) {

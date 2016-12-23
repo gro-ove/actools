@@ -102,24 +102,25 @@ namespace AcTools.Utils.Helpers {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
 
-            var en = source.GetEnumerator();
-            if (!en.MoveNext()) {
-                throw new InvalidOperationException("Sequence contains no elements");
-            }
-
-            var result = en.Current;
-            var maxValue = selector(result);
-
-            while (en.MoveNext()) {
-                var item = en.Current;
-                var value = selector(item);
-                if (value.CompareTo(maxValue) > 0) {
-                    result = item;
-                    maxValue = value;
+            using (var en = source.GetEnumerator()) {
+                if (!en.MoveNext()) {
+                    throw new InvalidOperationException("Sequence contains no elements");
                 }
-            }
 
-            return result;
+                var result = en.Current;
+                var maxValue = selector(result);
+
+                while (en.MoveNext()) {
+                    var item = en.Current;
+                    var value = selector(item);
+                    if (value.CompareTo(maxValue) > 0) {
+                        result = item;
+                        maxValue = value;
+                    }
+                }
+
+                return result;
+            }
         }
 
         [CanBeNull]
@@ -151,24 +152,25 @@ namespace AcTools.Utils.Helpers {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
 
-            var en = source.GetEnumerator();
-            if (!en.MoveNext()) {
-                throw new InvalidOperationException("Sequence contains no elements");
-            }
-
-            var result = en.Current;
-            var minValue = selector(result);
-
-            while (en.MoveNext()) {
-                var item = en.Current;
-                var value = selector(item);
-                if (value.CompareTo(minValue) < 0) {
-                    result = item;
-                    minValue = value;
+            using (var en = source.GetEnumerator()) {
+                if (!en.MoveNext()) {
+                    throw new InvalidOperationException("Sequence contains no elements");
                 }
-            }
 
-            return result;
+                var result = en.Current;
+                var minValue = selector(result);
+
+                while (en.MoveNext()) {
+                    var item = en.Current;
+                    var value = selector(item);
+                    if (value.CompareTo(minValue) < 0) {
+                        result = item;
+                        minValue = value;
+                    }
+                }
+
+                return result;
+            }
         }
 
         [CanBeNull]
@@ -300,6 +302,13 @@ namespace AcTools.Utils.Helpers {
             }
 
             return sb.ToString();
+        }
+        
+        public static void Pass<T>([NotNull] this IEnumerable<T> enumerable) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            using (var e = enumerable.GetEnumerator()) {
+                while (e.MoveNext()) { }
+            }
         }
 
         [NotNull]
@@ -541,7 +550,7 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = additionalItems.ToListIfItsNot();
+            var list = additionalItems.ToIReadOnlyListIfItsNot();
             return source.Where(x => !list.Contains(x));
         }
 
@@ -629,6 +638,64 @@ namespace AcTools.Utils.Helpers {
         public static IEnumerable<T> CollectRest<T>([NotNull] this IEnumerator<T> source) {
             while (source.MoveNext()) {
                 yield return source.Current;
+            }
+        }
+
+        public static int AddSorted<T>([NotNull] this IList<T> list, T value, IComparer<T> comparer = null) {
+            if (comparer == null) comparer = Comparer<T>.Default;
+
+            var end = list.Count - 1;
+
+            // Array is empty or new item should go in the end
+            if (end == -1 || comparer.Compare(value, list[end]) > 0) {
+                list.Add(value);
+                return end + 1;
+            }
+
+            // Simplest version for small arrays
+            if (end < 20) {
+                for (end--; end >= 0; end--) {
+                    if (comparer.Compare(value, list[end]) >= 0) {
+                        list.Insert(end + 1, value);
+                        return end + 1;
+                    }
+                }
+
+                list.Insert(0, value);
+                return list.Count - 1;
+            }
+
+            // Sort of binary search
+            var start = 0;
+            while (true) {
+                if (end == start) {
+                    list.Insert(start, value);
+                    return start;
+                }
+
+                if (end == start + 1) {
+                    if (comparer.Compare(value, list[start]) <= 0) {
+                        list.Insert(start, value);
+                        return start;
+                    }
+
+                    list.Insert(end, value);
+                    return end;
+                }
+
+                var m = start + (end - start) / 2;
+
+                var c = comparer.Compare(value, list[m]);
+                if (c == 0) {
+                    list.Insert(m, value);
+                    return m;
+                }
+
+                if (c < 0) {
+                    end = m;
+                } else {
+                    start = m + 1;
+                }
             }
         }
     }

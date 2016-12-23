@@ -271,8 +271,17 @@
     <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
       <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\TrackMapEditorT.xaml.cs">
-      <DependentUpon>TrackMapEditorT.xaml</DependentUpon>
+    <Compile Include="Pages\Dialogs\OnlineAddManuallyDialog.xaml.cs">
+      <DependentUpon>OnlineAddManuallyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\OnlineDriverTags.xaml.cs">
+      <DependentUpon>OnlineDriverTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\OnlineListsManager.xaml.cs">
+      <DependentUpon>OnlineListsManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\OnlineNewDriverTag.xaml.cs">
+      <DependentUpon>OnlineNewDriverTag.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\Online.SortingModes.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
@@ -381,10 +390,7 @@
     <Compile Include="Tools\ArgumentHandleResult.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
-    <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
-    <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
-    <Compile Include="Tools\TextEditing\ProperUndoStrategy.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
     <Compile Include="Pages\Selected\SelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedCarSetupPage.xaml.cs">
@@ -474,7 +480,6 @@
       <DependentUpon>SettingsOnline.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
-    <Compile Include="Tools\TextEditing\TextEditorExtension.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Compile Include="UserControls\AssistsEditor.xaml.cs">
@@ -690,7 +695,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\TrackMapEditorT.xaml">
+    <Page Include="Pages\Dialogs\OnlineAddManuallyDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\OnlineDriverTags.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\OnlineListsManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\OnlineNewDriverTag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1181,7 +1198,6 @@
     <None Include="Assets\Data\AssistsPro.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />
-    <Resource Include="Assets\Syntax\Ini.xml" />
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>

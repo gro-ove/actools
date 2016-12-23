@@ -1,11 +1,22 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public abstract class BaseSwitch : FrameworkElement {
+        public static readonly DependencyProperty ResetElementNameBindingsProperty = DependencyProperty.Register(nameof(ResetElementNameBindings), typeof(bool),
+                typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
+
+        public bool ResetElementNameBindings {
+            get { return (bool)GetValue(ResetElementNameBindingsProperty); }
+            set { SetValue(ResetElementNameBindingsProperty, value); }
+        }
+
         [CanBeNull]
         protected abstract UIElement GetChild();
 
@@ -22,6 +33,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             AddLogicalChild(_child);
             AddVisualChild(_child);
+
+            if (ResetElementNameBindings) {
+                var w = Stopwatch.StartNew();
+                child.ResetElementNameBindings();
+                Logging.Debug($"{w.Elapsed.TotalMilliseconds:F2} ms");
+            }
         }
 
         private class EmptyEnumerator : IEnumerator {

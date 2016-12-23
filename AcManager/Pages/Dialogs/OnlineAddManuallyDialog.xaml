@@ -1,0 +1,42 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.OnlineAddManuallyDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
+        xmlns:acManager="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static acManager:AppStrings.Online_AddServer_Title}"
+        d:DataContext="{d:DesignInstance di:OnlineAddManuallyDialog+ViewModel}" Width="400" MinHeight="240" MaxHeight="400" SizeToContent="Height" Closing="OnClosing">
+    <mui:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </mui:ModernDialog.Resources>
+
+    <mui:Switch Value="{Binding Informations.Count}">
+        <TextBlock mui:Switch.When="0" Text="Nothing found." />
+        <DockPanel>
+            <TextBlock Text="{Binding Informations.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {server} found.'}"
+                    DockPanel.Dock="Bottom" Margin="0 4 0 0" />
+            <ListBox x:Name="List" ItemsSource="{Binding Informations}"
+                     Style="{StaticResource VirtualizingListBox}" TextSearch.TextPath="DisplayName" MaxHeight="320" SelectionMode="Multiple"
+                    ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} ({1}:{2})" Mode="OneWay">
+                                    <Binding Path="Name" />
+                                    <Binding Path="Ip" />
+                                    <Binding Path="PortHttp" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </mui:Switch>
+</mui:ModernDialog>

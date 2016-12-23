@@ -3,7 +3,9 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Windows.Controls;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -29,6 +31,18 @@ namespace AcManager.Pages.Settings {
             public SettingsHolder.OnlineSettings Online => SettingsHolder.Online;
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
+
+            private DelegateCommand _manageListsCommand;
+
+            public DelegateCommand ManageListsCommand => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => {
+                new OnlineListsManager().ShowDialog();
+            }));
+
+            private DelegateCommand _manageDriverTagsCommand;
+
+            public DelegateCommand ManageDriversTagsCommand => _manageDriverTagsCommand ?? (_manageDriverTagsCommand = new DelegateCommand(() => {
+                new OnlineDriverTags().ShowDialog();
+            }));
 
             public List<NetworkInterface> NetworkInterfaces { get; }
 

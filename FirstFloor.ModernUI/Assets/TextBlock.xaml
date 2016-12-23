@@ -51,8 +51,8 @@
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>
 
-    <Style x:Key="Fixed" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{StaticResource FixedFont}" />
+    <Style x:Key="Monospace" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonospaceFont}" />
         <Setter Property="FontSize" Value="{DynamicResource FixedFontSize}" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>
@@ -76,7 +76,7 @@
         <Setter Property="Padding" Value="0" />
     </Style>
 
-    <Style x:Key="LabelWithPadding" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+    <Style x:Key="Label.Padding" TargetType="TextBlock" BasedOn="{StaticResource Label}">
         <Setter Property="Padding" Value="8 0 0 0" />
     </Style>
 </ResourceDictionary>

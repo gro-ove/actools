@@ -87,6 +87,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnSourceChanged(Uri oldValue, Uri newValue) {
+            var immediate = Content as IImmediateContent;
+
+            try {
+                if (immediate != null && oldValue.SamePath(newValue) && immediate.ImmediateChange(newValue)) {
+                    return;
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+
             // if resetting source or old source equals new, don’t do anything
             if (_isResetSource || newValue != null && newValue.Equals(oldValue)) {
                 return;

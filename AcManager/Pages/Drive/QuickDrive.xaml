@@ -98,7 +98,7 @@
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <mui:Cell Margin="0 0 0 4">
-                        <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
+                        <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Border.ToolTip>
@@ -168,7 +168,7 @@
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="{x:Static g:AppStrings.Drive_TrackStateLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+                    <TextBlock Text="{x:Static g:AppStrings.Drive_TrackStateLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
                 </StackPanel>
 

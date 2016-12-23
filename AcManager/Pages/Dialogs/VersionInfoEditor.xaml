@@ -17,9 +17,9 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
+        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource Label.Padding}" />
+        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource Label.Padding}" />
+        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}" />
 
         <ComboBox Text="{Binding AcObj.Author, Mode=OneWay, TargetNullValue=''}" x:Name="AuthorInput" Grid.Column="1" Grid.Row="0" Background="Transparent"
                 BorderThickness="0" ItemsSource="{x:Static m:SuggestionLists.AuthorsListView}" IsTextSearchEnabled="True" IsEditable="True"

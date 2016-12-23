@@ -133,8 +133,10 @@
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
     <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
+    <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
     <Compile Include="Windows\Controls\Switch.cs" />
     <Compile Include="Windows\Controls\SpacingUniformGrid.cs" />
+    <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
@@ -352,6 +354,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\DatePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\ColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

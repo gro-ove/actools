@@ -23,7 +23,7 @@
         </StackPanel>
 
         <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_StartFrom}" Margin="0 0 0 4" />
+            <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static g:AppStrings.Drive_StartFrom}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" ItemsSource="{Binding StartTypes}" SelectedItem="{Binding SelectedStartType}" />
         </StackPanel>
     </Grid>

@@ -115,6 +115,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return Titling.Convert(s);
         }
 
+        public static string ToTitle(this string s, CultureInfo culture) {
+            return Titling.Convert(s, culture);
+        }
+
         public static string ToSentence(this string s) {
             return s.Length == 0 ? string.Empty : char.IsLetterOrDigit(s[s.Length - 1]) ? $"{s}." : s;
         }

@@ -66,9 +66,9 @@ namespace AcManager.Controls {
         }
 
         protected void ToolBar_OnMouseUp(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Left) return;
+            /*if (e.ChangedButton != MouseButton.Left) return;
             if (_toolBar == null) return;
-            _toolBar.IsActive = false;
+            _toolBar.IsActive = false;*/
         }
 
         private void Header_IconMouseDown(object sender, MouseButtonEventArgs e) {

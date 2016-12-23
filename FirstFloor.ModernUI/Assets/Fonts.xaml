@@ -2,5 +2,5 @@
     <FontFamily x:Key="DefaultFont">Segoe UI</FontFamily>
     <!--<FontFamily x:Key="DefaultFont">Courier New</FontFamily>-->
     <FontFamily x:Key="CondensedFont">/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed</FontFamily>
-    <FontFamily x:Key="FixedFont">Consolas</FontFamily>
+    <FontFamily x:Key="MonospaceFont">Consolas</FontFamily>
 </ResourceDictionary>

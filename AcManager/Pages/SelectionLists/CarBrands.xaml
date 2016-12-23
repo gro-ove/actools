@@ -15,7 +15,7 @@
             <DataTemplate DataType="{x:Type sl:CarBrands+CarBrandInformation}">
                 <Grid Width="72" Height="72" PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown" Background="Transparent">
                     <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" DecodeHeight="40" ClearOnChange="True" />
-                    <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0"
+                    <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0"
                             VerticalAlignment="Bottom" />
                 </Grid>
             </DataTemplate>

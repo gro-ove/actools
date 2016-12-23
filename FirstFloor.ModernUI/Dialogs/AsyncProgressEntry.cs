@@ -46,7 +46,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         public override string ToString() {
-            return $@"{(Message ?? @"<NULL>")} ({Progress*100:F1}%)";
+            return $@"{Message ?? @"<NULL>"} ({Progress*100:F1}%)";
         }
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {

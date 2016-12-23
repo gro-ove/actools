@@ -106,6 +106,7 @@ namespace AcManager.Pages.Windows {
             SettingsHolder.Live.PropertyChanged += Live_PropertyChanged;
 
             UpdateServerTab();
+            UpdateMinoratingLink();
             SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
 
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
@@ -130,7 +131,7 @@ namespace AcManager.Pages.Windows {
             foreach (var source in FileBasedOnlineSources.Instance.GetVisibleSources().OrderBy(x => x.DisplayName)) {
                 list.Add(new Link {
                     DisplayName = source.DisplayName,
-                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}", source.Id)
+                    Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id)
                 });
             }
         }
@@ -144,13 +145,22 @@ namespace AcManager.Pages.Windows {
         }
 
         private void Online_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging)) {
-                UpdateServerTab();
+            switch (e.PropertyName) {
+                case nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging):
+                    UpdateServerTab();
+                    break;
+                case nameof(SettingsHolder.OnlineSettings.IntegrateMinorating):
+                    UpdateMinoratingLink();
+                    break;
             }
         }
 
         private void UpdateServerTab() {
             ServerGroup.IsShown = SettingsHolder.Online.ServerPresetsManaging;
+        }
+
+        private void UpdateMinoratingLink() {
+            MinoratingLink.IsShown = SettingsHolder.Online.IntegrateMinorating;
         }
 
         private const string KeyOfficialStarterNotification = "mw.osn";

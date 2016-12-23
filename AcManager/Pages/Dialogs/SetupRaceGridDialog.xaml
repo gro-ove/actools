@@ -10,7 +10,7 @@
         </Grid.RowDefinitions>
 
         <DockPanel Margin="0 0 0 8" Grid.Row="0">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Width="100" />
+            <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Width="100" />
             <mui:HierarchicalComboBox ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode}" FixedMode="False" />
         </DockPanel>
     </Grid>

@@ -37,8 +37,8 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource Label.Padding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource Label.Padding}" />
 
                     <TextBlock Text="{Binding Country}" Grid.Column="1" Grid.Row="0" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -46,8 +46,8 @@
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- second row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CityLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CityLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource Label.Padding}" />
+                    <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource Label.Padding}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
                                 <Binding Path="Author" />
@@ -63,12 +63,12 @@
                             TextTrimming="CharacterEllipsis" Grid.Column="3" Grid.Row="1" />
 
                     <!-- third row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_TrackGeoTagsLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_TrackGeoTagsLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}" />
                     <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding GeoTags}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource Label.Padding}" />
                     <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

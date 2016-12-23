@@ -2,12 +2,13 @@
 using System.Collections;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Drive {
     public partial class Online {
-
-        public abstract class ServerEntrySorter : IComparer {
+        public abstract class ServerEntrySorter : NotifyPropertyChanged, IComparer {
             int IComparer.Compare(object x, object y) {
                 var xs = x as ServerEntry;
                 var ys = y as ServerEntry;
@@ -22,14 +23,24 @@ namespace AcManager.Pages.Drive {
             public abstract bool IsAffectedBy(string propertyName);
         }
 
-        private class SortingName : ServerEntrySorter {
+        public class SortingName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                if (x.IsFavorited ^ y.IsFavorited) return x.IsFavorited ? -1 : 1;
                 return string.Compare(x.DisplayName, y.DisplayName, StringComparison.CurrentCultureIgnoreCase);
             }
 
             public override bool IsAffectedBy(string propertyName) {
-                return propertyName == nameof(ServerEntry.DisplayName) || propertyName == nameof(ServerEntry.IsFavorited);
+                return propertyName == nameof(ServerEntry.DisplayName);
+            }
+        }
+
+        public class SortingFavourites : ServerEntrySorter {
+            public override int Compare(ServerEntry x, ServerEntry y) {
+                if (x.IsFavourited ^ y.IsFavourited) return x.IsFavourited ? -1 : 1;
+                return string.Compare(x.DisplayName, y.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            public override bool IsAffectedBy(string propertyName) {
+                return propertyName == nameof(ServerEntry.DisplayName) || propertyName == nameof(ServerEntry.IsFavourited);
             }
         }
 
@@ -89,9 +100,11 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        [NotNull]
+        [CanBeNull]
         public static ServerEntrySorter GetSorter(string modeKey) {
             switch (modeKey) {
+                case "favourites":
+                    return new SortingFavourites();
                 case "drivers":
                     return new SortingDriversCount();
                 case "connected":
@@ -102,13 +115,16 @@ namespace AcManager.Pages.Drive {
                     return new SortingCarsNumberCount();
                 case "ping":
                     return new SortingPing();
-                default:
+                case "name":
                     return new SortingName();
+                default:
+                    return null;
             }
         }
 
-        public static SettingEntry[] SortingModes { get; } = {
-            new SettingEntry(null, AppStrings.Online_Sorting_Name),
+        private static SettingEntry[] DefaultSortingModes { get; } = {
+            new SettingEntry("name", AppStrings.Online_Sorting_Name),
+            new SettingEntry("favourites", "Favourites"),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
             new SettingEntry("connected", "Connected Drivers"),
             new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),

@@ -26,7 +26,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
-            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
@@ -37,7 +37,7 @@
         </StackPanel>
 
         <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
-            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
         </StackPanel>
 
@@ -52,7 +52,7 @@
         </CheckBox>
 
         <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
-            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
             <TextBox Margin="4 0 4 0" Text="{Binding CameraFov}" h:TextBoxAdvancement.SpecialMode="Number" />
         </StackPanel>
     </Grid>

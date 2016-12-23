@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using JetBrains.Annotations;
 
@@ -59,13 +61,13 @@ namespace FirstFloor.ModernUI.Windows.Media {
         [Pure]
         public static IEnumerable<T> FindLogicalChildren<T>([NotNull] this DependencyObject depObj) where T : DependencyObject {
             if (depObj == null) throw new ArgumentNullException(nameof(depObj));
-            
+
             foreach (var child in LogicalTreeHelper.GetChildren(depObj).OfType<DependencyObject>()) {
                 var childT = child as T;
                 if (childT != null) {
                     yield return childT;
                 }
-                
+
                 foreach (var childOfChild in FindLogicalChildren<T>(child)) {
                     yield return childOfChild;
                 }
@@ -214,6 +216,37 @@ namespace FirstFloor.ModernUI.Windows.Media {
             if (element == null) return;
             if (element.Visibility != visibility) {
                 element.Visibility = visibility;
+            }
+        }
+
+        public static void ResetElementNameBindings(this DependencyObject obj) {
+            var boundProperties = obj.GetDataBoundProperties();
+            foreach (DependencyProperty dp in boundProperties) {
+                var binding = BindingOperations.GetBinding(obj, dp);
+
+                //binding itself should never be null, but anyway
+                if (!string.IsNullOrEmpty(binding?.ElementName)) {
+                    //just updating source and/or target doesn’t do the trick – reset the binding
+                    BindingOperations.ClearBinding(obj, dp);
+                    BindingOperations.SetBinding(obj, dp, binding);
+                }
+            }
+
+            var count = VisualTreeHelper.GetChildrenCount(obj);
+            for (var i = 0; i < count; i++) {
+                //process child items recursively
+                var childObject = VisualTreeHelper.GetChild(obj, i);
+                ResetElementNameBindings(childObject);
+            }
+        }
+
+        public static IEnumerable GetDataBoundProperties(this DependencyObject element) {
+            var lve = element.GetLocalValueEnumerator();
+            while (lve.MoveNext()) {
+                var entry = lve.Current;
+                if (BindingOperations.IsDataBound(element, entry.Property)) {
+                    yield return entry.Property;
+                }
             }
         }
     }

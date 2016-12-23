@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -135,9 +136,8 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
-        public static string Convert(string s) {
-            var culture = CultureInfo.CurrentUICulture;
-            if (culture.Name.Length < 2) return s;
+        public static string Convert(string s, CultureInfo culture) {
+            if (culture.Name.Length < 2) return En(s, culture);
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
                 case "en":
                     return En(s, culture);
@@ -150,6 +150,10 @@ namespace FirstFloor.ModernUI.Localizable {
                 default:
                     return CapitalizeFirst(s, culture);
             }
+        }
+
+        public static string Convert(string s) {
+            return Convert(s, CultureInfo.CurrentUICulture);
         }
     }
 }

@@ -5,7 +5,15 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public class WeakList<T> : IList<T> where T : class {
-        private readonly List<WeakReference<T>> _innerList = new List<WeakReference<T>>();
+        private readonly List<WeakReference<T>> _innerList;
+
+        public WeakList() {
+            _innerList = new List<WeakReference<T>>();
+        }
+
+        public WeakList(int capacity) {
+            _innerList = new List<WeakReference<T>>(capacity);
+        }
 
         public IEnumerable<T> NonNull() {
             T r;
@@ -78,9 +86,19 @@ namespace AcTools.Utils.Helpers {
         }
         #endregion
 
-        public void Purge() {
-            T r;
-            _innerList.RemoveAll(x => !x.TryGetTarget(out r));
+        private DateTime _lastPurged;
+
+        /// <summary>
+        /// Remove items which are no longer available.
+        /// </summary>
+        /// <param name="force">If set to false, only does something once in ten seconds.</param>
+        public void Purge(bool force = false) {
+            var now = DateTime.Now;
+            if (force || (now - _lastPurged).TotalSeconds > 10) {
+                T r;
+                _innerList.RemoveAll(x => !x.TryGetTarget(out r));
+                _lastPurged = now;
+            }
         }
     }
 }

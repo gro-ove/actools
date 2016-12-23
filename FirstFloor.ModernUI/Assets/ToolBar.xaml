@@ -413,7 +413,13 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
+            <Style TargetType="{x:Type c:BooleanSwitch}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
+                </Style.Resources>
+            </Style>
+
             <Style TargetType="{x:Type c:ButtonWithComboBox}" BasedOn="{StaticResource {x:Type c:ButtonWithComboBox}}">
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderBrush" Value="Transparent" />
@@ -421,7 +427,7 @@
             </Style>
         </Style.Resources>
     </Style>
-    
+
     <Style x:Key="{x:Type ToolBarTray}" TargetType="{x:Type ToolBarTray}">
         <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
     </Style>

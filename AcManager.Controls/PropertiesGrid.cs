@@ -17,6 +17,14 @@ namespace AcManager.Controls {
             set { SetValue(ColumnsProperty, value); }
         }
 
+        public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(double),
+                typeof(PropertiesGrid));
+
+        public double Spacing {
+            get { return (double)GetValue(SpacingProperty); }
+            set { SetValue(SpacingProperty, value); }
+        }
+
         public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(nameof(LabelWidth), typeof(double), typeof(PropertiesGrid),
                 new FrameworkPropertyMetadata(80d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
@@ -96,6 +104,7 @@ namespace AcManager.Controls {
         private void UpdateComputedValues() {
             _columns = Columns;
             _rows = 0;
+            _spacing = Spacing;
 
             var nonCollapsedCount = 0;
             for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
@@ -136,7 +145,11 @@ namespace AcManager.Controls {
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
-            var childConstraint = new Size(constraint.Width / _columns - _labelWidth, constraint.Height / _rows);
+            if (_columns == 0 || _rows == 0) return default(Size);
+            var totalSpacingX = _spacing * (_columns - 1);
+            var totalSpacingY = _spacing * (_rows - 1);
+
+            var childConstraint = new Size(constraint.Width / _columns - totalSpacingX - _labelWidth, constraint.Height / _rows - totalSpacingY);
             var maxChildDesiredWidth = 0.0;
             var maxChildDesiredHeight = 0.0;
             
@@ -155,19 +168,33 @@ namespace AcManager.Controls {
                 }
             }
 
-            return new Size(maxChildDesiredWidth * _columns, maxChildDesiredHeight * _rows);
+            return new Size(maxChildDesiredWidth * _columns + totalSpacingX, maxChildDesiredHeight * _rows + totalSpacingY);
         }
         
         protected override Size ArrangeOverride(Size arrangeSize) {
-            _xStep = arrangeSize.Width / _columns;
-            _yStep = arrangeSize.Height / _rows;
+            if (_columns == 0 || _rows == 0) return default(Size);
+            var totalSpacingX = _spacing * (_columns - 1);
+            var totalSpacingY = _spacing * (_rows - 1);
+
+            _xStep = (arrangeSize.Width - totalSpacingX) / _columns;
+            _yStep = (arrangeSize.Height - totalSpacingY) / _rows;
             _labelTextOffset = (_yStep + _labelPadding.Top - _labelPadding.Bottom) / 2;
 
             var xBound = arrangeSize.Width - 1.0;
             var childBounds = new Rect(_labelWidth, 0, _xStep - _labelWidth, _yStep);
+
+            _xStep += _spacing;
+            _yStep += _spacing;
             
             foreach (UIElement child in InternalChildren) {
-                child.Arrange(childBounds);
+                var delta = childBounds.Height - child.DesiredSize.Height;
+                if (delta > 0) {
+                    childBounds.Y += delta / 2d;
+                    child.Arrange(childBounds);
+                    childBounds.Y -= delta / 2d;
+                } else {
+                    child.Arrange(childBounds);
+                }
                 
                 if (child.Visibility != Visibility.Collapsed) {
                     childBounds.X += _xStep;
@@ -183,5 +210,6 @@ namespace AcManager.Controls {
 
         private int _rows;
         private int _columns;
+        private double _spacing;
     }
 }

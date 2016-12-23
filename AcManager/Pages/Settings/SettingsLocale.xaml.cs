@@ -268,7 +268,7 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);
                 }
-            }, () => Directory.Exists(FilesStorage.Instance.Combine("Locales", Locale.LocaleName)), 3000));
+            }, () => Directory.Exists(FilesStorage.Instance.Combine("Locales", Locale.LocaleName)), TimeSpan.FromSeconds(3d)));
 
             private ICommand _restartCommand;
 

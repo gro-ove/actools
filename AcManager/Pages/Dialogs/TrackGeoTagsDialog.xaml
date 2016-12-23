@@ -12,9 +12,9 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{x:Static t:ToolsStrings.TrackGeoTags_LatitudeLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}"
+            <TextBlock Text="{x:Static t:ToolsStrings.TrackGeoTags_LatitudeLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource Label.Padding}"
                     ToolTip="{x:Static t:ToolsStrings.TrackGeoTags_LatitudeLabel_Tooltip}" />
-            <TextBlock Text="{x:Static t:ToolsStrings.TrackGeoTags_LongitudeLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}"
+            <TextBlock Text="{x:Static t:ToolsStrings.TrackGeoTags_LongitudeLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource Label.Padding}"
                     ToolTip="{x:Static t:ToolsStrings.TrackGeoTags_LongitudeLabel_Tooltip}" />
 
             <TextBox Text="{Binding Latitude}" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"

@@ -66,6 +66,10 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
             return result;
         }
+
+        public string ToDescription() {
+            return Name == null ? Id : $@"{Id};{Name}";
+        }
     }
 
     [Localizable(false)]

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -116,6 +117,10 @@ namespace AcManager.Tools.Miscellaneous {
 
             [LocalizedDescription("LogHelper_CloudsMightBeMissing")]
             CloudsMightBeMissing,
+
+            // TRANSLATE ME
+            [Description("Game might be obsolete")]
+            GameMightBeObsolete
         }
 
         [CanBeNull]
@@ -129,6 +134,10 @@ namespace AcManager.Tools.Miscellaneous {
 
                 if (log.Contains(@"ERROR: RaceManager :: Handshake FAILED")) {
                     return new WhatsGoingOn(WhatsGoingOnType.OnlineConnectionFailed);
+                }
+
+                if (log.Contains(@"ERROR: Cannot create suspension type")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.GameMightBeObsolete);
                 }
                 
                 if (log.Contains(@"COULD NOT FIND SUSPENSION OBJECT SUSP_")) {

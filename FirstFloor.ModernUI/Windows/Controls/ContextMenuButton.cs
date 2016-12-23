@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -6,14 +8,25 @@ using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public class ContextMenuButtonEventArgs : EventArgs {
+        internal ContextMenuButtonEventArgs() {}
+
+        public object Menu { internal get; set; }
+    }
+
     [ContentProperty(nameof(Menu))]
     public class ContextMenuButton : Control {
         public ContextMenuButton() {
             DefaultStyleKey = typeof(ContextMenuButton);
         }
 
+        public event EventHandler<ContextMenuButtonEventArgs> Click;
+
         private bool Open(bool near) {
-            var menu = Menu;
+            var args = new ContextMenuButtonEventArgs();
+            Click?.Invoke(this, args);
+
+            var menu = args.Menu ?? Menu;
 
             var popup = menu as Popup;
             if (popup != null) {

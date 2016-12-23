@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,14 +24,41 @@ namespace AcManager.Controls.Video {
             _switch = new BooleanSwitch {
                 Value = true,
                 True = _mediaPlayer,
-                False = new TextBlock {
-                    Text = "Can’t play file. Make sure Windows Media Player is available and required codec is installed, or enable VLC plugin instead.",
+                False = new BbCodeBlock {
                     Width = 320,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     TextWrapping = TextWrapping.Wrap
                 }
             };
+        }
+
+        private void UpdateErrorMessage(string filename) {
+            string url;
+            var extension = Path.GetExtension(filename)?.Replace(@".", "").ToLowerInvariant();
+            switch (extension) {
+                case ".ogv":
+                    url = @"https://xiph.org/dshow/";
+                    break;
+
+                case ".webm":
+                    url = @"https://tools.google.com/dlpage/webmmf/";
+                    break;
+
+                case null:
+                case "":
+                    url = null;
+                    break;
+
+                default:
+                    url = $@"https://google.com/search?q={extension}+windows+media+player+codec";
+                    break;
+            }
+
+            ((BbCodeBlock)_switch.False).BbCode = string.Format(
+                    "Can’t play file. Make sure Windows Media Player is available and {0}required codec is installed{1}, or enable VLC plugin instead.",
+                    url == null ? "" : $@"[url=""{url}""]",
+                    url == null ? "" : @"[/url]");
         }
 
         public UIElement Initialize() {
@@ -72,6 +100,7 @@ namespace AcManager.Controls.Video {
 
         private void MediaPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e) {
             Logging.Warning(e.ErrorException);
+            UpdateErrorMessage(Source?.OriginalString);
             _switch.Value = false;
         }
 

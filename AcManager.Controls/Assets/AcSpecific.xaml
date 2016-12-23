@@ -91,7 +91,6 @@
                     Visibility="{Binding TakenPlacePrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{Binding Name}" x:Name="NameTextBlock" TextTrimming="CharacterEllipsis" />
         </DockPanel>
-
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding IsPlayer}" Value="True">
                 <Setter TargetName="NameTextBlock" Property="Foreground" Value="{DynamicResource Go}" />

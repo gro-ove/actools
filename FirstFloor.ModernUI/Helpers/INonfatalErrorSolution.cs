@@ -14,7 +14,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public string DisplayName { get; }
 
         public INonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [NotNull] Func<CancellationToken, Task> execute, Func<bool> canExecute = null)
-                : base(() => Task.Delay(0), canExecute, 0, false) {
+                : base(() => Task.Delay(0), canExecute) {
             _entry = entry;
             _execute = execute;
             DisplayName = displayName ?? "Fix It";

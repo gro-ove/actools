@@ -5254,7 +5254,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add a New Server.
+        ///   Looks up a localized string similar to Add New Servers.
         /// </summary>
         public static string Online_AddServer_Title {
             get {

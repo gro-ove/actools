@@ -16,6 +16,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -55,12 +56,22 @@ namespace AcManager.Controls {
             CarsPool.Clear();
             SessionsPool.Clear();
         }
-
-        private Inline _errorIcon;
+        
+        private readonly List<Inline> _errorIcons = new List<Inline>(4);
 
         private Inline GetErrorIconInline() {
-            return _errorIcon?.Parent != null ? (Inline)TryFindResource(@"WarningIconInline") :
-                    _errorIcon ?? (_errorIcon = (Inline)TryFindResource(@"WarningIconInline"));
+            var c = _errorIcons.Count;
+            if (c > 0) {
+                var result = _errorIcons[c - 1];
+                _errorIcons.RemoveAt(c - 1);
+                return result;
+            }
+            
+            return (Inline)TryFindResource(@"WarningIconInline");
+        }
+
+        private void ReleaseErrorIconInline(Inline released) {
+            _errorIcons.Add(released);
         }
 
         public static readonly DependencyProperty HideSourceIconProperty = DependencyProperty.Register(nameof(HideSourceIcon), typeof(string),
@@ -87,10 +98,16 @@ namespace AcManager.Controls {
             return _lanIcon ?? (_lanIcon = (Inline)TryFindResource(@"LanIconInline"));
         }
 
-        private Inline _favoritesIcon;
+        private Inline _favouritesIcon;
 
-        private Inline GetFavoritesIconInline() {
-            return _favoritesIcon ?? (_favoritesIcon = (Inline)TryFindResource(@"FavoriteIconInline"));
+        private Inline GetFavouritesIconInline() {
+            return _favouritesIcon ?? (_favouritesIcon = (Inline)TryFindResource(@"FavouriteIconInline"));
+        }
+
+        private Inline _hiddenIcon;
+
+        private Inline GetHiddenIconInline() {
+            return _hiddenIcon ?? (_hiddenIcon = (Inline)TryFindResource(@"HiddenIconInline"));
         }
 
         private Inline _recentIcon;
@@ -115,75 +132,95 @@ namespace AcManager.Controls {
             }
         }
 
-        private string _origins;
         private string _hideIcon;
+
+        private readonly Dictionary<string, Inline> _customIcons = new Dictionary<string, Inline>();
 
         [CanBeNull]
         private Inline GetIcon(string originId) {
             if (originId == _hideIcon) return null;
 
             switch (originId) {
-                case FileBasedOnlineSources.FavoritesKey:
-                    return GetFavoritesIconInline();
+                case FileBasedOnlineSources.FavouritesKey:
+                    return GetFavouritesIconInline();
+                case FileBasedOnlineSources.HiddenKey:
+                    return GetHiddenIconInline();
                 case FileBasedOnlineSources.RecentKey:
                     return GetRecentIconInline();
                 case MinoratingOnlineSource.Key:
                     return GetMinoratingIconInline();
                 case LanOnlineSource.Key:
                     return GetLanIconInline();
+                case KunosOnlineSource.Key:
+                    return null;
                 default:
-                    var information = FileBasedOnlineSources.Instance.GetInformation(originId);
-                    if (information?.Label == null) {
-                        return null;
-                    }
+                    Inline result;
+                    if (!_customIcons.TryGetValue(originId, out result)) {
+                        var information = FileBasedOnlineSources.Instance.GetInformation(originId);
 
-                    var baseIcon = (Decorator)TryFindResource(@"BaseIcon");
-                    if (baseIcon == null) {
-                        return null;
-                    }
+                        var baseIcon = (Decorator)TryFindResource(@"BaseIcon");
+                        if (baseIcon == null) {
+                            return null;
+                        }
 
-                    var text = (BbCodeBlock)baseIcon.Child;
+                        var text = (BbCodeBlock)baseIcon.Child;
 
-                    // text.Foreground = new SolidColorBrush(information.Color ?? Colors.White);
-                    // text.BbCode = information.Label;
+                        text.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
+                            Path = new PropertyPath(nameof(information.Label)),
+                            Source = information
+                        });
 
-                    text.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
-                        Path = new PropertyPath(nameof(information.Label)),
-                        Source = information
-                    });
+                        text.SetBinding(TextBlock.ForegroundProperty, new Binding {
+                            Path = new PropertyPath(nameof(information.Color)),
+                            TargetNullValue = new SolidColorBrush(Colors.White),
+                            Converter = ColorPicker.ColorToBrushConverter,
+                            Source = information
+                        });
 
-                    text.SetBinding(TextBlock.ForegroundProperty, new Binding {
-                        Path = new PropertyPath(nameof(information.Color)),
-                        TargetNullValue = new SolidColorBrush(Colors.White),
-                        Converter = ColorPicker.ColorToBrushConverter,
-                        Source = information
-                    });
-
-                    return new InlineUIContainer {
-                        Child = new Border {
+                        var block = new Border {
                             Margin = (Thickness)TryFindResource(@"InlineIconMargin"),
                             Child = baseIcon
-                        }
-                    };
+                        };
+
+                        block.SetBinding(VisibilityProperty, new Binding {
+                            Path = new PropertyPath(nameof(information.Label)),
+                            Source = information,
+                            Converter = new NullToVisibilityConverter(),
+                            ConverterParameter = @"inverse"
+                        });
+
+                        result = new InlineUIContainer { Child = block };
+                        _customIcons[originId] = result;
+                    }
+
+                    return result;
             }
         }
 
-        private void UpdateName(ServerEntry n) {
-            var inlines = _nameText.Inlines;
+        private string _origins;
+        private Span _icons;
 
-            if (n.OriginsString == _origins) {
-                var last = inlines.LastInline as Run;
-                if (last != null) {
-                    ((Run)inlines.LastInline).Text = n.DisplayName;
-                } else {
-                    _nameText.Text = n.DisplayName;
-                }
-            } else {
-                _origins = n.OriginsString;
+        private void UpdateName(ServerEntry n) {
+            if (n.ReferencesString != _origins) {
+                _origins = n.ReferencesString;
                 _hideIcon = HideSourceIcon;
 
+                var icons = n.GetReferencesIds().Select(GetIcon).NonNull().ToList();
+                if (icons.Any()) {
+                    _icons = new Span();
+                    _icons.Inlines.AddRange(icons);
+                } else {
+                    _icons = null;
+                }
+            }
+
+            if (_icons == null) {
+                _nameText.Text = n.DisplayName;
+            } else {
+                var inlines = _nameText.Inlines;
                 inlines.Clear();
-                inlines.AddRange(n.GetOriginsIds().Select(GetIcon).NonNull().Append(new Run { Text = n.DisplayName }));
+                inlines.Add(_icons);
+                inlines.Add(new Run { Text = n.DisplayName });
             }
         }
 
@@ -206,6 +243,8 @@ namespace AcManager.Controls {
                         BindedTrack_PropertyChanged);
             }
 
+            var existingIcon = _trackNameText.Inlines.FirstInline as InlineUIContainer;
+
             _bindedTrack = n.Track;
             if (_bindedTrack != null) {
                 _trackNameText.Text = _bindedTrack.Name;
@@ -214,11 +253,16 @@ namespace AcManager.Controls {
             } else if (n.TrackId != null) {
                 _trackNameText.Inlines.Clear();
                 _trackNameText.Inlines.AddRange(new [] {
-                    GetErrorIconInline(),
+                    existingIcon ?? GetErrorIconInline(),
                     new Run { Text = n.TrackId }
                 }.NonNull());
+                return;
             } else {
                 _trackNameText.Text = "No information";
+            }
+
+            if (existingIcon != null) {
+                ReleaseErrorIconInline(existingIcon);
             }
         }
 
@@ -350,16 +394,23 @@ namespace AcManager.Controls {
                 child.ToolTip = null;
             }
 
+            var existingIcon = child.Inlines.FirstInline as InlineUIContainer;
+
             child.DataContext = car;
             var wrapper = car.CarObjectWrapper;
             if (wrapper != null) {
-                child.Tag = new CarDisplayNameBind(child, wrapper);
+                child.Bind = new CarDisplayNameBind(child, wrapper);
             } else {
                 child.Inlines.Clear();
                 child.Inlines.AddRange(new [] {
-                    GetErrorIconInline(),
+                    existingIcon ?? GetErrorIconInline(),
                     new Run { Text = car.Id }
                 }.NonNull());
+                return;
+            }
+
+            if (existingIcon != null) {
+                ReleaseErrorIconInline(existingIcon);
             }
         }
 
@@ -423,7 +474,7 @@ namespace AcManager.Controls {
 
             _nameText.FontStyle = loaded ? FontStyles.Normal : FontStyles.Italic;
 
-            if (!n.OriginsFromLan) {
+            if (!n.FromLan) {
                 _countryName.Visibility = visibility;
                 _countryFlagImage.Visibility = visibility;
             }
@@ -453,7 +504,7 @@ namespace AcManager.Controls {
 
             _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
 
-            if (!n.OriginsFromLan) {
+            if (!n.FromLan) {
                 _countryName.Text = n.Country;
             }
 
@@ -487,8 +538,8 @@ namespace AcManager.Controls {
         private TextBlock _nameText;
         private TextBlock _countryName;
         private TextBlock _trackNameText;
-        private StackPanel _sessionsPanel;
-        private StackPanel _carsPanel;
+        private Panel _sessionsPanel;
+        private Panel _carsPanel;
 
         public override void OnApplyTemplate() {
             if (_carsPanel != null) {
@@ -518,8 +569,8 @@ namespace AcManager.Controls {
             _nameText = (TextBlock)GetTemplateChild(@"DisplayNameText");
             _trackNameText = (TextBlock)GetTemplateChild(@"TrackNameText");
             _countryName = (TextBlock)GetTemplateChild(@"CountryName");
-            _sessionsPanel = (StackPanel)GetTemplateChild(@"SessionsPanel");
-            _carsPanel = (StackPanel)GetTemplateChild(@"CarsPanel");
+            _sessionsPanel = (Panel)GetTemplateChild(@"SessionsPanel");
+            _carsPanel = (Panel)GetTemplateChild(@"CarsPanel");
             Update(Server);
 
             if (_carsPanel != null) {
@@ -620,7 +671,7 @@ namespace AcManager.Controls {
 
             var n = (ServerEntry)sender;
             switch (e.PropertyName) {
-                case nameof(ServerEntry.OriginsString):
+                case nameof(ServerEntry.ReferencesString):
                 case nameof(ServerEntry.DisplayName):
                     UpdateName(n);
                     break;
@@ -634,7 +685,7 @@ namespace AcManager.Controls {
                     UpdateCountryFlag(n);
                     break;
                 case nameof(ServerEntry.Country):
-                    if (!n.OriginsFromLan) {
+                    if (!n.FromLan) {
                         _countryName.Text = n.Country;
                     }
                     break;

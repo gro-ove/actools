@@ -5,89 +5,197 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
-using FirstFloor.ModernUI;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
 namespace AcManager.Pages.Drive {
-    internal class WrappedCommand : ICommand {
-        private readonly Func<ICommand> _provider;
+    public partial class OnlineServer : IParametrizedUriContent, IImmediateContent {
+        private Holder<ServerEntry> _holder;
+        private Sublist<MenuItem> _sourcesMenuItems;
 
-        public WrappedCommand(Func<ICommand> provider) {
-            _provider = provider;
-        }
-
-        public bool CanExecute(object parameter) {
-            return true;
-        }
-
-        public void Execute(object parameter) {
-            _provider()?.Execute(parameter);
-        }
-
-        public event EventHandler CanExecuteChanged {
-            add { }
-            remove { }
-        }
-    }
-
-    public partial class OnlineServer : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var id = uri.GetQueryParam("Id");
             if (id == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
 
-            var entry = OnlineManager.Instance.GetById(id);
-            if (entry == null) {
+            _holder = OnlineManager.Instance.HoldById(id);
+            if (_holder == null) {
                 throw new Exception(string.Format(AppStrings.Online_ServerWithIdIsMissing, id));
             }
 
+            var entry = _holder.Value;
             if (entry.Status == ServerStatus.Unloaded) {
                 entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
+
+            var list = ListsButton.MenuItems;
+            _sourcesMenuItems = new Sublist<MenuItem>(list, list.Count - 1, 0);
 
             DataContext = new ViewModel(entry);
             InitializeComponent();
             UpdateCarsView();
             UpdateIcons();
-
-            InputBindings.AddRange(new[] {
-                new InputBinding(new WrappedCommand(() => Model.Entry.RefreshCommand), new KeyGesture(Key.R, ModifierKeys.Alt)),
-                new InputBinding(new WrappedCommand(() => Model.Entry.JoinCommand), new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(new WrappedCommand(() => Model.Entry.CancelBookingCommand), new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(new WrappedCommand(() => Model.Entry.JoinCommand), new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
-                    CommandParameter = ServerEntry.ForceJoin
-                }
-            });
+            UpdateBindings();
+            Model.Entry.PropertyChanged += Entry_PropertyChanged;
+            ResizingStuff();
         }
 
-        public void Change(ServerEntry entry) {
+        private bool _showExtendedInformation;
+
+        public bool ShowExtendedInformation {
+            get { return _showExtendedInformation; }
+            set {
+                if (Equals(value, _showExtendedInformation)) return;
+                _showExtendedInformation = value;
+
+                if (value) {
+                    ExtendedInformation.Visibility = Visibility.Visible;
+                    CarsListBox.ItemsSource = CarsComboBox.ItemsSource;
+                    CarsListBox.SelectedItem = CarsComboBox.SelectedItem;
+                } else {
+                    ExtendedInformation.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void ResizingStuff() {
+            ShowExtendedInformation = ActualWidth > 600;
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            ResizingStuff();
+        }
+
+        private void OnUserSourcesUpdated(object sender, EventArgs e) {
+            UpdateMenuItems();
+        }
+
+        private bool _listsButtonInitialized;
+
+        private void ListsButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            if (_listsButtonInitialized) return;
+            _listsButtonInitialized = true;
+
+            UpdateMenuItems();
+            FileBasedOnlineSources.Instance.Update += OnUserSourcesUpdated;
+        }
+
+        public bool ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var existing = _holder;
+            _holder = OnlineManager.Instance.HoldById(id);
+            DisposeHelper.Dispose(ref existing);
+            if (_holder == null) return false;
+
+            var entry = _holder.Value;
             if (entry.Status == ServerStatus.Unloaded) {
                 entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
-            
+
             Model.Entry.PropertyChanged -= Entry_PropertyChanged;
             Model.ChangeEntry(entry);
             UpdateCarsView();
             UpdateIcons();
+            UpdateBindings();
+            UpdateCheckedMenuItems();
             Model.Entry.PropertyChanged += Entry_PropertyChanged;
+            return true;
+        }
+
+        private void UpdateBindings() {
+            InputBindings.Clear();
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.Entry.ToggleFavouritedCommand, new KeyGesture(Key.D, ModifierKeys.Control)),
+                new InputBinding(Model.Entry.ToggleHiddenCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.ManageListsCommand, new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
+                    CommandParameter = ServerEntry.ForceJoin
+                }
+            });
+            InputBindingBehavior.UpdateBindings(this);
+        }
+
+        private class MenuComparer : IComparer<MenuItem> {
+            public static readonly IComparer<MenuItem> Instance = new MenuComparer();
+
+            public int Compare(MenuItem x, MenuItem y) {
+                return string.Compare(x.Header.ToString(), y.Header.ToString(), StringComparison.CurrentCulture);
+            }
+        }
+
+        private DelegateCommand<string> _toggleSourceCommand;
+
+        public DelegateCommand<string> ToggleSourceCommand => _toggleSourceCommand ?? (_toggleSourceCommand = new DelegateCommand<string>(key => {
+            var entry = Model.Entry;
+            if (entry.ReferencedFrom(key)) {
+                FileBasedOnlineSources.RemoveFromList(key, entry);
+            } else {
+                FileBasedOnlineSources.AddToList(key, entry);
+            }
+        }));
+
+        private void UpdateMenuItems() {
+            var entry = Model.Entry;
+            var sources = FileBasedOnlineSources.Instance.GetUserSources().ToList();
+
+            for (var i = _sourcesMenuItems.Count - 1; i >= 0; i--) {
+                var id = _sourcesMenuItems[i].Tag as string;
+                if (sources.GetByIdOrDefault(id) == null) {
+                    _sourcesMenuItems.RemoveAt(i);
+                }
+            }
+
+            _sourcesMenuItems.Clear();
+            foreach (var source in sources) {
+                var existing = _sourcesMenuItems.FirstOrDefault(x => x.Tag as string == source.Id);
+                if (existing != null) {
+                    existing.IsChecked = entry.ReferencedFrom(source.Id);
+                } else {
+                    _sourcesMenuItems.AddSorted(new MenuItem {
+                        Header = source.DisplayName,
+                        IsCheckable = true,
+                        IsChecked = entry.ReferencedFrom(source.Id),
+                        Tag = source.Id,
+                        Command = ToggleSourceCommand,
+                        CommandParameter = source.Id
+                    }, MenuComparer.Instance);
+                }
+            }
+        }
+
+        private void UpdateCheckedMenuItems() {
+            if (!_listsButtonInitialized) return;
+            var entry = Model.Entry;
+            foreach (var menuItem in _sourcesMenuItems) {
+                menuItem.IsChecked = entry.ReferencedFrom(menuItem.Tag as string);
+            }
         }
 
         private DispatcherTimer _timer;
@@ -123,7 +231,7 @@ namespace AcManager.Pages.Drive {
 
             Model.Entry.OnTick();
             if (RequiresUpdate()) {
-                Model.Entry.Update(ServerEntry.UpdateMode.Full, true).Forget();
+                Model.Entry.Update(ServerEntry.UpdateMode.Normal, true).Forget();
             }
         }
 
@@ -135,11 +243,6 @@ namespace AcManager.Pages.Drive {
             ToolBar.IsActive = !ToolBar.IsActive;
         }
 
-        private void ToolBar_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Left) return;
-            ToolBar.IsActive = false;
-        }
-
         public class ViewModel : NotifyPropertyChanged, IComparer {
             private ServerEntry _entry;
 
@@ -148,7 +251,7 @@ namespace AcManager.Pages.Drive {
                 get { return _entry; }
                 private set {
                     if (Equals(value, _entry)) return;
-                    
+
                     _entry = value;
                     OnPropertyChanged();
 
@@ -170,6 +273,12 @@ namespace AcManager.Pages.Drive {
             int IComparer.Compare(object x, object y) {
                 return string.Compare((x as CarEntry)?.CarObject?.DisplayName, (y as CarEntry)?.CarObject?.DisplayName, StringComparison.CurrentCulture);
             }
+
+            private DelegateCommand _manageListsCommand;
+
+            public DelegateCommand ManageListsCommand => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => {
+                new OnlineListsManager().ShowDialog();
+            }));
         }
 
         private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -196,30 +305,52 @@ namespace AcManager.Pages.Drive {
             _timer = null;
 
             Model.Entry.PropertyChanged -= Entry_PropertyChanged;
+            DisposeHelper.Dispose(ref _holder);
+
+            if (_listsButtonInitialized) {
+                FileBasedOnlineSources.Instance.Update -= OnUserSourcesUpdated;
+            }
         }
 
         private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case nameof(ServerEntry.Cars):
+                case nameof(ServerEntry.Status):
                     UpdateCarsView();
                     break;
-                case nameof(ServerEntry.OriginsString):
+                case nameof(ServerEntry.SelectedCarEntry):
+                    UpdateSelectedCar();
+                    break;
+                case nameof(ServerEntry.ReferencesString):
                     UpdateIcons();
+                    UpdateCheckedMenuItems();
                     break;
             }
         }
 
         private IEnumerable<CarEntry> GetCars() {
-            return (IEnumerable<CarEntry>)Model.Entry.Cars?.OrderBy(x => x.CarObject?.DisplayName) ?? new CarEntry[0];
+            var cars = Model.Entry.Cars;
+            if (cars == null) return new CarEntry[0];
+            return cars.OrderBy(x => x.CarObject?.DisplayName).ToList();
         }
 
         private void UpdateCarsView() {
             CarsComboBox.ItemsSource = GetCars();
+            if (ShowExtendedInformation) {
+                CarsListBox.ItemsSource = CarsComboBox.ItemsSource;
+            }
+
+            UpdateSelectedCar();
+        }
+
+        private void UpdateSelectedCar() {
             CarsComboBox.SelectedItem = Model.Entry.SelectedCarEntry;
+            if (ShowExtendedInformation) {
+                CarsListBox.SelectedItem = CarsComboBox.SelectedItem;
+            }
         }
 
         private void CarsComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var carEntry = CarsComboBox.SelectedItem as CarEntry;
+            var carEntry = ((Selector)sender).SelectedItem as CarEntry;
             if (carEntry != null) {
                 Model.Entry.SelectedCarEntry = carEntry;
             }
@@ -229,9 +360,9 @@ namespace AcManager.Pages.Drive {
             var children = IconsPanel.Children;
             children.Clear();
 
-            foreach (var originId in Model.Entry.GetOriginsIds()) {
-                if (originId == KunosOnlineSource.Key || originId == LanOnlineSource.Key || originId == FileBasedOnlineSources.FavoritesKey ||
-                        originId == FileBasedOnlineSources.RecentKey) {
+            foreach (var originId in Model.Entry.GetReferencesIds()) {
+                if (originId == KunosOnlineSource.Key || originId == LanOnlineSource.Key || originId == FileBasedOnlineSources.FavouritesKey ||
+                        originId == FileBasedOnlineSources.RecentKey || originId == FileBasedOnlineSources.HiddenKey) {
                     continue;
                 }
 
@@ -262,6 +393,58 @@ namespace AcManager.Pages.Drive {
                 baseIcon.Margin = new Thickness(0d, 0d, 4d, 0);
                 children.Add(baseIcon);
             }
+        }
+
+        private void Driver_OnContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
+            var driver = ((FrameworkElement)sender).DataContext as ServerEntry.CurrentDriver;
+            if (driver == null) return;
+
+            var menu = new ContextMenu();
+            foreach (var tag in ServerEntry.DriverTag.GetTags().OrderBy(x => x.DisplayName)) {
+                var icon = TryFindResource(@"PlayerTagIcon") as Shape;
+                icon?.SetBinding(Shape.FillProperty, new Binding {
+                    Source = tag,
+                    Path = new PropertyPath(nameof(tag.Color)),
+                    Converter = ColorPicker.ColorToBrushConverter
+                });
+
+                var header = new TextBlock();
+                header.SetBinding(TextBlock.TextProperty, new Binding {
+                    Source = tag,
+                    Path = new PropertyPath(nameof(tag.DisplayName))
+                });
+
+                var item = new MenuItem {
+                    Header = icon == null ? (FrameworkElement)header : new DockPanel { Children = { icon, header } },
+                    IsChecked = driver.Tags.GetByIdOrDefault(tag.Id) != null,
+                    StaysOpenOnClick = true,
+                    IsCheckable = true
+                };
+
+                item.Click += (o, args) => {
+                    (((MenuItem)o).IsChecked ? driver.AddTagCommand : driver.RemoveTagCommand).Execute(tag.Id);
+                };
+
+                menu.Items.Add(item);
+            }
+
+            menu.AddSeparator();
+
+            menu.Items.Add(new MenuItem {
+                Header = "New Tag…",
+                Command = new DelegateCommand(() => {
+                    new OnlineNewDriverTag(driver).ShowDialog();
+                })
+            });
+
+            menu.Items.Add(new MenuItem {
+                Header = "Edit Tags…",
+                Command = new DelegateCommand(() => {
+                    new OnlineDriverTags().ShowDialog();
+                })
+            });
+
+            e.Menu = menu;
         }
     }
 }

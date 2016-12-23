@@ -4,13 +4,13 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 
 namespace AcManager.Controls {
-    public class FavoriteButton : ToggleButton {
-        static FavoriteButton() {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(FavoriteButton), new FrameworkPropertyMetadata(typeof(FavoriteButton)));
+    public class FavouriteButton : ToggleButton {
+        static FavouriteButton() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(FavouriteButton), new FrameworkPropertyMetadata(typeof(FavouriteButton)));
         }
 
         public static readonly DependencyProperty ActiveBrushProperty = DependencyProperty.Register(nameof(ActiveBrush), typeof(Brush),
-                typeof(FavoriteButton));
+                typeof(FavouriteButton));
 
         public Brush ActiveBrush {
             get { return (Brush)GetValue(ActiveBrushProperty); }
@@ -18,7 +18,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register(nameof(Data), typeof(PathData),
-                typeof(FavoriteButton));
+                typeof(FavouriteButton));
 
         public PathData Data {
             get { return (PathData)GetValue(DataProperty); }

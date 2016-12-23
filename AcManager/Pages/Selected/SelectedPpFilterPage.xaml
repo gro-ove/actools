@@ -60,7 +60,7 @@
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 
-        <av:TextEditor x:Name="TextEditor" />
+        <av:TextEditor c:AvalonExtension.Text="{Binding SelectedObject.Content}" c:AvalonExtension.Mode="Ini" />
     </c:AcObjectBase>
 </sel:SelectedAcObjectPage>
 

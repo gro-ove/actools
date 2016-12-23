@@ -47,7 +47,7 @@ namespace AcManager.Pages.Settings {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t send data", e);
                 }
-            }, 3000));
+            }, TimeSpan.FromSeconds(3d)));
 
             private ICommand _decryptHelperCommand;
 

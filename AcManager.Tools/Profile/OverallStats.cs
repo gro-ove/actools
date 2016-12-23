@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Profile {
@@ -32,12 +33,17 @@ namespace AcManager.Tools.Profile {
             private double _totalWheelie;
             private double _totalTwoWheels;
 
-            public OverallStats(Storage associatedStorage = null) {
-                _associatedStorage = associatedStorage ?? new Storage();
+            /// <summary>
+            /// Don’t forget to set Storage later if needed.
+            /// </summary>
+            public OverallStats() { }
+
+            public OverallStats(IStorage storage) {
+                Storage = storage;
             }
 
-            [JsonIgnore]
-            private readonly Storage _associatedStorage;
+            [JsonIgnore, CanBeNull]
+            public IStorage Storage { get; set; }
 
             [JsonProperty]
             public int Version => 2;
@@ -315,9 +321,13 @@ namespace AcManager.Tools.Profile {
 
             public void Extend(SessionStats session) {
                 /* extremums */
+                if (Storage == null) {
+                    Storage = new Storage();
+                }
+
                 {
-                    var drivenDistance = _associatedStorage.GetDouble(KeyDistancePerCarPrefix + session.CarId) + session.Distance;
-                    _associatedStorage.Set(KeyDistancePerCarPrefix + session.CarId, drivenDistance);
+                    var drivenDistance = Storage.GetDouble(KeyDistancePerCarPrefix + session.CarId) + session.Distance;
+                    Storage.Set(KeyDistancePerCarPrefix + session.CarId, drivenDistance);
 
                     if (session.CarId == MaxDistancePerCarCarId) {
                         MaxDistancePerCar += session.Distance;
@@ -328,8 +338,8 @@ namespace AcManager.Tools.Profile {
                 }
 
                 {
-                    var drivenDistance = _associatedStorage.GetDouble(KeyDistancePerTrackPrefix + session.TrackId) + session.Distance;
-                    _associatedStorage.Set(KeyDistancePerTrackPrefix + session.TrackId, drivenDistance);
+                    var drivenDistance = Storage.GetDouble(KeyDistancePerTrackPrefix + session.TrackId) + session.Distance;
+                    Storage.Set(KeyDistancePerTrackPrefix + session.TrackId, drivenDistance);
 
                     if (session.TrackId == MaxDistancePerTrackTrackId) {
                         MaxDistancePerTrack += session.Distance;

@@ -2003,7 +2003,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Server address (IP &amp; HTTP or TCP Port):</value>
   </data>
   <data name="Online_AddServer_Title" xml:space="preserve">
-    <value>Add a New Server</value>
+    <value>Add New Servers</value>
   </data>
   <data name="Online_AddServer_Tooltip" xml:space="preserve">
     <value>Port could be omitted, in this case app will scan all specific ports</value>

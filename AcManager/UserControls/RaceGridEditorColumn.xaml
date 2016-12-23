@@ -213,10 +213,8 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <mui:Cell>
-                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
-                </mui:Cell>
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
@@ -330,7 +328,7 @@
                         </StackPanel>
                     </c:ModernPopup>
                 </mui:ContextMenuButton>
-                <TextBlock Style="{StaticResource LabelWithPadding}"
+                <TextBlock Style="{StaticResource Label.Padding}"
                         Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
             </DockPanel>
 

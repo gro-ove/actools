@@ -91,7 +91,7 @@ namespace AcManager.Tools.Managers.Online {
 
             PasswordRequired = information.Password;
             if (PasswordRequired) {
-                Password = ValuesStorage.GetEncryptedString(PasswordStorageKey);
+                Password = ValuesStorage.GetEncryptedString(KeyPasswordStorage);
             }
 
             if (information.CarIds != null && Cars?.Select(x => x.Id).SequenceEqual(information.CarIds) != true) {
@@ -188,7 +188,7 @@ namespace AcManager.Tools.Managers.Online {
                 case WebExceptionStatus.RequestCanceled:
                     return "Server did not respond in given time";
                 case WebExceptionStatus.ConnectFailure:
-                    return "Connect failure.";
+                    return "Connect failure";
                 default:
                     Logging.Warning(e.Status);
                     return "Unknown reason";
@@ -206,8 +206,6 @@ namespace AcManager.Tools.Managers.Online {
         public async Task Update(UpdateMode mode, bool background = false, bool fast = false) {
             if (_updating) return;
             _updating = true;
-
-            Logging.Debug(Id);
 
             var errors = new List<string>(3);
 
@@ -234,7 +232,7 @@ namespace AcManager.Tools.Managers.Online {
                     informationUpdated = true;
                 }
 
-                if (mode == UpdateMode.Full) {
+                if (mode != UpdateMode.Lite) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.2);
 
                     ServerInformationComplete loaded;
@@ -265,7 +263,7 @@ namespace AcManager.Tools.Managers.Online {
                     }
                 }
 
-                if (Ping == null || !SettingsHolder.Online.PingOnlyOnce) {
+                if (Ping == null || mode == UpdateMode.Full || !SettingsHolder.Online.PingOnlyOnce) {
                     UpdateProgress = new AsyncProgressEntry("Pinging server…", 0.3);
                     var pair = SettingsHolder.Online.ThreadsPing
                             ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
@@ -287,6 +285,10 @@ namespace AcManager.Tools.Managers.Online {
                 } catch (WebException e) {
                     errors.Add($"Can’t load drivers information: {GetFailedReason(e)}.");
                     return;
+                }
+
+                if (!BookingMode) {
+                    CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
                 }
 
                 var currentDrivers = (BookingMode ? information.Cars : information.Cars.Where(x => x.IsConnected))

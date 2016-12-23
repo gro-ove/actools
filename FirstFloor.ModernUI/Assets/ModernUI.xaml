@@ -5,6 +5,7 @@
         <ResourceDictionary Source="ButtonWithComboBox.xaml" />
         <ResourceDictionary Source="Calendar.xaml" />
         <ResourceDictionary Source="CheckBox.xaml" />
+        <ResourceDictionary Source="ColorPicker.xaml" />
         <ResourceDictionary Source="ComboBox.xaml" />
         <ResourceDictionary Source="ContextMenu.xaml" />
         <ResourceDictionary Source="DataGrid.xaml" />

@@ -89,7 +89,7 @@
             </Grid>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
+                <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
                 <mui:HierarchicalComboBox ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}" FixedMode="False"
                         PreviewProvider="{Binding}" />
             </StackPanel>

@@ -61,6 +61,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
+        public static bool SamePath(this Uri a, Uri b) {
+            return a.ToString().Split('?', '&')[0] == b.ToString().Split('?', '&')[0];
+        }
+
+        [Pure]
         public static T GetQueryParamEnum<T>(this Uri uri, string key) where T : struct, IConvertible {
             var value = uri.GetQueryParam(key);
             if (value == null) return default(T);

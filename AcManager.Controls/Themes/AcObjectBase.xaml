@@ -24,7 +24,7 @@
                                 <ContentPresenter Margin="0 4 0 0" Content="{TemplateBinding Content}" />
                             </StackPanel>
                         </ScrollViewer>
-                        <ac:AcToolBar Grid.Row="2" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}" />
+                        <ac:AcToolBar Grid.Row="2" x:Name="PART_ToolBar" Panel.ZIndex="1" ToolBars="{TemplateBinding ToolBars}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

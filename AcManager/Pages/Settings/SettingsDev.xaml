@@ -105,6 +105,16 @@
                     <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="Placeholder"
                             ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
                 </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Colorpicker:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ColorPicker />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New CB, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ColorPicker Style="{StaticResource ColorPicker.Borderless}" />
+                </DockPanel>
             </StackPanel>
 
             <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">

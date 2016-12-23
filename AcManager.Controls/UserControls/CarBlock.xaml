@@ -58,13 +58,13 @@
 
                     <!-- first row -->
                     <DockPanel x:Name="InnerBrandArea" Background="Transparent" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource Label.Padding}" Width="80"
                                 DockPanel.Dock="Left" />
                         <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource LabelWithPadding}" Width="80"
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource Label.Padding}" Width="80"
                                 DockPanel.Dock="Left" />
                         <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
@@ -72,21 +72,21 @@
                     <!-- second row -->
                     <DockPanel x:Name="InnerClassArea" Background="Transparent" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left"
-                                Style="{StaticResource LabelWithPadding}" />
+                                Style="{StaticResource Label.Padding}" />
                         <mui:PlaceholderTextBlock Text="{Binding CarClass}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <DockPanel x:Name="InnerYearArea" Background="Transparent" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2">
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Width="80" DockPanel.Dock="Left"
-                                Style="{StaticResource LabelWithPadding}" />
+                                Style="{StaticResource Label.Padding}" />
                         <mui:PlaceholderTextBlock Text="{Binding Year, TargetNullValue=''}" Placeholder="?" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" />
                     </DockPanel>
 
                     <!-- third row -->
                     <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
-                            Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}"
+                            Style="{StaticResource Label.Padding}" />
+                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}"
                             ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
@@ -103,7 +103,7 @@
                             TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource Label.Padding}" />
                     <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

@@ -18,37 +18,37 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PowerLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PowerLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Power_Tooltip}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_TorqueLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_TorqueLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Torque_Tooltip}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_WeightLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_WeightLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Weight_Tooltip}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_MaxSpeed_Tooltip}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Acceleration_Tooltip}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
-                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}">
+                <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
                                 ContentStringFormat="{x:Static g:AppStrings.CarSpecs_PwRatio_Tooltip}" />

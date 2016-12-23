@@ -155,6 +155,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _integrateMinorating;
+
+            public bool IntegrateMinorating {
+                get { return _integrateMinorating ?? (_integrateMinorating = ValuesStorage.GetBool("Settings.OnlineSettings.IntegrateMinorating", true)).Value; }
+                set {
+                    if (Equals(value, _integrateMinorating)) return;
+                    _integrateMinorating = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.IntegrateMinorating", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _fixNames;
 
             public bool FixNames {
@@ -172,12 +184,12 @@ namespace AcManager.Tools.Helpers {
             public bool ServerPresetsManaging {
                 get {
                     return _serverPresetsManaging ??
-                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
+                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging2", false)).Value;
                 }
                 set {
                     if (Equals(value, _serverPresetsManaging)) return;
                     _serverPresetsManaging = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging2", value);
                     OnPropertyChanged();
                 }
             }
@@ -1602,7 +1614,7 @@ namespace AcManager.Tools.Helpers {
             public PeriodEntry UpdatePeriod {
                 get {
                     return _updatePeriod ?? (_updatePeriod = Common.Periods.FirstOrDefault(x =>
-                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.LocaleSettings.UpdatePeriod", Common.Periods.ElementAt(4).TimeSpan)) ??
+                            x.TimeSpan == (ValuesStorage.GetTimeSpan("Settings.LocaleSettings.UpdatePeriod") ?? Common.Periods.ElementAt(4).TimeSpan)) ??
                             Common.Periods.First());
                 }
                 set {

@@ -22,27 +22,15 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         /* sadly, I don’t know how to get window from unloaded FrameworkElement, so I’m going a stupid way */
-        private static readonly List<Window> OpenedWindows = new List<Window>(); 
+        private static readonly List<Window> OpenedWindows = new List<Window>();
 
-        private static void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
-            var frameworkElement = (FrameworkElement)sender;
-            frameworkElement.Unloaded -= FrameworkElement_Unloaded;
-
-            foreach (var window in OpenedWindows) {
-                for (var i = window.InputBindings.Count - 1; i >= 0; i--) {
-                    var binding = window.InputBindings[i];
-                    if (Equals(binding.CommandTarget, frameworkElement)) {
-                        window.InputBindings.RemoveAt(i);
-                    }
-                }
-            }
+        public static void UpdateBindings(FrameworkElement element) {
+            RemoveBindings(element);
+            SetBindings(element);
         }
 
-        private static void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
-            var frameworkElement = (FrameworkElement)sender;
-            frameworkElement.Loaded -= FrameworkElement_Loaded;
-
-            var window = Window.GetWindow(frameworkElement);
+        private static void SetBindings(UIElement element) {
+            var window = Window.GetWindow(element);
             if (window == null) {
                 return;
             }
@@ -52,12 +40,35 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 window.Closed += Window_Closed;
             }
 
-            for (var i = frameworkElement.InputBindings.Count - 1; i >= 0; i--) {
-                var binding = frameworkElement.InputBindings[i];
-                binding.CommandTarget = frameworkElement;
+            for (var i = element.InputBindings.Count - 1; i >= 0; i--) {
+                var binding = element.InputBindings[i];
+                binding.CommandTarget = element;
                 window.InputBindings.Add(binding);
-                frameworkElement.InputBindings.RemoveAt(i);
+                element.InputBindings.RemoveAt(i);
             }
+        }
+
+        private static void RemoveBindings(UIElement element) {
+            foreach (var window in OpenedWindows) {
+                for (var i = window.InputBindings.Count - 1; i >= 0; i--) {
+                    var binding = window.InputBindings[i];
+                    if (Equals(binding.CommandTarget, element)) {
+                        window.InputBindings.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        private static void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
+            var element = (FrameworkElement)sender;
+            element.Unloaded -= FrameworkElement_Unloaded;
+            RemoveBindings(element);
+        }
+
+        private static void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
+            var element = (FrameworkElement)sender;
+            element.Loaded -= FrameworkElement_Loaded;
+            SetBindings(element);
         }
 
         private static void Window_Closed(object sender, System.EventArgs e) {

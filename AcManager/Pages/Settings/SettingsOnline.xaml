@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
         xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:g="clr-namespace:AcManager"
+        xmlns:c="http://acstuff.ru/app/controls"
+        mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsOnline+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -13,7 +14,7 @@
             <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
-                <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                <mui:BetterTextBox Text="{Binding Drive.PlayerNameOnline}" Placeholder="?"
                         IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
@@ -25,6 +26,18 @@
             <CheckBox IsChecked="{Binding Online.RememberPasswords}">
                 <Label Content="{x:Static g:AppStrings.Settings_Online_RememberPasswords}" />
             </CheckBox>
+
+            <CheckBox IsChecked="{Binding Online.IntegrateMinorating}">
+                <Label Content="Integrate Minorating" />
+            </CheckBox>
+
+            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
+                <Button Content="Manage Lists" Command="{Binding ManageListsCommand}" />
+                <Button Content="Manage Drivers Tags" Command="{Binding ManageDriversTagsCommand}" />
+            </mui:SpacingUniformGrid>
+
+            <!--display-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Display:" />
 
             <CheckBox IsChecked="{Binding Online.CompactUi}">
                 <Label Content="{x:Static g:AppStrings.Settings_Online_CompactUi}" />
@@ -44,6 +57,11 @@
             <CheckBox IsChecked="{Binding Online.LoadServerInformationDirectly}"
                     ToolTip="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="Ping servers only once and while pressing Refresh button, like in original launcher"
+                    mui:NewMarkService.New="True">
+                <Label Content="Ping servers once" />
             </CheckBox>
 
             <!--pinging-->
@@ -74,7 +92,7 @@
 
             <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Online_PortsByIp_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Online_PortsLabel}" />
-                <TextBox Text="{Binding Online.PortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Online.PortsEnumeration}" Placeholder="?" />
             </DockPanel>
 
             <DockPanel>
@@ -83,6 +101,7 @@
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
+            <!--lan-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_LanHeader}" />
 
             <!--<CheckBox IsChecked="{Binding Holder.AlternativeScanningMethod}" Margin="0 0 0 8" IsEnabled="False">
@@ -91,9 +110,9 @@
 
             <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Online_PortsLan_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Online_PortsLabel}" />
-                <TextBox Text="{Binding Online.LanPortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Online.LanPortsEnumeration}" Placeholder="?" />
             </DockPanel>
-
+            
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Online_LanScanConnectionLabel}" />
                 <ListBox x:Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
@@ -110,11 +129,11 @@
             </DockPanel>
 
             <!--connection-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True"
+            <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2}"
                     Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
-            <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" attached:LimitedService.Limited="True">
+            <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" mui:LimitedService.Limited="True">
                 <Label Content="{x:Static g:AppStrings.Toolbar_Enable}" />
-            </CheckBox>
+            </CheckBox>-->
         </StackPanel>
     </ScrollViewer>
 </UserControl>

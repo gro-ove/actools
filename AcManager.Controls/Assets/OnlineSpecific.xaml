@@ -17,7 +17,7 @@
     <Border x:Key="BaseIcon" Padding="4 3 4 0" Background="{DynamicResource ButtonBackground}" x:Shared="False">
         <mui:BbCodeBlock Height="15" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
     </Border>
-    
+
     <Border x:Key="MinoratingIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Minorating server" x:Shared="False">
         <Path Data="{StaticResource MinoratingIconData}" Fill="#FF0000" Width="21" Height="10" Stretch="Uniform" />
     </Border>
@@ -30,8 +30,12 @@
         <TextBlock Foreground="#FF7700" Height="15" Text="Kunos" FontSize="11" FontStyle="Normal" FontFamily="{StaticResource CondensedFont}" />
     </Border>
 
-    <Border x:Key="FavoriteIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Favorite server" x:Shared="False">
+    <Border x:Key="FavouriteIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Favourite server" x:Shared="False">
         <Path Data="{StaticResource StarIconData}" Fill="#FFFF00" Width="10" Height="10" Stretch="Uniform" />
+    </Border>
+
+    <Border x:Key="HiddenIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Hidden server" x:Shared="False">
+        <Path Data="{StaticResource HiddenIconData}" Fill="#999999" Width="10" Height="10" Stretch="Uniform" />
     </Border>
 
     <Border x:Key="RecentIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Recently used server" x:Shared="False">
@@ -61,9 +65,15 @@
         </Border>
     </InlineUIContainer>
 
-    <InlineUIContainer x:Key="FavoriteIconInline" x:Shared="False">
+    <InlineUIContainer x:Key="FavouriteIconInline" x:Shared="False">
         <Border Margin="{StaticResource InlineIconMargin}">
-            <StaticResource ResourceKey="FavoriteIcon" />
+            <StaticResource ResourceKey="FavouriteIcon" />
+        </Border>
+    </InlineUIContainer>
+
+    <InlineUIContainer x:Key="HiddenIconInline" x:Shared="False">
+        <Border Margin="{StaticResource InlineIconMargin}">
+            <StaticResource ResourceKey="HiddenIcon" />
         </Border>
     </InlineUIContainer>
 
@@ -187,7 +197,7 @@
             <Grid.CacheMode>
                 <BitmapCache EnableClearType="True" />
             </Grid.CacheMode>
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="60" />
@@ -342,8 +352,8 @@
                                 TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
                         <TextBlock x:Name="TimeLeftText" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="146 30 0 3"
                                 TextAlignment="Right" />
-                        <StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />
-                        <StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />
+                        <mui:SpacingStackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />
+                        <mui:SpacingStackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />
                     </mui:Cell>
                 </ControlTemplate>
             </Setter.Value>
@@ -365,14 +375,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <mui:Cell>
-                            <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </mui:Cell>
-                    </Border>
+                    <mui:Cell Background="Transparent" SnapsToDevicePixels="True">
+                        <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                Margin="{TemplateBinding Padding}" />
+                    </mui:Cell>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundHover}" />
@@ -400,14 +408,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type mui:ModernToggleButton}">
-                    <Grid Background="Transparent" Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}"
+                    <mui:Cell Background="Transparent" Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}"
                             Height="{TemplateBinding EllipseDiameter}">
                         <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
                                 SnapsToDevicePixels="True" />
                         <Path Data="F1 M 60,0 L0,60 L4,64 L64,4 Z" Fill="Red" Stretch="Uniform"
                                 Visibility="{TemplateBinding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True"
                                 Margin="-2" />
-                    </Grid>
+                    </mui:Cell>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextHover}" />
@@ -437,10 +445,10 @@
                     <DockPanel Background="Transparent">
                         <TextBlock TextAlignment="Center" Margin="0 4 0 0" Text="{TemplateBinding Content}" Style="{StaticResource Label}"
                                 DockPanel.Dock="Bottom" />
-                        <Grid Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
+                        <mui:Cell Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
                             <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
                                     SnapsToDevicePixels="True" />
-                        </Grid>
+                        </mui:Cell>
                     </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -470,13 +478,49 @@
                     <DockPanel Background="Transparent">
                         <TextBlock TextAlignment="Center" Margin="0 4 0 0" Text="{TemplateBinding Content}" Style="{StaticResource Label}"
                                 DockPanel.Dock="Bottom" />
-                        <Grid Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
+                        <mui:Cell Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
                             <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
                                     SnapsToDevicePixels="True" />
                             <Path Data="F1 M 60,0 L0,60 L4,64 L64,4 Z" Fill="Red" Stretch="Uniform"
                                     Visibility="{TemplateBinding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True"
                                     Margin="-2" />
-                        </Grid>
+                        </mui:Cell>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextPressed}" />
+                            <Setter TargetName="IconPath" Property="Fill" Value="{DynamicResource ModernButtonIconForegroundPressed}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextDisabled}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BigToggleButton.Include" TargetType="{x:Type mui:ModernToggleButton}" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="EllipseDiameter" Value="24" />
+        <Setter Property="Margin" Value="0 0 8 0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type mui:ModernToggleButton}">
+                    <DockPanel Background="Transparent">
+                        <TextBlock TextAlignment="Center" Margin="0 4 0 0" Text="{TemplateBinding Content}" Style="{StaticResource Label}"
+                                DockPanel.Dock="Bottom" />
+                        <mui:Cell Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
+                            <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
+                                    SnapsToDevicePixels="True" />
+                            <Ellipse Stroke="Red" StrokeThickness="2" Stretch="Uniform"
+                                    Visibility="{TemplateBinding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True"
+                                    Margin="-4" />
+                        </mui:Cell>
                     </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">

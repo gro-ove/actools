@@ -21,21 +21,29 @@ namespace AcManager.Tools.Profile {
 
         public static int OptionRunStatsWebserver = 0;
 
-        private static PlayerStatsManager _instance;
-
         public static PlayerStatsManager Instance => _instance ?? (_instance = new PlayerStatsManager());
+        private static PlayerStatsManager _instance;
 
         [CanBeNull]
         private static PlayerStatsWebServer _webServer;
 
         private readonly Storage _storage;
+        
+        public event EventHandler<SessionStatsEventArgs> NewSessionAdded;
 
         private static OverallStats _overall;
 
-        public event EventHandler<SessionStatsEventArgs> NewSessionAdded;
-
         [NotNull]
-        public OverallStats Overall => _overall ?? (_overall = _storage.GetOrCreateObject<OverallStats>(KeyOverall, () => new OverallStats(_storage)));
+        public OverallStats Overall {
+            get {
+                if (_overall == null) {
+                    _overall = _storage.GetOrCreateObject<OverallStats>(KeyOverall);
+                    _overall.Storage = _storage;
+                }
+
+                return _overall;
+            }
+        }
 
         private WatchingSessionStats _current;
         private SessionStats _last;
@@ -51,11 +59,7 @@ namespace AcManager.Tools.Profile {
         }
 
         private PlayerStatsManager() {
-#if DEBUG
-            _storage = new Storage(FilesStorage.Instance.GetFilename("Progress", "Profile.data"), null, true);
-#else
             _storage = new Storage(FilesStorage.Instance.GetFilename("Progress", "Profile.data"));
-#endif
         }
 
         public void SetListener() {
@@ -100,7 +104,7 @@ namespace AcManager.Tools.Profile {
             }
 
             Overall.CopyFrom(newOverall);
-            _storage.Set(KeyOverall, Overall);
+            _storage.SetObject(KeyOverall, Overall);
         }
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {
@@ -121,7 +125,7 @@ Fuel burnt: {current.FuelBurnt:F2}l ({current.FuelConsumption:F2} liters per 100
 Gone offroad: {current.GoneOffroad} time(s)");
 
             Overall.Extend(current);
-            _storage.Set(KeyOverall, Overall);
+            _storage.SetObject(KeyOverall, Overall);
             _storage.Set(KeySessionStatsPrefix + current.StartedAt.ToMillisecondsTimestamp(), current.Serialize());
         }
 

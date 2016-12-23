@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -11,9 +13,11 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
+using AcManager.Pages.Dialogs;
 using JetBrains.Annotations;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -21,6 +25,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using StringBasedFilter;
 using Prompt = AcManager.Controls.Dialogs.Prompt;
@@ -49,12 +54,8 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ShowDetails(ServerEntry entry) {
-            var opened = Frame.Content as OnlineServer;
-            if (opened != null) {
-                opened.Change(entry);
-            } else {
-                Frame.Source = UriExtension.Create("/Pages/Drive/OnlineServer.xaml?Id={0}", entry.Id);
-            }
+            Model.ServerSelected = true;
+            Frame.Source = UriExtension.Create("/Pages/Drive/OnlineServer.xaml?Id={0}", entry.Id);
         }
 
         private DispatcherTimer _timer;
@@ -119,10 +120,21 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private bool _wideInformationMode;
+
+        public bool WideInformationMode {
+            get { return _wideInformationMode; }
+            set {
+                if (Equals(value, _wideInformationMode)) return;
+                _wideInformationMode = value;
+                Frame.Width = value ? 670 : 450;
+            }
+        }
+
         private void ResizingStuff() {
-            SimpleListMode = ActualWidth > 1080 ? ListMode.DetailedPlus :
-                    ActualWidth > 800 ? ListMode.Detailed :
-                            ListMode.Simple;
+            var width = ActualWidth;
+            SimpleListMode = width > 1080 ? ListMode.DetailedPlus : width > 800 ? ListMode.Detailed : ListMode.Simple;
+            WideInformationMode = width > 1280;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -188,6 +200,34 @@ namespace AcManager.Pages.Drive {
             LimitedStorage.Move(LimitedSpace.OnlineSorting, GetKey(e.OldValue), GetKey(e.NewValue));
         }
 
+        public static async Task AddServerManually(string listKey) {
+            var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "",
+                    @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
+            if (address == null) return;
+
+            try {
+                var list = new List<ServerInformationComplete>();
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report(AppStrings.Online_AddingServer);
+
+                    foreach (var s in address.Split(',').Select(x => x.Trim())) {
+                        var part = await OnlineManager.Instance.ScanForServers(s, waiting, waiting.CancellationToken);
+                        if (part == null || waiting.CancellationToken.IsCancellationRequested) return;
+
+                        list.AddRange(part);
+                    }
+                }
+
+                if (list.Count == 0) {
+                    ModernDialog.ShowMessage("Nothing found.", AppStrings.Online_AddServer_Title, MessageBoxButton.OK);
+                } else {
+                    new OnlineAddManuallyDialog(listKey, list).ShowDialog();
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);
+            }
+        }
+
         public class OnlineViewModel : NotifyPropertyChanged {
             public string Key { get; }
 
@@ -208,6 +248,7 @@ namespace AcManager.Pages.Drive {
                 FilterPassword = loaded.Contains(@"password");
                 FilterMissing = loaded.Contains(@"haserrors");
                 FilterBooking = loaded.Contains(@"booking");
+                FilterFriendsOnly = loaded.Contains(@"friends");
             }
 
             private void SaveQuickFilter() {
@@ -220,7 +261,8 @@ namespace AcManager.Pages.Drive {
                     FilterFull ? @"(full-)" : null,
                     FilterPassword ? @"(password-)" : null,
                     FilterMissing ? @"(haserrors-)" : null,
-                    FilterBooking ? @"(booking-)" : null
+                    FilterBooking ? @"(booking-)" : null,
+                    FilterFriendsOnly ? @"(friends+)" : null
                 }.Where(x => x != null).JoinToString('&');
             }
 
@@ -247,13 +289,13 @@ namespace AcManager.Pages.Drive {
                 _updatingQuickFilter = false;
             }
 
-            private Uri _selectedSource;
+            private bool _serverSelected;
 
-            public Uri SelectedSource {
-                get { return _selectedSource; }
+            public bool ServerSelected {
+                get { return _serverSelected; }
                 set {
-                    if (Equals(value, _selectedSource)) return;
-                    _selectedSource = value;
+                    if (Equals(value, _serverSelected)) return;
+                    _serverSelected = value;
                     OnPropertyChanged();
                 }
             }
@@ -268,11 +310,12 @@ namespace AcManager.Pages.Drive {
                 }
 
                 public bool Test(ServerEntry obj) {
-                    return obj.OriginsFrom(_source);
+                    return obj.ReferencedFrom(_source) && (_source == FileBasedOnlineSources.HiddenKey || !obj.IsExcluded);
                 }
 
                 public bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.OriginsString);
+                    return propertyName == nameof(ServerEntry.ReferencesString)
+                            || _source != FileBasedOnlineSources.HiddenKey && propertyName == nameof(ServerEntry.IsExcluded);
                 }
 
                 public override string ToString() {
@@ -292,11 +335,12 @@ namespace AcManager.Pages.Drive {
                 }
 
                 public bool Test(ServerEntry obj) {
-                    return obj.OriginsFrom(_sources);
+                    return obj.ReferencedFrom(_sources) && !obj.IsExcluded;
                 }
 
                 public bool IsAffectedBy(string propertyName) {
-                    return propertyName == nameof(ServerEntry.OriginsString);
+                    return propertyName == nameof(ServerEntry.ReferencesString)
+                            || propertyName == nameof(ServerEntry.IsExcluded);
                 }
 
                 public override string ToString() {
@@ -329,6 +373,10 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
+            public bool UserListMode { get; }
+
+            public SettingEntry[] SortingModes { get; }
+
             private readonly Action<ServerEntry> _showDetails;
 
             public OnlineViewModel([CanBeNull] string filterParam, Action<ServerEntry> showDetails) {
@@ -349,11 +397,19 @@ namespace AcManager.Pages.Drive {
                 }
                 
                 Pack = OnlineManager.Instance.GetSourcesPack(sources);
+                UserListMode = Pack.SourceWrappers.Count == 1 && FileBasedOnlineSources.Instance.GetUserSources()
+                                                                                       .Select(x => x.Id)
+                                                                                       .Append(FileBasedOnlineSources.FavouritesKey)
+                                                                                       .Contains(Pack.SourceWrappers[0].Id);
+
                 ListFilter = GetFilter(filter, sources);
                 Key = GetKey(filterParam);
-                
+
                 Manager = OnlineManager.Instance;
                 MainList = new BetterListCollectionView(Manager.List);
+
+                SortingModes = sources?.Length == 1 && sources[0] == FileBasedOnlineSources.RecentKey
+                        ? DefaultSortingModes.Prepend(new SettingEntry(null, "Default")).ToArray() : DefaultSortingModes;
 
                 LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
@@ -366,15 +422,13 @@ namespace AcManager.Pages.Drive {
                 Debug.Assert(!_loaded);
                 _loaded = true;
                 
+                Manager.List.CollectionChanged += List_CollectionChanged;
                 Manager.List.ItemPropertyChanged += List_ItemPropertyChanged;
 
                 using (MainList.DeferRefresh()) {
                     MainList.Filter = FilterTest;
                     MainList.CustomSort = Sorting;
                 }
-
-                LoadCurrent();
-                MainList.CurrentChanged += OnCurrentChanged;
 
                 if (!Pack.LoadingComplete) {
                     // In case pack is basically ready, but there is still something loads in background,
@@ -386,6 +440,9 @@ namespace AcManager.Pages.Drive {
                 if (Pack.Status == OnlineManagerStatus.Ready) {
                     StartPinging().Forget();
                 }
+                
+                LoadCurrent();
+                MainList.CurrentChanged += OnCurrentChanged;
 
                 Pack.Ready += Pack_Ready;
             }
@@ -394,7 +451,9 @@ namespace AcManager.Pages.Drive {
                 Debug.Assert(_loaded);
                 _loaded = false;
 
+                Manager.List.CollectionChanged -= List_CollectionChanged;
                 Manager.List.ItemPropertyChanged -= List_ItemPropertyChanged;
+
                 StopLoading();
                 StopPinging();
 
@@ -413,7 +472,6 @@ namespace AcManager.Pages.Drive {
                 var cancellation = new CancellationTokenSource();
                 try {
                     _currentLoading = cancellation;
-                    Logging.Write($"({Pack.SourceWrappers.Select(x => x.Id).JoinToString(", ")}) customerId: {cancellation.GetHashCode()}");
                     await Pack.EnsureLoadedAsync(cancellation.Token);
                 } finally {
                     if (Equals(_currentLoading, cancellation)) {
@@ -458,23 +516,49 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private string _loadCurrentFailed;
+            private bool _currentLoaded;
+
             private void LoadCurrent() {
+                if (_currentLoaded) {
+                    if (_loadCurrentFailed != null) {
+                        var selected = Manager.GetById(_loadCurrentFailed);
+                        if (selected != null) {
+                            MainList.MoveCurrentTo(selected);
+                            _loadCurrentFailed = null;
+                        }
+                    }
+                    return;
+                }
+
+                _currentLoaded = true;
+                MainList.CurrentChanged -= OnCurrentChanged;
+
                 var current = LimitedStorage.Get(LimitedSpace.OnlineSelected, Key);
                 if (current != null) {
                     var selected = Manager.GetById(current);
                     if (selected != null) {
                         MainList.MoveCurrentTo(selected);
+                        _loadCurrentFailed = null;
                     } else {
                         MainList.MoveCurrentToFirst();
+                        _loadCurrentFailed = current;
                     }
                 } else {
                     MainList.MoveCurrentToFirst();
                 }
                 
                 CurrentChanged(false);
+                MainList.CurrentChanged += OnCurrentChanged;
             }
 
             private object _testMeLater;
+
+            private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+                if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Reset) {
+                    LoadCurrent();
+                }
+            }
 
             private void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 if (!_loaded) return;
@@ -482,8 +566,6 @@ namespace AcManager.Pages.Drive {
                 if (ListFilter.IsAffectedBy(e.PropertyName)) {
                     var server = (ServerEntry)sender;
                     var willBeVisible = ListFilter.Test(server);
-
-                    Logging.Debug($"{e.PropertyName} ({server.DisplayName}): {willBeVisible}, {ReferenceEquals(_current, server)}");
 
                     if (ReferenceEquals(_current, server)) {
                         _testMeLater = willBeVisible ? null : server;
@@ -497,11 +579,11 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
-                if (e.PropertyName == nameof(ServerEntry.IsFavorited) || e.PropertyName == nameof(ServerEntry.OriginsString)) {
+                if (e.PropertyName == nameof(ServerEntry.IsFavourited) || e.PropertyName == nameof(ServerEntry.ReferencesString)) {
                     return;
                 }
 
-                if (Sorting.IsAffectedBy(e.PropertyName)) {
+                if (Sorting?.IsAffectedBy(e.PropertyName) == true) {
                     MainList.Refresh(sender);
                 }
             }
@@ -515,7 +597,7 @@ namespace AcManager.Pages.Drive {
 
             private ServerEntrySorter _sorting;
 
-            [NotNull]
+            [CanBeNull]
             public ServerEntrySorter Sorting {
                 get { return _sorting; }
                 set {
@@ -553,22 +635,8 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _addNewServerCommand;
 
-            public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new DelegateCommand(async () => {
-                /*var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
-                        @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
-                if (address == null) return;
-
-                foreach (var s in address.Split(',').Select(x => x.Trim())) {
-                    try {
-                        using (var waiting = new WaitingDialog()) {
-                            waiting.Report(AppStrings.Online_AddingServer);
-                            await RecentManagerOld.Instance.AddServer(s, waiting, waiting.CancellationToken);
-                        }
-                    } catch (Exception e) {
-                        NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);
-                    }
-                }*/
-            }, () => false /* Manager is RecentManagerOld*/));
+            public ICommand AddNewServerCommand => _addNewServerCommand ??
+                    (_addNewServerCommand = UserListMode ? new AsyncCommand(() => AddServerManually(Pack.SourceWrappers[0].Id)) : UnavailableCommand.Instance);
 
             private AsyncCommand<bool?> _refreshCommand;
 
@@ -591,6 +659,7 @@ namespace AcManager.Pages.Drive {
 
                 if (save) {
                     LimitedStorage.Set(LimitedSpace.OnlineSelected, Key, item.Id);
+                    _loadCurrentFailed = null;
                 }
 
                 if (ReferenceEquals(_current, item)) return;
@@ -659,6 +728,18 @@ namespace AcManager.Pages.Drive {
                 set {
                     if (Equals(value, _filterMissing)) return;
                     _filterMissing = value;
+                    OnPropertyChanged();
+                    UpdateQuickFilter();
+                }
+            }
+
+            private bool _filterFriendsOnly;
+
+            public bool FilterFriendsOnly {
+                get { return _filterFriendsOnly; }
+                set {
+                    if (Equals(value, _filterFriendsOnly)) return;
+                    _filterFriendsOnly = value;
                     OnPropertyChanged();
                     UpdateQuickFilter();
                 }

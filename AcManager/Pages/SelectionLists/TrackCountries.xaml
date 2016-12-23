@@ -27,7 +27,7 @@
                 <Grid Width="72" Height="72" PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown" Background="Transparent">
                     <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding CountryId, Converter={StaticResource CountryIdToImageConverter}}"
                             Margin="8 8 8 24" Stretch="None" />
-                    <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
+                    <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
                             VerticalAlignment="Bottom" />
                 </Grid>
             </DataTemplate>

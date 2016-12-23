@@ -237,6 +237,7 @@ namespace AcManager.Tools.Managers.Online {
             } catch (InformativeException e) {
                 Error = new ErrorInformation(e);
             } catch (Exception e) {
+                Logging.Error(e);
                 Error = new ErrorInformation(e);
             } finally {
                 if (_cancellationSource == cancellationSource) {
@@ -284,7 +285,7 @@ namespace AcManager.Tools.Managers.Online {
             if (existing == null) {
                 var entry = new ServerEntry(information);
                 entry.SetOrigin(Key);
-                entry.SetOrigins(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
+                entry.SetReferences(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
                 _list.Add(entry);
             } else {
                 existing.SetOrigin(Key);
@@ -302,11 +303,12 @@ namespace AcManager.Tools.Managers.Online {
                     if (existing == null) {
                         var entry = new ServerEntry(information);
                         entry.SetOrigin(Key);
-                        entry.SetOrigins(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
+                        entry.SetReferences(FileBasedOnlineSources.Instance.GetSourceKeys(entry));
                         newEntries.Add(entry);
                     } else {
                         existing.SetOrigin(Key);
                         existing.UpdateValues(information);
+                        OnlineManager.Instance.AvoidRemoval(existing);
                     }
                 }
 
@@ -330,12 +332,22 @@ namespace AcManager.Tools.Managers.Online {
                     } else {
                         existing.SetOrigin(Key);
                         existing.UpdateValues(information);
+                        OnlineManager.Instance.AvoidRemoval(existing);
                     }
                 }
 
                 for (var i = _list.Count - 1; i >= 0; i--) {
-                    if (list.GetByIdOrDefault(_list[i].Id) == null && _list[i].RemoveOrigin(_source.Id)) {
-                        _list.RemoveAt(i);
+                    if (list.GetByIdOrDefault(_list[i].Id) == null) {
+                        var serverEntry = _list[i];
+                        var empty = serverEntry.RemoveOrigin(_source.Id);
+                        
+                        if (empty) {
+                            if (OnlineManager.Instance.IsHolded(serverEntry)) {
+                                OnlineManager.Instance.RemoveWhenReleased(serverEntry);
+                            } else {
+                                _list.RemoveAt(i);
+                            }
+                        }
                     }
                 }
             }

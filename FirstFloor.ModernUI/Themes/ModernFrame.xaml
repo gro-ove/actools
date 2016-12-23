@@ -32,7 +32,7 @@
                                     <TextBlock Text="{Binding Source, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=c:ModernFrame}}"
                                             Margin="0 0 0 8" />
                                     <TextBlock Text="{x:Static mui:UiStrings.StackTrace}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding}" Style="{StaticResource Fixed}" Margin="0 0 0 16" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding}" Style="{StaticResource Monospace}" Margin="0 0 0 16" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static mui:UiStrings.Suggestions}" FontWeight="Bold" />
                                     <c:BbCodeBlock BbCode="{x:Static mui:UiStrings.SuggestionsMessage}">
                                         <c:BbCodeBlock.LinkNavigator>

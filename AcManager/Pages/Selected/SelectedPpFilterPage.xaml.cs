@@ -9,7 +9,7 @@ using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.TextEditing;
+// using AcManager.Tools.TextEditing;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -71,20 +71,20 @@ namespace AcManager.Pages.Selected {
             });
             InitializeComponent();
 
-            TextEditor.SetAsIniEditor(v => { _object.Content = v; });
+            /*TextEditor.SetAsIniEditor(v => { _object.Content = v; });
             TextEditor.SetDocument(_object.Content);
-            _object.PropertyChanged += SelectedObject_PropertyChanged;
+            _object.PropertyChanged += SelectedObject_PropertyChanged;*/
         }
 
-        private void SelectedObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        /*private void SelectedObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (TextEditor.IsBusy()) return;
             if (e.PropertyName == nameof(_object.Content)) {
                 TextEditor.SetDocument(_object.Content);
             }
-        }
+        }*/
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
-            _object.PropertyChanged -= SelectedObject_PropertyChanged;
+            //_object.PropertyChanged -= SelectedObject_PropertyChanged;
         }
     }
 }

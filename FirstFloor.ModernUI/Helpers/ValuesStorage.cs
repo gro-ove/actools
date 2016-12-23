@@ -182,7 +182,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, string value) {
-            Storage.SetEncrypted(key, value);
+            Storage.SetEncryptedString(key, value);
         }
 
         public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, bool value) {

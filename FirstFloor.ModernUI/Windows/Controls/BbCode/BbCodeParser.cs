@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Globalization;
-using System.Text;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
-    /// <summary>
-    /// Represents the BbCode parser.
-    /// </summary>
     internal partial class BbCodeParser : Parser<Span> {
         private static FileCache _imageCache;
-
-        // supporting a basic set of BbCode tags
+        
         private const string TagBold = "b";
         private const string TagMono = "mono";
         private const string TagColor = "color";
@@ -206,12 +200,13 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         {
                             string uri;
                             double maxSize;
-                            bool expand;
+                            bool expand, toolTip;
                             FileCache cache;
 
-                            if (context.ImageUri?.StartsWith("emoji://") == true) {
+                            if (context.ImageUri?.StartsWith(@"emoji://") == true) {
                                 maxSize = 0;
                                 expand = false;
+                                toolTip = false;
 
                                 var provider = BbCodeBlock.OptionEmojiProvider;
                                 if (provider == null) {
@@ -224,6 +219,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                             _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
                                 }
                             } else {
+                                toolTip = true;
+
                                 Uri temporary;
                                 string parameter;
                                 string targetName;
@@ -248,12 +245,12 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             }
 
                             if (uri != null) {
-                                var image = new Image (cache) {
-                                    ImageUrl = uri,
-                                    ToolTip = new ToolTip {
+                                var image = new Image (cache) { ImageUrl = uri };
+                                if (toolTip) {
+                                    image.ToolTip = new ToolTip {
                                         Content = new TextBlock { Text = token.Value }
-                                    }
-                                };
+                                    };
+                                }
                                 
                                 if (double.IsNaN(maxSize)) {
                                     RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);

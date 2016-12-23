@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,39 +24,77 @@ namespace AcManager.Tools.Managers.Online {
         private bool _hidden;
         private bool _excluded;
 
+        public OnlineSourceInformation() {}
+
+        public OnlineSourceInformation(string id) {
+            switch (id) {
+                case FileBasedOnlineSources.HiddenKey:
+                    SetHiddenInner(true);
+                    SetExcludedInner(true);
+                    break;
+            }
+        }
+
         public string Label {
             get { return _label; }
-            private set {
-                if (value == _label) return;
-                _label = value;
-                OnPropertyChanged();
-            }
+            set { SetLabelInner(value); }
+        }
+
+        private void SetLabelInner(string value) {
+            if (string.IsNullOrWhiteSpace(value)) value = null;
+            if (Equals(value, _label)) return;
+            _label = value;
+            OnPropertyChanged(nameof(Label));
         }
 
         public Color? Color {
             get { return _color; }
-            private set {
-                if (value.Equals(_color)) return;
-                _color = value;
-                OnPropertyChanged();
-            }
+            set { SetColorInner(value); }
+        }
+
+        private void SetColorInner(Color? value) {
+            if (Equals(value, _color)) return;
+            _color = value;
+            OnPropertyChanged(nameof(Color));
         }
 
         public bool Hidden {
             get { return _hidden; }
-            private set {
-                if (value == _hidden) return;
-                _hidden = value;
-                OnPropertyChanged();
+            set {
+                SetHiddenInner(value);
+                FileBasedOnlineSources.Instance.RaiseUpdated();
             }
+        }
+
+        private void SetHiddenInner(bool value) {
+            if (Equals(value, _hidden)) return;
+            _hidden = value;
+            OnPropertyChanged(nameof(Hidden));
         }
 
         public bool Excluded {
             get { return _excluded; }
-            private set {
-                if (value == _excluded) return;
-                _excluded = value;
-                OnPropertyChanged();
+            set { SetExcludedInner(value); }
+        }
+
+        private void SetExcludedInner(bool value) {
+            if (Equals(value, _excluded)) return;
+            _excluded = value;
+            OnPropertyChanged(nameof(Excluded));
+        }
+
+        internal void Export(IList<string> list) {
+            if (!string.IsNullOrWhiteSpace(Label)) {
+                list.Add($@"# label: {Label}");
+            }
+
+            if (Color.HasValue) {
+                list.Add($@"# color: {Color.Value.ToHexString()}");
+            }
+
+            if (Hidden || Excluded) {
+                list.Add($@"# hidden: {(Hidden ? @"yes" : @"no")}");
+                list.Add($@"# excluded: {(Excluded ? @"yes" : @"no")}");
             }
         }
 
@@ -87,27 +126,32 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
-            Label = label;
-            Color = color;
-            Hidden = hidden;
-            Excluded = excluded;
+            SetLabelInner(label);
+            SetColorInner(color);
+            SetHiddenInner(hidden);
+            SetExcludedInner(excluded);
         }
     }
 
     public class FileBasedOnlineSources : AbstractFilesStorage {
+        public static int OptionRecentSize = 100;
+
         public const string RecentKey = @"recent";
-        public const string FavoritesKey = @"favorites";
+        public const string FavouritesKey = @"favourites";
+        public const string HiddenKey = @"hidden";
 
         public event EventHandler Update;
 
         public static IOnlineSource RecentInstance { get; private set; }
 
-        public static IOnlineSource FavoritesInstance { get; private set; }
+        public static IOnlineSource FavouritesInstance { get; private set; }
+
+        public static IOnlineSource HiddenInstance { get; private set; }
 
         private static FileBasedOnlineSources _instance;
 
         public static FileBasedOnlineSources Instance => _instance ?? (_instance = new FileBasedOnlineSources());
-
+        
         private const string Extension = ".txt";
 
         private FileBasedOnlineSources() : base(FilesStorage.Instance.GetDirectory("Online Servers")) {}
@@ -117,11 +161,16 @@ namespace AcManager.Tools.Managers.Online {
             Rescan();
 
             RecentInstance = GetSource(RecentKey);
-            FavoritesInstance = GetSource(FavoritesKey);
+            FavouritesInstance = GetSource(FavouritesKey);
+            HiddenInstance = GetSource(HiddenKey);
         }
 
         public static void AddToList(string key, ServerEntry server) {
             Instance.GetInternalSource(key).Add(server);
+        }
+
+        public static void AddToList(string key, ServerInformation serverInformation) {
+            Instance.GetInternalSource(key).Add(serverInformation);
         }
 
         public static void RemoveFromList(string key, ServerEntry server) {
@@ -129,7 +178,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public IEnumerable<string> GetSourceKeys(bool incudeAll = false) {
-            return incudeAll ? _sources.Keys : _sources.Where(x => x.Value.Information?.Excluded != true).Select(x => x.Key);
+            return incudeAll ? _sources.Keys :
+                    _sources.Where(x => x.Key != HiddenKey && x.Value.Information?.Excluded != true).Select(x => x.Key);
         }
 
         public IEnumerable<string> GetSourceKeys(ServerEntry entry) {
@@ -142,7 +192,15 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public IEnumerable<IOnlineSource> GetVisibleSources() {
-            return _sources.Values.Where(x => x.Information?.Hidden != true);
+            return _sources.Where(x => x.Key != HiddenKey && x.Value.Information?.Hidden != true).Select(x => x.Value);
+        }
+
+        public IEnumerable<IOnlineSource> GetBuiltInSources() {
+            return new[] { FavouritesInstance, RecentInstance, HiddenInstance };
+        }
+
+        public IEnumerable<IOnlineSource> GetUserSources() {
+            return _sources.Where(x => x.Key != HiddenKey && x.Key != FavouritesKey && x.Key != RecentKey).Select(x => x.Value);
         }
 
         [NotNull]
@@ -162,7 +220,7 @@ namespace AcManager.Tools.Managers.Online {
                 return source;
             }
 
-            var filename = Path.Combine(RootDirectory, key + Extension);
+            var filename = Path.Combine(RootDirectory, key.ToTitle(CultureInfo.InvariantCulture) + Extension);
             source = new Source(filename, key);
             _missing[key] = new WeakReference<Source>(source);
             return source;
@@ -170,6 +228,10 @@ namespace AcManager.Tools.Managers.Online {
 
         private readonly Dictionary<string, Source> _sources = new Dictionary<string, Source>(2);
         private readonly Dictionary<string, WeakReference<Source>> _missing = new Dictionary<string, WeakReference<Source>>();
+
+        internal void RaiseUpdated() {
+            Update?.Invoke(this, EventArgs.Empty);
+        }
 
         private void Rescan() {
             if (!Directory.Exists(RootDirectory)) {
@@ -179,7 +241,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 _sources.Clear();
-                Update?.Invoke(this, EventArgs.Empty);
+                RaiseUpdated();
                 return;
             }
 
@@ -213,7 +275,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         
             if (changed) {
-                Update?.Invoke(this, EventArgs.Empty);
+                RaiseUpdated();
             }
         }
 
@@ -234,6 +296,7 @@ namespace AcManager.Tools.Managers.Online {
                 Filename = filename;
                 DisplayName = Path.GetFileNameWithoutExtension(filename) ?? @"?";
                 Information = new OnlineSourceInformation();
+                Information.PropertyChanged += Information_PropertyChanged;
                 Reload();
             }
 
@@ -242,6 +305,8 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             private void Reload() {
+                _dirty++;
+
                 var fileInfo = new FileInfo(Filename);
                 if (fileInfo.Exists) {
                     using (var sr = new StreamReader(Filename, Encoding.UTF8)) {
@@ -264,10 +329,13 @@ namespace AcManager.Tools.Managers.Online {
                     }
 
                     actual.Capacity = actual.Count;
+                    if (Id == RecentKey) {
+                        actual.Reverse();
+                    }
 
                     if (_entries == null) {
                         foreach (var entry in actual) {
-                            list.GetByIdOrDefault(entry.Id)?.SetOrigin(Id);
+                            list.GetByIdOrDefault(entry.Id)?.SetReference(Id);
                         }
                     } else {
                         foreach (var removed in _entries.Where(x => !actual.Contains(x, Comparer.ComparerInstance))) {
@@ -275,7 +343,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
 
                         foreach (var added in actual.Where(x => !_entries.Contains(x, Comparer.ComparerInstance))) {
-                            list.GetByIdOrDefault(added.Id)?.SetOrigin(Id);
+                            list.GetByIdOrDefault(added.Id)?.SetReference(Id);
                         }
                     }
 
@@ -341,8 +409,60 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
+            private void UpdateMetaInformation() {
+                var information = Information;
+
+                try {
+                    var list = new List<string>();
+                    information?.Export(list);
+
+                    if (File.Exists(Filename)) {
+                        using (var sr = new StreamReader(Filename, Encoding.UTF8)) {
+                            var skip = true;
+
+                            string line;
+                            while ((line = sr.ReadLine()) != null) {
+                                if (skip && !_metaInformation.IsMatch(line)) {
+                                    skip = false;
+                                }
+
+                                if (!skip) {
+                                    list.Add(line);
+                                }
+                            }
+                        }
+                    }
+
+                    File.WriteAllText(Filename, list.JoinToString('\n'));
+                    _lastDateTime = new FileInfo(Filename).LastWriteTime;
+                } catch(Exception e) {
+                    NonfatalError.Notify("Can’t save list information", e);
+                }
+            }
+
+            private int _dirty;
+
+            private async void Information_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(Information.Excluded)) {
+                    foreach (var entry in OnlineManager.Instance.List) {
+                        if (entry.ReferencedFrom(Id)) {
+                            entry.UpdateExcluded(Id, Information?.Excluded == true);
+                        }
+                    }
+                }
+
+                var dirty = ++_dirty;
+                await Task.Delay(1000);
+                if (dirty == _dirty) {
+                    UpdateMetaInformation();
+                }
+            }
+
             private void AssignMetaInformation([CanBeNull] StreamReader sr) {
-                Information.Assign(sr == null ? null : ReadMetaInformation(sr));
+                var information = Information;
+                information.PropertyChanged -= Information_PropertyChanged;
+                information.Assign(sr == null ? null : ReadMetaInformation(sr));
+                information.PropertyChanged += Information_PropertyChanged;
             }
 
             public Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
@@ -370,6 +490,30 @@ namespace AcManager.Tools.Managers.Online {
                 return false;
             }
 
+            public void Add(ServerInformation entry) {
+                if (File.Exists(Filename)) {
+                    var lines = File.ReadAllLines(Filename);
+                    for (var i = 0; i < lines.Length; i++) {
+                        if (ParseLine(lines[i])?.Id == entry.Id) {
+                            lines[i] = entry.ToDescription();
+                            goto Save;
+                        }
+                    }
+
+                    var newLines = new string[lines.Length + 1];
+                    lines.CopyTo(newLines, 0);
+                    newLines[lines.Length] = entry.ToDescription();
+                    lines = newLines;
+
+                    Save:
+                    File.WriteAllLines(Filename, lines);
+                } else {
+                    File.WriteAllText(Filename, entry.ToDescription());
+                }
+
+                CheckIfChanged();
+            }
+
             public void Add(ServerEntry entry) {
                 if (File.Exists(Filename)) {
                     var lines = File.ReadAllLines(Filename);
@@ -394,11 +538,11 @@ namespace AcManager.Tools.Managers.Online {
                 CheckIfChanged();
             }
 
-            public void Remove(ServerEntry entry) {
+            private void Remove(string id) {
                 if (File.Exists(Filename)) {
                     var lines = File.ReadAllLines(Filename).ToList();
                     for (var i = 0; i < lines.Count; i++) {
-                        if (ParseLine(lines[i])?.Id == entry.Id) {
+                        if (ParseLine(lines[i])?.Id == id) {
                             lines.RemoveAt(i);
                             goto Save;
                         }
@@ -411,11 +555,61 @@ namespace AcManager.Tools.Managers.Online {
                     CheckIfChanged();
                 }
             }
+
+            public void Remove(ServerInformation entry) {
+                Remove(entry.Id);
+            }
+
+            public void Remove(ServerEntry entry) {
+                Remove(entry.Id);
+            }
         }
 
         [CanBeNull]
-        public OnlineSourceInformation GetInformation(string id) {
-            return _sources.GetValueOrDefault(id)?.Information;
+        public OnlineSourceInformation GetInformation(string key) {
+            return _sources.GetValueOrDefault(key)?.Information;
+        }
+
+        public bool IsSourceExcluded(string key) {
+            return GetInformation(key)?.Excluded == true;
+        }
+
+        public static void RenameList(string key, string newName) {
+            try {
+                File.Move(Path.Combine(Instance.RootDirectory, key + Extension), Path.Combine(Instance.RootDirectory, newName + Extension));
+                Instance.Rescan();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t rename list", e);
+            }
+        }
+
+        public static void RemoveList(string key) {
+            try {
+                FileUtils.Recycle(Path.Combine(Instance.RootDirectory, key + Extension));
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t remove list", e);
+            }
+        }
+
+        public static void CreateList(string name) {
+            try {
+                File.WriteAllText(Path.Combine(Instance.RootDirectory, name + Extension), "");
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t create list", e);
+            }
+        }
+
+        public static async Task AddRecent(ServerEntry serverEntry) {
+            var source = Instance.GetInternalSource(RecentKey);
+
+            IReadOnlyList<ServerInformation> entries = null;
+            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItsNot(), null, default(CancellationToken));
+
+            if (entries?.Count > OptionRecentSize) {
+                source.Remove(entries[0]);
+            }
+
+            source.Add(serverEntry);
         }
     }
 }
