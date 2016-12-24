@@ -37,7 +37,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             if (SteamIdHelper.Instance.Value == null) {
                 throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
@@ -68,7 +68,7 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public async Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var data = await Task.Run(() => KunosApiProvider.TryToGetMinoratingList(), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 

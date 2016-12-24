@@ -135,5 +135,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return (ICommand)GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
         }
+
+        public static readonly DependencyProperty PropagateToChildrenProperty = DependencyProperty.Register(nameof(PropagateToChildren), typeof(bool),
+                typeof(ContextMenuButton));
+
+        public bool PropagateToChildren {
+            get { return (bool)GetValue(PropagateToChildrenProperty); }
+            set { SetValue(PropagateToChildrenProperty, value); }
+        }
     }
 }

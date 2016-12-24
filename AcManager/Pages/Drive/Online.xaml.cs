@@ -131,10 +131,36 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private bool _showFilteringComboBox;
+
+        public bool ShowFilteringComboBox {
+            get { return _showFilteringComboBox; }
+            set {
+                if (Equals(value, _showFilteringComboBox)) return;
+                _showFilteringComboBox = value;
+                FilteringComboBox.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool _showFriendsFilteringButton;
+
+        public bool ShowFriendsFilteringButton {
+            get { return _showFriendsFilteringButton; }
+            set {
+                if (Equals(value, _showFriendsFilteringButton)) return;
+                _showFriendsFilteringButton = value;
+                FriendsFilteringButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         private void ResizingStuff() {
             var width = ActualWidth;
             SimpleListMode = width > 1080 ? ListMode.DetailedPlus : width > 800 ? ListMode.Detailed : ListMode.Simple;
             WideInformationMode = width > 1280;
+
+            var buttonsWidth = BigButtons.ActualWidth;
+            ShowFilteringComboBox = buttonsWidth > 430;
+            ShowFriendsFilteringButton = buttonsWidth > 490;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

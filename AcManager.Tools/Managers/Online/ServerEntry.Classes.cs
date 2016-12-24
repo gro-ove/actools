@@ -381,8 +381,32 @@ namespace AcManager.Tools.Managers.Online {
                 return TagsStorage.GetStringList(GetKey(driverName, false)).Select(GetTag);
             }
 
-            public static void SetTags(string driverName, IEnumerable<DriverTag> tags) {
+            public static void SetTags(string driverName, IReadOnlyList<DriverTag> tags) {
                 TagsStorage.Set(GetKey(driverName, true), tags.Select(x => x.Id));
+                UpdateServerEntry(driverName, tags.Contains(FriendTag))?.RaiseDriversTagsChanged();
+            }
+
+            [CanBeNull]
+            private static ServerEntry GetServerEntry(string driverName) {
+                var convertedDriverName = ConvertName(driverName, false);
+                return OnlineManager.Instance.List.FirstOrDefault(x => x.CurrentDrivers?.Any(y => y.ConvertedName == convertedDriverName) == true);
+            }
+
+            [CanBeNull]
+            private static ServerEntry UpdateServerEntry(string driverName, bool hasFriendTag) {
+                var server = GetServerEntry(driverName);
+                if (server == null) return null;
+
+                if (server.HasFriends) {
+                    if (!hasFriendTag && server.CurrentDrivers?.Any(x => x.Tags.Contains(FriendTag)) != true) {
+                        server.HasFriends = false;
+                    }
+                } else {
+                    if (hasFriendTag) {
+                        server.HasFriends = true;
+                    }
+                }
+                return server;
             }
 
             public static DriverTag CreateTag(string name, Color color) {
@@ -413,19 +437,29 @@ namespace AcManager.Tools.Managers.Online {
             public static void SetNames(string tagId, IEnumerable<string> names) {
                 var namesList = names.ToIReadOnlyListIfItsNot();
                 var namesConvertedList = namesList.Select(x => ConvertName(x, true)).ToList();
+                var serversToRaiseEvent = new List<ServerEntry>(10);
 
                 /* remove old entries */
                 foreach (var key in TagsStorage.Keys.ToList()) {
                     if (key.StartsWith(KeyTagsPrefix)) {
-                        var name = key.Substring(KeyTagsPrefix.Length);
-                        if (!namesConvertedList.Contains(name)) {
+                        var convertedName = key.Substring(KeyTagsPrefix.Length);
+                        if (!namesConvertedList.Contains(convertedName)) {
                             var list = TagsStorage.GetStringList(key).ToList();
                             if (list.Remove(tagId)) {
                                 TagsStorage.Set(key, list);
-                                CurrentDriver.UpdateName(name, tagId);
+                                CurrentDriver.UpdateName(convertedName, tagId);
+
+                                var server = tagId == FriendTagId ? UpdateServerEntry(convertedName, false) : GetServerEntry(convertedName);
+                                if (server != null && !serversToRaiseEvent.Contains(server)) {
+                                    serversToRaiseEvent.Add(server);
+                                }
                             }
                         }
                     }
+                }
+
+                if (tagId == FriendTagId) {
+                    HasAnyFriends.Value = namesList.Count > 0;
                 }
 
                 /* add new entries */
@@ -435,7 +469,16 @@ namespace AcManager.Tools.Managers.Online {
                     if (!list.Contains(tagId)) {
                         TagsStorage.Set(KeyTagsPrefix + convertedName, list.Append(tagId));
                         CurrentDriver.UpdateName(convertedName, tag);
+
+                        var server = tagId == FriendTagId ? UpdateServerEntry(convertedName, true) : GetServerEntry(convertedName);
+                        if (server != null && !serversToRaiseEvent.Contains(server)) {
+                            serversToRaiseEvent.Add(server);
+                        }
                     }
+                }
+
+                foreach (var serverEntry in serversToRaiseEvent) {
+                    serverEntry.RaiseDriversTagsChanged();
                 }
             }
 
@@ -457,6 +500,24 @@ namespace AcManager.Tools.Managers.Online {
                 TagsStorage.Remove(KeyTagColorPrefix + tagId);
             }
         }
+
+        public class HasAnyFriendsHolder : NotifyPropertyChanged {
+            private const string KeyHasFriends = "_hasFriends";
+
+            private bool _value = ValuesStorage.GetBool(KeyHasFriends);
+
+            public bool Value {
+                get { return _value; }
+                set {
+                    if (Equals(value, _value)) return;
+                    _value = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeyHasFriends, value);
+                }
+            }
+        }
+
+        public static readonly HasAnyFriendsHolder HasAnyFriends = new HasAnyFriendsHolder();
     }
 }
 

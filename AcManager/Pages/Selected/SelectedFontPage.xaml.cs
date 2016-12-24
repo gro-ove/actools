@@ -24,7 +24,7 @@ using JetBrains.Annotations;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedFontPage : ILoadableContent, IParametrizedUriContent {
+    public partial class SelectedFontPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class ViewModel : SelectedAcObjectViewModel<FontObject> {
             public ViewModel([NotNull] FontObject acObject) : base(acObject) { }
 
@@ -89,16 +89,38 @@ namespace AcManager.Pages.Selected {
             _object = FontsManager.Instance.GetById(_id);
         }
 
+        private ViewModel _model;
+
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
-            InitializeAcObjectPage(new ViewModel(_object));
+            SetModel();
+            InitializeComponent();
+        }
+
+        bool IImmediateContent.ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = FontsManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            _id = id;
+            _object = obj;
+
+            _model.Unload();
+            SetModel();
+            RedrawTestText();
+            return true;
+        }
+
+        private void SetModel() {
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.CreateNewFontCommand, new KeyGesture(Key.N, ModifierKeys.Control)),
                 new InputBinding(Model.UsingsRescanCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
                 new InputBinding(Model.DisableUnusedCommand, new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift))
             });
-            InitializeComponent();
         }
 
         private const string KeyTestText = "SelectedFontPage.TestText";

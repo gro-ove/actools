@@ -248,7 +248,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformation[] TryToGetList(IProgress<int> progress = null) {
+        public static ServerInformationComplete[] TryToGetList(IProgress<int> progress = null) {
             if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {

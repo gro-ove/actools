@@ -103,8 +103,10 @@
                                 <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                                         IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                                         Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                                <mui:ModernToggleButton Style="{StaticResource BigToggleButton.Include}" IconData="{StaticResource MultiplePeopleIconData}"
-                                        IsChecked="{Binding FilterFriendsOnly}" ToolTip="Only servers with friends" Content="Friends" />
+                                <mui:BooleanSwitch Value="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}">
+                                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton.Include}" IconData="{StaticResource MultiplePeopleIconData}"
+                                            IsChecked="{Binding FilterFriendsOnly}" ToolTip="Only servers with friends" Content="Friends" />
+                                </mui:BooleanSwitch>
                                 <Separator />
                                 <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}"
                                         Command="{Binding RefreshCommand}" Content="Refresh" />
@@ -207,15 +209,17 @@
                                         <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                                                 IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                                                 Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
-                                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton.Include}"
-                                                IconData="{StaticResource MultiplePeopleIconData}" IsChecked="{Binding FilterFriendsOnly}"
-                                                Visibility="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=490}"
-                                                ToolTip="Only servers with friends" Content="Friends" />
+                                        <mui:BooleanSwitch Value="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}">
+                                            <mui:ModernToggleButton x:Name="FriendsFilteringButton" Style="{StaticResource BigToggleButton.Include}"
+                                                    IconData="{StaticResource MultiplePeopleIconData}" IsChecked="{Binding FilterFriendsOnly}"
+                                                    ToolTip="Only servers with friends" Content="Friends" />
+                                        </mui:BooleanSwitch>
                                     </StackPanel>
 
-                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16"
-                                            Visibility="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DockPanel}}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=430}">
+                                    <StackPanel x:Name="FilteringComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16">
                                         <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
+                                        <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8"
+                                                Text="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}" />
                                         <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}"
                                                 DisplayMemberPath="DisplayName" />
                                     </StackPanel>

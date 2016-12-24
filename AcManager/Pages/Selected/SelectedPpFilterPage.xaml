@@ -4,7 +4,7 @@
         xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:av="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:g="clr-namespace:AcManager"
         xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}" Unloaded="OnUnloaded">
+        d:DataContext="{d:DesignInstance sel:SelectedPpFilterPage+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/TextEditor.xaml" />
     </UserControl.Resources>

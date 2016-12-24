@@ -33,7 +33,7 @@ using SharpCompress.Common;
 using SharpCompress.Writers;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent, INotifyPropertyChanged {
+    public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent, INotifyPropertyChanged, IImmediateContent {
         private const string KeyEditMode = "weather.editmode";
 
         public class ViewModel : SelectedAcObjectViewModel<WeatherObject> {
@@ -88,7 +88,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public string DisplayTime {
-                get { return $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+                get { return $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
                 set {
                     int time;
                     if (!FlexibleParser.TryParseTime(value, out time)) return;
@@ -315,7 +315,6 @@ namespace AcManager.Pages.Selected {
         }));
 
         private void ToEditMode() {
-            _model.SelectedObject.EnsureLoadedExtended();
             _editMode = (FrameworkElement)FindResource(@"EditMode");
             Wrapper.Children.Add(_editMode);
         }
@@ -324,6 +323,34 @@ namespace AcManager.Pages.Selected {
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
+
+            SetModel();
+            InitializeComponent();
+
+            if (EditMode) {
+                ToEditMode();
+            }
+        }
+
+        bool IImmediateContent.ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = WeatherManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            _id = id;
+            _object = obj;
+
+            _model.Unload();
+            SetModel();
+            return true;
+        }
+
+        private void SetModel() {
+            if (EditMode) {
+                _object.EnsureLoadedExtended();
+            }
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
@@ -335,11 +362,6 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"15:00" },
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"18:00" }
             });
-            InitializeComponent();
-
-            if (EditMode) {
-                ToEditMode();
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -280,7 +280,7 @@ namespace AcManager.Tools.Managers.Online {
             throw new NotSupportedException($@"Not supported type: {_source.GetType().Name}");
         }
 
-        private void Add(ServerInformation information) {
+        private void Add([NotNull] ServerInformation information) {
             var existing = _list.GetByIdOrDefault(information.Id);
             if (existing == null) {
                 var entry = new ServerEntry(information);
@@ -293,7 +293,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private void Add(IEnumerable<ServerInformation> informations) {
+        private void Add([NotNull] IEnumerable<ServerInformation> informations) {
             if (_first) {
                 _first = false;
 

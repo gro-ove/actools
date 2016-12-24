@@ -107,7 +107,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 textBox.Text = "";
 
                 if (e.Key == Key.Tab) {
-                    FocusAdvancement.MoveFocus(textBox);
+                    FocusAdvancement.MoveFocus(textBox, Keyboard.Modifiers == ModifierKeys.Shift ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next);
                 } else if (e.Key == Key.Escape) {
                     FocusAdvancement.RemoveFocus(textBox);
                 }

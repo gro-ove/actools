@@ -66,10 +66,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 linkGroup.Initialize();
             }
 
-            var uri = ValuesStorage.GetUri($"{SaveKey}_link");
-            RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
-
-            if (!SelectUriIfLinkExists(uri)) {
+            if (!SelectUriIfLinkExists(ValuesStorage.GetUri($"{SaveKey}_link"))) {
                 SelectUriIfLinkExists(DefaultSource);
             }
         }
@@ -250,29 +247,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _subMenuListBox = GetTemplateChild("PART_SubMenu") as ListBox;
         }
 
-        public bool SelectUriIfLinkExists(Uri uri) {
-            if (uri == null) return false;
+        private bool SelectUriIfLinkExists(Uri uri) {
+            if (uri != null) {
+                RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
+                var selected = LinkGroups.SelectMany(g => g.Links).FirstOrDefault(t => t.Source?.ToString() == uri.ToString());
+                if (selected != null) {
+                    SelectedLink = selected;
+                    return true;
+                }
+            }
 
-            var selected = (from g in LinkGroups
-                            from l in g.Links
-                            where l.Source?.ToString() == uri.ToString()
-                            select l).FirstOrDefault();
-            if (selected == null) return false;
-            
-            SelectedLink = selected;
-            return true;
+            return false;
         }
 
         public void SwitchToGroupByKey(string key) {
-            if (SaveKey != null) {
-                var uri = ValuesStorage.GetUri($"{SaveKey}__{key}");
-                if (SelectUriIfLinkExists(uri)) return;
+            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.GetUri($"{SaveKey}__{key}"))) {
+                SelectedLink = (from g in LinkGroups
+                                where g.GroupKey == key
+                                from l in g.Links
+                                select l).FirstOrDefault();
             }
-            
-            SelectedLink = (from g in LinkGroups
-                            where g.GroupKey == key
-                            from l in g.Links
-                            select l).FirstOrDefault();
         }
 
         private void Link_PropertyChanged(object sender, PropertyChangedEventArgs args) {

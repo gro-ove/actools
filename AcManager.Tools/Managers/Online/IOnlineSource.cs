@@ -27,6 +27,10 @@ namespace AcManager.Tools.Managers.Online {
         event EventHandler Obsolete;
     }
 
+    public delegate void ListAddCallback<in T>([NotNull] IEnumerable<T> value);
+
+    public delegate void ItemAddCallback<in T>([NotNull] T value);
+
     /// <summary>
     /// For sources like LAN, which usually load one server at the time.
     /// </summary>
@@ -35,7 +39,8 @@ namespace AcManager.Tools.Managers.Online {
         /// Throws exceptions.
         /// </summary>
         /// <returns>True if data is loaded and source can be marked as Ready.</returns>
-        Task<bool> LoadAsync([NotNull] Action<ServerInformation> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        Task<bool> LoadAsync([NotNull] ItemAddCallback<ServerInformation> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress,
+                CancellationToken cancellation);
     }
 
     /// <summary>
@@ -46,6 +51,7 @@ namespace AcManager.Tools.Managers.Online {
         /// Throws exceptions.
         /// </summary>
         /// <returns>True if data is loaded and source can be marked as Ready.</returns>
-        Task<bool> LoadAsync([NotNull] Action<IEnumerable<ServerInformation>> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        Task<bool> LoadAsync([NotNull] ListAddCallback<ServerInformation> callback, [CanBeNull] IProgress<AsyncProgressEntry> progress,
+                CancellationToken cancellation);
     }
 }

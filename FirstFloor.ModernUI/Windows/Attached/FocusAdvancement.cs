@@ -28,9 +28,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (element == null) return;
 
             if ((bool)e.NewValue) {
-                element.PreviewKeyDown += Element_KeyDown;
+                element.PreviewKeyDown += OnKeyDown;
             } else {
-                element.PreviewKeyDown -= Element_KeyDown;
+                element.PreviewKeyDown -= OnKeyDown;
             }
         }
 
@@ -50,7 +50,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return true;
         }
 
-        private static void Element_KeyDown(object sender, KeyEventArgs e) {
+        public static void OnKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
                     if (RemoveFocus(sender as DependencyObject)) {
@@ -59,6 +59,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     break;
                 case Key.Enter: 
                     if (MoveFocus(sender as DependencyObject)) {
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.Tab: 
+                    if (Keyboard.Modifiers == ModifierKeys.Shift && MoveFocus(sender as DependencyObject, FocusNavigationDirection.Previous)) {
                         e.Handled = true;
                     }
                     break;

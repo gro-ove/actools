@@ -81,6 +81,10 @@ namespace AcManager.Tools.Filters {
                 case "sessionscount":
                 case "connectedtimes":
                     return nameof(ServerEntry.SessionsCount);
+
+                case "tag":
+                case "drivertag":
+                    return nameof(ServerEntry.DriversTagsString);
             }
 
             return null;
@@ -191,6 +195,10 @@ namespace AcManager.Tools.Filters {
                 case "sessionscount":
                 case "connectedtimes":
                     return value.Test(obj.SessionsCount);
+
+                case "tag":
+                case "drivertag":
+                    return obj.CurrentDrivers?.Any(x => x.Tags.Any(y => value.Test(y.DisplayName))) == true;
             }
 
             Game.SessionType sessionType;

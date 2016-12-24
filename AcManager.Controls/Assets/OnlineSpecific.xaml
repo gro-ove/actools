@@ -257,10 +257,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
-                        <!--optional lock icon-->
-                        <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="8 1 0 2" />
+                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="8">
+                            <!--optional lock icon-->
+                            <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" />
+                            
+                            <!--optional friends icon-->
+                            <Path x:Name="FriendsIcon" Data="{StaticResource MultiplePeopleIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                    Stretch="Uniform" ToolTip="Some of your friends are here" />
+                        </mui:SpacingStackPanel>
 
                         <!--first row-->
                         <mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
@@ -310,10 +315,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
-                        <!--optional lock icon-->
-                        <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="8 1 0 2" />
+                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="8">
+                            <!--optional lock icon-->
+                            <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" />
+
+                            <!--optional friends icon-->
+                            <Path x:Name="FriendsIcon" Data="{StaticResource MultiplePeopleIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
+                                    Stretch="Uniform" ToolTip="Some of your friends are here" />
+                        </mui:SpacingStackPanel>
 
                         <!--first row-->
                         <mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">

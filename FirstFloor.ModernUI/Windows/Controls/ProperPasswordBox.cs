@@ -1,9 +1,15 @@
 ﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    /// <summary>
+    /// Use it only if password is not really important — it will be stored in
+    /// memory in plain view.
+    /// </summary>
     public class ProperPasswordBox : Control {
         public ProperPasswordBox() {
             DefaultStyleKey = typeof(ProperPasswordBox);
@@ -18,6 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (_passwordBox != null) {
                 _passwordBox.PasswordChanged -= PasswordBox_PasswordChanged;
+                _passwordBox.PreviewKeyDown -= FocusAdvancement.OnKeyDown;
             }
 
             _passwordBox = GetTemplateChild("PART_PasswordBox") as PasswordBox;
@@ -26,6 +33,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_passwordBox != null) {
                 _passwordBox.Password = Password;
                 _passwordBox.PasswordChanged += PasswordBox_PasswordChanged;
+                _passwordBox.PreviewKeyDown += FocusAdvancement.OnKeyDown;
             }
         }
 
@@ -63,10 +71,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnPasswordChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ProperPasswordBox)o).OnPasswordChanged((string)e.OldValue, (string)e.NewValue);
+            ((ProperPasswordBox)o).OnPasswordChanged((string)e.NewValue);
         }
 
-        private void OnPasswordChanged(string oldValue, string newValue) {
+        private void OnPasswordChanged(string newValue) {
             if (_passwordBox == null || !VisiblePassword) return;
             _skipNext = true;
             _passwordBox.Password = newValue;
@@ -102,6 +110,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else if (_passwordBox.IsFocused) {
                 _textBox.Focus();
             }
+        }
+
+        public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
+                typeof(ProperPasswordBox));
+
+        public string Placeholder {
+            get { return (string)GetValue(PlaceholderProperty); }
+            set { SetValue(PlaceholderProperty, value); }
+        }
+
+        public static readonly DependencyProperty CaretBrushProperty = DependencyProperty.Register(nameof(CaretBrush), typeof(Brush),
+                typeof(ProperPasswordBox));
+
+        public Brush CaretBrush {
+            get { return (Brush)GetValue(CaretBrushProperty); }
+            set { SetValue(CaretBrushProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectionBrushProperty = DependencyProperty.Register(nameof(SelectionBrush), typeof(Brush),
+                typeof(ProperPasswordBox));
+
+        public Brush SelectionBrush {
+            get { return (Brush)GetValue(SelectionBrushProperty); }
+            set { SetValue(SelectionBrushProperty, value); }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace AcManager.Pages.Selected {
 
         protected void InitializeAcObjectPage([NotNull] ISelectedAcObjectViewModel model) {
             SelectedAcObject = model.SelectedAcObject;
+            InputBindings.Clear();
             InputBindings.AddRange(new[] {
                 new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control | ModifierKeys.Shift)) { CommandParameter = @"name" },
@@ -28,11 +29,14 @@ namespace AcManager.Pages.Selected {
             });
             DataContext = model;
 
-            Loaded += OnLoaded;
-            Unloaded += OnUnloaded;
+            if (!_set) {
+                _set = true;
+                Loaded += OnLoaded;
+                Unloaded += OnUnloaded;
+            }
         }
 
-        private bool _loaded;
+        private bool _set, _loaded;
 
         private void OnLoaded(object sender, System.Windows.RoutedEventArgs e) {
             if (_loaded) return;

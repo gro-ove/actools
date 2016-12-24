@@ -339,6 +339,7 @@ namespace AcManager.Tools.Managers.Online {
                 _currentDrivers = value;
                 HasFriends = value?.Any(x => x.Tags.Contains(DriverTag.FriendTag)) == true;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(DriversTagsString));
             }
         }
 
@@ -350,7 +351,24 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _hasFriends)) return;
                 _hasFriends = value;
                 OnPropertyChanged();
+
+                if (value) {
+                    HasAnyFriends.Value = true;
+                }
             }
+        }
+
+        private string _driversTagsString;
+
+        /// <summary>
+        /// It’s better not to use this property directly, but instead just listen when it’s changed —
+        /// that’s when drivers’ tags has been changed.
+        /// </summary>
+        public string DriversTagsString => _driversTagsString ??
+                (_driversTagsString = CurrentDrivers?.SelectMany(x => x.Tags).Select(x => x.DisplayName).JoinToString(',') ?? "");
+
+        internal void RaiseDriversTagsChanged() {
+            OnPropertyChanged(nameof(DriversTagsString));
         }
 
         private IReadOnlyList<Session> _sessions;
@@ -444,8 +462,6 @@ namespace AcManager.Tools.Managers.Online {
                 if (!_lastConnectedLoaded) {
                     _lastConnectedLoaded = true;
                     _lastConnected = StatsStorage.GetDateTime(KeyLastConnected);
-                    Logging.Debug(StatsStorage.GetString(KeyLastConnected));
-                    Logging.Debug(_lastConnected);
                 }
 
                 return _lastConnected;

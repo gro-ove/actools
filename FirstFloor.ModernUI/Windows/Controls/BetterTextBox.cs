@@ -49,15 +49,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
-            switch (e.Key) {
-                case Key.Escape:
-                    e.Handled = FocusAdvancement.RemoveFocus(this);
-                    break;
-
-                case Key.Enter:
-                    e.Handled = FocusAdvancement.MoveFocus(this);
-                    break;
-            }
+            FocusAdvancement.OnKeyDown(this, e);
 
             if (!e.Handled) {
                 base.OnPreviewKeyDown(e);
@@ -211,6 +203,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 case Key.Enter:
                     if (!AcceptsReturn) {
                         e.Handled = FocusAdvancement.MoveFocus(this);
+                    }
+                    break;
+
+                case Key.Tab:
+                    if (Keyboard.Modifiers == ModifierKeys.Shift && FocusAdvancement.MoveFocus(this, FocusNavigationDirection.Previous)) {
+                        e.Handled = true;
                     }
                     break;
 

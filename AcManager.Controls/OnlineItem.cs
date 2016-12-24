@@ -503,6 +503,7 @@ namespace AcManager.Controls {
             }
 
             _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
+            _friendsIcon.Visibility = n.HasFriends ? Visibility.Visible : Visibility.Collapsed;
 
             if (!n.FromLan) {
                 _countryName.Text = n.Country;
@@ -527,6 +528,7 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         private FrameworkElement _passwordIcon;
+        private FrameworkElement _friendsIcon;
         private BooleanSwitch _hasErrorsGroup;
         private BbCodeBlock _errorMessageGroup;
         private TextBlock _pingText;
@@ -560,6 +562,7 @@ namespace AcManager.Controls {
 
             base.OnApplyTemplate();
             _passwordIcon = (FrameworkElement)GetTemplateChild(@"PasswordIcon");
+            _friendsIcon = (FrameworkElement)GetTemplateChild(@"FriendsIcon");
             _hasErrorsGroup = (BooleanSwitch)GetTemplateChild(@"HasErrorsGroup");
             _errorMessageGroup = (BbCodeBlock)GetTemplateChild(@"ErrorMessageGroup");
             _pingText = (TextBlock)GetTemplateChild(@"PingText");
@@ -677,6 +680,9 @@ namespace AcManager.Controls {
                     break;
                 case nameof(ServerEntry.PasswordRequired):
                     _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
+                    break;
+                case nameof(ServerEntry.HasFriends):
+                    _friendsIcon.Visibility = n.HasFriends ? Visibility.Visible : Visibility.Collapsed;
                     break;
                 case nameof(ServerEntry.HasErrors):
                     UpdateErrorFlag(n);

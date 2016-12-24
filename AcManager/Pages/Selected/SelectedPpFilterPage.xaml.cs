@@ -17,7 +17,7 @@ using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedPpFilterPage : ILoadableContent, IParametrizedUriContent {
+    public partial class SelectedPpFilterPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class ViewModel : SelectedAcObjectViewModel<PpFilterObject> {
             public ViewModel([NotNull] PpFilterObject acObject) : base(acObject) { }
 
@@ -64,27 +64,33 @@ namespace AcManager.Pages.Selected {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
+            SetModel();
+            InitializeComponent();
+        }
+
+        bool IImmediateContent.ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = PpFiltersManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            obj.PrepareForEditing();
+
+            _id = id;
+            _object = obj;
+
+            _model.Unload();
+            SetModel();
+            return true;
+        }
+
+        private void SetModel() {
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
             });
-            InitializeComponent();
-
-            /*TextEditor.SetAsIniEditor(v => { _object.Content = v; });
-            TextEditor.SetDocument(_object.Content);
-            _object.PropertyChanged += SelectedObject_PropertyChanged;*/
-        }
-
-        /*private void SelectedObject_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (TextEditor.IsBusy()) return;
-            if (e.PropertyName == nameof(_object.Content)) {
-                TextEditor.SetDocument(_object.Content);
-            }
-        }*/
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            //_object.PropertyChanged -= SelectedObject_PropertyChanged;
         }
     }
 }

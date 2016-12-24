@@ -289,6 +289,7 @@ namespace AcManager.Tools.Managers.Online {
 
             internal readonly string Filename;
 
+            [CanBeNull]
             private List<ServerInformation> _entries;
 
             public Source(string filename, string local) {
@@ -301,7 +302,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             internal bool Contains(ServerEntry entry) {
-                return _entries.GetByIdOrDefault(entry.Id) != null;
+                return _entries?.GetByIdOrDefault(entry.Id) != null;
             }
 
             private void Reload() {
@@ -465,8 +466,13 @@ namespace AcManager.Tools.Managers.Online {
                 information.PropertyChanged += Information_PropertyChanged;
             }
 
-            public Task<bool> LoadAsync(Action<IEnumerable<ServerInformation>> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-                callback(_entries);
+            public Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                if (_entries != null) {
+                    callback(_entries);
+                } else {
+                    callback(new ServerInformation[0]);
+                }
+
                 return Task.FromResult(true);
             }
 

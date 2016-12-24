@@ -21,7 +21,7 @@ namespace AcManager.Tools.Managers.Online {
             remove { }
         }
 
-        public async Task<bool> LoadAsync(Action<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        public async Task<bool> LoadAsync(ItemAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             Logging.Here();
             await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
             return !cancellation.IsCancellationRequested;

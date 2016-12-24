@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcManager.Tools.Managers.Online;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -79,7 +80,7 @@ namespace AcManager.Tools.Helpers.Api {
             public int Current;
         }
 
-        private static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
+        private static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports, [CanBeNull] Progress progress,
                 CancellationToken cancellation) {
             var addresses = GetBroadcastAddresses().ToList();
 
@@ -121,15 +122,15 @@ namespace AcManager.Tools.Helpers.Api {
             } catch (OperationCanceledException) {}
         }
 
-        public static void TryToGetLanList(Action<ServerInformation> foundCallback, IEnumerable<int> ports) {
+        public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports) {
             TryToGetLanList(foundCallback, ports, null, default(CancellationToken));
         }
 
-        public static void TryToGetLanList(Action<ServerInformation> foundCallback) {
+        public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback) {
             TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), null, default(CancellationToken));
         }
 
-        public static async Task TryToGetLanListAsync(Action<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task TryToGetLanListAsync(ItemAddCallback<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var holder = progress == null ? null : new Progress();
             DispatcherTimer timer = null;

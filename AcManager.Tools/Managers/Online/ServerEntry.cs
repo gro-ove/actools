@@ -290,7 +290,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (!BookingMode) {
                     CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
                 }
-
+                
                 var currentDrivers = (BookingMode ? information.Cars : information.Cars.Where(x => x.IsConnected))
                         .Select(x => CurrentDrivers?.FirstOrDefault(y => y.Name == x.DriverName && y.Team == x.DriverTeam &&
                                 y.CarId == x.CarId && y.CarSkinId == x.CarSkinId) ?? new CurrentDriver(x))

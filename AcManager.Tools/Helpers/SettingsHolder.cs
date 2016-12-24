@@ -179,6 +179,21 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _alwaysAllowToUsePassword;
+
+            public bool AlwaysAllowToUsePassword {
+                get {
+                    return _alwaysAllowToUsePassword ??
+                            (_alwaysAllowToUsePassword = ValuesStorage.GetBool("Settings.OnlineSettings.AlwaysAllowToUsePassword", true)).Value;
+                }
+                set {
+                    if (Equals(value, _alwaysAllowToUsePassword)) return;
+                    _alwaysAllowToUsePassword = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.AlwaysAllowToUsePassword", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _serverPresetsManaging;
 
             public bool ServerPresetsManaging {

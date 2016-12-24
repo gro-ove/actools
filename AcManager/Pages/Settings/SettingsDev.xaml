@@ -112,8 +112,28 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <Label Content="New CB, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <Label Content="Colorpicker, borderless:" Width="200" DockPanel.Dock="Left" />
                     <mui:ColorPicker Style="{StaticResource ColorPicker.Borderless}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="PasswordBox:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ProperPasswordBox Placeholder="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="PasswordBox:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ProperPasswordBox Placeholder="Placeholder" VisiblePassword="True" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="PasswordBox, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ProperPasswordBox Placeholder="Placeholder" Style="{StaticResource ProperPasswordBox.Borderless}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="PasswordBox, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <mui:ProperPasswordBox Placeholder="Placeholder" VisiblePassword="True" Style="{StaticResource ProperPasswordBox.Borderless}" />
                 </DockPanel>
             </StackPanel>
 

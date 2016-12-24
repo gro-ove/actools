@@ -13,9 +13,18 @@ namespace AcManager.Tools.Data {
 
         public IReadOnlyList<LutPoint> Points => _points;
 
-        private readonly List<Point> _normalizedValuesArray;
+        private IReadOnlyList<Point> _normalizedValuesArray;
 
-        public IReadOnlyList<Point> NormalizedValuesArray => _normalizedValuesArray;
+        public IReadOnlyList<Point> NormalizedValuesArray => _normalizedValuesArray ?? (_normalizedValuesArray = GetNormalizedValuesArray());
+
+        private IReadOnlyList<Point> GetNormalizedValuesArray() {
+            var result = new Point[_points.Count];
+            for (var i = 0; i < result.Length; i++) {
+                var x = _points[i];
+                result[i] = new Point((x.X - MinX) / (MaxX - MinX), (x.Y - MinY) / (MaxY - MinY));
+            }
+            return result;
+        }
 
         public readonly double MinX, MaxX, MinY, MaxY;
 
@@ -33,13 +42,10 @@ namespace AcManager.Tools.Data {
             MaxX = _points.MaxX;
             MinY = _points.MinY;
             MaxY = _points.MaxY;
-
-            _normalizedValuesArray = Points.Select(x => new Point((x.X - MinX) / (MaxX - MinX), (x.Y - MinY) / (MaxY - MinY))).ToList();
         }
 
-        public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {
-        }
-        
+        public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {}
+
         private static Lut ConvertToValues(JArray obj) {
             var values = new Lut();
             if (obj == null) return values;
