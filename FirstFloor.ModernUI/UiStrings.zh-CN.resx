@@ -558,4 +558,10 @@
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
     <value>分享参赛名单</value>
   </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>降序</value>
+  </data>
 </root>

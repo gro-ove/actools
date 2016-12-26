@@ -3442,4 +3442,22 @@
   <data name="Main_UnsavedChanges" xml:space="preserve">
     <value>是否保存对以下项目的更改？</value>
   </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>AI发车顺序:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>如果你想要速度最快的AI在靠后位置发车,将这个选项设置为“升序”</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>档案</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>统计</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>最近圈速</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>圈速一览</value>
+  </data>
 </root>

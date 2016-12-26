@@ -2211,4 +2211,31 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   <data name="TableHeader_BestLap" xml:space="preserve">
     <value>Лучший круг</value>
   </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>Последние изменения</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>Content Manager скрыт</value>
+  </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>Несохранённые изменения</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>Порядок размещения:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>Выберите «По возрастанию», если хотите, чтобы самый умный стартовал последним</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>Статистика</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>Последние времена</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>Таблица с временами</value>
+  </data>
 </root>

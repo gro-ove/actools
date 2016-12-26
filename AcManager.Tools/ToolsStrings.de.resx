@@ -720,4 +720,7 @@
   <data name="SyntaxError_Solution" xml:space="preserve">
     <value>Datei öffnen</value>
   </data>
+  <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
+    <value>Die unmodifizierte Originalversion des Spiel-Starter konnte nicht wieder hergestellt werden. Bitte ersetze die Datei selbständig. Ersetze dafür im Hauptverzeichnis von Assetto Corsa die Datei "AssettoCorsa.exe" mit der Datei "AssettoCorsa_backup_sp.exe".</value>
+  </data>
 </root>

@@ -987,4 +987,40 @@
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Начать</value>
   </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>об/мин</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Отправить</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Открыть файл</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Не удалось узнать разрешения экрана</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Случайный</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Случайная</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Расположить:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Перемешав</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Случайно</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Каким образом расположить кандидатов на стартовой решётке</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Использовать имена из скинов, если имеются</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>Вы</value>
+  </data>
 </root>

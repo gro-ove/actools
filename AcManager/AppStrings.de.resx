@@ -405,8 +405,8 @@ Autor: [b]{3}[/b]</value>
     <value>Schriftarten</value>
   </data>
   <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
-    <value>Ich bezweifel alles aktualisieren zu können</value>
-  </data>
+    <value>Ich bezweifle, dass alles rechtzeitig erneuert werden kann.</value>
+  <alternative>Ich bezweifel alles aktualisieren zu können</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
     <value>Standardmäßig anwenden:</value>
   </data>
@@ -1743,5 +1743,108 @@ Autor: [b]{3}[/b]</value>
   </data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP-Filter wird später zurückgesetzt</value>
+  </data>
+  <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
+    <value>Erstelle eine neue, leere Lackierung namens "default"</value>
+  </data>
+  <data name="Solution_EnableSkin_Details" xml:space="preserve">
+    <value>Aktiviere deaktivierte Lackierung</value>
+  </data>
+  <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
+    <value>Übergangsanimation
+</value>
+  </data>
+  <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
+    <value>Erlaube die Fahrzeuglackierung zu ändern</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>Startmenü-Verknüpfung (für moderne Benachrichtigungen)</value>
+  </data>
+  <data name="Settings_Online_CompactUi" xml:space="preserve">
+    <value>Kompakte Benutzeroberfläche</value>
+  </data>
+  <data name="Settings_Replays_AddExtension" xml:space="preserve">
+    <value>Füge ".acreplay" automatisch zu neuen Replays hinzu.</value>
+  </data>
+  <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
+    <value>Füge ".acreplay" an alle vorhandenen Replays an.</value>
+  </data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+    <value>Nach Marke filtern</value>
+  </data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+    <value>Nach Land filtern</value>
+  </data>
+  <data name="Filter_ByClass" xml:space="preserve">
+    <value>Nach Klasse filtern</value>
+  </data>
+  <data name="Filter_ByYear" xml:space="preserve">
+    <value>Nach Jahr filtern</value>
+  </data>
+  <data name="Filter_ByDecade" xml:space="preserve">
+    <value>Nach Dekade filtern</value>
+  </data>
+  <data name="Filter_ByPower" xml:space="preserve">
+    <value>Nach ähnlicher Leistung filtern</value>
+  </data>
+  <data name="Filter_ByTorque" xml:space="preserve">
+    <value>Nach ähnlichem Drehmoment filtern
+</value>
+  </data>
+  <data name="Filter_ByWeight" xml:space="preserve">
+    <value>Nach ähnlichem Gewicht filtern</value>
+  </data>
+  <data name="Filter_ByPwRatio" xml:space="preserve">
+    <value>Nach ähnlichem Leistungs-/Gewichtverhältnis filtern</value>
+  </data>
+  <data name="Filter_ByTopSpeed" xml:space="preserve">
+    <value>Nach ähnlicher Höchstgeschwindigkeit filtern</value>
+  </data>
+  <data name="Filter_ByAcceleration" xml:space="preserve">
+    <value>Nach ähnlicher Beschleunigung filtern
+</value>
+  </data>
+  <data name="Filter_ByAge" xml:space="preserve">
+    <value>Nach Alter filtern</value>
+  </data>
+  <data name="Filter_BySize" xml:space="preserve">
+    <value>Nach Größe filtern</value>
+  </data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+    <value>Nach Wetter filtern</value>
+  </data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+    <value>Nach Strecke filtern</value>
+  </data>
+  <data name="Filter_ByCar" xml:space="preserve">
+    <value>Nach Auto filtern</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>Informationen finden
+</value>
+  </data>
+  <data name="Toolbar_PackData" xml:space="preserve">
+    <value>Daten packen</value>
+  </data>
+  <data name="Toolbar_UnpackData" xml:space="preserve">
+    <value>Daten entpacken</value>
+  </data>
+  <data name="Toolbar_ReplaceSound" xml:space="preserve">
+    <value>Audio ersetzen</value>
+  </data>
+  <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
+    <value>Nur für Entwicklungszwecke (Alt+J)</value>
   </data>
 </root>

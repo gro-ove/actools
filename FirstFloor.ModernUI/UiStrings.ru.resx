@@ -413,4 +413,10 @@
   <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
     <value>Соответствующие кандидаты не найдены</value>
   </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>По возрастанию</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>По убыванию</value>
+  </data>
 </root>

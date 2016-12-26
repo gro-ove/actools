@@ -175,9 +175,11 @@ namespace AcManager {
 
             AcObjectsUriManager.Register(new UriProvider());
 
-            var uiFactory = new GameWrapperUiFactory();
-            GameWrapper.RegisterFactory(uiFactory);
-            ServerEntry.RegisterFactory(uiFactory);
+            {
+                var uiFactory = new GameWrapperUiFactory();
+                GameWrapper.RegisterFactory(uiFactory);
+                ServerEntry.RegisterFactory(uiFactory);
+            }
 
             GameWrapper.RegisterFactory(new DefaultAssistsFactory());
             LapTimesManager.Instance.SetListener();
@@ -190,21 +192,31 @@ namespace AcManager {
             SharingHelper.Initialize();
             SharingUiHelper.Initialize();
 
-            var addonsDir = FilesStorage.Instance.GetFilename("Addons");
-            var pluginsDir = FilesStorage.Instance.GetFilename("Plugins");
-            if (Directory.Exists(addonsDir) && !Directory.Exists(pluginsDir)) {
-                Directory.Move(addonsDir, pluginsDir);
-            } else {
-                pluginsDir = FilesStorage.Instance.GetDirectory("Plugins");
+            {
+                var addonsDir = FilesStorage.Instance.GetFilename("Addons");
+                var pluginsDir = FilesStorage.Instance.GetFilename("Plugins");
+                if (Directory.Exists(addonsDir) && !Directory.Exists(pluginsDir)) {
+                    Directory.Move(addonsDir, pluginsDir);
+                } else {
+                    pluginsDir = FilesStorage.Instance.GetDirectory("Plugins");
+                }
+
+                PluginsManager.Initialize(pluginsDir);
+                PluginsWrappers.Initialize(
+                        new MagickPluginWrapper(),
+                        new AwesomiumPluginWrapper(),
+                        new CefSharpPluginWrapper(),
+                        new StarterPlus());
             }
 
-            PluginsManager.Initialize(pluginsDir);
-            PluginsWrappers.Initialize(
-                    new MagickPluginWrapper(),
-                    new AwesomiumPluginWrapper(),
-                    new CefSharpPluginWrapper(),
-                    new StarterPlus());
+            {
+                var onlineMainListFile = FilesStorage.Instance.GetFilename("Online Servers", "Main List.txt");
+                var onlineFavouritesFile = FilesStorage.Instance.GetFilename("Online Servers", "Favourites.txt");
+                if (File.Exists(onlineMainListFile) && !File.Exists(onlineFavouritesFile)) {
+                    Directory.Move(onlineMainListFile, onlineFavouritesFile);
+                }
 
+            }
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             Superintendent.Initialize();
 

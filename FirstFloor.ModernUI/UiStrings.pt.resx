@@ -390,4 +390,34 @@
   <data name="Common_Add" xml:space="preserve">
     <value>Adicionar</value>
   </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Inserir</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Apagar</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Re-actualizar o Navegador</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Tocar</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Parar</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Gravar Grelha de Corrida como Preset</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Partilhar Grelha de Corrida</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -349,8 +349,8 @@
     <value>Nova pista {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
-    <value>Novo salão de exposição {0}</value>
-  </data>
+    <value>Novo expositor {0}</value>
+  <alternative>Novo salão de exposição {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
     <value>Nova fonte {0}</value>
   </data>
@@ -764,5 +764,80 @@
   </data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
     <value>Reler o ficheiro?</value>
+  </data>
+  <data name="Shared_PpFilter" xml:space="preserve">
+    <value>Filtro de PP</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Repetição</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>O ID está errado</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>fonte</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>expositor</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>pista</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Certifique-se que a app tem acesso ao directório cfg.</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Potência</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Binário</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Não é possível obter o ID através da localização</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>Permitir que as apps dentro-de-jogo se sobreponham</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>A cada {0}</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Linha ideal</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Controlo de Tracção</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimiza a aderência durante a aceleração</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Cobertores de pneus</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Aquecem os pneus na boxe</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Desgaste dos pneus</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Multiplicador do desgaste de pneus</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Iniciar</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Desligado</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>De Fábrica</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Ligado</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Boxes</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Aleatório</value>
   </data>
 </root>

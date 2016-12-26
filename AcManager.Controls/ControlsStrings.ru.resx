@@ -695,4 +695,10 @@
   <data name="Controls_MinumumDamperLevel" xml:space="preserve">
     <value>Мин. уровень демпфера</value>
   </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Без водителя</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Скрыть модель водителя</value>
+  </data>
 </root>

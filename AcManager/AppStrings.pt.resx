@@ -287,8 +287,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Cancelado.</value>
   </data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Não é possível criar novo salão de exposição</value>
-  </data>
+    <value>Não é possível criar novo expositor</value>
+  <alternative>Não é possível criar novo salão de exposição</alternative></data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
     <value>Capacidade</value>
   </data>
@@ -398,8 +398,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Visualizar "readme_weather.txt"</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>Ver carro no salão de exposição (Ctrl+H)</value>
-  </data>
+    <value>Ver carro no expositor (Ctrl+H)</value>
+  <alternative>Ver carro no salão de exposição (Ctrl+H)</alternative></data>
   <data name="Common_ViewUserFolder" xml:space="preserve">
     <value>Ver Directório do Utilizador</value>
   </data>
@@ -530,14 +530,14 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Criar Nova Fonte</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Criar novo salão de exposição</value>
-  </data>
+    <value>Criar Novo Expositor</value>
+  <alternative>Criar novo salão de exposição</alternative></data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Criar novo salão de exposição</value>
-  </data>
+    <value>Criar Novo Expositor</value>
+  <alternative>Criar novo salão de exposição</alternative></data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>Criar novo salão de exposição a partir de um panorama existente (Ctrl+N)</value>
-  </data>
+    <value>Criar novo expositor a partir de um panorama existente (Ctrl+N)</value>
+  <alternative>Criar novo salão de exposição a partir de um panorama existente (Ctrl+N)</alternative></data>
   <data name="UpgradeIcon_Current" xml:space="preserve">
     <value>Actual</value>
   </data>
@@ -548,8 +548,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>IDs Personalizados</value>
   </data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Salão de exposição personalizado</value>
-  </data>
+    <value>Expositor Personalizado</value>
+  <alternative>Salão de exposição personalizado</alternative></data>
   <data name="Settings_Live_CustomStyle" xml:space="preserve">
     <value>Estilo personalizado</value>
   </data>
@@ -566,8 +566,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Data:</value>
   </data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>Salão de exposição original</value>
-  </data>
+    <value>Expositor original</value>
+  <alternative>Salão de exposição original</alternative></data>
   <data name="AcSettings_DefaultValue" xml:space="preserve">
     <value>Valor original:</value>
   </data>
@@ -626,14 +626,14 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Reabrir (Ctrl+R)</value>
   </data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Salão de exposição</value>
-  </data>
+    <value>Expositor</value>
+  <alternative>Salão de exposição</alternative></data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Seleccionar salão de exposição, filtro e etc.</value>
-  </data>
+    <value>Seleccionar expositor, filtro e etc.</value>
+  <alternative>Seleccionar salão de exposição, filtro e etc.</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Salão de exposição personalizado Leve</value>
-  </data>
+    <value>Expositor Personalizado Leve</value>
+  <alternative>Salão de exposição personalizado Leve</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>Conduzir</value>
   </data>
@@ -836,11 +836,11 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Não é possível partilhar repetição</value>
   </data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>Abrir directório dos salões de exposição (Ctrl+F)</value>
-  </data>
+    <value>Abrir directório do expositor (Ctrl+F)</value>
+  <alternative>Abrir directório dos salões de exposição (Ctrl+F)</alternative></data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>Actualizar pré-visualização do salão de exposição</value>
-  </data>
+    <value>Actualizar pré-visualização do expositor</value>
+  <alternative>Actualizar pré-visualização do salão de exposição</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>Desligar Som</value>
   </data>
@@ -854,8 +854,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Ligar som (Ctrl+I)</value>
   </data>
   <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
-    <value>Não é possível actualizar pré-visualização do salão de exposição</value>
-  </data>
+    <value>Não é possível actualizar pré-visualização do expositor</value>
+  <alternative>Não é possível actualizar pré-visualização do salão de exposição</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
     <value>Usar pista numa sessão de Condução Rápida (Ctrl+G)</value>
   </data>
@@ -1646,8 +1646,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Pistas</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Salões de exposição</value>
-  </data>
+    <value>Expositores</value>
+  <alternative>Salões de exposição</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Misc.</value>
   </data>
@@ -1697,8 +1697,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Procurar na Wikipedia por omissão</value>
   </data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Salões de exposição</value>
-  </data>
+    <value>Expositores:</value>
+  <alternative>Salões de exposição</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Fontes:</value>
   </data>
@@ -2304,8 +2304,8 @@ Autor: [b]{3}[/b]</alternative></data>
     <value>Não esqueça, há um atalho de teclado para todos os botões</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Fazer download das pré-visualizações de salões de exposição comuns</value>
-  </data>
+    <value>Fazer download das pré-visualizações de expositores comuns</value>
+  <alternative>Fazer download das pré-visualizações de salões de exposição comuns</alternative></data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
     <value>Por exemplo, ao desactivar</value>
   </data>
@@ -2373,5 +2373,44 @@ Autor: [b]{3}[/b]</alternative></data>
   </data>
   <data name="RaceGrid_DetailedSettings" xml:space="preserve">
     <value>Definições detalhadas</value>
+  </data>
+  <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
+    <value>Definir a hora manualmente</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Traduções personalizadas</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>Preparar</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>Preparar localização descompactada</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Linguagem:</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Reiniciar</value>
+  </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>Alterações Recentes</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>Ordenamento da AI:</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>Definir como Ascendente se desejar que o bot mais inteligente comece no final da grelha de partida</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>Estatísticas</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>Tempos de Volta Recentes</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>Grelha de Tempos de Volta</value>
   </data>
 </root>

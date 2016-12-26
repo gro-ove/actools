@@ -924,4 +924,10 @@
   <data name="Theme_Black" xml:space="preserve">
     <value>黑色主题</value>
   </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>隐藏车手</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>隐藏车手模型</value>
+  </data>
 </root>
