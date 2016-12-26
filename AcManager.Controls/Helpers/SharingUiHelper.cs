@@ -82,16 +82,6 @@ namespace AcManager.Controls.Helpers {
 
                 ShowShared(type, link);
                 await Task.Delay(2000);
-
-#if WIN10_SHARE
-                try {
-                    var dataTransferManager = DataTransferManager.GetForCurrentView();
-                    dataTransferManager.DataRequested += OnDataRequested;
-                    DataTransferManager.ShowShareUI();
-                } catch (Exception e) {
-                    Logging.Warning("DataTransferManager exception: " + e);
-                }
-#endif
             } catch (Exception e) {
                 NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ToolsStrings.Common_CannotDownloadFile_Commentary, e);
             } finally {
@@ -100,14 +90,28 @@ namespace AcManager.Controls.Helpers {
         }
 
         public static void ShowShared(SharedEntryType type, string link) {
+            ShowShared(type.GetDescription(), link);
+        }
+
+        public static void ShowShared(string type, string link) {
             if (SettingsHolder.Sharing.CopyLinkToClipboard) {
                 Clipboard.SetText(link);
             }
 
-            Toast.Show(string.Format(ControlsStrings.Share_Shared, type.GetDescription().ToTitle()),
+            Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
                     SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative, () => {
                         Process.Start(link + "#noauto");
                     });
+
+#if WIN10_SHARE
+            try {
+                var dataTransferManager = DataTransferManager.GetForCurrentView();
+                dataTransferManager.DataRequested += OnDataRequested;
+                DataTransferManager.ShowShareUI();
+            } catch (Exception e) {
+                Logging.Warning("DataTransferManager exception: " + e);
+            }
+#endif
         }
 
 #if WIN10_SHARE

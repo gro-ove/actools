@@ -326,7 +326,7 @@ namespace AcManager.Tools.Helpers.Api {
             if (result.Durations != null && result.SessionTypes != null) {
                 for (var i = 0; i < result.Durations.Length; i++) {
                     if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race &&
-                            result.Durations[i] < 60) {
+                            result.Durations[i] < 200 /* usual value was 60, but it’s not enough */) {
                         result.Durations[i] *= 60;
                     }
                 }

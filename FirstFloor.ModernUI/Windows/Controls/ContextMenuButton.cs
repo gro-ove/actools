@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ContextMenuButtonEventArgs : EventArgs {
@@ -63,7 +65,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public override void OnApplyTemplate() {
             if (_button != null) {
                 _button.PreviewMouseLeftButtonUp -= OnButtonClick;
-                _button.PreviewMouseLeftButtonDown -= OnButtonDown;
+                _button.MouseRightButtonUp -= OnButtonDown;
             }
 
             base.OnApplyTemplate();
@@ -71,36 +73,50 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _button = GetTemplateChild(@"PART_Button") as FrameworkElement;
             if (_button != null) {
                 _button.PreviewMouseLeftButtonUp += OnButtonClick;
-                _button.PreviewMouseLeftButtonDown += OnButtonDown;
+                _button.MouseRightButtonUp += OnButtonDown;
             }
         }
 
         private void OnButtonDown(object sender, MouseButtonEventArgs e) {
-            if (Command != null) {
+            if (!e.Handled && Command != null) {
                 e.Handled = true;
             }
         }
 
         private void OnButtonClick(object sender, MouseButtonEventArgs e) {
-            if (Open(true)) e.Handled = true;
+            if (!e.Handled && Open(true)) {
+                e.Handled = true;
+            }
         }
 
-        private void OnContextMenuClick(object sender, MouseButtonEventArgs e) {
-            if (Open(false)) e.Handled = true;
+        private async void OnContextMenuClick(object sender, MouseButtonEventArgs e) {
+            await Task.Delay(1);
+            if (!e.Handled && Open(false)) {
+                e.Handled = true;
+            }
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
             var fe = oldParent as FrameworkElement;
             if (fe != null) {
-                fe.PreviewMouseRightButtonUp -= OnContextMenuClick;
+                fe.PreviewMouseRightButtonUp -= OnContextMenuPreviewClick;
+                fe.MouseRightButtonUp -= OnContextMenuClick;
             }
 
             fe = Parent as FrameworkElement;
             if (fe != null) {
-                fe.PreviewMouseRightButtonUp += OnContextMenuClick;
+                fe.PreviewMouseRightButtonUp += OnContextMenuPreviewClick;
+                fe.MouseRightButtonUp += OnContextMenuClick;
             }
 
             base.OnVisualParentChanged(oldParent);
+        }
+
+        private void OnContextMenuPreviewClick(object sender, MouseButtonEventArgs e) {
+            var menu = Menu as ContextMenu;
+            if (menu != null) {
+                ContextMenuAdvancement.Add(menu);
+            }
         }
 
         public static readonly DependencyProperty MenuProperty = DependencyProperty.Register(nameof(Menu), typeof(FrameworkElement),

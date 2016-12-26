@@ -23,6 +23,7 @@
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
         <Setter Property="Padding" Value="24 20" />
+        <Setter Property="ButtonsMargin" Value="24 0 24 24" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -50,13 +51,13 @@
                                                 <c:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly"
                                                         Filename="{TemplateBinding IconSource}"
                                                         Visibility="{TemplateBinding IconSource, Converter={StaticResource ExistToVisibilityConverter}}" />
-                                                <TextBlock DataContext="{TemplateBinding Title}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                                        FontFamily="{StaticResource DefaultFont}" FontSize="24" TextOptions.TextFormattingMode="Ideal"
-                                                        TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{TemplateBinding Title}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light"
+                                                        FontSize="24" TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis"
+                                                        Visibility="{TemplateBinding ShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                             </StackPanel>
 
                                             <!-- buttons -->
-                                            <Grid DockPanel.Dock="Bottom" Margin="24 0 24 24">
+                                            <Grid DockPanel.Dock="Bottom" Margin="{TemplateBinding ButtonsMargin}" Panel.ZIndex="1">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" />

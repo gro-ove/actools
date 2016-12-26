@@ -46,15 +46,6 @@
                         Command="{Binding Entry.RefreshCommand}" />
                 <Separator />
 
-                <!--<mui:BooleanSwitch Value="{Binding IsFavourited}">
-                    <mui:BooleanSwitch.True>
-                        <Button Content="Remove From Favourites" ToolTip="Remove server from favourites list (Ctrl+D)" Command="{Binding ToggleFavouritedCommand}" />
-                    </mui:BooleanSwitch.True>
-                    <mui:BooleanSwitch.False>
-                        <Button Content="Add To Favourites" ToolTip="Add server to favourites list (Ctrl+D)" Command="{Binding ToggleFavouritedCommand}" />
-                    </mui:BooleanSwitch.False>
-                </mui:BooleanSwitch>-->
-
                 <mui:ButtonWithComboBox x:Name="ListsButton" Command="{Binding Entry.ToggleFavouritedCommand}" PreviewMouseDown="ListsButton_OnPreviewMouseDown">
                     <mui:ButtonWithComboBox.Content>
                         <mui:BooleanSwitch Value="{Binding Entry.IsFavourited}">
@@ -105,8 +96,13 @@
                     <Separator />
                     <MenuItem Header="Manage Lists…" InputGestureText="Ctrl+Shift+D" Command="{Binding ManageListsCommand}" />
                 </mui:ButtonWithComboBox>
-
+                <mui:ButtonWithComboBox Content="Invite" Command="{Binding InviteCommand}"
+                        ToolTip="Share a link to this server so your friends could quickly join you (Ctrl+Page Up)">
+                    <MenuItem Header="Include Password" IsChecked="{Binding CopyPasswordToInviteLink}" IsCheckable="True"
+                            IsEnabled="{Binding Entry.PasswordRequired}" />
+                </mui:ButtonWithComboBox>
                 <Separator />
+
                 <ToggleButton x:Name="AssistsButton" Content="Assists"
                         IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
                     <ToggleButton.ToolTip>
@@ -117,7 +113,6 @@
                         IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
                     <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
                 </c:ModernPopup>
-
                 <mui:BooleanSwitch Value="{Binding IsBooked}" DataContext="{Binding Entry}">
                     <mui:BooleanSwitch.True>
                         <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}" />
@@ -175,7 +170,7 @@
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" VerticalAlignment="Center" Text="{Binding Id, Mode=OneWay}" />
             </DockPanel>
             <c:FavouriteButton DockPanel.Dock="Right" Margin="4 0 0 0" IsChecked="{Binding IsFavourited, Mode=TwoWay}" />
-            <TextBox Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
+            <TextBox x:Name="Title" Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
         </DockPanel>
 
         <mui:Switch Value="{Binding Status}" DataContext="{Binding Entry}">
@@ -211,7 +206,8 @@
                                     Margin="0 0 6 0" />
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static g:AppStrings.Online_PasswordLabel}" Style="{StaticResource Heading2}"
                                     Margin="0 0 16 0" />
-                            <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBox.Borderless}" />
+                            <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ProperPasswordBox.Borderless}" />
                         </DockPanel>
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
@@ -228,7 +224,8 @@
                             <Path DockPanel.Dock="Left" Data="{StaticResource ToolsIconData}" Width="16" Height="16" Fill="{DynamicResource WindowText}"
                                     Stretch="Uniform" Margin="0 0 6 0" />
                             <TextBlock DockPanel.Dock="Left" Text="Admin password:" Style="{StaticResource Heading2}" Margin="0 0 16 0" />
-                            <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBox.Borderless}" />
+                            <mui:ProperPasswordBox FontSize="16" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource ProperPasswordBox.Borderless}" />
                         </DockPanel>
                     </mui:BooleanSwitch.False>
                 </mui:BooleanSwitch>
@@ -266,7 +263,7 @@
                             <mui:Cell.ToolTip>
                                 <ToolTip>
                                     <StackPanel Margin="4 8">
-                                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
+                                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.Name}" Margin="0 0 0 4" />
                                         <c:TrackBlock Track="{Binding Track}" ShowPreview="False" Width="512" MaxHeight="320" />
                                     </StackPanel>
                                 </ToolTip>
@@ -398,7 +395,7 @@
                                 </ItemsControl.ItemContainerStyle>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
-                                        <DockPanel Width="200">
+                                        <DockPanel>
                                             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" Click="Driver_OnContextMenuButtonClick" />
 
                                             <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0"
@@ -443,8 +440,15 @@
                                                 <!--<Setter Property="TextBlock.FontWeight" Value="Bold" TargetName="DriverName" />-->
                                                 <Setter Property="TextBlock.Opacity" Value="0.5" TargetName="DriverName" />
                                                 <Setter Property="TextBlock.Text" Value="{Binding Name, StringFormat='{}{0} (You)'}" TargetName="DriverName" />
-                                                <Setter Property="ToolTip" Value="You're pre-booked on this server" />
+                                                <Setter Property="ToolTip" Value="You're booked on this server" />
                                             </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsConnected}" Value="True" />
+                                                    <Condition Binding="{Binding IsBookedForPlayer}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="ToolTip" Value="You're on this server" />
+                                            </MultiDataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

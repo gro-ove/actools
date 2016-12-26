@@ -1,0 +1,4 @@
+name: SlimDX DirectX 11 Tutorials
+url: https://github.com/ericrrichards/dx11
+content: LICENSE.txt
+sid: 27_1767902742_167133862

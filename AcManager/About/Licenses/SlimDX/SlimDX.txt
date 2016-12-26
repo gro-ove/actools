@@ -1,0 +1,3 @@
+url: https://slimdx.org/
+content: LICENSE
+sid: 6_-1919219596_107757880

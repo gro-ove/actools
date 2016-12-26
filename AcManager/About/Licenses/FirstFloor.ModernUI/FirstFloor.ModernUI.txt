@@ -1,0 +1,4 @@
+name: Modern UI for WPF (MUI)
+url: https://github.com/firstfloorsoftware/mui
+content: LICENSE.md
+sid: 23_-656282555_1649727296

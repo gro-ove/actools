@@ -28,6 +28,10 @@ namespace AcManager.Tools.Managers.Online {
         public void Dispose() {
             _dispose.Invoke(Value);
         }
+
+        public static Holder<T> CreateNonHolding(T value) {
+            return new Holder<T>(value, v => { });
+        }
     }
 
     public class ReleasedEventArgs<T> : EventArgs {

@@ -1,0 +1,4 @@
+name: Modern UI Icons
+url: https://github.com/Templarian/WindowsIcons
+content: license.txt
+sid: 15_1746373167_-1305869619

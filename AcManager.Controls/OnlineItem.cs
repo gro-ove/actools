@@ -491,6 +491,38 @@ namespace AcManager.Controls {
             _hasErrorsGroup.Value = n.HasErrors || !n.IsFullyLoaded;
         }
 
+        private bool _password;
+
+        private void UpdatePasswordState(ServerEntry n) {
+            if (_password != n.PasswordRequired && _passwordIcon != null) {
+                _password = n.PasswordRequired;
+                _passwordIcon.Visibility = _password ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool _friends;
+
+        private void UpdateFriendsState(ServerEntry n) {
+            if (_friends != n.HasFriends) {
+                _friends = n.HasFriends;
+                _friendsIcon.Visibility = _friends ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool _bookedForPlayer;
+        
+        private void UpdateBookedState(ServerEntry n) {
+            if (_bookedForPlayer != n.IsBookedForPlayer) {
+                _bookedForPlayer = n.IsBookedForPlayer;
+                _bookedIcon.Visibility = _bookedForPlayer ? Visibility.Visible : Visibility.Collapsed;
+                if (_bookedForPlayer) {
+                    _nameText.SetValue(TextBlock.ForegroundProperty, (Brush)TryFindResource(@"Go"));
+                } else {
+                    _nameText.ClearValue(TextBlock.ForegroundProperty);
+                }
+            }
+        }
+
         private void Update(ServerEntry n) {
             if (n == null || _passwordIcon == null) return;
 
@@ -501,10 +533,7 @@ namespace AcManager.Controls {
                 _clientsText.ToolTip = null;
                 _clientsTooltipSet = false;
             }
-
-            _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
-            _friendsIcon.Visibility = n.HasFriends ? Visibility.Visible : Visibility.Collapsed;
-
+            
             if (!n.FromLan) {
                 _countryName.Text = n.Country;
             }
@@ -524,10 +553,14 @@ namespace AcManager.Controls {
             UpdateCars(n);
             UpdateFullyLoaded(n);
             UpdateErrorFlag(n);
+            UpdatePasswordState(n);
+            UpdateFriendsState(n);
+            UpdateBookedState(n);
         }
 
         [CanBeNull]
         private FrameworkElement _passwordIcon;
+        private FrameworkElement _bookedIcon;
         private FrameworkElement _friendsIcon;
         private BooleanSwitch _hasErrorsGroup;
         private BbCodeBlock _errorMessageGroup;
@@ -562,6 +595,7 @@ namespace AcManager.Controls {
 
             base.OnApplyTemplate();
             _passwordIcon = (FrameworkElement)GetTemplateChild(@"PasswordIcon");
+            _bookedIcon = (FrameworkElement)GetTemplateChild(@"BookedForPlayerIcon");
             _friendsIcon = (FrameworkElement)GetTemplateChild(@"FriendsIcon");
             _hasErrorsGroup = (BooleanSwitch)GetTemplateChild(@"HasErrorsGroup");
             _errorMessageGroup = (BbCodeBlock)GetTemplateChild(@"ErrorMessageGroup");
@@ -679,10 +713,13 @@ namespace AcManager.Controls {
                     UpdateName(n);
                     break;
                 case nameof(ServerEntry.PasswordRequired):
-                    _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
+                    UpdatePasswordState(n);
+                    break;
+                case nameof(ServerEntry.IsBookedForPlayer):
+                    UpdateBookedState(n);
                     break;
                 case nameof(ServerEntry.HasFriends):
-                    _friendsIcon.Visibility = n.HasFriends ? Visibility.Visible : Visibility.Collapsed;
+                    UpdateFriendsState(n);
                     break;
                 case nameof(ServerEntry.HasErrors):
                     UpdateErrorFlag(n);

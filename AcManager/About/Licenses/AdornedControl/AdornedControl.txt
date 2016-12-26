@@ -1,0 +1,4 @@
+name: WPF Adorners in XAML
+url: https://www.codeproject.com/articles/54472/defining-wpf-adorners-in-xaml
+content: LICENSE
+sid: 20_1348168051_-1001197761

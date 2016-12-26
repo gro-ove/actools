@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
@@ -132,6 +133,12 @@ namespace AcManager.Pages.Dialogs {
                 _ready = value;
                 OnPropertyChanged();
                 CommandManager.InvalidateRequerySuggested();
+
+                if (value) {
+                    Toast.Show("Booking Is Finished", AppStrings.Srs_ReadyNotification, () => {
+                        ServerEntry?.JoinCommand.Execute(ServerEntry.ActualJoin);
+                    });
+                }
             }
         }
 

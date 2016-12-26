@@ -29,14 +29,14 @@ namespace AcManager.Tools.Managers.Online {
             Ping = null;
 
             var errors = new List<string>(3);
-            var status = UpdateValues(information, errors);
+            var status = UpdateValues(information, errors, true);
             Status = status ?? ServerStatus.Unloaded;
             Errors = errors;
         }
 
         public void UpdateValues([NotNull] ServerInformation information) {
             var errors = new List<string>(3);
-            var status = UpdateValues(information, errors);
+            var status = UpdateValues(information, errors, true);
             if (status.HasValue) {
                 Status = status.Value;
                 Errors = errors;
@@ -48,8 +48,9 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         /// <param name="baseInformation">Loaded information.</param>
         /// <param name="errors">Errors will be put here.</param>
+        /// <param name="setCurrentDriversCount">Set CurrentDriversCount property.</param>
         /// <returns>Null if everything is OK, ServerStatus.Error/ServerStatus.Unloaded message otherwise.</returns>
-        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, [NotNull] ICollection<string> errors) {
+        private ServerStatus? UpdateValues([NotNull] ServerInformation baseInformation, [NotNull] ICollection<string> errors, bool setCurrentDriversCount) {
             if (Ip != baseInformation.Ip) {
                 errors.Add($"IP changed (from {Ip} to {baseInformation.Ip})");
                 return ServerStatus.Error;
@@ -86,17 +87,16 @@ namespace AcManager.Tools.Managers.Online {
                 CountryId = CountryId != null && countryId == @"na" ? CountryId : countryId;
             }
 
-            CurrentDriversCount = information.Clients;
-            Capacity = information.Capacity;
-
-            PasswordRequired = information.Password;
-            if (PasswordRequired) {
-                Password = ValuesStorage.GetEncryptedString(KeyPasswordStorage);
+            if (setCurrentDriversCount) {
+                CurrentDriversCount = information.Clients;
             }
+
+            Capacity = information.Capacity;
+            PasswordRequired = information.Password;
 
             if (information.CarIds != null && Cars?.Select(x => x.Id).SequenceEqual(information.CarIds) != true) {
                 Cars = information.CarIds.Select(x => Cars?.GetByIdOrDefault(x) ?? new CarEntry(x)).ToList();
-                SelectedCarEntry = Cars.FirstOrDefault();
+                SetSelectedCarEntry(Cars.FirstOrDefault());
             }
 
             if (TrackId != information.TrackId) {
@@ -208,6 +208,7 @@ namespace AcManager.Tools.Managers.Online {
             _updating = true;
 
             var errors = new List<string>(3);
+            var driversCount = -1;
 
             try {
                 if (!background) {
@@ -220,7 +221,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (!IsFullyLoaded) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.1);
 
-                    ServerInformation loaded;
+                    ServerInformationComplete loaded;
                     try {
                         loaded = await GetInformationDirectly();
                     } catch (WebException e) {
@@ -228,7 +229,13 @@ namespace AcManager.Tools.Managers.Online {
                         return;
                     }
 
-                    if (UpdateValues(loaded, errors) != null) return;
+                    if (UpdateValues(loaded, errors, false) != null) {
+                        // Loaded data isn’t for this server (port by which it was loaded differs).
+                        // Won’t even set drivers count in this case, whole data is obsviously wrong.
+                        return;
+                    }
+
+                    driversCount = loaded.Clients;
                     informationUpdated = true;
                 }
 
@@ -248,7 +255,8 @@ namespace AcManager.Tools.Managers.Online {
                             // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
                             // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
                             // loaded just before that and loaded information wasn’t loaded from it.
-                            if (UpdateValues(loaded, errors) != null) return;
+                            if (UpdateValues(loaded, errors, false) != null) return;
+                            driversCount = loaded.Clients;
                         } else {
                             ServerInformation directlyLoaded;
                             try {
@@ -258,7 +266,8 @@ namespace AcManager.Tools.Managers.Online {
                                 return;
                             }
 
-                            if (UpdateValues(directlyLoaded, errors) != null) return;
+                            if (UpdateValues(directlyLoaded, errors, false) != null) return;
+                            driversCount = loaded.Clients;
                         }
                     }
                 }
@@ -289,11 +298,15 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (!BookingMode) {
                     CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
+                    driversCount = -1;
                 }
                 
                 var currentDrivers = (BookingMode ? information.Cars : information.Cars.Where(x => x.IsConnected))
-                        .Select(x => CurrentDrivers?.FirstOrDefault(y => y.Name == x.DriverName && y.Team == x.DriverTeam &&
-                                y.CarId == x.CarId && y.CarSkinId == x.CarSkinId) ?? new CurrentDriver(x))
+                        .Select(x => {
+                            var driver = CurrentDrivers?.FirstOrDefault(y => y.Name == x.DriverName && y.Team == x.DriverTeam &&
+                                    y.CarId == x.CarId && y.CarSkinId == x.CarSkinId) ?? new CurrentDriver(x);
+                            return driver;
+                        })
                         .ToList();
                 if (CurrentDrivers == null || !CurrentDrivers.SequenceEqual(currentDrivers)) {
                     CurrentDrivers = currentDrivers;
@@ -304,7 +317,7 @@ namespace AcManager.Tools.Managers.Online {
                         if (x.IsConnected) count++;
                         if (x.IsBookedForPlayer) {
                             booked = true;
-                            SelectedCarEntry = Cars?.GetByIdOrDefault(x.CarId, StringComparison.OrdinalIgnoreCase);
+                            SetSelectedCarEntry(Cars?.GetByIdOrDefault(x.CarId, StringComparison.OrdinalIgnoreCase));
                         }
                     }
 
@@ -345,27 +358,30 @@ namespace AcManager.Tools.Managers.Online {
                     /* set next available skin */
                     if (CurrentSessionType == Game.SessionType.Booking) {
                         entry.AvailableSkin = car.SelectedSkin;
+                        entry.Total = 0;
+                        entry.Available = 0;
+                        entry.IsAvailable = true;
                     } else {
                         var cars = information.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
                         string availableSkinId;
 
                         if (BookingMode) {
                             availableSkinId = cars.FirstOrDefault(x => x.IsRequestedGuid)?.CarSkinId;
+                            entry.Total = 0;
+                            entry.Available = 0;
+                            entry.IsAvailable = true;
                         } else {
-                            if (cars.Count == 0) {
-                                // errors.Add(ToolsStrings.Online_Server_CarsDoNotMatch);
-                                return;
-                            }
-
+                            availableSkinId = cars.FirstOrDefault(y => !y.IsConnected)?.CarSkinId;
                             entry.Total = cars.Count;
                             entry.Available = cars.Count(y => !y.IsConnected);
-
-                            availableSkinId = cars.FirstOrDefault(y => !y.IsConnected)?.CarSkinId;
+                            entry.IsAvailable = entry.Available > 0;
                         }
 
                         entry.AvailableSkin = availableSkinId == null
                                 ? null : availableSkinId == string.Empty ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId);
                     }
+
+                    // TODO: Revert back `errors.Add(ToolsStrings.Online_Server_CarsDoNotMatch);` (?)
                 }
 
                 if (IsBookedForPlayer) {
@@ -380,6 +396,10 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add(string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message));
                 Logging.Error(e);
             } finally {
+                if (driversCount != -1) {
+                    CurrentDriversCount = driversCount;
+                }
+
                 UpdateProgress = AsyncProgressEntry.Ready;
                 Errors = errors;
                 Status = errors.Any() ? ServerStatus.Error : ServerStatus.Ready;
@@ -412,6 +432,7 @@ namespace AcManager.Tools.Managers.Online {
         public CarEntry SelectedCarEntry {
             get { return _selectedCarEntry; }
             set {
+                if (FixedCar) return;
                 if (SetSelectedCarEntry(value)) {
                     LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, value?.Id);
                     AvailableUpdate();

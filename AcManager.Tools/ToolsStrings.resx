@@ -1440,7 +1440,7 @@
     <value>Slipstream effect</value>
   </data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
-    <value>Multipler for slipstream effect</value>
+    <value>Multiplier for slipstream effect</value>
   </data>
   <data name="Assists_StabilityControl" xml:space="preserve">
     <value>Stability control</value>
@@ -1467,7 +1467,7 @@
     <value>Tyre wear</value>
   </data>
   <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
-    <value>Multipler for tyre wear</value>
+    <value>Multiplier for tyre wear</value>
   </data>
   <data name="KunosCareer_Place" xml:space="preserve">
     <value>place</value>

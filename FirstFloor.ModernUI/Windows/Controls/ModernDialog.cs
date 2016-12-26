@@ -276,6 +276,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return GetValue(ButtonsRowContentProperty); }
             set { SetValue(ButtonsRowContentProperty, value); }
         }
+
+        public static readonly DependencyProperty ButtonsMarginProperty = DependencyProperty.Register(nameof(ButtonsMargin), typeof(Thickness),
+                typeof(ModernDialog));
+
+        public Thickness ButtonsMargin {
+            get { return (Thickness)GetValue(ButtonsMarginProperty); }
+            set { SetValue(ButtonsMarginProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowTitleProperty = DependencyProperty.Register(nameof(ShowTitle), typeof(bool),
+                typeof(ModernDialog), new PropertyMetadata(true));
+
+        public bool ShowTitle {
+            get { return (bool)GetValue(ShowTitleProperty); }
+            set { SetValue(ShowTitleProperty, value); }
+        }
     }
 
     public class FatalErrorMessage : ModernDialog {

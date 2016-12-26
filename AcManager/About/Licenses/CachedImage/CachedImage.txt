@@ -1,0 +1,3 @@
+url: https://github.com/floydpink/CachedImage
+content: LICENSE
+sid: 11_63558086_-472086088

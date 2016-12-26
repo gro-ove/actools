@@ -38,16 +38,20 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        private static void PropagateToChildren_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-            var menu = (ContextMenu)((FrameworkElement)sender).GetValue(FrameworkElement.ContextMenuProperty);
-            if (menu == null) return;
-
+        internal static void Add(ContextMenu menu) {
             CheckTime();
             if (!ParentContextMenu.Any(x => ReferenceEquals(x, menu))) {
                 ParentContextMenu.Add(menu);
             }
 
             _lastClicked = DateTime.Now;
+        }
+
+        private static void PropagateToChildren_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+            var menu = (ContextMenu)((FrameworkElement)sender).GetValue(FrameworkElement.ContextMenuProperty);
+            if (menu != null) {
+                Add(menu);
+            }
         }
     }
 }

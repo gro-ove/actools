@@ -1,0 +1,4 @@
+name: LevelDB for Windows and .NET
+url: https://github.com/Reactive-Extensions/LevelDB
+content: LICENSE
+sid: 28_-1260613915_-1720553161

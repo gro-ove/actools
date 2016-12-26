@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
@@ -34,6 +37,15 @@ namespace AcManager.Pages.Drive {
         private Holder<ServerEntry> _holder;
         private Sublist<MenuItem> _sourcesMenuItems;
 
+        public OnlineServer() { }
+
+        public OnlineServer([NotNull] ServerEntry entry) {
+            if (entry == null) throw new ArgumentNullException(nameof(entry));
+
+            _holder = new Holder<ServerEntry>(entry, t => { });
+            Initialize();
+        }
+
         public void OnUri(Uri uri) {
             var id = uri.GetQueryParam("Id");
             if (id == null) {
@@ -45,16 +57,21 @@ namespace AcManager.Pages.Drive {
                 throw new Exception(string.Format(AppStrings.Online_ServerWithIdIsMissing, id));
             }
 
+            Initialize();
+        }
+
+        private void Initialize() {
             var entry = _holder.Value;
             if (entry.Status == ServerStatus.Unloaded) {
                 entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
 
+            DataContext = new ViewModel(entry);
+            InitializeComponent();
+
             var list = ListsButton.MenuItems;
             _sourcesMenuItems = new Sublist<MenuItem>(list, list.Count - 1, 0);
 
-            DataContext = new ViewModel(entry);
-            InitializeComponent();
             UpdateCarsView();
             UpdateIcons();
             UpdateBindings();
@@ -279,6 +296,66 @@ namespace AcManager.Pages.Drive {
             public DelegateCommand ManageListsCommand => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => {
                 new OnlineListsManager().ShowDialog();
             }));
+
+            private const string KeyCopyPasswordToInviteLink = "Online.CopyPasswordToInviteLink";
+
+            private bool _copyPasswordToInviteLink = ValuesStorage.GetBool(KeyCopyPasswordToInviteLink, true);
+
+            public bool CopyPasswordToInviteLink {
+                get { return _copyPasswordToInviteLink; }
+                set {
+                    if (Equals(value, _copyPasswordToInviteLink)) return;
+                    _copyPasswordToInviteLink = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeyCopyPasswordToInviteLink, value);
+                }
+            }
+
+            private DelegateCommand _inviteCommand;
+
+            public DelegateCommand InviteCommand => _inviteCommand ?? (_inviteCommand = new DelegateCommand(() => {
+                var link = $@"http://acstuff.ru/s/q:race/online/join?ip={Entry.Ip}&httpPort={Entry.PortHttp}";
+                if (CopyPasswordToInviteLink && !string.IsNullOrWhiteSpace(Entry.Password)) {
+                    link += $@"&password={EncryptSharedPassword(Entry.Id, Entry.Password)}";
+                }
+
+                SharingUiHelper.ShowShared("Inviting link", link);
+            }));
+        }
+
+        /// <summary>
+        /// Of course, it’s the stupidest way to crypt anything, but all “encrypted” data still
+        /// could be very easily decrypted just by using CM (then, password will end up in race.ini
+        /// in a plain view). And this way at least result string is small.
+        /// </summary>
+        private static readonly string EncryptKey = InternalUtils.GetOnlineInviteEncryptionKey();
+
+        private static void Xor(byte[] data, byte[] key) {
+            int dataLength = data.Length, keyLength = key.Length;
+            for (int i = 0, k = 0; i < dataLength; i++, k++) {
+                if (k == keyLength) k = 0;
+                data[i] ^= key[k];
+            }
+        }
+
+        public static string EncryptSharedPassword(string id, string password) {
+            var data = Encoding.UTF8.GetBytes(password);
+            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
+            return Convert.ToBase64String(data);
+        }
+
+        public static string EncryptSharedPassword(string ip, int httpPort, string password) {
+            return EncryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", password);
+        }
+
+        public static string DecryptSharedPassword(string id, string encryptedPassword) {
+            var data = Convert.FromBase64String(encryptedPassword);
+            Xor(data, Encoding.UTF8.GetBytes(id + EncryptKey));
+            return Encoding.UTF8.GetString(data);
+        }
+
+        public static string DecryptSharedPassword(string ip, int httpPort, string encryptedPassword) {
+            return DecryptSharedPassword($@"{ip}:{httpPort.ToInvariantString()}", encryptedPassword);
         }
 
         private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -350,9 +427,13 @@ namespace AcManager.Pages.Drive {
         }
 
         private void CarsComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var carEntry = ((Selector)sender).SelectedItem as CarEntry;
-            if (carEntry != null) {
-                Model.Entry.SelectedCarEntry = carEntry;
+            if (Model.Entry.FixedCar) {
+                ((Selector)sender).SelectedItem = Model.Entry.SelectedCarEntry;
+            } else {
+                var carEntry = ((Selector)sender).SelectedItem as CarEntry;
+                if (carEntry != null) {
+                    Model.Entry.SelectedCarEntry = carEntry;
+                }
             }
         }
 

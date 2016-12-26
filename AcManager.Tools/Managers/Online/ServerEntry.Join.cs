@@ -48,15 +48,15 @@ namespace AcManager.Tools.Managers.Online {
                 yield return "CM isn’t ready";
             }
 
-            if (PasswordRequired) {
-                if (string.IsNullOrEmpty(Password)) {
-                    yield return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
-                } else if (WrongPassword) {
-                    yield return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
-                }
-            }
-
             if (!IsBookedForPlayer) {
+                if (PasswordRequired) {
+                    if (string.IsNullOrEmpty(Password)) {
+                        yield return ToolsStrings.ArchiveInstallator_PasswordIsRequired;
+                    } else if (WrongPassword) {
+                        yield return ToolsStrings.ArchiveInstallator_PasswordIsInvalid;
+                    }
+                }
+
                 if (SelectedCarEntry == null) {
                     yield return "Car isn’t selected";
                 }

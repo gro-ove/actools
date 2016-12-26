@@ -39,7 +39,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e) {
             if (_skipNext) return;
-            Password = _passwordBox.Password;
+            _skipNext = true;
+
+            var value = _passwordBox.Password;
+            if (value != Password) {
+                SetValue(PasswordProperty, value);
+            }
+
+            _skipNext = false;
         }
 
         protected override void OnGotFocus(RoutedEventArgs e) {
@@ -75,9 +82,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnPasswordChanged(string newValue) {
-            if (_passwordBox == null || !VisiblePassword) return;
+            if (_passwordBox == null || _skipNext) return;
             _skipNext = true;
-            _passwordBox.Password = newValue;
+            if (_passwordBox.Password != newValue) {
+                _passwordBox.Password = newValue;
+            }
             _skipNext = false;
         }
 

@@ -1731,7 +1731,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>HDR-off mult.</value>
   </data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
-    <value>Multipler</value>
+    <value>Multiplier</value>
   </data>
   <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
     <value>Switch to Edit Mode (Ctrl+E)</value>
@@ -1770,7 +1770,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Number of clouds</value>
   </data>
   <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
-    <value>Base speed multipler</value>
+    <value>Base speed multiplier</value>
   </data>
   <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
     <value>Used when HDR is disabled</value>
@@ -2051,7 +2051,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Track:</value>
   </data>
   <data name="Drive_TimeMultiplerLabel" xml:space="preserve">
-    <value>Time multipler</value>
+    <value>Time multiplier</value>
   </data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
     <value>Tyre blankets</value>

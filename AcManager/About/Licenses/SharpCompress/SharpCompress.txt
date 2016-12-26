@@ -1,0 +1,3 @@
+url: https://github.com/adamhathcock/sharpcompress
+content: LICENSE.md
+sid: 13_1265365092_-1200296128

@@ -28,8 +28,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private readonly double _offsetX;
         private readonly double _offsetY;
 
-        // Position of the child (when not set to NaN).
-
         public FrameworkElementAdorner(FrameworkElement adornerChildElement, UIElement adornedElement) : base(adornedElement) {
             _child = adornerChildElement;
 
@@ -485,7 +483,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Internal method to hide the adorner.
         /// </summary>
         private void HideAdornerInternal() {
-            // Not already adorned.
             if (_adornerLayer == null || _adorner == null) return;
 
             _adornerLayer.Remove(_adorner);

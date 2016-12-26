@@ -28,7 +28,7 @@
                 <mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroupFilterable x:Name="OnlineGroup" IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
+        <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
                 Source="/Pages/Drive/Online.xaml">
             <mui:LinkGroupFilterable.FixedLinks>
                 <mui:Link DisplayName="Kunos" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />

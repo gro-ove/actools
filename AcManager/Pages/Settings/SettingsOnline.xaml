@@ -81,7 +81,7 @@
             <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}"
                     ToolTip="{x:Static g:AppStrings.Settings_Online_PingConcurrency_Tooltip}">
                 <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer" Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
-                <Slider Minimum="10" Maximum="300" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
+                <Slider Minimum="5" Maximum="50" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>

@@ -1,0 +1,4 @@
+name: NVIDIA FXAA Shader
+url: https://gist.github.com/bkaradzic/6011431
+content: LICENSE
+sid: 18_1668019067_971726590

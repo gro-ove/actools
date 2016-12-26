@@ -97,18 +97,25 @@ namespace AcManager.Tools.Managers.Online {
         private string KeyPasswordStorage => $@"__smt_pw_{Id}";
 
         private string _password;
+        private bool _passwordLoaded;
 
         public string Password {
-            get { return _password; }
+            get {
+                if (!_passwordLoaded) {
+                    _passwordLoaded = true;
+                    _password = ValuesStorage.GetEncryptedString(KeyPasswordStorage);
+                }
+
+                return _password;
+            }
             set {
-                if (Equals(value, _password)) return;
+                if (Equals(value, Password)) return;
                 _password = value;
+                _wrongPassword = false;
                 ValuesStorage.SetEncrypted(KeyPasswordStorage, value);
                 OnPropertyChanged();
-
-                _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
-                _joinCommand?.RaiseCanExecuteChanged();
+                AvailableUpdate();
             }
         }
 
@@ -120,7 +127,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _wrongPassword)) return;
                 _wrongPassword = value;
                 OnPropertyChanged();
-                _joinCommand?.RaiseCanExecuteChanged();
+                AvailableUpdate();
             }
         }
 

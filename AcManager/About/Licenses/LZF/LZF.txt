@@ -1,0 +1,4 @@
+name: C# LZF Compressor
+url: http://csharplzfcompression.codeplex.com/
+content: license.cs
+sid: 17_-1842149017_137208794

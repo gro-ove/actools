@@ -239,7 +239,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _pingingWithThreads;
 
             public bool ThreadsPing {
-                get { return _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", true)).Value; }
+                get { return _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", false)).Value; }
                 set {
                     if (Equals(value, _pingingWithThreads)) return;
                     _pingingWithThreads = value;
@@ -303,7 +303,7 @@ namespace AcManager.Tools.Helpers {
             public string LanPortsEnumeration {
                 get {
                     return _lanPortsEnumeration ??
-                            (_lanPortsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", @"9456-9458,9556,9600-9612,9700"));
+                            (_lanPortsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", @"9000-10000"));
                 }
                 set {
                     value = value.Trim();

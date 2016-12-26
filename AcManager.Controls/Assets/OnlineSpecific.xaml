@@ -257,14 +257,18 @@
             <Setter.Value>
                 <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
-                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="8">
+                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="4">
+                            <!--optional booked-for-player icon-->
+                            <Path x:Name="BookedForPlayerIcon" Data="{StaticResource TriangleFlagIconData}" Width="12" Height="12" Fill="{DynamicResource Go}"
+                                    Stretch="Uniform" ToolTip="There is a place booked for you" Visibility="Collapsed" />
+
                             <!--optional lock icon-->
                             <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" />
-                            
+                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Visibility="Collapsed" />
+
                             <!--optional friends icon-->
                             <Path x:Name="FriendsIcon" Data="{StaticResource MultiplePeopleIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                    Stretch="Uniform" ToolTip="Some of your friends are here" />
+                                    Stretch="Uniform" ToolTip="Some of your friends are here" Visibility="Collapsed" />
                         </mui:SpacingStackPanel>
 
                         <!--first row-->
@@ -315,14 +319,18 @@
             <Setter.Value>
                 <ControlTemplate TargetType="c:OnlineItem">
                     <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
-                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="8">
+                        <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="4">
+                            <!--optional booked-for-player icon-->
+                            <Path x:Name="BookedForPlayerIcon" Data="{StaticResource TriangleFlagIconData}" Width="12" Height="12" Fill="{DynamicResource Go}"
+                                    Stretch="Uniform" ToolTip="There is a place booked for you" Visibility="Collapsed" />
+
                             <!--optional lock icon-->
                             <Path x:Name="PasswordIcon" Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" />
+                                    Stretch="Uniform" ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Visibility="Collapsed" />
 
                             <!--optional friends icon-->
                             <Path x:Name="FriendsIcon" Data="{StaticResource MultiplePeopleIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}"
-                                    Stretch="Uniform" ToolTip="Some of your friends are here" />
+                                    Stretch="Uniform" ToolTip="Some of your friends are here" Visibility="Collapsed" />
                         </mui:SpacingStackPanel>
 
                         <!--first row-->

@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.ViewModels;
@@ -17,8 +22,10 @@ using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -27,8 +34,10 @@ using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Readers;
@@ -185,6 +194,9 @@ namespace AcManager.Tools {
                     case "race/online":
                         return await ProgressRaceOnline(custom.Params);
 
+                    case "race/online/join":
+                        return await ProgressRaceOnlineJoin(custom.Params);
+
                     case "loadgooglespreadsheetslocale":
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
 
@@ -223,7 +235,8 @@ namespace AcManager.Tools {
             var trackId = p.Get(@"track");
             var name = p.Get(@"name");
             var nationality = p.Get(@"nationality");
-            var password = p.Get(@"password");
+            var password = p.Get(@"plainPassword");
+            var encryptedPassword = p.Get(@"password");
 
             if (string.IsNullOrWhiteSpace(ip)) {
                 throw new InformativeException("IP is missing");
@@ -235,6 +248,10 @@ namespace AcManager.Tools {
 
             if (!httpPort.HasValue) {
                 throw new InformativeException("HTTP port is missing or is in invalid format");
+            }
+
+            if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)) {
+                password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
             }
 
             if (string.IsNullOrWhiteSpace(carId)) {
@@ -279,6 +296,106 @@ namespace AcManager.Tools {
                 }
             });
 
+            return ArgumentHandleResult.Successful;
+        }
+
+        private class FakeSource : IOnlineListSource {
+            private ServerInformation _information;
+            private readonly string _id;
+
+            public FakeSource(string ip, int httpPort) {
+                _information = new ServerInformation { Ip = ip, PortHttp = httpPort };
+                _id = _information.Id;
+            }
+
+            public string Id => _id;
+
+            public string DisplayName => "Temporary Source";
+
+            public event EventHandler Obsolete {
+                add { }
+                remove { }
+            }
+            
+            public Task<bool> LoadAsync(ListAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+                // This source will load provided server, but only once — call .ReloadAsync() and server will be nicely removed.
+                callback(new[] { _information }.NonNull());
+                _information = null;
+                return Task.FromResult(true);
+            }
+        }
+
+        public async Task<ArgumentHandleResult> ProgressRaceOnlineJoin(NameValueCollection p) {
+            /* required arguments */
+            var ip = p.Get(@"ip");
+            var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
+            var password = p.Get(@"plainPassword");
+            var encryptedPassword = p.Get(@"password");
+
+            if (string.IsNullOrWhiteSpace(ip)) {
+                throw new InformativeException("IP is missing");
+            }
+
+            if (!httpPort.HasValue) {
+                throw new InformativeException("HTTP port is missing or is in invalid format");
+            }
+
+            if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)) {
+                password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
+            }
+
+            var list = OnlineManager.Instance.List;
+            var source = new FakeSource(ip, httpPort.Value);
+            var wrapper = new OnlineSourceWrapper(list, source);
+
+            ServerEntry server;
+
+            using (var waiting = new WaitingDialog()) {
+                waiting.Report("Loading information…");
+                
+                await wrapper.EnsureLoadedAsync();
+                server = list.GetByIdOrDefault(source.Id);
+                if (server == null) {
+                    throw new Exception(@"Unexpected");
+                }
+            }
+
+            if (password != null) {
+                server.Password = password;
+            }
+
+            var content = new OnlineServer(server) {
+                Margin = new Thickness(0, 0, 0, -51),
+                ToolBar = { FitWidth = true },
+
+                // Values taken from ModernDialog.xaml
+                // TODO: Extract them to some style?
+                Title = { FontSize = 24, FontWeight = FontWeights.Light, Margin = new Thickness(6, 0, 0, 8) }
+            };
+
+            content.Title.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+
+            var dlg = new ModernDialog {
+                ShowTitle = false,
+                Content = content,
+                MinHeight = 400,
+                MinWidth = 450,
+                MaxHeight = 99999,
+                MaxWidth = 700,
+                Padding = new Thickness(0),
+                ButtonsMargin = new Thickness(8),
+                SizeToContent = SizeToContent.Manual,
+                ResizeMode = ResizeMode.CanResizeWithGrip,
+                LocationAndSizeKey = @".OnlineServerDialog"
+            };
+
+            dlg.SetBinding(Window.TitleProperty, new Binding {
+                Path = new PropertyPath(nameof(server.DisplayName)),
+                Source = server
+            });
+
+            await dlg.ShowDialogAsync();
+            await wrapper.ReloadAsync(true);
             return ArgumentHandleResult.Successful;
         }
 

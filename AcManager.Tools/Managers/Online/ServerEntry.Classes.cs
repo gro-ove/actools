@@ -108,7 +108,6 @@ namespace AcManager.Tools.Managers.Online {
                     if (value == _total) return;
                     _total = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsAvailable));
                 }
             }
 
@@ -120,11 +119,20 @@ namespace AcManager.Tools.Managers.Online {
                     if (value == _available) return;
                     _available = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsAvailable));
                 }
             }
 
-            public bool IsAvailable => Total == 0 || Available > 0;
+            private bool _isAvailable;
+
+            public bool IsAvailable {
+                get { return _isAvailable; }
+                set {
+                    if (Equals(value, _isAvailable)) return;
+                    _isAvailable = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged();
+                }
+            }
 
             public override string DisplayName {
                 get { return CarObjectWrapper?.Value.DisplayName ?? Id; }

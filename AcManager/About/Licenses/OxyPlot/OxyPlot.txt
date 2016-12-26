@@ -1,0 +1,3 @@
+url: http://www.oxyplot.org/
+content: LICENSE
+sid: 7_-1868496878_655939918

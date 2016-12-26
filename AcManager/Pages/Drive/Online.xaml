@@ -218,8 +218,6 @@
 
                                     <StackPanel x:Name="FilteringComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16">
                                         <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
-                                        <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8"
-                                                Text="{Binding Value, Source={x:Static t:ServerEntry.HasAnyFriends}}" />
                                         <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}"
                                                 DisplayMemberPath="DisplayName" />
                                     </StackPanel>

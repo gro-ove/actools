@@ -1,0 +1,3 @@
+url: https://github.com/google/leveldb
+content: LICENSE
+sid: 7_-4385210_598346215

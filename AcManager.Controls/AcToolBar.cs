@@ -27,10 +27,19 @@ namespace AcManager.Controls {
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
 
-            if (ToolBarTray == null) return;
+            var tray = ToolBarTray;
+            if (tray == null) return;
             foreach (var toolBar in ToolBars) {
-                ToolBarTray.ToolBars.Add(toolBar);
+                tray.ToolBars.Add(toolBar);
             }
+        }
+
+        public static readonly DependencyProperty FitWidthProperty = DependencyProperty.Register(nameof(FitWidth), typeof(bool),
+                typeof(AcToolBar), new PropertyMetadata(false));
+
+        public bool FitWidth {
+            get { return (bool)GetValue(FitWidthProperty); }
+            set { SetValue(FitWidthProperty, value); }
         }
 
         #region Toggling attributes

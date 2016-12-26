@@ -1,0 +1,4 @@
+name: Assetto Corsa Shared Memory Library
+url: https://github.com/mdjarv/assettocorsasharedmemory
+content: LICENSE
+sid: 35_1099014494_2012376479

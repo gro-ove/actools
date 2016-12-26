@@ -1450,6 +1450,9 @@
     <Resource Include="Assets\Icons\TrayIcon.ico" />
     <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="About\Licenses\WindowsIcons\license.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>

@@ -1,0 +1,3 @@
+url: https://github.com/icsharpcode/AvalonEdit
+content: LICENSE
+sid: 10_-841269115_1406199749
