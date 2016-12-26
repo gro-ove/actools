@@ -44,7 +44,7 @@ namespace AcManager.Tools.Managers.Online {
                 var w = Stopwatch.StartNew();
                 var pingedNow = 0;
 
-                for (var i = 0; Pinged < List.Count && i < 10; i++) {
+                for (var i = 0; Pinged < List.Count && i < 10 && !linked.IsCancellationRequested; i++) {
                     if (i > 0) {
                         Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
                     }

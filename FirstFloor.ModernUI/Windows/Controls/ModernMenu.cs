@@ -9,6 +9,8 @@ using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -243,8 +245,41 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ListBox _subMenuListBox;
 
         public override void OnApplyTemplate() {
+            if (_subMenuListBox != null) {
+                _subMenuListBox.Drop -= OnDrop;
+            }
+
             base.OnApplyTemplate();
+            
             _subMenuListBox = GetTemplateChild("PART_SubMenu") as ListBox;
+            if (_subMenuListBox != null) {
+                _subMenuListBox.Drop += OnDrop;
+            }
+        }
+
+        private void OnDrop(object sender, DragEventArgs e) {
+            var destination = (ListBox)sender;
+            var widget = e.Data.GetData(LinkInput.DraggableFormat) as LinkInput;
+            var source = e.Data.GetData(Draggable.SourceFormat) as ItemsControl;
+            var group = SelectedLinkGroup as LinkGroupFilterable;
+
+            if (widget == null || source == null || !ReferenceEquals(source, _subMenuListBox) || group == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            var newIndex = destination.GetMouseItemIndex();
+            if (newIndex == -1) {
+                newIndex = group.Links.Count - 1;
+            } else {
+                var minIndex = group.FixedLinksCount;
+                if (newIndex < minIndex) {
+                    newIndex = minIndex;
+                }
+            }
+
+            group.Links.Remove(widget);
+            group.Links.Insert(newIndex, widget);
         }
 
         private bool SelectUriIfLinkExists(Uri uri) {

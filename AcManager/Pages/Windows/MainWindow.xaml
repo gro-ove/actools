@@ -124,7 +124,5 @@
                 </DockPanel>
             </Border>
         </Popup>
-
-        <!--<MediaElement Source="C:/Users/Main/AppData/Local/AcTools Content Manager/Themes/Backgrounds/mountains.webm" LoadedBehavior="Play"></MediaElement>-->
     </mui:Cell>
 </mui:ModernWindow>

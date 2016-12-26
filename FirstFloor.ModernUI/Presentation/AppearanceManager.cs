@@ -18,6 +18,7 @@ namespace FirstFloor.ModernUI.Presentation {
         public const string KeyFormattingMode = "FormattingMode";
         public const string KeyFixedFontSize = "FixedFontSize";
         public const string KeySubMenuFontSize = "ModernSubMenuFontSize";
+        public const string KeySubMenuDraggablePoints = "ModernSubMenuDraggablePoints";
 
         public event EventHandler ThemeChange;
         
@@ -62,11 +63,11 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
-        public bool OptionIdealFormattingMode {
+        public bool IdealFormattingMode {
             get { return Equals(Application.Current.Resources[KeyFormattingMode] as TextFormattingMode?, TextFormattingMode.Ideal); }
             set {
                 Application.Current.Resources[KeyFormattingMode] = value ? TextFormattingMode.Ideal : TextFormattingMode.Display;
-                OnPropertyChanged(nameof(OptionIdealFormattingMode));
+                OnPropertyChanged(nameof(IdealFormattingMode));
             }
         }
 
@@ -86,6 +87,14 @@ namespace FirstFloor.ModernUI.Presentation {
                 if (SubMenuFontSize == value) return;
                 Application.Current.Resources[KeySubMenuFontSize] = value == FontSize.Small ? 11D : 14D;
                 OnPropertyChanged();
+            }
+        }
+
+        public bool SubMenuDraggablePoints {
+            get { return Equals(Application.Current.Resources[KeySubMenuDraggablePoints] as Visibility?, Visibility.Visible); }
+            set {
+                Application.Current.Resources[KeySubMenuDraggablePoints] = value ? Visibility.Visible : Visibility.Collapsed;
+                OnPropertyChanged(nameof(SubMenuDraggablePoints));
             }
         }
 

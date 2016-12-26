@@ -395,7 +395,7 @@
                                 </ItemsControl.ItemContainerStyle>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type t:ServerEntry+CurrentDriver}">
-                                        <DockPanel>
+                                        <DockPanel Background="Transparent">
                                             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" Click="Driver_OnContextMenuButtonClick" />
 
                                             <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0"
@@ -414,7 +414,7 @@
                                             <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock Text="{Binding DisplayName}"
+                                                        <mui:BbCodeBlock BbCode="{Binding DisplayName}"
                                                                 Foreground="{Binding Color, Converter={x:Static mui:ColorPicker.ColorToBrushConverter}}"
                                                                 Background="{DynamicResource ButtonBackground}" FontFamily="{StaticResource CondensedFont}"
                                                                 FontSize="10" Margin="0 0 4 0" Padding="2 2" />

@@ -35,6 +35,17 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static readonly DependencyProperty DataProperty = DependencyProperty.RegisterAttached("Data", typeof(object),
                 typeof(Draggable), new PropertyMetadata(null, OnEnabledChanged));
 
+        public static bool GetKeepSelection(DependencyObject obj) {
+            return (bool)obj.GetValue(KeepSelectionProperty);
+        }
+
+        public static void SetKeepSelection(DependencyObject obj, bool value) {
+            obj.SetValue(KeepSelectionProperty, value);
+        }
+
+        public static readonly DependencyProperty KeepSelectionProperty = DependencyProperty.RegisterAttached("KeepSelection", typeof(bool),
+                typeof(Draggable), new PropertyMetadata(false));
+
         private static void OnEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = (FrameworkElement)d;
 
@@ -68,8 +79,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static Point _startingPoint;
 
         private static void Element_MouseDown(object sender, MouseButtonEventArgs e) {
-            _previous = e.Handled ? null : sender;
-            _startingPoint = VisualExtension.GetMousePosition();
+            if (!e.Handled) {
+                var element = sender as FrameworkElement;
+                if (element != null && !IgnoreSpecialControls(sender, e)) {
+                    _previous = element;
+                    _startingPoint = VisualExtension.GetMousePosition();
+                    return;
+                }
+            }
+
+            _previous = null;
         }
 
         [CanBeNull]
@@ -78,7 +97,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 var item = element as ListBoxItem;
                 var parent = item?.GetParent<ListBox>();
                 if (parent != null) {
-                    parent.SelectedItem = item;
+                    if (!GetKeepSelection(parent)) {
+                        parent.SelectedItem = item;
+                    }
                     return parent;
                 }
             }
@@ -87,7 +108,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 var row = element as DataGridRow;
                 var parent = row?.GetParent<DataGrid>();
                 if (parent != null) {
-                    parent.SelectedItem = row.Item;
+                    if (!GetKeepSelection(parent)) {
+                        parent.SelectedItem = row.Item;
+                    }
                     return parent;
                 }
             }
@@ -132,23 +155,35 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return row != null && MoveDraggable(row, row.Item as IDraggable);
         }
 
-        private static readonly Type[] IgnoredControls = {
-            typeof(TextBoxBase),
-            typeof(PasswordBox),
-            typeof(Thumb)
-        };
+        private static bool IsIgnored(DependencyObject obj) {
+            var textBox = obj as TextBoxBase;
+            if (textBox != null) {
+                return textBox.IsEnabled;
+            }
+
+            var thumb = obj as Thumb;
+            if (thumb != null) {
+                return thumb.IsEnabled;
+            }
+
+            var passwordBox = obj as PasswordBox;
+            if (passwordBox != null) {
+                return passwordBox.IsEnabled;
+            }
+
+            return false;
+        }
 
         private static bool IgnoreSpecialControls(object sender, MouseEventArgs e) {
             var reference = sender as UIElement;
             var element = reference?.InputHitTest(e.GetPosition(reference)) as DependencyObject;
-            return element == null || new[] { element }.Union(element.GetParents())
-                                                       .TakeWhile(x => !ReferenceEquals(x, sender))
-                                                       .Any(parent => IgnoredControls.Contains(parent.GetType()));
+            if (element == null || IsIgnored(element)) return true;
+            return element.GetParents().TakeWhile(parent => !ReferenceEquals(parent, sender)).Any(IsIgnored);
         }
 
         private static bool IsDragging(object sender, MouseEventArgs e) {
             if (_dragging || _previous != sender || e.LeftButton != MouseButtonState.Pressed ||
-                    VisualExtension.GetMousePosition().DistanceTo(_startingPoint) < 4d) return false;
+                    VisualExtension.GetMousePosition().DistanceTo(_startingPoint) < 3d) return false;
             if (IgnoreSpecialControls(sender, e)) {
                 _previous = null;
                 return false;
@@ -187,8 +222,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var newValue = (string)e.NewValue;
             if (newValue != null) {
                 element.Drop += Destination_Drop;
+                element.AllowDrop = true;
             } else {
                 element.Drop -= Destination_Drop;
+                element.AllowDrop = false;
             }
         }
 

@@ -27,6 +27,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyPopupToolBars = "appearance_popupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
         public const string KeyLargeSubMenuFont = "AppAppearanceManager.LargeSubMenuFont";
+        public const string KeyShowSubMenuDraggableIcons = "AppAppearanceManager.ShowSubMenuDraggableIcons";
 
         public const string UriDefaultTheme = "/AcManager.Controls;component/Assets/ModernUI.AcTheme.xaml";
         public const string UriBlackTheme = "/AcManager.Controls;component/Assets/ModernUI.Black.xaml";
@@ -132,6 +133,7 @@ namespace AcManager.Controls.Presentation {
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
                 BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
+                ShowSubMenuDraggableIcons = ValuesStorage.GetBool(KeyShowSubMenuDraggableIcons, true);
                 PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
             } finally {
@@ -167,14 +169,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _idealFormattingMode = value;
-                    AppearanceManager.Current.OptionIdealFormattingMode = value;
+                    AppearanceManager.Current.IdealFormattingMode = value;
                     return;
                 }
 
                 if (Equals(value, _idealFormattingMode)) return;
                 _idealFormattingMode = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.OptionIdealFormattingMode = value;
+                AppearanceManager.Current.IdealFormattingMode = value;
                 ValuesStorage.Set(KeyIdealFormattingMode, value);
             }
         }
@@ -214,6 +216,25 @@ namespace AcManager.Controls.Presentation {
                 OnPropertyChanged();
                 AppearanceManager.Current.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
                 ValuesStorage.Set(KeyLargeSubMenuFont, value);
+            }
+        }
+
+        private bool _showSubMenuDraggableIcons;
+
+        public bool ShowSubMenuDraggableIcons {
+            get { return _showSubMenuDraggableIcons; }
+            set {
+                if (_loading) {
+                    _showSubMenuDraggableIcons = value;
+                    AppearanceManager.Current.SubMenuDraggablePoints = value;
+                    return;
+                }
+
+                if (Equals(value, _showSubMenuDraggableIcons)) return;
+                _showSubMenuDraggableIcons = value;
+                OnPropertyChanged();
+                AppearanceManager.Current.SubMenuDraggablePoints = value;
+                ValuesStorage.Set(KeyShowSubMenuDraggableIcons, value);
             }
         }
         #endregion

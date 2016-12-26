@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,7 +8,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ContextMenuButtonEventArgs : EventArgs {
@@ -21,6 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ContextMenuButton() {
             DefaultStyleKey = typeof(ContextMenuButton);
         }
+
 
         public event EventHandler<ContextMenuButtonEventArgs> Click;
 
@@ -60,6 +64,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return false;
         }
 
+        private FrameworkElement _child;
         private FrameworkElement _button;
 
         public override void OnApplyTemplate() {
@@ -90,7 +95,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private async void OnContextMenuClick(object sender, MouseButtonEventArgs e) {
+            foreach (var child in Parent.FindVisualChildren<FrameworkElement>()) {
+                if (child.ContextMenu is InheritingContextMenu) {
+                    goto Wait;
+                }
+            }
+
+            goto Action;
+
+            Wait:
             await Task.Delay(1);
+
+            Action:
             if (!e.Handled && Open(false)) {
                 e.Handled = true;
             }
@@ -133,16 +149,33 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnMenuChanged(FrameworkElement oldValue, FrameworkElement newValue) {
             if (oldValue != null) {
-                BindingOperations.ClearBinding(oldValue, DataContextProperty);
+                if (oldValue is ContextMenu) {
+                    BindingOperations.ClearBinding(oldValue, DataContextProperty);
+                } else {
+                    RemoveVisualChild(oldValue);
+                    RemoveLogicalChild(oldValue);
+                }
             }
 
-            if (newValue != null && newValue.DataContext == null) {
-                newValue.SetBinding(DataContextProperty, new Binding {
-                    Path = new PropertyPath(nameof(DataContext)),
-                    Source = this
-                });
+            if (newValue != null) {
+                if (newValue is ContextMenu) {
+                    _child = null;
+                    newValue.SetBinding(DataContextProperty, new Binding {
+                        Path = new PropertyPath(nameof(DataContext)),
+                        Source = this
+                    });
+                } else {
+                    _child = newValue;
+                    AddLogicalChild(newValue);
+                    AddVisualChild(newValue);
+                }
+            } else {
+                _child = null;
             }
         }
+
+        protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance :
+                new SingleChildEnumerator(_child);
 
         public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(nameof(Command), typeof(ICommand),
             typeof(ContextMenuButton));

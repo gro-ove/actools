@@ -280,6 +280,8 @@ namespace FirstFloor.ModernUI.Presentation {
             public bool IsFixedSize => false;
         }
 
+        public int FixedLinksCount => (_fixedLinks?.Count ?? 0) + (AddAllLink ? 1 : 0);
+
         private InnerFixedList _fixedLinks;
 
         public IList FixedLinks => _fixedLinks ?? (_fixedLinks = new InnerFixedList(this, !AddAllLink));

@@ -2,9 +2,10 @@
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace FirstFloor.ModernUI.Presentation {
-    public class LinkInput : Link {
+    public class LinkInput : Link, IDraggable {
         public LinkInput(Uri baseUri, string value) {
             _baseUri = baseUri;
             _value = value;
@@ -43,5 +44,9 @@ namespace FirstFloor.ModernUI.Presentation {
         }));
 
         public event EventHandler Close;
+
+        public const string DraggableFormat = "X-Search-Tab";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

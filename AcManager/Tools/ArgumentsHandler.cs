@@ -365,7 +365,7 @@ namespace AcManager.Tools {
             }
 
             var content = new OnlineServer(server) {
-                Margin = new Thickness(0, 0, 0, -51),
+                Margin = new Thickness(0, 0, 0, -43),
                 ToolBar = { FitWidth = true },
 
                 // Values taken from ModernDialog.xaml

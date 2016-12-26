@@ -36,7 +36,8 @@
                 <mui:HierarchicalComboBox ItemsSource="{Binding AppAppearanceManager.Themes}"
                         SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
             </DockPanel>
-            <TextBlock Text="{Binding AppAppearanceManager.ThemeError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}" TextWrapping="Wrap"
+            <TextBlock Text="{Binding AppAppearanceManager.ThemeError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
+                    TextWrapping="Wrap"
                     Visibility="{Binding AppAppearanceManager.ThemeError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
@@ -61,6 +62,11 @@
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}"
+                    ToolTip="With this option disabled, you can drag them by close button" mui:NewMarkService.New="True">
+                <Label Content="Show draggable areas next to search boxes" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">

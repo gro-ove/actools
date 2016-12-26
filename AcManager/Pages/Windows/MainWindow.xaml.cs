@@ -130,7 +130,7 @@ namespace AcManager.Pages.Windows {
 
             foreach (var source in FileBasedOnlineSources.Instance.GetVisibleSources().OrderBy(x => x.DisplayName)) {
                 list.Add(new Link {
-                    DisplayName = source.DisplayName,
+                    DisplayName = $@"{source.DisplayName}",
                     Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id)
                 });
             }

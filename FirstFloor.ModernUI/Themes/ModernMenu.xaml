@@ -15,7 +15,8 @@
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="Foreground" Value="{DynamicResource SubMenuText}" />
         <Setter Property="FontSize" Value="{DynamicResource ModernSubMenuFontSize}" />
-        <Setter Property="Margin" Value="0 0 12 0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="False" />
@@ -43,7 +44,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <c:Cell SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinWidth="20" d:DataContext="{d:DesignInstance pr:Link}">
+                    <c:Cell SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinWidth="20" d:DataContext="{d:DesignInstance pr:Link}"
+                            Margin="0 0 12 0">
                         <TextBlock x:Name="NameTextBox" Text="{Binding DisplayName, Converter={StaticResource ToUpperSpecialConverter}}" TextAlignment="Center"
                                 Margin="2" />
                         <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" FontWeight="Bold" Visibility="Hidden" Margin="2" />
@@ -59,7 +61,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <c:Cell MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInputEmpty}">
+                    <c:Cell MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInputEmpty}" Margin="0 0 12 0">
                         <c:BetterTextBox x:Name="NameTextBox" Style="{StaticResource Borderless}" Text="{Binding DisplayName}" TextAlignment="Center" Margin="2"
                                 Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" />
                         <Path x:Name="Icon" Width="12" Height="12" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -77,19 +79,28 @@
     </Style>
 
     <Style x:Key="ModernSubMenuItemLinkInput" TargetType="ListBoxItem" BasedOn="{StaticResource ModernSubMenuItemBase}">
+        <Setter Property="attached:Draggable.Data" Value="{Binding}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <DockPanel MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent">
+                    <DockPanel MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent" Margin="0 0 12 0">
                         <DockPanel.InputBindings>
                             <MouseBinding Command="{Binding CloseCommand}" Gesture="MiddleClick" />
                         </DockPanel.InputBindings>
 
+                        <!--TODO: Create a proper icon-->
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal" DockPanel.Dock="Left" Height="8" Margin="0 0 0 2"
+                                Visibility="{DynamicResource ModernSubMenuDraggablePoints}">
+                            <Path Fill="{TemplateBinding Foreground}" Width="4" Stretch="Uniform"
+                                    Data="F1 M 0,47C 0,51 3,55 7,55C 12,55 15,51 15,47C 15,42 12,39 7,39C 3,39 0,42 0,47 Z M 0,27C 0,31 3,35 8,35C 12,35 15,31 15,27C 15,23 12,19 8,19C 3,19 0,23 0,27 Z M 0,7C 0,12 3,15 7,15C 12,15 15,12 15,7C 15,3 12,0 7,0C 3,0 0,3 0,7 Z" />
+                            <Path Fill="{TemplateBinding Foreground}" Width="4" Stretch="Uniform"
+                                    Data="F1 M 0,47C 0,51 3,55 7,55C 12,55 15,51 15,47C 15,42 12,39 7,39C 3,39 0,42 0,47 Z M 0,27C 0,31 3,35 8,35C 12,35 15,31 15,27C 15,23 12,19 8,19C 3,19 0,23 0,27 Z M 0,7C 0,12 3,15 7,15C 12,15 15,12 15,7C 15,3 12,0 7,0C 3,0 0,3 0,7 Z" />
+                        </StackPanel>
+
                         <Button Focusable="False" x:Name="CloseButton" DockPanel.Dock="Right" Margin="0 0 -4 0" Command="{Binding CloseCommand}">
                             <Border Background="Transparent">
                                 <Path Data="M0,0 L5,5 M5,0 L0,5 Z" Width="6" Height="6" Margin="4 0" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                        Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                        StrokeThickness="1" />
+                                        Stroke="{TemplateBinding Foreground}" StrokeThickness="1" />
                             </Border>
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">
@@ -138,23 +149,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="c:ModernMenu">
-                    <Grid>
-                        <Grid.Resources>
-                            <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-                                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
-                                <Setter Property="ScrollViewer.PanningMode" Value="Both" />
-                            </Style>
-                        </Grid.Resources>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40" />
-                            <RowDefinition MinHeight="20" />
-                        </Grid.RowDefinitions>
-
+                    <StackPanel>
                         <ListBox ItemsSource="{TemplateBinding VisibleLinkGroups}"
-                                SelectedItem="{Binding SelectedLinkGroup, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                SelectedItem="{Binding SelectedLinkGroup, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both" Height="40">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -197,19 +196,23 @@
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
                         </ListBox>
-
-                        <ListBox Grid.Row="1" x:Name="PART_SubMenu"
+                        <ListBox MinHeight="20" x:Name="PART_SubMenu"
                                 ItemsSource="{Binding SelectedLinkGroup.Links, RelativeSource={RelativeSource TemplatedParent}}"
                                 SelectedItem="{Binding SelectedLink, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" VerticalAlignment="Top"
                                 ItemContainerStyleSelector="{StaticResource ModernSubMenuItemContainerStyleSelector}" ItemContainerStyle="{x:Null}"
-                                HorizontalAlignment="Stretch">
+                                HorizontalAlignment="Stretch" AllowDrop="True" attached:Draggable.KeepSelection="True">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
+                            <ListBox.Template>
+                                <ControlTemplate TargetType="ListBox">
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </ControlTemplate>
+                            </ListBox.Template>
                         </ListBox>
-                    </Grid>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

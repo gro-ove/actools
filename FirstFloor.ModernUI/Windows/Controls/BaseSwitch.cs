@@ -41,43 +41,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private class EmptyEnumerator : IEnumerator {
-            private EmptyEnumerator() {}
-
-            public static IEnumerator Instance => _instance ?? (_instance = new EmptyEnumerator());
-
-            public void Reset() { }
-            
-            public bool MoveNext() { return false; }
-
-            public object Current {
-                get { throw new InvalidOperationException(); }
-            }
-
-            private static IEnumerator _instance;
-        }
-
-        private class SingleChildEnumerator : IEnumerator {
-            internal SingleChildEnumerator(object child) {
-                _child = child;
-                _count = child == null ? 0 : 1;
-            }
-
-            object IEnumerator.Current => _index == 0 ? _child : null;
-
-            bool IEnumerator.MoveNext() {
-                return ++_index < _count;
-            }
-
-            void IEnumerator.Reset() {
-                _index = -1;
-            }
-
-            private int _index = -1;
-            private readonly int _count;
-            private readonly object _child;
-        }
-
         protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance :
                 new SingleChildEnumerator(_child);
 
@@ -110,5 +73,42 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 (VisualTreeHelper.GetParent(element) as BaseSwitch)?.InvalidateMeasure();
             }
         }
+    }
+
+    internal class EmptyEnumerator : IEnumerator {
+        private EmptyEnumerator() { }
+
+        public static IEnumerator Instance => _instance ?? (_instance = new EmptyEnumerator());
+
+        public void Reset() { }
+
+        public bool MoveNext() { return false; }
+
+        public object Current {
+            get { throw new InvalidOperationException(); }
+        }
+
+        private static IEnumerator _instance;
+    }
+
+    internal class SingleChildEnumerator : IEnumerator {
+        internal SingleChildEnumerator(object child) {
+            _child = child;
+            _count = child == null ? 0 : 1;
+        }
+
+        object IEnumerator.Current => _index == 0 ? _child : null;
+
+        bool IEnumerator.MoveNext() {
+            return ++_index < _count;
+        }
+
+        void IEnumerator.Reset() {
+            _index = -1;
+        }
+
+        private int _index = -1;
+        private readonly int _count;
+        private readonly object _child;
     }
 }
