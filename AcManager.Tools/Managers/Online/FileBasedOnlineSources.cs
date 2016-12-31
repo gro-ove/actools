@@ -165,6 +165,10 @@ namespace AcManager.Tools.Managers.Online {
             HiddenInstance = GetSource(HiddenKey);
         }
 
+        public static bool IsInitialized() {
+            return RecentInstance != null;
+        }
+
         public static void AddToList(string key, ServerEntry server) {
             Instance.GetInternalSource(key).Add(server);
         }

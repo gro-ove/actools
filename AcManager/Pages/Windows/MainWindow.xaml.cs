@@ -116,12 +116,25 @@ namespace AcManager.Pages.Windows {
             EntryPoint.HandleSecondInstanceMessages(this, HandleMessagesAsync);
 
             _defaultOnlineGroupCount = OnlineGroup.FixedLinks.Count;
+
+            if (FileBasedOnlineSources.IsInitialized()) {
+                UpdateOnlineSourcesLinks();
+            }
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
+
+            Activated += OnActivated;
+        }
+
+        private void OnActivated(object sender, EventArgs e) {
+            Activated -= OnActivated;
+            foreach (var dialog in Application.Current.Windows.OfType<ModernDialog>().Where(x => x.Owner == null)) {
+                dialog.Owner = this;
+            }
         }
 
         private readonly int _defaultOnlineGroupCount;
 
-        private void OnOnlineSourcesUpdate(object sender, EventArgs e) {
+        private void UpdateOnlineSourcesLinks() {
             var list = OnlineGroup.FixedLinks;
 
             for (var i = list.Count - 1; i >= _defaultOnlineGroupCount; i--) {
@@ -134,6 +147,10 @@ namespace AcManager.Pages.Windows {
                     Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id)
                 });
             }
+        }
+
+        private void OnOnlineSourcesUpdate(object sender, EventArgs e) {
+            UpdateOnlineSourcesLinks();
         }
 
         private async void HandleMessagesAsync(IEnumerable<string> data) {

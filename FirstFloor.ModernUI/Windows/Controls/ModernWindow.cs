@@ -282,5 +282,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return GetValue(AdditionalContentProperty); }
             set { SetValue(AdditionalContentProperty, value); }
         }
+
+        public static readonly DependencyProperty BackButtonVisibilityProperty = DependencyProperty.Register(nameof(BackButtonVisibility), typeof(Visibility),
+                typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility BackButtonVisibility {
+            get { return (Visibility)GetValue(BackButtonVisibilityProperty); }
+            set { SetValue(BackButtonVisibilityProperty, value); }
+        }
     }
 }

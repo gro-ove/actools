@@ -20,10 +20,10 @@ namespace AcTools.Render.Base.Objects {
 
         BoundingBox? BoundingBox { get; }
 
-        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode);
-
-        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter);
+        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, [CanBeNull] Func<IRenderableObject, bool> filter = null);
 
         void UpdateBoundingBox();
+
+        IRenderableObject Clone();
     }
 }

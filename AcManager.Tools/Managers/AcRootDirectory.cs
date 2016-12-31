@@ -27,13 +27,13 @@ namespace AcManager.Tools.Managers {
 
         public static AcRootDirectory Instance { get; private set; }
 
-        public static AcRootDirectory Initialize() {
+        public static AcRootDirectory Initialize(string directory = null) {
             if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new AcRootDirectory();
+            return Instance = new AcRootDirectory(directory);
         }
 
-        private AcRootDirectory() {
-            Value = ValuesStorage.GetString(Key);
+        private AcRootDirectory(string directory) {
+            Value = directory ?? ValuesStorage.GetString(Key);
             if (Value == null || CheckDirectory(Value)) return;
 
             Logging.Warning($"AC root directory “{Value}” is not valid anymore");

@@ -1,21 +1,51 @@
-using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
+using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using SlimDX;
 
 namespace AcManager.Controls.CustomShowroom {
     public class TrackMapRendererWrapper : BaseKn5FormWrapper {
         private AttachedHelper _helper;
+
+        protected class TrackMapCameraControlHelper : Kn5WrapperCameraControlHelper {
+            public override void CameraMouseRotate(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+                var preparationRenderer = (TrackMapPreparationRenderer)renderer;
+                var camera = preparationRenderer.CameraOrtho;
+                if (camera != null) {
+                    camera.Move(new Vector3((float)(dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
+                    preparationRenderer.AutoResetCamera = false;
+                    preparationRenderer.IsDirty = true;
+                }
+            }
+
+            public override void CameraMousePan(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+                var preparationRenderer = (TrackMapPreparationRenderer)renderer;
+                var camera = preparationRenderer.CameraOrtho;
+                if (camera != null) {
+                    camera.Move(new Vector3((float)(dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
+                    preparationRenderer.AutoResetCamera = false;
+                    preparationRenderer.IsDirty = true;
+                }
+            }
+
+            public override void CameraMouseZoom(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+                var preparationRenderer = (TrackMapPreparationRenderer)renderer;
+                preparationRenderer.AutoResetCamera = false;
+                preparationRenderer.SetZoom((float)(preparationRenderer.Zoom * (1f + dy * 0.001f)));
+            }
+        }
+
+        protected override Kn5WrapperCameraControlHelper GetHelper() {
+            return new TrackMapCameraControlHelper();
+        }
 
         public new TrackMapPreparationRenderer Renderer => (TrackMapPreparationRenderer)base.Renderer;
 
@@ -29,32 +59,9 @@ namespace AcManager.Controls.CustomShowroom {
             InvokeFirstFrameCallback();
         }
 
-        protected override void CameraMouseRotate(float dx, float dy) {
-            var camera = Renderer.CameraOrtho;
-            if (camera != null) {
-                camera.Move(new Vector3(dx * camera.Width / Renderer.Width, 0f, -dy * camera.Height / Renderer.Height));
-                Renderer.AutoResetCamera = false;
-                Renderer.IsDirty = true;
-            }
-        }
-
-        protected override void CameraMousePan(float dx, float dy) {
-            var camera = Renderer.CameraOrtho;
-            if (camera != null) {
-                camera.Move(new Vector3(dx * camera.Width / Renderer.Width, 0f, -dy * camera.Height / Renderer.Height));
-                Renderer.AutoResetCamera = false;
-                Renderer.IsDirty = true;
-            }
-        }
-
-        protected override void CameraMouseZoom(float dx, float dy) {
-            Renderer.AutoResetCamera = false;
-            Renderer.SetZoom(Renderer.Zoom * (1f + dy * 0.001f));
-        }
-
         protected override void OnMouseWheel(object sender, MouseEventArgs e) {
             var value = e.Delta > 0 ? 100f : -100f;
-            CameraMouseZoom(0f, value);
+            Helper.CameraMouseZoom(Kn5ObjectRenderer, 0f, value, Form.ClientSize.Height, Form.ClientSize.Width);
         }
 
         public static async Task Run(TrackObjectBase track) {

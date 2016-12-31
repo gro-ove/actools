@@ -107,26 +107,8 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public new void Remove(IRenderableObject obj) {
-            base.Remove(obj);
-            obj.ParentMatrix = Matrix;
-        }
-
-        public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (!IsEnabled) return;
-            if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
-            if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
-
-            for (var i = 0; i < Count; i++) {
-                var child = this[i];
-                if (child.IsEnabled) {
-                    child.Draw(contextHolder, camera, mode);
-                }
-            }
-        }
-
-        public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter) {
-            if (!IsEnabled || !filter(this)) return;
+        public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            if (!IsEnabled || filter?.Invoke(this) == false) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
             if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
 
@@ -136,6 +118,19 @@ namespace AcTools.Render.Base.Objects {
                     child.Draw(contextHolder, camera, mode, filter);
                 }
             }
+        }
+
+        public RenderableList Clone() {
+            return new RenderableList(Name + "_copy", LocalMatrix, this.Select(x => x.Clone())) {
+                IsEnabled = IsEnabled,
+                IsReflectable = IsReflectable,
+                ParentMatrix = ParentMatrix,
+                BoundingBox = BoundingBox
+            };
+        }
+
+        IRenderableObject IRenderableObject.Clone() {
+            return Clone();
         }
 
         public void Dispose() {

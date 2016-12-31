@@ -1,28 +1,21 @@
 ﻿/* GENERATED AUTOMATICALLY */
-/* DON'T MODIFY */
+/* DON’T MODIFY */
 
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
+using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
-using AcTools.Render.Base.Structs;
-using AcTools.Render.Base.Utils;
 // ReSharper disable InconsistentNaming
 // ReSharper disable LocalizableElement
 
-namespace AcTools.Render.Base.Shaders {
-	public interface IEffectWrapper : System.IDisposable {
-		void Initialize(Device device);
-	}
-
-	public interface IEffectMatricesWrapper {
-		EffectMatrixVariable FxWorld { get; }
-		EffectMatrixVariable FxWorldInvTranspose { get; }
-		EffectMatrixVariable FxWorldViewProj { get; }
-	}
-
-	public interface IEffectScreenSizeWrapper {
-		EffectVectorVariable FxScreenSize { get; }
+namespace AcTools.Render.Shaders {
+	internal static class ShadersResourceManager {
+		internal static readonly ResourceManager Manager = new ResourceManager("AcTools.Render.Shaders", Assembly.GetExecutingAssembly());
 	}
 
 	public class EffectDeferredGObject : IEffectWrapper, IEffectMatricesWrapper {
@@ -71,7 +64,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial;
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredGObject");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredGObject");
 			E = new Effect(device, _b);
 
 			TechStandardDeferred = E.GetTechniqueByName("StandardDeferred");
@@ -134,7 +127,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredGObjectSpecial");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredGObjectSpecial");
 			E = new Effect(device, _b);
 
 			TechSpecialGlDeferred = E.GetTechniqueByName("SpecialGlDeferred");
@@ -177,7 +170,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxSkyRange { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredGSky");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredGSky");
 			E = new Effect(device, _b);
 
 			TechSkyDeferred = E.GetTechniqueByName("SkyDeferred");
@@ -232,7 +225,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredLight");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredLight");
 			E = new Effect(device, _b);
 
 			TechPointLight = E.GetTechniqueByName("PointLight");
@@ -292,7 +285,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredPpSslr");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredPpSslr");
 			E = new Effect(device, _b);
 
 			TechHabrahabrVersion = E.GetTechniqueByName("HabrahabrVersion");
@@ -337,7 +330,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredResult");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredResult");
 			E = new Effect(device, _b);
 
 			TechDebug = E.GetTechniqueByName("Debug");
@@ -390,7 +383,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("DeferredTransparent");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DeferredTransparent");
 			E = new Effect(device, _b);
 
 			TechDebug = E.GetTechniqueByName("Debug");
@@ -455,7 +448,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial;
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("KunosShader");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "KunosShader");
 			E = new Effect(device, _b);
 
 			TechPerPixel = E.GetTechniqueByName("PerPixel");
@@ -497,7 +490,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpBasic");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBasic");
 			E = new Effect(device, _b);
 
 			TechCopy = E.GetTechniqueByName("Copy");
@@ -544,7 +537,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxSampleOffsets { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpBlur");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBlur");
 			E = new Effect(device, _b);
 
 			TechGaussianBlur = E.GetTechniqueByName("GaussianBlur");
@@ -586,7 +579,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpFxaa311");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpFxaa311");
 			E = new Effect(device, _b);
 
 			TechLuma = E.GetTechniqueByName("Luma");
@@ -628,7 +621,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxCropImage { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpHdr");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHdr");
 			E = new Effect(device, _b);
 
 			TechDownsampling = E.GetTechniqueByName("Downsampling");
@@ -673,7 +666,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpOutline");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpOutline");
 			E = new Effect(device, _b);
 
 			TechOutline = E.GetTechniqueByName("Outline");
@@ -712,7 +705,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSizeSpec { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("PpSmaa");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpSmaa");
 			E = new Effect(device, _b);
 
 			TechSmaa = E.GetTechniqueByName("Smaa");
@@ -812,7 +805,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial, FxReflectiveMaterial, FxMapsMaterial, FxAlphaMaterial, FxNmUvMultMaterial;
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("SimpleMaterial");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SimpleMaterial");
 			E = new Effect(device, _b);
 
 			TechStandard = E.GetTechniqueByName("Standard");
@@ -881,7 +874,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxShadowSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("SpecialShadow");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialShadow");
 			E = new Effect(device, _b);
 
 			TechHorizontalShadowBlur = E.GetTechniqueByName("HorizontalShadowBlur");
@@ -930,7 +923,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("SpecialTrackMap");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialTrackMap");
 			E = new Effect(device, _b);
 
 			TechMain = E.GetTechniqueByName("Main");
@@ -980,7 +973,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxOffset { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("SpecialUv");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialUv");
 			E = new Effect(device, _b);
 
 			TechMain = E.GetTechniqueByName("Main");
@@ -1015,7 +1008,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("TestingCube");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingCube");
 			E = new Effect(device, _b);
 
 			TechCube = E.GetTechniqueByName("Cube");
@@ -1050,7 +1043,7 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("TestingPnt");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingPnt");
 			E = new Effect(device, _b);
 
 			TechCube = E.GetTechniqueByName("Cube");

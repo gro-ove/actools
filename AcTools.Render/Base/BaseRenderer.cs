@@ -91,6 +91,8 @@ namespace AcTools.Render.Base {
 
         public bool UseMsaa { get; set; }
 
+        public bool WpfMode { get; set; }
+
         public bool UseSprite { get; set; } = true;
 
         protected bool Initialized { get; private set; }
@@ -127,6 +129,10 @@ namespace AcTools.Render.Base {
             _deviceContextHolder = new DeviceContextHolder(InitializeDevice());
             InitializeInner();
             Initialized = true;
+        }
+
+        public IntPtr GetRenderTarget() {
+            return _renderBuffer.ComPointer;
         }
 
         private bool _sharedHolder;
@@ -204,12 +210,12 @@ namespace AcTools.Render.Base {
                     Height = _height,
                     MipLevels = 1,
                     ArraySize = 1,
-                    Format = Format.R8G8B8A8_UNorm,
+                    Format = WpfMode ? Format.B8G8R8A8_UNorm : Format.R8G8B8A8_UNorm,
                     SampleDescription = SampleDescription,
                     Usage = ResourceUsage.Default,
                     BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
                     CpuAccessFlags = CpuAccessFlags.None,
-                    OptionFlags = ResourceOptionFlags.None
+                    OptionFlags = WpfMode ? ResourceOptionFlags.Shared : ResourceOptionFlags.None
                 });
             }
 
@@ -254,11 +260,12 @@ namespace AcTools.Render.Base {
 
         protected RenderTargetView RenderTargetView => _renderView;
 
-        public virtual void Draw() {
+        public virtual bool Draw() {
             Debug.Assert(Initialized);
             IsDirty = false;
 
-            if (_resized) {
+            var result = _resized;
+            if (result) {
                 Resize();
                 _resized = false;
             }
@@ -281,7 +288,13 @@ namespace AcTools.Render.Base {
                 DrawSprites();
             }
 
-            _swapChain?.Present(SyncInterval ? 1 : 0, PresentFlags.None);
+            if (_swapChain != null) {
+                _swapChain.Present(SyncInterval ? 1 : 0, PresentFlags.None);
+            } else {
+                DeviceContext.Flush();
+            }
+
+            return result;
         }
 
         private bool _syncInterval = true;

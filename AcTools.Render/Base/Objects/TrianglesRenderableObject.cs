@@ -22,6 +22,7 @@ namespace AcTools.Render.Base.Objects {
 
         public int IndicesCount { get; private set; }
 
+        private DataStream _verticesStream, _indicesStream;
         private Buffer _verticesBuffer, _indicesBuffer;
         private VertexBufferBinding _verticesBufferBinding;
 
@@ -30,10 +31,11 @@ namespace AcTools.Render.Base.Objects {
             Indices = indices;
             IndicesCount = Indices.Length;
             IsEmpty = IndicesCount == 0;
+        }
 
-            if (IsEnabled && IsEmpty) {
-                IsEnabled = false;
-            }
+        public override bool IsEnabled {
+            get { return !IsEmpty && base.IsEnabled; }
+            set { base.IsEnabled = value; }
         }
 
         public IEnumerable<Tuple<Vector3, Vector3, Vector3>> GetTrianglesInWorldSpace() {
@@ -51,17 +53,26 @@ namespace AcTools.Render.Base.Objects {
             BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, ParentMatrix)).ToBoundingBox();
         }
 
+        public override BaseRenderableObject Clone() {
+            return new TrianglesRenderableObject<T>(Name + "_copy", Vertices, Indices) {
+                IsReflectable = IsReflectable,
+                IsEnabled = IsEnabled
+            };
+        }
+
         protected override void Initialize(DeviceContextHolder contextHolder) {
             if (IsEmpty) return;
 
             var vbd = new BufferDescription(Vertices[0].Stride * Vertices.Length, ResourceUsage.Immutable,
                     BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-            _verticesBuffer = new Buffer(contextHolder.Device, new DataStream(Vertices, false, false), vbd);
+            _verticesStream = new DataStream(Vertices, false, false);
+            _verticesBuffer = new Buffer(contextHolder.Device, _verticesStream, vbd);
             _verticesBufferBinding = new VertexBufferBinding(_verticesBuffer, Vertices[0].Stride, 0);
 
             var ibd = new BufferDescription(sizeof(ushort) * Indices.Length, ResourceUsage.Immutable,
                     BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-            _indicesBuffer = new Buffer(contextHolder.Device, new DataStream(Indices, false, false), ibd);
+            _indicesStream = new DataStream(Indices, false, false);
+            _indicesBuffer = new Buffer(contextHolder.Device, _indicesStream, ibd);
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
@@ -80,6 +91,8 @@ namespace AcTools.Render.Base.Objects {
             
             DisposeHelper.Dispose(ref _verticesBuffer);
             DisposeHelper.Dispose(ref _indicesBuffer);
+            DisposeHelper.Dispose(ref _verticesStream);
+            DisposeHelper.Dispose(ref _indicesStream);
         }
     }
 }

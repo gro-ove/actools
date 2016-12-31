@@ -8,6 +8,7 @@ using AcTools.Render.DeferredShading;
 using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using SlimDX;
 
 namespace AcTools.Render.Wrapper {
@@ -22,23 +23,23 @@ namespace AcTools.Render.Wrapper {
             base.OnTick(sender, args);
 
             if (_renderer.Sun == null) return;
-            if (IsPressed(Keys.LMenu) || IsPressed(Keys.RMenu)) { 
-                if (IsPressed(Keys.Left)) {
+            if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) { 
+                if (User32.IsKeyPressed(Keys.Left)) {
                     _renderer.AutoRotateSun = false;
                     _renderer.Sun.Direction = _renderer.Sun.Direction + new Vector3(-args.DeltaTime, 0f, 0f);
                 }
 
-                if (IsPressed(Keys.Right)) {
+                if (User32.IsKeyPressed(Keys.Right)) {
                     _renderer.AutoRotateSun = false;
                     _renderer.Sun.Direction = _renderer.Sun.Direction + new Vector3(args.DeltaTime, 0f, 0f);
                 }
 
-                if (IsPressed(Keys.Up)) {
+                if (User32.IsKeyPressed(Keys.Up)) {
                     _renderer.AutoRotateSun = false;
                     _renderer.Sun.Direction = _renderer.Sun.Direction + new Vector3(0f, 0f, args.DeltaTime);
                 }
 
-                if (IsPressed(Keys.Down)) {
+                if (User32.IsKeyPressed(Keys.Down)) {
                     _renderer.AutoRotateSun = false;
                     _renderer.Sun.Direction = _renderer.Sun.Direction + new Vector3(0f, 0f, -args.DeltaTime);
                 }

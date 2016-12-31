@@ -5,7 +5,6 @@ using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.DeferredShading;
 using AcTools.Render.DeferredShading.Lights;
@@ -14,6 +13,7 @@ using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
+using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
 

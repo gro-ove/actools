@@ -8,12 +8,12 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
-using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Utils;
+using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -152,6 +152,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public override IRenderableMaterial CreateMirrorMaterial() {
+            return new InvisibleMaterial();
+        }
+
+        public override IRenderableMaterial CreateFlatMirrorMaterial() {
             return new InvisibleMaterial();
         }
     }

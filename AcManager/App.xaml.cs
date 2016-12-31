@@ -215,8 +215,8 @@ namespace AcManager {
                 if (File.Exists(onlineMainListFile) && !File.Exists(onlineFavouritesFile)) {
                     Directory.Move(onlineMainListFile, onlineFavouritesFile);
                 }
-
             }
+
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             Superintendent.Initialize();
 

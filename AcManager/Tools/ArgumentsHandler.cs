@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -37,7 +35,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Readers;
@@ -340,6 +337,8 @@ namespace AcManager.Tools {
                 throw new InformativeException("HTTP port is missing or is in invalid format");
             }
 
+            OnlineManager.EnsureInitialized();
+
             if (string.IsNullOrWhiteSpace(password) && !string.IsNullOrWhiteSpace(encryptedPassword)) {
                 password = OnlineServer.DecryptSharedPassword(ip, httpPort.Value, encryptedPassword);
             }
@@ -351,7 +350,7 @@ namespace AcManager.Tools {
             ServerEntry server;
 
             using (var waiting = new WaitingDialog()) {
-                waiting.Report("Loading information…");
+                waiting.Report(ControlsStrings.Common_Loading);
                 
                 await wrapper.EnsureLoadedAsync();
                 server = list.GetByIdOrDefault(source.Id);
@@ -394,7 +393,7 @@ namespace AcManager.Tools {
                 Source = server
             });
 
-            await dlg.ShowDialogAsync();
+            dlg.ShowDialog();
             await wrapper.ReloadAsync(true);
             return ArgumentHandleResult.Successful;
         }

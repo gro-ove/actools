@@ -4,6 +4,7 @@ using System.Linq;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -136,7 +137,7 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
         private BlendState _transparentBlendState, _addBlendState;
-        private RasterizerState _doubleSidedState;
+        private RasterizerState _doubleSidedState, _invertedState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
@@ -217,6 +218,14 @@ namespace AcTools.Render.Base {
                     IsFrontCounterclockwise = true,
                     IsDepthClipEnabled = false
                 }));
+
+        public RasterizerState InvertedState => _invertedState ?? (_invertedState =
+                RasterizerState.FromDescription(Device, new RasterizerStateDescription {
+                    FillMode = FillMode.Solid,
+                    CullMode = CullMode.Back,
+                    IsFrontCounterclockwise = true,
+                    IsDepthClipEnabled = true
+                }));
         #endregion
 
         public void Dispose() {
@@ -228,6 +237,7 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _transparentBlendState);
             DisposeHelper.Dispose(ref _addBlendState);
             DisposeHelper.Dispose(ref _doubleSidedState);
+            DisposeHelper.Dispose(ref _invertedState);
             DisposeHelper.Dispose(ref _quadBuffers);
 
             _effects.DisposeEverything();

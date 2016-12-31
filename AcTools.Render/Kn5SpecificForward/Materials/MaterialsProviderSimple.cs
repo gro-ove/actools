@@ -78,5 +78,9 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         public override IRenderableMaterial CreateMirrorMaterial() {
             return new Kn5MaterialSimpleMirror();
         }
+
+        public override IRenderableMaterial CreateFlatMirrorMaterial() {
+            throw new NotImplementedException();
+        }
     }
 }

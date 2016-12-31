@@ -1,49 +1,88 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Resources" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
-<#@ import namespace="System.IO" #>
-<#@ import namespace="System.Diagnostics" #>
-<#@ import namespace="System.Resources" #>
-<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Xml.Linq" #>
 <#@ output extension=".cs" #>
-/* GENERATED AUTOMATICALLY */
-/* DON'T MODIFY */
+<#= string.Join("\n", Encoding.UTF8.GetString(Convert.FromBase64String("R0VORVJBVEVEIEFVVE9NQVRJQ0FMTFkKRE9O4oCZVCBNT0RJRlk="))
+		.Split('\n').Select(x => $"/* {x} */")) #>
 
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
+using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
-using AcTools.Render.Base.Structs;
-using AcTools.Render.Base.Utils;
 // ReSharper disable InconsistentNaming
 // ReSharper disable LocalizableElement
 
-namespace AcTools.Render.Base.Shaders {
-	public interface IEffectWrapper : System.IDisposable {
-		void Initialize(Device device);
+<#
+/* INITIALIZE PATHS */
+	var dataFolder = Path.GetFullPath(Host.ResolvePath(@"."));
+	string rootNamespace = null;
+	string resultNamespace = null;
+	string resxName = null;
+
+/* LOOKING FOR CSPROJ TO FIND PROJECT’S ROOT DIRECTORY */
+	var projectRoot = dataFolder;
+	while (true){
+		var files = Directory.GetFiles(projectRoot, "*.csproj");
+		if (files.Length > 2){
+			throw new Exception("Two .csproj-files found, can’t work if these conditions");
+		}
+
+		if (files.Length == 1){
+            var xml = XDocument.Load(files[0]);
+            var ns = xml.Root.Name.Namespace;
+            rootNamespace = xml.Root.Descendants(ns + "RootNamespace").First().Value;
+			if (resultNamespace == null){
+				resultNamespace = rootNamespace;
+			} else {
+				resultNamespace = rootNamespace + "." + resultNamespace;
+			}
+			break;
+		}
+
+		var directoryName = Path.GetFileName(projectRoot);
+		if (resxName == null){
+			resxName = directoryName + ".resources";
+		}
+
+		if (resultNamespace == null){
+			resultNamespace = directoryName;
+		} else {
+			resultNamespace = directoryName + "." + resultNamespace;
+		}
+
+		projectRoot = Path.GetDirectoryName(projectRoot);
+		if (projectRoot == null) throw new Exception("Could not find project’s root directory");
 	}
 
-	public interface IEffectMatricesWrapper {
-		EffectMatrixVariable FxWorld { get; }
-		EffectMatrixVariable FxWorldInvTranspose { get; }
-		EffectMatrixVariable FxWorldViewProj { get; }
-	}
-
-	public interface IEffectScreenSizeWrapper {
-		EffectVectorVariable FxScreenSize { get; }
+	var baseName = rootNamespace + "." + Path.GetFileNameWithoutExtension(resxName);
+#>
+namespace <#= resultNamespace #> {
+	internal static class ShadersResourceManager {
+		internal static readonly ResourceManager Manager = new ResourceManager("<#= baseName #>", Assembly.GetExecutingAssembly());
 	}
 
 <#
 	var structsNames = new List<string>();
-	var dataFolder = Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders"));
 
 /* GENERATE SHADERS */
-	var tempFolder = Path.Combine(Path.GetFullPath(Host.ResolvePath(@"..\..")), "obj", "Shaders");
-	var resxLocation = Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders.resources"));
-
+	var tempFolder = Path.Combine(projectRoot, "obj", "Shaders");
 	Directory.CreateDirectory(tempFolder);
+
+	var resxLocation = Path.Combine(projectRoot, resxName);
 
 	Func<string, byte[]> CompileShader = f => {
 		var n = Path.GetFileName(f);
@@ -193,9 +232,9 @@ namespace AcTools.Render.Base.Shaders {
 		
 		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int)\w+)\s+(\w+)\s*;").Cast<Match>();
+		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>();
 		
 	/* CONSTS */
 		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
@@ -261,7 +300,7 @@ namespace AcTools.Render.Base.Shaders {
 <# } #>
 
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load("<#= name #>");
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "<#= name #>");
 			E = new Effect(device, _b);
 
 <# foreach (var x in ts){ #>

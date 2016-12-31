@@ -43,7 +43,7 @@
                             </mui:ReferenceSwitch.NonNull>
                         </mui:ReferenceSwitch>
 
-                        <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.LapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}'}"
+                        <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.LapTime, StringFormat='{}{0:mm}:{0:ss}:{0:fff}'}"
                                 Style="{StaticResource Heading1}" VerticalAlignment="Center" Margin="0 0 0 8" />
                         <TextBlock Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Text="{Binding Entry.EntryDate}" Style="{StaticResource Small}"
                                 VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="4" />

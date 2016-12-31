@@ -5,9 +5,7 @@ using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.Parsing {
     internal class FilterTreeNodeValue : FilterTreeNode {
-        protected static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>=+-])\s*", RegexOptions.Compiled);
-
-        private readonly string _key;
+        internal string Key;
         private readonly ITestEntry _testEntry;
 
         private static ITestEntry CreateTimeSpanTestEntry(Operator op, string value) {
@@ -73,6 +71,8 @@ namespace StringBasedFilter.Parsing {
             }
         }
 
+        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>=+-])\s*", RegexOptions.Compiled);
+
         public static FilterTreeNode Create(string value, bool strictMode, out string keyName) {
             ITestEntry testEntry;
 
@@ -125,7 +125,7 @@ namespace StringBasedFilter.Parsing {
         }
 
         private FilterTreeNodeValue(string value, ITestEntry testEntry) {
-            _key = value;
+            Key = value;
             _testEntry = testEntry;
         }
 
@@ -143,7 +143,7 @@ namespace StringBasedFilter.Parsing {
                         return new ConstTestEntry(false);
                     }
                 }
-            } 
+            }
 
             if (value.Contains("*") || value.Contains("?")) {
                 return new RegexTestEntry(RegexFromQuery.Create(value, wholeMatch, strictMode));
@@ -153,11 +153,11 @@ namespace StringBasedFilter.Parsing {
         }
 
         public override string ToString() {
-            return "\"" + (_key == null ? "" : _key + "=") + _testEntry + "\"";
+            return "\"" + (Key == null ? "" : Key + "=") + _testEntry + "\"";
         }
 
         public override bool Test<T>(ITester<T> tester, T obj) {
-            return tester.Test(obj, _key, _testEntry);
+            return tester.Test(obj, Key, _testEntry);
         }
     }
 }

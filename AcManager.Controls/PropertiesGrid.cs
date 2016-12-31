@@ -168,7 +168,7 @@ namespace AcManager.Controls {
                 }
             }
 
-            return new Size(maxChildDesiredWidth * _columns + totalSpacingX, maxChildDesiredHeight * _rows + totalSpacingY);
+            return new Size(maxChildDesiredWidth * _columns + totalSpacingX + _labelWidth, maxChildDesiredHeight * _rows + totalSpacingY);
         }
         
         protected override Size ArrangeOverride(Size arrangeSize) {
@@ -181,6 +181,8 @@ namespace AcManager.Controls {
             _labelTextOffset = (_yStep + _labelPadding.Top - _labelPadding.Bottom) / 2;
 
             var xBound = arrangeSize.Width - 1.0;
+
+            // TODO: fix me
             var childBounds = new Rect(_labelWidth, 0, _xStep - _labelWidth, _yStep);
 
             _xStep += _spacing;

@@ -31,5 +31,9 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
         public override IRenderableMaterial CreateMirrorMaterial() {
             return new MirrorMaterialDeferred();
         }
+
+        public override IRenderableMaterial CreateFlatMirrorMaterial() {
+            throw new System.NotImplementedException();
+        }
     }
 }

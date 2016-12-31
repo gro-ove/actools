@@ -6,7 +6,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Utils;
 
 namespace AcTools.Render.Kn5Specific.Objects {
-    public class Kn5RenderableList : RenderableList {
+    public sealed class Kn5RenderableList : RenderableList {
         public readonly Kn5Node OriginalNode;
 
         public Kn5RenderableList(Kn5Node node, DeviceContextHolder holder)

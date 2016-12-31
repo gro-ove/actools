@@ -46,6 +46,9 @@ namespace AcTools.Render.Kn5Specific.Materials {
         public IRenderableMaterial GetMirrorMaterial() => GetOrCreate("//mirror",
                 CreateMirrorMaterial);
 
+        public IRenderableMaterial GetFlatMirrorMaterial() => GetOrCreate("//flatmirror",
+                CreateFlatMirrorMaterial);
+
         public abstract IRenderableMaterial CreateMaterial(string kn5Filename, [CanBeNull]Kn5Material kn5Material);
 
         public abstract IRenderableMaterial CreateAmbientShadowMaterial(string filename);
@@ -53,5 +56,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
         public abstract IRenderableMaterial CreateSkyMaterial();
 
         public abstract IRenderableMaterial CreateMirrorMaterial();
+
+        public abstract IRenderableMaterial CreateFlatMirrorMaterial();
     }
 }

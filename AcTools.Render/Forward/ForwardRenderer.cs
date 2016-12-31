@@ -3,9 +3,9 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
-using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -124,23 +124,32 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        protected override void DrawInner() {
-            DrawPrepare();
+        public Color BackgroundColor { get; set; } = Color.Gray;
 
-            DeviceContext.ClearRenderTargetView(_buffer.TargetView, Color.Gray);
-            DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _buffer.TargetView);
+        public virtual RasterizerState GetRasterizerState() {
+            return ShowWireframe ? _wireframeRasterizerState : null;
+        }
 
+        protected virtual void DrawScene() {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = ShowWireframe ? _wireframeRasterizerState : null;
+            DeviceContext.Rasterizer.State = GetRasterizerState();
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+        }
 
+        protected override void DrawInner() {
+            DrawPrepare();
+
+            DeviceContext.ClearRenderTargetView(_buffer.TargetView, BackgroundColor);
+            DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _buffer.TargetView);
+
+            DrawScene();
             DrawAfter();
 
             DeviceContext.OutputMerger.DepthStencilState = null;

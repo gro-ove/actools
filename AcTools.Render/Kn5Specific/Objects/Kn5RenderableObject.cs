@@ -10,7 +10,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
-    public class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
+    public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
         public static bool FlipByX = true;
 
         public readonly bool IsCastingShadows;
@@ -50,6 +50,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
+
+            if (OriginalNode.IsTransparent) {
+                IsReflectable = false;
+            }
         }
 
         public void SwitchToMirror(DeviceContextHolder holder) {
@@ -65,7 +69,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
-            //return;
             _material.Initialize(contextHolder);
         }
 
@@ -76,7 +79,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     mode != SpecialRenderMode.DeferredTransparentForw &&
                     mode != SpecialRenderMode.DeferredTransparentDef &&
                     mode != SpecialRenderMode.DeferredTransparentMask) return;
-            //return;
 
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
             if (!_material.Prepare(contextHolder, mode)) return;
@@ -91,9 +93,50 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _material.Draw(contextHolder, Indices.Length, mode);
         }
 
+        public override BaseRenderableObject Clone() {
+            return new ClonedKn5RenderableObject(this);
+        }
+
         public override void Dispose() {
             _material.Dispose();
             base.Dispose();
+        }
+
+        internal class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
+            private readonly Kn5RenderableObject _original;
+
+            internal ClonedKn5RenderableObject(Kn5RenderableObject original) : base(original.Name + "_copy", original.Vertices, original.Indices) {
+                _original = original;
+            }
+
+            public override bool IsEnabled => _original.IsEnabled;
+
+            public override bool IsReflectable => _original.IsReflectable;
+
+            protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+                if (_original._isTransparent &&
+                        mode != SpecialRenderMode.Outline &&
+                        mode != SpecialRenderMode.SimpleTransparent &&
+                        mode != SpecialRenderMode.DeferredTransparentForw &&
+                        mode != SpecialRenderMode.DeferredTransparentDef &&
+                        mode != SpecialRenderMode.DeferredTransparentMask) return;
+
+                if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows) return;
+                if (!_original._material.Prepare(contextHolder, mode)) return;
+
+                base.DrawInner(contextHolder, camera, mode);
+
+                if (_original.Emissive.HasValue) {
+                    (_original._material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
+                }
+
+                _original._material.SetMatrices(ParentMatrix, camera);
+                _original._material.Draw(contextHolder, Indices.Length, mode);
+            }
+
+            public override BaseRenderableObject Clone() {
+                return new ClonedKn5RenderableObject(_original);
+            }
         }
     }
 }

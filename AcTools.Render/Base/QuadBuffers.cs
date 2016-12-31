@@ -6,37 +6,24 @@ using Device = SlimDX.Direct3D11.Device;
 
 namespace AcTools.Render.Base {
     public class QuadBuffers : System.IDisposable {
-        public Buffer VertexBuffer, IndexBuffer;
+        private readonly DataStream _verticesStream, _indicesStream;
+        private readonly Buffer _verticesBuffer, _indicesBuffer;
 
         public QuadBuffers(Device device) {
-            VertexBuffer = new Buffer(
-                    device,
-                    new DataStream(new[] {
-                        new InputLayouts.VerticePT(new Vector3(-1, -1, 0.999f), new Vector2(0, 1)),
-                        new InputLayouts.VerticePT(new Vector3(-1, 1, 0.999f), new Vector2(0, 0)),
-                        new InputLayouts.VerticePT(new Vector3(1, 1, 0.999f), new Vector2(1, 0)),
-                        new InputLayouts.VerticePT(new Vector3(1, -1, 0.999f), new Vector2(1, 1))
-                    }, false, false),
-                    new BufferDescription(
-                            InputLayouts.VerticePT.StrideValue * 4,
-                            ResourceUsage.Immutable,
-                            BindFlags.VertexBuffer,
-                            CpuAccessFlags.None,
-                            ResourceOptionFlags.None,
-                            0));
+            _verticesStream = new DataStream(new[] {
+                new InputLayouts.VerticePT(new Vector3(-1, -1, 0.999f), new Vector2(0, 1)),
+                new InputLayouts.VerticePT(new Vector3(-1, 1, 0.999f), new Vector2(0, 0)),
+                new InputLayouts.VerticePT(new Vector3(1, 1, 0.999f), new Vector2(1, 0)),
+                new InputLayouts.VerticePT(new Vector3(1, -1, 0.999f), new Vector2(1, 1))
+            }, false, false);
+            _verticesBuffer = new Buffer(device, _verticesStream, new BufferDescription(InputLayouts.VerticePT.StrideValue * 4,
+                    ResourceUsage.Immutable, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
 
-            IndexBuffer = new Buffer(
-                    device,
-                    new DataStream(new ushort[] { 0, 1, 2, 0, 2, 3 }, false, false),
-                    new BufferDescription(
-                            sizeof(short) * 6,
-                            ResourceUsage.Immutable,
-                            BindFlags.IndexBuffer,
-                            CpuAccessFlags.None,
-                            ResourceOptionFlags.None,
-                            0));
+            _indicesStream = new DataStream(new ushort[] { 0, 1, 2, 0, 2, 3 }, false, false);
+            _indicesBuffer = new Buffer(device, _indicesStream, new BufferDescription(sizeof(short) * 6,
+                    ResourceUsage.Immutable, BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
 
-            VertexBinding = new VertexBufferBinding(VertexBuffer, InputLayouts.VerticePT.StrideValue, 0);
+            VertexBinding = new VertexBufferBinding(_verticesBuffer, InputLayouts.VerticePT.StrideValue, 0);
         }
 
         public VertexBufferBinding VertexBinding { get; }
@@ -50,12 +37,14 @@ namespace AcTools.Render.Base {
             deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             deviceContext.InputAssembler.InputLayout = layout;
             deviceContext.InputAssembler.SetVertexBuffers(0, VertexBinding);
-            deviceContext.InputAssembler.SetIndexBuffer(IndexBuffer, Format.R16_UInt, 0);
+            deviceContext.InputAssembler.SetIndexBuffer(_indicesBuffer, Format.R16_UInt, 0);
         }
 
         public void Dispose() {
-            VertexBuffer.Dispose();
-            IndexBuffer.Dispose();
+            _verticesBuffer.Dispose();
+            _indicesBuffer.Dispose();
+            _verticesStream.Dispose();
+            _indicesStream.Dispose();
         }
 
         public void Dispose(bool b) {

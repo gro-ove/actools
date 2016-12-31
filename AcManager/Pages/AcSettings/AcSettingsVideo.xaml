@@ -210,9 +210,8 @@
                 </DockPanel>
 
                 <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MipLodBias_Tooltip}">
-                    <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer" Postfix="%"
-                            Content="{x:Static g:AppStrings.AcSettings_Video_MipLodBias}" />
-                    <Slider Minimum="-400" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="25"
+                    <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer" Content="{x:Static g:AppStrings.AcSettings_Video_MipLodBias}" />
+                    <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="1"
                             TickPlacement="BottomRight" />
                 </DockPanel>
 

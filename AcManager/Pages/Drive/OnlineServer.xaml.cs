@@ -489,8 +489,8 @@ namespace AcManager.Pages.Drive {
                     Converter = ColorPicker.ColorToBrushConverter
                 });
 
-                var header = new TextBlock();
-                header.SetBinding(TextBlock.TextProperty, new Binding {
+                var header = new BbCodeBlock();
+                header.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
                     Source = tag,
                     Path = new PropertyPath(nameof(tag.DisplayName))
                 });

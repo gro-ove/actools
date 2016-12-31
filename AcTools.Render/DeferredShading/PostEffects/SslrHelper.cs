@@ -1,7 +1,7 @@
 ﻿using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.PostEffects;
-using AcTools.Render.Base.Shaders;
+using AcTools.Render.Shaders;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.DeferredShading.PostEffects {
@@ -15,7 +15,7 @@ namespace AcTools.Render.DeferredShading.PostEffects {
         public void OnResize(DeviceContextHolder holder) {}
 
         public void Draw(DeviceContextHolder holder, ShaderResourceView view) {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void Dispose() {}

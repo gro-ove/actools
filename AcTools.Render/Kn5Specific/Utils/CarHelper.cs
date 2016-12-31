@@ -64,7 +64,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         private FileSystemWatcher _watcher;
         private DeviceContextHolder _holder;
 
-        public void SetupWatching(DeviceContextHolder holder) {
+        private void SetupWatching(DeviceContextHolder holder) {
             if (!Directory.Exists(SkinsDirectory)) return;
 
             _watcher = new FileSystemWatcher(SkinsDirectory) {
@@ -77,8 +77,6 @@ namespace AcTools.Render.Kn5Specific.Utils {
             _watcher.Deleted += Watcher_Deleted;
             _watcher.Renamed += Watcher_Renamed;
             _watcher.EnableRaisingEvents = true;
-
-            _holder = holder;
         }
 
         private async void UpdateOverrideLater(string filename) {
@@ -433,8 +431,12 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
         }
 
-        public void SetKn5(DeviceContextHolder contextHolder) {
-            SetupWatching(contextHolder);
+        public void SetKn5(DeviceContextHolder contextHolder, bool watching = true) {
+            _holder = contextHolder;
+
+            if (watching) {
+                SetupWatching(contextHolder);
+            }
 
             var materialsProvider = contextHolder.Get<Kn5MaterialsProvider>();
             var texturesProvider = contextHolder.Get<TexturesProvider>();
@@ -448,12 +450,25 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
         }
 
+        private bool IsDisposed => _holder == null;
+
         public void Dispose() {
             if (_watcher != null) {
                 _watcher.EnableRaisingEvents = false;
+                _watcher.Changed -= Watcher_Changed;
+                _watcher.Created -= Watcher_Created;
+                _watcher.Deleted -= Watcher_Deleted;
+                _watcher.Renamed -= Watcher_Renamed;
                 DisposeHelper.Dispose(ref _watcher);
             }
 
+            var materialsProvider = _holder.Get<Kn5MaterialsProvider>();
+            var texturesProvider = _holder.Get<TexturesProvider>();
+
+            materialsProvider.DisposeFor(MainKn5);
+            texturesProvider.DisposeFor(MainKn5);
+            texturesProvider.SetOverridedProvider(MainKn5.OriginalFilename, null);
+            
             _holder = null;
         }
     }

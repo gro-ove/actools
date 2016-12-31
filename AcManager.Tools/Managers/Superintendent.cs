@@ -18,7 +18,10 @@ namespace AcManager.Tools.Managers {
         }
 
         public Superintendent() {
-            AcRootDirectory.Initialize();
+            if (AcRootDirectory.Instance == null) {
+                AcRootDirectory.Initialize();
+            }
+
             AcRootDirectory.Instance.Changed += AcRootDirectory_Changed;
         }
 

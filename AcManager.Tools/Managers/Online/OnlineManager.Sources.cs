@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers.Online {
             Register(FileBasedOnlineSources.FavouritesInstance);
         }
 
-        public static void EnsureInitialized() { }
+        public static void EnsureInitialized() {}
 
         private readonly Dictionary<string, OnlineSourceWrapper> _wrappers = new Dictionary<string, OnlineSourceWrapper>(10);
 

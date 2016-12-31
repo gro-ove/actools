@@ -87,10 +87,6 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual void OnKeyDown(object sender, KeyEventArgs args) {}
 
-        public bool IsPressed(Keys key) {
-            return Form.Focused && User32.IsKeyPressed(key);
-        }
-
         protected virtual void OnKeyUp(object sender, KeyEventArgs args) {
             switch (args.KeyCode) { 
                 case Keys.Escape:

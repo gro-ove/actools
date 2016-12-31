@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
 using SlimDX;
@@ -5,10 +6,8 @@ using SlimDX.D3DCompiler;
 
 namespace AcTools.Render.Base.Shaders {
     public static class EffectUtils {
-        private static readonly ResourceManager Shaders = new ResourceManager("AcTools.Render.Shaders", Assembly.GetExecutingAssembly());
-
-        internal static ShaderBytecode Load(string name){
-            var bytes = Shaders.GetObject(name) as byte[];
+        public static ShaderBytecode Load(ResourceManager manager, string name) {
+            var bytes = manager.GetObject(name) as byte[];
             if (bytes == null) {
                 throw new System.Exception("Shader is missing!");
             }

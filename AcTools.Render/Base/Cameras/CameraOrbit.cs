@@ -4,6 +4,7 @@ using SlimDX;
 namespace AcTools.Render.Base.Cameras {
     public class CameraOrbit : BaseCamera {
         public float Radius, Alpha, Beta;
+        public float MinBeta = float.MinValue, MinY = float.MinValue;
 
         public CameraOrbit(float fov) : base(fov) {
             Alpha = Beta = 0.5f;
@@ -73,8 +74,16 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
+            if (Beta < MinBeta) {
+                Beta = MinBeta;
+            }
+
             var sideRadius = Radius * MathF.Cos(Beta);
             var height = Radius * MathF.Sin(Beta);
+
+            if (Target.Y + height < MinY) {
+                height = MinY - Target.Y;
+            }
 
             Position = new Vector3(
                     Target.X + sideRadius * MathF.Cos(Alpha),

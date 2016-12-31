@@ -81,7 +81,11 @@ namespace AcTools.Render.Base.Reflections {
             }
         }
 
-        public void Update(Vector3 center) {
+        private Vector3 _previousCenter;
+
+        public bool Update(Vector3 center) {
+            if (_cameras[0] != null && (center - _previousCenter).LengthSquared() < 0.01) return false;
+
             var targets = new[] {
                 new Vector3(center.X + 1, center.Y, center.Z),
                 new Vector3(center.X - 1, center.Y, center.Z),
@@ -109,6 +113,9 @@ namespace AcTools.Render.Base.Reflections {
                 _cameras[i].SetLens(1f);
                 _cameras[i].UpdateViewMatrix();
             }
+
+            _previousCenter = center;
+            return true;
         }
 
         public void DrawScene(DeviceContextHolder holder, IReflectionDraw draw) {

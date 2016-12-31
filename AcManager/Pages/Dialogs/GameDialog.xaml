@@ -104,7 +104,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{x:Static g:AppStrings.RaceResult_BestLap}" Style="{StaticResource Label}" VerticalAlignment="Bottom"
                                         Margin="0 0 0 6" Width="80" TextOptions.TextFormattingMode="Ideal" />
-                                <TextBlock Text="{Binding BestLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}', TargetNullValue='N/A'}"
+                                <TextBlock Text="{Binding BestLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:fff}', TargetNullValue='N/A'}"
                                         Style="{StaticResource Heading1}" />
                             </StackPanel>
                         </StackPanel>
@@ -121,7 +121,7 @@
                                             Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                                 </Border>
                                 <TextBlock
-                                        Text="{Binding BestLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
+                                        Text="{Binding BestLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:fff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
                                         Style="{StaticResource Heading1}" FontSize="40" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
@@ -133,7 +133,7 @@
                                 <TextBlock Text="{x:Static g:AppStrings.RaceResult_Threoretical}" Style="{StaticResource Label}" VerticalAlignment="Bottom"
                                         Margin="0 0 0 6" Width="80" TextOptions.TextFormattingMode="Ideal" />
                                 <TextBlock Style="{StaticResource Heading1}"
-                                        Text="{Binding TheoreticallLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}" />
+                                        Text="{Binding TheoreticallLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:fff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}" />
                             </StackPanel>
                         </StackPanel>
                     </Viewbox>

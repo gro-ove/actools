@@ -40,10 +40,27 @@ namespace StringBasedFilter.Parsing {
 
         private FilterTreeNode NextNodeOr() {
             var node = NextNodeNor();
-            while (NextMatchIs('|') || NextMatchIs(',')) {
-                node = new FilterTreeNodeOr(node, NextNodeNor());
+
+            while (true) {
+                if (NextMatchIs('|')) {
+                    node = new FilterTreeNodeOr(node, NextNodeNor());
+                } else if (NextMatchIs(',')) {
+                    var a = node;
+                    var b = NextNodeNor();
+
+                    var av = a as FilterTreeNodeValue;
+                    if (av != null) {
+                        var bv = b as FilterTreeNodeValue;
+                        if (bv != null && bv.Key == null) {
+                            bv.Key = av.Key;
+                        }
+                    }
+
+                    node = new FilterTreeNodeOr(a, b);
+                } else {
+                    return node;
+                }
             }
-            return node;
         }
 
         private FilterTreeNode NextNodeNor() {
@@ -74,11 +91,50 @@ namespace StringBasedFilter.Parsing {
             string s = null;
             FilterTreeNode node = null;
 
-            var buffer = new StringBuilder();
+            var buffer = new StringBuilder(_filter.Length - _pos);
             for (; _pos < _filter.Length; _pos++) {
                 var c = _filter[_pos];
-                if (c == '\\') continue;
-                if (c == ')' || c == '&' || c == '|' || c == ',' || c == '^' || c == '!') break;
+                if (c == '\\') {
+                    _pos++;
+                    if (_pos < _filter.Length) {
+                        buffer.Append(_filter[_pos]);
+                    }
+                    continue;
+                }
+
+                if (c == ')' || c == '&' || c == '|' || c == ',' || c == '^' || c == '!') {
+                    break;
+                }
+
+                if (c == '`' || c == '"') {
+                    var i = _pos + 1;
+                    var literal = new StringBuilder(_filter.Length - _pos);
+                    literal.Append(c);
+
+                    for (; i < _filter.Length; i++) {
+                        var n = _filter[i];
+                        if (n == '\\') {
+                            i++;
+                            if (i < _filter.Length) {
+                                literal.Append(_filter[i]);
+                            }
+                            continue;
+                        }
+
+                        literal.Append(n);
+
+                        if (n == c) {
+                            goto Ok;
+                        }
+                    }
+
+                    continue;
+
+                    Ok:
+                    buffer.Append(literal);
+                    _pos = i;
+                    continue;
+                }
 
                 if (c == '(') {
                     var value = buffer.ToString().Trim();
@@ -103,7 +159,7 @@ namespace StringBasedFilter.Parsing {
                     break;
                 }
 
-                buffer.Append(_filter[_pos]);
+                buffer.Append(c);
             }
 
             if (node == null) {

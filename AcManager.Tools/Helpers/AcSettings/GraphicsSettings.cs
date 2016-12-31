@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int MipLodBias {
             get { return _mipLodBias; }
             set {
-                value = value.Clamp(-400, 0);
+                value = value.Clamp(-4, 0);
                 if (Equals(value, _mipLodBias)) return;
                 _mipLodBias = value;
                 OnPropertyChanged();
@@ -56,7 +56,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected override void LoadFromIni() {
             var section = Ini["DX11"];
             AllowUnsupportedDx10 = section.GetBool("ALLOW_UNSUPPORTED_DX10", false);
-            MipLodBias = section.GetDouble("MIP_LOD_BIAS", 0).ToIntPercentage();
+            MipLodBias = section.GetInt("MIP_LOD_BIAS", 0);
             SkyboxReflectionGain = section.GetDouble("SKYBOX_REFLECTION_GAIN", 1d).ToIntPercentage();
             MaximumFrameLatency = section.GetInt("MAXIMUM_FRAME_LATENCY", 0);
         }
@@ -91,7 +91,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected override void SetToIni(IniFile ini) {
             var section = ini["DX11"];
             section.Set("ALLOW_UNSUPPORTED_DX10", AllowUnsupportedDx10);
-            section.Set("MIP_LOD_BIAS", MipLodBias.ToDoublePercentage());
+            section.Set("MIP_LOD_BIAS", MipLodBias);
             section.Set("SKYBOX_REFLECTION_GAIN", SkyboxReflectionGain.ToDoublePercentage());
             section.Set("MAXIMUM_FRAME_LATENCY", MaximumFrameLatency);
 

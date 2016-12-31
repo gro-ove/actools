@@ -25,16 +25,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public struct BitmapEntry {
             public readonly ImageSource BitmapSource;
             public readonly int Width, Height;
+            public readonly bool Downsized;
             public readonly DateTime Date;
 
             public int Size => Width * Height;
 
             public static BitmapEntry Empty => new BitmapEntry();
 
-            public BitmapEntry(ImageSource source, int width, int height) {
+            public BitmapEntry(ImageSource source, int width, int height, bool downsized) {
                 BitmapSource = source;
                 Width = width;
                 Height = height;
+                Downsized = downsized;
                 Date = DateTime.Now;
             }
 
@@ -143,7 +145,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var source = newValue as ImageSource;
                 if (newValue == null || source != null) {
                     ++_loading;
-                    _current = source == null ? BitmapEntry.Empty : new BitmapEntry(source, (int)source.Width, (int)source.Height);
+                    _current = source == null ? BitmapEntry.Empty : new BitmapEntry(source, (int)source.Width, (int)source.Height, false);
                     InvalidateVisual();
                 } else {
                     Filename = newValue as string;
@@ -179,15 +181,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 var width = 0;
                 var height = 0;
+                var downsized = false;
 
                 if (decodeWidth > 0) {
                     bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
                     width = decodeWidth;
+                    downsized = true;
                 }
 
                 if (decodeHeight > 0) {
                     bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
                     height = decodeHeight;
+                    downsized = true;
                 }
 
                 var remote = uri.Scheme == "http" || uri.Scheme == "https";
@@ -208,7 +213,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     height = bi.PixelHeight;
                 }
 
-                return new BitmapEntry(bi, width, height);
+                return new BitmapEntry(bi, width, height, downsized);
             } catch (FileNotFoundException) {
                 return BitmapEntry.Empty;
             } catch (Exception e) {
@@ -249,6 +254,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // for more information about WrappingStream: https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
                 using (var stream = new WrappingStream(new MemoryStream(data))) {
                     int width = 0, height = 0;
+                    var downsized = false;
 
                     var bi = new BitmapImage();
                     bi.BeginInit();
@@ -256,11 +262,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (decodeWidth > 0) {
                         bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
                         width = bi.DecodePixelWidth;
+                        downsized = true;
                     }
 
                     if (decodeHeight > 0) {
                         bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
                         height = bi.DecodePixelHeight;
+                        downsized = true;
                     }
 
                     bi.CacheOption = BitmapCacheOption.OnLoad;
@@ -276,7 +284,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         height = bi.PixelHeight;
                     }
 
-                    return new BitmapEntry(bi, width, height);
+                    return new BitmapEntry(bi, width, height, downsized);
                 }
             } catch (FileFormatException e) {
                 // I AM THE GOD OF STUPID WORKAROUNDS, AND I BRING YOU, WORKAROUND!
@@ -418,7 +426,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool ReloadImage() {
             if (OptionCacheTotalSize != 0) {
                 var cached = GetCached(Filename);
-                if (cached.BitmapSource != null && cached.Width >= InnerDecodeWidth) {
+                var innerDecodeWidth = InnerDecodeWidth;
+                if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
                         var info = new FileInfo(Filename);
                         if (!info.Exists) {
