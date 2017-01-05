@@ -375,7 +375,6 @@
     <Compile Include="Miscellaneous\AppReporter.cs" />
     <Compile Include="SemiGui\GameWrapper.cs" />
     <Compile Include="GameProperties\ImmediateStart.cs" />
-    <Compile Include="SemiGui\INonfatalErrorNotifier.cs" />
     <Compile Include="Helpers\WeatherProvider.cs" />
     <Compile Include="Helpers\TimezoneDeterminer.cs" />
     <Compile Include="Helpers\TracksLocator.cs" />
