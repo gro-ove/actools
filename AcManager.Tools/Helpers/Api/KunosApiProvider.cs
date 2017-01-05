@@ -16,6 +16,7 @@ using AcManager.Internal;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -254,7 +255,7 @@ namespace AcManager.Tools.Helpers.Api {
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 if (progress != null) {
                     var j = i;
-                    Application.Current.Dispatcher.Invoke(() => {
+                    ActionExtension.InvokeInMainThread(() => {
                         progress.Report(j);
                     });
                 }

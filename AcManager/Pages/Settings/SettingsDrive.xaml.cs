@@ -35,7 +35,7 @@ namespace AcManager.Pages.Settings {
                 if (o.StartsWith(@"http")) {
                     WindowsHelper.ViewInBrowser(o);
                 } else {
-                    (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri(o, UriKind.RelativeOrAbsolute));
+                    (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri(o, UriKind.RelativeOrAbsolute));
                 }
             }));
 

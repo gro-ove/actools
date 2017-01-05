@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Tools.Managers.Plugins;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using xZune.Vlc.Wpf;
@@ -94,11 +95,11 @@ namespace AcManager.Controls.Video {
         private void Player_StateChanged(object sender, xZune.Vlc.ObjectEventArgs<MediaState> e) {
             if (e.Value == MediaState.Playing && !_playing) {
                 _playing = true;
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     Started?.Invoke(this, EventArgs.Empty);
                 });
             } else if (e.Value == MediaState.Ended && _playing) {
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     Ended?.Invoke(this, EventArgs.Empty);
                 });
             }

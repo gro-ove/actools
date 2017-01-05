@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -109,7 +110,7 @@ namespace AcManager.Tools.Helpers.Api {
                             if (information == null) return;
 
                             information.IsLan = true;
-                            Application.Current.Dispatcher.InvokeAsync(() => foundCallback(information));
+                            ActionExtension.InvokeInMainThreadAsync(() => foundCallback(information));
                         } catch (Exception e) {
                             Logging.Warning(e);
                         }
@@ -137,7 +138,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             try {
                 if (holder != null) {
-                    timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                    timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher) {
                         Interval = TimeSpan.FromSeconds(0.1),
                         IsEnabled = true
                     };

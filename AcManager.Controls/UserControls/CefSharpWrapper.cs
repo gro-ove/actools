@@ -13,6 +13,7 @@ using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using CefSharp.Wpf;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -59,7 +60,7 @@ namespace AcManager.Controls.UserControls {
                 IRunContextMenuCallback callback) {
             callback.Dispose();
 
-            Application.Current.Dispatcher.Invoke(() => {
+            ActionExtension.InvokeInMainThread(() => {
                 var menu = new ContextMenu {
                     Items = {
                         new MenuItem {
@@ -371,7 +372,7 @@ namespace AcManager.Controls.UserControls {
 
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
             if (e.Frame.IsMain) {
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     Navigating?.Invoke(this, PageLoadingEventArgs.Indetermitate);
                 });
             }
@@ -379,7 +380,7 @@ namespace AcManager.Controls.UserControls {
 
         private void OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
             if (e.Frame.IsMain) {
-                Application.Current.Dispatcher.Invoke(() => {
+                ActionExtension.InvokeInMainThread(() => {
                     Navigating?.Invoke(this, PageLoadingEventArgs.Ready);
 
                     ModifyPage();

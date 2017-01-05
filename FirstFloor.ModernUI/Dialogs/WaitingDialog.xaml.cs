@@ -124,13 +124,19 @@ namespace FirstFloor.ModernUI.Dialogs {
             await Task.Delay(500);
             if (_closed || _disposed) return;
 
-            await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+            var app = Application.Current;
+            if (app == null) {
+                ShowDialog();
+                return;
+            }
+
+            await app.Dispatcher.BeginInvoke((Action)(() => {
                 if (_closed || _disposed) return;
 
                 try {
                     ShowDialog();
-                } catch (InvalidOperationException) {
-                    Logging.Warning("Damn…");
+                } catch (InvalidOperationException e) {
+                    Logging.Error(e);
                 }
             }));
         }

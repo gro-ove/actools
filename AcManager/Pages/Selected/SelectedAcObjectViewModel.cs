@@ -84,7 +84,7 @@ namespace AcManager.Pages.Selected {
 
         #region Filter Commands
         public void NewFilterTab(string filter) {
-            (Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
+            (Application.Current?.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
         private CommandBase _filterTagCommand;

@@ -8,6 +8,7 @@ using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -65,15 +66,9 @@ namespace AcManager.Tools.Data {
         private async void LoadLater() {
             if (_loadingInProgress) return;
             _loadingInProgress = true;
-
-            await Task.Delay(200);
             
-            if (Application.Current == null) {
-                await Reload();
-            } else {
-                await Application.Current.Dispatcher.Invoke(Reload);
-            }
-
+            await Task.Delay(200);
+            await ActionExtension.InvokeInMainThread(Reload);
             _loadingInProgress = false;
         }
 

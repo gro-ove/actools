@@ -397,8 +397,9 @@ namespace AcManager.Controls.Presentation {
                 ValuesStorage.Set(KeyFrameAnimation, value.Id);
                 ModernFrame.OptionTransitionName = value.Id;
 
-                if (Application.Current.MainWindow == null) return;
-                foreach (var child in Application.Current.MainWindow.FindVisualChildren<ModernFrame>()) {
+                var window = Application.Current?.MainWindow;
+                if (window == null) return;
+                foreach (var child in window.FindVisualChildren<ModernFrame>()) {
                     child.TransitionName = value.Id;
                 }
             }

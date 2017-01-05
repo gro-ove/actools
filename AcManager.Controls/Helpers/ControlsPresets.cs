@@ -12,6 +12,7 @@ using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -98,7 +99,7 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 await Task.Delay(200);
-                Application.Current.Dispatcher.Invoke(() => {
+                ActionExtension.InvokeInMainThread(() => {
                     RebuildPresetsList().Forget();
                 });
             } catch (Exception e) {

@@ -161,7 +161,9 @@ namespace AcManager.Controls.Dialogs {
         }
 
         public async Task ShowAsync(CancellationToken cancellation) {
-            await Application.Current.Dispatcher.InvokeAsync(ShowDialog, DispatcherPriority.Normal, cancellation).Task;
+            var app = Application.Current;
+            if (app == null) return;
+            await app.Dispatcher.InvokeAsync(ShowDialog, DispatcherPriority.Normal, cancellation).Task;
             if (cancellation.IsCancellationRequested) Close();
         }
 

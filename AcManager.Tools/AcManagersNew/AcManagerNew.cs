@@ -8,6 +8,7 @@ using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -210,7 +211,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             // special case for whole directory being created
             if (e.Name == null) {
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     foreach (var f in FileUtils.GetFilesAndDirectories(e.FullPath)) {
                         OnCreated(f);
                     }
@@ -234,7 +235,7 @@ namespace AcManager.Tools.AcManagersNew {
             // special case for whole directory being deleted
             if (e.Name == null) {
                 var state = Directories.CheckIfEnabled(e.FullPath);
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     while (InnerWrappersList.Remove(InnerWrappersList.FirstOrDefault(x => x.Value.Enabled == state))) { }
                 });
                 return;

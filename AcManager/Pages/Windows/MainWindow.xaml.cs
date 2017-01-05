@@ -57,7 +57,10 @@ namespace AcManager.Pages.Windows {
         private readonly string _testGameDialog = null;
 
         public MainWindow() {
-            Application.Current.MainWindow = this;
+            var app = Application.Current;
+            if (app != null) {
+                app.MainWindow = this;
+            }
 
             _cancelled = false;
 
@@ -127,7 +130,10 @@ namespace AcManager.Pages.Windows {
 
         private void OnActivated(object sender, EventArgs e) {
             Activated -= OnActivated;
-            foreach (var dialog in Application.Current.Windows.OfType<ModernDialog>().Where(x => x.Owner == null)) {
+
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var dialog in app.Windows.OfType<ModernDialog>().Where(x => x.Owner == null)) {
                 dialog.Owner = this;
             }
         }
@@ -427,7 +433,12 @@ namespace AcManager.Pages.Windows {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 WindowsHelper.RestartCurrentApplication();
             } else {
-                Application.Current.Shutdown();
+                var app = Application.Current;
+                if (app == null) {
+                    Environment.Exit(0);
+                } else {
+                    app.Shutdown();
+                }
             }
         }
 

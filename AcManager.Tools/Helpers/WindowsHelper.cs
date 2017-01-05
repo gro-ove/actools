@@ -20,10 +20,11 @@ namespace AcManager.Tools.Helpers {
                                    .ApartFrom(RestartArg)
                                    .Where(x => !x.StartsWith("acmanager:", StringComparison.OrdinalIgnoreCase))
                                    .Prepend(RestartArg));
-                if (Application.Current != null) {
-                    Application.Current.Shutdown();
-                } else {
+                var app = Application.Current;
+                if (app == null) {
                     Environment.Exit(0);
+                } else {
+                    app.Shutdown();
                 }
             } catch (Exception e) {
                 Logging.Warning("RestartCurrentApplication(): " + e);

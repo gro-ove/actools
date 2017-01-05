@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
@@ -58,19 +59,21 @@ namespace AcManager.Tools.Managers {
 
         public async Task UpdateProgress(IProgress<string> progress, CancellationToken cancellation) {
             if (SteamIdHelper.Instance.Value == null) {
-                throw new InformativeException("Can’t get challenges progress", "Steam ID is missing.");    
+                throw new InformativeException("Canâ€™t get challenges progress", "Steam ID is missing.");    
             }
 
-            progress.Report("Finishing preparing…");
+            progress.Report("Finishing preparingâ€¦");
             await EnsureLoadedAsync();
             if (cancellation.IsCancellationRequested) return;
 
-            progress.Report("Loading stats…");
-            var achievments = await Task.Run(() => SteamWebProvider.TryToGetAchievments(CommonAcConsts.AppId, SteamIdHelper.Instance.Value), cancellation);
-            if (cancellation.IsCancellationRequested) return;
-
-            if (achievments == null) {
-                throw new InformativeException("Can’t get challenges progress", "Make sure Steam account isn’t private.");
+            progress.Report("Loading statsâ€¦");
+            string[] achievments;
+            try {
+                achievments = await Task.Run(() => SteamWebProvider.GetAchievments(CommonAcConsts.AppId, SteamIdHelper.Instance.Value), cancellation);
+                if (cancellation.IsCancellationRequested) return;
+            } catch (WebException e)
+                    when (e.Status == WebExceptionStatus.ProtocolError && (e.Response as HttpWebResponse)?.StatusCode == HttpStatusCode.InternalServerError) {
+                throw new InformativeException("Canâ€™t get challenges progress because of internal server error (500)", "Make sure Steam account isnâ€™t private.");
             }
 
             foreach (var eventObject in LoadedOnly) {
@@ -89,7 +92,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public async Task UpdateProgressViaModule(IProgress<string> progress, CancellationToken cancellation) {
-            progress.Report("Getting data…");
+            progress.Report("Getting dataâ€¦");
             var data = await ModuleStarter.GetDataAsync("achievments", cancellation);
 
             foreach (var pair in JsonConvert.DeserializeObject<Dictionary<string, int>>(data)) {

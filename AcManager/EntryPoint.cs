@@ -198,7 +198,7 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void UnhandledExceptionFancyHandler(Exception e) {
-            if (!System.Windows.Application.Current.Windows.OfType<Window>().Any(x => x.IsLoaded && x.IsVisible)) {
+            if (System.Windows.Application.Current?.Windows.OfType<Window>().Any(x => x.IsLoaded && x.IsVisible) != true) {
                 throw new Exception();
             }
 
@@ -245,10 +245,15 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-            System.Windows.Application.Current.Dispatcher.Invoke(() => {
-                var e = args.ExceptionObject as Exception;
+            var e = args.ExceptionObject as Exception;
+            var app = System.Windows.Application.Current;
+            if (app != null) {
+                app.Dispatcher.Invoke(() => {
+                    UnhandledExceptionHandler(e);
+                });
+            } else {
                 UnhandledExceptionHandler(e);
-            });
+            }
         }
 
         public static void HandleSecondInstanceMessages(DpiAwareWindow window, Action<IEnumerable<string>> handler) {

@@ -36,7 +36,8 @@ namespace AcManager.Controls.Dialogs {
                 bool multiline = false, bool passwordMode = false, int maxLength = -1, IEnumerable<string> suggestions = null, Window window = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             if (window == null) {
-                window = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive) ?? Application.Current.MainWindow;
+                window = Application.Current?.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive) ?? Application.Current?.MainWindow;
+                if (window == null) return null;
             }
 
             WindowsHelper.ViewInBrowser(url);

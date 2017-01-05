@@ -11,7 +11,7 @@ namespace AcManager.Pages.About {
             Root.DataContext = this;
 
             /* TODO */
-            var mainWindow = Application.Current.MainWindow;
+            var mainWindow = Application.Current?.MainWindow;
             if (mainWindow != null) {
                 WeakEventManager<Window, EventArgs>.AddHandler(mainWindow, nameof(mainWindow.Activated), Handler);
             }
@@ -41,7 +41,7 @@ namespace AcManager.Pages.About {
             if (value == null) return;
             await Task.Delay(1000);
             if (value != Piece) return;
-            if (Application.Current.MainWindow?.IsActive == true) {
+            if (Application.Current?.MainWindow?.IsActive == true) {
                 value.MarkAsRead();
             }
         }

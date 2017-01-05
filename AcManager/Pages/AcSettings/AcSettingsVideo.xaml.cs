@@ -33,7 +33,7 @@ namespace AcManager.Pages.AcSettings {
             private ICommand _manageFiltersCommand;
 
             public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {
-                (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
+                (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
             }));
 
             private ICommand _benchmarkCommand;

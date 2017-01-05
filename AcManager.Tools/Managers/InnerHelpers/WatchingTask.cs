@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI;
 
 namespace AcManager.Tools.Managers.InnerHelpers {
     internal class WatchingTask {
@@ -37,7 +38,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 await Task.Delay(_queue.Any() && _queue.Peek().Type == WatcherChangeTypes.Deleted ? 300 : 200);
             }
 
-            Application.Current.Dispatcher.Invoke(() => {
+            ActionExtension.InvokeInMainThread(() => {
                 Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Invoke");
                 // in some cases (CREATED, DELETED) queue could be cleared
                 if (_queue.Any()) {

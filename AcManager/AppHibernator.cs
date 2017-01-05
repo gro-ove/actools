@@ -101,7 +101,12 @@ namespace AcManager {
         }
 
         private void CloseMenuItem_Click(object sender, EventArgs e) {
-            Application.Current.Shutdown();
+            var app = Application.Current;
+            if (app == null) {
+                Environment.Exit(0);
+            } else {
+                app.Shutdown();
+            }
         }
 
         private void TrayIcon_DoubleClick(object sender, EventArgs e) {
@@ -121,7 +126,7 @@ namespace AcManager {
                 if (Equals(value, _hibernated)) return;
                 _hibernated = value;
 
-                Application.Current.Dispatcher.Invoke(() => {
+                ActionExtension.InvokeInMainThread(() => {
                     try {
                         if (value) {
                             /* add an icon to the tray for manual restoration just in case */
@@ -129,15 +134,16 @@ namespace AcManager {
                             AddTrayIconWpf();
 
                             /* hide windows */
-                            _hiddenWindows = Application.Current.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible).ToList();
-                            foreach (var window in _hiddenWindows) {
-                                Logging.Write("hide: " + window);
-                                window.Visibility = Visibility.Collapsed;
+                            _hiddenWindows = Application.Current?.Windows.OfType<Window>().Where(x => x.Visibility == Visibility.Visible).ToList();
+                            if (_hiddenWindows != null) {
+                                foreach (var window in _hiddenWindows) {
+                                    window.Visibility = Visibility.Collapsed;
+                                }
                             }
 
                             /* pause processing */
                             if (OptionDisableProcessing) {
-                                _pausedProcessing = Application.Current.Dispatcher.DisableProcessing();
+                                _pausedProcessing = Application.Current?.Dispatcher.DisableProcessing();
                             }
                         } else {
                             /* restore processing */
@@ -152,7 +158,7 @@ namespace AcManager {
                             }
 
                             if (_raceStartedByCm) {
-                                (Application.Current.MainWindow as DpiAwareWindow)?.BringToFront();
+                                (Application.Current?.MainWindow as DpiAwareWindow)?.BringToFront();
                             }
 
                             /* remove tray icon */

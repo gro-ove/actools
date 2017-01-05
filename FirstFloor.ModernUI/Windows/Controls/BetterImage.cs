@@ -321,9 +321,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <param name="filename"></param>
         public static void ReloadImage(string filename) {
             RemoveFromCache(filename);
-            foreach (var image in Application.Current.Windows.OfType<Window>()
-                                             .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                                             .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var image in app.Windows.OfType<Window>()
+                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
+                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged();
             }
         }

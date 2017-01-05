@@ -32,10 +32,13 @@
             <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True"
                     Drop="Car_OnDrop">
-                <mui:Cell Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
-                    <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
-                            Text="{Binding SelectedCar.DisplayName}" Foreground="White" />
+                <mui:Cell Margin="-1" ClipToBounds="True">
+                    <mui:Cell IsHitTestVisible="False">
+                        <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                                Text="{Binding SelectedCar.DisplayName}" Foreground="White" />
+                    </mui:Cell>
+                    <mui:ContextMenuButton Click="SelectedCarContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
                 </mui:Cell>
             </Button>
 

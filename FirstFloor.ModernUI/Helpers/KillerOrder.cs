@@ -87,7 +87,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     _sockets = new List<KillerOrder>();
 
                     if (OptionUseDispatcher) {
-                        _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                        _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Background, Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher) {
                             Interval = OptionInterval,
                             IsEnabled = true
                         };
@@ -123,7 +123,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     foreach (var tuple in list) {
                         _sockets.Remove(tuple);
                         if (sync) {
-                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)tuple.Kill);
+                            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).BeginInvoke(DispatcherPriority.Background, (Action)tuple.Kill);
                         } else {
                             tuple.Kill();
                         }

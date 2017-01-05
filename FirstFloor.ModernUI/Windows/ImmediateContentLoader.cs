@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Windows {
         public Task<object> LoadContentAsync(Uri uri, CancellationToken cancellationToken) {
             if (ModernUiHelper.IsInDesignMode) return null;
 
-            if (!Application.Current.Dispatcher.CheckAccess()) {
+            if (Application.Current?.Dispatcher.CheckAccess() == false) {
                 throw new InvalidOperationException(UiStrings.UIThreadRequired);
             }
 

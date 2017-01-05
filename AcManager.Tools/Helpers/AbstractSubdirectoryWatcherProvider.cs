@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -69,10 +70,10 @@ namespace AcManager.Tools.Helpers {
                 _dispatched = true;
 
                 await Task.Delay(300);
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                ActionExtension.InvokeInMainThreadAsync(() => {
                     UpdateInternal?.Invoke(this, new EventArgs());
                     _dispatched = false;
-                }).Task.Forget();
+                });
             }
 
             public void Dispose() {

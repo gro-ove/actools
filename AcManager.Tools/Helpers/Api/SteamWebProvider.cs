@@ -20,10 +20,10 @@ namespace AcManager.Tools.Helpers.Api {
             httpRequest.Method = "GET";
 
             using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
-                if (response.StatusCode != HttpStatusCode.OK) return null;
-
                 var result = response.GetResponseStream()?.ReadAsStringAndDispose();
-                if (result == null) return null;
+                if (result == null) {
+                    throw new Exception("No response");
+                }
 
                 var parsed = JObject.Parse(result);
                 return ((JArray)((JObject)parsed["playerstats"])["achievements"]).Select(x => (JObject)x)

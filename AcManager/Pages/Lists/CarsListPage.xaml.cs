@@ -46,7 +46,7 @@ namespace AcManager.Pages.Lists {
         }
         
         public static void Show(CarObject car, string carSkinId = null) {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
             if (mainWindow == null) return;
 
             _selectNextCar = car.Id;
@@ -56,7 +56,7 @@ namespace AcManager.Pages.Lists {
         }
 
         public static void NavigateToPage() {
-            (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/CarsListPage.xaml", UriKind.Relative));
+            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/CarsListPage.xaml", UriKind.Relative));
         }
 
         private static string _selectNextCar;

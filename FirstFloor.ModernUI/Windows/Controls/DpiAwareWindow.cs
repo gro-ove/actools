@@ -57,9 +57,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _isPerMonitorDpiAware = ModernUiHelper.TrySetPerMonitorDpiAware();
 
             // set the default owner
-            if (Application.Current != null && !ReferenceEquals(Application.Current.MainWindow, this)) {
-                Owner = Application.Current.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
-                        ?? (Application.Current.MainWindow.IsVisible ? Application.Current.MainWindow : null);
+            var app = Application.Current;
+            if (app != null && !ReferenceEquals(app.MainWindow, this)) {
+                Owner = app.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
+                        ?? (app.MainWindow.IsVisible ? app.MainWindow : null);
             }
 
             foreach (var gesture in NavigationCommands.BrowseBack.InputGestures.OfType<KeyGesture>()
@@ -379,8 +380,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static void OnFatalError(Exception e) {
-            foreach (var result in Application.Current.Windows.OfType<DpiAwareWindow>()) {
-                result.IsDimmed = true;
+            var app = Application.Current;
+            if (app != null){
+                foreach (var result in app.Windows.OfType<DpiAwareWindow>()) {
+                    result.IsDimmed = true;
+                }
             }
 
             new FatalErrorMessage {
@@ -390,7 +394,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void ShowDialogWithoutBlocking() {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => ShowDialog()));
+            ActionExtension.BeginInvokeInMainThread(new Action(() => ShowDialog()));
         }
 
         private const int GwlStyle = -16;

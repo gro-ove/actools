@@ -70,8 +70,8 @@ namespace AcManager.Tools.Lists {
                     OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                 } catch (Exception e) {
-                    if (Application.Current.Dispatcher.CheckAccess()) {
-                        Logging.Error("AutocompleteValuesList.AddUnique failed: " + e);
+                    if (Application.Current?.Dispatcher.CheckAccess() != true) {
+                        Logging.Error(e);
                     } else {
                         Logging.Warning("[ UI THREAD ONLY! ]");
                     }
@@ -91,8 +91,8 @@ namespace AcManager.Tools.Lists {
                         _valuesLc.Add(valueLc);
                     }
                 } catch (Exception e) {
-                    if (Application.Current.Dispatcher.CheckAccess()) {
-                        Logging.Error("AutocompleteValuesList.AddUnique failed: " + e);
+                    if (Application.Current?.Dispatcher.CheckAccess() != true) {
+                        Logging.Error(e);
                     } else {
                         Logging.Warning("[ UI THREAD ONLY! ]");
                     }

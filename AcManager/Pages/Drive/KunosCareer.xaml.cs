@@ -83,7 +83,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public static void NavigateToCareerPage(KunosCareerObject kunosCareer) {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
             links?.Remove(links.OfType<CustomLink>().FirstOrDefault());

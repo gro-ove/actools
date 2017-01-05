@@ -330,10 +330,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ICommand _exitCommand;
 
         public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new DelegateCommand(() => {
-            if (Application.Current != null) {
-                Application.Current.Shutdown();
-            } else {
+            var app = Application.Current;
+            if (app == null) {
                 Environment.Exit(0);
+            } else {
+                app.Shutdown();
             }
         }));
 

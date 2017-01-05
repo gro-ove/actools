@@ -10,6 +10,7 @@ using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -522,9 +523,9 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
 
                     if (value == UiModuleStarterType && ModuleStarter.TryToInstallModule() && ModuleStarter.IsAssettoCorsaRunning) {
-                        Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+                        ((Action)(() => {
                             ModernDialog.ShowMessage(ToolsStrings.Settings_Starter_UiModule_JustInstalled);
-                        }));
+                        })).BeginInvokeInMainThread();
                     }
                 }
             }

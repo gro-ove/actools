@@ -4,6 +4,7 @@ using System.Windows;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Helpers {
@@ -42,7 +43,7 @@ namespace AcManager.Controls.Helpers {
             var toast = new ToastNotification(content);
             if (click != null) {
                 toast.Activated += (sender, args) => {
-                    Application.Current.Dispatcher.Invoke(click);
+                    click.InvokeInMainThreadAsync();
                 };
             }
 

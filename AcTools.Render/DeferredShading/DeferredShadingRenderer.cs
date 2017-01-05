@@ -443,14 +443,20 @@ namespace AcTools.Render.DeferredShading {
             _ppBasic.TechOverlay.DrawAllPasses(DeviceContext, 6);
         }
 
+        public bool KeepFxaaWhileShooting;
+        
         public override Image Shot(int multipler) {
-            var useFxaa = UseFxaa;
-            UseFxaa = false;
-
-            try {
+            if (KeepFxaaWhileShooting) {
                 return base.Shot(multipler);
-            } finally {
-                UseFxaa = useFxaa;
+            } else {
+                var useFxaa = UseFxaa;
+                UseFxaa = false;
+
+                try {
+                    return base.Shot(multipler);
+                } finally {
+                    UseFxaa = useFxaa;
+                }
             }
         }
 

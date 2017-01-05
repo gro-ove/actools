@@ -13,8 +13,11 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// </summary>
         public DataGridTextColumn()
         {
-            this.ElementStyle = Application.Current.Resources["DataGridTextStyle"] as Style;
-            this.EditingElementStyle = Application.Current.Resources["DataGridEditingTextStyle"] as Style;
+            var app = Application.Current;
+            if (app != null){
+                this.ElementStyle = app.Resources["DataGridTextStyle"] as Style;
+                this.EditingElementStyle = app.Resources["DataGridEditingTextStyle"] as Style;
+            }
         }
     }
 }

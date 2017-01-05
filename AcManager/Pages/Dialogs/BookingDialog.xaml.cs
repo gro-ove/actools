@@ -99,7 +99,7 @@ namespace AcManager.Pages.Dialogs {
                 InitializeComponent();
                 Show();
 
-                Owner = Application.Current.MainWindow;
+                Owner = Application.Current?.MainWindow;
 
                 _timer = new DispatcherTimer {
                     Interval = TimeSpan.FromSeconds(1),

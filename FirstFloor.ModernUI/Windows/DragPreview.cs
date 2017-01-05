@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Windows {
             _dragPopup = new DragPopup(item.RenderSize, new VisualBrush(item));
             _dragPopup.UpdatePosition();
 
-            _mainWindow = Application.Current.MainWindow;
+            _mainWindow = Application.Current?.MainWindow;
             if (_mainWindow?.AllowDrop == true) {
                 _mainWindow.AllowDrop = false;
             } else {

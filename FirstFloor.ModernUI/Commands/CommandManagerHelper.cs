@@ -13,7 +13,8 @@ namespace FirstFloor.ModernUI.Commands {
         internal static void CallWeakReferenceHandlers(List<WeakReference> handlers) {
             if (handlers == null) return;
 
-            if (Application.Current.Dispatcher.CheckAccess()) {
+            var app = Application.Current;
+            if (app?.Dispatcher.CheckAccess() != false) {
                 // Take a snapshot of the handlers before we call out to them since the handlers
                 // could cause the array to me modified while we are reading it.
                 var callees = new EventHandler[handlers.Count];
@@ -37,7 +38,7 @@ namespace FirstFloor.ModernUI.Commands {
                     handler(null, EventArgs.Empty);
                 }
             } else {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => CallWeakReferenceHandlers(handlers)));
+                app.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => CallWeakReferenceHandlers(handlers)));
             }
         }
 

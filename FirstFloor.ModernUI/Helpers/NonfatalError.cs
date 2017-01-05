@@ -62,7 +62,7 @@ namespace FirstFloor.ModernUI.Helpers {
             Logging.Write('•', $"{message}:\n{exception}", m, p, l);
 
             var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new INonfatalErrorSolution[0]);
-            Application.Current.Dispatcher.InvokeAsync(() => {
+            ActionExtension.InvokeInMainThreadAsync(() => {
                 try {
                     var active = _active;
                     _active = true;

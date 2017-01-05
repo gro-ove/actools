@@ -187,14 +187,20 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        public override Image Shot(int multipler) {
-            var useFxaa = UseFxaa;
-            UseFxaa = false;
+        public bool KeepFxaaWhileShooting;
 
-            try {
+        public override Image Shot(int multipler) {
+            if (KeepFxaaWhileShooting) {
                 return base.Shot(multipler);
-            } finally {
-                UseFxaa = useFxaa;
+            } else {
+                var useFxaa = UseFxaa;
+                UseFxaa = false;
+
+                try {
+                    return base.Shot(multipler);
+                } finally {
+                    UseFxaa = useFxaa;
+                }
             }
         }
 

@@ -5,12 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -18,10 +20,12 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 using Newtonsoft.Json;
 
@@ -516,7 +520,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public static void NavigateToPage() {
-            (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
+            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
         }
 
         private static CarObject _selectNextCar;
@@ -524,7 +528,7 @@ namespace AcManager.Pages.Drive {
         private static TrackObjectBase _selectNextTrack;
 
         public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null) {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
             if (mainWindow == null) return;
 
             _selectNextCar = car;
@@ -547,6 +551,19 @@ namespace AcManager.Pages.Drive {
 
             Model.SelectedCar = carObject ?? raceGridEntry.Car;
             e.Effects = DragDropEffects.Copy;
+        }
+
+        private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+            var menu = new ContextMenu {};
+
+            menu.AddItem("Change To Random Car", () => {
+                Model.SelectedCar = (CarObject)CarsManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+            }, @"Alt+R");
+            menu.AddItem("Open Car In Content Tab", () => {
+                CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+            });
+            
+            e.Menu = menu;
         }
     }
 }

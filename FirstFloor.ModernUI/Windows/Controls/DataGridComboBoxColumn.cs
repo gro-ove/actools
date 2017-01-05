@@ -13,7 +13,10 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// </summary>
         public DataGridComboBoxColumn()
         {
-            this.EditingElementStyle = Application.Current.Resources["DataGridEditingComboBoxStyle"] as Style;
+            var app = Application.Current;
+            if (app != null){
+                this.EditingElementStyle = app.Resources["DataGridEditingComboBoxStyle"] as Style;
+            }
         }
     }
 }

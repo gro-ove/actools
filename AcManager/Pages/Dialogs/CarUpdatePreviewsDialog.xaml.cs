@@ -519,7 +519,7 @@ namespace AcManager.Pages.Dialogs {
 
         private async void Apply() {
             using (var waiting = new WaitingDialog {
-                Owner = Application.Current.MainWindow
+                Owner = Application.Current?.MainWindow
             }) {
                 try {
                     await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);

@@ -386,10 +386,11 @@ namespace FirstFloor.ModernUI.Win32 {
                     Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=42642");
                 }
 
-                if (Application.Current != null) {
-                    Application.Current.Shutdown(10);
-                } else {
+                var app = Application.Current;
+                if (app == null) {
                     Environment.Exit(10);
+                } else {
+                    app.Shutdown(10);
                 }
 
                 return false;

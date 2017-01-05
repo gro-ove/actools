@@ -16,7 +16,9 @@ namespace FirstFloor.ModernUI.Windows {
         private readonly IntPtr _windowHandle;
         private TaskbarState _state;
 
-        public TaskbarProgress() : this(Application.Current.MainWindow) {}
+        public TaskbarProgress() : this(Application.Current?.MainWindow) {
+            // if Application.Current == null, it will cause a crash
+        }
 
         public TaskbarProgress(Window window) {
             _windowHandle = new WindowInteropHelper(window).Handle;

@@ -14,7 +14,7 @@ namespace AcManager {
         private TaskbarIcon _icon;
 
         private void AddTrayIconWpf() {
-            Application.Current.Dispatcher.Invoke(() => {
+            ActionExtension.InvokeInMainThread(() => {
                 var rhm = new MenuItem { Header = "RHM Settings", Command = RhmService.Instance.ShowSettingsCommand };
                 rhm.SetBinding(UIElement.VisibilityProperty, new Binding {
                     Source = RhmService.Instance,

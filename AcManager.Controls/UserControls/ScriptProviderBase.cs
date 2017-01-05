@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -13,11 +14,11 @@ namespace AcManager.Controls.UserControls {
         private WeakReference<WebBlock> _lastAssociatedWebBrowser;
 
         protected void Sync(Action action) {
-            Application.Current.Dispatcher.Invoke(action);
+            action.InvokeInMainThread();
         }
 
         protected T Sync<T>(Func<T> action) {
-            return Application.Current.Dispatcher.Invoke(action);
+            return action.InvokeInMainThread();
         }
 
         [CanBeNull]

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
@@ -95,12 +96,40 @@ namespace AcTools.Render.Wrapper {
 
                 case Keys.F8:
                     if (!_renderer.UseMsaa) {
-                        var multipler = 2;
+                        int multipler;
+                        bool downscale;
+
+                        {
+                            // hold shift to disable downsampling
+                            // hold ctrl to render scene in 8x resolution
+                            // hold alt to render scene in 4x resolution
+                            // hold both for 16x (but any videocard most likely won’t be able to pull this off)
+
+                            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
+                            var altPressed = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
+                            var shiftPressed = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
+
+                            downscale = !shiftPressed;
+
+                            if (ctrlPressed) {
+                                multipler = altPressed ? 16 : 8;
+                            } else if (altPressed) {
+                                multipler = 4;
+                            } else {
+                                multipler = 2;
+                            }
+                        }
+
+                        _renderer.KeepFxaaWhileShooting = !downscale;
                         var image = _renderer.Shot(multipler);
                         var directory = FileUtils.GetDocumentsScreensDirectory();
                         FileUtils.EnsureDirectoryExists(directory);
                         var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
-                        image.HighQualityResize(new Size(image.Width / multipler, image.Height / multipler)).Save(filename);
+                        if (downscale) {
+                            image = image.HighQualityResize(new Size(image.Width / 2, image.Height / 2));
+                        }
+
+                        image.Save(filename);
                     }
                     break;
 

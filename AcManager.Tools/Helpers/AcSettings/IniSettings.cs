@@ -8,6 +8,7 @@ using System.Windows;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -117,7 +118,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
 
                 IsLoading = true;
-                Application.Current.Dispatcher.Invoke(LoadFromIni);
+                ActionExtension.InvokeInMainThread(LoadFromIni);
                 IsLoading = false;
             } finally {
                 _reloading = false;

@@ -13,8 +13,11 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// </summary>
         public DataGridCheckBoxColumn()
         {
-            this.ElementStyle = Application.Current.Resources["DataGridCheckBoxStyle"] as Style;
-            this.EditingElementStyle = Application.Current.Resources["DataGridEditingCheckBoxStyle"] as Style;
+            var app = Application.Current;
+            if (app != null){
+                this.ElementStyle = app.Resources["DataGridCheckBoxStyle"] as Style;
+                this.EditingElementStyle = app.Resources["DataGridEditingCheckBoxStyle"] as Style;
+            }
         }
     }
 }
