@@ -12,13 +12,16 @@ namespace AcTools.Tests {
                     FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows"));
 
             Assert.AreEqual(@"system32\a.exe",
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\"));
+                    FileUtils.GetRelativePath(@"C:\WiNDows\system32\a.exe", @"C:\Windows\"));
 
             Assert.AreEqual(@"system32\a.exe",
-                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:/Windows"));
+                    FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:/WinDOws"));
 
             Assert.AreEqual(@"C:\Windows\system32\a.exe",
                     FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows\s"));
+
+            Assert.AreEqual(@"",
+                    FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
         }
 
         [TestMethod]
