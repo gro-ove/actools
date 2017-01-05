@@ -377,14 +377,14 @@ namespace AcTools.Utils {
             return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
-        public static string EnsureUnique(string filename) {
+        public static string EnsureUnique(string filename, string postfix = "-{0}") {
             if (!Exists(filename)) return filename;
             
             var ext = Path.GetExtension(filename) ?? "";
             var start = filename.Substring(0, filename.Length - ext.Length);
 
             for (var i = 1; i < 99999; i++) {
-                var result = start + "-" + i + ext;
+                var result = start + string.Format(postfix, i) + ext;
                 if (!Exists(result)) return result;
             }
 
