@@ -7,6 +7,9 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 - ### [AcTools](https://github.com/gro-ove/actools/tree/master/AcTools)
     Main library, used by any other project (including [Cars Manager](https://ascobash.wordpress.com/2015/06/14/actools-uijson/) and even [modded KsEditor](https://ascobash.wordpress.com/2015/07/22/kseditor/)). Contains methods to work with common AC files, launches game and stuff.
     
+- ### [AcTools.LapTimes](https://github.com/gro-ove/actools/tree/master/AcTools.LapTimes)
+    Thing for reading best lap times from different sources. Uses LevelDb for reading from the original launcher (which saves times using Chromium’s IndexedDB).
+
 - ### [AcTools.Render](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
     A replacement for AcTools.Kn5Render. Has a much more thoughtful architecture and thereby contains two different renderers: Lite (simple skins-editing DX10-compatible version) and Deferred (deferred rendering & lighting, SSLR, HDR, dynamic shadows).
 
@@ -49,6 +52,6 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
  - Take AcTools.Internal from [the unpacked version](https://trello.com/c/w5xT6ssZ/49-contacts) (or make your own compatible version, it mostly contains different API codes, addresses and salts for testing checksums).
 
- - You might need to install DirectX SDK to rebuild [AcTools.Render/Base/Shaders/ShadersTemplate.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Base/Shaders/ShadersTemplate.tt). But, just in case, builded *ShadersTemplate.cs* and *Shaders.resources* are already included.
+ - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included.
 
  - Please, feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don’t have any experience it open-source, there might be some things I forgot to mention.
