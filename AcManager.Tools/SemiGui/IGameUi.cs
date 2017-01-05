@@ -9,7 +9,7 @@ namespace AcManager.Tools.SemiGui {
 
         void OnProgress(Game.ProgressState progress);
 
-        void OnResult(Game.Result result, [CanBeNull]ReplayHelper replayHelper);
+        void OnResult([CanBeNull] Game.Result result, [CanBeNull] ReplayHelper replayHelper);
 
         void OnError(Exception exception);
 

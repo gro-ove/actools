@@ -24,6 +24,7 @@ namespace AcTools.Processes {
             [JsonProperty(PropertyName = "extras"), JsonConverter(typeof(ResultExtraConverter))]
             public ResultExtra[] Extras;
 
+            [CanBeNull]
             public T GetExtraByType<T>() where T : ResultExtra {
                 return Extras.OfType<T>().FirstOrDefault();
             }
