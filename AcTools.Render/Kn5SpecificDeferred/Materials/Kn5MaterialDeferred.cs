@@ -2,6 +2,7 @@
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
@@ -14,11 +15,14 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
     public class Kn5MaterialDeferred : IRenderableMaterial, IEmissiveMaterial {
         public bool IsBlending { get; }
 
-        [CanBeNull]
-        private readonly string _kn5Filename;
+        // [NotNull]
+        // Null only for special materials.
+        // TODO: Sort this out.
+        protected readonly Kn5MaterialDescription Description;
 
-        [CanBeNull]
-        private readonly Kn5Material _kn5Material;
+        // [NotNull]
+        // It’s actually not null, but Resharper won’t allow it.
+        protected Kn5Material Kn5Material => Description.Material;
 
         private EffectDeferredGObject.Material _material;
         private EffectDeferredGObject _effect;
@@ -26,14 +30,12 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
         private IRenderableTexture _txDiffuse, _txNormal, _txMaps, _txDetails,
                 _txDetailsNormal;
 
-        internal Kn5MaterialDeferred([NotNull] string kn5Filename, [NotNull] Kn5Material material) {
-            if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
-            if (material == null) throw new ArgumentNullException(nameof(material));
+        internal Kn5MaterialDeferred([NotNull] Kn5MaterialDescription description) {
+            if (description == null) throw new ArgumentNullException(nameof(description));
+            if (description.Material == null) throw new ArgumentNullException(nameof(description.Material));
 
-            _kn5Filename = kn5Filename;
-            _kn5Material = material;
-
-            IsBlending = _kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
+            Description = description;
+            IsBlending = Kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
         }
 
         protected Kn5MaterialDeferred(EffectDeferredGObject.Material material, bool isBlending) {
@@ -41,19 +43,16 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             IsBlending = isBlending;
         }
 
-        private IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
-            var mapping = _kn5Material?.GetMappingByName(mappingName);
-            return mapping == null || _kn5Filename == null ? null :
-                    contextHolder.Get<TexturesProvider>().GetTexture(_kn5Filename, mapping.Texture, contextHolder);
+        protected IRenderableTexture GetTexture(string mappingName, IDeviceContextHolder contextHolder) {
+            var mapping = Kn5Material.GetMappingByName(mappingName);
+            return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);
         }
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGObject>();
 
-            if (_kn5Material == null) return;
-
             _txDiffuse = GetTexture("txDiffuse", contextHolder);
-            _txNormal = _kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
+            _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
             _txMaps = GetTexture("txMaps", contextHolder);
             _txDetails = GetTexture("txDetail", contextHolder);
             _txDetailsNormal = GetTexture("txNormalDetail", contextHolder);
@@ -68,7 +67,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
                 flags |= EffectDeferredGObject.HasMaps;
             }
 
-            if (_kn5Material.GetPropertyValueAByName("useDetail") > 0) {
+            if (Kn5Material.GetPropertyValueAByName("useDetail") > 0) {
                 flags |= EffectDeferredGObject.HasDetailsMap;
             }
 
@@ -76,7 +75,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
                 flags |= EffectDeferredGObject.HasDetailsNormalMap;
             }
 
-            if (_kn5Material.ShaderName == "ksTyres" || _kn5Material.ShaderName == "ksBrakeDisc") {
+            if (Kn5Material.ShaderName == "ksTyres" || Kn5Material.ShaderName == "ksBrakeDisc") {
                 flags |= EffectDeferredGObject.UseDiffuseAlphaAsMap;
             }
 
@@ -84,26 +83,26 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
                 flags |= EffectDeferredGObject.AlphaBlend;
             }
 
-            if (Equals(_kn5Material.GetPropertyValueAByName("isAdditive"), 1.0f)) {
+            if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 1.0f)) {
                 flags |= EffectDeferredGObject.IsAdditive;
             }
 
-            var specularExp = _kn5Material.GetPropertyValueAByName("ksSpecularEXP");
-            if (Equals(_kn5Material.GetPropertyValueAByName("isAdditive"), 2.0f)) {
+            var specularExp = Kn5Material.GetPropertyValueAByName("ksSpecularEXP");
+            if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 2.0f)) {
                 specularExp = 250f;
             }
 
             _material = new EffectDeferredGObject.Material {
-                Ambient = _kn5Material.GetPropertyValueAByName("ksAmbient"),
-                Diffuse = _kn5Material.GetPropertyValueAByName("ksDiffuse"),
-                Specular = _kn5Material.GetPropertyValueAByName("ksSpecular"),
+                Ambient = Kn5Material.GetPropertyValueAByName("ksAmbient"),
+                Diffuse = Kn5Material.GetPropertyValueAByName("ksDiffuse"),
+                Specular = Kn5Material.GetPropertyValueAByName("ksSpecular"),
                 SpecularExp = specularExp,
-                Emissive = _kn5Material.GetPropertyValueCByName("ksEmissive"),
-                FresnelC = _kn5Material.GetPropertyValueAByName("fresnelC"),
-                FresnelExp = _kn5Material.GetPropertyValueAByName("fresnelEXP"),
-                FresnelMaxLevel = _kn5Material.GetPropertyValueAByName("fresnelMaxLevel"),
-                DetailsUvMultipler = _kn5Material.GetPropertyValueAByName("detailUVMultiplier"),
-                DetailsNormalBlend = _kn5Material.GetPropertyValueAByName("detailNormalBlend"),
+                Emissive = Kn5Material.GetPropertyValueCByName("ksEmissive"),
+                FresnelC = Kn5Material.GetPropertyValueAByName("fresnelC"),
+                FresnelExp = Kn5Material.GetPropertyValueAByName("fresnelEXP"),
+                FresnelMaxLevel = Kn5Material.GetPropertyValueAByName("fresnelMaxLevel"),
+                DetailsUvMultipler = Kn5Material.GetPropertyValueAByName("detailUVMultiplier"),
+                DetailsNormalBlend = Kn5Material.GetPropertyValueAByName("detailNormalBlend"),
                 Flags = flags
             };
         }
@@ -122,7 +121,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             _effect.FxMaterial.Set(material);
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.DeferredTransparentMask) return IsBlending;
 
             if (mode == SpecialRenderMode.Reflection) {
@@ -153,7 +152,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
 
         public static int Drawed;
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.DeferredTransparentMask || mode == SpecialRenderMode.Shadow) {
                 _effect.TechTransparentMask.DrawAllPasses(contextHolder.DeviceContext, indices);
                 Drawed++;

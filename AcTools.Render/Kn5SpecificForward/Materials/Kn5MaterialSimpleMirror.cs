@@ -1,5 +1,6 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
@@ -14,7 +15,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         internal Kn5MaterialSimpleMirror() {}
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
 
@@ -22,7 +23,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
         public void SetEmissiveNext(Vector3 value) {}
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!mode.HasFlag(SpecialRenderMode.Simple)) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
             return true;
@@ -34,7 +35,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
              _effect.TechMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 

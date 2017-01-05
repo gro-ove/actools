@@ -3,62 +3,81 @@ using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
-    public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
+    public interface IKn5RenderableObject : IRenderableObject {
+        [NotNull]
+        Kn5Node OriginalNode { get; }
+
+        void SwitchToMirror(IDeviceContextHolder holder);
+
+        void SetEmissive(Vector3? color);
+    }
+
+    public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
         public static bool FlipByX = true;
 
         public readonly bool IsCastingShadows;
+        
+        public Kn5Node OriginalNode { get; }
 
-        public readonly Kn5Node OriginalNode;
-        private IRenderableMaterial _material;
+        private static InputLayouts.VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
+            var size = vertices.Length;
+            var result = new InputLayouts.VerticePNTG[size];
 
-        private static InputLayouts.VerticePNTG[] Convert(IEnumerable<Kn5Node.Vertice> vertices) {
-            return FlipByX ?
-                    vertices.Select(x => new InputLayouts.VerticePNTG(
+            if (FlipByX) {
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i] = new InputLayouts.VerticePNTG(
                             x.Co.ToVector3FixX(),
                             x.Normal.ToVector3FixX(),
                             x.Uv.ToVector2(),
-                            x.Tangent.ToVector3Tangent())).ToArray() :
-                    vertices.Select(x => new InputLayouts.VerticePNTG(
+                            x.Tangent.ToVector3Tangent());
+                }
+            } else {
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i] = new InputLayouts.VerticePNTG(
                             x.Co.ToVector3(),
                             x.Normal.ToVector3(),
                             x.Uv.ToVector2(),
-                            x.Tangent.ToVector3())).ToArray();
+                            x.Tangent.ToVector3());
+                }
+            }
+
+            return result;
         }
 
         private static ushort[] Convert(ushort[] indices) {
             return FlipByX ? indices.ToIndicesFixX() : indices;
         }
 
-        private readonly bool _isTransparent;
-
-        public Kn5RenderableObject(Kn5Node node, DeviceContextHolder holder) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
+        public Kn5RenderableObject(Kn5Node node) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
-
-            var materialsProvider = holder.Get<Kn5MaterialsProvider>();
-            _material = materialsProvider.GetMaterial(OriginalNode.MaterialId);
 
             if (IsEnabled && (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable)) {
                 IsEnabled = false;
             }
-
-            _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
 
             if (OriginalNode.IsTransparent) {
                 IsReflectable = false;
             }
         }
 
-        public void SwitchToMirror(DeviceContextHolder holder) {
-            var materialsProvider = holder.Get<Kn5MaterialsProvider>();
-            _material = materialsProvider.GetMirrorMaterial();
+        public void SwitchToMirror(IDeviceContextHolder holder) {
+            _material = holder.GetMaterial(BasicMaterials.MirrorKey);
+            if (IsInitialized) {
+                _material.Initialize(holder);
+            }
         }
 
         public Vector3? Emissive { get; set; }
@@ -67,12 +86,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
             Emissive = color;
         }
 
-        protected override void Initialize(DeviceContextHolder contextHolder) {
+        private bool _isTransparent;
+        private IRenderableMaterial _material;
+
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
+
+            _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
             _material.Initialize(contextHolder);
+            _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
         }
 
-        protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (_isTransparent &&
                     mode != SpecialRenderMode.Outline &&
                     mode != SpecialRenderMode.SimpleTransparent &&
@@ -98,7 +123,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public override void Dispose() {
-            _material.Dispose();
+            DisposeHelper.Dispose(ref _material);
             base.Dispose();
         }
 
@@ -113,7 +138,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             public override bool IsReflectable => _original.IsReflectable;
 
-            protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
                 if (_original._isTransparent &&
                         mode != SpecialRenderMode.Outline &&
                         mode != SpecialRenderMode.SimpleTransparent &&
@@ -121,7 +146,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         mode != SpecialRenderMode.DeferredTransparentDef &&
                         mode != SpecialRenderMode.DeferredTransparentMask) return;
 
-                if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows) return;
+                if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows || _original._material == null) return;
                 if (!_original._material.Prepare(contextHolder, mode)) return;
 
                 base.DrawInner(contextHolder, camera, mode);

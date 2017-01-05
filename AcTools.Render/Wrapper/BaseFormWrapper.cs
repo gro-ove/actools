@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Temporary;
 using AcTools.Windows;
 using JetBrains.Annotations;
 using SlimDX.Windows;
+using Timer = System.Windows.Forms.Timer;
 
 namespace AcTools.Render.Wrapper {
     public static class ImageExtension {
@@ -132,10 +134,15 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected virtual void OnRender() {
-            Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (Paused && !Renderer.IsDirty) return;
+            // Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+            if (Paused && !Renderer.IsDirty) {
+                Thread.Sleep(20);
+                return;
+            }
+
             Renderer.Draw();
             InvokeFirstFrameCallback();
+            Thread.Sleep(1);
         }
 
         private Timer _toastTimer;

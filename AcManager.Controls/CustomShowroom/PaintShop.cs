@@ -22,9 +22,9 @@ namespace AcManager.Controls.CustomShowroom {
             public string DiffuseTexture { get; }
 
             [CanBeNull]
-            protected ToolsKn5ObjectRenderer Renderer { get; private set; }
+            protected IPaintShopRenderer Renderer { get; private set; }
 
-            public void SetRenderer(ToolsKn5ObjectRenderer renderer) {
+            public void SetRenderer(IPaintShopRenderer renderer) {
                 Renderer = renderer;
             }
 
@@ -58,12 +58,20 @@ namespace AcManager.Controls.CustomShowroom {
                 try {
                     _updating = true;
                     await Task.Delay(20);
-                    if (_enabled) {
+                    if (_updating && _enabled) {
                         Apply();
                     }
                 } finally {
                     _updating = false;
                 }
+            }
+
+            public void ApplyImmediate() {
+                if (!_updating) return;
+                if (_enabled) {
+                    Apply();
+                }
+                _updating = false;
             }
 
             protected override void OnPropertyChanged(string propertyName = null) {
@@ -129,12 +137,25 @@ namespace AcManager.Controls.CustomShowroom {
 
             public override string DisplayName { get; set; } = "License plate";
 
+            private string _text;
+
+            public string Text {
+                get { return _text; }
+                set {
+                    if (Equals(value, _text)) return;
+                    _text = value;
+                    OnPropertyChanged();
+                }
+            }
+
             protected override void Apply() {
                 throw new NotImplementedException();
+                //Renderer?.OverrideTexture(DiffuseTexture, NormalsTexture, Text);
             }
 
             public override Task SaveAsync(string location) {
                 throw new NotImplementedException();
+                //Renderer?.SaveTexture(DiffuseTexture, NormalsTexture, Text);
             }
         }
 
@@ -370,7 +391,7 @@ namespace AcManager.Controls.CustomShowroom {
             return kn5 == null ? new PaintableItem[0] : new PaintableItem[] {
                 kn5.Textures.ContainsKey("Plate_D.dds") && kn5.Textures.ContainsKey("Plate_NM.dds") ?
                         new LicensePlate(LicensePlate.LicenseFormat.Europe) : null,
-                new[] { "metal_detail.dds", "car_paint.dds", "carpaint.dds" }.Where(x => kn5.Textures.ContainsKey(x))
+                new[] { "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "car_paint.dds", "carpaint.dds" }.Where(x => kn5.Textures.ContainsKey(x))
                                                                              .Select(x => new CarPaint(x))
                                                                              .FirstOrDefault(),
                 new[] { "car_paint_rims.dds" }.Where(x => kn5.Textures.ContainsKey(x))

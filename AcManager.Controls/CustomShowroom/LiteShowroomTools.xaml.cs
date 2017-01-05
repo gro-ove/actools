@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -141,6 +142,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                 Renderer = renderer;
                 renderer.PropertyChanged += Renderer_PropertyChanged;
+                Renderer_CarNodeUpdated();
                 renderer.Tick += Renderer_Tick;
 
                 Car = carObject;
@@ -183,14 +185,34 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private void Renderer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            private INotifyPropertyChanged _carNode;
+
+            private void Renderer_CarNodeUpdated() {
+                if (_carNode != null) {
+                    _carNode.PropertyChanged -= CarNode_PropertyChanged;
+                }
+                _carNode = _renderer.CarNode;
+                if (_carNode != null) {
+                    _carNode.PropertyChanged += CarNode_PropertyChanged;
+                }
+            }
+
+            private void CarNode_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(Renderer.CarNode.CurrentSkin):
+                        Skin = Car.GetSkinById(Renderer?.CarNode?.CurrentSkin ?? "");
+                        break;
+                }
+            }
+
+            private void Renderer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.LiveReload):
                         SaveLater();
                         break;
 
-                    case nameof(Renderer.CurrentSkin):
-                        Skin = Car.GetSkinById(Renderer?.CurrentSkin ?? "");
+                    case nameof(Renderer.CarNode):
+                        Renderer_CarNodeUpdated();
                         break;
 
                     case nameof(Renderer.SelectedObject):
@@ -380,18 +402,6 @@ namespace AcManager.Controls.CustomShowroom {
                         });
 
                         waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Reloading);
-
-                        foreach (var s in new[] {
-                            @"body_shadow.png",
-                            @"tyre_0_shadow.png",
-                            @"tyre_1_shadow.png",
-                            @"tyre_2_shadow.png",
-                            @"tyre_3_shadow.png"
-                        }) {
-                            if (Renderer == null) return;
-                            await Renderer.UpdateTextureAsync(Path.Combine(Car.Location, s));
-                        }
-
                         GC.Collect();
                     }
                 } catch (Exception e) {

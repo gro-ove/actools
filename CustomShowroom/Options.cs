@@ -6,7 +6,7 @@ namespace CustomShowroom {
     public class Options {
         [Option('m', "mode", DefaultValue =
 #if DEBUG
-                Mode.ExtractUv
+                Mode.Lite
 #else
             Mode.Lite
 #endif

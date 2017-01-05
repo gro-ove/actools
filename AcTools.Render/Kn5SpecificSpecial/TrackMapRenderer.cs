@@ -7,6 +7,7 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
@@ -128,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected sealed override void DrawSprites() {
-            if (Sprite == null) return;
+            if (Sprite == null || ShotMode) return;
             DrawSpritesInner();
             Sprite.Flush();
         }
@@ -233,7 +234,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _kn5 = kn5;
         }
 
-        private Kn5MaterialsProvider _materialsProvider;
+        //private Kn5MaterialsProvider _materialsProvider;
         private TrackMapInformation _information;
 
         protected RenderableList RootNode { get; private set; }
@@ -284,21 +285,32 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        protected virtual Kn5MaterialsProvider CreateMaterialsProvider() {
+        /*protected virtual Kn5MaterialsProvider CreateMaterialsProvider() {
             return new TrackMapMaterialProvider();
-        }
+        }*/
 
         private TargetResourceTexture _buffer0, _buffer1;
 
         protected override void InitializeInner() {
-            _materialsProvider = CreateMaterialsProvider();
-            DeviceContextHolder.Set(_materialsProvider);
-            _materialsProvider.SetKn5(_kn5);
-
-            RootNode = (RenderableList)Kn5Converter.Convert(_kn5.RootNode, DeviceContextHolder);
+            DeviceContextHolder.Set<IMaterialsFactory>(new TrackMapMaterialsFactory());
+            RootNode = (RenderableList)Convert(_kn5.RootNode);
 
             _buffer0 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+        }
+
+        private static IRenderableObject Convert(Kn5Node node) {
+            switch (node.NodeClass) {
+                case Kn5NodeClass.Base:
+                    return new Kn5RenderableList(node, Convert);
+
+                case Kn5NodeClass.Mesh:
+                case Kn5NodeClass.SkinnedMesh:
+                    return new Kn5RenderableDepthOnlyObject(node, true);
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override void ResizeInner() {
@@ -311,13 +323,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private ITrackMapRendererFilter _filter;
 
         protected void UpdateFiltered() {
-            FilteredNode = Filter(RootNode, n => {
-                if (n is RenderableList) return true;
-                AcToolsLogging.Write(n.Name);
-                return _filter?.Filter(n.Name) ?? n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1;
-            });
+            FilteredNode = Filter(RootNode, n => n is RenderableList ||
+                    (_filter?.Filter(n.Name) ?? n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1));
             FilteredNode.UpdateBoundingBox();
-            TrianglesCount = FilteredNode.BoundingBox.HasValue ? FilteredNode.TrianglesCount : 0;
+            TrianglesCount = FilteredNode.BoundingBox.HasValue ? FilteredNode.GetTrianglesCount() : 0;
             IsDirty = true;
         }
 
@@ -408,7 +417,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.OutputMerger.SetTargets(_buffer0.TargetView);
 
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.Rasterizer.State = DeviceContextHolder.DoubleSidedState;
+            DeviceContext.Rasterizer.State = DeviceContextHolder.States.DoubleSidedState;
             FilteredNode.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Simple);
             DeviceContext.Rasterizer.State = null;
 
@@ -465,21 +474,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public override void Dispose() {
             DisposeHelper.Dispose(ref _buffer0);
             DisposeHelper.Dispose(ref _buffer1);
-            DisposeHelper.Dispose(ref _materialsProvider);
+            // DisposeHelper.Dispose(ref _materialsProvider);
             base.Dispose();
         }
     }
 
-    public class TrackMapMaterialProvider : Kn5MaterialsProvider {
-        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) => new Kn5MaterialTrackMap(kn5Material);
+    public class TrackMapMaterialsFactory : IMaterialsFactory {
+        public IRenderableMaterial CreateMaterial(object key) {
+            if (BasicMaterials.DepthOnlyKey.Equals(key)) {
+                return new Kn5MaterialTrackMap();
+            }
 
-        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) => new InvisibleMaterial();
-
-        public override IRenderableMaterial CreateSkyMaterial() => new InvisibleMaterial();
-
-        public override IRenderableMaterial CreateMirrorMaterial() => new InvisibleMaterial();
-
-        public override IRenderableMaterial CreateFlatMirrorMaterial() {
             return new InvisibleMaterial();
         }
     }
@@ -555,16 +560,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public class Kn5MaterialTrackMap : IRenderableMaterial {
         private EffectSpecialTrackMap _effect;
 
-        internal Kn5MaterialTrackMap(Kn5Material material) { }
+        internal Kn5MaterialTrackMap() { }
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSpecialTrackMap>();
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
             return true;
         }
 
@@ -572,7 +577,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 

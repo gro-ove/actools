@@ -1,8 +1,8 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
@@ -22,7 +22,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             DisposeHelper.Dispose(ref _rasterizerState);
         }
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGSky>();
             _rasterizerState = RasterizerState.FromDescription(contextHolder.Device, new RasterizerStateDescription {
                 FillMode = FillMode.Solid,
@@ -33,7 +33,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             });
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Deferred && mode != SpecialRenderMode.Reflection) return false;
 
             _effect.FxSkyDown.Set(SkyColorLower);
@@ -45,7 +45,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             _effect.FxWorldViewProj.SetMatrix(Matrix.Translation(camera.Position) * camera.ViewProj);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             contextHolder.DeviceContext.Rasterizer.State = _rasterizerState;
 
             if (mode == SpecialRenderMode.Deferred) {

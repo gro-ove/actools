@@ -1,18 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
-using AcTools.Render.Base.Utils;
-using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base {
-    public class DeviceContextHolder : IDisposable {
-        public readonly Device Device;
-        public readonly DeviceContext DeviceContext;
+    public interface IDeviceContextHolder {
+        [NotNull]
+        Device Device { get; }
+
+        [NotNull]
+        DeviceContext DeviceContext { get; }
+
+        T Get<T>() where T : class;
+
+        T GetEffect<T>() where T : IEffectWrapper, new();
+
+        IRenderableMaterial GetMaterial(object key);
+
+        [NotNull]
+        CommonStates States { get; }
+
+        void RaiseUpdateRequired();
+    }
+
+    public class DeviceContextHolder : IDeviceContextHolder, IDisposable {
+        public Device Device { get; }
+
+        public DeviceContext DeviceContext { get; }
 
         private QuadBuffers _quadBuffers;
 
@@ -75,12 +95,20 @@ namespace AcTools.Render.Base {
             _something[typeof(T)] = obj;
         }
 
+        public void Remove<T>() where T : class {
+            _something.Remove(typeof(T));
+        }
+
         public T Get<T>() where T : class {
             var key = typeof(T);
             object result;
 
             if (_something.TryGetValue(key, out result)) {
                 return (T)result;
+            }
+
+            if (typeof(T) == typeof(SharedMaterials)) {
+                return GetSharedMaterialsInstance() as T;
             }
 
             T child = null;
@@ -97,6 +125,16 @@ namespace AcTools.Render.Base {
             }
 
             throw new Exception($"Entry with type {key} not found");
+        }
+
+        private SharedMaterials _sharedMaterials;
+
+        private SharedMaterials GetSharedMaterialsInstance() {
+            return _sharedMaterials ?? (_sharedMaterials = new SharedMaterials(Get<IMaterialsFactory>()));
+        }
+
+        public IRenderableMaterial GetMaterial(object key) {
+            return GetSharedMaterialsInstance().GetMaterial(key);
         }
 
         private readonly Dictionary<Type, IRenderHelper> _helpers = new Dictionary<Type, IRenderHelper>();
@@ -124,8 +162,10 @@ namespace AcTools.Render.Base {
         private Viewport _savedViewport;
 
         public void SaveRenderTargetAndViewport() {
-            _savedRenderTargetView = DeviceContext.OutputMerger.GetRenderTargets(1)[0];
-            _savedViewport = DeviceContext.Rasterizer.GetViewports()[0];
+            var targets = DeviceContext.OutputMerger.GetRenderTargets(1);
+            var viewports = DeviceContext.Rasterizer.GetViewports();
+            _savedRenderTargetView = targets.Length > 0 ? targets[0] : null;
+            _savedViewport = viewports.Length > 0 ? viewports[0] : default(Viewport);
         }
 
         public void RestoreRenderTargetAndViewport() {
@@ -133,111 +173,18 @@ namespace AcTools.Render.Base {
             DeviceContext.OutputMerger.SetTargets(_savedRenderTargetView);
         }
 
-        #region Common shared stuff
-        private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
-                _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
-        private BlendState _transparentBlendState, _addBlendState;
-        private RasterizerState _doubleSidedState, _invertedState;
+        public event EventHandler UpdateRequired;
 
-        public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = true,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.All,
-                    DepthComparison = Comparison.Less,
-                }));
+        public void RaiseUpdateRequired() {
+            UpdateRequired?.Invoke(this, EventArgs.Empty);
+        }
 
-        public DepthStencilState DisabledDepthState => _disabledDepthState ?? (_disabledDepthState = 
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = false,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.Zero,
-                    DepthComparison = Comparison.Always,
-                }));
+        private CommonStates _states;
 
-        public DepthStencilState ReadOnlyDepthState => _readOnlyDepthState ?? (_readOnlyDepthState =
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = true,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.Zero,
-                    DepthComparison = Comparison.Less,
-                }));
-
-        public DepthStencilState GreaterReadOnlyDepthState => _greaterReadOnlyDepthState ?? (_greaterReadOnlyDepthState =
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = true,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.Zero,
-                    DepthComparison = Comparison.Greater
-                }));
-
-        public DepthStencilState LessEqualDepthState => _lessEqualDepthState ?? (_lessEqualDepthState =
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = true,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.All,
-                    DepthComparison = Comparison.LessEqual
-                }));
-
-        public DepthStencilState LessEqualReadOnlyDepthState => _lessEqualReadOnlyDepthState ?? (_lessEqualReadOnlyDepthState =
-                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                    IsDepthEnabled = true,
-                    IsStencilEnabled = false,
-                    DepthWriteMask = DepthWriteMask.Zero,
-                    DepthComparison = Comparison.LessEqual
-                }));
-
-        public BlendState TransparentBlendState => _transparentBlendState ?? (_transparentBlendState =
-                Device.CreateBlendState(new RenderTargetBlendDescription {
-                    BlendEnable = true,
-                    SourceBlend = BlendOption.SourceAlpha,
-                    DestinationBlend = BlendOption.InverseSourceAlpha,
-                    BlendOperation = BlendOperation.Add,
-                    SourceBlendAlpha = BlendOption.One,
-                    DestinationBlendAlpha = BlendOption.One,
-                    BlendOperationAlpha = BlendOperation.Add,
-                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
-                }));
-
-        public BlendState AddBlendState => _addBlendState ?? (_addBlendState =
-                Device.CreateBlendState(new RenderTargetBlendDescription {
-                    BlendEnable = true,
-                    SourceBlend = BlendOption.SourceAlpha,
-                    DestinationBlend = BlendOption.One,
-                    BlendOperation = BlendOperation.Add,
-                    SourceBlendAlpha = BlendOption.One,
-                    DestinationBlendAlpha = BlendOption.Zero,
-                    BlendOperationAlpha = BlendOperation.Add,
-                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
-                }));
-
-        public RasterizerState DoubleSidedState => _doubleSidedState ?? (_doubleSidedState =
-                RasterizerState.FromDescription(Device, new RasterizerStateDescription {
-                    FillMode = FillMode.Solid,
-                    CullMode = CullMode.None,
-                    IsFrontCounterclockwise = true,
-                    IsDepthClipEnabled = false
-                }));
-
-        public RasterizerState InvertedState => _invertedState ?? (_invertedState =
-                RasterizerState.FromDescription(Device, new RasterizerStateDescription {
-                    FillMode = FillMode.Solid,
-                    CullMode = CullMode.Back,
-                    IsFrontCounterclockwise = true,
-                    IsDepthClipEnabled = true
-                }));
-        #endregion
+        public CommonStates States => _states ?? (_states = new CommonStates(Device));
 
         public void Dispose() {
-            DisposeHelper.Dispose(ref _normalDepthState);
-            DisposeHelper.Dispose(ref _readOnlyDepthState);
-            DisposeHelper.Dispose(ref _greaterReadOnlyDepthState);
-            DisposeHelper.Dispose(ref _lessEqualDepthState);
-            DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
-            DisposeHelper.Dispose(ref _transparentBlendState);
-            DisposeHelper.Dispose(ref _addBlendState);
-            DisposeHelper.Dispose(ref _doubleSidedState);
-            DisposeHelper.Dispose(ref _invertedState);
+            DisposeHelper.Dispose(ref _states);
             DisposeHelper.Dispose(ref _quadBuffers);
 
             _effects.DisposeEverything();

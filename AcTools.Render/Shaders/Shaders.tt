@@ -152,6 +152,10 @@ namespace <#= resultNamespace #> {
 	};
 	Func<string,string> ConvertConstName = s => 
 		Regex.Replace(s.ToLower(), @"^\w|_\w", x => x.Value.Replace("_", "").ToUpper());
+	Func<string,string> ConvertConstValue = s => 
+		Regex.Replace(
+			s.Replace("float4", "new Vector4").Replace("float3", "new Vector3").Replace("float2", "new Vector2"), 
+			@"(\d+\.\d+\b)", x => x.Value + "f");
 	Func<string,string> MapShaderType = s => 
 		s == "dword" ? "uint" :
 		s == "float2" ? "Vector2" :
@@ -188,6 +192,7 @@ namespace <#= resultNamespace #> {
 		var dataLiteral = ConvertStringToLiteral(ClearHlslCode(data));
 
 	/* ADD INCLUDED STUFF */
+		var baseData = data;
 		foreach (var match in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>()){
 				data = includes[match.Groups[1].Value] + "\n\n" + data;
 		}
@@ -241,9 +246,25 @@ namespace <#= resultNamespace #> {
 			var typeName = MapShaderType(x.Groups[1].Value);
 			var isConst = !typeName.StartsWith("Vector");
 			var constName = ConvertConstName(x.Groups[2].Value);
-			var constValue = x.Groups[3].Value.Replace("float3", "new Vector3");
+			var constValue = ConvertConstValue(x.Groups[3].Value);
 			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		";
-		});
+		}).ToList();
+		
+	/* CONSTS FROM DEFINES (ROOT FILE ONLY) */
+		foreach (var x in Regex.Matches(baseData, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
+			var v = x.Groups[2].Value;
+			var constName = ConvertConstName(x.Groups[1].Value);
+			var constValue = ConvertConstValue(v).Trim();
+			var typeName = v.Contains("float4") ? "Vector4" : 
+				v.Contains("float3") ? "Vector3" : 
+				v.Contains("float2") ? "Vector2" :
+				v.Contains("true") || v.Contains("false") ? "bool" :
+				v.Contains(".") ? "float" : "int";
+			var isConst = !typeName.StartsWith("Vector");
+			consts.Add("public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		");
+		}
+
+		consts = consts.Distinct().ToList();
 
 	/* AND EVEN STRUCTS! */
 		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
@@ -283,31 +304,31 @@ namespace <#= resultNamespace #> {
 
 		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
-<# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value))){ #>
+<# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
 		public EffectMatrixVariable <#= matriceFieldName #> { get; private set; }
 <# } #>
 <# if (vrs.Any()){ #>
-		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vss.Any()){ #>
-		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
-<# foreach (var vectorFieldName in vvs.Select(x => ConvertFxName(x.Groups[1].Value))){ #>
+<# foreach (var vectorFieldName in vvs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
 		public EffectVectorVariable <#= vectorFieldName #> { get; private set; }
 <# } #>
 <# if (vs.Any()){ #>
-		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "<#= name #>");
 			E = new Effect(device, _b);
 
-<# foreach (var x in ts){ #>
+<# foreach (var x in ts.Distinct()){ #>
 			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
 <# } #>
 
-<# foreach (var x in tls){ var a = x.Type; var b = x.TechName; #>
+<# foreach (var x in tls.Distinct()){ var a = x.Type; var b = x.TechName; #>
 			for (var i = 0; i < Tech<#= b #>.Description.PassCount && InputSignature<#= a #> == null; i++) {
 				InputSignature<#= a #> = Tech<#= b #>.GetPassByIndex(i).Description.Signature;
 			}
@@ -315,26 +336,26 @@ namespace <#= resultNamespace #> {
 			Layout<#= a #> = new InputLayout(device, InputSignature<#= a #>, InputLayouts.Vertice<#= a #>.InputElementsValue);
 <# } #>
 
-<# foreach (var x in vms){ #>
+<# foreach (var x in vms.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix();
 <# } #>
-<# foreach (var x in vrs){ #>
+<# foreach (var x in vrs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();
 <# } #>
-<# foreach (var x in vss){ #>
+<# foreach (var x in vss.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsScalar();
 <# } #>
-<# foreach (var x in vvs){ #>
+<# foreach (var x in vvs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsVector();
 <# } #>
-<# foreach (var x in vs){ #>
+<# foreach (var x in vs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>");
 <# } #>
 		}
 
         public void Dispose() {
 			if (E == null) return;
-<# foreach (var t in tls.Select(x => x.Type)){ #>
+<# foreach (var t in tls.Select(x => x.Type).Distinct()){ #>
 			InputSignature<#= t #>.Dispose();
             Layout<#= t #>.Dispose();
 <# } #>

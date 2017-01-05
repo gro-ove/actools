@@ -11,7 +11,7 @@ namespace AcTools.Render.Base.Objects {
             Name = name;
         }
 
-        private bool _initialized;
+        protected bool IsInitialized { get; private set; }
 
         public virtual Matrix ParentMatrix { get; set; }
 
@@ -19,29 +19,33 @@ namespace AcTools.Render.Base.Objects {
 
         public virtual bool IsEnabled { get; set; } = true;
 
-        public abstract int TrianglesCount { get; }
+        public abstract int GetTrianglesCount();
 
-        public int ObjectsCount => 1;
+        public int GetObjectsCount() {
+            return 1;
+        }
 
         public BoundingBox? BoundingBox { get; protected set; }
 
-        public void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (filter?.Invoke(this) == false) return;
             if (!IsEnabled || mode == SpecialRenderMode.Reflection && !IsReflectable) return;
 
-            if (!_initialized) {
+            if (!IsInitialized) {
                 Initialize(contextHolder);
-                _initialized = true;
+                IsInitialized = true;
             }
 
-            DrawInner(contextHolder, camera, mode);
+            if (mode != SpecialRenderMode.InitializeOnly) {
+                DrawInner(contextHolder, camera, mode);
+            }
         }
 
         public abstract void UpdateBoundingBox();
 
-        protected abstract void Initialize(DeviceContextHolder contextHolder);
+        protected abstract void Initialize(IDeviceContextHolder contextHolder);
 
-        protected abstract void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
+        protected abstract void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
 
         public abstract BaseRenderableObject Clone();
 

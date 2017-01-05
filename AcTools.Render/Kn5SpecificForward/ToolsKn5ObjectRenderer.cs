@@ -8,6 +8,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -17,16 +18,34 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer {
+    public interface IPaintShopRenderer {
+        bool OverrideTexture(string textureName, byte[] textureBytes);
+
+        bool OverrideTexture(string textureName, Color color);
+
+        bool OverrideTexture(string textureName, Color color, double alpha);
+
+        bool OverrideTextureFlakes(string textureName, Color color);
+
+        bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular);
+
+        Task SaveTexture(string filename, Color color);
+
+        Task SaveTexture(string filename, Color color, double alpha);
+
+        Task SaveTextureFlakes(string filename, Color color);
+    }
+
+    public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer, IPaintShopRenderer {
         public ToolsKn5ObjectRenderer(string mainKn5Filename, string carDirectory = null) : base(mainKn5Filename, carDirectory) {
             UseSprite = false;
         }
 
         public bool LiveReload {
-            get { return CarHelper.LiveReload; }
+            get { return CarNode?.LiveReload ?? false; }
             set {
-                if (Equals(value, CarHelper.LiveReload)) return;
-                CarHelper.LiveReload = value;
+                if (CarNode == null || Equals(value, CarNode.LiveReload)) return;
+                CarNode.LiveReload = value;
                 OnPropertyChanged();
             }
         }
@@ -58,45 +77,44 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public float AmbientShadowWidth {
-            get { return CarHelper.AmbientShadowSize.X; }
+            get { return CarNode?.AmbientShadowSize.X ?? 0f; }
             set {
-                if (Equals(value, CarHelper.AmbientShadowSize.X)) return;
-                CarHelper.AmbientShadowSize = new Vector3(value, CarHelper.AmbientShadowSize.Y, CarHelper.AmbientShadowSize.Z);
+                if (CarNode == null) return;
+                if (Equals(value, CarNode.AmbientShadowSize.X)) return;
+                CarNode.AmbientShadowSize = new Vector3(value, CarNode.AmbientShadowSize.Y, CarNode.AmbientShadowSize.Z);
                 OnPropertyChanged();
                 AmbientShadowSizeChanged = true;
             }
         }
 
         public float AmbientShadowLength {
-            get { return CarHelper.AmbientShadowSize.Z; }
+            get { return CarNode?.AmbientShadowSize.Z ?? 0f; }
             set {
-                if (Equals(value, CarHelper.AmbientShadowSize.Z)) return;
-                CarHelper.AmbientShadowSize = new Vector3(CarHelper.AmbientShadowSize.X, CarHelper.AmbientShadowSize.Y, value);
+                if (CarNode == null) return;
+                if (Equals(value, CarNode.AmbientShadowSize.Z)) return;
+                CarNode.AmbientShadowSize = new Vector3(CarNode.AmbientShadowSize.X, CarNode.AmbientShadowSize.Y, value);
                 OnPropertyChanged();
                 AmbientShadowSizeChanged = true;
             }
         }
 
         public void ResetAmbientShadowSize() {
-            CarHelper.ResetAmbientShadowSize();
+            if (CarNode == null) return;
+            CarNode.ResetAmbientShadowSize();
             OnPropertyChanged(nameof(AmbientShadowWidth));
             OnPropertyChanged(nameof(AmbientShadowLength));
             AmbientShadowSizeChanged = false;
         }
 
         public void FitAmbientShadowSize() {
-            CarHelper.FitAmbientShadowSize(CarNode);
+            if (CarNode == null) return;
+            CarNode.FitAmbientShadowSize();
             OnPropertyChanged(nameof(AmbientShadowWidth));
             OnPropertyChanged(nameof(AmbientShadowLength));
             AmbientShadowSizeChanged = true;
         }
 
         protected override void DrawSpritesInner() { }
-
-        public async Task UpdateTextureAsync(string filename) {
-            await TexturesProvider.UpdateTextureAsync(filename, DeviceContextHolder);
-            IsDirty = true;
-        }
 
         private TargetResourceTexture _outlineBuffer;
         private TargetResourceDepthTexture _outlineDepthBuffer;
@@ -109,13 +127,15 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected override void DrawPrepare() {
             base.DrawPrepare();
-            if (!AmbientShadowHighlight && SelectedObject == null || _outlineBuffer == null) return;
+
+            var highlighted = AmbientShadowHighlight ? (IRenderableObject)CarNode?.AmbientShadowNode : SelectedObject;
+            if (highlighted == null || _outlineBuffer == null) return;
 
             DeviceContext.ClearDepthStencilView(_outlineDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             DeviceContext.OutputMerger.SetTargets(_outlineDepthBuffer.DepthView);
-            DeviceContext.Rasterizer.State = DeviceContextHolder.DoubleSidedState;
-            (AmbientShadowHighlight ? (IRenderableObject)CarHelper.AmbientShadowNode : SelectedObject)
-                    .Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Outline);
+            DeviceContext.Rasterizer.State = DeviceContextHolder.States.DoubleSidedState;
+            
+            highlighted.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Outline);
 
             DeviceContext.ClearRenderTargetView(_outlineBuffer.TargetView, Color.Transparent);
             DeviceContext.OutputMerger.SetTargets(_outlineBuffer.TargetView);
@@ -132,12 +152,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (!AmbientShadowHighlight && SelectedObject == null || _outlineBuffer == null) return;
 
             var effect = DeviceContextHolder.GetEffect<EffectPpBasic>();
-            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.TransparentBlendState;
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.TransparentBlendState;
             DeviceContextHolder.PrepareQuad(effect.LayoutPT);
             effect.FxInputMap.SetResource(_outlineBuffer.View);
 
             DeviceContext.Rasterizer.State = null;
-            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.DisabledDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.DisabledDepthState;
             effect.TechCopy.DrawAllPasses(DeviceContext, 6);
         }
 
@@ -286,9 +306,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool OverrideTexture(string textureName, byte[] textureBytes) {
-            var texture = TexturesProvider.GetExistingTexture(Kn5.OriginalFilename, textureName);
-            texture?.SetProceduralOverride(textureBytes, Device);
-            return texture != null;
+            if (CarNode == null) return true;
+            return CarNode.OverrideTexture(DeviceContextHolder, textureName, textureBytes);
         }
 
         public bool OverrideTexture(string textureName, Color color) {

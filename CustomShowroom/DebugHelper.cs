@@ -43,9 +43,10 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_ford_escort_mk1\ford_escort_mk1.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_ford_mustang_2015\ford_mustang_2015.kn5";
             //kn5file = @"D:\Development\GitHub\actools\AcManager\Assets\Data\ShowroomPreviewSphere\sphere.kn5";
-            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_155_v6\Alfa_Romeo_155_V6_LOD_B.kn5";
+            kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_155_v6\Alfa_Romeo_155_V6_LOD_B.kn5";
+            kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\bmw_m3_e30_dtm\bmw_m3_e30_grC.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\__balls\sphere.kn5";
-
+            //kn5file = @"D:\Games\Assetto Corsa\content\tracks\topgear\topgear.kn5";
             return kn5file;
         }
 

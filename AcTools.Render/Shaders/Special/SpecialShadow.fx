@@ -116,3 +116,34 @@ technique10 Result {
 		SetPixelShader(CompileShader(ps_4_0, ps_Result()));
 	}
 }
+
+// Simplest shader for rendering meshes without any lighting
+cbuffer cbPerObject : register(b0) {
+	matrix gWorldViewProj;
+}
+
+struct simplest_VS_IN {
+	float3 PosL : POSITION;
+};
+
+struct simplest_PS_IN {
+	float4 PosH : SV_POSITION;
+};
+
+simplest_PS_IN vs_simplest(simplest_VS_IN vin) {
+	simplest_PS_IN vout;
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	return vout;
+}
+
+float4 ps_simplest(simplest_PS_IN pin) : SV_Target {
+	return float4(1.0, 1.0, 1.0, 1.0);
+}
+
+technique10 Simplest {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_simplest()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_simplest()));
+	}
+}

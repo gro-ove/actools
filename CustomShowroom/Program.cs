@@ -16,10 +16,13 @@ using CommandLine;
 namespace CustomShowroom {
     public class Program {
         private static void UpdateAmbientShadows(string kn5) {
-            using (var renderer = new AmbientShadowKn5ObjectRenderer(kn5)) {
+            using (var renderer = new AmbientShadowKn5ObjectRenderer(kn5) {
+                Iterations = 8000,
+                HideWheels = false
+            }) {
                 var dir = Path.GetDirectoryName(kn5);
                 renderer.Shot(dir);
-                Process.Start(Path.Combine(dir, "tyre_0_shadow.png"));
+                // Process.Start(Path.Combine(dir, "tyre_0_shadow.png"));
             }
         }
 
@@ -46,6 +49,12 @@ namespace CustomShowroom {
         public static void SetUnhandledExceptionHandler() {
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += UnhandledExceptionHandler;
+        }
+
+        private class TrackMapRendererFilter : ITrackMapRendererFilter {
+            public bool Filter(string name) {
+                return name?.Contains("TARMAC") == true;
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -87,7 +96,10 @@ namespace CustomShowroom {
             }
 
             if (options.Mode == Mode.UpdateAmbientShadows) {
+                MessageBox.Show("Started");
+                var sw = Stopwatch.StartNew();
                 UpdateAmbientShadows(kn5File);
+                MessageBox.Show($@"Time taken: {sw.Elapsed.TotalSeconds:F2}s");
                 return 0;
             }
 
@@ -117,7 +129,13 @@ namespace CustomShowroom {
                     renderer.UseFxaa = options.UseFxaa;
                     new LiteShowroomWrapper(renderer).Run();
                 }
-            } else {
+            } else if (options.Mode == Mode.TrackMap) {
+                using (var renderer = new TrackMapPreparationRenderer(kn5File)) {
+                    renderer.UseFxaa = options.UseFxaa;
+                    renderer.SetFilter(new TrackMapRendererFilter());
+                    new BaseKn5FormWrapper(renderer, "Track", 800, 800).Run();
+                }
+            }else {
                 using (var renderer = new Kn5ObjectRenderer(kn5File, showroomKn5File)) {
                     renderer.UseFxaa = options.UseFxaa;
                     new FancyShowroomWrapper(renderer).Run();

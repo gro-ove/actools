@@ -3,14 +3,12 @@ using System.Drawing;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Textures;
-using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Kn5SpecificForward.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -61,85 +59,78 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public Kn5 Kn5 { get; }
-
-        protected CarHelper CarHelper { get; }
+        private readonly string _carDirectory;
 
         public ForwardKn5ObjectRenderer(string mainKn5Filename, string carDirectory = null) {
+            _carDirectory = carDirectory;
             Kn5 = Kn5.FromFile(mainKn5Filename);
-            CarHelper = new CarHelper(Kn5, carDirectory);
         }
 
         private string _selectSkin;
-        public string CurrentSkin => CarHelper.CurrentSkin;
 
         public void SelectPreviousSkin() {
-            if (MaterialsProvider == null) return;
-            CarHelper.SelectPreviousSkin(DeviceContextHolder);
-            IsDirty = true;
-            OnPropertyChanged(nameof(CurrentSkin));
+            CarNode?.SelectPreviousSkin(DeviceContextHolder);
         }
 
         public void SelectNextSkin() {
-            if (MaterialsProvider == null) return;
-            CarHelper.SelectNextSkin(DeviceContextHolder);
-            IsDirty = true;
-            OnPropertyChanged(nameof(CurrentSkin));
+            CarNode?.SelectNextSkin(DeviceContextHolder);
         }
 
         public void SelectSkin(string skinId) {
-            if (MaterialsProvider == null) {
-                _selectSkin = skinId;
+            CarNode?.SelectSkin(DeviceContextHolder, skinId);
+        }
+
+        private int? _selectLod;
+
+        public int SelectedLod => _selectLod ?? (CarNode?.CurrentLod ?? -1);
+
+        public int LodsCount => CarNode?.LodsCount ?? 0;
+
+        public void SelectPreviousLod() {
+            if (CarNode == null) return;
+            SelectLod((CarNode.CurrentLod + CarNode.LodsCount - 1) % CarNode.LodsCount);
+        }
+
+        public void SelectNextLod() {
+            if (CarNode == null) return;
+            SelectLod((CarNode.CurrentLod + 1) % CarNode.LodsCount);
+        }
+
+        public void SelectLod(int lod) {
+            if (CarNode == null) {
+                _selectLod = lod;
                 return;
             }
 
-            CarHelper.SelectSkin(skinId, DeviceContextHolder);
+            CarNode.CurrentLod = lod;
+            Scene.UpdateBoundingBox();
+
             IsDirty = true;
-            OnPropertyChanged(nameof(CurrentSkin));
         }
 
-        protected Kn5MaterialsProvider MaterialsProvider;
-        protected TexturesProvider TexturesProvider;
-
         [CanBeNull]
-        protected Kn5RenderableList CarNode;
-
-        [CanBeNull]
-        private List<CarLight> _carLights;
+        public Kn5RenderableCar CarNode { get; private set; }
 
         protected override void InitializeInner() {
             base.InitializeInner();
 
-            MaterialsProvider = new MaterialsProviderSimple();
-            TexturesProvider = new TexturesProvider();
-            DeviceContextHolder.Set(MaterialsProvider);
-            DeviceContextHolder.Set(TexturesProvider);
-            
-            CarHelper.SetKn5(DeviceContextHolder);
-            CarHelper.SkinTextureUpdated += (sender, args) => IsDirty = true;
+            DeviceContextHolder.Set<IMaterialsFactory>(new MaterialsProviderSimple());
 
-            var node = Kn5Converter.Convert(Kn5.RootNode, DeviceContextHolder);
-            Scene.Add(node);
-
-            CarNode = node as Kn5RenderableList;
-            if (CarNode != null) {
-                Scene.InsertRange(0, CarHelper.LoadAmbientShadows(CarNode, 0f));
-                CarHelper.AdjustPosition(CarNode);
-                CarHelper.LoadMirrors(CarNode, DeviceContextHolder);
-
-                _carLights = CarHelper.LoadLights(CarNode).ToList();
+            CarNode = new Kn5RenderableCar(Kn5, _carDirectory, Matrix.Identity, null);
+            if (_selectLod.HasValue) {
+                CarNode.CurrentLod = _selectLod.Value;
             }
 
+            _selectLod = null;
+            _selectSkin = null;
+
+            OnPropertyChanged(nameof(CarNode));
+
+            Scene.Add(CarNode);
             Scene.UpdateBoundingBox();
-            TrianglesCount = node.TrianglesCount;
-            ObjectsCount = node.ObjectsCount;
 
-            Camera = CreateCamera(node);
+            Camera = CreateCamera(CarNode);
             _resetCamera = (CameraOrbit)Camera.Clone();
-
-            if (_selectSkin != null) {
-                SelectSkin(_selectSkin);
-                _selectSkin = null;
-            }
         }
 
         private static CameraOrbit CreateCamera(IRenderableObject node) {
@@ -163,21 +154,37 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool CarLightsEnabled {
-            get { return _carLights?.FirstOrDefault()?.IsEnabled == true; }
+            get { return CarNode?.LightsEnabled == true; }
             set {
-                if (_carLights == null) return;
-                foreach (var light in _carLights) {
-                    if (light.IsEnabled == value) return;
-                    light.IsEnabled = value;
+                if (CarNode != null) {
+                    CarNode.LightsEnabled = value;
                 }
-                IsDirty = true;
-                OnPropertyChanged(nameof(CarLightsEnabled));
             }
         }
+
+        // crash test
+        private int _i = -1;
+        private Kn5RenderableCar _temp;
 
         protected override void DrawPrepare() {
             base.DrawPrepare();
             DeviceContextHolder.GetEffect<EffectSimpleMaterial>().FxEyePosW.Set(ActualCamera.Position);
+
+            if (_i >= 0 && ++_i % 50 == 0) {
+                if (_temp != null) {
+                    Scene.Remove(_temp);
+                    _temp.Dispose();
+                }
+
+                _temp = new Kn5RenderableCar(Kn5, _carDirectory,
+                        Matrix.RotationY(MathUtils.Random(0f, 3.14f)) * Matrix.Translation(MathUtils.Random(-2f, 2f), 0f, MathUtils.Random(-2f, 2f)),
+                        CarNode?.Skins?.RandomElement()) {
+                            CurrentLod = Enumerable.Range(0, LodsCount).RandomElement(),
+                            LightsEnabled = MathUtils.Random() > 0.5
+                        };
+                Scene.Add(_temp);
+                Scene.UpdateBoundingBox();
+            }
         }
 
         private TextBlockRenderer _textBlock;
@@ -191,16 +198,52 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             _textBlock.DrawString($@"
 FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
-Triangles: {TrianglesCount:D}
+Triangles: {CarNode?.TrianglesCount:D}
 FXAA: {(UseFxaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
                     new Vector2(Width - 300, 20), 16f, new Color4(1.0f, 1.0f, 1.0f),
                     CoordinateType.Absolute);
 
-            if (CarHelper.Skins != null && CarHelper.CurrentSkin != null) {
-                _textBlock.DrawString($"{CarHelper.CurrentSkin} ({CarHelper.Skins.IndexOf(CarHelper.CurrentSkin) + 1}/{CarHelper.Skins.Count})",
-                        new RectangleF(0f, 0f, Width, Height - 20),
+            if (CarNode == null) return;
+
+            var offset = 15;
+            if (CarNode.LodsCount > 0) {
+                var information = CarNode.CurrentLodInformation;
+                _textBlock.DrawString($"LOD #{CarNode.CurrentLod + 1} ({CarNode.LodsCount} in total; shown from {information.In} to {information.Out})",
+                        new RectangleF(0f, 0f, Width, Height - offset),
+                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
+                        CoordinateType.Absolute);
+                offset += 20;
+            }
+
+            var flags = new List<string>(4);
+
+            if (CarNode.HasCockpitLr) {
+                flags.Add(CarNode.CockpitLrActive ? "LR-cockpit" : "HR-cockpit");
+            }
+
+            if (CarNode.HasSeatbeltOn) {
+                flags.Add(flags.Count > 0 ? ", seatbelt " : "Seatbelt ");
+                flags.Add(CarNode.SeatbeltOnActive ? "is on" : "is off");
+            }
+
+            if (CarNode.HasBlurredNodes) {
+                flags.Add(flags.Count > 0 ? ", blurred " : "Blurred ");
+                flags.Add(CarNode.BlurredNodesActive ? "objects visible" : "objects hidden");
+            }
+
+            if (flags.Count > 0) {
+                _textBlock.DrawString(flags.JoinToString(),
+                        new RectangleF(0f, 0f, Width, Height - offset),
+                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
+                        CoordinateType.Absolute);
+                offset += 20;
+            }
+
+            if (CarNode.Skins != null && CarNode.CurrentSkin != null) {
+                _textBlock.DrawString($"{CarNode.CurrentSkin} ({CarNode.Skins.IndexOf(CarNode.CurrentSkin) + 1}/{CarNode.Skins.Count})",
+                        new RectangleF(0f, 0f, Width, Height - offset),
                         TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
                         CoordinateType.Absolute);
             }
@@ -250,7 +293,6 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
 
         public override void Dispose() {
             DisposeHelper.Dispose(ref _textBlock);
-            CarHelper.Dispose();
             base.Dispose();
         }
     }

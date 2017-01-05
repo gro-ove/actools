@@ -1,5 +1,6 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
@@ -10,11 +11,11 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
     public class Kn5MaterialGlDeferred : IRenderableMaterial {
         private EffectDeferredGObjectSpecial _effect;
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGObjectSpecial>();
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             switch (mode) {
                 case SpecialRenderMode.Deferred:
                 case SpecialRenderMode.Reflection:
@@ -33,7 +34,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             switch (mode) {
                 case SpecialRenderMode.Deferred:
                     _effect.TechSpecialGlDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);

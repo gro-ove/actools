@@ -10,7 +10,6 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base.Objects {
     public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
@@ -47,7 +46,9 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public override int TrianglesCount => IndicesCount / 3;
+        public override int GetTrianglesCount() {
+            return IndicesCount / 3;
+        }
 
         public override void UpdateBoundingBox() {
             BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, ParentMatrix)).ToBoundingBox();
@@ -60,7 +61,7 @@ namespace AcTools.Render.Base.Objects {
             };
         }
 
-        protected override void Initialize(DeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             if (IsEmpty) return;
 
             var vbd = new BufferDescription(Vertices[0].Stride * Vertices.Length, ResourceUsage.Immutable,
@@ -75,15 +76,14 @@ namespace AcTools.Render.Base.Objects {
             _indicesBuffer = new Buffer(contextHolder.Device, _indicesStream, ibd);
         }
 
-        protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            contextHolder.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            contextHolder.DeviceContext.InputAssembler.SetVertexBuffers(0, _verticesBufferBinding);
-            contextHolder.DeviceContext.InputAssembler.SetIndexBuffer(_indicesBuffer, Format.R16_UInt, 0);
+        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            var assembler = contextHolder.DeviceContext.InputAssembler;
+            assembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            assembler.SetVertexBuffers(0, _verticesBufferBinding);
+            assembler.SetIndexBuffer(_indicesBuffer, Format.R16_UInt, 0);
         }
 
         public override void Dispose() {
-            Debug.WriteLine("Disposing: " + TrianglesCount + " triangles");
-
             Vertices = new T[0];
             Indices = new ushort[0];
             IndicesCount = 0;

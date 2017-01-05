@@ -1,5 +1,5 @@
 namespace CustomShowroom {
     public enum Mode {
-        Custom, Lite, UpdateAmbientShadows, ExtractUv
+        Fancy, Lite, TrackMap, UpdateAmbientShadows, ExtractUv
     }
 }

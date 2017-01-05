@@ -1,5 +1,6 @@
 using System.Linq;
 using AcTools.DataFile;
+using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using JetBrains.Annotations;
@@ -29,11 +30,11 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         [CanBeNull]
-        public Kn5RenderableObject Node { get; private set; }
+        public IKn5RenderableObject Node { get; private set; }
 
         private bool _isEnabled;
 
-        public virtual void Initialize(CarLightType type, Kn5RenderableList main, IniFileSection section) {
+        public virtual void Initialize(CarLightType type, RenderableList main, IniFileSection section) {
             Type = type;
             Name = section.GetNonEmpty("NAME");
             Emissive = section.GetVector3("COLOR").Select(y => (float)y).ToArray().ToVector3();

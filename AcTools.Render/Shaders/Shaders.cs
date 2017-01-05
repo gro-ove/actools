@@ -202,6 +202,8 @@ namespace AcTools.Render.Shaders {
 		public const int NumSplits = 4;
 		public const float SmapSize = 2048.0f;
 		public const float SmapDx = 1.0f / 2048.0f;
+		public const float ShadowA = 0.0001f;
+		public const float ShadowZ = 0.9999f;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -271,6 +273,11 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectDeferredPpSslr : IEffectWrapper {
+		public const float MaxL = 0.72f;
+		public const float FadingFrom = 0.5f;
+		public const float MinL = 0.0f;
+		public const int Iterations = 20;
+		public const float StartL = 0.01f;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -477,6 +484,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpBasic : IEffectWrapper, IEffectScreenSizeWrapper {
+		public const int FxaaPreset = 5;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -566,6 +574,9 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpFxaa311 : IEffectWrapper, IEffectScreenSizeWrapper {
+		public const int FxaaPc = 1;
+		public const int FxaaHlsl5 = 1;
+		public const int FxaaQualitypreset = 29;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -654,6 +665,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpOutline : IEffectWrapper, IEffectScreenSizeWrapper {
+		public const float Threshold = 0.99999f;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -862,12 +874,13 @@ namespace AcTools.Render.Shaders {
 		private ShaderBytecode _b;
 		public Effect E;
 
-        public ShaderSignature InputSignaturePT;
-        public InputLayout LayoutPT;
+        public ShaderSignature InputSignaturePT, InputSignatureP;
+        public InputLayout LayoutPT, LayoutP;
 
-		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult;
+		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest;
 
 		public EffectMatrixVariable FxShadowViewProj { get; private set; }
+		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectResourceVariable FxInputMap, FxDepthMap;
 		public EffectScalarVariable FxMultipler, FxCount, FxPadding;
 		public EffectVectorVariable FxSize { get; private set; }
@@ -881,14 +894,21 @@ namespace AcTools.Render.Shaders {
 			TechVerticalShadowBlur = E.GetTechniqueByName("VerticalShadowBlur");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechResult = E.GetTechniqueByName("Result");
+			TechSimplest = E.GetTechniqueByName("Simplest");
 
 			for (var i = 0; i < TechHorizontalShadowBlur.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechHorizontalShadowBlur.GetPassByIndex(i).Description.Signature;
 			}
 			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialShadow, PT, HorizontalShadowBlur) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+			for (var i = 0; i < TechSimplest.Description.PassCount && InputSignatureP == null; i++) {
+				InputSignatureP = TechSimplest.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignatureP == null) throw new System.Exception("input signature (SpecialShadow, P, Simplest) == null");
+			LayoutP = new InputLayout(device, InputSignatureP, InputLayouts.VerticeP.InputElementsValue);
 
 			FxShadowViewProj = E.GetVariableByName("gShadowViewProj").AsMatrix();
+			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
 			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
 			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
 			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
@@ -902,6 +922,8 @@ namespace AcTools.Render.Shaders {
 			if (E == null) return;
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
+			InputSignatureP.Dispose();
+            LayoutP.Dispose();
             E.Dispose();
             _b.Dispose();
         }
@@ -912,13 +934,12 @@ namespace AcTools.Render.Shaders {
 		private ShaderBytecode _b;
 		public Effect E;
 
-        public ShaderSignature InputSignaturePNTG, InputSignaturePT;
-        public InputLayout LayoutPNTG, LayoutPT;
+        public ShaderSignature InputSignatureP, InputSignaturePT;
+        public InputLayout LayoutP, LayoutPT;
 
 		public EffectTechnique TechMain, TechPp, TechFinal, TechFinalCheckers, TechPpHorizontalBlur, TechPpVerticalBlur;
 
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectResourceVariable FxInputMap;
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
@@ -933,11 +954,11 @@ namespace AcTools.Render.Shaders {
 			TechPpHorizontalBlur = E.GetTechniqueByName("PpHorizontalBlur");
 			TechPpVerticalBlur = E.GetTechniqueByName("PpVerticalBlur");
 
-			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePNTG == null; i++) {
-				InputSignaturePNTG = TechMain.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignatureP == null; i++) {
+				InputSignatureP = TechMain.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePNTG == null) throw new System.Exception("input signature (SpecialTrackMap, PNTG, Main) == null");
-			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
+			if (InputSignatureP == null) throw new System.Exception("input signature (SpecialTrackMap, P, Main) == null");
+			LayoutP = new InputLayout(device, InputSignatureP, InputLayouts.VerticeP.InputElementsValue);
 			for (var i = 0; i < TechPp.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechPp.GetPassByIndex(i).Description.Signature;
 			}
@@ -945,15 +966,14 @@ namespace AcTools.Render.Shaders {
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
 			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
-			FxWorldInvTranspose = E.GetVariableByName("gWorldInvTranspose").AsMatrix();
 			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
 			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 		}
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePNTG.Dispose();
-            LayoutPNTG.Dispose();
+			InputSignatureP.Dispose();
+            LayoutP.Dispose();
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();

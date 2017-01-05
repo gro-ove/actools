@@ -55,12 +55,12 @@ namespace AcTools.Render.Temporary {
             new InputLayouts.VerticePC(new Vector3(1.0f, 1.0f, 1.0f), new Vector4(0.0f, 1.0f, 1.0f, 1.0f)),
         }, Enumerable.Range(0, 36).Select(x => (ushort)x).ToArray()) {}
 
-        protected override void Initialize(DeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
             _effectMiniCube = contextHolder.GetEffect<EffectTestingCube>();
         }
 
-        protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return;
 
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effectMiniCube.LayoutPC;

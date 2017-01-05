@@ -10,9 +10,9 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
     public class Kn5MaterialSimpleNmMult : Kn5MaterialSimpleNm {
         private EffectSimpleMaterial.NmUvMultMaterial _material;
 
-        public Kn5MaterialSimpleNmMult([NotNull] string kn5Filename, [NotNull] Kn5Material material) : base(kn5Filename, material) { }
+        public Kn5MaterialSimpleNmMult([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(DeviceContextHolder contextHolder) {
+        public override void Initialize(IDeviceContextHolder contextHolder) {
             _material = new EffectSimpleMaterial.NmUvMultMaterial {
                 DiffuseMultipler = Kn5Material.GetPropertyValueAByName("diffuseMult"),
                 NormalMultipler = Kn5Material.GetPropertyValueAByName("normalMult")
@@ -21,14 +21,14 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             base.Initialize(contextHolder);
         }
 
-        public override bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!base.Prepare(contextHolder, mode)) return false;
 
             Effect.FxNmUvMultMaterial.Set(_material);
             return true;
         }
 
-        public override void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             Effect.TechNmUvMult.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }

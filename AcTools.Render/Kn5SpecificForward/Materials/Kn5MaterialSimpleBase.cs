@@ -2,6 +2,7 @@ using System;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
@@ -14,34 +15,35 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {
         public bool IsBlending { get; }
 
-        protected readonly string Kn5Filename;
-        protected readonly Kn5Material Kn5Material;
+        [NotNull]
+        protected readonly Kn5MaterialDescription Description;
+
+        // [NotNull]
+        // It’s actually not null, but Resharper won’t allow it.
+        protected Kn5Material Kn5Material => Description.Material;
 
         protected EffectSimpleMaterial Effect { get; private set; }
 
-        internal Kn5MaterialSimpleBase([NotNull] string kn5Filename, [NotNull] Kn5Material material) {
-            if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
-            if (material == null) throw new ArgumentNullException(nameof(material));
+        internal Kn5MaterialSimpleBase([NotNull] Kn5MaterialDescription description) {
+            if (description == null) throw new ArgumentNullException(nameof(description));
+            if (description.Material == null) throw new ArgumentNullException(nameof(description.Material));
 
-            Kn5Filename = kn5Filename;
-            Kn5Material = material;
-
+            Description = description;
             IsBlending = Kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
         }
 
-        protected IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
-            var mapping = Kn5Material?.GetMappingByName(mappingName);
-            return mapping == null || Kn5Filename == null ? null :
-                    contextHolder.Get<TexturesProvider>().GetTexture(Kn5Filename, mapping.Texture, contextHolder);
+        protected IRenderableTexture GetTexture(string mappingName, IDeviceContextHolder contextHolder) {
+            var mapping = Kn5Material.GetMappingByName(mappingName);
+            return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);
         }
 
-        public virtual void Initialize(DeviceContextHolder contextHolder) {
+        public virtual void Initialize(IDeviceContextHolder contextHolder) {
             Effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
 
-        protected void PrepareStates(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
             switch (Kn5Material.DepthMode) {
@@ -50,11 +52,11 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
                     break;
 
                 case Kn5MaterialDepthMode.DepthNoWrite:
-                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.ReadOnlyDepthState;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.ReadOnlyDepthState;
                     break;
 
                 case Kn5MaterialDepthMode.DepthOff:
-                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.DisabledDepthState;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.DisabledDepthState;
                     break;
 
                 default:
@@ -62,7 +64,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             }
         }
 
-        public virtual bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
             PrepareStates(contextHolder, mode);
             return true;
@@ -74,7 +76,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public virtual void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public virtual void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 

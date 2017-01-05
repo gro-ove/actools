@@ -12,10 +12,6 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Forward {
     public abstract class ForwardRenderer : SceneRenderer {
-        public int TrianglesCount { get; protected set; }
-
-        public int ObjectsCount { get; protected set; }
-
         private bool _useInterpolationCamera;
 
         public bool UseInterpolationCamera {
@@ -135,10 +131,10 @@ namespace AcTools.Render.Forward {
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = GetRasterizerState();
 
-            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
 
-            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
         }
 

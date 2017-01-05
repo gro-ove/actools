@@ -14,7 +14,7 @@ namespace AcTools.Render.Base {
         }
 
         protected int GetTrianglesCount() {
-            return Scene.TrianglesCount;
+            return Scene.GetTrianglesCount();
         }
 
         protected override void ResizeInner() {

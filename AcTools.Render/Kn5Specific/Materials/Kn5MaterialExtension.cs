@@ -5,7 +5,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Materials {
-    public static class Kn5MaterialExtend {
+    public static class Kn5MaterialExtension {
         public static float GetPropertyValueAByName(this Kn5Material mat, string name, float defaultValue = 0.0f) {
             var property = mat.GetPropertyByName(name);
             return property?.ValueA ?? defaultValue;

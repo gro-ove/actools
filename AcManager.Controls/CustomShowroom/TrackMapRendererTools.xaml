@@ -44,7 +44,7 @@
         <mui:BetterTextBox Text="{Binding Filter, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 4 0 0" />
 
         <Label Content="Surfaces:" Margin="0 8 0 0" />
-        <ListBox x:Name="SurfacesListBox" ItemsSource="{Binding Surfaces}" SelectionMode="Extended" SelectionChanged="OnSelectionChanged" MaxHeight="240"
+        <ListBox x:Name="SurfacesListBox" ItemsSource="{Binding Surfaces}" SelectionMode="Extended" SelectionChanged="OnSelectionChanged" MaxHeight="220"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
                 ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" Margin="0 4 0 0">
             <ListBox.ItemTemplate>

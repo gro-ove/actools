@@ -14,13 +14,13 @@ namespace AcTools.Render.Base.Objects {
 
         bool IsReflectable { get; set; }
 
-        int TrianglesCount { get; }
+        int GetTrianglesCount();
 
-        int ObjectsCount { get; }
+        int GetObjectsCount();
 
         BoundingBox? BoundingBox { get; }
 
-        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, [CanBeNull] Func<IRenderableObject, bool> filter = null);
+        void Draw(IDeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, [CanBeNull] Func<IRenderableObject, bool> filter = null);
 
         void UpdateBoundingBox();
 

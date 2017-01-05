@@ -1,49 +1,68 @@
 using System;
-using AcTools.Kn5File;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificForward.Materials {
-    public class MaterialsProviderSimple : Kn5MaterialsProvider {
-        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
-            if (kn5Material == null) {
+    public class MaterialsProviderSimple : IMaterialsFactory {
+        public IRenderableMaterial CreateMaterial(object key) {
+            var kn5 = key as Kn5MaterialDescription;
+            if (kn5 != null) {
+                return CreateMaterial(kn5);
+            }
+
+            var shadow = key as Kn5AmbientShadowMaterialDescription;
+            if (shadow != null) {
+                return new AmbientShadowMaterialSimple(shadow);
+            }
+
+            switch (key as string) {
+                case BasicMaterials.MirrorKey:
+                    return new Kn5MaterialSimpleMirror();
+            }
+
+            throw new NotSupportedException($@"Key not supported: {key}");
+        }
+
+        private IRenderableMaterial CreateMaterial(Kn5MaterialDescription description) {
+            if (description?.Material == null) {
                 return new InvisibleMaterial();
             }
 
-            // return new Kn5MaterialSimpleGl(kn5Filename, kn5Material);
+            // return new Kn5MaterialSimpleGl(description);
 
-            switch (kn5Material.ShaderName) {
+            switch (description.Material?.ShaderName) {
                 case "ksBrokenGlass":
                     return new InvisibleMaterial();
 
                 case "GL":
-                    return new Kn5MaterialSimpleGl(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleGl(description);
 
                 case "ksTyres":
                 case "ksBrakeDisc":
-                    return new Kn5MaterialSimpleDiffMaps(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleDiffMaps(description);
 
                 case "ksWindscreen":
-                    return new Kn5MaterialSimple(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimple(description);
 
                 case "ksPerPixel":
                 case "ksPerPixelAT":
                 case "ksPerPixelAT_NS":
                 case "ksTree":
-                    return new Kn5MaterialSimple(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimple(description);
 
                 case "ksPerPixelAT_NM":
-                    return new Kn5MaterialSimpleAtNm(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleAtNm(description);
 
                 case "ksPerPixelReflection":
                 case "ksPerPixelSimpleRefl":
-                    return new Kn5MaterialSimpleReflective(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleReflective(description);
 
                 case "ksPerPixelNM":
                 case "ksPerPixelNM_UV2":
-                    return new Kn5MaterialSimpleNm(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleNm(description);
 
                 case "ksPerPixelNM_UVMult":
-                    return new Kn5MaterialSimpleNmMult(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleNmMult(description);
 
                 case "ksPerPixelMultiMap":
                 case "ksPerPixelMultiMap_AT":
@@ -53,34 +72,18 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
                 case "ksPerPixelMultiMap_damage_dirt_sunspot":
                 case "ksPerPixelMultiMap_NMDetail":
                 case "ksPerPixelMultiMapSimpleRefl":
-                    return new Kn5MaterialSimpleMaps(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleMaps(description);
 
                 case "ksPerPixelAlpha":
-                    return new Kn5MaterialSimpleAlpha(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleAlpha(description);
 
                 case "ksSkinnedMesh":
                     // TODO
-                    return new Kn5MaterialSimpleMaps(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimpleMaps(description);
 
                 default:
-                    return new Kn5MaterialSimple(kn5Filename, kn5Material);
+                    return new Kn5MaterialSimple(description);
             }
-        }
-
-        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
-            return new AmbientShadowMaterialSimple(filename);
-        }
-
-        public override IRenderableMaterial CreateSkyMaterial() {
-            throw new NotSupportedException();
-        }
-
-        public override IRenderableMaterial CreateMirrorMaterial() {
-            return new Kn5MaterialSimpleMirror();
-        }
-
-        public override IRenderableMaterial CreateFlatMirrorMaterial() {
-            throw new NotImplementedException();
         }
     }
 }

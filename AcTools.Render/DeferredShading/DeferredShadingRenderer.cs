@@ -180,7 +180,7 @@ namespace AcTools.Render.DeferredShading {
 
         private void DrawLights(TargetResourceTexture target, DepthStencilView limitedBy = null) {
             // set blending & prepare quad
-            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.AddBlendState;
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddBlendState;
 
             // proper render target
             if (limitedBy == null) {
@@ -188,7 +188,7 @@ namespace AcTools.Render.DeferredShading {
                 DeviceContext.OutputMerger.DepthStencilState = null;
             } else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.GreaterReadOnlyDepthState;
             }
 
             DeviceContext.ClearRenderTargetView(target.TargetView, ColorTransparent);
@@ -236,7 +236,7 @@ namespace AcTools.Render.DeferredShading {
             if (limitedBy == null) DeviceContext.OutputMerger.SetTargets(target.TargetView);
             else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.GreaterReadOnlyDepthState;
             }
 
             // camera position & matrix
@@ -287,7 +287,7 @@ namespace AcTools.Render.DeferredShading {
                 DeviceContext.OutputMerger.SetTargets(target.TargetView);
             } else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.GreaterReadOnlyDepthState;
             }
 
             DeviceContext.ClearRenderTargetView(target.TargetView, ColorTransparent);
@@ -344,16 +344,16 @@ namespace AcTools.Render.DeferredShading {
             effect.FxEyePosW.Set(Camera.Position);
             
             DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.DepthView, _temporaryBuffer1.TargetView);
-            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.TransparentBlendState;
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.TransparentBlendState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDepth);
 
-            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentForw);
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
 
             DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.DepthView, _gBufferBase.TargetView, _gBufferNormal.TargetView, _gBufferMaps.TargetView);
-            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDef);
 
             DrawLights(_temporaryBuffer0);

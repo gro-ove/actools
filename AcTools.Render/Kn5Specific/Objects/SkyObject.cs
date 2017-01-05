@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Kn5Specific.Materials;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
@@ -21,15 +21,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     mesh.Indices.Select(x => (ushort)x).ToArray());
         }
 
-        protected override void Initialize(DeviceContextHolder contextHolder) {
+        protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            var materialsProvider = contextHolder.Get<Kn5MaterialsProvider>();
-            _material = materialsProvider.GetSkyMaterial();
+            _material = contextHolder.GetMaterial(BasicMaterials.SkyKey);
             _material.Initialize(contextHolder);
         }
 
-        protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!_material.Prepare(contextHolder, mode)) return;
             base.DrawInner(contextHolder, camera, mode);
 

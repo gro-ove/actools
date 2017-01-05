@@ -6,15 +6,14 @@ using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Shaders;
-using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -24,7 +23,7 @@ using Matrix = SlimDX.Matrix;
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class UvRenderer : BaseRenderer {
         private readonly Kn5 _kn5;
-        private Kn5RenderableList _carNode;
+        private Kn5RenderableFile _carNode;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
@@ -38,14 +37,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override void ResizeInner() {}
 
-        private Kn5MaterialsProvider _materialsProvider;
-
         protected override void InitializeInner() {
-            _materialsProvider = new UvMaterialProvider();
-            DeviceContextHolder.Set(_materialsProvider);
-
-            _materialsProvider.SetKn5(_kn5);
-            _carNode = (Kn5RenderableList)Kn5Converter.Convert(_kn5.RootNode, DeviceContextHolder);
+            DeviceContextHolder.Set<IMaterialsFactory>(new UvMaterialsFactory());
+            _carNode = new Kn5RenderableFile(_kn5, Matrix.Identity);
         }
 
         public bool UseAntialiazing = true;
@@ -131,31 +125,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected override void OnTick(float dt) {}
-
-        public override void Dispose() {
-            DisposeHelper.Dispose(ref _materialsProvider);
-            base.Dispose();
-        }
     }
 
-    public class UvMaterialProvider : Kn5MaterialsProvider {
-        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
-            return new Kn5MaterialUv(kn5Material);
-        }
+    public class UvMaterialsFactory : IMaterialsFactory {
+        public IRenderableMaterial CreateMaterial(object key) {
+            if (key is Kn5MaterialDescription) {
+                return new Kn5MaterialUv(((Kn5MaterialDescription)key).Material);
+            }
 
-        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
-            return new InvisibleMaterial();
-        }
-
-        public override IRenderableMaterial CreateSkyMaterial() {
-            return new InvisibleMaterial();
-        }
-
-        public override IRenderableMaterial CreateMirrorMaterial() {
-            return new InvisibleMaterial();
-        }
-
-        public override IRenderableMaterial CreateFlatMirrorMaterial() {
             return new InvisibleMaterial();
         }
     }
@@ -171,21 +148,21 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     && x.Name != "txNormalDetail").Select(x => x.Texture).ToArray() ?? new string[0];
         }
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSpecialUv>();
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
             if (!_textures.Contains(Filter)) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
             return true;
         }
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) { }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 

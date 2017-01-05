@@ -2,8 +2,6 @@
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
-    public delegate float HeightFunc(float x, float y);
-
     public class FpsCamera : BaseCamera {
         public FpsCamera(float fov) : base(fov) {}
 
@@ -53,7 +51,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
-            View = Matrix.LookAtLH(Position, Position + Look, Vector3.UnitY);
+            SetView(Matrix.LookAtLH(Position, Position + Look, Vector3.UnitY));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

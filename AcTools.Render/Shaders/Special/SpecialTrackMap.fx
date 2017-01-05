@@ -2,23 +2,14 @@
 
 struct VS_IN {
 	float3 PosL       : POSITION;
-	float3 NormalL    : NORMAL;
-	float2 Tex        : TEXCOORD;
-	float3 TangentL   : TANGENT;
 };
 
 cbuffer cbPerObject : register(b0) {
 	matrix gWorldViewProj;
-	matrix gWorldInvTranspose;
 }
 
 struct PS_IN {
 	float4 PosH : SV_POSITION;
-};
-
-struct Normals_PS_IN {
-	float4 PosH : SV_POSITION;
-	float3 NormalW : NORMAL;
 };
 
 PS_IN vs_main(VS_IN vin) {

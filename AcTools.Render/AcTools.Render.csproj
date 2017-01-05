@@ -90,6 +90,9 @@
     <Compile Include="Base\Cameras\Frustum.cs" />
     <Compile Include="Base\Cameras\ICamera.cs" />
     <Compile Include="Base\Cameras\InterpolationCamera.cs" />
+    <Compile Include="Base\CommonStates.cs" />
+    <Compile Include="Base\Materials\BasicMaterials.cs" />
+    <Compile Include="Base\Materials\IMaterialsFactory.cs" />
     <Compile Include="Base\Objects\BaseRenderableObject.cs" />
     <Compile Include="Base\Objects\IRenderableObject.cs" />
     <Compile Include="Base\Objects\RenderableList.cs" />
@@ -115,6 +118,12 @@
     <Compile Include="Base\Shaders\IEffectScreenSizeWrapper.cs" />
     <Compile Include="Base\Shaders\IEffectWrapper.cs" />
     <Compile Include="Base\Shaders\IFxMatrixVariable.cs" />
+    <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
+    <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Textures\Kn5TexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Textures\TexturesProviderBase.cs" />
     <Compile Include="Shaders\Shaders.cs">
       <DependentUpon>Shaders.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -159,11 +168,10 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMaps.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleReflective.cs" />
-    <Compile Include="Kn5Specific\Materials\Kn5MaterialExtend.cs" />
+    <Compile Include="Kn5Specific\Materials\Kn5MaterialExtension.cs" />
     <Compile Include="Kn5Specific\Objects\RenderableListExtension.cs" />
     <Compile Include="Kn5Specific\Textures\IOverridedTextureProvider.cs" />
     <Compile Include="Base\Utils\TaskExtension.cs" />
-    <Compile Include="Kn5Specific\Utils\CarHelper.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificDeferred\Kn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\AmbientShadowMaterialDeferred.cs" />
@@ -172,13 +180,12 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimple.cs" />
     <Compile Include="Kn5SpecificForward\Materials\MaterialsProviderSimple.cs" />
     <Compile Include="Kn5Specific\Materials\IObjectMaterialDeferred.cs" />
-    <Compile Include="Kn5Specific\Materials\IKn5MaterialsProvider.cs" />
-    <Compile Include="Kn5Specific\Materials\InvisibleMaterial.cs" />
+    <Compile Include="Base\Materials\InvisibleMaterial.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialGlDeferred.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialDeferred.cs" />
-    <Compile Include="Kn5Specific\Materials\IRenderableMaterial.cs" />
+    <Compile Include="Base\Materials\IRenderableMaterial.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\MaterialsProviderDeferred.cs" />
-    <Compile Include="Kn5Specific\Materials\Kn5MaterialsProvider.cs" />
+    <Compile Include="Base\Materials\SharedMaterials.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\MirrorMaterialDeferred.cs" />
     <Compile Include="Kn5Specific\Objects\AmbientShadow.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableList.cs" />
@@ -187,10 +194,10 @@
     <Compile Include="Kn5Specific\Objects\SkyObject.cs" />
     <Compile Include="Kn5Specific\Textures\RenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\IRenderableTexture.cs" />
-    <Compile Include="Kn5Specific\Textures\TexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Textures\Kn5OverrideableTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Utils\CarLight.cs" />
     <Compile Include="Kn5Specific\Utils\CarLightType.cs" />
-    <Compile Include="Kn5Specific\Utils\Kn5Converter.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableFile.cs" />
     <Compile Include="Temporary\Logging.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />

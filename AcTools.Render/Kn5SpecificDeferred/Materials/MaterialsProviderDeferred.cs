@@ -1,14 +1,36 @@
-using AcTools.Kn5File;
+using System;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificDeferred.Materials {
-    public class MaterialsProviderDeferred : Kn5MaterialsProvider {
-        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
-            if (kn5Material == null) {
+    public class MaterialsProviderDeferred : IMaterialsFactory {
+        public IRenderableMaterial CreateMaterial(object key) {
+            var kn5 = key as Kn5MaterialDescription;
+            if (kn5 != null) {
+                return CreateMaterial(kn5);
+            }
+
+            var shadow = key as Kn5AmbientShadowMaterialDescription;
+            if (shadow != null) {
+                return new AmbientShadowMaterialDeferred(shadow.Filename);
+            }
+
+            switch (key as string) {
+                case BasicMaterials.MirrorKey:
+                    return new MirrorMaterialDeferred();
+                case BasicMaterials.SkyKey:
+                    return new SkyMaterialDeferred();
+            }
+
+            throw new NotSupportedException($@"Key not supported: {key}");
+        }
+
+        private IRenderableMaterial CreateMaterial(Kn5MaterialDescription description) {
+            if (description?.Material == null) {
                 return new InvisibleMaterial();
             }
 
-            switch (kn5Material.ShaderName) {
+            switch (description.Material.ShaderName) {
                 case "GL":
                     return new Kn5MaterialGlDeferred();
 
@@ -16,24 +38,8 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
                     return new InvisibleMaterial();
 
                 default:
-                    return new Kn5MaterialDeferred(kn5Filename, kn5Material);
+                    return new Kn5MaterialDeferred(description);
             }
-        }
-
-        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
-            return new AmbientShadowMaterialDeferred(filename);
-        }
-
-        public override IRenderableMaterial CreateSkyMaterial() {
-            return new SkyMaterialDeferred();
-        }
-
-        public override IRenderableMaterial CreateMirrorMaterial() {
-            return new MirrorMaterialDeferred();
-        }
-
-        public override IRenderableMaterial CreateFlatMirrorMaterial() {
-            throw new System.NotImplementedException();
         }
     }
 }

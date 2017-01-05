@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Utils.Helpers;
@@ -97,15 +99,10 @@ namespace AcTools.Render.Base.Shadows {
         private RasterizerState _rasterizerState;
         private DepthStencilState _depthStencilState;
 
-        public ShadowsDirectional(int mapSize) {
+        public ShadowsDirectional(int mapSize, IEnumerable<float> splits) {
             _mapSize = mapSize;
 
-            Splits = new [] {
-                // new Split(5f),
-                new Split(15f),
-                new Split(50f),
-                new Split(200f)
-            };
+            Splits = splits.Select(x => new Split(x)).ToArray();
 
             for (var i = 1; i < Splits.Length; i++) {
                 Splits[i].Camera.SmallerCamera = Splits[i - 1].Camera;
@@ -113,6 +110,8 @@ namespace AcTools.Render.Base.Shadows {
 
             _viewport = new Viewport(0, 0, _mapSize, _mapSize, 0, 1.0f);
         }
+
+        public ShadowsDirectional(int mapSize) : this(mapSize, new []{ 15f, 50f, 200f }) {}
 
         public void Initialize(DeviceContextHolder holder) {
             foreach (var split in Splits) {
@@ -125,8 +124,8 @@ namespace AcTools.Render.Base.Shadows {
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
                 DepthBias = 1000,
-                DepthBiasClamp = 0f,
-                SlopeScaledDepthBias = 1f
+                DepthBiasClamp = 0.0f,
+                SlopeScaledDepthBias = 1.0f
             });
 
             _depthStencilState = DepthStencilState.FromDescription(holder.Device, new DepthStencilStateDescription {
@@ -140,6 +139,12 @@ namespace AcTools.Render.Base.Shadows {
         public void Update(Vector3 direction, BaseCamera camera) {
             foreach (var split in Splits) {
                 split.LookAt(direction, camera.Position + camera.Look * split.Size / 2);
+            }
+        }
+
+        public void Update(Vector3 direction, Vector3 target) {
+            foreach (var split in Splits) {
+                split.LookAt(direction, target);
             }
         }
 

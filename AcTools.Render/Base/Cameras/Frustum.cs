@@ -10,7 +10,7 @@ namespace AcTools.Render.Base.Cameras {
         public const int Near = 4;
         public const int Far = 5;
 
-        public Frustum(Matrix vp) {
+        private Frustum(Matrix vp) {
             Planes = new[] {
                 //left
                 new Plane(vp.M14 + vp.M11, vp.M24 + vp.M21, vp.M34 + vp.M31, vp.M44 + vp.M41),
@@ -36,6 +36,19 @@ namespace AcTools.Render.Base.Cameras {
         public static Frustum FromViewProj(Matrix viewProj) => new Frustum(viewProj);
 
         public FrustrumIntersectionType Intersect(BoundingBox box) {
+            for (var i = 0; i < 6; i++) {
+                switch (Plane.Intersects(Planes[i], box)) {
+                    case PlaneIntersectionType.Back:
+                        return FrustrumIntersectionType.None;
+                    case PlaneIntersectionType.Intersecting:
+                        return FrustrumIntersectionType.Intersection;
+                }
+            }
+
+            return FrustrumIntersectionType.Inside;
+        }
+
+        public FrustrumIntersectionType IntersectOld(BoundingBox box) {
             var totalIn = 0;
 
             foreach (var intersection in Planes.Select(plane => Plane.Intersects(plane, box))) {

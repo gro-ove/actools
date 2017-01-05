@@ -12,9 +12,9 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         private EffectSimpleMaterial.MapsMaterial _material;
         private IRenderableTexture _txNormal, _txMaps, _txDetails, _txDetailsNormal;
 
-        public Kn5MaterialSimpleMaps([NotNull] string kn5Filename, [NotNull] Kn5Material material) : base(kn5Filename, material) { }
+        public Kn5MaterialSimpleMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(DeviceContextHolder contextHolder) {
+        public override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
             _txMaps = GetTexture("txMaps", contextHolder);
             _txDetails = GetTexture("txDetail", contextHolder);
@@ -44,7 +44,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             base.Initialize(contextHolder);
         }
 
-        public override bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!base.Prepare(contextHolder, mode)) return false;
 
             Effect.FxMapsMaterial.Set(_material);
@@ -55,7 +55,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             return true;
         }
 
-        public override void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             Effect.TechMaps.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }

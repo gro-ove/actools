@@ -19,6 +19,14 @@ namespace AcTools.Render.Base {
         public static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
 
         private DeviceContextHolder _deviceContextHolder;
+
+        private void SetDeviceContextHolder(DeviceContextHolder value) {
+            _deviceContextHolder = value;
+            value.UpdateRequired += (sender, args) => {
+                IsDirty = true;
+            };
+        }
+
         private SwapChainDescription _swapChainDescription;
         private SwapChain _swapChain;
 
@@ -126,7 +134,7 @@ namespace AcTools.Render.Base {
         public void Initialize() {
             Debug.Assert(Initialized == false);
 
-            _deviceContextHolder = new DeviceContextHolder(InitializeDevice());
+            SetDeviceContextHolder(new DeviceContextHolder(InitializeDevice()));
             InitializeInner();
             Initialized = true;
         }
@@ -144,7 +152,7 @@ namespace AcTools.Render.Base {
             Debug.Assert(Initialized == false);
 
             _sharedHolder = true;
-            _deviceContextHolder = existingHolder;
+            SetDeviceContextHolder(existingHolder);
             InitializeInner();
             Initialized = true;
         }
@@ -171,7 +179,7 @@ namespace AcTools.Render.Base {
 
             Device device;
             Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, _swapChainDescription, out device, out _swapChain);
-            _deviceContextHolder = new DeviceContextHolder(device);
+            SetDeviceContextHolder(new DeviceContextHolder(device));
 
             using (var factory = _swapChain.GetParent<Factory>()) {
                 factory.SetWindowAssociation(outputHandle, WindowAssociationFlags.IgnoreAll);

@@ -60,9 +60,13 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public int TrianglesCount => this.Aggregate(0, (a, b) => a + b.TrianglesCount);
+        public int GetTrianglesCount() {
+            return this.Where(x => x.IsEnabled).Aggregate(0, (a, b) => a + b.GetTrianglesCount());
+        }
 
-        public int ObjectsCount => this.Aggregate(0, (a, b) => a + b.ObjectsCount);
+        public int GetObjectsCount() {
+            return this.Where(x => x.IsEnabled).Aggregate(0, (a, b) => a + b.GetObjectsCount());
+        }
 
         public BoundingBox? BoundingBox { get; private set; }
 
@@ -107,12 +111,13 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public virtual void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (!IsEnabled || filter?.Invoke(this) == false) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
             if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
 
-            for (var i = 0; i < Count; i++) {
+            var c = Count;
+            for (var i = 0; i < c; i++) {
                 var child = this[i];
                 if (child.IsEnabled) {
                     child.Draw(contextHolder, camera, mode, filter);
@@ -133,7 +138,7 @@ namespace AcTools.Render.Base.Objects {
             return Clone();
         }
 
-        public void Dispose() {
+        public virtual void Dispose() {
             this.DisposeEverything();
         }
     }

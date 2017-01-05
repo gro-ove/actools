@@ -83,3 +83,4 @@ AcTools/AcdFile/AcdEncryption.cs
 # Libraries
 Libraries/*
 Libraries.zip
+*.vsp

@@ -49,11 +49,11 @@
             </DockPanel>
             <DockPanel>
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
-                <TextBlock Text="{Binding Renderer.ObjectsCount}" />
+                <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
             </DockPanel>
             <DockPanel>
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                <TextBlock Text="{Binding Renderer.TrianglesCount}" />
+                <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
             </DockPanel>
 
             <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -63,6 +63,31 @@
             <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Wireframe}" />
             </CheckBox>
+            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.BlurredNodesActive}" IsEnabled="{Binding Renderer.CarNode.HasBlurredNodes}">
+                <Label Content="Blurred rims" />
+            </CheckBox>
+            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.CockpitLrActive}" IsEnabled="{Binding Renderer.CarNode.HasCockpitBoth}">
+                <Label Content="Low-resolution cockpit" />
+            </CheckBox>
+            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.SeatbeltOnActive}" IsEnabled="{Binding Renderer.CarNode.HasSeatbeltOn}">
+                <Label Content="Seatbelt" />
+            </CheckBox>
+            <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}" Margin="0 4 0 0">
+                <DockPanel.ToolTip>
+                    <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
+                                <Binding Path="In"/>
+                                <Binding Path="Out"/>
+                                <Binding Path="FileName"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DockPanel.ToolTip>
+                <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
+                <Slider Minimum="0" Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
+                        Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
+            </DockPanel>
 
             <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
             <ComboBox ItemsSource="{Binding Car.EnabledOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
@@ -178,9 +203,8 @@
                                                 </DockPanel>
 
                                                 <DockPanel Style="{StaticResource DockPanel}">
-                                                    <mui:ValueLabel
-                                                            Value="{Binding Transparency, Converter={StaticResource PercentageConverter}}"
-                                                            Postfix="%" Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
+                                                    <mui:ValueLabel Value="{Binding Transparency, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                            Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
                                                     <Slider Minimum="0" Maximum="100"
                                                             Value="{Binding Transparency, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                                                             TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />

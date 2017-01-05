@@ -90,7 +90,7 @@ namespace AcTools.Render.Base.Cameras {
                     Target.Y + height,
                     Target.Z + sideRadius * MathF.Sin(Alpha));
 
-            View = Matrix.LookAtLH(Position, Target, Vector3.UnitY);
+            SetView(Matrix.LookAtLH(Position, Target, Vector3.UnitY));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

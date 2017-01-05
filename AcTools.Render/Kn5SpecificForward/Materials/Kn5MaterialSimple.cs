@@ -18,12 +18,12 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         private EffectSimpleMaterial.StandartMaterial _material;
         private IRenderableTexture _txDiffuse;
 
-        internal Kn5MaterialSimple([NotNull] string kn5Filename, [NotNull] Kn5Material material) : base(kn5Filename, material) {}
+        internal Kn5MaterialSimple([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        public override void Initialize(DeviceContextHolder contextHolder) {
+        public override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            if (Kn5Material.AlphaTested) {
+            if (Description.Material?.AlphaTested == true) {
                 Flags |= EffectSimpleMaterial.AlphaTest;
             }
 
@@ -52,7 +52,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect.FxMaterial.Set(material);
         }
 
-        public override bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
             Effect.FxMaterial.Set(_material);
@@ -62,7 +62,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             return true;
         }
 
-        public override void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }

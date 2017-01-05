@@ -113,7 +113,41 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.B:
-                    _renderer.UseBloom = !_renderer.UseBloom;
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.BlurredNodesActive = !_renderer.CarNode.BlurredNodesActive;
+                        }
+                    } else {
+                        _renderer.UseBloom = !_renderer.UseBloom;
+                    }
+                    break;
+
+                case Keys.C:
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.CockpitLrActive = !_renderer.CarNode.CockpitLrActive;
+                        }
+                    }
+                    break;
+
+                case Keys.S:
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.SeatbeltOnActive = !_renderer.CarNode.SeatbeltOnActive;
+                        }
+                    }
+                    break;
+
+                case Keys.PageUp:
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        _renderer.SelectPreviousLod();
+                    }
+                    break;
+
+                case Keys.PageDown:
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        _renderer.SelectNextLod();
+                    }
                     break;
             }
         }

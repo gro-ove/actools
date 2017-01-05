@@ -1,5 +1,6 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
@@ -19,20 +20,18 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             _filename = filename;
         }
 
-        public void Initialize(DeviceContextHolder contextHolder) {
+        public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGObject>();
-
-            var texturesProvider = contextHolder.Get<TexturesProvider>();
-            _txDiffuse = texturesProvider.GetTexture(_filename, contextHolder);
+            _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _filename);
         }
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Deferred) return false;
 
             _effect.FxDiffuseMap.SetResource(_txDiffuse);
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
-            contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.TransparentBlendState;
-            contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.LessEqualReadOnlyDepthState;
+            contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
+            contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
             return true;
         }
 
@@ -41,7 +40,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             _effect.TechAmbientShadowDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
