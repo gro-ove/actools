@@ -139,30 +139,23 @@
                     <Border Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
                         <Border BorderBrush="#2067b2" BorderThickness="1">
                             <AdornerDecorator>
-                                <c:Cell>
-                                    <c:Cell.LayoutTransform>
-                                        <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
-                                                ScaleX="{x:Static c:DpiAwareWindow.OptionScale}" ScaleY="{x:Static c:DpiAwareWindow.OptionScale}" />
-                                    </c:Cell.LayoutTransform>
+                                <StackPanel Margin="40" RenderOptions.ClearTypeHint="Enabled">
+                                    <TextBlock Text="ɿ(｡･ɜ･)ɾ" Style="{StaticResource Heading1}" FontSize="50" Margin="0 0 0 20" />
+                                    <TextBlock Text="{x:Static mui:UiStrings.FatalError_Message}" Style="{StaticResource Light}" Margin="0 0 0 20"
+                                            TextWrapping="Wrap" />
 
-                                    <StackPanel Margin="40" RenderOptions.ClearTypeHint="Enabled">
-                                        <TextBlock Text="ɿ(｡･ɜ･)ɾ" Style="{StaticResource Heading1}" FontSize="50" Margin="0 0 0 20" />
-                                        <TextBlock Text="{x:Static mui:UiStrings.FatalError_Message}" Style="{StaticResource Light}" Margin="0 0 0 20"
-                                                TextWrapping="Wrap" />
+                                    <TextBlock Text="Detailed information:" Style="{StaticResource Light}" Margin="0 0 0 8" />
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 20" MaxHeight="200">
+                                        <TextBlock Text="{TemplateBinding StackTrace}" Style="{StaticResource Monospace}" Margin="0 0 0 8" TextWrapping="Wrap"
+                                                FontSize="11" />
+                                    </ScrollViewer>
 
-                                        <TextBlock Text="Detailed information:" Style="{StaticResource Light}" Margin="0 0 0 8" />
-                                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 20" MaxHeight="200">
-                                            <TextBlock Text="{TemplateBinding StackTrace}" Style="{StaticResource Monospace}" Margin="0 0 0 8"
-                                                    TextWrapping="Wrap" FontSize="11" />
-                                        </ScrollViewer>
-
-                                        <c:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
-                                            <Button Content="Copy To Clipboard" Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                            <Button Content="Restart" Command="{Binding RestartCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                            <Button Content="Close" Command="{Binding ExitCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        </c:SpacingStackPanel>
-                                    </StackPanel>
-                                </c:Cell>
+                                    <c:SpacingStackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                        <Button Content="Copy To Clipboard" Command="{Binding CopyCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <Button Content="Restart" Command="{Binding RestartCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        <Button Content="Close" Command="{Binding ExitCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    </c:SpacingStackPanel>
+                                </StackPanel>
                             </AdornerDecorator>
                         </Border>
                     </Border>
