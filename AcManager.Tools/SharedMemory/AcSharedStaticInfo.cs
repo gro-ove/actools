@@ -84,6 +84,9 @@ namespace AcManager.Tools.SharedMemory {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
         public string TrackConfiguration;
 
+        // added 1.10.2
+        public float ErsMaxJ;
+
         [Pure]
         public static AcSharedStaticInfo FromFile([NotNull] MemoryMappedFile file) {
             if (file == null) throw new ArgumentNullException(nameof(file));

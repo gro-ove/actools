@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using SlimDX;
 
 namespace AcManager.Tools.SharedMemory {
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode), Serializable]
@@ -100,8 +101,36 @@ namespace AcManager.Tools.SharedMemory {
         public int DrsEnabled;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float[] BrakeTemp;
-        
+        public float[] BrakeTemperature;
+
+        // added in 1.10
+        public float Clutch;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public float[] TyreTempI;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public float[] TyreTempM;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public float[] TyreTempO;
+
+        // added in 1.10.2
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool IsAiControlled;
+
+        // added in 1.11
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public Vector3[] TyreContactPoint;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public Vector3[] TyreContactNormal;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public Vector3[] TyreContactHeading;
+
+        public float BrakeBias;
+
         [Pure, NotNull]
         public static AcSharedPhysics FromFile([NotNull] MemoryMappedFile file) {
             if (file == null) throw new ArgumentNullException(nameof(file));
