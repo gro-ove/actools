@@ -343,6 +343,11 @@ namespace AcManager.Tools.Profile {
                 var graphics = current.Graphics;
                 var info = current.StaticInfo;
 
+                if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
+                    CurrentStatus = Status.NotLive;
+                    return;
+                }
+
                 if (CarId == null) {
                     CarId = info.CarModel;
                     TrackId = string.IsNullOrWhiteSpace(info.TrackConfiguration) ? info.Track :
