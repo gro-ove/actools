@@ -299,6 +299,10 @@
     </Compile>
     <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
     <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
+    <Compile Include="Pages\SelectionLists\SelectionList.cs" />
+    <Compile Include="Pages\SelectionLists\TrackCountries_New.xaml.cs">
+      <DependentUpon>TrackCountries_New.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SelectionLists\TrackCountries.xaml.cs">
       <DependentUpon>TrackCountries.xaml</DependentUpon>
     </Compile>
@@ -727,6 +731,10 @@
     <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SelectionLists\TrackCountries_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\SelectionLists\TrackCountries.xaml">
       <Generator>MSBuild:Compile</Generator>
