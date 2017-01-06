@@ -616,19 +616,29 @@ namespace AcManager.Pages.Windows {
 
         public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
 
-        private void TitleLinkCars_OnDrop(object sender, DragEventArgs e) {
-            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
-            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
-
-            if (raceGridEntry == null && carObject == null) {
-                e.Effects = DragDropEffects.None;
+        private void TitleLinkContent_OnDrop(object sender, DragEventArgs e) {
+            var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
+            if (trackObject != null) {
+                TracksListPage.Show(trackObject);
+                e.Effects = DragDropEffects.Copy;
                 return;
             }
 
-            CarsListPage.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
-            e.Effects = DragDropEffects.Copy;
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            if (raceGridEntry != null) {
+                CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
+                e.Effects = DragDropEffects.Copy;
+                return;
+            }
 
-            // TODO: moving tracks
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+            if (carObject != null) {
+                CarsListPage.Show(carObject);
+                e.Effects = DragDropEffects.Copy;
+                return;
+            }
+
+            e.Effects = DragDropEffects.None;
         }
 
         private void TitleLinkDrive_OnDrop(object sender, DragEventArgs e) {

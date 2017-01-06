@@ -9,6 +9,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -16,7 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
-    public abstract partial class TrackObjectBase : AcJsonObjectNew {
+    public abstract partial class TrackObjectBase : AcJsonObjectNew, IDraggable {
         protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         public override void PastLoad() {
@@ -251,5 +252,9 @@ namespace AcManager.Tools.Objects {
         public string MapImage => Path.Combine(MapDirectory, @"map.png");
         
         public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models-{LayoutId}.ini");
+
+        public const string DraggableFormat = "Data-TrackObject";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

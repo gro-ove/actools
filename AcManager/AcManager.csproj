@@ -119,7 +119,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net45\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
@@ -186,6 +186,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
+    <Compile Include="About\Licenses\LZF\license.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -307,7 +308,7 @@
     <Compile Include="Pages\Dialogs\SetupRaceGridDialog.xaml.cs">
       <DependentUpon>SetupRaceGridDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Drive\QuickDrive_Conditions.cs" />
+    <Compile Include="Pages\Drive\QuickDrive.Conditions.cs" />
     <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
     <Compile Include="Pages\Drive\QuickDriveModeViewModel.cs" />
     <Compile Include="Pages\Drive\QuickDrive_GridTest.xaml.cs">
@@ -1188,6 +1189,20 @@
     <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="About\Licenses\AdornedControl\LICENSE" />
+    <None Include="About\Licenses\AssettoCorsaSharedMemory\LICENSE" />
+    <None Include="About\Licenses\AvalonEdit\LICENSE" />
+    <None Include="About\Licenses\CachedImage\LICENSE" />
+    <None Include="About\Licenses\EmojiOne\LICENSE.md" />
+    <None Include="About\Licenses\FirstFloor.ModernUI\LICENSE.md" />
+    <None Include="About\Licenses\FXAA\LICENSE" />
+    <None Include="About\Licenses\Json.NET\LICENSE.md" />
+    <None Include="About\Licenses\LevelDB.net\LICENSE" />
+    <None Include="About\Licenses\LevelDB\LICENSE" />
+    <None Include="About\Licenses\MoonSharp\LICENSE" />
+    <None Include="About\Licenses\OxyPlot\LICENSE" />
+    <None Include="About\Licenses\SharpCompress\LICENSE.md" />
+    <None Include="About\Licenses\SlimDX\LICENSE" />
     <None Include="App.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -1247,6 +1262,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="About\Licenses\WpfNotifyIcon\" />
     <Folder Include="Assets\Libs\" />
   </ItemGroup>
   <ItemGroup>
@@ -1451,6 +1467,24 @@
     <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
+    <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />
+    <Content Include="About\Licenses\AvalonEdit\AvalonEdit.txt" />
+    <Content Include="About\Licenses\CachedImage\CachedImage.txt" />
+    <Content Include="About\Licenses\EmojiOne\EmojiOne.txt" />
+    <Content Include="About\Licenses\FirstFloor.ModernUI\FirstFloor.ModernUI.txt" />
+    <Content Include="About\Licenses\FXAA\FXAA.txt" />
+    <Content Include="About\Licenses\Json.NET\Json.NET.txt" />
+    <Content Include="About\Licenses\LevelDB.net\LevelDB.net.txt" />
+    <Content Include="About\Licenses\LevelDB\LevelDB.txt" />
+    <Content Include="About\Licenses\LZF\LZF.txt" />
+    <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />
+    <Content Include="About\Licenses\MoonSharp\MoonSharp.txt" />
+    <Content Include="About\Licenses\OxyPlot\OxyPlot.txt" />
+    <Content Include="About\Licenses\SharpCompress\SharpCompress.txt" />
+    <Content Include="About\Licenses\SlimDX.dx11\LICENSE.txt" />
+    <Content Include="About\Licenses\SlimDX.dx11\SlimDX.dx11.txt" />
+    <Content Include="About\Licenses\SlimDX\SlimDX.txt" />
     <Content Include="About\Licenses\WindowsIcons\license.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

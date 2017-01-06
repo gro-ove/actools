@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
@@ -523,9 +524,9 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
 
                     if (value == UiModuleStarterType && ModuleStarter.TryToInstallModule() && ModuleStarter.IsAssettoCorsaRunning) {
-                        ((Action)(() => {
+                        (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).BeginInvoke((Action)(() => {
                             ModernDialog.ShowMessage(ToolsStrings.Settings_Starter_UiModule_JustInstalled);
-                        })).BeginInvokeInMainThread();
+                        }));
                     }
                 }
             }

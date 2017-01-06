@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
 using Microsoft.Win32;
@@ -394,7 +395,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void ShowDialogWithoutBlocking() {
-            ActionExtension.BeginInvokeInMainThread(new Action(() => ShowDialog()));
+            (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).BeginInvoke(new Action(() => ShowDialog()));
         }
 
         private const int GwlStyle = -16;

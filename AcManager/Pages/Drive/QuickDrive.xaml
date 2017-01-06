@@ -12,6 +12,16 @@
             </ResourceDictionary.MergedDictionaries>
 
             <mui:BindingProxy x:Key="Model" Data="{Binding}" />
+
+            <ContextMenu x:Key="RealConditionsContextMenu" x:Shared="False">
+                <!--TODO-->
+                <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}"
+                        IsCheckable="True" ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}" Command="{Binding SwitchLocalWeatherCommand}" />
+                <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
+                <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
+                        IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
+                <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
+            </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -29,28 +39,22 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True"
-                    Drop="Car_OnDrop">
-                <mui:Cell Margin="-1" ClipToBounds="True">
-                    <mui:Cell IsHitTestVisible="False">
-                        <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-                        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
-                                Text="{Binding SelectedCar.DisplayName}" Foreground="White" />
-                    </mui:Cell>
-                    <mui:ContextMenuButton Click="SelectedCarContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
-                </mui:Cell>
-            </Button>
+            <mui:Cell DataContext="{Binding SelectedCar}" Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
+                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="Car_OnDrop" MouseLeftButtonUp="SelectedCar_OnClick" ClipToBounds="True">
+                <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
+                        Foreground="White" TextTrimming="CharacterEllipsis" />
+                <mui:ContextMenuButton Click="SelectedCarContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+            </mui:Cell>
 
-            <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch" Margin="0 0 20 0" Grid.Column="1" Background="Gray">
-                <mui:Cell Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedTrack}">
-                    <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-                    <mui:BetterImage Source="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
-                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
-                            Foreground="White" />
-                </mui:Cell>
-            </Button>
+            <mui:Cell DataContext="{Binding SelectedTrack}" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
+                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="Track_OnDrop" MouseLeftButtonUp="SelectedTrack_OnClick">
+                <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
+                <mui:BetterImage Source="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
+                        Foreground="White" TextTrimming="CharacterEllipsis" />
+                <mui:ContextMenuButton Click="SelectedTrackContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+            </mui:Cell>
 
             <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
@@ -79,20 +83,7 @@
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
-                    <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 8"
-                            Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ContextMenu>
-                            <!--TODO-->
-                            <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}"
-                                    IsCheckable="True" ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}"
-                                    Command="{Binding SwitchLocalWeatherCommand}" />
-                            <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}"
-                                    IsCheckable="True" />
-                            <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
-                                    IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
-                            <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
-                        </ContextMenu>
-                    </mui:ContextMenuButton>
+                    <mui:ContextMenuButton DockPanel.Dock="Right" Padding="8" Click="ConditionsContextMenuButton_OnClick" />
                     <CheckBox IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
                         <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
                     </CheckBox>

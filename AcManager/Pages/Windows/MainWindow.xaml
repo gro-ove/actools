@@ -95,7 +95,7 @@
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Profile}" GroupKey="profile" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
         <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
-            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkCars_OnDrop"
+            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkContent_OnDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
         <mui:TitleLink x:Name="ServerGroup" DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False"

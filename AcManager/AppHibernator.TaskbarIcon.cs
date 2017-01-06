@@ -7,7 +7,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using Hardcodet.Wpf.TaskbarNotification;
-using Application = System.Windows.Application;
 
 namespace AcManager {
     public partial class AppHibernator {

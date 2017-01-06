@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -7,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
@@ -60,7 +63,14 @@ namespace AcManager.Pages.Drive {
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
-                new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
+                new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
+
+                new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
+                new InputBinding(Model.RandomCarCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(Model.RandomTrackCommand, new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(Model.RandomTimeCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(Model.RandomWeatherCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(Model.RandomTemperatureCommand, new KeyGesture(Key.D5, ModifierKeys.Control | ModifierKeys.Alt)),
             });
 
             _selectNextCar = null;
@@ -186,6 +196,20 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private AsyncCommand _randomizeCommand;
+
+            public AsyncCommand RandomizeCommand => _randomizeCommand ?? (_randomizeCommand = new AsyncCommand(async () => {
+                RandomCarCommand.Execute();
+                await Task.Delay(100);
+                RandomTrackCommand.Execute();
+                await Task.Delay(100);
+                RandomTimeCommand.Execute();
+                await Task.Delay(100);
+                RandomWeatherCommand.Execute();
+                await Task.Delay(100);
+                RandomTemperatureCommand.Execute();
+            }));
+
             public CarObject SelectedCar {
                 get { return _selectedCar; }
                 set {
@@ -199,7 +223,13 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public BindingList<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
+            private DelegateCommand _randomCarCommand;
+
+            public DelegateCommand RandomCarCommand => _randomCarCommand ?? (_randomCarCommand = new DelegateCommand(() => {
+                SelectedCar = (CarObject)CarsManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+            }));
+
+            public ObservableCollection<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
 
             private Game.TrackPropertiesPreset _selectedTrackPropertiesPreset;
 
@@ -226,6 +256,13 @@ namespace AcManager.Pages.Drive {
                     FancyBackgroundManager.Instance.ChangeBackground(value?.PreviewImage);
                 }
             }
+
+            private DelegateCommand _randomTrackCommand;
+
+            public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
+                var track = (TrackObject)TracksManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+                SelectedTrack = track.MultiLayouts?.RandomElement() ?? track;
+            }));
 
             public int TimeMultiplerMinimum => 0;
 
@@ -553,17 +590,61 @@ namespace AcManager.Pages.Drive {
             e.Effects = DragDropEffects.Copy;
         }
 
-        private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
-            var menu = new ContextMenu {};
+        private void Track_OnDrop(object sender, DragEventArgs e) {
+            var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
 
-            menu.AddItem("Change To Random Car", () => {
-                Model.SelectedCar = (CarObject)CarsManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
-            }, @"Alt+R");
-            menu.AddItem("Open Car In Content Tab", () => {
-                CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
-            });
-            
-            e.Menu = menu;
+            if (trackObject == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            Model.SelectedTrack = trackObject;
+            e.Effects = DragDropEffects.Copy;
+        }
+
+        private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+            e.Menu = new ContextMenu()
+                    .AddItem("Change To Random Car", Model.RandomCarCommand, @"Ctrl+Alt+1")
+                    .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddSeparator()
+                    .AddItem("Open Car In Content Tab", () => {
+                         CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                     });
+        }
+
+        private void SelectedTrackContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+            e.Menu = new ContextMenu()
+                    .AddItem("Change To Random Track", Model.RandomTrackCommand, @"Ctrl+Alt+2")
+                    .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddSeparator()
+                    .AddItem("Open Track In Content Tab", () => {
+                        TracksListPage.Show(Model.SelectedTrack);
+                    }, isEnabled: AppKeyHolder.IsAllRight);
+        }
+
+        private void SelectedCar_OnClick(object sender, RoutedEventArgs e) {
+            if (e.Handled) return;
+            Model.ChangeCarCommand.Execute(null);
+        }
+
+        private void SelectedTrack_OnClick(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
+            Model.ChangeTrackCommand.Execute(null);
+        }
+
+        private void ConditionsContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+            if (Model.RealConditions) {
+                e.Menu = (TryFindResource(@"RealConditionsContextMenu") as ContextMenu)?
+                        .AddSeparator()
+                        .AddItem("Set Random Time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+            } else {
+                e.Menu = new ContextMenu()
+                        .AddItem("Set Random Time",  Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem("Set Random Weather", Model.RandomWeatherCommand, @"Ctrl+Alt+4")
+                        .AddItem("Set Random Temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
+                        .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+            }
         }
     }
 }

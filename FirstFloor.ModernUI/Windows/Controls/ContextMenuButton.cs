@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,7 +8,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 
@@ -95,18 +94,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private async void OnContextMenuClick(object sender, MouseButtonEventArgs e) {
-            foreach (var child in Parent.FindVisualChildren<FrameworkElement>()) {
-                if (child.ContextMenu is InheritingContextMenu) {
-                    goto Wait;
-                }
+            if (Parent.FindVisualChildren<FrameworkElement>().Any(child => child.ContextMenu is InheritingContextMenu)) {
+                await Task.Delay(1);
             }
 
-            goto Action;
-
-            Wait:
-            await Task.Delay(1);
-
-            Action:
             if (!e.Handled && Open(false)) {
                 e.Handled = true;
             }

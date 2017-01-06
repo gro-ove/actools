@@ -60,6 +60,6 @@ namespace AcManager.Pages.Lists {
         }
 
         private static string _selectNextCar;
-        private static string _selectNextCarSkinId;
+        private static string _selectNextCarSkinId; // TODO
     }
 }

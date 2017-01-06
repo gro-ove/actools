@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using AcManager.Controls.ViewModels;
+using AcManager.Internal;
+using AcManager.Pages.Windows;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -31,6 +33,36 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Tracks);
+
+            protected override string LoadCurrentId() {
+                if (_selectNextTrack != null) {
+                    var value = _selectNextTrack;
+                    _selectNextTrack = null;
+                    return value;
+                }
+
+                return base.LoadCurrentId();
+            }
         }
+
+        public static void Show(TrackObjectBase track) {
+            // TODO
+            if (!AppKeyHolder.IsAllRight) return;
+
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
+            if (mainWindow == null) return;
+
+            _selectNextTrack = track.Id;
+            _selectNextTrackLayoutId = track.LayoutId;
+
+            NavigateToPage();
+        }
+
+        public static void NavigateToPage() {
+            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/TracksListPage.xaml", UriKind.Relative));
+        }
+
+        private static string _selectNextTrack;
+        private static string _selectNextTrackLayoutId; // TODO
     }
 }

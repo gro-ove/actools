@@ -1,0 +1,3 @@
+name: Hardcodet WPF NotifyIcon
+url: http://www.hardcodet.net/wpf-notifyicon
+sid: 24_154463160_

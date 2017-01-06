@@ -129,6 +129,13 @@ namespace AcManager.Pages.Drive {
                     }
                 }
             }
+
+            private DelegateCommand _randomWeatherCommand;
+
+            public DelegateCommand RandomWeatherCommand => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => {
+                RealConditions = false;
+                SelectedWeather = (WeatherObject)WeatherManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+            }));
             #endregion
 
             #region Automatically set variables
@@ -217,6 +224,13 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private DelegateCommand _randomTemperatureCommand;
+
+            public DelegateCommand RandomTemperatureCommand => _randomTemperatureCommand ?? (_randomTemperatureCommand = new DelegateCommand(() => {
+                RealConditions = false;
+                Temperature = MathUtils.Random(TemperatureMinimum, TemperatureMaximum);
+            }));
+
             public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
                     SelectedWeather?.TemperatureCoefficient ?? 0.0);
 
@@ -240,6 +254,16 @@ namespace AcManager.Pages.Drive {
                     }
                 }
             }
+
+            private DelegateCommand _randomTimeCommand;
+
+            public DelegateCommand RandomTimeCommand => _randomTimeCommand ?? (_randomTimeCommand = new DelegateCommand(() => {
+                if (RealConditions) {
+                    RealConditionsManualTime = true;
+                }
+
+                Time = (int)MathUtils.Random(TimeMinimum, TimeMaximum);
+            }));
 
             public string DisplayTime {
                 get { return $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }

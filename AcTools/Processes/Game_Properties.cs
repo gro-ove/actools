@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -418,7 +419,7 @@ namespace AcTools.Processes {
             public int? Id => Properties.Preset;
         }
 
-        private static BindingList<TrackPropertiesPreset> _defaultTrackPropertiesPresets;
+        private static ObservableCollection<TrackPropertiesPreset> _defaultTrackPropertiesPresets;
 
         public static TrackPropertiesPreset GetDefaultTrackPropertiesPreset() {
             return DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == "Optimum") ??
@@ -426,8 +427,8 @@ namespace AcTools.Processes {
         }
 
         // TODO: rework; move everything related to actools?
-        public static BindingList<TrackPropertiesPreset> DefaultTrackPropertiesPresets
-            => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new BindingList<TrackPropertiesPreset>(new[] {
+        public static ObservableCollection<TrackPropertiesPreset> DefaultTrackPropertiesPresets
+            => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new ObservableCollection<TrackPropertiesPreset>(new[] {
                 new TrackPropertiesPreset("Dusty", new TrackProperties {
                     Preset = 0,
                     SessionStart = 86.0,

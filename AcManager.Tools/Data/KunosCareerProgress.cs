@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -68,7 +69,7 @@ namespace AcManager.Tools.Data {
             _loadingInProgress = true;
             
             await Task.Delay(200);
-            await ActionExtension.InvokeInMainThread(Reload);
+            await (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(Reload);
             _loadingInProgress = false;
         }
 
