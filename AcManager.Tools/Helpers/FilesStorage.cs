@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -68,6 +69,7 @@ namespace AcManager.Tools.Helpers {
             public bool Exists => File.Exists(Filename);
         }
 
+        [NotNull]
         public ContentEntry GetContentFile(params string[] name) {
             var nameJoined = Path.Combine(name);
 

@@ -139,7 +139,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBox">
-                    <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="False">
+                    <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False">
                         <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </ScrollViewer>
                 </ControlTemplate>
@@ -158,8 +158,8 @@
                 <ControlTemplate TargetType="ListBox">
                     <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
-                        <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True" HorizontalScrollBarVisibility="Disabled"
-                                VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+                                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </ScrollViewer>
                     </Border>

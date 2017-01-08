@@ -129,7 +129,7 @@
                 mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible">
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories_New.xaml" />
                 <!-- ReSharper disable once Xaml.PathError -->
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
             </mui:ModernTab.Links>

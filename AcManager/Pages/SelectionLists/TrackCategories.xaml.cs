@@ -19,23 +19,23 @@ namespace AcManager.Pages.SelectionLists {
             InitializeComponent();
         }
 
-        private static Uri GetPageAddress(SelectCategory category) {
+        private static Uri GetPageAddress(SelectCategoryDescription category) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
-                $"enabled+&({category.Filter})", category.DisplayName);
+                $"enabled+&({category.Filter})", category.Name);
         }
 
         private void CategoriesListBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {
                 e.Handled = true;
 
-                var selected = CategoriesListBox.SelectedItem as SelectCategory;
+                var selected = CategoriesListBox.SelectedItem as SelectCategoryDescription;
                 if (selected == null) return;
                 NavigationCommands.GoToPage.Execute(GetPageAddress(selected), (IInputElement)sender);
             }
         }
 
         private void ListItem_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var selected = ((FrameworkElement)sender).DataContext as SelectCategory;
+            var selected = ((FrameworkElement)sender).DataContext as SelectCategoryDescription;
             e.Handled = true;
             if (selected == null) return;
             NavigationCommands.GoToPage.Execute(GetPageAddress(selected), (IInputElement)sender);
@@ -44,18 +44,18 @@ namespace AcManager.Pages.SelectionLists {
         public class ViewModel : NotifyPropertyChanged {
             public ViewModel() {
                 FilesStorage.Instance.Watcher(ContentCategory.TrackCategories).Update += SelectTrackDialog_CategoriesViewModel_LibraryUpdate;
-                Categories = new BetterObservableCollection<SelectCategory>(ReloadCategories());
+                Categories = new BetterObservableCollection<SelectCategoryDescription>(ReloadCategories());
             }
 
-            private IEnumerable<SelectCategory> ReloadCategories() {
-                return SelectCategory.LoadCategories(ContentCategory.TrackCategories);
+            private IEnumerable<SelectCategoryDescription> ReloadCategories() {
+                return SelectCategoryDescription.LoadCategories(ContentCategory.TrackCategories);
             }
 
             private void SelectTrackDialog_CategoriesViewModel_LibraryUpdate(object sender, EventArgs e) {
                 Categories.ReplaceEverythingBy(ReloadCategories());
             }
 
-            public BetterObservableCollection<SelectCategory> Categories { get; }
+            public BetterObservableCollection<SelectCategoryDescription> Categories { get; }
         }
     }
 }

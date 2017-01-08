@@ -44,14 +44,14 @@
             </CheckBox>
 
             <!--shared memory-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="AC’s shared memory" />
-            
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="AC's shared memory" />
+
             <CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
                 <Label Content="Watch for AC shared memory" ToolTip="Used for proper hibernation and other stuff" />
             </CheckBox>
-            
+
             <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-                <Label Content="Hibernate CM while racing" ToolTip="This way, CM won’t waste precious CPU and/or GPU time when it’s so needed" />
+                <Label Content="Hibernate CM while racing" ToolTip="This way, CM won't waste precious CPU and/or GPU time when it's so needed" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
@@ -84,16 +84,17 @@
             <!--quick drive-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
+            <CheckBox IsChecked="{Binding Drive.QuickDriveTrackDayViaPractice}"
+                    ToolTip="This way, there'll be a crew for pitstops, but bots might be more passive">
+                <Label Content="For Track Day, use Practice as a session type" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost}" />
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CacheBrands_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_Drive_CacheBrands}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.QuickDriveUseSkinNames}">
@@ -141,8 +142,7 @@
             <!--game-related events-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
-            <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}"
-                    ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
+            <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />
             </CheckBox>
 

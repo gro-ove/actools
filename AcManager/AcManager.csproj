@@ -297,7 +297,12 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
       <DependentUpon>LapTimes_Table.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
+    <Compile Include="Pages\SelectionLists\CarCategories_New.xaml.cs">
+      <DependentUpon>CarCategories_New.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SelectionLists\SelectCarBrand.cs" />
+    <Compile Include="Pages\SelectionLists\SelectCategoryDescription.cs" />
+    <Compile Include="Pages\SelectionLists\SelectCategoryBase.cs" />
     <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
     <Compile Include="Pages\SelectionLists\SelectionList.cs" />
     <Compile Include="Pages\SelectionLists\TrackCountries_New.xaml.cs">
@@ -731,6 +736,10 @@
     <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SelectionLists\CarCategories_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\SelectionLists\TrackCountries_New.xaml">
       <Generator>MSBuild:Compile</Generator>

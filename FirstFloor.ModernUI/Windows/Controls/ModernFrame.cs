@@ -296,6 +296,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     // load the content (asynchronous!)
                     var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
+#if DEBUG
+                    var task = ContentLoader.LoadContentAsync(newValue, _tokenSource.Token);
+#else
                     Task<object> task;
                     try {
                         task = ContentLoader.LoadContentAsync(newValue, _tokenSource.Token);
@@ -303,6 +306,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         SetNavigationFailedContent(newValue, navigationType, e);
                         return;
                     }
+#endif
 
                     task.ContinueWith(t => {
                         try {

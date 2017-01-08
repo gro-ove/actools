@@ -175,6 +175,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 for (var itemIndex = layoutInfo.FirstRealizedItemIndex; itemIndex <= layoutInfo.LastRealizedItemIndex; itemIndex++, visualIndex++) {
                     bool newlyRealized;
                     var child = (UIElement)_itemsGenerator.GenerateNext(out newlyRealized);
+                    if (child == null) continue;
+
                     SetVirtualItemIndex(child, itemIndex);
 
                     if (newlyRealized) {

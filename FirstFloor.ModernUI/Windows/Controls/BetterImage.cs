@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -121,7 +122,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnFilenameChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((BetterImage)o).OnFilenameChanged();
+            ((BetterImage)o).OnFilenameChanged((string)e.NewValue);
         }
 
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source), typeof(object),
@@ -325,8 +326,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (app == null) return;
             foreach (var image in app.Windows.OfType<Window>()
                     .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
-                image.OnFilenameChanged();
+                    .Where(x => string.Equals(x._filename, filename, StringComparison.OrdinalIgnoreCase))) {
+                image.OnFilenameChanged(filename);
             }
         }
         #endregion
@@ -350,7 +351,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void AddToCache(string filename, BitmapEntry entry) {
             _fromCache = false;
-            if (OptionCacheTotalSize == 0 || entry.Size > OptionCacheLimitSize) return;
+            if (OptionCacheTotalSize <= 0 || entry.Size > OptionCacheLimitSize) return;
 
             lock (Cache) {
                 var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
@@ -426,21 +427,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
-            if (OptionCacheTotalSize != 0) {
-                var cached = GetCached(Filename);
+            if (OptionCacheTotalSize > 0) {
+                var cached = GetCached(_filename);
                 var innerDecodeWidth = InnerDecodeWidth;
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
-                        var info = new FileInfo(Filename);
+                        var info = new FileInfo(_filename);
                         if (!info.Exists) {
                             _current = BitmapEntry.Empty;
                             _broken = true;
-                            RemoveFromCache(Filename);
+                            RemoveFromCache(_filename);
                             return false;
                         }
 
                         if (info.LastWriteTime > cached.Date) {
-                            RemoveFromCache(Filename);
+                            RemoveFromCache(_filename);
                         } else {
                             _current = cached;
                             _broken = false;
@@ -453,7 +454,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         // If there will be any problems with FileInfo
                         _current = BitmapEntry.Empty;
                         _broken = true;
-                        RemoveFromCache(Filename);
+                        RemoveFromCache(_filename);
                         return false;
                     }
                 }
@@ -469,10 +470,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             ++_loading;
-            _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
+            _current = LoadBitmapSource(_filename, InnerDecodeWidth, InnerDecodeHeight);
             _broken = _current.BitmapSource == null;
             if (!_broken) {
-                AddToCache(Filename, _current);
+                AddToCache(_filename, _current);
             }
 
             InvalidateMeasure();
@@ -495,13 +496,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var loading = ++_loading;
             _broken = false;
 
-            var current = await LoadBitmapSourceAsync(Filename, InnerDecodeWidth, InnerDecodeHeight);
+            var current = await LoadBitmapSourceAsync(_filename, InnerDecodeWidth, InnerDecodeHeight);
             if (loading != _loading) return;
 
             _current = current;
             _broken = _current.BitmapSource == null;
             if (!_broken) {
-                AddToCache(Filename, _current);
+                AddToCache(_filename, _current);
             }
 
             InvalidateMeasure();
@@ -512,7 +513,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var loading = ++_loading;
             _broken = false;
 
-            var filename = Filename;
+            var filename = _filename;
 
             byte[] data;
             if (string.IsNullOrEmpty(filename)) {
@@ -525,7 +526,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
-            if (loading != _loading) return;
+            if (loading != _loading || _filename != filename) return;
             if (data == null) {
                 _current = BitmapEntry.Empty;
                 _broken = true;
@@ -543,7 +544,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
                 _broken = _current.BitmapSource == null;
                 if (!_broken) {
-                    AddToCache(Filename, _current);
+                    AddToCache(filename, _current);
                 }
 
                 InvalidateMeasure();
@@ -553,18 +554,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (RecentlyLoaded.Count > 5) {
                 await Task.Delay((RecentlyLoaded.Count - 3) * 10);
-                if (loading != _loading) return;
+                if (loading != _loading || _filename != filename) return;
             }
 
             ThreadPool.QueueUserWorkItem(o => {
                 var current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
-                    if (loading != _loading) return;
+                    if (loading != _loading || _filename != filename) return;
 
                     _current = current;
                     _broken = _current.IsBroken;
                     if (!_broken) {
-                        AddToCache(Filename, _current);
+                        AddToCache(filename, _current);
                     }
 
                     InvalidateMeasure();
@@ -573,7 +574,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             });
         }
 
-        private void OnFilenameChanged() {
+        private string _filename;
+
+        private void OnFilenameChanged(string value) {
+            _filename = value;
             if (ReloadImage() && ClearOnChange) {
                 _current = BitmapEntry.Empty;
                 _broken = false;
@@ -610,6 +614,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
         }
 
+        private static readonly FormattedText CachedFormattedText = new FormattedText("Cached", CultureInfo.InvariantCulture,
+                FlowDirection.LeftToRight, new Typeface(new FontFamily(@"Arial").ToString()), 12, Brushes.Red);
+
         protected override void OnRender(DrawingContext dc) {
             if (_current.BitmapSource == null && HideBroken) return;
 
@@ -623,7 +630,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (OptionMarkCached && _fromCache) {
-                dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(50, 255, 255, 0)), null, new Rect(_offset, _size));
+                dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(40, 255, 255, 0)), null, new Rect(_offset, _size));
+                dc.DrawText(CachedFormattedText, new Point(_offset.X + 4, _offset.Y + 4));
             }
         }
 

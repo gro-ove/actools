@@ -1,200 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using JetBrains.Annotations;
 using AcManager.Pages.Dialogs;
-using AcManager.Pages.Miscellaneous;
-using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.SelectionLists {
-    public partial class CarBrands : ISelectedItemPage<AcObjectNew> {
-        private AcObjectNew _selectedItem;
-
-        public AcObjectNew SelectedItem {
-            get { return _selectedItem; }
-            set {
-                if (Equals(value, _selectedItem)) return;
-                _selectedItem = value;
-
-                UpdateSelected(value as CarObject);
-            }
-        }
-
-        public class CarBrandInformation : IComparable, IComparable<CarBrandInformation> {
-            public string Name { get; set; }
-
-            public string Icon { get; set; }
-
-            internal bool BuiltInIcon;
-
-            public CarBrandInformation(string name) {
-                Name = name;
-                Icon = GetBrandIcon(name, out BuiltInIcon);
-            }
-
-            public override string ToString() {
-                return Name;
-            }
-
-            public int CompareTo(object obj) {
-                return string.Compare(Name, obj.ToString(), StringComparison.InvariantCulture);
-            }
-
-            public int CompareTo(CarBrandInformation other) {
-                return string.Compare(Name, other.Name, StringComparison.InvariantCulture);
-            }
-        }
-
-        private static string GetBrandIcon(string brand, out bool builtInIcon) {
-            var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + @".png");
-            builtInIcon = entry != null && File.Exists(entry.Filename);
-            return builtInIcon ? entry.Filename : CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand)?.BrandBadge;
-        }
-
-        public ListCollectionView Brands => _brands;
-
-        private static ListCollectionView _brands;
-        private static BetterObservableCollection<CarBrandInformation> _carBrandsInformationList;
-        private const string KeyBrandsCache = ".SelectCarDialog.BrandsCache";
-
-        public static void ClearBrandsCache() {
-            CacheStorage.Set(KeyBrandsCache, new string[0]);
-        }
-
-        private static void UpdateCache() {
-            if (CarsManager.Instance.IsLoaded && SettingsHolder.Drive.QuickDriveCacheBrands) {
-                CacheStorage.Set(KeyBrandsCache, _carBrandsInformationList.Where(x => x.BuiltInIcon).Select(x => x.Name));
-            }
-        }
-
-        private class DistinctHelper : IEqualityComparer<CarBrandInformation> {
-            public bool Equals(CarBrandInformation x, CarBrandInformation y) => string.Equals(x.Name, y.Name, StringComparison.Ordinal);
-
-            public int GetHashCode(CarBrandInformation obj) => obj.Name.GetHashCode();
-        }
-
-        private static void InitializeOnce() {
-            if (CarsManager.Instance.IsLoaded) {
-                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
-                UpdateCache();
-            } else if (SettingsHolder.Drive.QuickDriveCacheBrands) {
-                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
-                        SuggestionLists.CarBrandsList
-                                       .Select(x => new CarBrandInformation(x)).Union(from name in CacheStorage.GetStringList(KeyBrandsCache)
-                                                                                      select new CarBrandInformation(name))
-                                       .Distinct(new DistinctHelper()));
-            } else {
-                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>();
-            }
-
-            SuggestionLists.CarBrandsList.CollectionChanged += CarBrandsList_CollectionChanged;
-            _brands = (ListCollectionView)CollectionViewSource.GetDefaultView(_carBrandsInformationList);
-            _brands.SortDescriptions.Add(new SortDescription());
-
-            CarsManager.Instance.WrappersList.CollectionReady += WrappersList_CollectionReady;
-        }
-
-        private static WeakReference<CarBrands> _instance;
-
-        private static void ReplaceBrands(IEnumerable<CarBrandInformation> brands) {
-            CarBrands instance;
-            _instance.TryGetTarget(out instance);
-
-            var selected = (instance?.BrandsListBox.SelectedItem as CarBrandInformation)?.Name;
-            _carBrandsInformationList.ReplaceEverythingBy(brands);
-
-            if (selected != null) {
-                instance.BrandsListBox.SelectedItem = _carBrandsInformationList.FirstOrDefault(x => x.Name == selected);
-            }
-        }
-
-        private static void ReplaceBrands() {
-            if (_carBrandsInformationList.Count == SuggestionLists.CarBrandsList.Count &&
-                    _carBrandsInformationList.All(x => SuggestionLists.CarBrandsList.Contains(x.Name))) return;
-            ReplaceBrands(SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
-            UpdateCache();
-        }
-
-        private static void WrappersList_CollectionReady(object sender, EventArgs e) {
-            ReplaceBrands();
-        }
-
-        private static void CarBrandsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    _carBrandsInformationList.AddRange(e.NewItems.OfType<string>()
-                                                        .Where(x => _carBrandsInformationList.All(y => !string.Equals(y.Name, x,
-                                                                StringComparison.OrdinalIgnoreCase)))
-                                                        .Select(x => new CarBrandInformation(x)));
-                    break;
-                default:
-                    ReplaceBrands();
-                    break;
-            }
-        }
-
-        public CarBrands() {
-            _instance = new WeakReference<CarBrands>(this);
-
+    public partial class CarBrands {
+        public CarBrands() : base(CarsManager.Instance, true) {
             InitializeComponent();
-            DataContext = this;
+        }
 
-            if (_carBrandsInformationList == null) {
-                InitializeOnce();
+        protected override void AddNewIfMissing(IList<SelectCarBrand> list, CarObject obj) {
+            var value = obj.Brand;
+            if (value == null) return;
+
+            for (var i = list.Count - 1; i >= 0; i--) {
+                var item = list[i];
+                if (item.DisplayName == value) {
+                    IncreaseCounter(obj, item);
+                    return;
+                }
             }
 
-            if (!CarsManager.Instance.IsLoaded) {
-                CarsManager.Instance.EnsureLoadedAsync().Forget();
+            AddNewIfMissing(list, obj, new SelectCarBrand(value, obj.BrandBadge));
+        }
+
+        protected override SelectCarBrand GetSelectedItem(IList<SelectCarBrand> list, CarObject selected) {
+            var value = selected?.Brand;
+            if (value != null) {
+                for (var i = list.Count - 1; i >= 0; i--) {
+                    var x = list[i];
+                    if (x.DisplayName == value) return x;
+                }
             }
+
+            return null;
         }
 
-        private void UpdateSelected(CarObject car) {
-            if (car == null) return;
-            var item = _carBrandsInformationList.FirstOrDefault(x => x.Name == car.Brand);
-            if (item == null) return;
-            BrandsListBox.SelectedItem = item;
-            BrandsListBox.ScrollIntoView(item);
+        protected override bool OnObjectPropertyChanged(CarObject obj, PropertyChangedEventArgs e) {
+            return e.PropertyName == nameof(obj.Brand);
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            BrandsListBox.Focus();
+        protected override Uri GetPageAddress(SelectCarBrand category) {
+            return SelectCarDialog.BrandUri(category.DisplayName);
         }
 
-        private void BrandsListBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
-                e.Handled = true;
-
-                var selected = BrandsListBox.SelectedItem as CarBrandInformation;
-                if (selected == null) return;
-                NavigationCommands.GoToPage.Execute(SelectCarDialog.BrandUri(selected.Name), (IInputElement)sender);
-            }
-        }
-
-        private void ListItem_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            e.Handled = true;
-
-            var selected = ((FrameworkElement)sender).DataContext as CarBrandInformation;
-            if (selected == null) return;
-            NavigationCommands.GoToPage.Execute(SelectCarDialog.BrandUri(selected.Name), (IInputElement)sender);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected override SelectCarBrand LoadFromCache(string serialized) {
+            return SelectCarBrand.Deserialize(serialized);
         }
     }
 }

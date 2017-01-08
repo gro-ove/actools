@@ -817,14 +817,17 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _quickDriveCacheBrands;
+            private bool? _quickDriveTrackDayViaPractice;
 
-            public bool QuickDriveCacheBrands {
-                get { return _quickDriveCacheBrands ?? (_quickDriveCacheBrands = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveCacheBrands", true)).Value; }
+            public bool QuickDriveTrackDayViaPractice {
+                get {
+                    return _quickDriveTrackDayViaPractice ??
+                            (_quickDriveTrackDayViaPractice = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveTrackDayViaPractice", true)).Value;
+                }
                 set {
-                    if (Equals(value, _quickDriveCacheBrands)) return;
-                    _quickDriveCacheBrands = value;
-                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveCacheBrands", value);
+                    if (Equals(value, _quickDriveTrackDayViaPractice)) return;
+                    _quickDriveTrackDayViaPractice = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveTrackDayViaPractice", value);
                     OnPropertyChanged();
                 }
             }

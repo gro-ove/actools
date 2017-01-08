@@ -663,8 +663,15 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public IEnumerable<string> GetStringList(string key, IEnumerable<string> defaultValue = null) {
             string value;
-            return _storage.TryGetValue(key, out value) && !string.IsNullOrEmpty(value)
-                    ? value.Split('\n').Select(Decode) : defaultValue ?? new string[] { };
+            if (_storage.TryGetValue(key, out value) && !string.IsNullOrEmpty(value)) {
+                var s = value.Split('\n');
+                for (var i = s.Length - 1; i >= 0; i--) {
+                    s[i] = Decode(s[i]);
+                }
+                return s;
+            }
+
+            return defaultValue ?? new string[] { };
         }
 
         [Pure]

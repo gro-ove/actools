@@ -44,25 +44,38 @@ namespace FirstFloor.ModernUI {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
+        private void ReplaceEverythingByInner([NotNull] IList<T> list) {
+            var items = Items;
+
+            items.Clear();
+            for (int i = 0, c = list.Count; i < c; i++) {
+                items.Add(list[i]);
+            }
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         public bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range, IEqualityComparer<T> comparer) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
             var list = range as IList<T> ?? range.ToList();
             var items = Items;
-            if (items.Count == list.Count) {
-                var c = list.Count;
-                for (var i = 0; i < c; i++) {
-                    if (!comparer.Equals(list[i], items[i])) {
-                        goto Replace;
-                    }
-                }
 
-                return false;
+            if (items.Count != list.Count) {
+                ReplaceEverythingByInner(list);
+                return true;
             }
 
-            Replace:
-            ReplaceEverythingByInner(list);
-            return true;
+            for (var i = list.Count - 1; i >= 0; i--) {
+                if (!comparer.Equals(list[i], items[i])) {
+                    ReplaceEverythingByInner(list);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {

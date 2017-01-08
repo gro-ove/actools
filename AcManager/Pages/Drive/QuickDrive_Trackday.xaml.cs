@@ -51,7 +51,8 @@ namespace AcManager.Pages.Drive {
                     JumpStartPenalty = Game.JumpStartPenaltyType.None,
                     StartingPosition = 1,
                     RaceLaps = LapsNumber,
-                    BotCars = botCars
+                    BotCars = botCars,
+                    UsePracticeSessionType = SettingsHolder.Drive.QuickDriveTrackDayViaPractice
                 };
             }
         }

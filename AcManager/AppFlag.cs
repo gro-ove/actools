@@ -56,7 +56,7 @@ namespace AcManager {
         /// <summary>
         /// How much RAM memory will be allocated for caching loaded from disk images, 10 MB
         /// by default. Feel free to modify if you want, I didn’t really test what values
-        /// would work best here.
+        /// would work best here. Also, set it to 0 if you want to disable caching at all.
         /// Example: --images-cache-limit=50MB.
         /// </summary>
         [FlagDefaultValue("10MB")]
