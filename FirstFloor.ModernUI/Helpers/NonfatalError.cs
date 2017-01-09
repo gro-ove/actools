@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private const int ErrorsLimit = 30;
 
         private static void NotifyInner([NotNull] string message, [CanBeNull] string commentary, [CanBeNull] Exception exception,
-                [CanBeNull] IEnumerable<INonfatalErrorSolution> solutions, bool show, string m, string p, int l) {
+                [CanBeNull] IEnumerable<NonfatalErrorSolution> solutions, bool show, string m, string p, int l) {
             if (exception is UserCancelledException) return;
 
             var i = exception as InformativeException;
@@ -61,7 +61,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
             Logging.Write('•', $"{message}:\n{exception}", m, p, l);
 
-            var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new INonfatalErrorSolution[0]);
+            var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new NonfatalErrorSolution[0]);
             ActionExtension.InvokeInMainThreadAsync(() => {
                 try {
                     var active = _active;
@@ -99,7 +99,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="p">File at which error occured.</param>
         /// <param name="l">Line at which error occured.</param>
         public static void Notify([LocalizationRequired, NotNull] string message, [LocalizationRequired, CanBeNull] string commentary, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                IEnumerable<NonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
                 [CallerLineNumber] int l = -1) {
             NotifyInner(message, commentary, exception, solutions, true, m, p, l);
         }
@@ -114,7 +114,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="p">File at which error occured.</param>
         /// <param name="l">Line at which error occured.</param>
         public static void Notify([LocalizationRequired, NotNull] string message, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                IEnumerable<NonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
                 [CallerLineNumber] int l = -1) {
             NotifyInner(message, null, exception, solutions, true, m, p, l);
         }
@@ -131,7 +131,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="p">File at which error occured.</param>
         /// <param name="l">Line at which error occured.</param>
         public static void NotifyBackground([LocalizationRequired, NotNull] string message, [LocalizationRequired, CanBeNull] string commentary,
-                Exception exception = null, IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null,
+                Exception exception = null, IEnumerable<NonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null,
                 [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             NotifyInner(message, commentary, exception, solutions, false, m, p, l);
         }
@@ -147,7 +147,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="p">File at which error occured.</param>
         /// <param name="l">Line at which error occured.</param>
         public static void NotifyBackground([LocalizationRequired, NotNull] string message, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                IEnumerable<NonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
                 [CallerLineNumber] int l = -1) {
             NotifyInner(message, null, exception, solutions, false, m, p, l);
         }

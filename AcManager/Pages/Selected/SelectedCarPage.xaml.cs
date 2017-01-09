@@ -264,7 +264,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
                 }
-            }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
+            }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData?.IsPacked == true));
 
             private CommandBase _packDataCommand;
 
@@ -353,6 +353,11 @@ namespace AcManager.Pages.Selected {
                     NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
                 }
             }));
+
+            private AsyncCommand _replaceTyresCommand;
+
+            public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
+                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
         }
 
         private string _id;

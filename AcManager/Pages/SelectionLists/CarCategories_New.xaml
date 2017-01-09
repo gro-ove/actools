@@ -22,7 +22,6 @@
             </mui:Cell>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsNew}" Value="True">
-                    <Setter TargetName="CountText" Property="Foreground" Value="White" />
                     <Setter TargetName="NewMark" Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </DataTemplate.Triggers>
@@ -32,7 +31,7 @@
         <GroupStyle>
             <GroupStyle.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}" Margin="0 4" />
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}" Margin="0 4" />
                 </DataTemplate>
             </GroupStyle.HeaderTemplate>
         </GroupStyle>

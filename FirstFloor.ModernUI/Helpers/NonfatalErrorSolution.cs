@@ -6,14 +6,14 @@ using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
-    public class INonfatalErrorSolution : AsyncCommand {
+    public class NonfatalErrorSolution : AsyncCommand {
         private readonly NonfatalErrorEntry _entry;
         private readonly Func<CancellationToken, Task> _execute;
 
         [NotNull]
         public string DisplayName { get; }
 
-        public INonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [NotNull] Func<CancellationToken, Task> execute, Func<bool> canExecute = null)
+        public NonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [NotNull] Func<CancellationToken, Task> execute, Func<bool> canExecute = null)
                 : base(() => Task.Delay(0), canExecute) {
             _entry = entry;
             _execute = execute;

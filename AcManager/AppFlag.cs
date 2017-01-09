@@ -14,11 +14,27 @@ namespace AcManager {
         TrackMapGeneratorMaxSize,
 
         /// <summary>
-        /// Run webserver with real-time updating player stats at specified port. Set to
-        /// 0 to disable (default value).
-        /// Example: --run-stats-webserver=18081.
+        /// How often shared memory will be read in Live state, in milliseconds. You might
+        /// want to decrease this value to make webpage with race information work smoother.
+        /// Default value: 50.
+        /// Example: --shared-memory-live-reading-interval=20.
         /// </summary>
-        RunStatsWebserver,
+        SharedMemoryLiveReadingInterval,
+
+        /// <summary>
+        /// Run webserver with real-time updating player stats at specified port. Set to
+        /// 0 to disable (default value). Don’t forget to enable selected port using netsh
+        /// (if it’s not enabled, the required command will be shown in CM’s logs).
+        /// Example: --run-race-information-webserver=18081.
+        /// </summary>
+        RunRaceInformationWebserver,
+
+        /// <summary>
+        /// Specify index file used by web server. Use either absolute path or path relative
+        /// to CM’s directory (by default located in AppData/Local).
+        /// Example: --race-information-webserver-file=Server.
+        /// </summary>
+        RaceInformationWebserverFile,
 
         /// <summary>
         /// Load libraries directly, without dumping them on disk.
@@ -157,12 +173,6 @@ namespace AcManager {
         /// Example: --disable-ac-root-checking.
         /// </summary>
         DisableAcRootChecking,
-
-        /// <summary>
-        /// Ping timeout for scanning while manual adding new server in online mode, in milliseconds. Default value: 200.
-        /// Example: --scan-ping-timeout=500.
-        /// </summary>
-        ScanPingTimeout,
 
         /// <summary>
         /// Command timeout in milliseconds. Default value: 3000.

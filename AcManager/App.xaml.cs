@@ -257,9 +257,11 @@ namespace AcManager {
             };
 
             AbstractDataFile.ErrorsCatcher = new DataSyntaxErrorCatcher();
+            AppArguments.Set(AppFlag.SharedMemoryLiveReadingInterval, ref AcSharedMemory.OptionLiveReadingInterval);
             AcSharedMemory.Initialize();
 
-            AppArguments.Set(AppFlag.RunStatsWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
+            AppArguments.Set(AppFlag.RunRaceInformationWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
+            AppArguments.Set(AppFlag.RaceInformationWebserverFile, ref PlayerStatsManager.OptionWebserverFilename);
             PlayerStatsManager.Instance.SetListener();
             RhmService.Instance.SetListener();
 
@@ -277,7 +279,7 @@ namespace AcManager {
                 } else {
                     NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.SourceFilename), line),
                             ToolsStrings.SyntaxError_Commentary, null, new[] {
-                                new INonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
+                                new NonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
                                     WindowsHelper.OpenFile(file.SourceFilename);
                                     return Task.Delay(0, token);
                                 })

@@ -165,6 +165,11 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&year:{Filter.Encode((year ?? 0).ToString())}", year != null ? year.ToString() : @"?");
         }
 
+        public static Uri TagUri(string tag) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"enabled+&tag:{Filter.Encode(tag)}", tag);
+        }
+
         public static Uri CountryUri(string country) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
                     $"enabled+&country:{Filter.Encode(country)}", country);

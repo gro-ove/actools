@@ -50,7 +50,7 @@
             <mui:Cell DataContext="{Binding SelectedTrack}" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
                     mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="Track_OnDrop" MouseLeftButtonUp="SelectedTrack_OnClick">
                 <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-                <mui:BetterImage Source="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+                <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
                 <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
                         Foreground="White" TextTrimming="CharacterEllipsis" />
                 <mui:ContextMenuButton Click="SelectedTrackContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
@@ -144,8 +144,9 @@
                                     <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
                                             Text="{Binding RealWeather.Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}, TargetNullValue='?'}"
                                             Margin="8" />
-                                    <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Source="{Binding RealWeather.Icon, IsAsync=True}" MaxWidth="36"
-                                            Height="36" Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1"
+                                            Source="{Binding RealWeather.Icon, Converter={StaticResource UriToCachedImageConverter}, IsAsync=True}"
+                                            MaxWidth="36" Height="36" Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Grid>
                             </ToolTip>

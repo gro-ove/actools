@@ -437,7 +437,12 @@ namespace AcTools.DataFile {
             return null;
         }
 
-        private IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
+        /// <summary>
+        /// Get all sections’ names by prefix like SECTION_0, SECTION_1, …
+        /// </summary>
+        /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
+        /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
+        public IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
             return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
                                 .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}")
                                 .TakeWhile(ContainsKey);

@@ -14,7 +14,7 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-        <Setter Property="Margin" Value="12 0 0 0" />
+        <Setter Property="Margin" Value="0 0 0 0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -34,18 +34,51 @@
     </Style>
 
     <ItemsPanelTemplate x:Key="ModernTabLinkItemPanelTemplate">
-        <StackPanel Orientation="Horizontal" />
+        <WrapPanel Orientation="Horizontal" />
     </ItemsPanelTemplate>
 
     <DataTemplate x:Key="ModernTabLinkItemPanelDataTemplate">
-        <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" />
+        <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="0 0 12 0" />
     </DataTemplate>
+
+    <c:ModernTabDataTemplateSelector x:Key="ModernTabDataTemplateSelector" LinkDataTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}">
+        <c:ModernTabDataTemplateSelector.TitleDataTemplate>
+            <DataTemplate>
+                <ContentPresenter Content="{Binding}" HorizontalAlignment="Left" />
+            </DataTemplate>
+        </c:ModernTabDataTemplateSelector.TitleDataTemplate>
+    </c:ModernTabDataTemplateSelector>
+
+    <Style x:Key="ModernTabTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="0 0 12 0" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
+    </Style>
 
     <Style TargetType="c:ModernTab">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="LinksHorizontalAlignment" Value="Right" />
         <Setter Property="LinksMargin" Value="{DynamicResource HeaderMargin}" />
         <Setter Property="FrameMargin" Value="0" />
+        
+        <Setter Property="LinksListBoxTemplate">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBox">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
+                        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
+                                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="c:ModernTab">
@@ -55,11 +88,11 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
                                 ItemContainerStyle="{StaticResource ModernTabLinkItem}" ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
                                 ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}"
-                                HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top" Margin="{TemplateBinding LinksMargin}" />
+                                HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top" Margin="{TemplateBinding LinksMargin}"
+                                Template="{TemplateBinding LinksListBoxTemplate}" />
 
                         <!-- content -->
-                        <c:ModernFrame x:Name="PART_Frame"
-                                Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                        <c:ModernFrame x:Name="PART_Frame" Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                 ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
                     </c:Cell>
                 </ControlTemplate>
@@ -69,46 +102,40 @@
         <Style.Triggers>
             <Trigger Property="Layout" Value="TabWithTitle">
                 <Trigger.Setters>
+                    <Setter Property="LinksHorizontalAlignment" Value="Right" />
+                    <Setter Property="LinksMargin" Value="0 0 0 4" />
+                    <Setter Property="FrameMargin" Value="0" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="c:ModernTab">
-                                <c:Cell>
-                                    <Grid HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top"
-                                            Margin="{TemplateBinding LinksMargin}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock
-                                                Text="{Binding Title, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-                                                    <Setter Property="FontSize" Value="15" />
-                                                    <Setter Property="HorizontalAlignment" Value="Right" />
-                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                                    <Setter Property="FontWeight" Value="Bold" />
-                                                    <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                                                    <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-
-                                        <!-- link list -->
-                                        <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}"
-                                                ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                                ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
-                                                ItemContainerStyle="{StaticResource ModernTabLinkItem}"
-                                                ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
-                                                ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}" Grid.Column="1" />
-                                    </Grid>
+                                <DockPanel>
+                                    <ListBox x:Name="PART_LinkList" ItemContainerStyle="{StaticResource ModernTabLinkItem}"
+                                            ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                            ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
+                                            ItemTemplateSelector="{StaticResource ModernTabDataTemplateSelector}"
+                                            ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
+                                            HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" Margin="{TemplateBinding LinksMargin}"
+                                            DockPanel.Dock="Top" Template="{TemplateBinding LinksListBoxTemplate}">
+                                        <ItemsControl.Resources>
+                                            <CollectionViewSource x:Key="TagsCollection"
+                                                    Source="{Binding Links, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        </ItemsControl.Resources>
+                                        <ItemsControl.ItemsSource>
+                                            <CompositeCollection>
+                                                <CollectionContainer Collection="{Binding Source={StaticResource TagsCollection}}" />
+                                                <TextBlock DataContext="{Binding Title, RelativeSource={RelativeSource TemplatedParent}}"
+                                                        Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                                        Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                                        Style="{StaticResource ModernTabTitleTextStyle}" />
+                                            </CompositeCollection>
+                                        </ItemsControl.ItemsSource>
+                                    </ListBox>
 
                                     <!-- content -->
                                     <c:ModernFrame x:Name="PART_Frame"
                                             Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                             ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
-                                </c:Cell>
+                                </DockPanel>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -129,7 +156,8 @@
 
                                     <!-- link list -->
                                     <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}"
-                                            ScrollViewer.HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}">
+                                            ScrollViewer.HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                            Template="{TemplateBinding LinksListBoxTemplate}">
                                         <ListBox.ItemContainerStyle>
                                             <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
                                                 <Setter Property="Template">

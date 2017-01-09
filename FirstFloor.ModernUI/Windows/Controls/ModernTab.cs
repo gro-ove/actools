@@ -204,5 +204,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((ModernTab)o).UpdateSelection(false);
         }
+
+        public static readonly DependencyProperty LinksListBoxTemplateProperty = DependencyProperty.Register(nameof(LinksListBoxTemplate), typeof(ControlTemplate),
+                typeof(ModernTab));
+
+        public ControlTemplate LinksListBoxTemplate {
+            get { return (ControlTemplate)GetValue(LinksListBoxTemplateProperty); }
+            set { SetValue(LinksListBoxTemplateProperty, value); }
+        }
+    }
+
+    public class ModernTabDataTemplateSelector : DataTemplateSelector {
+        public DataTemplate LinkDataTemplate { get; set; }
+
+        public DataTemplate TitleDataTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container) {
+            return item is Link ? LinkDataTemplate : TitleDataTemplate;
+        }
     }
 }

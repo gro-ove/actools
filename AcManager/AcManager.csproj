@@ -263,6 +263,9 @@
     <Compile Include="Pages\Dialogs\BookingDialog.xaml.cs">
       <DependentUpon>BookingDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CarReplaceTyresDialog.xaml.cs">
+      <DependentUpon>CarReplaceTyresDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
       <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
     </Compile>
@@ -297,6 +300,16 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
       <DependentUpon>LapTimes_Table.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\TrackTags.xaml.cs">
+      <DependentUpon>TrackTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SelectionLists\CarTags.xaml.cs">
+      <DependentUpon>CarTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SelectionLists\SelectTag.cs" />
+    <Compile Include="Pages\SelectionLists\TrackCategories_New.xaml.cs">
+      <DependentUpon>TrackCategories_New.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SelectionLists\CarCategories_New.xaml.cs">
       <DependentUpon>CarCategories_New.xaml</DependentUpon>
     </Compile>
@@ -305,6 +318,9 @@
     <Compile Include="Pages\SelectionLists\SelectCategoryBase.cs" />
     <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
     <Compile Include="Pages\SelectionLists\SelectionList.cs" />
+    <Compile Include="Pages\SelectionLists\CarCountries.xaml.cs">
+      <DependentUpon>CarCountries.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SelectionLists\TrackCountries_New.xaml.cs">
       <DependentUpon>TrackCountries_New.xaml</DependentUpon>
     </Compile>
@@ -681,6 +697,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\CarReplaceTyresDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Dialogs\CarSetupsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -737,7 +757,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\SelectionLists\TrackTags.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\CarTags.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\TrackCategories_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\SelectionLists\CarCategories_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\CarCountries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

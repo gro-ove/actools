@@ -21,7 +21,7 @@
                     <ItemsControl ItemsSource="{Binding Solutions}" DockPanel.Dock="Bottom" Margin="0 8 0 0"
                             Visibility="{Binding HasSolutions, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type h:INonfatalErrorSolution}">
+                            <DataTemplate DataType="{x:Type h:NonfatalErrorSolution}">
                                 <Button Content="{Binding DisplayName}" Command="{Binding}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

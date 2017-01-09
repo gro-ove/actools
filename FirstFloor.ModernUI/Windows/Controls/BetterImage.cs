@@ -125,33 +125,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((BetterImage)o).OnFilenameChanged((string)e.NewValue);
         }
 
-        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source), typeof(object),
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source), typeof(ImageSource),
                 typeof(BetterImage), new PropertyMetadata(OnSourceChanged));
 
-        public object Source {
-            get { return GetValue(SourceProperty); }
+        public ImageSource Source {
+            get { return (ImageSource)GetValue(SourceProperty); }
             set { SetValue(SourceProperty, value); }
         }
 
         private static void OnSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((BetterImage)o).OnSourceChanged(e.NewValue);
+            var potentialFilename = e.NewValue as string;
+            if (potentialFilename != null) {
+                ((BetterImage)o).Filename = potentialFilename;
+            } else {
+                ((BetterImage)o).OnSourceChanged((ImageSource)e.NewValue);
+            }
         }
 
-        private void OnSourceChanged(object newValue) {
-            if (newValue is BitmapEntry) {
-                ++_loading;
-                _current = (BitmapEntry)newValue;
-                InvalidateVisual();
-            } else {
-                var source = newValue as ImageSource;
-                if (newValue == null || source != null) {
-                    ++_loading;
-                    _current = source == null ? BitmapEntry.Empty : new BitmapEntry(source, (int)source.Width, (int)source.Height, false);
-                    InvalidateVisual();
-                } else {
-                    Filename = newValue as string;
-                }
-            }
+        private void OnSourceChanged(ImageSource newValue) {
+            Filename = null;
+            ++_loading;
+            _current = newValue == null ? BitmapEntry.Empty : new BitmapEntry(newValue, (int)newValue.Width, (int)newValue.Height, false);
+            _broken = newValue == null;
+            InvalidateMeasure();
+            InvalidateVisual();
         }
 
         public static readonly DependencyProperty ForceFillProperty = DependencyProperty.Register(nameof(ForceFill), typeof(bool),
@@ -476,7 +473,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 AddToCache(_filename, _current);
             }
 
-            InvalidateMeasure();
+            InvalidateVisual();
             return false;
         }
 

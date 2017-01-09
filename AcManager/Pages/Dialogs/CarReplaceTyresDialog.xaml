@@ -1,0 +1,27 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarReplaceTyresDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Found Tyres" SizeToContent="Manual"
+        Width="400" Height="800" MinWidth="320" MinHeight="240" LocationAndSizeKey=".carReplaceTyresDialog"
+        d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}">
+
+    <ListBox ItemsSource="{Binding Tyres}" Style="{StaticResource VirtualizingListBox}">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <DockPanel Height="40">
+                    <TextBlock DockPanel.Dock="Top">
+                        <Run Text="{Binding DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                        <Run FontSize="11">from</Run>
+                        <Run Text="{Binding Source.DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                    </TextBlock>
+                    <StackPanel VerticalAlignment="Top">
+                        <TextBlock Text="{Binding DisplayName}" />
+                        <TextBlock Text="{Binding Source.DisplayName, StringFormat='{} from {0}'}" />
+                        <TextBlock Text="{Binding Source.Author, StringFormat='{} made by {0}'}"
+                                Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    </StackPanel>
+                </DockPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</mui:ModernDialog>

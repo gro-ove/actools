@@ -13,6 +13,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.SharedMemory {
     public class AcSharedMemory : NotifyPropertyChanged, IDisposable {
+        public static double OptionLiveReadingInterval = 50d;
+
         public static AcSharedMemory Instance { get; private set; }
 
         public static void Initialize() {
@@ -69,7 +71,7 @@ namespace AcManager.Tools.SharedMemory {
                         _timer.Enabled = false;
                         break;
                     case AcSharedMemoryStatus.Live:
-                        _timer.Interval = 50d;
+                        _timer.Interval = OptionLiveReadingInterval;
                         _timer.Enabled = true;
                         Start?.Invoke(this, EventArgs.Empty);
                         break;

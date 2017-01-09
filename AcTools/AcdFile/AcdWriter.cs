@@ -20,9 +20,10 @@ namespace AcTools.AcdFile {
             Write(entry.Name);
             Write(entry.Data.Length);
 
-            for (var i = 0; i < entry.Data.Length; i++) {
-                Write((uint)_enc.Encrypt(entry.Data[i], i));
-            }
+            var copy = new byte[entry.Data.Length];
+            entry.Data.CopyTo(copy, 0);
+            _enc.Encrypt(copy);
+            Write(copy);
         }
     }
 }

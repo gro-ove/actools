@@ -1,7 +1,9 @@
 using System.ComponentModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Tools.SharedMemory {
-    public class AcShared {
+    public class AcShared : IJsonSerializable {
         public AcShared(AcSharedPhysics physics, AcSharedGraphics graphics, AcSharedStaticInfo staticInfo) {
             Physics = physics;
             Graphics = graphics;
@@ -13,6 +15,13 @@ namespace AcManager.Tools.SharedMemory {
         public AcSharedGraphics Graphics { get; }
 
         public AcSharedStaticInfo StaticInfo { get; }
+
+        string IJsonSerializable.ToJson() {
+            return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.None
+            });
+        }
     }
 
     public enum AcGameStatus {

@@ -12,7 +12,7 @@ namespace AcTools.AcdFile {
             Entries = new Dictionary<string, AcdEntry>(60);
         }
 
-        public Dictionary<string, AcdEntry> Entries;
+        public readonly Dictionary<string, AcdEntry> Entries;
 
         public void SetEntry(string entryName, byte[] entryData) {
             Entries[entryName] = new AcdEntry {

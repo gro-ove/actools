@@ -35,10 +35,6 @@ namespace AcManager.Tools.Helpers {
         void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load);
     }
 
-    public interface IStringSerializable {
-        string Serialize();
-    }
-
     public class SaveHelper<T> : ISaveHelper {
         [CanBeNull]
         private readonly string _key;
@@ -143,7 +139,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         private string Serialize<TAny>(TAny obj) {
-            return (obj as IStringSerializable)?.Serialize() ?? JsonConvert.SerializeObject(obj);
+            return (obj as IJsonSerializable)?.ToJson() ?? JsonConvert.SerializeObject(obj);
         }
 
         public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);

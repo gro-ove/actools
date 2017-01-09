@@ -310,7 +310,7 @@ namespace AcTools.Utils.Helpers {
             }
             writer.WriteEndArray();
         }
-        
+
         public static void Write(this JsonTextWriter writer, string key, int[] value) {
             if (value == null) return;
             writer.WritePropertyName(key);

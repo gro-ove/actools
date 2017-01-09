@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -172,15 +173,21 @@ namespace AcManager.Pages.Dialogs {
             double maxPower, maxTorque;
             if (!FlexibleParser.TryParseDouble(PowerInput.Text, out maxPower) ||
                     !FlexibleParser.TryParseDouble(TorqueInput.Text, out maxTorque)) {
-                ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst);
+                return;
+            }
+
+            var data = Car.AcdData;
+            if (data == null) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
                 return;
             }
 
             Lut torque;
             try {
-                torque = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
-            } catch (FileNotFoundException ex) {
-                Logging.Warning(ex);
+                torque = TorquePhysicUtils.LoadCarTorque(data);
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
                 return;
             }
 
@@ -195,10 +202,17 @@ namespace AcManager.Pages.Dialogs {
 
             var lossMultipler = 100.0 / (100.0 - dlg.Value);
 
+            var data = Car.AcdData;
+            if (data == null) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
+                return;
+            }
+
             Lut torque;
             try {
-                torque = TorquePhysicUtils.LoadCarTorque(Car.AcdData);
-            } catch (FileNotFoundException) {
+                torque = TorquePhysicUtils.LoadCarTorque(data);
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
                 return;
             }
 
@@ -254,7 +268,13 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RecalculateWeight() {
-            var car = Car.AcdData.GetIniFile("car.ini");
+            var data = Car.AcdData;
+            if (data == null) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
+                return;
+            }
+
+            var car = data.GetIniFile("car.ini");
             WeightInput.Text = Format(AppStrings.CarSpecs_Weight_FormatTooltip,
                     (car["BASIC"].GetInt("TOTALMASS", CommonAcConsts.DriverWeight) - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
         }

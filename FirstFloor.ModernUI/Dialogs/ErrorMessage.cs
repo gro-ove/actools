@@ -31,7 +31,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         [CanBeNull]
-        public static Button CreateFixItButton([NotNull] this ModernDialog dlg, [CanBeNull] INonfatalErrorSolution solution, NonfatalErrorEntry entry = null) {
+        public static Button CreateFixItButton([NotNull] this ModernDialog dlg, [CanBeNull] NonfatalErrorSolution solution, NonfatalErrorEntry entry = null) {
             if (dlg == null) throw new ArgumentNullException(nameof(dlg));
             return solution == null ? null : dlg.CreateCloseDialogButton(solution.DisplayName, false, false, MessageBoxResult.OK, solution);
         }

@@ -43,12 +43,12 @@ namespace AcManager.Pages.Selected {
             public ViewModel(CarObject car, [NotNull] CarSetupObject acObject) : base(acObject) {
                 Car = car;
 
-                var main = Car.AcdData.GetIniFile("car.ini");
-                SelectedObject.FuelMaximum = main["FUEL"].GetInt("MAX_FUEL", 0);
+                var main = Car.AcdData?.GetIniFile("car.ini");
+                SelectedObject.FuelMaximum = main?["FUEL"].GetInt("MAX_FUEL", 0) ?? 0;
 
-                var tyres = Car.AcdData.GetIniFile("tyres.ini");
-                Tyres = tyres.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.GetPossiblyEmpty("NAME"))).ToArray();
-                SelectedTyres = Tyres.ElementAtOrDefault(SelectedObject.Tyres);
+                var tyres = Car.AcdData?.GetIniFile("tyres.ini");
+                Tyres = tyres?.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.GetPossiblyEmpty("NAME"))).ToArray();
+                SelectedTyres = Tyres?.ElementAtOrDefault(SelectedObject.Tyres);
 
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
             }
@@ -119,8 +119,8 @@ namespace AcManager.Pages.Selected {
                 }
 
                 await Task.Run(() => {
-                    _carObject.AcdData.GetIniFile("car.ini");
-                    _carObject.AcdData.GetIniFile("tyres.ini");
+                    _carObject.AcdData?.GetIniFile("car.ini");
+                    _carObject.AcdData?.GetIniFile("tyres.ini");
                 }, cancellationToken);
 
                 _object = await _carObject.SetupsManager.GetByIdAsync(_id);

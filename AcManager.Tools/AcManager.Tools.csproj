@@ -279,6 +279,7 @@
     <Compile Include="Managers\Online\ServerEntry.Utils.cs" />
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />
+    <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />
     <Compile Include="Profile\LapTimeWrapped.cs" />
@@ -322,7 +323,7 @@
     <Compile Include="Objects\WeatherColorEntry.cs" />
     <Compile Include="Profile\SessionStats.cs" />
     <Compile Include="Profile\PlayerStatsManager.cs" />
-    <Compile Include="Profile\PlayerStatsWebServer.cs" />
+    <Compile Include="Profile\RaceWebServer.cs" />
     <Compile Include="Profile\OverallStats.cs" />
     <Compile Include="Profile\StorageObjectExtension.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />

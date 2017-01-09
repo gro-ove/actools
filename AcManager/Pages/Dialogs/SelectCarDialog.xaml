@@ -111,7 +111,8 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True" Margin="0 0 0 -42">
+        <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True"
+                Margin="0 0 0 -42">
             <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                 <ComboBox Width="64" Height="64" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
                         Style="{StaticResource TunableVersions.ComboBox}"
@@ -124,12 +125,22 @@
             </StackPanel>
         </c:CarBlock>
 
-        <mui:ModernTab Layout="TabWithTitle" Margin="20 0 0 0" LinksMargin="0 0 0 0" FrameMargin="0 30 0 0" x:Name="Tabs" Width="320" Grid.Column="1"
-                mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml" FrameNavigated="Tabs_OnFrameNavigated"
-                mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible">
+        <mui:ModernTab Layout="TabWithTitle" Margin="20 -44 0 0" x:Name="Tabs" Width="320" Grid.Column="1"
+                mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml" FrameNavigated="Tabs_OnFrameNavigated" mui:ModernFrame.KeepContentAlive="True"
+                SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
+            <mui:ModernTab.LinksListBoxTemplate>
+                <ControlTemplate>
+                    <DockPanel>
+                        <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+                    </DockPanel>
+                </ControlTemplate>
+            </mui:ModernTab.LinksListBoxTemplate>
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories_New.xaml" />
+                <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
                 <!-- ReSharper disable once Xaml.PathError -->
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
             </mui:ModernTab.Links>

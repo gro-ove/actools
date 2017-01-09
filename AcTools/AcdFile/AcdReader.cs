@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace AcTools.AcdFile {
@@ -19,6 +20,10 @@ namespace AcTools.AcdFile {
 
         public override string ReadString() {
             var length = ReadInt32();
+            if (length < 0) {
+                throw new Exception("Damaged file");
+            }
+
             return Encoding.ASCII.GetString(ReadBytes(length));
         }
 

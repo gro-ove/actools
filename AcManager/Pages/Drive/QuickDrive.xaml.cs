@@ -17,6 +17,8 @@ using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -66,6 +68,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
 
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
+                new InputBinding(Model.RandomCarSkinCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomTrackCommand, new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomTimeCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)),
@@ -223,10 +226,26 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private static T GetRandomObject<T>(BaseAcManager<T> manager, string currentId) where T : AcObjectNew {
+                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElement();
+                return manager.GetById(id) ?? manager.GetDefault();
+            }
+
             private DelegateCommand _randomCarCommand;
 
             public DelegateCommand RandomCarCommand => _randomCarCommand ?? (_randomCarCommand = new DelegateCommand(() => {
-                SelectedCar = (CarObject)CarsManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+                SelectedCar = GetRandomObject(CarsManager.Instance, SelectedCar?.Id);
+                if (SelectedCar != null) {
+                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id);
+                }
+            }));
+
+            private DelegateCommand _randomCarSkinCommand;
+
+            public DelegateCommand RandomCarSkinCommand => _randomCarSkinCommand ?? (_randomCarSkinCommand = new DelegateCommand(() => {
+                if (SelectedCar != null) {
+                    SelectedCar.SelectedSkin = GetRandomObject(SelectedCar.SkinsManager, SelectedCar.SelectedSkin?.Id);
+                }
             }));
 
             public ObservableCollection<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
@@ -260,7 +279,7 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomTrackCommand;
 
             public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
-                var track = (TrackObject)TracksManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+                var track = GetRandomObject(TracksManager.Instance, SelectedTrack.Id);
                 SelectedTrack = track.MultiLayouts?.RandomElement() ?? track;
             }));
 
@@ -604,7 +623,8 @@ namespace AcManager.Pages.Drive {
 
         private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
-                    .AddItem("Change To Random Car", Model.RandomCarCommand, @"Ctrl+Alt+1")
+                    .AddItem("Change Car To Random", Model.RandomCarCommand, @"Ctrl+Alt+1")
+                    .AddItem("Change Skin To Random", Model.RandomCarCommand, @"Ctrl+Alt+R")
                     .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Open Car In Content Tab", () => {
@@ -614,7 +634,7 @@ namespace AcManager.Pages.Drive {
 
         private void SelectedTrackContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
-                    .AddItem("Change To Random Track", Model.RandomTrackCommand, @"Ctrl+Alt+2")
+                    .AddItem("Change Track To Random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
                     .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Open Track In Content Tab", () => {

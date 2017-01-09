@@ -81,10 +81,10 @@ namespace AcManager.Tools.Miscellaneous {
                 return string.Format(Type.GetDescription() ?? Type.ToString(), Arguments);
             }
 
-            private INonfatalErrorSolution _solution;
+            private NonfatalErrorSolution _solution;
 
-            public INonfatalErrorSolution Solution => _solution ?? (Fix == null ? null :
-                    _solution = new INonfatalErrorSolution(null, null, Fix, () => Fix != null));
+            public NonfatalErrorSolution Solution => _solution ?? (Fix == null ? null :
+                    _solution = new NonfatalErrorSolution(null, null, Fix, () => Fix != null));
         }
 
         public enum WhatsGoingOnType {

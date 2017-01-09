@@ -72,7 +72,7 @@ namespace AcTools.Utils.Physics {
             return file.GetSections("TURBO").Select(TurboDescription.FromIniSection).ToList();
         }
         
-        public static Lut LoadCarTorque(IDataWrapper data, bool considerLimiter = true, int detalization = 100) {
+        public static Lut LoadCarTorque([NotNull] IDataWrapper data, bool considerLimiter = true, int detalization = 100) {
             /* read torque curve and engine params */
             var torqueFile = data.GetLutFile("power.lut");
             if (torqueFile.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load power.lut", "data/power.lut");

@@ -134,7 +134,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand RandomWeatherCommand => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => {
                 RealConditions = false;
-                SelectedWeather = (WeatherObject)WeatherManager.Instance.WrappersList.Where(x => x.Value.Enabled).RandomElement().Loaded();
+                SelectedWeather = GetRandomObject(WeatherManager.Instance, SelectedWeather?.Id);
             }));
             #endregion
 

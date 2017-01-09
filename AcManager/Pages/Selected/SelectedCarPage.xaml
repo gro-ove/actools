@@ -103,6 +103,8 @@
                         Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
+                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}"
+                        Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 

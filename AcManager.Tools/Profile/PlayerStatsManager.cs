@@ -20,12 +20,13 @@ namespace AcManager.Tools.Profile {
         private const string KeySessionStatsPrefix = "sessionStats:";
 
         public static int OptionRunStatsWebserver = 0;
+        public static string OptionWebserverFilename = null;
 
         public static PlayerStatsManager Instance => _instance ?? (_instance = new PlayerStatsManager());
         private static PlayerStatsManager _instance;
 
         [CanBeNull]
-        private static PlayerStatsWebServer _webServer;
+        private static RaceWebServer _webServer;
 
         private readonly Storage _storage;
         
@@ -68,8 +69,8 @@ namespace AcManager.Tools.Profile {
             AcSharedMemory.Instance.Updated += OnUpdated;
 
             if (OptionRunStatsWebserver != 0 && _webServer == null) {
-                _webServer = new PlayerStatsWebServer();
-                _webServer.Start(OptionRunStatsWebserver);
+                _webServer = new RaceWebServer();
+                _webServer.Start(OptionRunStatsWebserver, OptionWebserverFilename);
             }
         }
 
@@ -109,7 +110,8 @@ namespace AcManager.Tools.Profile {
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {
             _current?.Extend(e.Previous, e.Current, e.Time);
-            _webServer?.PublishNewCurrentData(_current);
+            _webServer?.PublishStatsData(_current);
+            _webServer?.PublishSharedData(e.Current);
         }
 
         private void Apply(SessionStats current) {

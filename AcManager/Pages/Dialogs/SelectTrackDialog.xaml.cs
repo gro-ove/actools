@@ -5,11 +5,13 @@ using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectTrackDialog {
@@ -25,6 +27,16 @@ namespace AcManager.Pages.Dialogs {
                 SelectTrackDialog result;
                 return _instance.TryGetTarget(out result) ? result : null;
             }
+        }
+
+        public static Uri TagUri(string tag) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
+                    $"enabled+&tag:{Filter.Encode(tag)}", tag);
+        }
+
+        public static Uri CountryUri(string country) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
+                    $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
         public SelectTrackDialog(TrackObjectBase selectedTrackConfiguration) {

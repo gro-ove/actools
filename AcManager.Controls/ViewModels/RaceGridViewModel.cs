@@ -63,7 +63,7 @@ namespace AcManager.Controls.ViewModels {
             _saveable.FromSerializedString(data);
         }
 
-        public class SaveableData : IStringSerializable {
+        public class SaveableData : IJsonSerializable {
             public string ModeId;
             public string FilterValue;
 
@@ -83,7 +83,7 @@ namespace AcManager.Controls.ViewModels {
             public double? AiLevelArrangeRandom;
             public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
 
-            string IStringSerializable.Serialize() {
+            string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
                 var w = new JsonTextWriter(s);
                 

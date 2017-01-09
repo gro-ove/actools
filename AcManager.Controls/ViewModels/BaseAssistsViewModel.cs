@@ -292,7 +292,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private class SaveableData : IStringSerializable {
+        private class SaveableData : IJsonSerializable {
             public bool IdealLine;
             public bool AutoBlip;
             public double StabilityControl;
@@ -312,7 +312,7 @@ namespace AcManager.Controls.ViewModels {
             public double FuelConsumption = 1d;
             public bool TyreBlankets;
 
-            public string Serialize() {
+            string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
                 var w = new JsonTextWriter(s);
 
