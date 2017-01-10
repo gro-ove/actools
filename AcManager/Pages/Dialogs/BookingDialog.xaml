@@ -21,7 +21,7 @@
                             <Grid.Effect>
                                 <BlurEffect Radius="20" KernelType="Box" RenderingBias="Quality" />
                             </Grid.Effect>
-                            <mui:BetterImage Source="{Binding Track.PreviewImage}" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill"
+                            <mui:BetterImage Filename="{Binding Track.PreviewImage}" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill"
                                     Margin="-20" />
                         </Grid>
                     </VisualBrush.Visual>
@@ -37,7 +37,7 @@
                     <c:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                 </StackPanel>
             </Grid.ToolTip>
-            <mui:BetterImage Source="{Binding Skin.PreviewImage}" RenderOptions.BitmapScalingMode="LowQuality" MaxWidth="320" Margin="0 20 0 0" />
+            <mui:BetterImage Filename="{Binding Skin.PreviewImage}" RenderOptions.BitmapScalingMode="LowQuality" MaxWidth="320" Margin="0 20 0 0" />
             <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Car.Name}" Foreground="White" IsHitTestVisible="False" />
         </Grid>
 

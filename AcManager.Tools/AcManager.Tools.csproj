@@ -280,6 +280,8 @@
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
+    <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Objects\UserChampionshipObject.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />
     <Compile Include="Profile\LapTimeWrapped.cs" />

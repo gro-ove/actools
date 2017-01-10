@@ -29,6 +29,12 @@ namespace AcManager.Controls.Dialogs {
             };
             InitializeComponent();
             Buttons = new Button[] { };
+
+            ((ViewModel)DataContext).PropertyChanged += OnModelPropertyChanged;
+        }
+
+        private void OnModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            // if (e.PropertyName == )
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {

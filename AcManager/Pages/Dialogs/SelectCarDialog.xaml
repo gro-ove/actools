@@ -93,7 +93,7 @@
             </Style>
 
             <DataTemplate x:Key="TunableVersions.ItemTemplate" DataType="{x:Type t:CarObject}">
-                <mui:BetterImage Width="64" Height="64" ToolTip="{Binding DisplayName}" x:Name="UpgradeIconImage" Source="/Assets/Img/UpgradeStd.png" />
+                <mui:BetterImage Width="64" Height="64" ToolTip="{Binding DisplayName}" x:Name="UpgradeIconImage" ImageSource="/Assets/Img/UpgradeStd.png" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsChild}" Value="True">
                         <Setter TargetName="UpgradeIconImage" Property="Source" Value="{Binding UpgradeIcon}" />

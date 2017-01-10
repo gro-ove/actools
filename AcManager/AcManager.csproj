@@ -291,6 +291,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\UserChampionshipsListPage.xaml.cs">
+      <DependentUpon>UserChampionshipsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Miscellaneous\PlayerStats.xaml.cs">
       <DependentUpon>PlayerStats.xaml</DependentUpon>
     </Compile>
@@ -299,6 +302,9 @@
     </Compile>
     <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
       <DependentUpon>LapTimes_Table.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
+      <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SelectionLists\TrackTags.xaml.cs">
       <DependentUpon>TrackTags.xaml</DependentUpon>
@@ -745,6 +751,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\UserChampionshipsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Miscellaneous\PlayerStats.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -756,6 +766,10 @@
     <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Selected\SelectedUserChampionship.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\SelectionLists\TrackTags.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -160,6 +160,7 @@
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\CefSharpResolverService.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
+    <Compile Include="Helpers\RaceGridViewModelModes.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
     <Compile Include="Helpers\Toast.cs" />

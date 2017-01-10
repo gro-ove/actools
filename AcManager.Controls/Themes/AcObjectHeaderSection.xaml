@@ -22,7 +22,7 @@
                         <ControlTemplate TargetType="ac:AcObjectHeaderSection">
                             <StackPanel Orientation="Horizontal">
                                 <mui:BetterImage x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0"
-                                        Source="{Binding IconSource, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        ImageSource="{Binding IconSource, RelativeSource={RelativeSource TemplatedParent}}" />
                                 <mui:BetterTextBox Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
                                         FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}"
                                         Style="{StaticResource Borderless.Heading2}" Placeholder="Name" />

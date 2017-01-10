@@ -138,12 +138,12 @@ namespace AcManager.Tools.Helpers {
             return false;
         }
 
-        private string Serialize<TAny>(TAny obj) {
+        private static string Serialize<TAny>(TAny obj) {
             return (obj as IJsonSerializable)?.ToJson() ?? JsonConvert.SerializeObject(obj);
         }
 
         public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);
-
+        
         public string ToSerializedString() {
             var obj = _save();
             return obj == null ? null : Serialize(obj);

@@ -46,9 +46,11 @@ namespace AcManager.Tools.Managers {
         public AcDirectories WeatherDirectories { get; private set; }
         public AcDirectories PpFiltersDirectories { get; private set; }
         public AcDirectories PythonAppsDirectories { get; private set; }
-        public AcDirectories ReplaysDirectories { get; private set; }
         public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
+
+        public AcDirectories ReplaysDirectories { get; private set; }
+        public AcDirectories UserChampionshipsDirectories { get; private set; }
 
         private void UpdateDirectories() {
             CarsDirectories?.Obsolete();
@@ -68,6 +70,7 @@ namespace AcManager.Tools.Managers {
             KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
 
             ReplaysDirectories = ReplaysDirectories ?? new AcDirectories(FileUtils.GetReplaysDirectory(), null);
+            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(FileUtils.GetDocumentsDirectory(), "champs"), null);
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();
@@ -76,6 +79,7 @@ namespace AcManager.Tools.Managers {
             PpFiltersDirectories?.CreateIfMissing();
             PythonAppsDirectories?.CreateIfMissing();
             ReplaysDirectories?.CreateIfMissing();
+            UserChampionshipsDirectories?.CreateIfMissing();
         }
 
         private string _value;
