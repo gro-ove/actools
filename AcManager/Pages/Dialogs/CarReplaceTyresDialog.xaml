@@ -8,19 +8,28 @@
     <ListBox ItemsSource="{Binding Tyres}" Style="{StaticResource VirtualizingListBox}">
         <ListBox.ItemTemplate>
             <DataTemplate>
-                <DockPanel Height="40">
-                    <TextBlock DockPanel.Dock="Top">
-                        <Run Text="{Binding DisplayName, Mode=OneWay}" FontWeight="Bold" />
-                        <Run FontSize="11">from</Run>
-                        <Run Text="{Binding Source.DisplayName, Mode=OneWay}" FontWeight="Bold" />
-                    </TextBlock>
-                    <StackPanel VerticalAlignment="Top">
-                        <TextBlock Text="{Binding DisplayName}" />
-                        <TextBlock Text="{Binding Source.DisplayName, StringFormat='{} from {0}'}" />
-                        <TextBlock Text="{Binding Source.Author, StringFormat='{} made by {0}'}"
+                <Border TextBlock.FontWeight="Normal" Height="40">
+                    <DockPanel VerticalAlignment="Center">
+                        <TextBlock DockPanel.Dock="Top">
+                            <Run Text="{Binding DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                            <Run FontSize="11">from</Run>
+                            <Run Text="{Binding Source.DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                        </TextBlock>
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Version, StringFormat='{}Version: {0}'}" Style="{StaticResource Small}" Margin="20 0"
                                 Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                    </StackPanel>
-                </DockPanel>
+                        <mui:BooleanSwitch Value="{Binding RearTyres}" DockPanel.Dock="Left">
+                            <mui:BooleanSwitch.True>
+                                <TextBlock DockPanel.Dock="Top" Text="Rear tyres" Style="{StaticResource Small}" Margin="20 0" />
+                            </mui:BooleanSwitch.True>
+                            <mui:BooleanSwitch.False>
+                                <TextBlock DockPanel.Dock="Top" Text="Front tyres" Style="{StaticResource Small}" Margin="20 0" />
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding Source.Author, StringFormat='{}Made by {0}'}" Style="{StaticResource Small}"
+                                Margin="20 0"
+                                Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    </DockPanel>
+                </Border>
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>

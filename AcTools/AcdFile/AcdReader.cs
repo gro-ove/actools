@@ -1,16 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
     internal sealed class AcdReader : BinaryReader {
+        [NotNull]
         private readonly AcdEncryption _enc;
 
-        public AcdReader(string filename) : this(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-            _enc = AcdEncryption.FromAcdFilename(filename);
-        }
+        public AcdReader(string filename) : this(filename, File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {}
 
-        public AcdReader(Stream input) : base(input) {
+        public AcdReader(string filename, Stream input) : base(input) {
+            _enc = AcdEncryption.FromAcdFilename(filename);
+
             if (ReadInt32() == -1111){
                 ReadInt32();
             } else {
@@ -27,7 +29,7 @@ namespace AcTools.AcdFile {
             return Encoding.ASCII.GetString(ReadBytes(length));
         }
 
-        public byte[] ReadData() {
+        private byte[] ReadData() {
             var length = ReadInt32();
             var result = new byte[length];
             for (var i = 0; i < length; i++) {
@@ -39,11 +41,29 @@ namespace AcTools.AcdFile {
             return result;
         }
 
+        private void SkipData() {
+            var length = ReadInt32();
+            BaseStream.Seek(length * 4, SeekOrigin.Current);
+        }
+
         public AcdEntry ReadEntry() {
             return new AcdEntry {
                 Name = ReadString(),
                 Data = ReadData()
             };
+        }
+
+        [CanBeNull]
+        public byte[] ReadEntryData(string entryName) {
+            while (BaseStream.Position < BaseStream.Length) {
+                var name = ReadString();
+                if (string.Equals(name, entryName, StringComparison.OrdinalIgnoreCase)) {
+                    return ReadData();
+                } else {
+                    SkipData();
+                }
+            }
+            return null;
         }
     }
 }

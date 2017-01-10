@@ -61,8 +61,9 @@ namespace AcTools.DataFile {
                     acd = Acd.FromFile(SourceFilename);
                 }
 
-                if (acd.Entries.ContainsKey(UnpackedFilename)) {
-                    ParseString(acd.Entries[UnpackedFilename].ToString());
+                var entry = acd.GetEntry(UnpackedFilename);
+                if (entry != null) {
+                    ParseString(entry.ToString());
                 } else {
                     Clear();
                 }

@@ -2,20 +2,68 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
     public class Acd {
-        public readonly string OriginalFilename;
+        [CanBeNull]
+        private readonly string _packedFile;
 
-        private Acd(string filename) {
-            OriginalFilename = filename;
-            Entries = new Dictionary<string, AcdEntry>(60);
+        [CanBeNull]
+        private readonly string _unpackedDirectory;
+
+        [CanBeNull]
+        private byte[] _packedBytes;
+
+        private Acd(string packedFile, string unpackedDirectory) {
+            _packedBytes = packedFile == null ? null : File.ReadAllBytes(packedFile);
+            _packedFile = packedFile;
+            _unpackedDirectory = unpackedDirectory;
+            _entries = new Dictionary<string, AcdEntry>(10);
         }
 
-        public readonly Dictionary<string, AcdEntry> Entries;
+        private readonly Dictionary<string, AcdEntry> _entries;
 
-        public void SetEntry(string entryName, byte[] entryData) {
-            Entries[entryName] = new AcdEntry {
+        [CanBeNull]
+        public AcdEntry GetEntry(string entryName) {
+            AcdEntry entry;
+
+            if (!_entries.TryGetValue(entryName, out entry)) {
+                if (_unpackedDirectory != null) {
+                    var filename = Path.Combine(_unpackedDirectory, entryName);
+                    entry = File.Exists(filename) ? new AcdEntry {
+                        Name = entryName,
+                        Data =  File.ReadAllBytes(filename)
+                    } : null;
+                } else {
+                    var data = ReadPacked(entryName);
+                    entry = data != null ? new AcdEntry {
+                        Name = entryName,
+                        Data = data
+                    } : null;
+                }
+
+                _entries[entryName] = entry;
+            }
+
+            return entry;
+        }
+
+        [CanBeNull]
+        private byte[] ReadPacked(string entryName) {
+            if (_packedBytes == null) {
+                if (_packedFile == null) return null;
+                _packedBytes = File.ReadAllBytes(_packedFile);
+            }
+
+            using (var stream = new MemoryStream(_packedBytes))
+            using (var reader = new AcdReader(_packedFile, stream)) {
+                return reader.ReadEntryData(entryName);
+            }
+        }
+
+        private void SetEntry(string entryName, byte[] entryData) {
+            _entries[entryName] = new AcdEntry {
                 Name = entryName,
                 Data = entryData
             };
@@ -26,48 +74,50 @@ namespace AcTools.AcdFile {
         }
 
         public static Acd FromFile(string filename) {
-            if (!File.Exists(filename)) {
-                throw new FileNotFoundException(filename);
-            }
-
-            var acd = new Acd(filename);
-            using (var reader = new AcdReader(filename)) {
-                acd.FromFile_Entries(reader);
-            }
-
-            return acd;
+            if (!File.Exists(filename)) throw new FileNotFoundException(filename);
+            return new Acd(filename, null);
         }
 
-        private void FromFile_Entries(AcdReader reader) {
-            while (reader.BaseStream.Position < reader.BaseStream.Length) {
-                var entry = reader.ReadEntry();
-                Entries[entry.Name] = entry;
+        public void EnsureFullyLoaded() {
+            if (_packedFile != null) {
+                using (var reader = new AcdReader(_packedFile)) {
+                    while (reader.BaseStream.Position < reader.BaseStream.Length) {
+                        var entry = reader.ReadEntry();
+                        if (!_entries.ContainsKey(entry.Name)) {
+                            _entries[entry.Name] = entry;
+                        }
+                    }
+                }
+            } else if (_unpackedDirectory != null) {
+                foreach (var file in Directory.GetFiles(_unpackedDirectory)) {
+                    var name = Path.GetFileName(file);
+                    if (name != null && !_entries.ContainsKey(name)) {
+                        _entries[name] = new AcdEntry {
+                            Name = name,
+                            Data = File.ReadAllBytes(file)
+                        };
+                    }
+                }
             }
         }
 
         public void Save(string filename) {
+            EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename)) {
-                foreach (var entry in Entries.Values) {
+                foreach (var entry in _entries.Values) {
                     writer.Write(entry);
                 }
             }
         }
 
         public static Acd FromDirectory(string dir) {
-            if (!Directory.Exists(dir)) {
-                throw new DirectoryNotFoundException(dir);
-            }
-
-            var acd = new Acd(dir);
-            foreach (var file in Directory.GetFiles(dir)) {
-                acd.SetEntry(Path.GetFileName(file), File.ReadAllBytes(file));
-            }
-
-            return acd;
+            if (!Directory.Exists(dir)) throw new DirectoryNotFoundException(dir);
+            return new Acd(null, dir);
         }
 
         public void ExportDirectory(string dir) {
-            foreach (var entry in Entries.Values) {
+            EnsureFullyLoaded();
+            foreach (var entry in _entries.Values) {
                 var destination = Path.Combine(dir, entry.Name);
                 Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
                 File.WriteAllBytes(destination, entry.Data);

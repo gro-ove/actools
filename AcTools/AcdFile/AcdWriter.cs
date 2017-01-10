@@ -1,15 +1,18 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
     internal class AcdWriter : BinaryWriter {
+        [NotNull]
         private readonly AcdEncryption _enc;
 
-        public AcdWriter(string filename) : this(File.Open(filename, FileMode.CreateNew)) {
+        public AcdWriter(string filename) : this(filename, File.Open(filename, FileMode.CreateNew)) {}
+
+        public AcdWriter(string filename, Stream output) : base(output) {
             _enc = AcdEncryption.FromAcdFilename(filename);
         }
-
-        public AcdWriter(Stream output) : base(output) {}
 
         public override void Write(string value) {
             Write(value.Length);
@@ -20,10 +23,9 @@ namespace AcTools.AcdFile {
             Write(entry.Name);
             Write(entry.Data.Length);
 
-            var copy = new byte[entry.Data.Length];
-            entry.Data.CopyTo(copy, 0);
-            _enc.Encrypt(copy);
-            Write(copy);
+            var result = new byte[entry.Data.Length * 4];
+            _enc.Encrypt(entry.Data, result);
+            Write(result);
         }
     }
 }
