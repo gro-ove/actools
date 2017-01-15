@@ -33,9 +33,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
-            _scrollViewer.ScrollToHorizontalOffset(IsInverted ?
-                _scrollViewer.HorizontalOffset + e.Delta :
-                _scrollViewer.HorizontalOffset - e.Delta);
+            if (!e.Handled) {
+                _scrollViewer.ScrollToHorizontalOffset(IsInverted ?
+                        _scrollViewer.HorizontalOffset + e.Delta :
+                        _scrollViewer.HorizontalOffset - e.Delta);
+            }
         }
     }
 }

@@ -3,7 +3,6 @@
     <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="MinHeight" Value="40" />
         <Setter Property="Foreground" Value="{DynamicResource ScrollBarThumb}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -33,7 +32,6 @@
     </Style>
 
     <system:Double x:Key="FancyScrollBar.Width">4</system:Double>
-    <system:Double x:Key="FancyScrollBar.MouseOverWidth">8</system:Double>
 
     <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
@@ -53,7 +51,11 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb">
+                                    <Thumb.RenderTransform>
+                                        <ScaleTransform CenterX="4" ScaleX="1" ScaleY="1" />
+                                    </Thumb.RenderTransform>
+                                </Thumb>
                             </Track.Thumb>
                         </Track>
                     </Border>
@@ -62,16 +64,16 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width"
-                                                To="{StaticResource FancyScrollBar.MouseOverWidth}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                To="2" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width"
-                                                To="{StaticResource FancyScrollBar.Width}" BeginTime="0:0:0.86" Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                To="1" BeginTime="0:0:0.86" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -85,21 +87,12 @@
     <Style x:Key="FancyScrollBarHorizontal" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-        <Setter Property="BorderThickness" Value="0,1" />
+        <Setter Property="BorderThickness" Value="0 1" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid x:Name="Bg" Height="8" Margin="0 0 0 -12" Background="Transparent" SnapsToDevicePixels="True">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition MaxWidth="0" />
-                            <ColumnDefinition Width="0.00001*" />
-                            <ColumnDefinition Width="0" />
-                        </Grid.ColumnDefinitions>
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="Transparent" Grid.Column="1" />
-                        <RepeatButton Grid.Column="0" Height="0" Width="0" x:Name="PART_LineLeftButton" Command="{x:Static ScrollBar.LineUpCommand}"
-                                IsEnabled="{TemplateBinding IsMouseOver}" />
-                        <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Column="1"
-                                VerticalAlignment="Bottom">
+                    <Border x:Name="Bg" Height="8" Margin="0 0 0 -12" Background="Transparent" SnapsToDevicePixels="True">
+                        <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" VerticalAlignment="Bottom">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Background="Transparent" BorderBrush="Transparent"
                                         BorderThickness="0" />
@@ -109,27 +102,29 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb">
+                                    <Thumb.RenderTransform>
+                                        <ScaleTransform CenterY="4" ScaleX="1" ScaleY="1" />
+                                    </Thumb.RenderTransform>
+                                </Thumb>
                             </Track.Thumb>
                         </Track>
-                        <RepeatButton x:Name="PART_LineRightButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineRightCommand}"
-                                IsEnabled="{TemplateBinding IsMouseOver}" Grid.Column="2" />
-                    </Grid>
+                    </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height"
-                                                To="{StaticResource FancyScrollBar.MouseOverWidth}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                To="2" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height"
-                                                To="{StaticResource FancyScrollBar.Width}" BeginTime="0:0:0.86" Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                To="1" BeginTime="0:0:0.86" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -151,9 +146,9 @@
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                                         CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
-                                <c:BetterScrollBar x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right" AutomationProperties.AutomationId="VerticalScrollBar"
-                                        Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0"
-                                        Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                <c:BetterScrollBar x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right"
+                                        AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}"
+                                        Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                         Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource FancyScrollBarVertical}" />
                             </c:Cell>
@@ -169,9 +164,10 @@
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                                         CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
-                                <c:BetterScrollBar x:Name="PART_HorizontalScrollBar" VerticalAlignment="Bottom" AutomationProperties.AutomationId="HorizontalScrollBar"
-                                        HorizontalAlignment="Stretch" Cursor="Arrow" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0"
-                                        Orientation="Horizontal" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                                <c:BetterScrollBar x:Name="PART_HorizontalScrollBar" VerticalAlignment="Bottom"
+                                        AutomationProperties.AutomationId="HorizontalScrollBar" HorizontalAlignment="Stretch" Cursor="Arrow"
+                                        Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal"
+                                        Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                         Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource FancyScrollBarHorizontal}" />
                             </c:Cell>
