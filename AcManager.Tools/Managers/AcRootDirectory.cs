@@ -70,7 +70,7 @@ namespace AcManager.Tools.Managers {
             KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
 
             ReplaysDirectories = ReplaysDirectories ?? new AcDirectories(FileUtils.GetReplaysDirectory(), null);
-            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(FileUtils.GetDocumentsDirectory(), "champs"), null);
+            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(FileUtils.GetDocumentsDirectory(), "champs"));
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();

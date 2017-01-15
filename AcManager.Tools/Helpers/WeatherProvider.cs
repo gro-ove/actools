@@ -34,13 +34,13 @@ namespace AcManager.Tools.Helpers {
 
             try {
                 var result = await new OpenWeatherApiProvider().GetWeatherAsync(geoTags);
-                LocalCache.Add(geoTags, new CachedEntry(DateTime.Now, result));
+                LocalCache[geoTags] = new CachedEntry(DateTime.Now, result);
                 return result;
             } catch (WebException e) {
-                Logging.Warning("TryToGetWeather(): " + e.Message);
+                Logging.Warning(e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("TryToGetWeather(): " + e);
+                Logging.Warning(e);
                 return null;
             }
         }

@@ -1,11 +1,31 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ImageEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{x:Static g:AppStrings.CropImage_Title}" MouseLeave="OnMouseLeave" MouseMove="OnMouseMove" MouseUp="OnMouseUp" MouseWheel="OnMouseWheel">
-    <Grid x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="Editor_OnMouseDown" ClipToBounds="True">
-        <Image x:Name="OriginalImage" />
-        <Border x:Name="SelectedArea" BorderThickness="1" UseLayoutRounding="False" BorderBrush="LightBlue" Background="#220000FF" HorizontalAlignment="Left"
-                VerticalAlignment="Top" SnapsToDevicePixels="True" />
-    </Grid>
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.CropImage_Title}" MouseLeave="OnMouseLeave"
+        MouseMove="OnMouseMove" MouseUp="OnMouseUp" MouseWheel="OnMouseWheel" MinWidth="200" MinHeight="200" MaxWidth="9999" MaxHeight="9999"
+        SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="640" Height="640" LocationAndSizeKey=".imageEditor">
+    <mui:ModernDialog.Resources>
+        <Thickness x:Key="BorderThickness">1</Thickness>
+        <Thickness x:Key="MarginThickness">-1</Thickness>
+    </mui:ModernDialog.Resources>
+    <mui:BorderyViewbox x:Name="Viewbox" StretchDirection="DownOnly" Stretch="Uniform">
+        <mui:Cell x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="OnMouseDown" ClipToBounds="True">
+            <Image x:Name="OriginalImage" />
+            <mui:Cell x:Name="SelectedArea" UseLayoutRounding="False" HorizontalAlignment="Left" VerticalAlignment="Top" SnapsToDevicePixels="True">
+                <Border BorderBrush="{DynamicResource Accent}" SnapsToDevicePixels="True"
+                        BorderThickness="{Binding Path=Scale, ElementName=Viewbox, Converter={x:Static mui:BorderyViewbox.ThicknessConverter}, ConverterParameter={StaticResource BorderThickness}}"
+                        Margin="{Binding Path=Scale, ElementName=Viewbox, Converter={x:Static mui:BorderyViewbox.ThicknessConverter}, ConverterParameter={StaticResource MarginThickness}}" />
+                <Canvas Opacity="0.4">
+                    <Rectangle Canvas.Left="-49999" Canvas.Bottom="{Binding ActualHeight, ElementName=SelectedArea}" Fill="{DynamicResource Accent}"
+                            Width="99999" Height="99999" />
+                    <Rectangle Canvas.Left="-49999" Canvas.Top="{Binding ActualHeight, ElementName=SelectedArea}" Fill="{DynamicResource Accent}" Width="99999"
+                            Height="99999" />
+                    <Rectangle Canvas.Top="-49999" Canvas.Right="{Binding ActualWidth, ElementName=SelectedArea}" Fill="{DynamicResource Accent}" Width="99999"
+                            Height="99999" />
+                    <Rectangle Canvas.Top="-49999" Canvas.Left="{Binding ActualWidth, ElementName=SelectedArea}" Fill="{DynamicResource Accent}" Width="99999"
+                            Height="99999" />
+                </Canvas>
+            </mui:Cell>
+        </mui:Cell>
+    </mui:BorderyViewbox>
 </mui:ModernDialog>

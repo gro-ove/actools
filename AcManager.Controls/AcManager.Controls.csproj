@@ -143,6 +143,7 @@
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AvalonExtension.cs" />
+    <Compile Include="Converters\AcTimeDisplayConverter.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
@@ -152,6 +153,9 @@
       <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
+    <Compile Include="Dialogs\UserChampionshipIntro.xaml.cs">
+      <DependentUpon>UserChampionshipIntro.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="FavouriteButton.cs" />
     <Compile Include="Helpers\AppIconService.cs" />
@@ -160,7 +164,6 @@
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\CefSharpResolverService.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
-    <Compile Include="Helpers\RaceGridViewModelModes.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
     <Compile Include="Helpers\Toast.cs" />
@@ -181,6 +184,9 @@
     <Compile Include="StatEntry.cs" />
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\CefSharpWrapper.cs" />
+    <Compile Include="UserControls\UserChampionshipBlock.xaml.cs">
+      <DependentUpon>UserChampionshipBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Video\IVideoPlayer.cs" />
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
@@ -333,6 +339,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Dialogs\UserChampionshipIntro.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\KunosCareerIntro.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -407,6 +417,10 @@
     <Page Include="UserControls\AssistsDescription.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UserChampionshipBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\ModernPopup.xaml">
       <SubType>Designer</SubType>

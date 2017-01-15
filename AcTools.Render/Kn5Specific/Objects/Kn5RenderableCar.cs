@@ -622,7 +622,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             get { return _lightsEnabled; }
             set {
                 if (_carLights == null) {
-                    _carLights = LoadLights().ToIReadOnlyListIfItsNot();
+                    _carLights = LoadLights().ToIReadOnlyListIfItIsNot();
                 }
 
                 if (Equals(value, _lightsEnabled)) return;

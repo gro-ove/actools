@@ -27,8 +27,8 @@ namespace AcManager.Pages.SelectionLists {
             AddNewIfMissing(list, obj, new SelectCarBrand(value, obj.BrandBadge));
         }
 
-        protected override SelectCarBrand GetSelectedItem(IList<SelectCarBrand> list, CarObject selected) {
-            var value = selected?.Brand;
+        protected override SelectCarBrand GetSelectedItem(IList<SelectCarBrand> list, CarObject obj) {
+            var value = obj?.Brand;
             if (value != null) {
                 for (var i = list.Count - 1; i >= 0; i--) {
                     var x = list[i];

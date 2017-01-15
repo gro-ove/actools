@@ -1,4 +1,4 @@
-﻿<sl:SelectionList x:TypeArguments="t:CarObject, sl:SelectTag" x:Class="AcManager.Pages.SelectionLists.CarTags"
+﻿<sl:SelectionTagsList x:TypeArguments="t:CarObject" x:Class="AcManager.Pages.SelectionLists.CarTags"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sl="clr-namespace:AcManager.Pages.SelectionLists" xmlns:t="http://acstuff.ru/app/tools"
@@ -19,7 +19,9 @@
     <ListBox.ItemTemplate>
         <DataTemplate DataType="{x:Type sl:SelectTag}">
             <mui:Cell PreviewMouseLeftButtonDown="OnItemMouseDown" Background="Transparent" HorizontalAlignment="Center">
-                <TextBlock FontSize="16" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="8 4" VerticalAlignment="Bottom" />
+                <TextBlock x:Name="Text" FontSize="14" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="8 4" VerticalAlignment="Bottom" />
+                <TextBlock FontSize="16" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="8 4" VerticalAlignment="Bottom" Visibility="Hidden"
+                        FontWeight="Bold" />
                 <TextBlock Style="{StaticResource Label}" FontSize="10" HorizontalAlignment="Right" Text="{Binding ItemsCount}" Margin="2"
                         VerticalAlignment="Top" />
                 <Ellipse x:Name="NewMark" Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0"
@@ -29,10 +31,14 @@
                 <DataTrigger Binding="{Binding IsNew}" Value="True">
                     <Setter TargetName="NewMark" Property="Visibility" Value="Visible" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding Accented}" Value="True">
+                    <Setter TargetName="Text" Property="Foreground" Value="{DynamicResource Go}" />
+                    <Setter TargetName="Text" Property="FontSize" Value="16" />
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
     </ListBox.ItemTemplate>
-</sl:SelectionList>
+</sl:SelectionTagsList>
 
 
 

@@ -16,7 +16,7 @@ namespace AcManager.Controls.ViewModels {
 
         public override string DisplayName => ToolsStrings.RaceGrid_You;
 
-        public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
+        internal RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }
 
     public class RaceGridEntry : Displayable, IDraggable {

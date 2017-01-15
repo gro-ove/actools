@@ -63,7 +63,7 @@ namespace AcManager.Tools.AcErrors {
         Data_KunosCareerTrackIsMissing,
 
         /// <summary>
-        /// {0}: skin id
+        /// {0}: car id
         /// </summary>
         [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredCarIsMissing)), SeveralAllowed]
         Data_KunosCareerCarIsMissing,
@@ -80,6 +80,31 @@ namespace AcManager.Tools.AcErrors {
         /// </summary>
         [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredWeatherIsMissing))]
         Data_KunosCareerWeatherIsMissing,
+
+        /// <summary>
+        /// {0}: car id
+        /// </summary>
+        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredCarIsMissing)), SeveralAllowed]
+        Data_UserChampionshipCarIsMissing,
+
+        /// <summary>
+        /// {0}: track id
+        /// </summary>
+        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredTrackIsMissing)), SeveralAllowed]
+        Data_UserChampionshipTrackIsMissing,
+
+        /// <summary>
+        /// {0}: car name or id
+        /// {1}: skin id
+        /// </summary>
+        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredSkinForIsMissing)), SeveralAllowed]
+        Data_UserChampionshipCarSkinIsMissing,
+
+        /// <summary>
+        /// {0}: file name
+        /// </summary>
+        [LocalizedDescription(nameof(ToolsStrings.AcError_FileIsDamaged))]
+        ExtendedData_JsonIsDamaged,
 
 
         [LocalizedDescription(nameof(ToolsStrings.AcError_CarParentIsMissing))]

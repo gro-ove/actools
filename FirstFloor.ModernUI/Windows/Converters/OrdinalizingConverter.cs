@@ -14,4 +14,15 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             throw new NotSupportedException();
         }
     }
+
+    [ValueConversion(typeof(int), typeof(string))]
+    public class OrdinalizingShortConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return value.AsInt().ToOrdinalShort(parameter as string, culture);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
+        }
+    }
 }

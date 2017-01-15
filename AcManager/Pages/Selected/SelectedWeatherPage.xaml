@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager"
         xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:c="http://acstuff.ru/app/controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+                          xmlns:a="clr-namespace:AcTools;assembly=AcTools"
+                          mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance sel:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -74,14 +75,15 @@
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
                                     <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
-                                    <Slider Minimum="{x:Static dr:QuickDrive.TimeMinimum}" Maximum="{x:Static dr:QuickDrive.TimeMaximum}" Value="{Binding Time}"
-                                            Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    <Slider Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
+                                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
                                 </StackPanel>
                                 <StackPanel Width="120">
                                     <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number"
                                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}"
                                             Content="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientAirTemperature}" />
-                                    <Slider Minimum="{x:Static dr:QuickDrive.TemperatureMinimum}" Maximum="{x:Static dr:QuickDrive.TemperatureMaximum}"
+                                    <Slider Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}"
                                             Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
                                             TickPlacement="BottomRight" />
                                 </StackPanel>

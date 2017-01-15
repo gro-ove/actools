@@ -20,31 +20,6 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="NonTransparent" TargetType="mui:ModernButton" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
-                <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
-                <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
-
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
-                        <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
-                    </Trigger>
-                    <Trigger Property="IsPressed" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
-                        <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
-                    </Trigger>
-                    <Trigger Property="IsFocused" Value="True">
-                        <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
             <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource FlatListBoxItem}">
                 <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
             </Style>
@@ -228,22 +203,19 @@
                     </MultiDataTrigger>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" />
+                        <Setter TargetName="TextBox" Property="Text" Value="" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <DockPanel>
-                    <TextBlock
-                            Text="{Binding CarSkin.DisplayName, TargetNullValue={x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}, FallbackValue='Skin Name'}" />
-                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                            Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentNationality_Random}" Style="{StaticResource Borderless.White}"
-                            Visibility="Hidden" />
-                </DockPanel>
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
+                        <Setter TargetName="TextBox" Property="Text" Value="" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
@@ -378,21 +350,21 @@
             <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="DetailsPopup" Placement="Custom" Padding="8"
                     IsOpen="{Binding IsChecked, ElementName=DetailsButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
                     Opened="SelectCarPopup_OnOpened" mui:PopupHelper.Register="True">
-                <Grid Width="600" DataContext="{x:Reference This}">
+                <Grid Width="620" DataContext="{x:Reference This}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="400" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.FilteredView}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
-                            Drop="ItemsControl_OnDrop" MinRowHeight="20">
+                            Drop="OnItemsControlDrop" MinRowHeight="20">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
                                     CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
                             <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin.DisplayName"
                                     CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
-                            <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
+                            <DataGridTemplateColumn Width="140" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
                                     CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-                            <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
+                            <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
                                     CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
                             <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Ai}" SortMemberPath="AiLevel"
                                     CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
@@ -423,7 +395,7 @@
 
         <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                VirtualizingPanel.ScrollUnit="Pixel" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}" Drop="ItemsControl_OnDrop"
+                VirtualizingPanel.ScrollUnit="Pixel" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}" Drop="OnItemsControlDrop"
                 Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True" mui:Draggable.Enabled="True">
             <ListBox.ContextMenu>
                 <ContextMenu DataContext="{x:Reference This}">

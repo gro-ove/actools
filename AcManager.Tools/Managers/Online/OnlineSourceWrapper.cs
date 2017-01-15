@@ -321,7 +321,7 @@ namespace AcManager.Tools.Managers.Online {
                     target._AddRangeDirect(newEntries);
                 }
             } else {
-                var list = informations.ToIReadOnlyListIfItsNot();
+                var list = informations.ToIReadOnlyListIfItIsNot();
 
                 foreach (var information in list) {
                     var existing = _list.GetByIdOrDefault(information.Id);

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.InnerHelpers {
     internal class WatchingTask {
@@ -39,32 +40,36 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             }
 
             ActionExtension.InvokeInMainThread(() => {
-                Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Invoke");
-                // in some cases (CREATED, DELETED) queue could be cleared
-                if (_queue.Any()) {
-                    var change = _queue.Dequeue();
-                    _applier.ApplyChange(_location, change);
-
+                try {
+                    Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Invoke");
+                    // in some cases (CREATED, DELETED) queue could be cleared
                     if (_queue.Any()) {
-                        if (change.Type == WatcherChangeTypes.Changed) {
-                            // very special case:
-                            // after CHANGED could be only CHANGED, and only with FULL_FILENAME
-                            // let’s process all of them in one INVOKE
+                        var change = _queue.Dequeue();
+                        _applier.ApplyChange(_location, change);
 
-                            foreach (var next in _queue) {
-                                _applier.ApplyChange(_location, next);
+                        if (_queue.Any()) {
+                            if (change.Type == WatcherChangeTypes.Changed) {
+                                // very special case:
+                                // after CHANGED could be only CHANGED, and only with FULL_FILENAME
+                                // let’s process all of them in one INVOKE
+
+                                foreach (var next in _queue) {
+                                    _applier.ApplyChange(_location, next);
+                                }
+                                _queue.Clear();
+                            } else {
+                                Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Next");
+                                AsyncAction().Forget();
+                                return;
                             }
-                            _queue.Clear();
-                        } else {
-                            Debug.WriteLine("ACMGR: WatchingTask.AsyncAction() Next");
-                            AsyncAction().Forget();
-                            return;
                         }
                     }
-                }
 
-                _delay = false;
-                _actionInProcess = false;
+                    _delay = false;
+                    _actionInProcess = false;
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
             });
         }
 

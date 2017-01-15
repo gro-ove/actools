@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -63,6 +67,8 @@ namespace AcManager.Tools.Objects {
 
         public abstract string IdWithLayout { get; }
 
+        public string KunosIdWithLayout => IdWithLayout.Replace('/', '-');
+
         public abstract string LayoutName { get; set; }
 
         #region Properties & Specifications
@@ -101,16 +107,21 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsLength;
+        private string _specsLengthDisplay;
 
         [CanBeNull]
         public string SpecsLength {
             get { return _specsLength; }
             set {
+                value = value?.Trim();
                 if (value == _specsLength) return;
                 _specsLength = value;
+                _specsLengthValue = null;
+                _specsLengthDisplay = null;
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsLength));
+                    OnPropertyChanged(nameof(SpecsLengthValue));
                     OnPropertyChanged(nameof(SpecsInfoDisplay));
                     Changed = true;
                 }
@@ -118,13 +129,16 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsWidth;
+        private string _specsWidthDisplay;
 
         [CanBeNull]
         public string SpecsWidth {
             get { return _specsWidth; }
             set {
+                value = value?.Trim();
                 if (value == _specsWidth) return;
                 _specsWidth = value;
+                _specsWidthDisplay = null;
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsWidth));
@@ -135,47 +149,149 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsPitboxes;
+        private string _specsPitboxesDisplay;
 
         [CanBeNull]
         public string SpecsPitboxes {
             get { return _specsPitboxes; }
             set {
+                value = value?.Trim();
                 if (value == _specsPitboxes) return;
                 _specsPitboxes = value;
+                _specsPitboxesValue = null;
+                _specsPitboxesDisplay = null;
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsPitboxes));
+                    OnPropertyChanged(nameof(SpecsPitboxesValue));
                     OnPropertyChanged(nameof(SpecsInfoDisplay));
                     Changed = true;
                 }
             }
         }
 
-        [CanBeNull]
-        public string SpecsInfoDisplay {
-            get {
-                var result = new StringBuilder();
-                int pitboxes;
-                if (!FlexibleParser.TryParseInt(SpecsPitboxes, out pitboxes)) {
-                    pitboxes = 99;
-                }
+        private static readonly Regex SpecsLengthFix = new Regex(@"^\W*(\d+(?:[\.,]\d+)?)\s*(?:(km|kilometers)|(mi|miles?)|m)\b",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-                foreach (var val in new[] {
-                    SpecsLength, 
-                    SpecsWidth, 
-                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : PluralizingConverter.PluralizeExt(pitboxes, ToolsStrings.TrackBaseObject_Specs_PitsNumber)
-                }.Where(val => !string.IsNullOrWhiteSpace(val))) {
-                    if (result.Length > 0) {
-                        result.Append(@", ");
+        private static readonly Regex SpecsDotFixTest = new Regex(@"\d[\.,]\d{3}(?=\D|$)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        private double? _specsLengthValue;
+
+        /// <summary>
+        /// Parsed value, in meters.
+        /// </summary>
+        public double SpecsLengthValue => _specsLengthValue ?? (_specsLengthValue = GetSpecsLengthValue(_specsLength, true) ?? 0d).Value;
+
+        private int? _specsPitboxesValue;
+
+        /// <summary>
+        /// Parsed value.
+        /// </summary>
+        public int SpecsPitboxesValue => _specsPitboxesValue ?? (_specsPitboxesValue = FlexibleParser.TryParseInt(SpecsPitboxes) ?? 2).Value;
+
+        private double? GetSpecsLengthValue(string original, bool dotFix) {
+            double value;
+            if (!double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
+                var m = SpecsLengthFix.Match(original);
+
+                if (m.Success) {
+                    var n = m.Groups[1].Value;
+                    if (n.Contains(',')) {
+                        n = n.Replace(',', '.');
                     }
 
-                    result.Append(val);
-                }
+                    if (!FlexibleParser.TryParseDouble(n, out value)) {
+                        return null;
+                    }
 
-                return result.Length > 0 ? result.ToString() : null;
+                    if (m.Groups[2].Success) {
+                        value *= 1e3;
+                    } else if (m.Groups[3].Success) {
+                        value *= 1.6e3;
+                    }
+                } else if (!FlexibleParser.TryParseDouble(original, out value)) {
+                    return null;
+                }
             }
+
+            if (dotFix && value < 100 && SpecsDotFixTest.IsMatch(original)) {
+                // For those lost and misguided souls who use “.” as a thousands separator or “,” as decimal separators.
+                value *= 1e3;
+            }
+
+            return value;
         }
-        #endregion
+
+        private string D(string a, string b) {
+            return a;
+
+#if DEBUG
+            return $"{a} 〈{b}〉";
+#else
+            return a;
+#endif
+        }
+
+        [CanBeNull]
+        private string GetSpecsLengthDisplay() {
+            var value = SpecsLengthValue;
+            if (Equals(value, 0d)) {
+                return SpecsLength;
+            }
+            
+            return D((value / 1000).Round(0.1) + " km", SpecsLength);
+        }
+
+        private static readonly Regex SpecsWidthFix = new Regex(@"^(.+?)\s*[-–—]\s*(.+)$",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        private string GetSpecsWidthDisplayPart(string original) {
+            var value = GetSpecsLengthValue(original, false);
+            if (!value.HasValue) return original;
+            return value.Value.Round(0.1) + " m";
+        }
+
+        [CanBeNull]
+        private string GetSpecsWidthDisplay() {
+            var original = SpecsWidth;
+            if (original == null) return null;
+
+            var m = SpecsWidthFix.Match(original);
+            if (m.Success) {
+                return D(GetSpecsWidthDisplayPart(m.Groups[1].Value) + @"–" + GetSpecsWidthDisplayPart(m.Groups[2].Value), original);
+            }
+
+            var result = D(GetSpecsWidthDisplayPart(original), original);
+            if (result != null) {
+                return result;
+            }
+
+            double value;
+            if (double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
+                return value + " m";
+            }
+
+            return original;
+        }
+
+        [CanBeNull]
+        private string GetSpecsPitboxesDisplay() {
+            return PluralizingConverter.PluralizeExt(SpecsPitboxesValue, ToolsStrings.TrackBaseObject_Specs_PitsNumber);
+        }
+
+        [NotNull]
+        public string SpecsInfoDisplay => new [] {
+            string.IsNullOrEmpty(SpecsLength) ? null : (_specsLengthDisplay ?? (_specsLengthDisplay = GetSpecsLengthDisplay())),
+            string.IsNullOrEmpty(SpecsWidth) ? null : (_specsWidthDisplay ?? (_specsWidthDisplay = GetSpecsWidthDisplay())),
+            string.IsNullOrEmpty(SpecsPitboxes) ? null : (_specsPitboxesDisplay ?? (_specsPitboxesDisplay = GetSpecsPitboxesDisplay()))
+        }.NonNull().JoinToString(@", ");
+#endregion
+        
+        public TimeSpan GuessApproximateLapDuration(CarObject car = null) {
+            var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.3).Clamp(20d, 200d);
+            return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(30), TimeSpan.FromHours(2));
+        } 
 
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.TrackTagsList;
@@ -253,8 +369,10 @@ namespace AcManager.Tools.Objects {
         
         public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models-{LayoutId}.ini");
 
+#region Draggable
         public const string DraggableFormat = "Data-TrackObject";
 
         string IDraggable.DraggableFormat => DraggableFormat;
+#endregion
     }
 }

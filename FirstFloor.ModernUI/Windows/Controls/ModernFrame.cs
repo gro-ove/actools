@@ -10,6 +10,7 @@ using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ModernFrame : ContentControl {
@@ -86,11 +87,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((ModernFrame)o).OnSourceChanged((Uri)e.OldValue, (Uri)e.NewValue);
         }
 
-        private void OnSourceChanged(Uri oldValue, Uri newValue) {
+        private void OnSourceChanged([CanBeNull] Uri oldValue, [CanBeNull] Uri newValue) {
             var immediate = Content as IImmediateContent;
 
             try {
-                if (immediate != null && oldValue.SamePath(newValue) && immediate.ImmediateChange(newValue)) {
+                if (newValue != null && oldValue?.SamePath(newValue) == true && immediate?.ImmediateChange(newValue) == true) {
                     return;
                 }
             } catch (Exception e) {

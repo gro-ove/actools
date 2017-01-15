@@ -1,4 +1,9 @@
-﻿using System;
+﻿// #define ZIP_SUPPORT
+/* ZIP-support: option to load images from ZIP-archives. With it enabled, BetterImage
+ * would look for a special separator in file’s path, and if found, load image from
+ * a ZIP-archive instead. Experimental feature, don’t know if it’s a good idea or not. */
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,7 +20,15 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
+#if ZIP_SUPPORT
+using System.IO.Compression;
+#endif
+
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public enum ImageCropMode {
+        Absolute, Relative
+    }
+
     public class BetterImage : Control {
         public static bool OptionBackgroundLoading = true;
         public static long OptionCacheTotalSize = 100 * 1000 * 100;
@@ -24,6 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
+            // In most cases, it’s BitmapSource.
             public readonly ImageSource BitmapSource;
             public readonly int Width, Height;
             public readonly bool Downsized;
@@ -87,11 +101,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Set to 0 if value shouldn’t be copied from Width.
+        /// Applied before cropping! Also, it will affect image size, so most likely you wouldn’t want to set it
+        /// with CropUnits=Absolute.
+        /// 
+        /// Without cropping, if set to -1 (default value), MaxWidth or Width will be used instead. Set to 0 
+        /// if you want to disable this behavior and force full-size decoding. 
         /// </summary>
         public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(DecodeWidth), typeof(int),
                 typeof(BetterImage), new PropertyMetadata(-1));
-
+        
         public int DecodeWidth {
             get { return (int)GetValue(DecodeWidthProperty); }
             set { SetValue(DecodeWidthProperty, value); }
@@ -156,6 +174,40 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((BetterImage)o).Source = e.NewValue;
         }
 
+        public static readonly DependencyProperty CropProperty = DependencyProperty.Register(nameof(Crop), typeof(Rect?),
+                typeof(BetterImage), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, OnCropChanged));
+
+        private Rect? _crop;
+        
+        public Rect? Crop {
+            get { return _crop; }
+            set { SetValue(CropProperty, value); }
+        }
+
+        private static void OnCropChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            var b = (BetterImage)o;
+            b._crop = (Rect?)e.NewValue;
+
+            if (b._filename != null) {
+                b.OnFilenameChanged(b._filename);
+            }
+        }
+
+        public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(CropUnits), typeof(ImageCropMode),
+                typeof(BetterImage), new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure, OnCropUnitsChanged));
+
+        private ImageCropMode _cropUnits = ImageCropMode.Relative;
+
+        public ImageCropMode CropUnits {
+            get { return _cropUnits; }
+            set { SetValue(CropUnitsProperty, value); }
+        }
+
+        private static void OnCropUnitsChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            var b = (BetterImage)o;
+            b._cropUnits = (ImageCropMode)e.NewValue;
+        }
+
         private void SetBitmapEntryDirectly(BitmapEntry value) {
             Filename = null;
             ++_loading;
@@ -176,6 +228,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return (bool)GetValue(ForceFillProperty); }
             set { SetValue(ForceFillProperty, value); }
         }
+
+        public static readonly DependencyProperty CollapseIfMissingProperty = DependencyProperty.Register(nameof(CollapseIfMissing), typeof(bool),
+                typeof(BetterImage), new PropertyMetadata(OnCollapseIfMissingChanged));
+
+        private bool _collapseIfMissing;
+
+        public bool CollapseIfMissing {
+            get { return _collapseIfMissing; }
+            set { SetValue(CollapseIfMissingProperty, value); }
+        }
+
+        private static void OnCollapseIfMissingChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((BetterImage)o)._collapseIfMissing = (bool)e.NewValue;
+        }
         #endregion
 
         #region Loading
@@ -183,6 +249,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (string.IsNullOrEmpty(filename)) {
                 return BitmapEntry.Empty;
             }
+
+#if ZIP_SUPPORT
+            string zipFilename, entryName;
+            if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
+                using (var zip = ZipFile.OpenRead(zipFilename)) {
+                    var entry = zip.Entries.First(x => x.Name == entryName);
+                    using (var s = entry.Open())
+                    using (var m = new MemoryStream((int)entry.Length)) {
+                        s.CopyTo(m);
+                        return LoadBitmapSourceFromBytes(m.ToArray(), decodeWidth, decodeHeight);
+                    }
+                }
+            }
+#endif
 
             Uri uri;
             try {
@@ -238,10 +318,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        [ItemNotNull]
-        private static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
-            if (filename.StartsWith(@"/")) {
-                try {
+        /// <summary>
+        /// Save (handles all exceptions inside).
+        /// </summary>
+        [ItemCanBeNull]
+        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default(CancellationToken)) {
+            if (filename == null) return null;
+
+            try {
+#if ZIP_SUPPORT
+                // Loading from ZIP file
+                string zipFilename, entryName;
+                if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
+                    using (var zip = ZipFile.OpenRead(zipFilename)) {
+                        var entry = zip.Entries.First(x => x.Name == entryName);
+                        using (var s = entry.Open())
+                        using (var m = new MemoryStream((int)entry.Length)) {
+                            await s.CopyToAsync(m);
+                            return m.ToArray();
+                        }
+                    }
+                }
+#endif
+
+                // Loading from application resources (I think, there is an issue here)
+                if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
                     if (stream != null) {
                         using (stream) {
@@ -250,22 +351,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             return result;
                         }
                     }
-                } catch (Exception) {
-                    // ignored
                 }
-            }
 
-            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                var result = new byte[stream.Length];
-                await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
-                return result;
+                // Regular loading
+                using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    var result = new byte[stream.Length];
+                    await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
+                    return result;
+                }
+            } catch (FileNotFoundException) {
+                return null;
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
             }
         }
 
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
-        private static BitmapEntry LoadBitmapSourceFromBytes(byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
+        private static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
             try {
                 // for more information about WrappingStream: https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
                 using (var stream = new WrappingStream(new MemoryStream(data))) {
@@ -318,15 +423,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
-            if (string.IsNullOrEmpty(filename)) {
-                return BitmapEntry.Empty;
-            }
-
-            try {
-                return LoadBitmapSourceFromBytes(await ReadAllBytesAsync(filename), decodeWidth, decodeHeight);
-            } catch (Exception) {
-                return BitmapEntry.Empty;
-            }
+            var bytes = await ReadBytesAsync(filename);
+            return bytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
         }
         #endregion
 
@@ -336,6 +434,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <param name="filename"></param>
         public static void ReloadImage(string filename) {
+#if ZIP_SUPPORT
+            filename = GetActualFilename(filename);
+            RemoveFromCache(filename);
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var image in app.Windows.OfType<Window>()
+                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
+                    .Where(x => string.Equals(GetActualFilename(x._filename), filename, StringComparison.OrdinalIgnoreCase))) {
+                image.OnFilenameChanged(filename);
+            }
+#else
             RemoveFromCache(filename);
             var app = Application.Current;
             if (app == null) return;
@@ -344,6 +453,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     .Where(x => string.Equals(x._filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
+#endif
         }
         #endregion
 
@@ -356,12 +466,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static readonly List<CacheEntry> Cache = new List<CacheEntry>(100);
 
         private static void RemoveFromCache(string filename) {
+#if ZIP_SUPPORT
+            lock (Cache) {
+                int i;
+                while ((i = Cache.FindIndex(x => string.Equals(GetActualFilename(x.Key), filename, StringComparison.OrdinalIgnoreCase))) != -1) {
+                    Cache.RemoveAt(i);
+                }
+            }
+#else
             lock (Cache) {
                 var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
                 if (i != -1) {
                     Cache.RemoveAt(i);
                 }
             }
+#endif
         }
 
         private void AddToCache(string filename, BitmapEntry entry) {
@@ -413,13 +532,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return item.Value;
             }
         }
-        #endregion
+#endregion
 
-        #region Inner control methods
+#region Inner control methods
         public int InnerDecodeWidth {
             get {
                 var decodeWidth = DecodeWidth;
                 if (decodeWidth >= 0) return decodeWidth;
+
+                if (Crop.HasValue) return -1;
 
                 var maxWidth = MaxWidth;
                 if (!double.IsPositiveInfinity(maxWidth)) return (int)maxWidth;
@@ -442,12 +563,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
+            if (_filename == null) {
+                _current = BitmapEntry.Empty;
+                _broken = true;
+                return false;
+            }
+
             if (OptionCacheTotalSize > 0) {
                 var cached = GetCached(_filename);
                 var innerDecodeWidth = InnerDecodeWidth;
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
-                        var info = new FileInfo(_filename);
+                        var info = new FileInfo(GetActualFilename(_filename));
                         if (!info.Exists) {
                             _current = BitmapEntry.Empty;
                             _broken = true;
@@ -524,22 +651,43 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             InvalidateVisual();
         }
 
+#if ZIP_SUPPORT
+        public static readonly string ZipSeparator = @"/.//";
+
+        private static bool TryToParseZipPath([CanBeNull] string filename, out string zipFilename, out string entryName) {
+            if (filename == null) {
+                zipFilename = entryName = null;
+                return false;
+            }
+
+            var index = filename.IndexOf(ZipSeparator, StringComparison.Ordinal);
+            if (index == -1) {
+                zipFilename = entryName = null;
+                return false;
+            }
+
+            zipFilename = filename.Substring(0, index);
+            entryName = filename.Substring(index + ZipSeparator.Length);
+            return zipFilename.Length > 0 && entryName.Length > 0;
+        }
+#endif
+
+        [ContractAnnotation(@"filename:null => null; filename:notnull => notnull")]
+        private static string GetActualFilename([CanBeNull] string filename) {
+#if ZIP_SUPPORT
+            string zipFilename, entryName;
+            return TryToParseZipPath(filename, out zipFilename, out entryName) ? zipFilename : filename;
+#else
+            return filename;
+#endif
+        }
+
         private async void ReloadImageAsync() {
             var loading = ++_loading;
             _broken = false;
 
             var filename = _filename;
-
-            byte[] data;
-            if (string.IsNullOrEmpty(filename)) {
-                data = null;
-            } else {
-                try {
-                    data = await ReadAllBytesAsync(filename);
-                } catch (Exception) {
-                    data = null;
-                }
-            }
+            var data = await ReadBytesAsync(filename);
 
             if (loading != _loading || _filename != filename) return;
             if (data == null) {
@@ -593,6 +741,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnFilenameChanged(string value) {
             _filename = value;
+
+            if (CollapseIfMissing) {
+                if (File.Exists(GetActualFilename(value))) {
+                    Visibility = Visibility.Visible;
+                } else {
+                    Visibility = Visibility.Collapsed;
+                    _current = BitmapEntry.Empty;
+                    _broken = false;
+                    return;
+                }
+            }
+
             if (ReloadImage() && ClearOnChange) {
                 _current = BitmapEntry.Empty;
                 _broken = false;
@@ -629,17 +789,36 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
         }
 
-        private static readonly FormattedText CachedFormattedText = new FormattedText("Cached", CultureInfo.InvariantCulture,
-                FlowDirection.LeftToRight, new Typeface(new FontFamily(@"Arial").ToString()), 12, Brushes.Red);
+        private static FormattedText _cachedFormattedText;
+
+        private static FormattedText CachedFormattedText => _cachedFormattedText ??
+                (_cachedFormattedText = new FormattedText(@"Cached", CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                        new Typeface(new FontFamily(@"Arial").ToString()), 12, Brushes.Red));
 
         protected override void OnRender(DrawingContext dc) {
             if (_current.BitmapSource == null && HideBroken) return;
 
             dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
 
-            if (_current.BitmapSource != null) {
+            var broken = false;
+            if (_current.BitmapSource == null) {
+                broken = true;
+            } else if (Crop.HasValue) {
+                try {
+                    var crop = Crop.Value;
+                    var cropped = new CroppedBitmap((BitmapSource)_current.BitmapSource, CropUnits == ImageCropMode.Relative ? new Int32Rect(
+                            (int)(crop.Left * _current.Width), (int)(crop.Top * _current.Height),
+                            (int)(crop.Width * _current.Width), (int)(crop.Height * _current.Height)) : new Int32Rect(
+                                    (int)crop.Left, (int)crop.Top, (int)crop.Width, (int)crop.Height));
+                    dc.DrawImage(cropped, new Rect(_offset, _size));
+                } catch (ArgumentException) {
+                    broken = true;
+                }
+            } else {
                 dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
-            } else if (ShowBroken && _broken) {
+            }
+
+            if (broken && ShowBroken && _broken) {
                 dc.DrawImage(BrokenIcon.ImageSource,
                         new Rect(new Point((RenderSize.Width - BrokenIcon.Width) / 2d, (RenderSize.Height - BrokenIcon.Height) / 2d), BrokenIcon.Size));
             }
@@ -697,12 +876,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return new Size(double.IsNaN(Width) ? 0d : Width, double.IsNaN(Height) ? 0d : Height);
             }
 
-            var scaleFactor = ComputeScaleFactor(inputSize, new Size(_current.Width, _current.Height), Stretch, StretchDirection);
-            return new Size(_current.Width * scaleFactor.Width, _current.Height * scaleFactor.Height);
-        }
-        #endregion
+            Size size;
+            if (Crop.HasValue) {
+                var crop = Crop.Value;
+                size = CropUnits == ImageCropMode.Relative ?
+                        new Size(crop.Width * _current.Width, crop.Height * _current.Height) :
+                        new Size(crop.Width, crop.Height);
+            } else {
+                size = new Size(_current.Width, _current.Height);
+            }
 
-        #region Initialization
+            var scaleFactor = ComputeScaleFactor(inputSize, size, Stretch, StretchDirection);
+            return new Size(size.Width * scaleFactor.Width, size.Height * scaleFactor.Height);
+        }
+#endregion
+
+#region Initialization
         static BetterImage() {
             var style = CreateDefaultStyles();
             StyleProperty.OverrideMetadata(typeof(BetterImage), new FrameworkPropertyMetadata(style));
@@ -724,6 +913,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             style.Seal();
             return style;
         }
-        #endregion
+#endregion
     }
 }

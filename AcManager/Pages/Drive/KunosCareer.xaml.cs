@@ -71,13 +71,13 @@ namespace AcManager.Pages.Drive {
             Model.Unload();
         }
 
-        private void ListBox_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+        private void OnListBoxDoubleClick(object sender, MouseButtonEventArgs e) {
             Model.SelectSeriesCommand.Execute(null);
         }
 
         private const string KeyScrollValue = "KunosCareer.ListBox.Scroll";
 
-        private void ListBox_ScrollChanged(object sender, ScrollChangedEventArgs e) {
+        private void OnListBoxScrollChanged(object sender, ScrollChangedEventArgs e) {
             if (_scroll == null || !_positionLoaded) return;
             ValuesStorage.Set(KeyScrollValue, _scroll.HorizontalOffset);
         }
@@ -86,7 +86,7 @@ namespace AcManager.Pages.Drive {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
-            links?.Remove(links.OfType<CustomLink>().FirstOrDefault());
+            links?.Remove(links.OfType<CustomLink>().FirstOrDefault(x => x.Source.OriginalString.StartsWith(@"/Pages/Drive/KunosCareer_SelectedPage.xaml")));
 
             if (kunosCareer == null) {
                 mainWindow?.NavigateTo(new Uri("/Pages/Drive/KunosCareer.xaml", UriKind.RelativeOrAbsolute));

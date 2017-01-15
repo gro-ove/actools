@@ -67,7 +67,7 @@ namespace AcManager.Pages.ServerPreset {
                     SelectedObject.TrackId = _track.MainTrackObject.Id;
                     SelectedObject.TrackLayoutId = _track.LayoutId;
 
-                    MaximumCapacity = FlexibleParser.ParseInt(_track.SpecsPitboxes, 2);
+                    MaximumCapacity = _track.SpecsPitboxesValue;
                 }
             }
 

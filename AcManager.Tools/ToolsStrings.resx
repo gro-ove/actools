@@ -310,6 +310,9 @@
   <data name="Shared_PpFilter" xml:space="preserve">
     <value>PP filter</value>
   </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Championship</value>
+  </data>
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
     <value>Quick Drive preset</value>
   </data>

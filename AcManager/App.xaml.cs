@@ -418,6 +418,7 @@ namespace AcManager {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
+            UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
             Dispose();
         }

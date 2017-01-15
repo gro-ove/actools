@@ -102,8 +102,8 @@ namespace AcManager.Pages.SelectionLists {
             }
         }
 
-        protected sealed override SelectCategory GetSelectedItem(IList<SelectCategory> list, TObject selected) {
-            var description = (from category in Categories where category.Test(selected) select category.Description).FirstOrDefault();
+        protected sealed override SelectCategory GetSelectedItem(IList<SelectCategory> list, TObject obj) {
+            var description = (from category in Categories where category.Test(obj) select category.Description).FirstOrDefault();
             return list.FirstOrDefault(x => ReferenceEquals(x.Description, description));
         }
 

@@ -22,7 +22,7 @@ namespace AcManager.Pages.Selected {
     public abstract class SelectedAcObjectViewModel : NotifyPropertyChanged {
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-                var obj = values.FirstOrDefault() as AcJsonObjectNew;
+                var obj = values.FirstOrDefault() as IAcObjectAuthorInformation;
                 if (obj == null || obj.Author != null || obj.Url == null && obj.Version == null) {
                     return ControlsStrings.AcObject_AuthorLabel;
                 }

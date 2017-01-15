@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     /// <summary>
-    /// Only for KunosCareerObject and KunosCareerEventObject
+    /// Only for KunosCareerObject and KunosCareerEventObject.
     /// </summary>
     public class KunosCareerProgress : NotifyPropertyChanged, IDisposable {
         private static KunosCareerProgress _instance;
@@ -25,24 +23,15 @@ namespace AcManager.Tools.Data {
                 (_instance = new KunosCareerProgress(FileUtils.GetKunosCareerProgressFilename()));
 
         private readonly string _filename;
-        private FileSystemWatcher _fsWatcher;
+        private IDisposable _watcher;
 
         private KunosCareerProgress(string filename) {
             _filename = filename;
-
-            var directory = Path.GetDirectoryName(_filename);
-            if (Directory.Exists(directory)) {
-                _fsWatcher = new FileSystemWatcher {
-                    Path = directory,
-                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
-                    Filter = Path.GetFileName(_filename)
-                };
-                _fsWatcher.Changed += FsWatcher_Changed;
-                _fsWatcher.Created += FsWatcher_Changed;
-                _fsWatcher.Deleted += FsWatcher_Changed;
-                _fsWatcher.Renamed += FsWatcher_Changed;
-                _fsWatcher.EnableRaisingEvents = true;
-            }
+            _watcher = KunosLauncherDataWatcher.Subscribe(_filename, () => { Reload().Forget(); }, () => {
+                lock (_ignoreChangesSync) {
+                    return (DateTime.Now - _ignoreChanges).TotalSeconds < 1d;
+                }
+            });
 
             if (!TryToLoad()) {
                 Reset();
@@ -55,24 +44,8 @@ namespace AcManager.Tools.Data {
         }
 #endif
 
+        private readonly object _ignoreChangesSync = new object();
         private DateTime _ignoreChanges;
-
-        private void FsWatcher_Changed(object sender, FileSystemEventArgs e) {
-            if ((DateTime.Now - _ignoreChanges).TotalSeconds < 1d) return;
-            LoadLater();
-        }
-
-        private bool _loadingInProgress;
-
-        private async void LoadLater() {
-            if (_loadingInProgress) return;
-            _loadingInProgress = true;
-            
-            await Task.Delay(200);
-            await (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(Reload);
-            _loadingInProgress = false;
-        }
-
         private string _currentSeries;
 
         [CanBeNull]
@@ -240,11 +213,14 @@ namespace AcManager.Tools.Data {
                 }
             }
 
-            if (!File.Exists(_filename + ".backup")) {
+            if (File.Exists(_filename) && !File.Exists(_filename + ".backup")) {
                 File.Copy(_filename, _filename + ".backup");
             }
 
-            _ignoreChanges = DateTime.Now;
+            lock (_ignoreChangesSync) {
+                _ignoreChanges = DateTime.Now;
+            }
+
             iniFile.Save();
         }
 
@@ -266,7 +242,7 @@ namespace AcManager.Tools.Data {
         }
 
         public void Dispose() {
-            DisposeHelper.Dispose(ref _fsWatcher);
+            DisposeHelper.Dispose(ref _watcher);
         }
     }
 }

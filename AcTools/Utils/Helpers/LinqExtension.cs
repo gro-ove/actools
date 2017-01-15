@@ -323,21 +323,27 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
-        public static List<T> ToListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
+        public static List<T> ToListIfItIsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as List<T> ?? enumerable.ToList();
         }
 
         [NotNull]
-        public static IList<T> ToIListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
+        public static IList<T> ToIListIfItIsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as IList<T> ?? enumerable.ToList();
         }
 
         [NotNull]
-        public static IReadOnlyList<T> ToIReadOnlyListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
+        public static IReadOnlyList<T> ToIReadOnlyListIfItIsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as IReadOnlyList<T> ?? enumerable.ToList();
+        }
+
+        [NotNull]
+        public static T[] ToArrayIfItIsNot<T>([NotNull] this IEnumerable<T> enumerable) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            return enumerable as T[] ?? enumerable.ToArray();
         }
 
         /// <summary>
@@ -519,7 +525,7 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<T> SkipLast<T>([NotNull] this IEnumerable<T> source, int count) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = source.ToIReadOnlyListIfItsNot();
+            var list = source.ToIReadOnlyListIfItIsNot();
             return list.Take(Math.Max(list.Count - count, 0));
         }
 
@@ -550,7 +556,7 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = additionalItems.ToIReadOnlyListIfItsNot();
+            var list = additionalItems.ToIReadOnlyListIfItIsNot();
             return source.Where(x => !list.Contains(x));
         }
 

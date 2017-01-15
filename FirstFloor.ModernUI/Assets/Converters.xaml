@@ -23,6 +23,7 @@
     <c:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     <c:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <c:OrdinalizingConverter x:Key="OrdinalizingConverter" />
+    <c:OrdinalizingShortConverter x:Key="OrdinalizingShortConverter" />
     <c:FileSizeConverter x:Key="FileSizeConverter" />
     <c:PercentageConverter x:Key="PercentageConverter" />
     <c:PluralizingConverter x:Key="PluralizingConverter" />

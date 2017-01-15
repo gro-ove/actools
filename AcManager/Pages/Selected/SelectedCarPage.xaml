@@ -267,7 +267,7 @@
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="VersionInfoBlock_OnMouse" />
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
                     </DockPanel>
 
                     <!-- last row -->

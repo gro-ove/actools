@@ -15,7 +15,7 @@ namespace AcManager.Pages.Selected {
             });
         }
 
-        protected virtual void VersionInfoBlock_OnMouse(object sender, MouseButtonEventArgs e) {
+        protected virtual void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
 
@@ -26,7 +26,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        protected void TagsList_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        protected void OnTagsListMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Right) return;
 
             new ContextMenu {

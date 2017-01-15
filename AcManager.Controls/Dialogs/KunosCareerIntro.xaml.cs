@@ -14,13 +14,13 @@ namespace AcManager.Controls.Dialogs {
             Buttons = new Button[] { };
         }
 
-        private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 Close();
             }
         }
 
-        private void ImageViewer_OnKeyUp(object sender, KeyEventArgs e) {
+        private void OnKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack ||
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 Close();

@@ -167,7 +167,7 @@ namespace AcManager.UserControls {
 
         private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {}
 
-        private void ItemsControl_OnDrop(object sender, DragEventArgs e) {
+        private void OnItemsControlDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
 

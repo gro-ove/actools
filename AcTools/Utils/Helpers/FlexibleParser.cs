@@ -7,6 +7,7 @@ namespace AcTools.Utils.Helpers {
     public static class FlexibleParser {
         private static Regex _parseDouble, _parseInt;
 
+        [ContractAnnotation("s:null => false")]
         public static bool TryParseDouble([CanBeNull] string s, out double value) {
             if (s == null) {
                 value = 0d;
@@ -31,11 +32,13 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
+        [ContractAnnotation("s:null => null")]
         public static double? TryParseDouble(string s) {
             double result;
             return TryParseDouble(s, out result) ? result : (double?)null;
         }
 
+        [ContractAnnotation("s:null => false")]
         public static bool TryParseInt([CanBeNull] string s, out int value) {
             if (s == null) {
                 value = 0;
@@ -62,11 +65,13 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
+        [ContractAnnotation("s:null => null")]
         public static int? TryParseInt(string s) {
             int result;
             return TryParseInt(s, out result) ? result : (int?)null;
         }
 
+        [ContractAnnotation("s:null => false")]
         public static bool TryParseLong(string s, out long value) {
             if (_parseInt == null) {
                 _parseInt = new Regex(@"-? *\d+");
@@ -84,6 +89,7 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
+        [ContractAnnotation("s:null => null")]
         public static long? TryParseLong(string s) {
             long result;
             return TryParseLong(s, out result) ? result : (long?)null;

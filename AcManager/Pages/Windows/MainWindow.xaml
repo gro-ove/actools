@@ -19,6 +19,7 @@
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
+                <mui:Link DisplayName="Championships" Source="/Pages/Drive/UserChampionships.xaml" IsEnabled="False" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
@@ -58,7 +59,7 @@
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
-                <mui:Link DisplayName="User Championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" />
+                <mui:Link DisplayName="User Championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
                 <!--<mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />-->
             </mui:LinkGroup.Links>

@@ -28,7 +28,7 @@
                                         <ColumnDefinition Width="{StaticResource FullscreenDialog.ButtonGridLength}" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Button Command="{Binding PreviousCommand}">
+                                    <Button Command="{Binding PreviousCommand}" Style="{StaticResource FullscreenDialogButton}">
                                         <Path Data="{StaticResource PreviousIconData}" />
                                     </Button>
 
@@ -42,19 +42,21 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <Button Height="{StaticResource FullscreenDialog.ButtonSize}" PreviewMouseDown="CloseButton_OnPreviewMouseDown">
+                                        <Button Height="{StaticResource FullscreenDialog.ButtonSize}" PreviewMouseDown="CloseButton_OnPreviewMouseDown"
+                                                Style="{StaticResource FullscreenDialogButton}">
                                             <Path Data="{StaticResource CloseIconData}" />
                                         </Button>
-                                        <Button Grid.Row="1" Command="{Binding NextCommand}">
+                                        <Button Grid.Row="1" Command="{Binding NextCommand}" Style="{StaticResource FullscreenDialogButton}">
                                             <Path Data="{StaticResource NextIconData}" />
                                         </Button>
                                         <Button Grid.Row="2" Height="{StaticResource FullscreenDialog.ButtonSize}"
-                                                PreviewMouseDown="ApplyButton_OnPreviewMouseDown"
+                                                PreviewMouseDown="ApplyButton_OnPreviewMouseDown" Style="{StaticResource FullscreenDialogButton}"
                                                 Visibility="{Binding SelectionMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <Path Data="{StaticResource CheckIconData}" />
                                         </Button>
                                         <Button Grid.Row="2" Height="{StaticResource FullscreenDialog.ButtonSize}" Command="{Binding SaveCommand}"
-                                                Visibility="{Binding Saveable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                Visibility="{Binding Saveable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Style="{StaticResource FullscreenDialogButton}">
                                             <Path Data="{StaticResource SaveIconData}" />
                                         </Button>
                                     </Grid>

@@ -27,6 +27,7 @@ namespace AcTools.Utils {
         public static int Clamp(this int v, int min, int max) => v < min ? min : v > max ? max : v;
         public static float Clamp(this float v, float min, float max) => v < min ? min : v > max ? max : v;
         public static double Clamp(this double v, double min, double max) => v < min ? min : v > max ? max : v;
+        public static TimeSpan Clamp(this TimeSpan v, TimeSpan min, TimeSpan max) => v < min ? min : v > max ? max : v;
 
         public static byte ClampToByte(this double v) => (byte)(v < 0d ? 0 : v > 255d ? 255 : v);
         public static byte ClampToByte(this int v) => (byte)(v < 0 ? 0 : v > 255 ? 255 : v);
@@ -48,7 +49,7 @@ namespace AcTools.Utils {
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static double Round(this double value, double precision) {
+        public static double Round(this double value, double precision = 1d) {
             return Math.Round(value / precision) * precision;
         }
 
@@ -58,8 +59,18 @@ namespace AcTools.Utils {
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static double Floor(this double value, double precision) {
+        public static double Floor(this double value, double precision = 1d) {
             return Math.Floor(value / precision) * precision;
+        }
+
+        /// <summary>
+        /// For example: Round(0.327, 0.05) → 0.35.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static double Ceiling(this double value, double precision = 1d) {
+            return Math.Ceiling(value / precision) * precision;
         }
 
         /// <summary>
@@ -68,7 +79,7 @@ namespace AcTools.Utils {
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static int Round(this int value, int precision) {
+        public static int Round(this int value, int precision = 1) {
             return (int)(Math.Round((double)value / precision) * precision);
         }
 
@@ -78,8 +89,18 @@ namespace AcTools.Utils {
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static int Floor(this int value, int precision) {
+        public static int Floor(this int value, int precision = 1) {
             return (int)(Math.Floor((double)value / precision) * precision);
+        }
+
+        /// <summary>
+        /// For example: Round(327, 25) → 350.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static int Ceiling(this int value, int precision = 1) {
+            return (int)(Math.Ceiling((double)value / precision) * precision);
         }
 
         /// <summary>

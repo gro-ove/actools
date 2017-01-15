@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:c="clr-namespace:AcManager.Controls.Converters">
-    <c:RealismLevelToColorConverter x:Key="RealismLevelToColorConverter" />
-    <c:CountryIdToImageConverter x:Key="CountryIdToImageConverter" />
+    <c:AcTimeDisplayConverter x:Key="AcTimeDisplayConverter" />
     <c:AuthorVersionUrlToLabelConverter x:Key="AuthorVersionUrlToLabelConverter" />
     <c:CarIdToCarWrapperConverter x:Key="CarIdToCarWrapperConverter" />
+    <c:CountryIdToImageConverter x:Key="CountryIdToImageConverter" />
+    <c:RealismLevelToColorConverter x:Key="RealismLevelToColorConverter" />
     <c:TrackIdToTrackWrapperConverter x:Key="TrackIdToTrackWrapperConverter" />
 </ResourceDictionary>

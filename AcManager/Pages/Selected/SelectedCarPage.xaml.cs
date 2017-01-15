@@ -32,25 +32,9 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent {
+    public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
-            public ViewModel([NotNull] CarObject acObject) : base(acObject) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
-            }
-
-            private void Handler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
-                if (propertyChangedEventArgs.PropertyName == nameof(CarObject.Brand) && SettingsHolder.Content.ChangeBrandIconAutomatically) {
-                    var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + @".png");
-                    if (entry.Exists) {
-                        try {
-                            FileUtils.Recycle(SelectedObject.BrandBadge);
-                            File.Copy(entry.Filename, SelectedObject.BrandBadge);
-                        } catch (Exception e) {
-                            Logging.Warning("Can’t change brand badge: " + e);
-                        }
-                    }
-                }
-            }
+            public ViewModel([NotNull] CarObject acObject) : base(acObject) {}
 
             public override void Load() {
                 base.Load();
@@ -67,6 +51,19 @@ namespace AcManager.Pages.Selected {
                 switch (e.PropertyName) {
                     case nameof(AcCommonObject.Year):
                         InnerFilterCommand?.RaiseCanExecuteChanged();
+                        break;
+                    case nameof(CarObject.Brand):
+                        if (SettingsHolder.Content.ChangeBrandIconAutomatically) {
+                            var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + @".png");
+                            if (entry.Exists) {
+                                try {
+                                    FileUtils.Recycle(SelectedObject.BrandBadge);
+                                    File.Copy(entry.Filename, SelectedObject.BrandBadge);
+                                } catch (Exception ex) {
+                                    Logging.Warning(ex);
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -382,11 +379,39 @@ namespace AcManager.Pages.Selected {
             _object?.SkinsManager.EnsureLoaded();
         }
 
+        bool IImmediateContent.ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = CarsManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            _object.SkinsManager.EnsureLoadedAsync().Forget();
+
+            _id = id;
+            _object = obj;
+            SetModel();
+            return true;
+        }
+
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
+            SetModel();
+            InitializeComponent();
+
+            if (SettingsHolder.CustomShowroom.LiteByDefault) {
+                LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
+            } else {
+                LiteCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Alt+H";
+            }
+        }
+
+        private void SetModel() {
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
@@ -395,7 +420,7 @@ namespace AcManager.Pages.Selected {
 
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-                
+
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
@@ -407,15 +432,6 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
             });
-            InitializeComponent();
-
-            if (SettingsHolder.CustomShowroom.LiteByDefault) {
-                LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
-            } else {
-                LiteCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = @"Alt+H";
-            }
         }
 
         #region Skins

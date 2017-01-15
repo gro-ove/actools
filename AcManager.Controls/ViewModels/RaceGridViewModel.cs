@@ -31,6 +31,10 @@ using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 
 namespace AcManager.Controls.ViewModels {
+    /* TODO, THE BIG ISSUE:
+     * Apparently, _saveable is only used for ExportToPresetData() and ImportFromPresetData()!
+     * Wouldn’t it be better to disable SaveLater() at all then? Also, what about LoadSerializedPreset()
+     * and keySaveable parameter? */
     public class RaceGridViewModel : NotifyPropertyChanged, IDisposable, IComparer, IUserPresetable {
         public static bool OptionNfsPorscheNames = false;
 
@@ -125,10 +129,10 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RaceGridViewModel(bool ignoreStartingPosition = false) {
+        public RaceGridViewModel(bool ignoreStartingPosition = false, [CanBeNull] string keySaveable = KeySaveable) {
             IgnoreStartingPosition = ignoreStartingPosition;
 
-            _saveable = new SaveHelper<SaveableData>(KeySaveable, () => {
+            _saveable = new SaveHelper<SaveableData>(keySaveable, () => {
                 var data = new SaveableData {
                     ModeId = Mode.Id,
                     FilterValue = FilterValue,
@@ -325,9 +329,9 @@ namespace AcManager.Controls.ViewModels {
             UserPresetsControl.LoadPreset(PresetableKeyValue, presetFilename);
         }
 
-        public static void LoadSerializedPreset([NotNull] string serializedPreset) {
+        public static void LoadSerializedPreset([NotNull] string serializedPreset, [NotNull] string keySaveable = KeySaveable) {
             if (!UserPresetsControl.LoadSerializedPreset(PresetableKeyValue, serializedPreset)) {
-                ValuesStorage.Set(KeySaveable, serializedPreset);
+                ValuesStorage.Set(keySaveable, serializedPreset);
             }
         }
         #endregion
@@ -384,9 +388,9 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region External loading (for compatibility)
-        protected bool InnerIsLoading => ExternalIsLoading || _saveable.IsLoading;
+        protected bool LoadingItself => LoadingFromOutside || _saveable.IsLoading;
 
-        public bool ExternalIsLoading { private get; set; }
+        public bool LoadingFromOutside { private get; set; }
         #endregion
 
         #region Active mode
@@ -406,16 +410,21 @@ namespace AcManager.Controls.ViewModels {
 
                 ErrorMessage = null;
                 FilteredView.CustomSort = value.CandidatesMode ? this : null;
-                if (InnerIsLoading) return;
+                if (LoadingItself) return;
                 
                 if (value == BuiltInGridMode.SameCar) {
                     NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
                 } else if (value != BuiltInGridMode.CandidatesManual && value.CandidatesMode) {
                     RebuildGridAsync().Forget();
                 } else if (!value.CandidatesMode == previousMode?.CandidatesMode) {
-                    NonfilteredList.ReplaceEverythingBy(value.CandidatesMode
-                            ? CombinePriorities(NonfilteredList.ApartFrom(_playerEntry))
-                            : _modeKeepOrder ? FlattenPriorities(NonfilteredList) : FlattenPriorities(NonfilteredList).Sort(Compare));
+                    if (previousMode == BuiltInGridMode.SameCar && NonfilteredList.Count == 1) {
+                        var opponent = NonfilteredList[0];
+                        NonfilteredList.ReplaceEverythingBy(Enumerable.Range(0, OpponentsNumber).Select(x => x > 0 ? opponent.Clone() : opponent));
+                    } else {
+                        NonfilteredList.ReplaceEverythingBy(value.CandidatesMode
+                                ? CombinePriorities(NonfilteredList.ApartFrom(_playerEntry))
+                                : _modeKeepOrder ? FlattenPriorities(NonfilteredList) : FlattenPriorities(NonfilteredList).Sort(Compare));
+                    }
                 }
 
                 UpdateViewFilter();
@@ -695,7 +704,7 @@ namespace AcManager.Controls.ViewModels {
                 _filterValue = value;
                 OnPropertyChanged();
 
-                if (InnerIsLoading) return;
+                if (LoadingItself) return;
                 UpdateViewFilter();
                 SaveLater();
             }
@@ -761,7 +770,7 @@ namespace AcManager.Controls.ViewModels {
                 }
 
                 if (value != null) {
-                    TrackPitsNumber = FlexibleParser.ParseInt(value.SpecsPitboxes, 2);
+                    TrackPitsNumber = value.SpecsPitboxesValue;
                     value.PropertyChanged += Track_OnPropertyChanged;
                 }
             }
@@ -769,7 +778,7 @@ namespace AcManager.Controls.ViewModels {
 
         private void Track_OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (_track != null && e.PropertyName == nameof(TrackObjectBase.SpecsPitboxes)) {
-                TrackPitsNumber = FlexibleParser.ParseInt(_track.SpecsPitboxes, 2);
+                TrackPitsNumber = _track.SpecsPitboxesValue;
             }
         }
 
@@ -1045,7 +1054,7 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged(nameof(StartingPositionLimited));
                 SaveLater();
 
-                if (!InnerIsLoading) {
+                if (!LoadingItself) {
                     UpdatePlayerEntry();
                 }
             }
@@ -1081,14 +1090,14 @@ namespace AcManager.Controls.ViewModels {
             NameNationality[] nameNationalities;
             if (opponentsNumber == 7 && OptionNfsPorscheNames) {
                 nameNationalities = new[] {
-                        new NameNationality { Name = "Dylan", Nationality = "Wales" },
-                        new NameNationality { Name = "Parise", Nationality = "Italy" },
-                        new NameNationality { Name = "Steele", Nationality = "United States" },
-                        new NameNationality { Name = "Wingnut", Nationality = "England" },
-                        new NameNationality { Name = "Leadfoot", Nationality = "Australia" },
-                        new NameNationality { Name = "Amazon", Nationality = "United States" },
-                        new NameNationality { Name = "Backlash", Nationality = "United States" }
-                    };
+                    new NameNationality { Name = "Dylan", Nationality = "Wales" },
+                    new NameNationality { Name = "Parise", Nationality = "Italy" },
+                    new NameNationality { Name = "Steele", Nationality = "United States" },
+                    new NameNationality { Name = "Wingnut", Nationality = "England" },
+                    new NameNationality { Name = "Leadfoot", Nationality = "Australia" },
+                    new NameNationality { Name = "Amazon", Nationality = "United States" },
+                    new NameNationality { Name = "Backlash", Nationality = "United States" }
+                };
             } else if (DataProvider.Instance.NationalitiesAndNames.Any()) {
                 nameNationalities = GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray();
             } else {
@@ -1129,7 +1138,7 @@ namespace AcManager.Controls.ViewModels {
                         }
                     }
 
-                    final = shuffled.Take(OpponentsNumberLimited);
+                    final = shuffled.Take(opponentsNumber);
                 } else {
                     var skip = _playerCar;
                     final = LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
@@ -1139,7 +1148,7 @@ namespace AcManager.Controls.ViewModels {
                         }
 
                         return true;
-                    }).Take(OpponentsNumberLimited);
+                    }).Take(opponentsNumber);
                 }
             } else {
                 final = NonfilteredList.Where(x => !x.SpecialEntry);
@@ -1149,9 +1158,9 @@ namespace AcManager.Controls.ViewModels {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
             }
 
-            var takenNames = new List<string>(OpponentsNumberLimited);
+            var takenNames = new List<string>(opponentsNumber);
 
-            return final.Take(OpponentsNumberLimited).Select((entry, i) => {
+            return final.Take(opponentsNumber).Select((entry, i) => {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
 
                 var skin = entry.CarSkin;

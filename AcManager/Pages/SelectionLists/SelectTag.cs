@@ -1,11 +1,33 @@
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.SelectionLists {
     public sealed class SelectTag : SelectCategoryBase {
-        public SelectTag([NotNull] string name) : base(name) {}
-        
+        public string TagValue { get; }
+
+        private bool _accented;
+
+        public bool Accented {
+            get { return _accented; }
+            set {
+                if (value == _accented) return;
+                _accented = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SelectTag([NotNull] string name) : base(name.ApartFromFirst(@"#").TrimStart()) {
+            TagValue = name;
+            Accented = name.StartsWith(@"#");
+        }
+
+        public SelectTag([NotNull] string name, [NotNull] string tagValue) : base(name) {
+            TagValue = tagValue;
+            Accented = tagValue != name;
+        }
+
         internal override string Serialize() {
-            return DisplayName;
+            return TagValue;
         }
 
         [CanBeNull]

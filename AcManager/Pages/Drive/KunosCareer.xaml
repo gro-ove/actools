@@ -176,8 +176,8 @@
         <Grid x:Name="MainListWrapper" Grid.ColumnSpan="2" Margin="-8 0 -8 0">
             <ListBox ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ItemTemplate="{StaticResource ItemTemplate}" x:Name="ListBox" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
-                    PreviewMouseDoubleClick="ListBox_OnPreviewMouseDoubleClick">
+                    ItemTemplate="{StaticResource ItemTemplate}" x:Name="ListBox" ScrollViewer.ScrollChanged="OnListBoxScrollChanged"
+                    PreviewMouseDoubleClick="OnListBoxDoubleClick">
                 <i:Interaction.Behaviors>
                     <mui:HorizontalScrollBehavior />
                 </i:Interaction.Behaviors>

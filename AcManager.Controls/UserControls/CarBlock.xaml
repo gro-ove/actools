@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Controls.UserControls.CarBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:t="http://acstuff.ru/app/tools"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" x:Name="ThisControl">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -84,8 +83,7 @@
                     </DockPanel>
 
                     <!-- third row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
-                            Style="{StaticResource Label.Padding}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}" />
                     <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}"
                             ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
@@ -97,7 +95,7 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" Grid.Column="1"
+                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Grid.Column="1"
                             Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />

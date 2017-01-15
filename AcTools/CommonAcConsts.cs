@@ -1,14 +1,27 @@
 ﻿namespace AcTools {
     public static class CommonAcConsts {
-        public const string AppId = "244210";
+        public static readonly string AppId = "244210";
 
-        public const int Kn5ActualVersion = 5;
-        public const int DriverWeight = 75;
+        public static readonly int Kn5ActualVersion = 5;
+        public static readonly int DriverWeight = 75;
 
-        public const int PreviewWidth = 1022;
-        public const int PreviewHeight = 575;
+        public static readonly int PreviewWidth = 1022;
+        public static readonly int PreviewHeight = 575;
 
-        public const int TrackPreviewWidth = 200;
-        public const int TrackPreviewHeight = 355;
+        public static readonly int TrackPreviewWidth = 200;
+        public static readonly int TrackPreviewHeight = 355;
+        
+        /// <summary>
+        /// Seconds from 00:00.
+        /// </summary>
+        public static readonly int TimeMinimum = 8 * 60 * 60;
+
+        /// <summary>
+        /// Seconds from 00:00.
+        /// </summary>
+        public static readonly int TimeMaximum = 18 * 60 * 60;
+
+        public static readonly double TemperatureMinimum = 0d;
+        public static readonly double TemperatureMaximum = 36d;
     }
 }

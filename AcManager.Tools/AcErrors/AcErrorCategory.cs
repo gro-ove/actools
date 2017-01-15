@@ -3,6 +3,7 @@ namespace AcManager.Tools.AcErrors {
         Unspecific,
         Load,
         Data,
+        ExtendedData,
         Car,
         CarSkin,
         CarSetup,

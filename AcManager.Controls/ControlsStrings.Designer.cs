@@ -727,7 +727,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset to Recommended Value.
+        ///   Looks up a localized string similar to Reset to recommended value.
         /// </summary>
         public static string Common_ResetToRecommendedValue {
             get {
@@ -1934,7 +1934,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable free camera (press F7 in-game).
+        ///   Looks up a localized string similar to Enable free camera (press F7 on track).
         /// </summary>
         public static string QuickSwitches_FreeCamera_Tooltip {
             get {

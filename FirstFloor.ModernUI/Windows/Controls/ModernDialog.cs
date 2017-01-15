@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
@@ -291,6 +290,35 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool ShowTitle {
             get { return (bool)GetValue(ShowTitleProperty); }
             set { SetValue(ShowTitleProperty, value); }
+        }
+
+        public static MessageBoxResult? GetButtonBehavior(DependencyObject obj) {
+            return (MessageBoxResult?)obj.GetValue(ButtonBehaviorProperty);
+        }
+
+        public static void SetButtonBehavior(DependencyObject obj, MessageBoxResult? value) {
+            obj.SetValue(ButtonBehaviorProperty, value);
+        }
+
+        public static readonly DependencyProperty ButtonBehaviorProperty = DependencyProperty.RegisterAttached("ButtonBehavior", typeof(MessageBoxResult?),
+                typeof(FatalErrorMessage), new UIPropertyMetadata(null, OnButtonBehaviorChanged));
+
+        private static void OnButtonBehaviorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            var element = d as Button;
+            if (element == null) return;
+
+            var newValue = (MessageBoxResult?)e.NewValue;
+            if (newValue.HasValue) {
+                element.Click += OnButtonBehavorClick;
+            } else {
+                element.Click -= OnButtonBehavorClick;
+            }
+        }
+
+        private static void OnButtonBehavorClick(object sender, RoutedEventArgs e) {
+            var element = (FrameworkElement)sender;
+            var value = GetButtonBehavior(element);
+            (GetWindow(element) as ModernDialog)?.CloseCommand.Execute(value);
         }
     }
 

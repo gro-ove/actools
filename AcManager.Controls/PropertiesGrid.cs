@@ -66,7 +66,15 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty LabelProperty = DependencyProperty.RegisterAttached("Label", typeof(string),
-                typeof(PropertiesGrid), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure));
+                typeof(PropertiesGrid), new FrameworkPropertyMetadata(OnLabelChanged));
+
+        private static void OnLabelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            var parent = (d as FrameworkElement)?.Parent as PropertiesGrid;
+            if (parent != null) {
+                parent.InvalidateArrange();
+                parent.InvalidateVisual();
+            }
+        }
 
         private Typeface _labelTypeface;
         private Thickness _labelPadding;
@@ -89,39 +97,23 @@ namespace AcManager.Controls {
                     y += _yStep;
                 }
 
-                var text = new FormattedText(_labels[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
-                        _labelTypeface, _labelFontSize, _labelForeground, new NumberSubstitution(), _formattingMode) {
-                    Trimming = TextTrimming.CharacterEllipsis,
-                    TextAlignment = TextAlignment.Left,
-                    MaxLineCount = 1,
-                    MaxTextWidth = _labelTextWidth
-                };
+                if (_labels[i] != null) {
+                    var text = new FormattedText(_labels[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
+                            _labelTypeface, _labelFontSize, _labelForeground, new NumberSubstitution(), _formattingMode) {
+                                Trimming = TextTrimming.CharacterEllipsis,
+                                TextAlignment = TextAlignment.Left,
+                                MaxLineCount = 1,
+                                MaxTextWidth = _labelTextWidth
+                            };
 
-                dc.DrawText(text, new Point(_xStep * c + _labelPadding.Left, y + _labelTextOffset - text.Height / 2));
+                    dc.DrawText(text, new Point(_xStep * c + _labelPadding.Left, y + _labelTextOffset - text.Height / 2));
+                }
             }
         }
 
-        private void UpdateComputedValues() {
-            _columns = Columns;
-            _rows = 0;
-            _spacing = Spacing;
-
-            var nonCollapsedCount = 0;
-            for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
-                var child = InternalChildren[i];
-                if (child.Visibility != Visibility.Collapsed) {
-                    nonCollapsedCount++;
-                }
-            }
-
-            if (nonCollapsedCount == 0) {
-                nonCollapsedCount = 1;
-            }
-
-            _rows = (nonCollapsedCount + (_columns - 1)) / _columns;
-
-            if (_labels?.Length != nonCollapsedCount) {
-                _labels = new string[nonCollapsedCount];
+        private void UpdateLabels() {
+            if (_labels?.Length != _nonCollapsedCount) {
+                _labels = new string[_nonCollapsedCount];
             }
 
             for (int i = 0, j = 0, count = InternalChildren.Count; i < count; ++i) {
@@ -140,6 +132,26 @@ namespace AcManager.Controls {
             _labelPadding = LabelPadding;
             _labelWidth = LabelWidth;
             _labelTextWidth = _labelWidth - _labelPadding.Left - _labelPadding.Right;
+        }
+
+        private void UpdateComputedValues() {
+            _columns = Columns;
+            _rows = 0;
+            _spacing = Spacing;
+
+            _nonCollapsedCount = 0;
+            for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                var child = InternalChildren[i];
+                if (child.Visibility != Visibility.Collapsed) {
+                    _nonCollapsedCount++;
+                }
+            }
+
+            if (_nonCollapsedCount == 0) {
+                _nonCollapsedCount = 1;
+            }
+
+            _rows = (_nonCollapsedCount + (_columns - 1)) / _columns;
         }
 
         protected override Size MeasureOverride(Size constraint) {
@@ -173,6 +185,8 @@ namespace AcManager.Controls {
         
         protected override Size ArrangeOverride(Size arrangeSize) {
             if (_columns == 0 || _rows == 0) return default(Size);
+            UpdateLabels();
+
             var totalSpacingX = _spacing * (_columns - 1);
             var totalSpacingY = _spacing * (_rows - 1);
 
@@ -212,6 +226,7 @@ namespace AcManager.Controls {
 
         private int _rows;
         private int _columns;
+        private int _nonCollapsedCount;
         private double _spacing;
     }
 }

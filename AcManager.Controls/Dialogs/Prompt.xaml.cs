@@ -91,7 +91,6 @@ namespace AcManager.Controls.Dialogs {
                     textBox.AcceptsReturn = true;
                     textBox.TextWrapping = TextWrapping.Wrap;
                     textBox.Height = 240;
-                    textBox.Width = 480;
                 }
 
                 if (watermark != null) {

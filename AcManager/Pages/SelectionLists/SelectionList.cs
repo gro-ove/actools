@@ -189,7 +189,7 @@ namespace AcManager.Pages.SelectionLists {
         protected abstract void AddNewIfMissing([NotNull] IList<TItem> list, [NotNull] TObject obj);
 
         [CanBeNull]
-        protected abstract TItem GetSelectedItem([NotNull] IList<TItem> list, [CanBeNull] TObject selected);
+        protected abstract TItem GetSelectedItem([NotNull] IList<TItem> list, [CanBeNull] TObject obj);
 
         protected void IncreaseCounter([NotNull] TObject obj, [NotNull] TItem item) {
             item.ItemsCount++;

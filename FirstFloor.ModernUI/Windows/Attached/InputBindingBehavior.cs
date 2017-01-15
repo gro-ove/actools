@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class InputBindingBehavior {
@@ -21,24 +20,31 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             element.Unloaded += FrameworkElement_Unloaded;
         }
 
-        /* sadly, I don’t know how to get window from unloaded FrameworkElement, so I’m going a stupid way */
-        private static readonly List<Window> OpenedWindows = new List<Window>();
-
-        public static void UpdateBindings(FrameworkElement element) {
-            RemoveBindings(element);
-            SetBindings(element);
+        public static void UpdateBindings(FrameworkElement obj) {
+            if (obj.IsLoaded && GetPropagateInputBindingsToWindow(obj)) {
+                RemoveBindings(obj);
+                SetBindings(obj);
+            }
         }
 
-        private static void SetBindings(UIElement element) {
-            var window = Window.GetWindow(element);
-            if (window == null) {
-                return;
-            }
+        public static Window GetWindow(DependencyObject obj) {
+            return (Window)obj.GetValue(WindowProperty);
+        }
 
-            if (!OpenedWindows.Contains(window)) {
-                OpenedWindows.Add(window);
-                window.Closed += Window_Closed;
-            }
+        public static void SetWindow(DependencyObject obj, Window value) {
+            obj.SetValue(WindowProperty, value);
+        }
+
+        public static readonly DependencyProperty WindowProperty = DependencyProperty.RegisterAttached("Window", typeof(Window),
+                typeof(InputBindingBehavior), new UIPropertyMetadata(null));
+
+        private static void SetBindings(UIElement element) {
+            RemoveBindings(element);
+
+            var window = Window.GetWindow(element);
+            if (window == null) return;
+
+            SetWindow(element, window);
 
             for (var i = element.InputBindings.Count - 1; i >= 0; i--) {
                 var binding = element.InputBindings[i];
@@ -49,32 +55,34 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void RemoveBindings(UIElement element) {
-            foreach (var window in OpenedWindows) {
-                for (var i = window.InputBindings.Count - 1; i >= 0; i--) {
-                    var binding = window.InputBindings[i];
-                    if (Equals(binding.CommandTarget, element)) {
-                        window.InputBindings.RemoveAt(i);
-                    }
+            var window = GetWindow(element);
+            if (window == null) return;
+
+            element.ClearValue(WindowProperty);
+
+            for (var i = window.InputBindings.Count - 1; i >= 0; i--) {
+                var binding = window.InputBindings[i];
+                if (ReferenceEquals(binding.CommandTarget, element)) {
+                    window.InputBindings.RemoveAt(i);
+                    element.InputBindings.Add(binding);
                 }
             }
         }
 
         private static void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {
-            var element = (FrameworkElement)sender;
+            /*var element = (FrameworkElement)sender;
             element.Unloaded -= FrameworkElement_Unloaded;
-            RemoveBindings(element);
+            RemoveBindings(element);*/
+
+            RemoveBindings((FrameworkElement)sender);
         }
 
         private static void FrameworkElement_Loaded(object sender, RoutedEventArgs e) {
-            var element = (FrameworkElement)sender;
+            /*var element = (FrameworkElement)sender;
             element.Loaded -= FrameworkElement_Loaded;
-            SetBindings(element);
-        }
+            SetBindings(element);*/
 
-        private static void Window_Closed(object sender, System.EventArgs e) {
-            var window = (Window)sender;
-            window.Closed -= Window_Closed;
-            OpenedWindows.Remove(window);
+            SetBindings((FrameworkElement)sender);
         }
     }
 }

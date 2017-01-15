@@ -16,7 +16,7 @@ namespace AcManager.Controls.Helpers {
         }
 
         public DelayedPropertyWrapper(Action<T> changed)
-                : this(changed, TimeSpan.FromMilliseconds(350)) { }
+                : this(changed, TimeSpan.FromMilliseconds(250)) { }
 
         public T Value {
             get { return _value; }
@@ -24,7 +24,7 @@ namespace AcManager.Controls.Helpers {
                 if (Equals(value, _hasUnappliedValue ? _unappliedValue : _value)) return;
 
                 var now = DateTime.Now;
-                if (now - _previousChange > Interval) {
+                if (Interval == TimeSpan.Zero || now - _previousChange > Interval) {
                     _unappliedValue = default(T);
                     _hasUnappliedValue = false;
                     _value = value;

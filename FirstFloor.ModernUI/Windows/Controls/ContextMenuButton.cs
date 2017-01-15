@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,11 +9,12 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class ContextMenuButtonEventArgs : EventArgs {
+    public class ContextMenuButtonEventArgs : HandledEventArgs {
         internal ContextMenuButtonEventArgs() {}
 
         public object Menu { internal get; set; }
@@ -30,6 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool Open(bool near) {
             var args = new ContextMenuButtonEventArgs();
             Click?.Invoke(this, args);
+            if (args.Handled) return true;
 
             var menu = args.Menu ?? Menu;
 
@@ -114,6 +117,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (fe != null) {
                 fe.PreviewMouseRightButtonUp += OnContextMenuPreviewClick;
                 fe.MouseRightButtonUp += OnContextMenuClick;
+
+                if (fe.GetValue(Panel.BackgroundProperty) == null) {
+                    fe.SetValue(Panel.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+                }
             }
 
             base.OnVisualParentChanged(oldParent);

@@ -63,7 +63,7 @@
             <!-- data section -->
             <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" MouseDown="TagsList_OnMouseDown"
+                <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" MouseDown="OnTagsListMouseDown"
                         SuggestionsSource="{x:Static managers:SuggestionLists.ShowroomTagsListView}" />
 
                 <Grid Style="{StaticResource ObjectDataGrid}">
@@ -113,7 +113,7 @@
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
-                                MouseUp="VersionInfoBlock_OnMouse" />
+                                MouseUp="OnVersionInfoBlockClick" />
                     </DockPanel>
                 </Grid>
 

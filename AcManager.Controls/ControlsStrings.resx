@@ -800,7 +800,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Recommended value: {0}%</value>
   </data>
   <data name="Common_ResetToRecommendedValue" xml:space="preserve">
-    <value>Reset to Recommended Value</value>
+    <value>Reset to recommended value</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
     <value>Change Skin</value>

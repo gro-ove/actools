@@ -124,5 +124,21 @@ namespace AcManager.Controls {
             get { return (Collection<ToolBar>)GetValue(ToolBarsProperty); }
             set { SetValue(ToolBarsProperty, value); }
         }
+
+        public static readonly DependencyProperty ScrollableProperty = DependencyProperty.Register(nameof(Scrollable), typeof(bool),
+                typeof(AcObjectBase), new PropertyMetadata(true));
+
+        public bool Scrollable {
+            get { return (bool)GetValue(ScrollableProperty); }
+            set { SetValue(ScrollableProperty, value); }
+        }
+
+        public static readonly DependencyProperty HeaderPaddingProperty = DependencyProperty.Register(nameof(HeaderPadding), typeof(Thickness),
+                typeof(AcObjectBase));
+
+        public Thickness HeaderPadding {
+            get { return (Thickness)GetValue(HeaderPaddingProperty); }
+            set { SetValue(HeaderPaddingProperty, value); }
+        }
     }
 }

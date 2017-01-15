@@ -32,7 +32,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mui:ModernToggleButton">
-                    <DockPanel Margin="{TemplateBinding Padding}">
+                    <DockPanel Margin="{TemplateBinding Padding}" Background="Transparent">
                         <StackPanel HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" Orientation="Horizontal">
                             <Ellipse x:Name="PART_Mark" Fill="{DynamicResource Accent}" Width="8" Height="8" VerticalAlignment="Center">
                                 <Ellipse.RenderTransform>
@@ -123,7 +123,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mui:ModernButton">
-                    <DockPanel Margin="{TemplateBinding Padding}">
+                    <DockPanel Margin="{TemplateBinding Padding}" Background="Transparent">
                         <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
                                 TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource CondensedFont}"
                                 FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center"
@@ -189,7 +189,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type qs:QuickSwitchComboBox}">
                     <DockPanel>
-                        <mui:Cell x:Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
+                        <mui:Cell x:Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4"
+                                Background="Transparent">
                             <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
                                     IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
@@ -282,7 +283,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="qs:QuickSwitchSlider">
-                    <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0" BorderBrush="Transparent">
+                    <Border x:Name="PART_Border" Background="Transparent" BorderThickness="0">
                         <Grid Margin="{TemplateBinding Padding}">
                             <Grid.RowDefinitions>
                                 <RowDefinition />

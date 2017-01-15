@@ -42,30 +42,6 @@ namespace FirstFloor.ModernUI.Commands {
             }
         }
 
-        internal static void AddHandlersToRequerySuggested(List<WeakReference> handlers) {
-            if (handlers == null) return;
-            foreach (var handlerRef in handlers) {
-                var handler = handlerRef.Target as EventHandler;
-                if (handler != null) {
-                    CommandManager.RequerySuggested += handler;
-                }
-            }
-        }
-
-        internal static void RemoveHandlersFromRequerySuggested(List<WeakReference> handlers) {
-            if (handlers == null) return;
-            foreach (var handlerRef in handlers) {
-                var handler = handlerRef.Target as EventHandler;
-                if (handler != null) {
-                    CommandManager.RequerySuggested -= handler;
-                }
-            }
-        }
-
-        internal static void AddWeakReferenceHandler(ref List<WeakReference> handlers, EventHandler handler) {
-            AddWeakReferenceHandler(ref handlers, handler, -1);
-        }
-
         internal static void AddWeakReferenceHandler(ref List<WeakReference> handlers, EventHandler handler, int defaultListSize) {
             if (handlers == null) {
                 handlers = defaultListSize > 0 ? new List<WeakReference>(defaultListSize) : new List<WeakReference>();

@@ -36,7 +36,8 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <Button Height="{StaticResource FullscreenDialog.ButtonSize}" PreviewMouseDown="CloseButton_OnPreviewMouseDown">
+                                        <Button Height="{StaticResource FullscreenDialog.ButtonSize}" PreviewMouseDown="CloseButton_OnPreviewMouseDown"
+                                                Style="{StaticResource FullscreenDialogButton}">
                                             <Path Data="{StaticResource CloseIconData}" />
                                         </Button>
                                     </Grid>

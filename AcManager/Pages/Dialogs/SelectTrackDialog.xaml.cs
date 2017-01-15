@@ -4,6 +4,7 @@ using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -39,7 +40,7 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
-        public SelectTrackDialog(TrackObjectBase selectedTrackConfiguration) {
+        public SelectTrackDialog([NotNull] TrackObjectBase selectedTrackConfiguration) {
             _instance = new WeakReference<SelectTrackDialog>(this);
 
             DataContext = new ViewModel(selectedTrackConfiguration);
@@ -51,10 +52,35 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] { OkButton, CancelButton };
         }
 
-        public static TrackObjectBase Show(TrackObjectBase track) {
+        /// <summary>
+        /// Returns null only when there is no tracks in the list at all and argument is null
+        /// as well.
+        /// </summary>
+        [CanBeNull]
+        public static TrackObjectBase Show([CanBeNull] TrackObjectBase track) {
+            if (track == null) {
+                track = TracksManager.Instance.GetDefault();
+                if (track == null) return null;
+            }
+
             var dialog = new SelectTrackDialog(track);
             dialog.ShowDialog();
             return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
+        }
+        
+        [ContractAnnotation(@"=> track:null, false; => track:notnull, true")]
+        public static bool Show([CanBeNull] ref TrackObjectBase track) {
+            if (track == null) {
+                track = TracksManager.Instance.GetDefault();
+                if (track == null) return false;
+            }
+
+            var dialog = new SelectTrackDialog(track);
+            dialog.ShowDialog();
+
+            if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return false;
+            track = dialog.Model.SelectedTrackConfiguration;
+            return true;
         }
 
         private int _state;
@@ -134,7 +160,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public ViewModel(TrackObjectBase selectedTrackConfiguration) {
+            public ViewModel([NotNull] TrackObjectBase selectedTrackConfiguration) {
                 _selectedTrackConfiguration = new DelayedPropertyWrapper<TrackObjectBase>(v => {
                     if (v == null) return;
 

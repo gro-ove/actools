@@ -56,10 +56,7 @@ namespace AcManager.Pages.Selected {
             private CommandBase _changeTrackCommand;
 
             public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
-                var dialog = new SelectTrackDialog(SelectedObject.Track);
-                dialog.ShowDialog();
-                if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
-                SelectedObject.Track = dialog.Model.SelectedTrack;
+                SelectedObject.Track = SelectTrackDialog.Show(SelectedObject.Track)?.MainTrackObject;
             }));
 
             private CommandBase _clearTrackCommand;

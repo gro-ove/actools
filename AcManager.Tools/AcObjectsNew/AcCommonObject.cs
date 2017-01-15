@@ -191,8 +191,7 @@ namespace AcManager.Tools.AcObjectsNew {
         /// Using for remembering selected item when its ID is changed.
         /// </summary>
         public string PreviousId { get; internal set; }
-
-        [Obsolete]
+        
         protected void OnImageChanged(string propertyName) {
             OnPropertyChanged(propertyName);
             BetterImage.ReloadImage((string)GetType().GetProperty(propertyName).GetValue(this, null));

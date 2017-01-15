@@ -443,7 +443,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             public static void SetNames(string tagId, IEnumerable<string> names) {
-                var namesList = names.ToIReadOnlyListIfItsNot();
+                var namesList = names.ToIReadOnlyListIfItIsNot();
                 var namesConvertedList = namesList.Select(x => ConvertName(x, true)).ToList();
                 var serversToRaiseEvent = new List<ServerEntry>(10);
 

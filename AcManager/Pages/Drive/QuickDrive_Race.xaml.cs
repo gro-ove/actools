@@ -167,7 +167,7 @@ namespace AcManager.Pages.Drive {
                 LapsNumber = o.LapsNumber ?? 2;
 
                 try {
-                    RaceGridViewModel.ExternalIsLoading = true;
+                    RaceGridViewModel.LoadingFromOutside = true;
                     switch (o.GridTypeId) {
                         case "same_car":
                             RaceGridViewModel.Mode = BuiltInGridMode.SameCar;
@@ -209,7 +209,7 @@ namespace AcManager.Pages.Drive {
                     RaceGridViewModel.StartingPosition = o.StartingPosition ?? 4;
                     RaceGridViewModel.FinishLoading();
                 } finally {
-                    RaceGridViewModel.ExternalIsLoading = false;
+                    RaceGridViewModel.LoadingFromOutside = false;
                 }
             }
 

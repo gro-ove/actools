@@ -613,7 +613,7 @@ namespace AcManager.Tools.Managers.Online {
             var source = Instance.GetInternalSource(RecentKey);
 
             IReadOnlyList<ServerInformation> entries = null;
-            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItsNot(), null, default(CancellationToken));
+            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItIsNot(), null, default(CancellationToken));
 
             if (entries?.Count > OptionRecentSize) {
                 source.Remove(entries[0]);

@@ -14,7 +14,31 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcObjectsNew {
-    public abstract partial class AcJsonObjectNew : AcCommonObject {
+    public interface IAcObjectAuthorInformation {
+        string Author { get; set; }
+
+        string Version { get; set; }
+
+        string Url { get; set; }
+
+        string VersionInfoDisplay { get; }
+    }
+
+    public static class AcObjectAuthorInformationExtension {
+        public static string GetVersionInfoDisplay([NotNull] this IAcObjectAuthorInformation obj) {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
+            if (obj.Version == null && obj.Author == null) {
+                return obj.Url != null ? $"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(obj.Url)}[/url]" : null;
+            }
+
+            var result = obj.Author == null ? obj.Version
+                    : obj.Version == null ? obj.Author : $"{obj.Author} ({obj.Version})";
+            return obj.Url != null ? $"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(result)}[/url]" : result;
+        }
+    }
+
+    public abstract partial class AcJsonObjectNew : AcCommonObject, IAcObjectAuthorInformation {
         protected AcJsonObjectNew(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             Tags = new TagsCollection();
@@ -298,17 +322,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public string VersionInfoDisplay {
-            get {
-                if (Version == null && Author == null) {
-                    return Url != null ? $"[url={BbCodeBlock.EncodeAttribute(Url)}]{BbCodeBlock.Encode(Url)}[/url]" : null;
-                }
-
-                var result = Author == null ? Version
-                        : Version == null ? Author : $"{Author} ({Version})";
-                return Url != null ? $"[url={BbCodeBlock.EncodeAttribute(Url)}]{BbCodeBlock.Encode(result)}[/url]" : result;
-            }
-        }
+        public string VersionInfoDisplay => this.GetVersionInfoDisplay();
         #endregion
     }
 }

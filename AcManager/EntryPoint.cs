@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -178,6 +179,22 @@ namespace AcManager {
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         public static void SetUnhandledExceptionHandler() {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+
+#if DEBUG
+            TaskScheduler.UnobservedTaskException += UnobservedTaskException;
+#endif
+        }
+
+        private static void UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args) {
+            var e = args.Exception as Exception;
+            var app = System.Windows.Application.Current;
+            if (app != null) {
+                app.Dispatcher.Invoke(() => {
+                    UnhandledExceptionHandler(e);
+                });
+            } else {
+                UnhandledExceptionHandler(e);
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

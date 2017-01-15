@@ -167,7 +167,7 @@ namespace AcManager.Tools.Managers {
                         FontIds = (await Task.Run(() => new IniFile(car.Location, @"digital_instruments.ini"), cancellation))
                                 .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant()).NonNull().ToList()
                     };
-                }).WhenAll(12)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItsNot();
+                }).WhenAll(12, cancellation)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItIsNot();
 
                 if (cancellation.IsCancellationRequested) return null;
                 foreach (var fontObject in LoadedOnly) {

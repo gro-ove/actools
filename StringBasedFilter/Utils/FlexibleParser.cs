@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace StringBasedFilter.Utils {
-    public static class FlexibleParser {
+    internal static class FlexibleParser {
         private static Regex _parseInt, _parseDouble;
 
         public static bool TryParseInt(string s, out int value) {

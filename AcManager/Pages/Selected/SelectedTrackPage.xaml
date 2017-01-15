@@ -94,7 +94,7 @@
             <StackPanel Visibility="{Binding SelectedTrackConfiguration.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!-- tags -->
                 <mui:TagsList ItemsSource="{Binding SelectedTrackConfiguration.Tags}" SuggestionsSource="{Binding SelectedTrackConfiguration.TagsList}"
-                        MouseDown="TagsList_OnMouseDown" />
+                        MouseDown="OnTagsListMouseDown" />
 
                 <Grid Style="{StaticResource ObjectDataGrid}">
                     <Grid.ColumnDefinitions>
@@ -164,7 +164,7 @@
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" h:WatermarkService.Watermark="?"
-                                MouseUp="VersionInfoBlock_OnMouse" />
+                                MouseUp="OnVersionInfoBlockClick" />
                     </DockPanel>
 
                     <!-- last row -->

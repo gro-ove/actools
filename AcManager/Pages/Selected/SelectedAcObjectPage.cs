@@ -1,7 +1,10 @@
-﻿using System.Windows.Controls;
+﻿using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace AcManager.Pages.Selected {
     public class SelectedAcObjectPage : UserControl {
@@ -34,6 +37,13 @@ namespace AcManager.Pages.Selected {
                 Loaded += OnLoaded;
                 Unloaded += OnUnloaded;
             }
+
+            UpdateBindingsLaterAsync().Forget();
+        }
+
+        private async Task UpdateBindingsLaterAsync() {
+            await Task.Delay(1);
+            InputBindingBehavior.UpdateBindings(this);
         }
 
         private bool _set, _loaded;

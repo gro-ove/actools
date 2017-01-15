@@ -1321,7 +1321,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multipler for slipstream effect.
+        ///   Looks up a localized string similar to Multiplier for slipstream effect.
         /// </summary>
         public static string Assists_SlipstreamEffect_Tooltip {
             get {
@@ -1402,7 +1402,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multipler for tyre wear.
+        ///   Looks up a localized string similar to Multiplier for tyre wear.
         /// </summary>
         public static string Assists_TyreWear_Tooltip {
             get {
@@ -2950,7 +2950,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t run the game.
+        ///   Looks up a localized string similar to Can’t run the race.
         /// </summary>
         public static string OfficialStarter_CannotRunGame {
             get {
@@ -2968,7 +2968,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t use Official Starter: game is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it..
+        ///   Looks up a localized string similar to Can’t use Official Starter: your version of AC is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it..
         /// </summary>
         public static string OfficialStarter_GameIsTooOld {
             get {
@@ -3664,7 +3664,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments.
+        ///   Looks up a localized string similar to Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments.
         /// </summary>
         public static string Settings_Starter_Sse_Description {
             get {
@@ -3718,7 +3718,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time.
+        ///   Looks up a localized string similar to Adds a special UI module in original launcher which listens to some orders and runs the race; use it if you need to use both CM and original launcher at the same time.
         /// </summary>
         public static string Settings_Starter_UiModule_Description {
             get {
@@ -3804,6 +3804,15 @@ namespace AcManager.Tools {
         public static string Shared_Replay {
             get {
                 return ResourceManager.GetString("Shared_Replay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Championship.
+        /// </summary>
+        public static string Shared_UserChampionship {
+            get {
+                return ResourceManager.GetString("Shared_UserChampionship", resourceCulture);
             }
         }
         

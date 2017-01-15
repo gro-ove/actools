@@ -74,6 +74,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
@@ -136,8 +138,9 @@
     <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
     <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
     <Compile Include="Windows\Controls\StretchyWrapPanel.cs" />
-    <Compile Include="Windows\Controls\Switch.cs" />
+    <Compile Include="Switch.cs" />
     <Compile Include="Windows\Controls\SpacingUniformGrid.cs" />
+    <Compile Include="Windows\Controls\BorderyViewbox.cs" />
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />

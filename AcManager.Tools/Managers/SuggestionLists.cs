@@ -83,9 +83,14 @@ namespace AcManager.Tools.Managers {
                               .Union(TracksManager.Instance)
                               .Union(ShowroomsManager.Instance);
 
+        private static IEnumerable<IAcObjectAuthorInformation> AuthorInformationObjects => CarsManager.Instance.OfType<IAcObjectAuthorInformation>()
+                              .Union(TracksManager.Instance)
+                              .Union(ShowroomsManager.Instance)
+                              .Union(UserChampionshipsManager.Instance);
+
         public static void RebuildAuthorsList() {
             // TODO: layouts
-            AuthorsList.ReplaceEverythingBy(from o in JsonObjects select o.Author);
+            AuthorsList.ReplaceEverythingBy(from o in AuthorInformationObjects select o.Author);
         }
 
         public static void RebuildCountriesList() {

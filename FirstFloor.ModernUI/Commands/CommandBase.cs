@@ -22,6 +22,11 @@ namespace FirstFloor.ModernUI.Commands {
         public void RaiseCanExecuteChanged() {
             OnPropertyChanged(nameof(IsAbleToExecute));
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
+            if (IsAutomaticRequeryDisabled) {
+                CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
+            } else {
+                CommandManager.InvalidateRequerySuggested();
+            }
         }
 
         public bool IsAbleToExecute => AlwaysCanExecute || CanExecuteOverride(null);

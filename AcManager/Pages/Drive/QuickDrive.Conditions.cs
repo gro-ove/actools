@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AcManager.Controls.Converters;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -10,6 +11,7 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -26,8 +28,6 @@ namespace AcManager.Pages.Drive {
         public partial class ViewModel {
             #region Constants and other non-changeable values
             public AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
-
-            private const int SecondsPerDay = 24 * 60 * 60;
             #endregion
 
             #region User-set variables which define working mode
@@ -212,7 +212,9 @@ namespace AcManager.Pages.Drive {
                 set {
                     value = value.Round(0.5);
                     if (Equals(value, _temperature)) return;
-                    _temperature = value.Clamp(TemperatureMinimum, SettingsHolder.Drive.QuickDriveExpandBounds ? TemperatureMaximum * 2 : TemperatureMaximum);
+                    _temperature = value.Clamp(CommonAcConsts.TemperatureMinimum,
+                            SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
+                    
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
 
@@ -228,7 +230,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand RandomTemperatureCommand => _randomTemperatureCommand ?? (_randomTemperatureCommand = new DelegateCommand(() => {
                 RealConditions = false;
-                Temperature = MathUtils.Random(TemperatureMinimum, TemperatureMaximum);
+                Temperature = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
             }));
 
             public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
@@ -240,7 +242,7 @@ namespace AcManager.Pages.Drive {
                 get { return _time; }
                 set {
                     if (value == _time) return;
-                    _time = value.Clamp((int)TimeMinimum, (int)TimeMaximum);
+                    _time = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
@@ -262,7 +264,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsManualTime = true;
                 }
 
-                Time = (int)MathUtils.Random(TimeMinimum, TimeMaximum);
+                Time = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
             }));
 
             public string DisplayTime {
@@ -275,6 +277,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private CancellationTokenSource _updateCancellationTokenSource;
+
             public async void UpdateConditions() {
                 if (_saveable.IsLoading) return;
                 _updateCancellationTokenSource?.Cancel();
@@ -284,8 +287,7 @@ namespace AcManager.Pages.Drive {
                     IsWeatherNotSupported = false;
                     ManualTime = true;
                     RealWeather = null;
-
-                    _weatherCandidatesFootprint = null;
+                    _weatherTypeHelper.Reset();
                 } else {
                     ManualTime = RealConditionsManualTime;
 
@@ -293,9 +295,15 @@ namespace AcManager.Pages.Drive {
                         _updateCancellationTokenSource = cancellation;
 
                         try {
-                            await Update(cancellation.Token);
-                        } catch (TaskCanceledException) { } catch (Exception e) {
-                            Logging.Warning("[QuickDrive.Conditions] Update(): " + e);
+                            await RealConditionsHelper.UpdateConditions(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
+                                    RealConditionsManualTime ? default(Action<int>) : TryToSetTime, weather => {
+                                        RealWeather = weather;
+                                        TryToSetTemperature(weather.Temperature);
+                                        SelectedWeatherType = weather.Type;
+                                        TryToSetWeather();
+                                    }, cancellation.Token);
+                        } catch (TaskCanceledException) {} catch (Exception e) {
+                            Logging.Warning(e);
                         }
 
                         _updateCancellationTokenSource = null;
@@ -307,92 +315,26 @@ namespace AcManager.Pages.Drive {
                 UpdateConditions();
             }
 
-            private async Task Update(CancellationToken cancellation) {
-                GeoTagsEntry trackGeoTags = null, localGeoTags = null;
-
-                if (!RealConditionsLocalWeather || RealConditionsTimezones) {
-                    var track = SelectedTrack;
-                    trackGeoTags = track.GeoTags;
-                    if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
-                        trackGeoTags = await TracksLocator.TryToLocateAsync(track);
-                        if (cancellation.IsCancellationRequested) return;
-                    }
-                }
-
-                if ((trackGeoTags == null || RealConditionsLocalWeather) && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
-                    localGeoTags = await TracksLocator.TryToLocateAsync(SettingsHolder.Drive.LocalAddress);
-                    if (cancellation.IsCancellationRequested) return;
-                }
-
-                // Time
-                var now = DateTime.Now;
-                var time = now.Hour * 60 * 60 + now.Minute * 60 + now.Second;
-
-                if (!RealConditionsManualTime) {
-                    if (trackGeoTags == null || !RealConditionsTimezones) {
-                        TryToSetTime(time);
-                    } else {
-                        var timeZone = await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
-                        if (cancellation.IsCancellationRequested) return;
-
-                        TryToSetTime((time + (int)(timeZone == null ? 0 : timeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds) +
-                                SecondsPerDay) % SecondsPerDay);
-                    }
-                }
-
-                // Weather
-                var tags = RealConditionsLocalWeather ? localGeoTags : trackGeoTags ?? localGeoTags;
-                if (tags == null) return;
-
-                var weather = await WeatherProvider.TryToGetWeatherAsync(tags);
-                if (cancellation.IsCancellationRequested) return;
-
-                if (weather != null) {
-                    RealWeather = weather;
-                    
-                    TryToSetTemperature(weather.Temperature);
-                    SelectedWeatherType = weather.Type;
-                    TryToSetWeather();
-                }
-            }
-
             private void TryToSetTime(int value) {
-                var clamped = value.Clamp((int)TimeMinimum, (int)TimeMaximum);
+                var clamped = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                 IsTimeClamped = clamped != value;
                 Time = clamped;
             }
 
             private void TryToSetTemperature(double value) {
-                var clamped = value.Clamp(TemperatureMinimum, TemperatureMaximum);
-                IsTemperatureClamped = value < TemperatureMinimum || value > TemperatureMaximum;
+                var clamped = value.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
+                IsTemperatureClamped = value < CommonAcConsts.TemperatureMinimum || value > CommonAcConsts.TemperatureMaximum;
                 Temperature = clamped;
             }
 
-            private string _weatherCandidatesFootprint;
+            private readonly WeatherTypeHelper _weatherTypeHelper = new WeatherTypeHelper();
 
             private void TryToSetWeather() {
-                if (SelectedWeatherType == WeatherType.None) return;
+                _weatherTypeHelper.SetParams(Time, Temperature);
 
-                try {
-                    var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Enabled && x.TemperatureDiapason?.DiapasonContains(Temperature) != false
-                            && x.TimeDiapason?.TimeDiapasonContains(Time) != false).ToList();
-                    var closest = WeatherDescription.FindClosestWeather(from w in candidates select w.Type, SelectedWeatherType);
-                    if (closest == null) {
-                        IsWeatherNotSupported = true;
-                    } else {
-                        candidates = candidates.Where(x => x.Type == closest).ToList();
-
-                        var footprint = candidates.Select(x => x.Id).JoinToString(';');
-                        if (footprint != _weatherCandidatesFootprint || !candidates.Contains(SelectedWeather)) {
-                            SelectedWeather = candidates.RandomElement();
-                            _weatherCandidatesFootprint = footprint;
-                        }
-
-                        IsWeatherNotSupported = false;
-                    }
-                } catch (Exception e) {
-                    IsWeatherNotSupported = true;
-                    Logging.Warning("TryToSetWeatherType(): " + e);
+                var weather = SelectedWeather;
+                if (_weatherTypeHelper.TryToGetWeather(SelectedWeatherType, ref weather)) {
+                    SelectedWeather = weather;
                 }
             }
 
@@ -410,6 +352,118 @@ namespace AcManager.Pages.Drive {
                 } finally {
                     _tryToSetWeatherLater = false;
                 }
+            }
+        }
+    }
+
+    public class WeatherTypeHelper {
+        private int _time;
+        private double _temperature;
+
+        public void SetParams(int time, double temperature) {
+            _time = time;
+            _temperature = temperature;
+        }
+
+        private string _weatherCandidatesFootprint;
+
+        public bool TryToGetWeather(WeatherType type, [CanBeNull] ref WeatherObject weather) {
+            if (type == WeatherType.None) return true;
+
+            try {
+                var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Enabled && x.TemperatureDiapason?.DiapasonContains(_temperature) != false
+                        && x.TimeDiapason?.TimeDiapasonContains(_time) != false).ToList();
+                var closest = WeatherDescription.FindClosestWeather(from w in candidates select w.Type, type);
+                if (closest == null) return false;
+
+                candidates = candidates.Where(x => x.Type == closest).ToList();
+                var footprint = candidates.Select(x => x.Id).JoinToString(';');
+                if (footprint != _weatherCandidatesFootprint || !candidates.Contains(weather)) {
+                    weather = candidates.RandomElement();
+                    _weatherCandidatesFootprint = footprint;
+                }
+
+                return true;
+            } catch (Exception e) {
+                Logging.Error(e);
+                return false;
+            }
+        }
+
+        public void Reset() {
+            _weatherCandidatesFootprint = null;
+        }
+
+        [CanBeNull]
+        public static WeatherObject TryToGetWeather(WeatherType type, int time, double temperature) {
+            var helper = new WeatherTypeHelper();
+            helper.SetParams(time, temperature);
+            WeatherObject result = null;
+            return helper.TryToGetWeather(type, ref result) ? result : null;
+        }
+
+        [CanBeNull]
+        public static WeatherObject TryToGetWeather(WeatherDescription description, int time) {
+            return TryToGetWeather(description.Type, time, description.Temperature);
+        }
+    }
+
+    public static class RealConditionsHelper {
+        private const int SecondsPerDay = 24 * 60 * 60;
+
+        /// <summary>
+        /// Complex method, but it’s the best I can think of for now. Due to async nature,
+        /// all results will be returned in callbacks. There is no guarantee in which order callbacks
+        /// will be called (and even if they will be called at all or not)!
+        /// </summary>
+        /// <param name="track">Track for which conditions will be loaded.</param>
+        /// <param name="localWeather">Use local weather instead.</param>
+        /// <param name="considerTimezones">Consider timezones while setting time. Be careful: you’ll get an unclamped time!</param>
+        /// <param name="timeCallback">Set to null if you don’t need an automatic time.</param>
+        /// <param name="weatherCallback">Set to null if you don’t need weather.</param>
+        /// <param name="cancellation">Cancellation token.</param>
+        /// <returns>Task.</returns>
+        public static async Task UpdateConditions(TrackObjectBase track, bool localWeather, bool considerTimezones,
+                [CanBeNull] Action<int> timeCallback, [CanBeNull] Action<WeatherDescription> weatherCallback, CancellationToken cancellation) {
+            GeoTagsEntry trackGeoTags = null, localGeoTags = null;
+
+            if (!localWeather || considerTimezones && timeCallback != null) {
+                trackGeoTags = track.GeoTags;
+                if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
+                    trackGeoTags = await TracksLocator.TryToLocateAsync(track);
+                    if (cancellation.IsCancellationRequested) return;
+                }
+            }
+
+            if ((trackGeoTags == null || localWeather) && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
+                localGeoTags = await TracksLocator.TryToLocateAsync(SettingsHolder.Drive.LocalAddress);
+                if (cancellation.IsCancellationRequested) return;
+            }
+
+            // Time
+            var time = DateTime.Now.TimeOfDay.TotalSeconds.RoundToInt();
+            if (timeCallback != null) {
+                if (trackGeoTags == null || !considerTimezones) {
+                    timeCallback.Invoke(time);
+                } else {
+                    var timeZone = await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
+                    if (cancellation.IsCancellationRequested) return;
+
+                    timeCallback.Invoke((time +
+                            (int)(timeZone == null ? 0 : timeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds) +
+                            SecondsPerDay) % SecondsPerDay);
+                }
+            }
+
+            // Weather
+            var tags = localWeather ? localGeoTags : trackGeoTags ?? localGeoTags;
+            if (tags == null) return;
+
+            var weather = await WeatherProvider.TryToGetWeatherAsync(tags);
+            if (cancellation.IsCancellationRequested) return;
+
+            if (weather != null) {
+                weatherCallback?.Invoke(weather);
             }
         }
     }

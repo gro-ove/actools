@@ -421,7 +421,7 @@ namespace AcTools.Processes {
             public int? Id => Properties.Preset;
         }
 
-        private static ObservableCollection<TrackPropertiesPreset> _defaultTrackPropertiesPresets;
+        private static TrackPropertiesPreset[] _defaultTrackPropertiesPresets;
 
         public static TrackPropertiesPreset GetDefaultTrackPropertiesPreset() {
             return DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == "Optimum") ??
@@ -429,8 +429,8 @@ namespace AcTools.Processes {
         }
 
         // TODO: rework; move everything related to actools?
-        public static ObservableCollection<TrackPropertiesPreset> DefaultTrackPropertiesPresets
-            => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new ObservableCollection<TrackPropertiesPreset>(new[] {
+        public static IReadOnlyList<TrackPropertiesPreset> DefaultTrackPropertiesPresets
+            => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new[] {
                 new TrackPropertiesPreset("Dusty", new TrackProperties {
                     Preset = 0,
                     SessionStart = 86.0,
@@ -473,7 +473,7 @@ namespace AcTools.Processes {
                     LapGain = 1.0,
                     SessionTransfer = 100.0
                 })
-            }));
+            });
 
         public class AssistsProperties : AdditionalProperties {
             public bool IdealLine;

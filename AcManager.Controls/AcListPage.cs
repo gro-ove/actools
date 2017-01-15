@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
@@ -54,13 +57,63 @@ namespace AcManager.Controls {
             });
         }
 
+        public static readonly DependencyProperty AddNewCommandProperty = DependencyProperty.Register(nameof(AddNewCommand), typeof(ICommand),
+                typeof(AcListPage), new PropertyMetadata(OnAddNewCommandChanged));
+
+        public ICommand AddNewCommand {
+            get { return (ICommand)GetValue(AddNewCommandProperty); }
+            set { SetValue(AddNewCommandProperty, value); }
+        }
+
+        private static void OnAddNewCommandChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((AcListPage)o).OnAddNewCommandChanged((ICommand)e.NewValue);
+        }
+
+        private void OnAddNewCommandChanged(ICommand newValue) {
+            InputBindings.Clear();
+            InputBindings.Add(new InputBinding(newValue, new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
+        }
+
+        private Button _addButton;
+
         public override void OnApplyTemplate() {
+            if (_addButton != null) {
+                _addButton.Click -= OnAddButtonClick;
+            }
+
             base.OnApplyTemplate();
             _list = GetTemplateChild(@"ItemsList") as ListBox;
             _list?.ScrollIntoView(_list.SelectedItem);
+            _addButton = GetTemplateChild(@"AddCarButton") as Button;
+
+            if (_addButton != null) {
+                _addButton.Click += OnAddButtonClick;
+            }
         }
 
-        private void ItemsSource_CurrentChanged(object sender, EventArgs e) {
+        private void OnAddButtonClick(object sender, RoutedEventArgs e) {
+            var command = AddNewCommand;
+            if (command?.CanExecute(null) == true) {
+                var list = ItemsSource as INotifyCollectionChanged;
+                if (list != null) {
+                    list.CollectionChanged += OnAddButtonCollectionChanged;
+                }
+
+                command.Execute(null);
+
+                if (list != null) {
+                    list.CollectionChanged -= OnAddButtonCollectionChanged;
+                }
+            }
+        }
+
+        private void OnAddButtonCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems.Count == 1) {
+                ItemsSource.MoveCurrentTo(e.NewItems[0]);
+            }
+        }
+
+        private void OnCurrentChanged(object sender, EventArgs e) {
             var newValue = ItemsSource.CurrentItem as AcItemWrapper;
             if (ItemsSource.Contains(_selectedWrapper.Value)) {
                 _selectedWrapper.Value = newValue;
@@ -111,11 +164,11 @@ namespace AcManager.Controls {
 
         private void OnItemsSourceChanged(AcWrapperCollectionView oldValue, AcWrapperCollectionView newValue) {
             if (oldValue != null) {
-                oldValue.CurrentChanged -= ItemsSource_CurrentChanged;
+                oldValue.CurrentChanged -= OnCurrentChanged;
             }
 
             if (newValue != null) {
-                newValue.CurrentChanged += ItemsSource_CurrentChanged;
+                newValue.CurrentChanged += OnCurrentChanged;
                 _selectedWrapper.Value = newValue.CurrentItem as AcItemWrapper;
             }
         }

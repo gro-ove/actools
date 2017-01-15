@@ -162,6 +162,9 @@
     <Compile Include="Data\HierarchicalHelper.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
+    <Compile Include="Data\KunosLauncherDataWatcher.cs" />
+    <Compile Include="Data\UserChampionshipProgressEntry.cs" />
+    <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
     <Compile Include="Data\WeatherType.cs" />
     <Compile Include="Filters\AcCommonObjectTester.cs" />
@@ -281,7 +284,11 @@
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />
+    <Compile Include="Objects\UserChampionshipRound.cs" />
+    <Compile Include="Objects\UserChampionshipRoundExtended.cs" />
+    <Compile Include="Objects\UserChampionshipRules.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />
     <Compile Include="Profile\LapTimeWrapped.cs" />

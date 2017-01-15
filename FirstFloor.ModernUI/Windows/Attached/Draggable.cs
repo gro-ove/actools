@@ -58,6 +58,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 handler = DataGrid_MouseMove;
             } else if (element is ListBox) {
                 handler = ListBox_MouseMove;
+            } else if (element is ItemsControl) {
+                handler = ItemsControl_MouseMove;
             } else {
                 handler = Element_MouseMove;
             }
@@ -150,6 +152,14 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return MoveBasic((element as ListBox)?.GetFromPoint<ListBoxItem>(e.GetPosition(element)));
         }
 
+        private static bool MoveFromItemsControl(IInputElement element, MouseEventArgs e) {
+            var item = (element as ItemsControl)?.GetFromPoint<FrameworkElement>(e.GetPosition(element))?
+                                                 .GetParents()
+                                                 .OfType<FrameworkElement>()
+                                                 .FirstOrDefault(x => ReferenceEquals(x.TemplatedParent, element));
+            return MoveBasic(item);
+        }
+
         private static bool MoveFromDataGrid(FrameworkElement element, MouseEventArgs e) {
             var row = (element as DataGrid)?.GetFromPoint<DataGridRow>(e.GetPosition(element));
             return row != null && MoveDraggable(row, row.Item as IDraggable);
@@ -200,6 +210,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromListBox((FrameworkElement)sender, e);
         }
 
+        private static void ItemsControl_MouseMove(object sender, MouseEventArgs e) {
+            e.Handled = e.Handled || IsDragging(sender, e) && MoveFromItemsControl((FrameworkElement)sender, e);
+        }
+
         private static void DataGrid_MouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromDataGrid((FrameworkElement)sender, e);
         }
@@ -230,7 +244,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void Destination_Drop(object sender, DragEventArgs e) {
-            var destination = (ListBox)sender;
+            var destination = (ItemsControl)sender;
             var format = GetDestination(destination);
             var widget = e.Data.GetData(format) as IDraggable;
             var source = e.Data.GetData(SourceFormat) as ItemsControl;

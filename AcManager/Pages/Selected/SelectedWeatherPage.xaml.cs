@@ -61,7 +61,7 @@ namespace AcManager.Pages.Selected {
                 set {
                     value = value.Round(0.5);
                     if (Equals(value, _temperature)) return;
-                    _temperature = value.Clamp(QuickDrive.TemperatureMinimum, QuickDrive.TemperatureMaximum);
+                    _temperature = value.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
                     ValuesStorage.Set(KeyTemperature, value);
@@ -79,7 +79,7 @@ namespace AcManager.Pages.Selected {
                 get { return _time; }
                 set {
                     if (value == _time) return;
-                    _time = value.Clamp((int)QuickDrive.TimeMinimum, (int)QuickDrive.TimeMaximum);
+                    _time = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));

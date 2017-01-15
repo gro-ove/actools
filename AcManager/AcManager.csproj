@@ -287,6 +287,12 @@
     <Compile Include="Pages\Dialogs\OnlineNewDriverTag.xaml.cs">
       <DependentUpon>OnlineNewDriverTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
+      <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Drive\UserChampionships.xaml.cs">
+      <DependentUpon>UserChampionships.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\Online.SortingModes.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
@@ -306,6 +312,7 @@
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\SelectionTagsList.cs" />
     <Compile Include="Pages\SelectionLists\TrackTags.xaml.cs">
       <DependentUpon>TrackTags.xaml</DependentUpon>
     </Compile>
@@ -420,6 +427,11 @@
     </Compile>
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentHandleResult.cs" />
+    <Compile Include="Tools\ArgumentsHandler.SharedUserChampionship.cs" />
+    <Compile Include="Tools\ArgumentsHandler.Online.cs" />
+    <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
+    <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
+    <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
@@ -746,6 +758,14 @@
     <Page Include="Pages\Dialogs\OnlineNewDriverTag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\UserChampionships.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\QuickDrive_Drag.xaml">
       <Generator>MSBuild:Compile</Generator>

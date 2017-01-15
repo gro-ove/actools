@@ -3,11 +3,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
     <Style TargetType="ac:AcListPage">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="mui:InputBindingBehavior.PropagateInputBindingsToWindow" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ac:AcListPage">
@@ -40,8 +43,12 @@
                                 </ListBox.ItemsPanel>
                             </ListBox>
 
-                            <TextBlock Grid.Row="1" Text="{Binding Status}" Margin="{StaticResource StatusMargin}"
-                                    Foreground="{DynamicResource WindowTextReadOnly}" />
+                            <DockPanel Grid.Row="1">
+                                <mui:ModernButton x:Name="AddCarButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
+                                        ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
+                                        Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                                <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
+                            </DockPanel>
                         </Grid>
 
                         <!-- seperator -->

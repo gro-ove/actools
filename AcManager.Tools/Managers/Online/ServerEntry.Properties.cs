@@ -309,7 +309,7 @@ namespace AcManager.Tools.Managers.Online {
             get { return _cars; }
             private set {
                 if (Equals(value, _cars)) return;
-                _cars = value?.ToListIfItsNot();
+                _cars = value?.ToListIfItIsNot();
                 OnPropertyChanged();
             }
         }

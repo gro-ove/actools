@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Navigation;
@@ -22,6 +26,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Save or load even if there is no link with that URI.
         /// </summary>
         Flexible
+    }
+
+    public class DirectContentLoaderEntry {
+        public Uri Source { get; set; }
+
+        public object Content { get; set; }
+    }
+
+    [ContentProperty(nameof(Entries))]
+    public class DirectContentLoader : IContentLoader {
+        public List<DirectContentLoaderEntry> Entries { get; }
+
+        public DirectContentLoader() {
+            Entries = new List<DirectContentLoaderEntry>(3);
+        }
+
+        public Task<object> LoadContentAsync(Uri uri, CancellationToken cancellationToken) {
+            return Task.FromResult(LoadContent(uri));
+        }
+
+        public object LoadContent(Uri uri) {
+            return Entries.FirstOrDefault(x => string.Equals(x.Source.ToString(), uri.OriginalString, StringComparison.OrdinalIgnoreCase))?.Content;
+        }
     }
 
     public class ModernTab : Control {

@@ -132,7 +132,7 @@ namespace AcTools.Utils {
                     image.FilterType = FilterType.Lanczos;
                     image.Sharpen();
                     image.Resize((int)(k * image.Width), (int)(k * image.Height));
-                    image.Crop(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, Gravity.Center);
+                    image.Crop((int)maxWidth, (int)maxHeight, Gravity.Center);
                 }
 
                 image.Quality = 95;
@@ -150,7 +150,7 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ApplyPreview(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
+        public static void ApplyPreview(string source, string destination, double maxWidth = 0d, double maxHeight = 0d, bool keepOriginal = false) {
             if (File.Exists(destination)) {
                 File.Delete(destination);
             }
@@ -162,7 +162,7 @@ namespace AcTools.Utils {
                 var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, 100L) } };
 
                 if (maxWidth > 0d || maxHeight > 0d) {
-                    using (var bitmap = new Bitmap(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
+                    using (var bitmap = new Bitmap((int)maxWidth, (int)maxHeight))
                     using (var graphics = Graphics.FromImage(bitmap)) {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                         graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -170,8 +170,8 @@ namespace AcTools.Utils {
 
                         using (var image = Image.FromFile(source)) {
                             var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
-                            graphics.DrawImage(image, (int)(0.5 * (CommonAcConsts.PreviewWidth - k * image.Width)),
-                                               (int)(0.5 * (CommonAcConsts.PreviewHeight - k * image.Height)),
+                            graphics.DrawImage(image, (int)(0.5 * ((int)maxWidth - k * image.Width)),
+                                               (int)(0.5 * ((int)maxHeight - k * image.Height)),
                                                (int)(k * image.Width), (int)(k * image.Height));
                         }
 
@@ -186,10 +186,12 @@ namespace AcTools.Utils {
                 GC.Collect();
             }
 
-            try {
-                File.Delete(source);
-            } catch (Exception) {
-                // ignored
+            if (!keepOriginal) {
+                try {
+                    File.Delete(source);
+                } catch (Exception) {
+                    // ignored
+                }
             }
         }
 

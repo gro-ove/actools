@@ -13,8 +13,8 @@ namespace AcManager.Pages.SelectionLists {
             InitializeComponent();
         }
 
-        protected override SelectCountry GetSelectedItem(IList<SelectCountry> list, TrackObject selected) {
-            var value = selected?.Country;
+        protected override SelectCountry GetSelectedItem(IList<SelectCountry> list, TrackObject obj) {
+            var value = obj?.Country;
             if (value != null) {
                 for (var i = list.Count - 1; i >= 0; i--) {
                     var x = list[i];

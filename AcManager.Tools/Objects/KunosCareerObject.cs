@@ -658,6 +658,11 @@ namespace AcManager.Tools.Objects {
                         }
                     }
 
+                    var place = 0;
+                    foreach (var driver in ChampionshipDrivers.OrderBy(x => x.Points)) {
+                        driver.TakenPlace = place++;
+                    }
+
                     ChampionshipDrivers.GetById(-1).Points = ChampionshipPoints;
                 }
 

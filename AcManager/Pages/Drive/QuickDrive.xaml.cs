@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -37,14 +38,6 @@ using Newtonsoft.Json;
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive : ILoadableContent {
         public static bool OptionTestMode = false;
-
-        public static double TimeMinimum { get; } = 8d * 60 * 60;
-
-        public static double TimeMaximum { get; } = 18d * 60 * 60;
-
-        public static double TemperatureMinimum { get; } = 0d;
-
-        public static double TemperatureMaximum { get; } = 36d;
 
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
@@ -100,7 +93,7 @@ namespace AcManager.Pages.Drive {
                     Model.UpdateConditions();
                 }
             };
-            _realConditionsTimer.Interval = new TimeSpan(0, 0, 60);
+            _realConditionsTimer.Interval = TimeSpan.FromMinutes(0.5);
             _realConditionsTimer.Start();
         }
 
@@ -248,7 +241,7 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
-            public ObservableCollection<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
+            public IReadOnlyList<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
 
             private Game.TrackPropertiesPreset _selectedTrackPropertiesPreset;
 
@@ -452,11 +445,7 @@ namespace AcManager.Pages.Drive {
             private ICommand _changeTrackCommand;
 
             public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
-                var dialog = new SelectTrackDialog(SelectedTrack);
-                dialog.ShowDialog();
-                if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
-
-                SelectedTrack = dialog.Model.SelectedTrackConfiguration;
+                SelectedTrack = SelectTrackDialog.Show(SelectedTrack);
             }));
 
             private QuickDriveModeViewModel _selectedModeViewModel;
@@ -596,7 +585,7 @@ namespace AcManager.Pages.Drive {
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
 
-        private void Car_OnDrop(object sender, DragEventArgs e) {
+        private void OnCarBlockDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
 
@@ -609,7 +598,7 @@ namespace AcManager.Pages.Drive {
             e.Effects = DragDropEffects.Copy;
         }
 
-        private void Track_OnDrop(object sender, DragEventArgs e) {
+        private void OnTrackBlockDrop(object sender, DragEventArgs e) {
             var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
 
             if (trackObject == null) {
@@ -642,12 +631,12 @@ namespace AcManager.Pages.Drive {
                     }, isEnabled: AppKeyHolder.IsAllRight);
         }
 
-        private void SelectedCar_OnClick(object sender, RoutedEventArgs e) {
+        private void OnCarBlockClick(object sender, RoutedEventArgs e) {
             if (e.Handled) return;
             Model.ChangeCarCommand.Execute(null);
         }
 
-        private void SelectedTrack_OnClick(object sender, MouseButtonEventArgs e) {
+        private void OnTrackBlockClick(object sender, MouseButtonEventArgs e) {
             if (e.Handled) return;
             Model.ChangeTrackCommand.Execute(null);
         }

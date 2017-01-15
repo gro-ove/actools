@@ -45,6 +45,9 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription("Shared_PpFilter")]
         PpFilter,
 
+        [LocalizedDescription("Shared_UserChampionship")]
+        UserChampionship,
+
         [LocalizedDescription("Shared_Weather")]
         Weather
     }
@@ -130,6 +133,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return @".lnk";
 
                 case SharedEntryType.Weather:
+                case SharedEntryType.UserChampionship:
                     return "";
 
                 default:

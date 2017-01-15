@@ -327,12 +327,11 @@
                             </StackPanel.ToolTip>
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem StaysOpenOnClick="True">
+                                    <MenuItem Command="{Binding ResetUserAiLevelCommand}" ToolTip="{x:Static c:ControlsStrings.Common_ResetToRecommendedValue}">
                                         <MenuItem.Header>
                                             <TextBlock Text="{Binding AiLevel, StringFormat={x:Static c:ControlsStrings.Common_RecommendedPercentageFormat}}" />
                                         </MenuItem.Header>
                                     </MenuItem>
-                                    <MenuItem Header="{x:Static c:ControlsStrings.Common_ResetToRecommendedValue}" Command="{Binding ResetUserAiLevelCommand}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                         </StackPanel>

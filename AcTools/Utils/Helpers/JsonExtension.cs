@@ -63,6 +63,25 @@ namespace AcTools.Utils.Helpers {
             return string.IsNullOrEmpty(result) ? null : result;
         }
 
+        public static int? GetIntValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj[key];
+            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
+                    value.Type != JTokenType.Float) return null;
+
+            var result = value.ToString();
+            if (string.IsNullOrEmpty(result)) return null;
+
+            double val;
+            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (int?)null : (int)val;
+        }
+
+        public static bool? GetBoolValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
+            var value = obj[key];
+            if (value == null || value.Type != JTokenType.Boolean && value.Type != JTokenType.Integer &&
+                    value.Type != JTokenType.Float) return null;
+            return (bool)value;
+        }
+
         public static GeoTagsEntry GetGeoTagsValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key] as JArray;
             if (value == null || value.Count != 2) return null;
@@ -75,18 +94,6 @@ namespace AcTools.Utils.Helpers {
 
         public static JArray ToJObject(this GeoTagsEntry geoTagsEntry) {
             return new JArray(geoTagsEntry.Latitude, geoTagsEntry.Longitude);
-        }
-
-        public static int? GetIntValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
-            var value = obj[key];
-            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
-                    value.Type != JTokenType.Float) return null;
-
-            var result = value.ToString();
-            if (string.IsNullOrEmpty(result)) return null;
-
-            double val;
-            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (int?)null : (int)val;
         }
 
         private static Regex _dequoteStringRegex;
@@ -190,6 +197,30 @@ namespace AcTools.Utils.Helpers {
             }
 
             return result;
+        }
+
+        public static void SetNonDefault(this JObject obj, [LocalizationRequired(false)] string key, string value) {
+            if (string.IsNullOrWhiteSpace(value)) {
+                obj.Remove(key);
+            } else {
+                obj[key] = value;
+            }
+        }
+
+        public static void SetNonDefault(this JObject obj, [LocalizationRequired(false)] string key, int? value) {
+            if (!value.HasValue || value == 0) {
+                obj.Remove(key);
+            } else {
+                obj[key] = value.Value;
+            }
+        }
+
+        public static void SetNonDefault(this JObject obj, [LocalizationRequired(false)] string key, bool? value) {
+            if (!value.HasValue || value == false) {
+                obj.Remove(key);
+            } else {
+                obj[key] = value.Value;
+            }
         }
     }
 

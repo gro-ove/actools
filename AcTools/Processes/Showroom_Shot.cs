@@ -123,7 +123,7 @@ namespace AcTools.Processes {
             }
 
             try {
-                var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItsNot();
+                var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItIsNot();
                 var position = 0;
                 foreach (var carSkin in skins) {
                     if (cancellation.IsCancellationRequested) return null;

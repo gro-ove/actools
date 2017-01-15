@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,7 +40,7 @@
             </Grid.ColumnDefinitions>
 
             <mui:Cell DataContext="{Binding SelectedCar}" Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
-                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="Car_OnDrop" MouseLeftButtonUp="SelectedCar_OnClick" ClipToBounds="True">
+                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
                 <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
                 <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
                         Foreground="White" TextTrimming="CharacterEllipsis" />
@@ -48,7 +48,7 @@
             </mui:Cell>
 
             <mui:Cell DataContext="{Binding SelectedTrack}" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
-                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="Track_OnDrop" MouseLeftButtonUp="SelectedTrack_OnClick">
+                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
                 <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
                 <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
                 <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
@@ -78,8 +78,9 @@
                             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
                         </Border>
                     </mui:Cell>
-                    <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
-                            Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                    <Slider Value="{Binding Time}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+                            Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
+                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
@@ -152,7 +153,7 @@
                             </ToolTip>
                         </mui:Cell.ToolTip>
 
-                        <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
+                        <Slider Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}"
                                 Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
