@@ -252,7 +252,7 @@
                     </DockPanel>
 
                     <CheckBox IsChecked="{Binding SelectedObject.CoherentTime}" IsEnabled="{Binding ShowTimeControls}">
-                        <Label Content="Coherent time" />
+                        <Label Content="Sheduled rounds" />
                     </CheckBox>
                 </StackPanel>
 
@@ -467,8 +467,9 @@
             </ToolBar>
             <ToolBar Band="1" BandIndex="1"
                     Visibility="{Binding SelectedSource, Source={x:Reference Tab}, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='Rules'}">
-                <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewDirectCommand}"
-                        ToolTip="Update championship's preview (Ctrl+P)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewDirectCommand}">
+                    <Button.ToolTip>Update championship’s preview (Ctrl+P)</Button.ToolTip>
+                </Button>
                 <Button Content="Set Crop Params" Command="{Binding SetCropParamsCommand}" ToolTip="Set offset and size for cropped square version of preview" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1"
