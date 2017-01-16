@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,10 +66,12 @@ namespace AcManager.Pages.Drive {
             });
 
             var acObject = Model.AcObject;
-            if (acObject.LastSelectedTimestamp != 0) return;
-
-            new UserChampionshipIntro(acObject).ShowDialog();
-            acObject.LastSelectedTimestamp = DateTime.Now.ToMillisecondsTimestamp();
+            if (acObject.LastSelectedTimestamp == 0) {
+                if (_ignoreIntroId != acObject.Id) {
+                    new UserChampionshipIntro(acObject).ShowDialog();
+                }
+                acObject.LastSelectedTimestamp = DateTime.Now.ToMillisecondsTimestamp();
+            }
         }
 
         private string _id;
@@ -499,6 +500,12 @@ namespace AcManager.Pages.Drive {
             if (image != null) {
                 FancyBackgroundManager.Instance.ChangeBackground(image);
             }
+        }
+
+        private static string _ignoreIntroId;
+
+        public static void IgnoreIntro(string openId) {
+            _ignoreIntroId = openId;
         }
     }
 }

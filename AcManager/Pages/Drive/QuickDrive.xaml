@@ -4,7 +4,7 @@
         xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
-        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,6 +22,26 @@
                         IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
                 <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
             </ContextMenu>
+            
+            <mui:HierarchicalComboBox x:Key="CarSpecificControlsComboBox" ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
+                    SelectedItem="{Binding SelectedCar.SelectedControlsPreset}" IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}"
+                    FixedMode="False" PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
+                <mui:HierarchicalComboBox.SelectedContent>
+                    <TextBlock TextTrimming="CharacterEllipsis" DataContext="{Binding SelectedCar}"
+                            Text="{Binding CurrentControlsPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentControlsPresetName}" Value="{x:Null}">
+                                        <Setter Property="FontStyle" Value="Italic" />
+                                        <Setter Property="Text" Value="Default" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </mui:HierarchicalComboBox.SelectedContent>
+            </mui:HierarchicalComboBox>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -182,10 +202,10 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Width="160" Margin="0 0 20 0" DataContext="{Binding AssistsViewModel}">
-                <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 8" />
+            <mui:SpacingStackPanel Width="160" Margin="0 0 20 0" Spacing="8">
+                <c:UserPresetsControl UserPresetable="{Binding AssistsViewModel}" ShowSaveButton="False" />
 
-                <Grid>
+                <Grid DataContext="{Binding AssistsViewModel}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
@@ -207,7 +227,13 @@
                         <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
                     </c:ModernPopup>
                 </Grid>
-            </StackPanel>
+
+                <CheckBox IsChecked="{Binding SelectedCar.SpecificControlsPreset}" Margin="0 20 0 0">
+                    <Label Content="Car-specific controls" />
+                </CheckBox>
+
+                <mui:LazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" ResourceKey="CarSpecificControlsComboBox" />
+            </mui:SpacingStackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
                     SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch"

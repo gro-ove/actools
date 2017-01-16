@@ -32,6 +32,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public IAcControlsConflictResolver ConflictResolver { get; set; }
 
+        static ControlsSettings() {
+            PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
+            UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
+        }
+
         internal ControlsSettings() : base("controls", false) {
             try {
                 KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
@@ -44,8 +49,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                 _directInput = new SlimDX.DirectInput.DirectInput();
                 _keyboardInput = new Dictionary<int, KeyboardInputButton>();
-                PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
-                UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
 
                 _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16.67) };
             } catch (Exception e) {
@@ -315,8 +318,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Presets
-        public readonly string PresetsDirectory;
-        public readonly string UserPresetsDirectory;
+        public static readonly string PresetsDirectory;
+        public static readonly string UserPresetsDirectory;
 
         protected override void OnRenamed(object sender, RenamedEventArgs e) {
             if (FileUtils.IsAffected(PresetsDirectory, e.OldFullPath) || FileUtils.IsAffected(PresetsDirectory, e.FullPath) ||
@@ -337,7 +340,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public event EventHandler PresetsUpdated;
 
-        private string GetCurrentPresetName(string filename) {
+        public static string GetCurrentPresetName(string filename) {
             filename = FileUtils.GetRelativePath(filename, PresetsDirectory);
             var f = new[] { SubBuiltInPresets, SubUserPresets }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
             return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(PresetExtension, StringComparison.OrdinalIgnoreCase);
@@ -388,7 +391,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     ["PRESET_NAME"] = presetFilename.SubstringExt(PresetsDirectory.Length + 1),
                     ["PRESET_CHANGED"] = false
                 }
-            });
+            }, backup);
         }
         #endregion
 

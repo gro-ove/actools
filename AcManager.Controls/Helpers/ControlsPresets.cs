@@ -112,12 +112,12 @@ namespace AcManager.Controls.Helpers {
         private ControlsSettings Controls => AcSettingsHolder.Controls;
 
         private Task<List<PresetEntry>> ScanAsync([Localizable(false)] string sub) {
-            var directory = Path.Combine(Controls.PresetsDirectory, sub);
+            var directory = Path.Combine(ControlsSettings.PresetsDirectory, sub);
             return Task.Run(() => FileUtils.GetFilesRecursive(directory, @"*" + ControlsSettings.PresetExtension).Select(x => new PresetEntry(x)).ToList());
         }
 
         private HierarchicalGroup Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
-            var directory = Path.Combine(Controls.PresetsDirectory, sub);
+            var directory = Path.Combine(ControlsSettings.PresetsDirectory, sub);
             return new HierarchicalGroup(header, UserPresetsControl.GroupPresets(presets, directory));
         }
 

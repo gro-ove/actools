@@ -284,6 +284,7 @@
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />
     <Compile Include="Objects\UserChampionshipRound.cs" />
@@ -320,7 +321,7 @@
     <Compile Include="Miscellaneous\LocaleUpdater.cs" />
     <Compile Include="Miscellaneous\SharedLocaleReader.cs" />
     <Compile Include="Miscellaneous\SharingHelper.cs" />
-    <Compile Include="Objects\CarObject_Setups.cs" />
+    <Compile Include="Objects\CarObject.Setups.cs" />
     <Compile Include="Objects\CarSetupObject.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="Objects\KunosEventObjectBase.cs" />
@@ -418,13 +419,13 @@
     <Compile Include="AcErrors\AcErrorException.cs" />
     <Compile Include="Miscellaneous\AppUpdater.cs" />
     <Compile Include="Miscellaneous\LuaHelper.cs" />
-    <Compile Include="Objects\CarObject_Parent.cs" />
-    <Compile Include="Objects\CarObject_Skins.cs" />
-    <Compile Include="Objects\CarObject_Kunos.cs" />
+    <Compile Include="Objects\CarObject.Parent.cs" />
+    <Compile Include="Objects\CarObject.Skins.cs" />
+    <Compile Include="Objects\CarObject.Kunos.cs" />
     <Compile Include="Managers\CarSkinsManager.cs" />
     <Compile Include="Objects\KunosCareerEventObject.cs" />
     <Compile Include="Objects\KunosCareerObjectType.cs" />
-    <Compile Include="Objects\KunosCareerObject_Events.cs" />
+    <Compile Include="Objects\KunosCareerObject.Events.cs" />
     <Compile Include="Managers\KunosCareerEventsManager.cs" />
     <Compile Include="Objects\ReplayObject.cs" />
     <Compile Include="Objects\PpFilterObject.cs" />
@@ -432,7 +433,7 @@
     <Compile Include="Objects\WeatherObject.cs" />
     <Compile Include="Objects\TrackExtraConfigurationObject.cs" />
     <Compile Include="Objects\TrackObjectBase.cs" />
-    <Compile Include="Objects\TrackObject_Lists.cs" />
+    <Compile Include="Objects\TrackObject.Lists.cs" />
     <Compile Include="Objects\CarSkinObject.cs" />
     <Compile Include="Data\GraphData.cs" />
     <Compile Include="Objects\ShowroomObject.cs" />

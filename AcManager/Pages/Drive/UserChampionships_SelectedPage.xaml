@@ -97,10 +97,17 @@
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
+
+            <mui:ChainConverter x:Key="OrdinalizingLowerConverter">
+                <mui:ChainConverter.Converters>
+                    <mui:OrdinalizingConverter />
+                    <mui:ToLowerConverter />
+                </mui:ChainConverter.Converters>
+            </mui:ChainConverter>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Style="{StaticResource ContentRootWithPadding}">
+    <mui:Cell Style="{StaticResource ContentRootWithPadding}">
         <!--career errors-->
         <c:AcObjectErrorsSection AcObject="{Binding AcObject}" />
 
@@ -450,5 +457,37 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>
+
+        <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Visibility="{Binding AcObject.IsFinished, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20" MaxWidth="320">
+            <mui:BooleanSwitch Value="{Binding AcObject.IsCompleted}" VerticalAlignment="Center">
+                <mui:BooleanSwitch.True>
+                    <DockPanel>
+                        <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                                Margin="0 0 8 0" VerticalAlignment="Center" />
+                        <TextBlock TextWrapping="Wrap">
+                            <TextBlock.Text>
+                                <Binding Path="AcObject.ChampionshipPlace" Converter="{StaticResource OrdinalizingLowerConverter}" ConverterParameter="place">
+                                    <Binding.StringFormat>Congratulations! You’ve completed this championship, earned {0} place and won! Press “Reset” if you want to start again.</Binding.StringFormat>
+                                </Binding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
+                </mui:BooleanSwitch.True>
+                <mui:BooleanSwitch.False>
+                    <DockPanel>
+                        <Path Data="{StaticResource LeaderboardIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
+                                Stretch="Uniform" Margin="0 0 8 0" VerticalAlignment="Center" />
+                        <TextBlock TextWrapping="Wrap">
+                            <TextBlock.Text>
+                                <Binding Path="AcObject.ChampionshipPlace" Converter="{StaticResource OrdinalizingLowerConverter}" ConverterParameter="place">
+                                    <Binding.StringFormat>You’ve completed this championship and earned {0} place. Sadly, it’s not good enough. Please, press “Reset” and try again!</Binding.StringFormat>
+                                </Binding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
+                </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch>
+        </Border>
+    </mui:Cell>
 </UserControl>

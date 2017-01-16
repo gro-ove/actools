@@ -1143,6 +1143,17 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _isFinished;
+
+        public bool IsFinished {
+            get { return _isFinished; }
+            set {
+                if (Equals(value, _isFinished)) return;
+                _isFinished = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _championshipPoints = -1;
         
         public int ChampionshipPoints {
@@ -1238,6 +1249,8 @@ namespace AcManager.Tools.Objects {
             var entry = UserChampionshipsProgress.Instance.Entries.GetValueOrDefault(entryId);
             if (entry == null) {
                 CompletedEvents = 0;
+                IsFinished = false;
+                IsCompleted = false;
 
                 foreach (var driver in Drivers) {
                     driver.Points = 0;
@@ -1258,6 +1271,7 @@ namespace AcManager.Tools.Objects {
             } else {
                 var count = ExtendedRounds.Count;
                 CompletedEvents = entry.EventsResults.Where(x => x.Key < count).Count(x => x.Value > 0);
+                IsFinished = CompletedEvents == ExtendedRounds.Count;
 
                 if (Type == KunosCareerObjectType.SingleEvents) {
                     FirstPlaces = entry.EventsResults.Count(x => x.Key < count && x.Value == 3);
@@ -1286,6 +1300,8 @@ namespace AcManager.Tools.Objects {
 
                 _lastSelectedTimestamp = 1;
                 CurrentRound = ExtendedRounds.ElementAtOrDefault(entry.SelectedEvent) ?? ExtendedRounds.FirstOrDefault();
+                IsCompleted = IsFinished && (ChampionshipPointsGoalType ? ChampionshipPoints >= ChampionshipPointsGoal :
+                        ChampionshipPlace > 0 && ChampionshipPlace <= ChampionshipRankingGoal);
 
                 foreach (var round in ExtendedRounds) {
                     var takenPlace = entry.EventsResults.GetValueOrDefault(round.Index);

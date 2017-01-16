@@ -214,7 +214,7 @@ namespace AcManager.Tools {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
-                            AcSettingsHolder.Controls.UserPresetsDirectory, @"Loaded", shared.GetFileName()));
+                            ControlsSettings.UserPresetsDirectory, @"Loaded", shared.GetFileName()));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     if (result == Choise.ApplyAndSave) {

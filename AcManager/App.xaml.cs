@@ -350,6 +350,7 @@ namespace AcManager {
                 WeatherSpecificCloudsHelper.Revert();
                 WeatherSpecificTyreSmokeHelper.Revert();
                 WeatherSpecificPpFilterHelper.Revert();
+                CarSpecificControlsPresetHelper.Revert();
                 CopyFilterToSystemForOculusHelper.Revert();
 
                 await Task.Delay(1500);

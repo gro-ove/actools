@@ -65,7 +65,8 @@
                 Background="Transparent" BorderThickness="0" Padding="1 0 3 0" InnerMargin="8 6 -2 0"
                 ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
                 SelectedItem="{Binding SelectedPreset, Source={x:Static c:ControlsPresets.Instance}}"
-                IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" HorizontalContentAlignment="Center" FixedMode="False">
+                IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" HorizontalContentAlignment="Center" FixedMode="False"
+                PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
             <mui:HierarchicalComboBox.SelectedContent>
                 <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" DataContext="{x:Static t:AcSettingsHolder.Controls}"
                         Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}, Converter={StaticResource ToUpperConverter}}"
@@ -78,6 +79,7 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
                                     <Setter Property="FontStyle" Value="Italic" />
+                                    <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

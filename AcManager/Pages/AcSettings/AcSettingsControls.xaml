@@ -144,6 +144,7 @@
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
                                             <Setter Property="FontStyle" Value="Italic" />
+                                            <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

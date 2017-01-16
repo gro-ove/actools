@@ -51,7 +51,7 @@ namespace AcManager.Pages.AcSettings {
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand<string>(o => {
                 var dialog = new SaveFileDialog {
-                    InitialDirectory = Controls.UserPresetsDirectory,
+                    InitialDirectory = ControlsSettings.UserPresetsDirectory,
                     FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
                     Filter = string.Format(ToolsStrings.Presets_FileFilter, @".ini"),
                     DefaultExt = @".ini",
@@ -59,8 +59,8 @@ namespace AcManager.Pages.AcSettings {
                 };
 
                 var filename = Controls.CurrentPresetFilename;
-                if (filename != null && FileUtils.IsAffected(Controls.UserPresetsDirectory, filename)) {
-                    dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(Controls.PresetsDirectory, filename));
+                if (filename != null && FileUtils.IsAffected(ControlsSettings.UserPresetsDirectory, filename)) {
+                    dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(ControlsSettings.PresetsDirectory, filename));
                     dialog.FileName = Path.GetFileNameWithoutExtension(filename);
                 }
 
@@ -73,7 +73,7 @@ namespace AcManager.Pages.AcSettings {
                 }
 
                 filename = dialog.FileName;
-                if (!FileUtils.IsAffected(Controls.UserPresetsDirectory, filename)) {
+                if (!FileUtils.IsAffected(ControlsSettings.UserPresetsDirectory, filename)) {
                     if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
                                                  ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
@@ -131,6 +133,8 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDisableAppAutomatically) {
                 PrepareRaceModeRsr(properties);
             }
+
+            properties.SetAdditional(new CarSpecificControlsPresetHelper());
 
             if (raceMode) {
                 if (properties.AssistsProperties == null) {

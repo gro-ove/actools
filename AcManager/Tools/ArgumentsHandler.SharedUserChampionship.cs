@@ -150,6 +150,7 @@ namespace AcManager.Tools {
 
                 if (_openId != null) {
                     UserChampionships.NavigateToChampionshipPage(UserChampionshipsManager.Instance.GetById(_openId));
+                    UserChampionships_SelectedPage.IgnoreIntro(_openId);
                 }
             }
         }

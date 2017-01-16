@@ -8,6 +8,28 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public class LazySwitch : BaseSwitch {
+        protected override UIElement GetChild() {
+            return Value ? (UIElement)TryFindResource(ResourceKey) : null;
+        }
+
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(bool),
+                typeof(LazySwitch), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public bool Value {
+            get { return (bool)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+
+        public static readonly DependencyProperty ResourceKeyProperty = DependencyProperty.Register(nameof(ResourceKey), typeof(object),
+                typeof(LazySwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public object ResourceKey {
+            get { return (object)GetValue(ResourceKeyProperty); }
+            set { SetValue(ResourceKeyProperty, value); }
+        }
+    }
+
     public abstract class BaseSwitch : FrameworkElement {
         public static readonly DependencyProperty ResetElementNameBindingsProperty = DependencyProperty.Register(nameof(ResetElementNameBindings), typeof(bool),
                 typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
