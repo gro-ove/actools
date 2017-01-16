@@ -189,7 +189,9 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="SelectedContent">
             <Setter.Value>
-                <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding DisplayName}" />
+                <DataTemplate>
+                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding DisplayName}" />
+                </DataTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
@@ -204,7 +206,7 @@
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                                 Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
                             <MenuItem.Header>
-                                <ContentPresenter DataContext="{TemplateBinding SelectedItem}" Content="{TemplateBinding SelectedContent}"
+                                <ContentPresenter Content="{TemplateBinding SelectedItem}" ContentTemplate="{TemplateBinding SelectedContent}"
                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                             </MenuItem.Header>
                         </c:LazyMenuItem>

@@ -349,7 +349,7 @@ namespace AcManager {
                 await Task.Delay(1500);
                 WeatherSpecificCloudsHelper.Revert();
                 WeatherSpecificTyreSmokeHelper.Revert();
-                WeatherSpecificPpFilterHelper.Revert();
+                WeatherSpecificVideoSettingsHelper.Revert();
                 CarSpecificControlsPresetHelper.Revert();
                 CopyFilterToSystemForOculusHelper.Revert();
 

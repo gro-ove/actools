@@ -185,13 +185,14 @@
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
+    <Compile Include="GameProperties\TemporaryFileReplacement.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
     <Compile Include="GameProperties\ReplayCommandExecutor.cs" />
     <Compile Include="GameProperties\RsrMark.cs" />
     <Compile Include="GameProperties\SrsMark.cs" />
-    <Compile Include="GameProperties\WeatherSpecificPpFilterHelper.cs" />
+    <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />

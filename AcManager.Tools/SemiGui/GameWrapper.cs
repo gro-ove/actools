@@ -121,11 +121,7 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
                 properties.SetAdditional(new WeatherSpecificCloudsHelper());
             }
-
-            if (SettingsHolder.Drive.WeatherSpecificPpFilter) {
-                properties.SetAdditional(new WeatherSpecificPpFilterHelper());
-            }
-
+            
             if (SettingsHolder.Drive.WeatherSpecificTyreSmoke) {
                 properties.SetAdditional(new WeatherSpecificTyreSmokeHelper());
             }
@@ -134,6 +130,7 @@ namespace AcManager.Tools.SemiGui {
                 PrepareRaceModeRsr(properties);
             }
 
+            properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
 
             if (raceMode) {

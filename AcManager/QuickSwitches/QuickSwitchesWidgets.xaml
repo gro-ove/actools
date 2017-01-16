@@ -60,7 +60,8 @@
     <c:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static t:AcSettingsHolder.AppsPresets}" IconData="{StaticResource ScreenIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_UiPresets_Tooltip}" />
     <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_ControlsPresets_Tooltip}"
-            Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}">
+            Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}"
+            x:Shared="False">
         <mui:HierarchicalComboBox x:Name="PART_ComboBox" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}"
                 Background="Transparent" BorderThickness="0" Padding="1 0 3 0" InnerMargin="8 6 -2 0"
                 ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
@@ -68,23 +69,25 @@
                 IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" HorizontalContentAlignment="Center" FixedMode="False"
                 PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
             <mui:HierarchicalComboBox.SelectedContent>
-                <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" DataContext="{x:Static t:AcSettingsHolder.Controls}"
-                        Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}, Converter={StaticResource ToUpperConverter}}"
-                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
-                                    <Setter Property="FontStyle" Value="Italic" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
-                                    <Setter Property="FontStyle" Value="Italic" />
-                                    <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                <DataTemplate>
+                    <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" DataContext="{x:Static t:AcSettingsHolder.Controls}"
+                            Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}, Converter={StaticResource ToUpperConverter}}"
+                            FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                                        <Setter Property="FontStyle" Value="Italic" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                                        <Setter Property="FontStyle" Value="Italic" />
+                                        <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DataTemplate>
             </mui:HierarchicalComboBox.SelectedContent>
         </mui:HierarchicalComboBox>
         <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"

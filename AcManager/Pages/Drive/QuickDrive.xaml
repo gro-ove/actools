@@ -22,24 +22,22 @@
                         IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
                 <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
             </ContextMenu>
-            
+
             <mui:HierarchicalComboBox x:Key="CarSpecificControlsComboBox" ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
-                    SelectedItem="{Binding SelectedCar.SelectedControlsPreset}" IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}"
-                    FixedMode="False" PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
+                    DataContext="{Binding SelectedCar}" SelectedItem="{Binding SelectedControlsPreset}"
+                    IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" FixedMode="False"
+                    PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}" x:Shared="False">
                 <mui:HierarchicalComboBox.SelectedContent>
-                    <TextBlock TextTrimming="CharacterEllipsis" DataContext="{Binding SelectedCar}"
-                            Text="{Binding CurrentControlsPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentControlsPresetName}" Value="{x:Null}">
-                                        <Setter Property="FontStyle" Value="Italic" />
-                                        <Setter Property="Text" Value="Default" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                    <DataTemplate>
+                        <TextBlock x:Name="TextBlock" TextTrimming="CharacterEllipsis"
+                                Text="{Binding DataContext.SelectedCar.CurrentControlsPresetName, ElementName=This}" />
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.SelectedCar.CurrentControlsPresetName, ElementName=This}" Value="{x:Null}">
+                                <Setter TargetName="TextBlock" Property="Text" Value="Default" />
+                                <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
                 </mui:HierarchicalComboBox.SelectedContent>
             </mui:HierarchicalComboBox>
         </ResourceDictionary>
@@ -260,3 +258,4 @@
         </StackPanel>
     </Grid>
 </UserControl>
+ 

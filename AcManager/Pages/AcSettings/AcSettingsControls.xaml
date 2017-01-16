@@ -134,22 +134,24 @@
                         IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" FixedMode="False"
                         PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}">
                     <mui:HierarchicalComboBox.SelectedContent>
-                        <TextBlock TextTrimming="CharacterEllipsis" DataContext="{x:Static t:AcSettingsHolder.Controls}"
-                                Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
-                                            <Setter Property="FontStyle" Value="Italic" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
-                                            <Setter Property="FontStyle" Value="Italic" />
-                                            <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <DataTemplate>
+                            <TextBlock TextTrimming="CharacterEllipsis" DataContext="{x:Static t:AcSettingsHolder.Controls}"
+                                    Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                                                <Setter Property="FontStyle" Value="Italic" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                                                <Setter Property="FontStyle" Value="Italic" />
+                                                <Setter Property="Text" Value="{x:Static c:ControlsStrings.Presets_Unsaved}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
                     </mui:HierarchicalComboBox.SelectedContent>
                 </mui:HierarchicalComboBox>
                 <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"

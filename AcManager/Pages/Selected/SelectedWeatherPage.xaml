@@ -1,10 +1,9 @@
 ﻿<sel:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedWeatherPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:c="http://acstuff.ru/app/controls"
-                          xmlns:a="clr-namespace:AcTools;assembly=AcTools"
-                          mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance sel:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -30,7 +29,7 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </DockPanel>
-                
+
                 <Grid x:Name="Grid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -38,18 +37,24 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <DockPanel ToolTip="Preferable temperature diapason in Celsius, example: “10-15,17-20,22”">
+                        <DockPanel>
+                            <DockPanel.ToolTip>Preferable temperature diapason in Celsius, example: “10-15,17-20,22”</DockPanel.ToolTip>
                             <Label Content="Temperature diapason:" />
                             <mui:BetterTextBox Text="{Binding SelectedObject.TemperatureDiapason}" Placeholder="?" />
                         </DockPanel>
 
-                        <DockPanel ToolTip="Preferable time diapason in 24-hour format, example: “10:30-11:00,11:30-15:25”">
+                        <DockPanel>
+                            <DockPanel.ToolTip>Preferable time diapason in 24-hour format, example: “10:30-11:00,11:30-15:25”</DockPanel.ToolTip>
                             <Label Content="Time diapason:" />
                             <mui:BetterTextBox Text="{Binding SelectedObject.TimeDiapason}" Placeholder="?" />
                         </DockPanel>
 
                         <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">
                             <Label Content="{x:Static g:AppStrings.WeatherEdit_Headlights}" />
+                        </CheckBox>
+
+                        <CheckBox IsChecked="{Binding SelectedObject.DisableShadows}">
+                            <Label Content="Disable shadows" />
                         </CheckBox>
 
                         <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True"

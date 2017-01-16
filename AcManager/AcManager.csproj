@@ -487,9 +487,6 @@
     <Compile Include="Pages\Dialogs\ShowroomCreateDialog.xaml.cs">
       <DependentUpon>ShowroomCreateDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\KunosCareerIntroDialog.xaml.cs">
-      <DependentUpon>KunosCareerIntroDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Drive\KunosCareer_SelectedPage.xaml.cs">
       <DependentUpon>KunosCareer_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -834,10 +831,6 @@
     <Page Include="Pages\Dialogs\ShowroomCreateDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Dialogs\KunosCareerIntroDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\FindInformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

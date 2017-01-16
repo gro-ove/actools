@@ -369,26 +369,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public event EventHandler<SelectedItemChangedEventArgs> ItemSelected;
 
-        public static readonly DependencyProperty SelectedContentProperty = DependencyProperty.Register(nameof(SelectedContent), typeof(object),
+        public static readonly DependencyProperty SelectedContentProperty = DependencyProperty.Register(nameof(SelectedContent), typeof(DataTemplate),
                 typeof(HierarchicalComboBox), new PropertyMetadata(OnSelectedContentChanged));
 
-        public object SelectedContent {
-            get { return (object)GetValue(SelectedContentProperty); }
+        public DataTemplate SelectedContent {
+            get { return (DataTemplate)GetValue(SelectedContentProperty); }
             set { SetValue(SelectedContentProperty, value); }
         }
 
         private static void OnSelectedContentChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((HierarchicalComboBox)o).OnSelectedContentChanged((object)e.OldValue, (object)e.NewValue);
+            ((HierarchicalComboBox)o).OnSelectedContentChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue);
         }
 
         private void OnSelectedContentChanged(object oldValue, object newValue) {
-            if (oldValue != null) {
+            /*if (oldValue != null) {
                 RemoveLogicalChild(oldValue);
             }
 
             if (newValue != null) {
                 AddLogicalChild(newValue);
-            }
+            }*/
         }
 
         public static readonly DependencyPropertyKey InnerItemsPropertyKey = DependencyProperty.RegisterReadOnly(nameof(InnerItems), typeof(HierarchicalItemsView),

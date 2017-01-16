@@ -67,6 +67,20 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _disableShadows;
+
+        public bool DisableShadows {
+            get { return _disableShadows; }
+            set {
+                if (Equals(value, _disableShadows)) return;
+                _disableShadows = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         private double _temperatureCoefficient;
 
         public double TemperatureCoefficient {
@@ -162,6 +176,7 @@ namespace AcManager.Tools.Objects {
 
             TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
             TimeDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TIME_DIAPASON");
+            DisableShadows = ini["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
 
             Type = type ?? TryToDetectWeatherTypeById(Id);
 
@@ -177,6 +192,7 @@ namespace AcManager.Tools.Objects {
             ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
             ini["__LAUNCHER_CM"].SetOrRemove("TEMPERATURE_DIAPASON", TemperatureDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("TIME_DIAPASON", TimeDiapason);
+            ini["__LAUNCHER_CM"].SetOrRemove("DISABLE_SHADOWS", DisableShadows);
 
             if (_loadedExtended) {
                 SaveExtended(ini);

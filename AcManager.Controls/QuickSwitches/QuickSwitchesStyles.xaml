@@ -246,10 +246,11 @@
                                 DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" Background="Transparent" BorderThickness="0" Padding="1 0 3 0"
                                 InnerMargin="8 6 -2 0" HorizontalContentAlignment="Center" FixedMode="False">
                             <mui:HierarchicalComboBox.SelectedContent>
-                                <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis" TextAlignment="Center"
-                                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource CondensedFont}"
-                                        FontSize="{StaticResource FontSize}"
-                                        Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}" />
+                                <DataTemplate>
+                                    <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" FontWeight="{StaticResource FontWeight}"
+                                            FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}"
+                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type qs:QuickSwitchPresetsControl}}, Converter={StaticResource ToUpperConverter}}" />
+                                </DataTemplate>
                             </mui:HierarchicalComboBox.SelectedContent>
                         </mui:HierarchicalComboBox>
                         <Path Data="{TemplateBinding IconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}"
@@ -258,11 +259,26 @@
                     </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Changed" Value="True">
-                            <Setter TargetName="PART_CurrentText" Property="FontStyle" Value="Italic" />
+                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" FontWeight="{StaticResource FontWeight}"
+                                                FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}" FontStyle="Italic"
+                                                Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type qs:QuickSwitchPresetsControl}}, Converter={StaticResource ToUpperConverter}}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="CurrentUserPreset" Value="{x:Null}">
-                            <Setter TargetName="PART_CurrentText" Property="Text" Value="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
-                            <Setter TargetName="PART_CurrentText" Property="FontStyle" Value="Italic" />
+                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" FontWeight="{StaticResource FontWeight}"
+                                                FontFamily="{StaticResource CondensedFont}" FontSize="{StaticResource FontSize}" FontStyle="Italic"
+                                                Text="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -24,8 +24,10 @@
                         </Grid.ColumnDefinitions>
                         <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
                             <mui:HierarchicalComboBox.SelectedContent>
-                                <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis" FontStyle="Normal"
-                                        Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <DataTemplate>
+                                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"
+                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
+                                </DataTemplate>
                             </mui:HierarchicalComboBox.SelectedContent>
                         </mui:HierarchicalComboBox>
                         <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
@@ -34,11 +36,23 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Changed" Value="True">
-                            <Setter TargetName="PART_CurrentText" Property="FontStyle" Value="Italic" />
+                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic"
+                                                Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="CurrentUserPreset" Value="{x:Null}">
-                            <Setter TargetName="PART_CurrentText" Property="Text" Value="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
-                            <Setter TargetName="PART_CurrentText" Property="FontStyle" Value="Italic" />
+                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic" Text="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
