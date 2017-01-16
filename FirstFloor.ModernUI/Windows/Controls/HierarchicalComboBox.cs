@@ -61,7 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
     }
 
-    internal class LazyMenuItem : MenuItem {
+    public class LazyMenuItem : MenuItem {
         public static readonly DependencyProperty AutoPrepareProperty = DependencyProperty.Register(nameof(AutoPrepare), typeof(bool),
                 typeof(LazyMenuItem), new PropertyMetadata(OnAutoPrepareChanged));
 
@@ -108,7 +108,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
     }
 
-    internal class HierarchicalItem : LazyMenuItem {
+    public class HierarchicalItem : LazyMenuItem {
         [CanBeNull]
         private readonly HierarchicalItemsView _view;
 
@@ -243,9 +243,35 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public static object GetValue(DependencyObject obj) {
+            return obj.GetValue(ValueProperty);
+        }
+
+        public static void SetValue(DependencyObject obj, object value) {
+            obj.SetValue(ValueProperty, value ?? NullSubstitute);
+        }
+
+        private static readonly object NullSubstitute = new object();
+
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.RegisterAttached("Value", typeof(object),
+                typeof(HierarchicalItemsView), new UIPropertyMetadata(null, null, CoerceMyProperty));
+
+        private static object CoerceMyProperty(DependencyObject d, object baseValue) {
+            return baseValue ?? NullSubstitute;
+        }
+
         private UIElement Wrap([CanBeNull] object value) {
             var direct = value as UIElement;
             if (direct != null) {
+                var menuItem = value as MenuItem;
+                if (menuItem != null) {
+                    var actualValue = GetValue(menuItem);
+                    if (actualValue != null) {
+                        menuItem.Command = this;
+                        menuItem.CommandParameter = ReferenceEquals(actualValue, NullSubstitute) ? null : actualValue;
+                    }
+                }
+
                 return direct;
             }
 

@@ -312,6 +312,10 @@
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\CarDlcs.xaml.cs">
+      <DependentUpon>CarDlcs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SelectionLists\SelectDlc.cs" />
     <Compile Include="Pages\SelectionLists\SelectionTagsList.cs" />
     <Compile Include="Pages\SelectionLists\TrackTags.xaml.cs">
       <DependentUpon>TrackTags.xaml</DependentUpon>
@@ -785,6 +789,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Selected\SelectedUserChampionship.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\CarDlcs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

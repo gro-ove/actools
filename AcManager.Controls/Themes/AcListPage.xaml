@@ -9,6 +9,25 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="ac:AcListPage">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ac:AcListPage">
+                            <mui:Cell>
+                                <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <mui:ModernButton DockPanel.Dock="Left" x:Name="AddCarButton" IconData="{StaticResource AddIconData}"
+                                            ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 0 8 0" Style="{StaticResource NonTransparent}"
+                                            Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                            Width="24" Height="24" EllipseDiameter="22" />
+                                    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+                                </DockPanel>
+                            </mui:Cell>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="mui:InputBindingBehavior.PropagateInputBindingsToWindow" Value="True" />
         <Setter Property="Template">
@@ -21,11 +40,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}"
-                                Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3"
-                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 100" />
-
-                        <Grid Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition Height="Auto" />
@@ -52,9 +67,7 @@
                         </Grid>
 
                         <!-- seperator -->
-                        <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage"
-                                Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-
+                        <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage" />
                         <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0"
                                 TransitionName="Normal" />
                     </Grid>

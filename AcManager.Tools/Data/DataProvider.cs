@@ -16,8 +16,28 @@ namespace AcManager.Tools.Data {
     public class NameNationality {
         [Localizable(false)]
         public string Name;
+
         [Localizable(false)]
         public string Nationality;
+    }
+
+    public sealed class KunosDlcInformation : Displayable {
+        public int Id { get; }
+
+        public string ShortName { get; }
+
+        public string[] Cars { get; }
+
+        public string[] Tracks { get; }
+
+        [JsonConstructor]
+        public KunosDlcInformation(int id, string shortName, string name, string[] cars, string[] tracks) {
+            Id = id;
+            ShortName = shortName;
+            DisplayName = name;
+            Cars = cars ?? new string[0];
+            Tracks = tracks ?? new string[0];
+        }
     }
 
     public class DataProvider : NotifyPropertyChanged {
@@ -35,6 +55,7 @@ namespace AcManager.Tools.Data {
         }
 
         public void RefreshData() {
+            _dlcInformations = null;
             _kunosContent = null;
             _tagCountries = null;
             _brandCountries = null;
@@ -44,6 +65,12 @@ namespace AcManager.Tools.Data {
         private void DataProvider_Update(object sender, EventArgs e) {
             RefreshData();
         }
+
+        private KunosDlcInformation[] _dlcInformations;
+
+        public KunosDlcInformation[] DlcInformations => _dlcInformations ?? (_dlcInformations =
+                FilesStorage.Instance.LoadJsonContentFile<KunosDlcInformation[]>(ContentCategory.Miscellaneous, "KunosDlcs.json") ??
+                        new KunosDlcInformation[0]);
 
         private Dictionary<string, string[]> _kunosContent;
 

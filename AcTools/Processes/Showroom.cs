@@ -31,7 +31,9 @@ namespace AcTools.Processes {
 
             public double CameraFov;
 
-            public string Filter;
+            public string VideoPresetFilename,
+                Filter;
+
             public bool UseBmp = false,
                 DisableWatermark = false,
                 DisableSweetFx = false;
@@ -57,7 +59,7 @@ namespace AcTools.Processes {
                 using (properties.UseBmp ? new ScreenshotFormatChange(properties.AcRoot, "BMP") : null)
                 using (properties.DisableWatermark ? new DisableShowroomWatermarkChange(properties.AcRoot) : null)
                 using (properties.DisableSweetFx ? new DisableSweetFxChange(properties.AcRoot) : null)
-                using (properties.Filter != null ? new VideoIniChange(properties.Filter, null, false, false) : null) {
+                using (properties.Filter != null ? new VideoIniChange(properties.VideoPresetFilename, properties.Filter) : null) {
                     var process = Process.Start(new ProcessStartInfo {
                         WorkingDirectory = properties.AcRoot,
                         FileName = "acShowroom.exe"

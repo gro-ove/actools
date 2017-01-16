@@ -35,9 +35,8 @@
                             <mui:Cell Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
                                 <TextBlock Text="No preview" Style="{StaticResource Heading1}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                         Opacity="0.4" ToolTip="{Binding DisplayName}" />
-                                <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill"
-                                        StretchDirection="DownOnly" x:Name="Image" ClearOnChange="True" Crop="{Binding PreviewCrop}" CropUnits="Absolute"
-                                        CollapseIfMissing="True" IsHitTestVisible="False" />
+                                <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" x:Name="Image"
+                                        ClearOnChange="True" Crop="{Binding PreviewCrop}" CropUnits="Absolute" CollapseIfMissing="True" IsHitTestVisible="False" />
 
                                 <TextBlock x:Name="TopPanel" Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                                         Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}" Foreground="White"
@@ -182,7 +181,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="MainListWrapper" Grid.ColumnSpan="2" Margin="{StaticResource ItemPaddingFix}">
+        <Grid x:Name="MainListWrapper" Grid.Row="0" Grid.ColumnSpan="2" Margin="{StaticResource ItemPaddingFix}">
             <ListBox ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                     ItemTemplate="{StaticResource ItemTemplate}" x:Name="ListBox" ScrollViewer.ScrollChanged="OnListBoxScrollChanged"
@@ -228,9 +227,20 @@
         <c:UserChampionshipBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding MainList.CurrentItem.Value}">
             <c:UserChampionshipBlock.ButtonPlaceholder>
                 <Button Style="{StaticResource Go.Button}" IsEnabled="{Binding IsAvailable}"
-                        Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}"
-                        Margin="0 4 0 0" />
+                        Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}" Margin="0 4 0 0" />
             </c:UserChampionshipBlock.ButtonPlaceholder>
         </c:UserChampionshipBlock>
+
+        <Border Background="#99333333" TextBlock.Foreground="White" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Padding="20" MaxWidth="320">
+            <DockPanel>
+                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                        Margin="0 0 8 0" VerticalAlignment="Center" />
+                <mui:BbCodeBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                    <mui:BbCodeBlock.BbCode>It appears that you don’t have any championships installed. Please, go to [url="/Pages/Lists/UserChampionshipsListPage.xaml"]Content/Miscellaneuos/User Championships[/url] if you want to create one.</mui:BbCodeBlock.BbCode>
+                </mui:BbCodeBlock>
+            </DockPanel>
+        </Border>
     </Grid>
 </UserControl>

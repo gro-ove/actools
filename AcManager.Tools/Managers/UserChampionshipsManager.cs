@@ -9,9 +9,11 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -78,6 +80,42 @@ namespace AcManager.Tools.Managers {
 
                         var pointsPerPlace = career.Rules.Points;
                         career.ChampionshipPoints += pointsPerPlace.ElementAtOrDefault(places[0]);
+
+                        if (career.PointsForBestLap != 0) {
+                            var bestLap = e.Result.Sessions.SelectMany(x => x.BestLaps).MinEntryOrDefault(x => x.Time);
+                            if (bestLap == null) {
+                                Logging.Debug("Best lap: not set");
+                            } else {
+                                Logging.Debug($"Best lap: set by {bestLap.CarNumber}, {bestLap.Time}");
+
+                                var driver = career.Drivers.ElementAtOrDefault(bestLap.CarNumber);
+                                if (driver == null) {
+                                    Logging.Warning("Best lap: driver not found!");
+                                } else {
+                                    Logging.Debug($"So, {PluralizingConverter.PluralizeExt(career.PointsForBestLap, "{0} bonus point")} for {driver.Name}!");
+                                    driver.Points += career.PointsForBestLap;
+                                }
+                            }
+                        }
+
+                        if (career.PointsForPolePosition != 0) {
+                            var bestLap = e.Result.Sessions.Where(x => x.Type == Game.SessionType.Qualification)
+                                           .SelectMany(x => x.BestLaps)
+                                           .MinEntryOrDefault(x => x.Time);
+                            if (bestLap == null) {
+                                Logging.Debug("Pole position: not set");
+                            } else {
+                                Logging.Debug($"Pole position: set by {bestLap.CarNumber}, {bestLap.Time}");
+
+                                var driver = career.Drivers.ElementAtOrDefault(bestLap.CarNumber);
+                                if (driver == null) {
+                                    Logging.Warning("Pole position: driver not found!");
+                                } else {
+                                    Logging.Debug($"So, {PluralizingConverter.PluralizeExt(career.PointsForPolePosition, "{0} bonus point")} for {driver.Name}!");
+                                    driver.Points += career.PointsForPolePosition;
+                                }
+                            }
+                        }
 
                         for (var i = career.Drivers.Count - 1; i >= 0; i--) {
                             var driver = career.Drivers[i];

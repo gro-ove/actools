@@ -14,6 +14,8 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <se:NumberToColumnsConverter x:Key="NumberToColumnsConverter" />
+
             <DataTemplate x:Key="RoundDataTemplate" DataType="t:UserChampionshipRoundExtended">
                 <mui:Cell Height="120">
                     <Border Opacity="0.5" ClipToBounds="True" Background="{DynamicResource WindowBackground}">
@@ -200,18 +202,29 @@
                             <ItemsControl ItemsSource="{Binding Points}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <mui:SpacingUniformGrid Rows="2" HorizontalSpacing="8" VerticalSpacing="8" />
+                                        <mui:SpacingUniformGrid HorizontalSpacing="8" VerticalSpacing="8"
+                                                Columns="{Binding DataContext.Points.Count, Converter={StaticResource NumberToColumnsConverter}, ConverterParameter=10, ElementName=This}" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <mui:SpacingStackPanel Spacing="4">
                                             <TextBlock Text="{Binding Place, Converter={StaticResource OrdinalizingShortConverter}}" />
-                                            <mui:BetterTextBox Text="{Binding Value}" />
+                                            <mui:BetterTextBox Text="{Binding Value}" Mode="Integer" />
                                         </mui:SpacingStackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                        </DockPanel>
+
+                        <DockPanel>
+                            <Label Content="Bonus points for the best lap:" />
+                            <mui:BetterTextBox Text="{Binding SelectedObject.PointsForBestLap}" Mode="Integer" />
+                        </DockPanel>
+
+                        <DockPanel>
+                            <Label Content="Bonus points for pole position:" />
+                            <mui:BetterTextBox Text="{Binding SelectedObject.PointsForPolePosition}" Mode="Integer" />
                         </DockPanel>
                     </StackPanel>
                 </mui:SpacingStackPanel>
@@ -486,8 +499,9 @@
                 <DockPanel>
                     <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                             Margin="0 0 8 0" VerticalAlignment="Center" />
-                    <TextBlock Text="Can't modify: competion is in process. Please, reset championship progress to get an updated grid."
-                            VerticalAlignment="Center" TextWrapping="Wrap" />
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                        <TextBlock.Text>Can’t modify: competion is in process. Please, reset championship progress to get an updated grid.</TextBlock.Text>
+                    </TextBlock>
                 </DockPanel>
             </Border>
         </mui:Cell>

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {
@@ -25,6 +27,39 @@ namespace AcManager.Tools.Objects {
             }
 
             return _kunosCarsIds.Contains(id);
+        }
+
+        private KunosDlcInformation _dlc;
+        private bool _dlcSet;
+
+        [CanBeNull]
+        public KunosDlcInformation Dlc {
+            get {
+                if (!_dlcSet) {
+                    _dlcSet = true;
+
+                    if (Author == AuthorKunos) {
+                        var dlcs = DataProvider.Instance.DlcInformations;
+                        for (var i = dlcs.Length - 1; i >= 0; i--) {
+                            var dlc = dlcs[i];
+                            if (dlc.Cars.Contains(Id)) {
+                                _dlc = dlc;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return _dlc;
+            }
+        }
+
+        public override string VersionInfoDisplay {
+            get {
+                var dlc = Dlc;
+                return dlc != null ? $@"{AuthorKunos} ([url=""http://store.steampowered.com/app/{dlc.Id}/""]{dlc.ShortName}[/url])" :
+                        base.VersionInfoDisplay;
+            }
         }
     }
 }

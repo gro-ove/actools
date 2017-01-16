@@ -79,13 +79,12 @@ namespace AcManager.Pages.Selected {
 
             _id = id;
             _object = obj;
-
-            _model.Unload();
             SetModel();
             return true;
         }
 
         private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),

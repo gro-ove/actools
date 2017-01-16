@@ -190,7 +190,9 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         public int SpecsPitboxesValue => _specsPitboxesValue ?? (_specsPitboxesValue = FlexibleParser.TryParseInt(SpecsPitboxes) ?? 2).Value;
 
-        private double? GetSpecsLengthValue(string original, bool dotFix) {
+        private double? GetSpecsLengthValue([CanBeNull] string original, bool dotFix) {
+            if (original == null) return null;
+
             double value;
             if (!double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out value)) {
                 var m = SpecsLengthFix.Match(original);

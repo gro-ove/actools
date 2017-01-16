@@ -341,8 +341,6 @@ namespace AcManager.Pages.Selected {
 
             _id = id;
             _object = obj;
-
-            _model.Unload();
             SetModel();
             return true;
         }
@@ -352,6 +350,7 @@ namespace AcManager.Pages.Selected {
                 _object.EnsureLoadedExtended();
             }
 
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(ToggleEditModeCommand, new KeyGesture(Key.E, ModifierKeys.Control)),

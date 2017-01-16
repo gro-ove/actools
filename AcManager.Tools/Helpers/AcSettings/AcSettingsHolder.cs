@@ -57,6 +57,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Graphics with presets
+        public static readonly string VideoPresetsKey = @"Video Settings";
+
         private class VideoPresetsInner : IUserPresetable {
             private class Saveable {
                 public string VideoData, GraphicsData, OculusData;
@@ -64,9 +66,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             public bool CanBeSaved => true;
 
-            public string PresetableKey => @"Video Settings";
+            public string PresetableKey => VideoPresetsKey;
 
-            string IUserPresetable.PresetableCategory => PresetableKey;
+            string IUserPresetable.PresetableCategory => VideoPresetsKey;
 
             string IUserPresetable.DefaultPreset => null;
 

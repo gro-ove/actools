@@ -31,6 +31,24 @@ namespace AcManager.Tools.Managers {
         public override Task<TrackObject> GetByIdAsync(string id) {
             return base.GetByIdAsync(id.Contains('/') ? id.Split('/')[0] : id);
         }
+        
+        [CanBeNull]
+        public AcItemWrapper GetWrapperByKunosId([NotNull] string id) {
+            var layout = GetWrapperById(id);
+            if (layout != null) return layout;
+
+            var index = id.LastIndexOf('-');
+            if (index == -1) return null;
+
+            while (index != -1 && index > 0 && index < id.Length - 1) {
+                var candidate = GetWrapperByKunosId(id.Substring(0, index));
+                if (candidate != null) return candidate;
+
+                index = id.LastIndexOf('-', index - 1);
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Gets track layout by ID like “ks_nordschleife-nordschleife” splitting it by “-” (but firstly 

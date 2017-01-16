@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 using AcManager.Tools.Managers.Presets;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
@@ -11,6 +14,7 @@ namespace AcManager.Controls.Helpers {
             public string Key;
             public EventHandler Handler;
         }
+
         public static IEnumerable<object> GroupPresets(string presetsKey, Action<ISavedPresetEntry> action) {
             var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
             var result = new HierarchicalItemsView(o => {
@@ -20,19 +24,37 @@ namespace AcManager.Controls.Helpers {
         }
 
         public HierarchicalItemsView Create(string presetsKey, Action<ISavedPresetEntry> action, string displayName = "") {
-            var group = new HierarchicalGroup(displayName, UserPresetsControl.GroupPresets(presetsKey));
-            var result = new HierarchicalItemsView(o => {
+            return new HierarchicalItemsView(o => {
                 action((ISavedPresetEntry)o);
-            }, group, false);
+            }, CreateGroup(presetsKey, displayName), false);
+        }
+
+        public HierarchicalGroup CreateGroup(string presetsKey, string displayName = "", string prependWithDefault = null) {
+            Func<IEnumerable<object>> groupPresets = () => {
+                var result = UserPresetsControl.GroupPresets(presetsKey);
+
+                if (prependWithDefault != null) {
+                    var menuItem = new HierarchicalItem {
+                        Header = new TextBlock { Text = prependWithDefault, FontStyle = FontStyles.Italic }
+                    };
+
+                    HierarchicalItemsView.SetValue(menuItem, null);
+                    result = result.Prepend(menuItem);
+                }
+
+                return result;
+            };
+
+            var group = new HierarchicalGroup(displayName, groupPresets());
 
             var handler = new EventHandler((sender, e) => {
-                group.ReplaceEverythingBy(UserPresetsControl.GroupPresets(presetsKey));
+                group.ReplaceEverythingBy(groupPresets());
             });
 
             PresetsManager.Instance.Watcher(presetsKey).Update += handler;
             _presetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = presetsKey, Handler = handler });
 
-            return result;
+            return group;
         }
 
         public void Dispose() {

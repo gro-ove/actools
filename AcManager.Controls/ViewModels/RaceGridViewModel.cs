@@ -556,7 +556,7 @@ namespace AcManager.Controls.ViewModels {
 
         private Task _rebuildingTask;
 
-        private Task RebuildGridAsync() {
+        public Task RebuildGridAsync() {
             if (_rebuildingTask == null) {
                 _rebuildingTask = RebuildGridAsyncInner();
                 OnPropertyChanged(nameof(IsBusy));

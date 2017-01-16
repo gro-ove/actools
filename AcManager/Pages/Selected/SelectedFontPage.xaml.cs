@@ -107,14 +107,13 @@ namespace AcManager.Pages.Selected {
 
             _id = id;
             _object = obj;
-
-            _model.Unload();
             SetModel();
             RedrawTestText();
             return true;
         }
 
         private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.CreateNewFontCommand, new KeyGesture(Key.N, ModifierKeys.Control)),

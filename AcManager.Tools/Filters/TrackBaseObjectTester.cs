@@ -41,19 +41,22 @@ namespace AcManager.Tools.Filters {
                 case "city":
                     return value.Test(obj.City);
 
+                case "dlc":
+                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
+
                 case "geotags":
                     return value.Test(obj.GeoTags?.ToString());
 
                 case "len":
                 case "length":
-                    return  value.Test(obj.SpecsLength);
+                    return  value.Test(obj.SpecsLengthValue);
 
                 case "width":
                     return value.Test(obj.SpecsWidth);
 
                 case "pits":
                 case "pitboxes":
-                    return value.Test(obj.SpecsPitboxes);
+                    return value.Test(obj.SpecsPitboxesValue);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

@@ -2,23 +2,58 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {
+    public class PresetSelection : IUserPresetable {
+        private readonly IUserPresetable _parent;
+        private readonly string _key;
+
+        public PresetSelection(IUserPresetable parent, string key) {
+            _parent = parent;
+            _key = key;
+        }
+
+        public bool CanBeSaved => false;
+
+        public string PresetableCategory => _parent.PresetableCategory;
+
+        public string PresetableKey => _key;
+
+        public string DefaultPreset => null;
+
+        public string ExportToPresetData() {
+            return null;
+        }
+
+        public event EventHandler Changed {
+            add { }
+            remove { }
+        }
+
+        public void ImportFromPresetData(string data) {
+            Logging.Write(data);
+        }
+    }
+
     public partial class CarOpenInShowroomDialog {
         public const string PresetableKeyValue = "Showroom";
 
-        public class ViewModel : NotifyPropertyChanged, IUserPresetable {
+        public class ViewModel : NotifyPropertyChanged, IUserPresetable, IDisposable {
             private class SaveableData {
-                public string ShowroomId, FilterId;
+                public string ShowroomId, FilterId, VideoPresetFilename;
                 public double CameraFov;
                 public bool DisableSweetFx, DisableWatermark;
             }
@@ -29,6 +64,7 @@ namespace AcManager.Controls.Dialogs {
             }
 
             private readonly ISaveHelper _saveable;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
             public ViewModel(string serializedPreset, CarObject carObject, string selectedSkinId) {
                 ShowroomsManager.Instance.EnsureLoaded();
@@ -37,12 +73,15 @@ namespace AcManager.Controls.Dialogs {
                 SelectedCar = carObject;
                 SelectedSkinId = selectedSkinId ?? SelectedCar.SelectedSkin?.Id;
 
+                VideoPresets = _helper.CreateGroup(AcSettingsHolder.VideoPresetsKey, "", "Default");
+
                 _saveable = new SaveHelper<SaveableData>("__CarOpenInShowroom", () => new SaveableData {
                     ShowroomId = SelectedShowroom?.Id,
                     FilterId = SelectedFilter?.Id,
                     CameraFov = CameraFov,
                     DisableSweetFx = DisableSweetFx,
                     DisableWatermark = DisableWatermark,
+                    VideoPresetFilename = VideoPresetFilename,
                 }, o => {
                     if (o.ShowroomId != null) SelectedShowroom = ShowroomsManager.Instance.GetById(o.ShowroomId) ?? SelectedShowroom;
                     if (o.FilterId != null) SelectedFilter = PpFiltersManager.Instance.GetById(o.FilterId) ?? SelectedFilter;
@@ -50,12 +89,14 @@ namespace AcManager.Controls.Dialogs {
                     CameraFov = o.CameraFov;
                     DisableWatermark = o.DisableWatermark;
                     DisableSweetFx = o.DisableSweetFx;
+                    VideoPresetFilename = o.VideoPresetFilename;
                 }, () => {
                     SelectedShowroom = ShowroomsManager.Instance.GetDefault();
                     SelectedFilter = PpFiltersManager.Instance.GetDefault();
                     CameraFov = 30;
                     DisableWatermark = false;
                     DisableSweetFx = false;
+                    VideoPresetFilename = null;
                 });
 
                 if (string.IsNullOrEmpty(serializedPreset)) {
@@ -66,8 +107,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public ViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) {
-            }
+            public ViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) {}
 
             public CarObject SelectedCar { get; set; }
 
@@ -134,6 +174,57 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
+            private HierarchicalGroup _videoPresets;
+
+            public HierarchicalGroup VideoPresets {
+                get { return _videoPresets; }
+                set {
+                    if (Equals(value, _videoPresets)) return;
+                    _videoPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _videoPresetFilename;
+
+            [CanBeNull]
+            public string VideoPresetFilename {
+                get { return _videoPresetFilename; }
+                set {
+                    if (Equals(value, _videoPresetFilename)) return;
+                    _videoPresetFilename = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                    DisplayVideoPreset = Path.GetFileNameWithoutExtension(value);
+                }
+            }
+
+            private string _displayVideoPreset;
+
+            [CanBeNull]
+            public string DisplayVideoPreset {
+                get { return _displayVideoPreset; }
+                set {
+                    if (Equals(value, _displayVideoPreset)) return;
+                    _displayVideoPreset = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public object SelectedVideoPreset {
+                get { return null; }
+                set {
+                    if (value == null) {
+                        VideoPresetFilename = null;
+                    } else {
+                        var entry = value as ISavedPresetEntry;
+                        if (entry != null) {
+                            VideoPresetFilename = entry.Filename;
+                        }
+                    }
+                }
+            }
+
             public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
 
             public AcEnabledOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.EnabledOnlyCollection;
@@ -165,7 +256,14 @@ namespace AcManager.Controls.Dialogs {
             public string ForceFilterAcId;
 
             public async void RunAsync() {
+                string restoreVideoSettings = null;
+
                 try {
+                    if (VideoPresetFilename != null && File.Exists(VideoPresetFilename)) {
+                        restoreVideoSettings = AcSettingsHolder.VideoPresets.ExportToPresetData();
+                        AcSettingsHolder.VideoPresets.ImportFromPresetData(File.ReadAllText(VideoPresetFilename));
+                    }
+
                     await Task.Run(() => Showroom.Start(new Showroom.ShowroomProperties {
                         AcRoot = AcRootDirectory.Instance.Value,
                         CarId = SelectedCar.Id,
@@ -186,7 +284,14 @@ namespace AcManager.Controls.Dialogs {
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.Showroom_CannotStart, e);
+                } finally {
+                    if (restoreVideoSettings != null) {
+                        AcSettingsHolder.VideoPresets.ImportFromPresetData(restoreVideoSettings);
+                    }
                 }
+            }
+            public void Dispose() {
+                _helper.Dispose();
             }
         }
 
@@ -202,6 +307,7 @@ namespace AcManager.Controls.Dialogs {
         private void CarOpenInShowroomDialog_OnClosing(object sender, CancelEventArgs e) {
             if (!IsResultOk) return;
             Model.Run();
+            Model.Dispose();
         }
 
         public static bool Run(CarObject carObject, string selectedSkinId, string filterAcId = null) {

@@ -67,6 +67,9 @@ namespace AcManager.Tools.Filters {
                 case "brand":
                     return value.Test(obj.Brand);
 
+                case "dlc":
+                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
+
                 case "newbrand":
                     if (_list == null) {
                         _list = FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges).Select(x => x.Name).ToList();

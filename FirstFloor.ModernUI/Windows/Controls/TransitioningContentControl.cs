@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -187,7 +188,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else {
                     // revert to old value
                     source.SetValue(TransitionProperty, oldTransition);
-                    throw new ArgumentException($"Transition '{newTransition}' was not defined.");
+                    Logging.Warning($"Transition “{newTransition}” was not defined.");
                 }
             } else {
                 source.CurrentTransition = newStoryboard;

@@ -161,10 +161,16 @@ namespace AcManager.Tools.Objects {
                     var aiLevelTo = 0;
                     var aiLevelFrom = 100;
 
-                    foreach (var driver in value.Where(x => !x.IsPlayer)) {
-                        var aiLevel = driver.AiLevel;
-                        if (aiLevel > aiLevelTo) aiLevelTo = aiLevel;
-                        if (aiLevel < aiLevelFrom) aiLevelFrom = aiLevel;
+                    foreach (var driver in value) {
+                        if (driver.CarId != null && CarsManager.Instance.GetWrapperById(driver.CarId) == null) {
+                            AddError(AcErrorType.Data_KunosCareerCarIsMissing, driver.CarId);
+                        }
+
+                        if (!driver.IsPlayer) {
+                            var aiLevel = driver.AiLevel;
+                            if (aiLevel > aiLevelTo) aiLevelTo = aiLevel;
+                            if (aiLevel < aiLevelFrom) aiLevelFrom = aiLevel;
+                        }
                     }
 
                     if (aiLevelTo < aiLevelFrom) aiLevelTo = aiLevelFrom;
@@ -260,6 +266,14 @@ namespace AcManager.Tools.Objects {
                 if (Loaded) {
                     OnPropertyChanged();
                     ChangedData = true;
+                }
+
+                if (value != null) {
+                    foreach (var round in value) {
+                        if (round.TrackId != null && TracksManager.Instance.GetWrapperByKunosId(round.TrackId) == null) {
+                            AddError(AcErrorType.Data_KunosCareerTrackIsMissing, round.TrackId);
+                        }
+                    }
                 }
             }
         }
@@ -359,6 +373,36 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Custom properties
+        private int _pointsForBestLap;
+
+        public int PointsForBestLap {
+            get { return _pointsForBestLap; }
+            set {
+                if (Equals(value, _pointsForBestLap)) return;
+                _pointsForBestLap = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    ChangedExtended = true;
+                }
+            }
+        }
+
+        private int _pointsForPolePosition;
+
+        public int PointsForPolePosition {
+            get { return _pointsForPolePosition; }
+            set {
+                if (Equals(value, _pointsForPolePosition)) return;
+                _pointsForPolePosition = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    ChangedExtended = true;
+                }
+            }
+        }
+
         private bool _realConditions;
 
         public bool RealConditions {
@@ -814,6 +858,8 @@ namespace AcManager.Tools.Objects {
                 Code = json.GetStringValueOnly("code");
                 ChampionshipPointsGoal = json.GetIntValueOnly("championshipPointsGoal") ?? 0;
                 ChampionshipRankingGoal = json.GetIntValueOnly("championshipRankingGoal") ?? 1;
+                PointsForBestLap = json.GetIntValueOnly("pointsForBestLap") ?? 0;
+                PointsForPolePosition = json.GetIntValueOnly("pointsForPolePosition") ?? 0;
                 Description = json.GetStringValueOnly("description");
                 Difficulty = json.GetStringValueOnly("difficulty");
                 CoherentTime = json.GetBoolValueOnly("coherentTime") ?? false;
@@ -855,6 +901,8 @@ namespace AcManager.Tools.Objects {
             json.SetNonDefault("code", Code);
             json.SetNonDefault("championshipPointsGoal", ChampionshipPointsGoal);
             json.SetNonDefault("championshipRankingGoal", ChampionshipRankingGoal);
+            json.SetNonDefault("pointsForBestLap", PointsForBestLap);
+            json.SetNonDefault("pointsForPolePosition", PointsForPolePosition);
             json.SetNonDefault("code", Code);
             json.SetNonDefault("description", Description);
             json.SetNonDefault("difficulty", Difficulty);

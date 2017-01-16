@@ -15,6 +15,7 @@ namespace FirstFloor.ModernUI.Localizable {
         #region Languages-specific
         #region English
         private static string EnPostfix(int v, string s) {
+            if (v >= 10 && v <= 20) return "th";
             switch (v % 10) {
                 case 1:
                     return "st";

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
@@ -24,14 +26,15 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Microsoft.Win32;
-using OxyPlot;
 using SharpCompress.Common;
 using SharpCompress.Writers;
 using UIElement = System.Windows.UIElement;
@@ -44,6 +47,24 @@ namespace AcManager.Pages.Selected {
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             return item is UserChampionshipRoundExtended ? RoundDataTemplate : NewRoundDataTemplate;
+        }
+    }
+
+    public class NumberToColumnsConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            var v = value.AsInt();
+            var max = parameter.AsInt();
+            if (max < 1 || v <= max) return v;
+
+            var from = max / 2;
+            return Enumerable.Range(from, max - from + 1).Select(x => new {
+                Colums = x,
+                Rows = (int)Math.Ceiling((double)v / x)
+            }).MinEntry(x => (x.Colums * x.Rows - v) * from - x.Colums).Colums;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
         }
     }
 
@@ -84,18 +105,13 @@ namespace AcManager.Pages.Selected {
 
             public AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
 
-            public PlacePoints[] Points { get; }
+            public BetterObservableCollection<PlacePoints> Points { get; }
 
             public RaceGridViewModel RaceGridViewModel { get; }
 
             public ViewModel([NotNull] UserChampionshipObject acObject) : base(acObject) {
-                Points = Enumerable.Range(1, OptionPlacePointsCount).Select((x, i) => {
-                    var result = new PlacePoints(x) {
-                        Value = acObject.Rules.Points.ElementAtOrDefault(i)
-                    };
-                    result.PropertyChanged += OnPlacePointsPropertyChanged;
-                    return result;
-                }).ToArray();
+                Points = new BetterObservableCollection<PlacePoints>();
+                UpdatePointsArray();
 
                 acObject.PropertyChanged += OnAcObjectPropertyChanged;
 
@@ -104,13 +120,44 @@ namespace AcManager.Pages.Selected {
                 RaceGridViewModel.Changed += OnRaceGridViewModelChanged;
             }
 
+            private void UpdatePointsArray() {
+                var count = SelectedObject.Drivers.Count;
+                if (Points.Count == count) return;
+
+                Points.ReplaceEverythingBy_Direct(Enumerable.Range(1, count).Select((x, i) => {
+                    var result = new PlacePoints(x) {
+                        Value = SelectedObject.Rules.Points.ElementAtOrDefault(i)
+                    };
+                    result.PropertyChanged += OnPlacePointsPropertyChanged;
+                    return result;
+                }));
+            }
+
+            private void OnPlacePointsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(PlacePoints.Value)) {
+                    var array = SelectedObject.Rules.Points;
+                    if (array.Length < Points.Count) {
+                        SelectedObject.Rules.Points = new int[Points.Count];
+                        array.CopyTo(SelectedObject.Rules.Points, 0);
+                        array = SelectedObject.Rules.Points;
+                    }
+
+                    var points = (PlacePoints)sender;
+                    array[points.Place - 1] = points.Value;
+                }
+            }
+
             private void OnAcObjectPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
+                    case nameof(UserChampionshipObject.Rules):
+                        UpdatePointsArray();
+                        break;
                     case nameof(UserChampionshipObject.Drivers):
+                        UpdatePointsArray();
+                        LoadRaceGridLaterAsync().Forget();
+                        break;
                     case nameof(UserChampionshipObject.SerializedRaceGridData):
-                        if (!_updatingSerializedRaceGridData) {
-                            LoadRaceGridLaterAsync().Forget();
-                        }
+                        LoadRaceGridLaterAsync().Forget();
                         break;
                     case nameof(UserChampionshipObject.PlayerCar):
                         RaceGridViewModel.PlayerCar = SelectedObject.PlayerCar;
@@ -222,6 +269,25 @@ namespace AcManager.Pages.Selected {
 
             private CancellationTokenSource _updatingSerializedRaceGridDataTokenSource;
 
+            private void SetSerializedRaceGridData(string data) {
+                try {
+                    SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
+                    SelectedObject.SerializedRaceGridData = data;
+                } finally {
+                    SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
+                }
+            }
+
+            private void SetDrivers(UserChampionshipDriver[] drivers) {
+                try {
+                    SelectedObject.PropertyChanged -= OnAcObjectPropertyChanged;
+                    SelectedObject.Drivers = drivers;
+                    UpdatePointsArray();
+                } finally {
+                    SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
+                }
+            }
+
             private async Task UpdateSerializedRaceGridDataLaterAsync() {
                 if (SelectedObject.IsStarted) return;
 
@@ -235,43 +301,28 @@ namespace AcManager.Pages.Selected {
                 CancellationTokenSource tokenSource = null;
 
                 try {
-                    await Task.Delay(300);
-                    SelectedObject.SerializedRaceGridData = RaceGridViewModel.ExportToPresetData();
-
                     using (tokenSource = new CancellationTokenSource()) {
-                        _updatingSerializedRaceGridDataTokenSource = null;
+                        _updatingSerializedRaceGridDataTokenSource = tokenSource;
+
+                        await Task.Delay(300, tokenSource.Token);
+                        if (tokenSource.IsCancellationRequested) return;
+
+                        SetSerializedRaceGridData(RaceGridViewModel.ExportToPresetData());
 
                         var generated = await RaceGridViewModel.GenerateGameEntries(tokenSource.Token);
-                        if (generated == null) {
-                            // Only happens when task was cancelled.
-                            return;
-                        }
+                        if (generated == null) return;
 
-                        SelectedObject.Drivers = generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
+                        SetDrivers(generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
                             AiLevel = x.AiLevel,
                             Nationality = x.Nationality
                         }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, SelectedObject.PlayerCarId,
-                                SelectedObject.PlayerCarSkinId)).ToArray();
+                                SelectedObject.PlayerCarSkinId)).ToArray());
                     }
                 } finally {
                     if (ReferenceEquals(tokenSource, _updatingSerializedRaceGridDataTokenSource)) {
                         _updatingSerializedRaceGridDataTokenSource = null;
+                        UpdatingSerializedRaceGridData = false;
                     }
-                    UpdatingSerializedRaceGridData = false;
-                }
-            }
-
-            private void OnPlacePointsPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-                if (e.PropertyName == nameof(PlacePoints.Value)) {
-                    var array = SelectedObject.Rules.Points;
-                    if (array.Length < OptionPlacePointsCount) {
-                        SelectedObject.Rules.Points = new int[OptionPlacePointsCount];
-                        array.CopyTo(SelectedObject.Rules.Points, 0);
-                        array = SelectedObject.Rules.Points;
-                    }
-
-                    var points = (PlacePoints)sender;
-                    array[points.Place - 1] = points.Value;
                 }
             }
 
@@ -435,6 +486,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new [] {
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),

@@ -9,11 +9,23 @@ namespace AcTools.Processes {
         private readonly string _filename, _backup, _originalContent;
         private readonly bool _changed;
 
-        public VideoIniChange(string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
+        public VideoIniChange(string presetFilename, string ppFilter)
+                : this(presetFilename, ppFilter, null, false, false) {}
+
+        public VideoIniChange(string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings)
+                : this(null, ppFilter, fxaa, specialResolution, maximizeSettings) {}
+
+        private VideoIniChange(string presetFilename, string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
             _filename = FileUtils.GetCfgVideoFilename();
             _originalContent = File.ReadAllText(_filename);
 
-            var video = IniFile.Parse(_originalContent);
+            var parseContent = _originalContent;
+            if (presetFilename != null && File.Exists(presetFilename)) {
+                parseContent = File.ReadAllText(presetFilename);
+                _changed = true;
+            }
+
+            var video = IniFile.Parse(parseContent);
             if (fxaa.HasValue) {
                 video["EFFECTS"].Set("FXAA", fxaa.Value);
                 video["POST_PROCESS"].Set("FXAA", fxaa.Value);

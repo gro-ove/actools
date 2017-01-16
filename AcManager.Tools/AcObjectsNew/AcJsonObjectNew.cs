@@ -322,7 +322,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public string VersionInfoDisplay => this.GetVersionInfoDisplay();
+        public virtual string VersionInfoDisplay => this.GetVersionInfoDisplay();
         #endregion
     }
 }
