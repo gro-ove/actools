@@ -79,7 +79,7 @@ namespace AcManager.Tools.Managers {
                         if (nextEvent != null) nextEvent.IsAvailable = true;
 
                         var pointsPerPlace = career.Rules.Points;
-                        career.ChampionshipPoints += pointsPerPlace.ElementAtOrDefault(places[0]);
+                        var playerPointsDelta = pointsPerPlace.ElementAtOrDefault(places[0]);
 
                         if (career.PointsForBestLap != 0) {
                             var bestLap = e.Result.Sessions.SelectMany(x => x.BestLaps).MinEntryOrDefault(x => x.Time);
@@ -93,7 +93,11 @@ namespace AcManager.Tools.Managers {
                                     Logging.Warning("Best lap: driver not found!");
                                 } else {
                                     Logging.Debug($"So, {PluralizingConverter.PluralizeExt(career.PointsForBestLap, "{0} bonus point")} for {driver.Name}!");
-                                    driver.Points += career.PointsForBestLap;
+                                    if (bestLap.CarNumber == 0) {
+                                        playerPointsDelta += career.PointsForBestLap;
+                                    } else {
+                                        driver.Points += career.PointsForBestLap;
+                                    }
                                 }
                             }
                         }
@@ -112,10 +116,16 @@ namespace AcManager.Tools.Managers {
                                     Logging.Warning("Pole position: driver not found!");
                                 } else {
                                     Logging.Debug($"So, {PluralizingConverter.PluralizeExt(career.PointsForPolePosition, "{0} bonus point")} for {driver.Name}!");
-                                    driver.Points += career.PointsForPolePosition;
+                                    if (bestLap.CarNumber == 0) {
+                                        playerPointsDelta += career.PointsForPolePosition;
+                                    } else {
+                                        driver.Points += career.PointsForPolePosition;
+                                    }
                                 }
                             }
                         }
+
+                        career.ChampionshipPoints += playerPointsDelta;
 
                         for (var i = career.Drivers.Count - 1; i >= 0; i--) {
                             var driver = career.Drivers[i];
