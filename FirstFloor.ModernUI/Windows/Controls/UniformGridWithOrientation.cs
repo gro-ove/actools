@@ -23,7 +23,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
-            var available = new Size(constraint.Width / _columns, constraint.Height / _rows);
+            var available = new Size((constraint.Width - _totalSpacingWidth) / _columns, (constraint.Height - _totalSpacingHeight) / _rows);
             var width = 0d;
             var height = 0d;
             var num3 = 0;
@@ -40,11 +40,59 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
                 num3++;
             }
-            return new Size(width * _columns, height * _rows);
+            return new Size(width * _columns + _totalSpacingWidth, height * _rows + _totalSpacingHeight);
         }
 
-        private int _columns;
-        private int _rows;
+        protected override Size ArrangeOverride(Size arrangeSize) {
+            var childBounds = new Rect(0, 0, (arrangeSize.Width - _totalSpacingWidth) / _columns, (arrangeSize.Height - _totalSpacingHeight) / _rows);
+            var xStep = childBounds.Width + _horizontalSpacing;
+            var yStep = childBounds.Height + _verticalSpacing;
+
+            switch (_orientation) {
+                case Orientation.Horizontal:
+                    var xBound = arrangeSize.Width - 1.0;
+                    childBounds.X += xStep * FirstColumn;
+
+                    // Arrange and Position each child to the same cell size
+                    foreach (UIElement child in InternalChildren) {
+                        child.Arrange(childBounds);
+
+                        // only advance to the next grid cell if the child was not collapsed
+                        if (child.Visibility != Visibility.Collapsed) {
+                            childBounds.X += xStep;
+                            if (childBounds.X >= xBound) {
+                                childBounds.Y += yStep;
+                                childBounds.X = 0;
+                            }
+                        }
+                    }
+                    break;
+
+                case Orientation.Vertical:
+                    var yBound = arrangeSize.Height - 1.0;
+                    childBounds.Y += yStep * FirstColumn;
+
+                    // Arrange and Position each child to the same cell size
+                    foreach (UIElement child in InternalChildren) {
+                        child.Arrange(childBounds);
+
+                        // only advance to the next grid cell if the child was not collapsed
+                        if (child.Visibility != Visibility.Collapsed) {
+                            childBounds.Y += yStep;
+                            if (childBounds.Y >= yBound) {
+                                childBounds.X += xStep;
+                                childBounds.Y = 0;
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return arrangeSize;
+        }
 
         private void UpdateComputedValues() {
             _columns = Columns;
@@ -86,24 +134,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     _columns = (n + (_rows - 1)) / _rows;
                 }
             }
+
+            _horizontalSpacing = HorizontalSpacing;
+            _verticalSpacing = VerticalSpacing;
+
+            _totalSpacingWidth = _columns == 0 ? 0 : HorizontalSpacing * (_columns - 1);
+            _totalSpacingHeight = _rows == 0 ? 0 : VerticalSpacing * (_rows - 1);
+
+            _orientation = Orientation;
         }
 
-        protected override Size ArrangeOverride(Size arrangeSize) {
-            var final = new Rect(0.0, 0.0, arrangeSize.Width / _columns, arrangeSize.Height / _rows);
-            var height = final.Height;
-            var x = arrangeSize.Height - 1.0;
-            final.X += final.Width * FirstColumn;
-            foreach (UIElement element in InternalChildren) {
-                element.Arrange(final);
-                if (element.Visibility == Visibility.Collapsed) continue;
-
-                final.Y += height;
-                if (final.Y < x) continue;
-
-                final.X += final.Width;
-                final.Y = 0.0;
-            }
-            return arrangeSize;
-        }
+        private int _columns;
+        private int _rows;
+        private double _horizontalSpacing;
+        private double _verticalSpacing;
+        private double _totalSpacingWidth;
+        private double _totalSpacingHeight;
+        private Orientation _orientation;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,7 +30,10 @@ namespace AcTools.Processes {
             TimeAttack = 5,
 
             [Description("Drift")]
-            Drift = 6
+            Drift = 6,
+
+            [Description("Drag Race")]
+            Drag = 7
         }
 
         public enum JumpStartPenaltyType {
@@ -131,6 +133,19 @@ namespace AcTools.Processes {
                     ["STARTING_LAPS"] = startingLaps
                 };
             }
+
+            protected virtual void SetBots(IniFile file, IEnumerable<AiCar> bots) {
+                file.SetSections("CAR", 1, from car in bots
+                                           select new IniFileSection {
+                                               ["MODEL"] = car.CarId?.ToLowerInvariant(),
+                                               ["SKIN"] = car.SkinId?.ToLowerInvariant(),
+                                               ["SETUP"] = car.Setup?.ToLowerInvariant(),
+                                               ["MODEL_CONFIG"] = "",
+                                               ["AI_LEVEL"] = car.AiLevel,
+                                               ["DRIVER_NAME"] = car.DriverName,
+                                               ["NATIONALITY"] = car.Nationality
+                                           });
+            }
         }
 
         public class OnlineProperties : BaseModeProperties {
@@ -187,9 +202,7 @@ namespace AcTools.Processes {
 
         public class HotlapProperties : BaseModeProperties {
             public string SessionName = "Hotlap";
-
             public bool GhostCar = true;
-
             public bool? RecordGhostCar = null;
 
             /// <summary>
@@ -212,6 +225,8 @@ namespace AcTools.Processes {
         }
 
         public class TimeAttackProperties : BaseModeProperties {
+            public string SessionName = "Time Attack";
+
             public override void Set(IniFile file) {
                 SetGhostCar(file);
                 SetGroove(file);
@@ -219,14 +234,59 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var section = file["SESSION_0"];
-                section.Set("NAME", "Time Attack");
+                section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.TimeAttack);
                 section.Set("DURATION_MINUTES", Duration);
                 section.Set("SPAWN_SET", "START");
             }
         }
 
+        public class DragProperties : BaseModeProperties {
+            public string SessionName = "Drag Race";
+            public StartType StartType = StartType.RegularStart;
+            public int AiLevel = 100;
+            public int MatchesCount = 10;
+
+            [CanBeNull]
+            public AiCar BotCar;
+
+            public override void Set(IniFile file) {
+                SetGhostCar(file);
+                SetGroove(file);
+                SetRace(file);
+                SetSessions(file);
+                SetBots(file, new[] {
+                    BotCar ?? new AiCar {
+                        AiLevel = 100,
+                        DriverName = "Bot",
+                        CarId = file["RACE"].GetNonEmpty("MODEL"),
+                        SkinId = file["RACE"].GetNonEmpty("SKIN")
+                    }
+                });
+            }
+
+            protected virtual void SetRace(IniFile file) {
+                var section = file["RACE"];
+                section.Set("CARS", 2);
+                section.Set("AI_LEVEL", AiLevel);
+                section.Set("DRIFT_MODE", false);
+                section.Set("FIXED_SETUP", FixedSetup);
+                section.Set("PENALTIES", true);
+                section.Set("JUMP_START_PENALTY", 0);
+            }
+
+            protected virtual void SetSessions(IniFile file) {
+                file["SESSION_0"] = new IniFileSection {
+                    ["NAME"] = SessionName,
+                    ["TYPE"] = SessionType.Drag,
+                    ["SPAWN_SET"] = StartType.Value,
+                    ["MATCHES"] = MatchesCount
+                };
+            }
+        }
+
         public class DriftProperties : BaseModeProperties {
+            public string SessionName = "Drift Session";
             public StartType StartType = StartType.Pit;
 
             public override void Set(IniFile file) {
@@ -236,7 +296,7 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var section = file["SESSION_0"];
-                section.Set("NAME", "Drift Session");
+                section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.Drift);
                 section.Set("DURATION_MINUTES", Duration);
                 section.Set("SPAWN_SET", StartType.Value);
@@ -244,6 +304,7 @@ namespace AcTools.Processes {
         }
 
         public class RaceProperties : BaseModeProperties {
+            public string SessionName = "Quick Race";
             public IEnumerable<AiCar> BotCars;
             public int AiLevel = 90, RaceLaps = 5, StartingPosition;
 
@@ -252,7 +313,7 @@ namespace AcTools.Processes {
                 SetGroove(file, 10, 30, 0);
                 SetRace(file);
                 SetSessions(file);
-                SetBots(file);
+                SetBots(file, BotCars);
             }
 
             protected virtual void SetRace(IniFile file) {
@@ -268,28 +329,13 @@ namespace AcTools.Processes {
 
             protected virtual void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection {
-                    ["NAME"] = "Quick Race",
+                    ["NAME"] = SessionName,
                     ["DURATION_MINUTES"] = Duration,
                     ["SPAWN_SET"] = StartType.RegularStart.Value,
                     ["TYPE"] = SessionType.Race,
                     ["LAPS"] = RaceLaps,
                     ["STARTING_POSITION"] = StartingPosition
                 };
-            }
-
-            protected virtual void SetBots(IniFile file) {
-                var j = 0;
-                foreach (var botCar in BotCars) {
-                    file["CAR_" + ++j] = new IniFileSection {
-                        ["MODEL"] = botCar.CarId?.ToLowerInvariant(),
-                        ["SKIN"] = botCar.SkinId?.ToLowerInvariant(),
-                        ["SETUP"] = botCar.Setup?.ToLowerInvariant(),
-                        ["MODEL_CONFIG"] = "",
-                        ["AI_LEVEL"] = botCar.AiLevel,
-                        ["DRIVER_NAME"] = botCar.DriverName,
-                        ["NATIONALITY"] = botCar.Nationality
-                    };
-                }
             }
         }
 
@@ -307,17 +353,14 @@ namespace AcTools.Processes {
         }
 
         public class WeekendProperties : RaceProperties {
-            public int PracticeDuration = 10,
-                    QualificationDuration = 15;
+            public int PracticeDuration = 10;
+            public int QualificationDuration = 15;
+            public StartType PracticeStartType = StartType.Pit;
+            public StartType QualificationStartType = StartType.Pit;
 
-            public StartType PracticeStartType = StartType.Pit,
-                    QualificationStartType = StartType.Pit;
-
-            protected override void SetSessions(IniFile file) {
-                var i = 0;
-
+            private IEnumerable<IniFileSection> GetSessions() {
                 if (PracticeDuration > 0) {
-                    file["SESSION_" + i++] = new IniFileSection {
+                    yield return new IniFileSection {
                         ["NAME"] = "Practice",
                         ["DURATION_MINUTES"] = PracticeDuration,
                         ["SPAWN_SET"] = PracticeStartType.Value,
@@ -326,7 +369,7 @@ namespace AcTools.Processes {
                 }
 
                 if (QualificationDuration > 0) {
-                    file["SESSION_" + i++] = new IniFileSection {
+                    yield return new IniFileSection {
                         ["NAME"] = "Qualifying",
                         ["DURATION_MINUTES"] = QualificationDuration,
                         ["SPAWN_SET"] = QualificationStartType.Value,
@@ -334,13 +377,17 @@ namespace AcTools.Processes {
                     };
                 }
 
-                file["SESSION_" + i] = new IniFileSection {
+                yield return new IniFileSection {
                     ["NAME"] = "Race",
                     ["DURATION_MINUTES"] = Duration,
                     ["SPAWN_SET"] = StartType.RegularStart.Value,
                     ["TYPE"] = SessionType.Race,
                     ["LAPS"] = RaceLaps,
                 };
+            }
+
+            protected override void SetSessions(IniFile file) {
+                file.SetSections("SESSION", GetSessions());
             }
         }
 

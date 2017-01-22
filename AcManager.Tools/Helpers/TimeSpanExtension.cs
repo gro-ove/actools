@@ -7,7 +7,9 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static string ToMillisecondsString(this TimeSpan span) {
-            return $"{span.Minutes:D2}:{span.Seconds:D2}:{span.Milliseconds:D3}";
+            return span.TotalHours > 1d
+                    ? $"{(int)span.TotalHours:D2}:{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}"
+                    : $"{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}";
         }
     }
 }

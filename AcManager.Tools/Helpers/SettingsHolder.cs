@@ -201,12 +201,12 @@ namespace AcManager.Tools.Helpers {
             public bool ServerPresetsManaging {
                 get {
                     return _serverPresetsManaging ??
-                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging2", false)).Value;
+                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
                 }
                 set {
                     if (Equals(value, _serverPresetsManaging)) return;
                     _serverPresetsManaging = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging2", value);
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
                     OnPropertyChanged();
                 }
             }

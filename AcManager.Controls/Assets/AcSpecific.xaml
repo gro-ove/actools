@@ -85,8 +85,8 @@
     </Style>
 
     <DataTemplate x:Key="DataGridCell.DriverName" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">
-        <DockPanel>
-            <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Left" Margin="0 0 8 4"
+        <DockPanel HorizontalAlignment="Left">
+            <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Right" Margin="8 0 8 4"
                     Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
                     Visibility="{Binding TakenPlacePrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{Binding Name}" x:Name="NameTextBlock" TextTrimming="CharacterEllipsis" />

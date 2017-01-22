@@ -1169,10 +1169,11 @@ namespace AcManager.Controls.ViewModels {
                 }
 
                 var name = entry.Name;
-                if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames &&
-                        !takenNames.Contains(skin?.DriverName)) {
-                    name = skin?.DriverName;
-                    takenNames.Add(name);
+                if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames) {
+                    var skinDriverNames = skin?.DriverName?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+                    if (skinDriverNames?.Count > 0) {
+                        name = GoodShuffle.Get(skinDriverNames).Take(skinDriverNames.Count).FirstOrDefault(x => !takenNames.Contains(x)) ?? name;
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(name)) {

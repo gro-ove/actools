@@ -120,6 +120,7 @@ namespace AcManager.Pages.Drive {
                     _lapsNumber = value.Clamp(1, LapsNumberMaximum);
                     OnPropertyChanged();
                     SaveLater();
+                    UpdateTrackFits();
                 }
             }
             #endregion
@@ -328,9 +329,14 @@ namespace AcManager.Pages.Drive {
                 };
             }
 
+            protected virtual void UpdateTrackFits() {
+                TrackFits = LapsNumber == 1 || RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            }
+
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
                 RaceGridViewModel.PlayerCar = selectedCar;
                 RaceGridViewModel.PlayerTrack = selectedTrack;
+                UpdateTrackFits();
             }
 
             public object GetPreview(object item) {

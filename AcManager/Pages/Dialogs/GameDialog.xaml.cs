@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -166,27 +167,48 @@ namespace AcManager.Pages.Dialogs {
             var isOnline = properties?.ModeProperties is Game.OnlineProperties;
             var playerName = isOnline && SettingsHolder.Drive.DifferentPlayerNameOnline ? SettingsHolder.Drive.PlayerNameOnline : SettingsHolder.Drive.PlayerName;
 
-            var sessionsData = (from session in result.Sessions
-                                let takenPlaces = session.GetTakenPlacesPerCar()
-                                select new SessionFinishedData(session.Name.ApartFromLast(@" Session")) {
-                                    PlayerEntries = (
-                                            from player in result.Players
-                                            let car = CarsManager.Instance.GetById(player.CarId)
-                                            let carSkin = car.GetSkinById(player.CarSkinId)
-                                            select new { Player = player, Car = car, CarSkin = carSkin }
-                                            ).Select((entry, i) => new SessionFinishedData.PlayerEntry {
-                                                Name = i == 0 ? playerName : entry.Player.Name,
-                                                IsPlayer = i == 0,
-                                                Car = entry.Car,
-                                                CarSkin = entry.CarSkin,
+            var dragExtra = result.GetExtraByType<Game.ResultExtraDrag>();
+            var sessionsData = result.Sessions.Select(session => {
+                var takenPlaces = session.GetTakenPlacesPerCar();
+                var data = dragExtra == null ? new SessionFinishedData(session.Name.ApartFromLast(@" Session")) : new DragFinishedData {
+                    BestReactionTime = dragExtra.ReactionTime,
+                    Total = dragExtra.Total,
+                    Wins = dragExtra.Wins,
+                    Runs = dragExtra.Runs,
+                };
 
-                                                TakenPlace = takenPlaces.ElementAtOrDefault(i) + 1,
-                                                PrizePlace = takenPlaces.Length > 1,
-                                                LapsCount = session.LapsTotalPerCar.ElementAtOrDefault(i),
-                                                BestLapTime = session.BestLaps.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time,
-                                                Total = session.Laps.Where(x => x.CarNumber == i).Select(x => x.Time).Sum()
-                                            }).OrderBy(x => x.TakenPlace).ToList()
-                                }).ToList();
+                var sessionBestLap = session.BestLaps.MinEntryOrDefault(x => x.Time);
+                var sessionBest = sessionBestLap?.Time;
+
+                data.PlayerEntries = (
+                        from player in result.Players
+                        let car = CarsManager.Instance.GetById(player.CarId)
+                        let carSkin = car.GetSkinById(player.CarSkinId)
+                        select new { Player = player, Car = car, CarSkin = carSkin }
+                        ).Select((entry, i) => {
+                            var bestLapTime = session.BestLaps.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;
+                            return new SessionFinishedData.PlayerEntry {
+                                Name = i == 0 ? playerName : entry.Player.Name,
+                                IsPlayer = i == 0,
+                                Car = entry.Car,
+                                CarSkin = entry.CarSkin,
+                                TakenPlace = takenPlaces.ElementAtOrDefault(i) + 1,
+                                PrizePlace = takenPlaces.Length > 1,
+                                LapsCount = session.LapsTotalPerCar.ElementAtOrDefault(i),
+                                BestLapTime = bestLapTime,
+                                DeltaToSessionBest = sessionBestLap?.CarNumber == i ? null : bestLapTime - sessionBest,
+                                Total = session.Laps.Where(x => x.CarNumber == i).Select(x => x.Time).Sum(),
+                                Laps = session.Laps.Where(x => x.CarNumber == i).Select(x => new SessionFinishedData.PlayerLapEntry {
+                                    LapNumber = x.LapId + 1,
+                                    Sectors = x.SectorsTime,
+                                    Total = x.Time,
+                                    DeltaToBest = bestLapTime.HasValue ? x.Time - bestLapTime.Value : (TimeSpan?)null,
+                                    DeltaToSessionBest = sessionBest.HasValue ? x.Time - sessionBest.Value : (TimeSpan?)null,
+                                }).ToArray()
+                            };
+                        }).OrderBy(x => x.TakenPlace).ToList();
+                return data;
+            }).ToList();
 
             return sessionsData.Count == 1 ? (BaseFinishedData)sessionsData.First() :
                     sessionsData.Any() ? new SessionsFinishedData(sessionsData) : null;
@@ -199,7 +221,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class SessionFinishedData : BaseFinishedData {
-            public class PlayerEntry {
+            public class PlayerEntry : NotifyPropertyChanged {
                 public string Name { get; set; }
 
                 public bool IsPlayer { get; set; }
@@ -216,7 +238,62 @@ namespace AcManager.Pages.Dialogs {
 
                 public TimeSpan? BestLapTime { get; set; }
 
+                public TimeSpan? DeltaToSessionBest { get; set; }
+
                 public TimeSpan? Total { get; set; }
+
+                public PlayerLapEntry[] Laps { get; set; }
+
+                private DataTable _lapsDataTable;
+
+                public DataTable LapsDataTable => _lapsDataTable ?? (_lapsDataTable = CreateLapTable(Laps));
+
+                private static DataTable CreateLapTable(PlayerLapEntry[] laps) {
+                    var result = new DataTable();
+
+                    if (laps.Length > 0) {
+                        result.Columns.Add("Lap");
+
+                        for (var i = 0; i < laps[0].Sectors.Length; i++) {
+                            result.Columns.Add($"{(i + 1).ToOrdinal("sector")} Sector");
+                        }
+
+                        result.Columns.Add("Total");
+                        result.Columns.Add("Delta");
+                        result.Columns.Add("Session Delta");
+                    }
+
+                    foreach (var lap in laps.Where(x => x.Total > TimeSpan.Zero)) {
+                        var items = new object[4 + lap.Sectors.Length];
+                        items[0] = lap.LapNumber;
+                        items[items.Length - 3] = lap.Total.ToMillisecondsString();
+
+                        items[items.Length - 2] = lap.DeltaToBest.HasValue
+                                ? lap.DeltaToBest == TimeSpan.Zero ? "-" : "+" + lap.DeltaToBest?.ToMillisecondsString() : "";
+                        items[items.Length - 1] = lap.DeltaToSessionBest.HasValue
+                                ? lap.DeltaToSessionBest == TimeSpan.Zero ? "-" : "+" + lap.DeltaToSessionBest?.ToMillisecondsString() : "";
+
+                        for (var i = 0; i < lap.Sectors.Length; i++) {
+                            items[i + 1] = lap.Sectors[i].ToMillisecondsString();
+                        }
+
+                        result.Rows.Add(items);
+                    }
+
+                    return result;
+                }
+            }
+
+            public class PlayerLapEntry : NotifyPropertyChanged {
+                public int LapNumber { get; set; }
+
+                public TimeSpan[] Sectors { get; set; }
+
+                public TimeSpan Total { get; set; }
+
+                public TimeSpan? DeltaToBest { get; set; }
+
+                public TimeSpan? DeltaToSessionBest { get; set; }
             }
 
             public SessionFinishedData(string title) {
@@ -279,6 +356,18 @@ namespace AcManager.Pages.Dialogs {
             public TimeSpan? BestLapTime { get; set; }
 
             public TimeSpan? TheoreticallLapTime { get; set; }
+        }
+
+        public class DragFinishedData : SessionFinishedData {
+            public int Total { get; set; }
+
+            public int Wins { get; set; }
+
+            public int Runs { get; set; }
+
+            public TimeSpan BestReactionTime { get; set; }
+
+            public DragFinishedData() : base(ToolsStrings.Session_Drag) {}
         }
 
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
@@ -494,5 +583,20 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnClosed(object sender, EventArgs e) {}
+
+        private void OnLapsTableLoaded(object sender, RoutedEventArgs e) {
+            var numberCellStyle = TryFindResource(@"NumberCellStyle") as Style;
+            var deltaCellStyle = TryFindResource(@"DeltaCellStyle") as Style;
+            var rightAligningHeader = TryFindResource(@"DataGridColumnHeader.RightAlignment") as Style;
+
+            var grid = (DataGrid)sender;
+            for (var i = grid.Columns.Count - 1; i >= 0; i--) {
+                var column = grid.Columns[i];
+                column.MinWidth = column.ActualWidth;
+                column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+                column.CellStyle = i >= grid.Columns.Count - 2 ? deltaCellStyle : numberCellStyle;
+                column.HeaderStyle = rightAligningHeader;
+            }
+        }
     }
 }

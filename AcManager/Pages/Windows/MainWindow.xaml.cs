@@ -179,7 +179,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateServerTab() {
-            ServerGroup.IsShown = SettingsHolder.Online.ServerPresetsManaging;
+            ServerGroup.IsShown = SettingsHolder.Common.MsMode && SettingsHolder.Online.ServerPresetsManaging;
         }
 
         private void UpdateMinoratingLink() {

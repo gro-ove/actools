@@ -286,6 +286,7 @@
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
+    <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Kunos.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />

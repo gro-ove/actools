@@ -19,6 +19,25 @@ namespace AcManager.Pages.Drive {
             Changed?.Invoke(this, new EventArgs());
         }
 
+        private bool _trackFits = true;
+
+        public bool TrackFits {
+            get { return _trackFits; }
+            set {
+                if (Equals(value, _trackFits)) return;
+                _trackFits = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /*// <summary>
+        /// Get an additional tab for track’s selection window.
+        /// </summary>
+        /// <returns>Tab’s name and URI.</returns>
+        public virtual Tuple<string, Uri> GetSpecificTrackSelectionPage() {
+            return null;
+        }*/
+
         public abstract Task Drive(Game.BasicProperties basicProperties,
                 Game.AssistsProperties assistsProperties,
                 Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);

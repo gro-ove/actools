@@ -240,7 +240,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public string DisplayTime {
-            get { return $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+            get { return $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
             set {
                 int time;
                 if (!FlexibleParser.TryParseTime(value, out time)) return;
@@ -431,7 +431,7 @@ namespace AcManager.Tools.Objects {
         
         protected virtual void LoadConditions(IniFile ini) {
             var conditions = LinqExtension.RangeFrom()
-                    .Select(x => $"CONDITION_{x}")
+                    .Select(x => $@"CONDITION_{x}")
                     .TakeWhile(ini.ContainsKey)
                     .Select(x => new {
                         Type = ini[x].GetEnumNullable<PlaceConditionsType>("TYPE"),

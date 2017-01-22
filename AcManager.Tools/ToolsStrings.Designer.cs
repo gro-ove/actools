@@ -2401,6 +2401,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alien.
+        /// </summary>
+        public static string DifficultyLevel_Alien {
+            get {
+                return ResourceManager.GetString("DifficultyLevel_Alien", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Easy.
+        /// </summary>
+        public static string DifficultyLevel_Easy {
+            get {
+                return ResourceManager.GetString("DifficultyLevel_Easy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hard.
+        /// </summary>
+        public static string DifficultyLevel_Hard {
+            get {
+                return ResourceManager.GetString("DifficultyLevel_Hard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string DifficultyLevel_Medium {
+            get {
+                return ResourceManager.GetString("DifficultyLevel_Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AssettoCorsa.club is changed..
         /// </summary>
         public static string DirectLoader_AcClubChanged {
@@ -3286,6 +3322,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Points.
+        /// </summary>
+        public static string PlaceConditionType_Points {
+            get {
+                return ResourceManager.GetString("PlaceConditionType_Points", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Position.
+        /// </summary>
+        public static string PlaceConditionType_Position {
+            get {
+                return ResourceManager.GetString("PlaceConditionType_Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string PlaceConditionType_Time {
+            get {
+                return ResourceManager.GetString("PlaceConditionType_Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wins.
+        /// </summary>
+        public static string PlaceConditionType_Wins {
+            get {
+                return ResourceManager.GetString("PlaceConditionType_Wins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t install plugin.
         /// </summary>
         public static string Plugins_CannotInstall {
@@ -3511,7 +3583,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag.
+        ///   Looks up a localized string similar to Drag Race.
         /// </summary>
         public static string Session_Drag {
             get {
@@ -3930,6 +4002,15 @@ namespace AcManager.Tools {
         public static string Solving_RestoreFrom_Commentary {
             get {
                 return ResourceManager.GetString("Solving_RestoreFrom_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} at {1}..
+        /// </summary>
+        public static string SpecialEvent_Description {
+            get {
+                return ResourceManager.GetString("SpecialEvent_Description", resourceCulture);
             }
         }
         

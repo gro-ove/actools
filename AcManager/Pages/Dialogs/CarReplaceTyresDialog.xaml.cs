@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FirstFloor.ModernUI.Windows.Controls;
-using System.Windows.Controls;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -55,7 +53,7 @@ namespace AcManager.Pages.Dialogs {
                         var version = tyres["HEADER"].GetInt("VERSION", -1);
                         if (version < 3) continue;
 
-                        list.AddRange(from id in tyres.GetSectionNames(@"FRONT", -1).Concat(tyres.GetSectionNames(@"REAR", -1))
+                        list.AddRange(from id in tyres.GetExistingSectionNames(@"FRONT", -1).Concat(tyres.GetExistingSectionNames(@"REAR", -1))
                                       let section = tyres[id]
                                       let thermal = tyres[$@"THERMAL_{id}"]
                                       where section.GetNonEmpty("NAME") != null && thermal.GetNonEmpty("PERFORMANCE_CURVE") != null

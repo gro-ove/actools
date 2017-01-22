@@ -7,6 +7,12 @@ namespace AcManager.Tools {
             return ToolsStrings.ResourceManager.GetString(key, CultureInfo.CurrentUICulture);
         }
 
-        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key) ?? key) { }
+        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key) ?? key) {}
+
+#if DEBUG
+        internal class Temp {
+            private string _a = ToolsStrings.PlaceConditionType_Points;
+        }
+#endif
     }
 }

@@ -164,10 +164,10 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
+            <!--<Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundHover}" />
                 <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundHover}" />
-            </Trigger>
+            </Trigger>-->
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundSelected}" />
                 <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundSelected}" />
@@ -182,8 +182,8 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
-        <Setter Property="Padding" Value="4 3 4 3" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="8 4" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
@@ -191,24 +191,19 @@
                     <c:Cell>
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                            <Grid x:Name="containerGrid" Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <ContentPresenter Grid.Column="0" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            <DockPanel x:Name="containerGrid">
+                                <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
+                                        Margin="4 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
+                                        Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                <Path x:Name="SortArrow" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
-                                        Margin="5 0 5 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
-                                        Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
-                            </Grid>
+                            </DockPanel>
                         </Border>
                         <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
                         <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
                     </c:Cell>
                     <ControlTemplate.Triggers>
-
                         <Trigger Property="SortDirection" Value="Ascending">
                             <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
                             <Setter TargetName="SortArrow" Property="RenderTransform">
@@ -219,6 +214,12 @@
                         </Trigger>
                         <Trigger Property="SortDirection" Value="Descending">
                             <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="CanUserSort" Value="False">
+                            <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="HorizontalContentAlignment" Value="Right">
+                            <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -235,7 +236,13 @@
                 <Setter Property="Foreground" Value="{DynamicResource DataGridHeaderForegroundPressed}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
 
+    <Style x:Key="DataGridColumnHeader.CenterAlignment" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style x:Key="DataGridColumnHeader.RightAlignment" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
     </Style>
 
     <Style x:Key="{x:Type DataGridRowHeader}" TargetType="{x:Type DataGridRowHeader}">
@@ -398,6 +405,10 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundHover}" />
                     </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundSelected}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundSelected}" />
+                    </Trigger>
                 </Style.Triggers>
             </Style>
         </Style.Resources>
@@ -460,5 +471,52 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="DataGrid.Lite.VisibleDetails" TargetType="DataGrid" BasedOn="{StaticResource DataGrid.Lite}">
+        <Style.Resources>
+            <Style x:Key="{x:Type DataGridRow}" TargetType="{x:Type DataGridRow}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
+                <Setter Property="ValidationErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBlock Margin="2 0 0 0" VerticalAlignment="Center" Foreground="#FFdc000c" Text="!" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridRow}">
+                            <Border x:Name="DGR_Border" SnapsToDevicePixels="True" Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <StackPanel>
+                                    <DataGridCellsPresenter ItemsPanel="{TemplateBinding ItemsPanel}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    <DataGridDetailsPresenter
+                                            SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=AreRowDetailsFrozen, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}}"
+                                            Visibility="{TemplateBinding DetailsVisibility}" />
+                                </StackPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="#11888888" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundHover}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource DataGridCellBackgroundSelected}" />
+                        <Setter Property="Foreground" Value="{DynamicResource DataGridCellForegroundSelected}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Style.Resources>
+
+        <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
     </Style>
 </ResourceDictionary>

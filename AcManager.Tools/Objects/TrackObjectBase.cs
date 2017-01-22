@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -229,7 +227,7 @@ namespace AcManager.Tools.Objects {
             return a;
 
 #if DEBUG
-            return $"{a} 〈{b}〉";
+            return $@"{a} 〈{b}〉";
 #else
             return a;
 #endif

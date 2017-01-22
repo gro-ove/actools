@@ -24,6 +24,7 @@ namespace AcManager.Tools.Profile {
         private LapTimesStorage _cmStorage;
         private LapTimesStorage _acStorage;
         private LapTimesStorage _sidekickStorage;
+        private LapTimesStorage _raceEssentialsStorage;
 
         public LapTimesManager() {
             Entries = new BetterObservableCollection<LapTimeEntry>();
@@ -101,6 +102,11 @@ namespace AcManager.Tools.Profile {
             _sidekickStorage = new LapTimesStorage(SidekickLapTimesReader.SourceId);
         }
 
+        private void InitializeRaceEssentials() {
+            if (_raceEssentialsStorage != null) return;
+            _raceEssentialsStorage = new LapTimesStorage(RaceEssentialsLapTimesReader.SourceId);
+        }
+
         public BetterObservableCollection<LapTimeEntry> Entries { get; }
 
         private DateTime _lastUpdate;
@@ -137,8 +143,11 @@ namespace AcManager.Tools.Profile {
             var cmEntries = ReadCmEntries();
             var acEntries = await ReadAcEntriesAsync();
             var sidekickEntries = await ReadSidekickEntriesAsync();
+            var raceEssectialsEntries = await ReadRaceEssentialsEntriesAsync();
             Entries.ReplaceEverythingBy(KeepBetterOnes(
-                    cmEntries.Concat(acEntries).Concat(sidekickEntries)
+                    cmEntries.Concat(acEntries)
+                             .Concat(sidekickEntries)
+                             .Concat(raceEssectialsEntries)
                              .OrderByDescending(x => x.EntryDate)));
         }
 
@@ -165,6 +174,18 @@ namespace AcManager.Tools.Profile {
 
                 await TracksManager.Instance.EnsureLoadedAsync();
                 return _sidekickStorage.UpdateCachedLapTimesList(reader);
+            }
+        }
+        
+        private async Task<IReadOnlyList<LapTimeEntry>> ReadRaceEssentialsEntriesAsync() {
+            InitializeRaceEssentials();
+            var raceEssentialsDirectory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials");
+            using (var reader = new RaceEssentialsLapTimesReader(raceEssentialsDirectory, this)) {
+                var result = _raceEssentialsStorage.GetCachedLapTimesList(reader);
+                if (result != null) return result;
+
+                await TracksManager.Instance.EnsureLoadedAsync();
+                return _raceEssentialsStorage.UpdateCachedLapTimesList(reader);
             }
         }
 

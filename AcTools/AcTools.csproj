@@ -116,9 +116,9 @@
     <Compile Include="Processes\AcMousePretender.cs" />
     <Compile Include="Processes\AssistState.cs" />
     <Compile Include="Processes\Game.cs" />
-    <Compile Include="Processes\Game_Result.cs" />
-    <Compile Include="Processes\Game_Properties.cs" />
-    <Compile Include="Processes\Game_Obsolete.cs" />
+    <Compile Include="Processes\Game.Result.cs" />
+    <Compile Include="Processes\Game.Properties.cs" />
+    <Compile Include="Processes\Game.Obsolete.cs" />
     <Compile Include="Processes\ShotingCancelledException.cs" />
     <Compile Include="Processes\TrickyStarter.cs" />
     <Compile Include="Processes\IAcsStarter.cs" />

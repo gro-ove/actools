@@ -2,10 +2,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedPythonAppPage+ViewModel}" Unloaded="OnUnloaded">
     <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="PropertyLabel" TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                <Setter Property="Margin" Value="0 4 8 0" />
+                <Setter Property="Width" Value="168" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+            </Style>
+
+            <Style x:Key="ValueLabel" TargetType="{x:Type mui:ValueLabel}" BasedOn="{StaticResource {x:Type mui:ValueLabel}}">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0 0 16 0" />
+                <Setter Property="Width" Value="160" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
@@ -26,17 +46,105 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Rename}" Command="{Binding SelectedObject.SaveCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Rename_AppTooltip}" />
+                <!--<Button Content="{x:Static g:AppStrings.Toolbar_Rename}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Rename_AppTooltip}" />-->
+                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_AppTooltip}" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
-        <StackPanel Style="{StaticResource SettingsPanel}">
-            <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
-                <Label Content="{x:Static g:AppStrings.AcObject_AppActivated}" />
-            </CheckBox>
-        </StackPanel>
+        <mui:SpacingStackPanel Spacing="8">
+            <StackPanel Style="{StaticResource SettingsPanel}">
+                <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
+                    <Label Content="{x:Static g:AppStrings.AcObject_AppActivated}" />
+                </CheckBox>
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding Configs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" Margin="0 0 0 8" />
+                            <ItemsControl ItemsSource="{Binding Sections}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding DisplayName, StringFormat='{}{0}:'}" DockPanel.Dock="Top" Margin="20 0 0 8"
+                                                       TextWrapping="Wrap" Style="{StaticResource Label}" />
+                                            <ItemsControl ItemsSource="{Binding}" Margin="40 0 0 20">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <mui:UniformGridWithOrientation Orientation="Vertical" VerticalSpacing="4" HorizontalSpacing="20" Columns="2" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ContentControl Content="{Binding}" ToolTip="{Binding ToolTip}" IsEnabled="{Binding IsEnabled}">
+                                                            <ContentControl.Resources>
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigBoolValue}">
+                                                                    <CheckBox IsChecked="{Binding Value}">
+                                                                        <Label Content="{Binding DisplayName}" />
+                                                                    </CheckBox>
+                                                                </DataTemplate>
+
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigRangeValue}">
+                                                                    <DockPanel>
+                                                                        <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding Value}" Mode="Number"
+                                                                                Postfix="{Binding Postfix}" Style="{StaticResource ValueLabel}" />
+                                                                        <Slider Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Value="{Binding Value}"
+                                                                                TickFrequency="{Binding Tick}" TickPlacement="BottomRight" />
+                                                                    </DockPanel>
+                                                                </DataTemplate>
+
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigNumberValue}">
+                                                                    <DockPanel>
+                                                                        <Label Content="{Binding DisplayName}" ContentStringFormat="{}{0}:"
+                                                                                Style="{StaticResource PropertyLabel}" />
+                                                                        <mui:BetterTextBox Text="{Binding Value}" Mode="Number" Placeholder="?" />
+                                                                    </DockPanel>
+                                                                </DataTemplate>
+
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigOptionsValue}">
+                                                                    <DockPanel>
+                                                                        <Label Content="{Binding DisplayName}" ContentStringFormat="{}{0}:"
+                                                                                Style="{StaticResource PropertyLabel}" />
+                                                                        <mui:BetterComboBox ItemsSource="{Binding Values}" DisplayMemberPath="DisplayName"
+                                                                                SelectedItem="{Binding Value, Mode=TwoWay}" IsEditable="False" />
+                                                                    </DockPanel>
+                                                                </DataTemplate>
+
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigFileValue}">
+                                                                    <DockPanel>
+                                                                        <Label Content="{Binding DisplayName}" ContentStringFormat="{}{0}:"
+                                                                                Style="{StaticResource PropertyLabel}" />
+                                                                        <Button DockPanel.Dock="Right" Padding="4 2" Margin="2 0 0 0" Content="…" Click="OnFileButtonClick" />
+                                                                        <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" />
+                                                                    </DockPanel>
+                                                                </DataTemplate>
+
+                                                                <DataTemplate DataType="{x:Type t:PythonAppConfigValue}">
+                                                                    <DockPanel>
+                                                                        <Label Content="{Binding DisplayName}" ContentStringFormat="{}{0}:"
+                                                                                Style="{StaticResource PropertyLabel}" />
+                                                                        <mui:BetterTextBox Text="{Binding Value}" Placeholder="?" />
+                                                                    </DockPanel>
+                                                                </DataTemplate>
+                                                            </ContentControl.Resources>
+                                                        </ContentControl>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </mui:SpacingStackPanel>
+
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

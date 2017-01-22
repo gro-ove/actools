@@ -15,7 +15,8 @@ namespace AcManager.Controls.Converters {
 
             var delimiter = id.IndexOf('/');
             if (delimiter != -1) {
-                id = id.Substring(0, delimiter);
+                return TracksManager.Instance.GetLayoutById(id);
+                // id = id.Substring(0, delimiter);
             }
 
             var wrapper = TracksManager.Instance.GetWrapperById(id);

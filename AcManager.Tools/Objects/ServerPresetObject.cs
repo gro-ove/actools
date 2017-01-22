@@ -1,9 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -26,6 +32,8 @@ namespace AcManager.Tools.Objects {
 
     public class ServerPresetObject : AcIniObject {
         public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
+
+        protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
@@ -436,7 +444,87 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+
+        private ChangeableObservableCollection<ServerPresetDriverEntry> _driverEntries;
+
+        public ChangeableObservableCollection<ServerPresetDriverEntry> DriverEntries {
+            get { return _driverEntries; }
+            set {
+                if (Equals(value, _driverEntries)) return;
+
+                if (_driverEntries != null) {
+                    _driverEntries.ItemPropertyChanged -= OnDriverEntryPropertyChanged;
+                }
+
+                _driverEntries = value;
+                OnPropertyChanged();
+
+                if (_driverEntries != null) {
+                    _driverEntries.CollectionChanged += OnDriverEntriesCollectionChanged;
+                    _driverEntries.ItemPropertyChanged += OnDriverEntryPropertyChanged;
+                }
+            }
+        }
+
+        private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+            CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
+            Changed = true;
+        }
+
+        private void OnDriverEntryPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ServerPresetDriverEntry.Deleted):
+                    DriverEntries.Remove((ServerPresetDriverEntry)sender);
+                    return;
+            }
+
+            Changed = true;
+        }
         #endregion
+
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+            LoadEntryListOrThrow();
+        }
+
+        private IniFile _entryListIniObject;
+
+        public IniFile EntryListIniObject {
+            get { return _entryListIniObject; }
+            set {
+                if (Equals(value, _entryListIniObject)) return;
+                _entryListIniObject = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void LoadEntryListOrThrow() {
+            string text;
+
+            try {
+                text = FileUtils.ReadAllText(EntryListIniFilename);
+            } catch (FileNotFoundException) {
+                AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(EntryListIniFilename));
+                return;
+            } catch (DirectoryNotFoundException) {
+                AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(EntryListIniFilename));
+                return;
+            }
+
+            try {
+                EntryListIniObject = IniFile.Parse(text, IniFileMode);
+            } catch (Exception) {
+                EntryListIniObject = null;
+                AddError(AcErrorType.Data_IniIsDamaged, Path.GetFileName(EntryListIniFilename));
+                return;
+            }
+
+            try {
+                LoadEntryListData(EntryListIniObject);
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
 
         protected override void LoadData(IniFile ini) {
             var section = ini["SERVER"];
@@ -474,6 +562,10 @@ namespace AcManager.Tools.Objects {
             JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
         }
 
+        private void LoadEntryListData(IniFile ini) {
+            DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR").Select(x => new ServerPresetDriverEntry(x)));
+        }
+
         public override void SaveData(IniFile ini) {
             var section = ini["SERVER"];
             section.Set("NAME", Name);
@@ -508,6 +600,17 @@ namespace AcManager.Tools.Objects {
             section.Set("MAX_BALLAST_KG", MaxBallast);
             section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
             section.SetIntEnum("START_RULE", JumpStart);
+        }
+
+        public override void Save() {
+            EntryListIniObject.SetSections("CAR", DriverEntries, (entry, section) => {
+                entry.SaveTo(section);
+            });
+
+            using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                File.WriteAllText(EntryListIniFilename, EntryListIniObject.ToString());
+                base.Save();
+            }
         }
     }
 }

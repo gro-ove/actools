@@ -13,6 +13,7 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.GameProperties {
     public class RhmService : NotifyPropertyChanged, IDisposable {
+        public static TimeSpan OptionKeepRunning = TimeSpan.FromMinutes(1);
 
         private static RhmService _instance;
 

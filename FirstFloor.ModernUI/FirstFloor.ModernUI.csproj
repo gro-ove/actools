@@ -143,6 +143,7 @@
     <Compile Include="Windows\Controls\BorderyViewbox.cs" />
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
+    <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
     <Compile Include="Windows\DragPopup.cs" />

@@ -478,13 +478,22 @@ namespace FirstFloor.ModernUI.Win32 {
 
             foreach (var k in WindowsEntries.Reverse().Select(x => x.Key)) {
                 if (IsWindowsVersionOrGreater(k)) {
-                    _version = k.GetDescription();
+                    _version = GetDescription(k);
                     return _version;
                 }
             }
 
             _version = "Unknown System";
             return _version;
+        }
+
+        private static string GetDescription(Enum value) {
+            var type = value.GetType();
+            var name = Enum.GetName(type, value);
+            if (name == null) return null;
+            var field = type.GetField(name);
+            return field == null ? null :
+                    (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute)?.Description;
         }
 
         /// <summary>

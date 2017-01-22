@@ -13,19 +13,55 @@ using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
+    public enum IniFileMode {
+        Normal, Comments, ValuesWithSemicolons
+    }
+
     public class IniFile : AbstractDataFile, IEnumerable<KeyValuePair<string, IniFileSection>> {
         /// <summary>
         /// Saving is much slower when enabled.
         /// </summary>
         public static bool OptionKeepComments = false;
 
-        public IniFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) { }
+        // Sorry about it
+        private static IniFileMode? _trickIniFileMode;
 
-        public IniFile(string carDir, string filename) : base(carDir, filename) { }
+        // I feel like I’ve sort of kicked a puppy right now
+        private static string InnerIniFileModeTrick(string s, IniFileMode mode) {
+            _trickIniFileMode = mode;
+            return s;
+        }
 
-        public IniFile(string filename) : base(filename) { }
+        private readonly IniFileMode _iniFileMode;
 
-        public IniFile() { }
+        public IniFileMode IniFileMode => _trickIniFileMode ?? _iniFileMode;
+
+        public IniFile(string carDir, string filename, Acd loadedAcd) : this(carDir, filename, loadedAcd, IniFileMode.Normal) { }
+
+        public IniFile(string carDir, string filename, Acd loadedAcd, IniFileMode mode) : base(carDir, InnerIniFileModeTrick(filename, mode), loadedAcd) {
+            _trickIniFileMode = null;
+            _iniFileMode = mode;
+        }
+
+        public IniFile(string carDir, string filename) : this(carDir, filename, IniFileMode.Normal) { }
+
+        public IniFile(string carDir, string filename, IniFileMode mode) : base(carDir, InnerIniFileModeTrick(filename, mode)) {
+            _trickIniFileMode = null;
+            _iniFileMode = mode;
+        }
+
+        public IniFile(string filename) : this(filename, IniFileMode.Normal) { }
+
+        public IniFile(string filename, IniFileMode mode) : base(InnerIniFileModeTrick(filename, mode)) {
+            _trickIniFileMode = null;
+            _iniFileMode = mode;
+        }
+
+        public IniFile() : this(IniFileMode.Normal) { }
+
+        public IniFile(IniFileMode mode) {
+            _iniFileMode = mode;
+        }
 
         public readonly Dictionary<string, IniFileSection> Content = new Dictionary<string, IniFileSection>();
 
@@ -72,6 +108,16 @@ namespace AcTools.DataFile {
         }
 
         protected override void ParseString(string data) {
+            if (IniFileMode == IniFileMode.ValuesWithSemicolons) {
+                ParseStringWithSemicolons(data);
+                return;
+            }
+
+            if (IniFileMode == IniFileMode.Comments) {
+                ParseStringWithComments(data);
+                return;
+            }
+
             Clear();
 
             IniFileSection currentSection = null;
@@ -96,7 +142,7 @@ namespace AcTools.DataFile {
                         break;
 
                     case '=':
-                        if (started != -1 && key == null) {
+                        if (started != -1 && key == null && currentSection != null) {
                             key = data.Substring(started, 1 + nonSpace - started);
                             started = -1;
                         }
@@ -127,8 +173,162 @@ namespace AcTools.DataFile {
             ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
         }
 
+        private void ParseStringWithSemicolons(string data) {
+            Clear();
+
+            IniFileSection currentSection = null;
+            var started = -1;
+            var nonSpace = -1;
+            string key = null;
+            for (var i = 0; i < data.Length; i++) {
+                var c = data[i];
+                switch (c) {
+                    case '[':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+
+                        var s = ++i;
+                        if (s == data.Length) break;
+                        for (; i < data.Length && data[i] != ']'; i++) { }
+
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        break;
+
+                    case '\n':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                        break;
+
+                    case '=':
+                        if (started != -1 && key == null && currentSection != null) {
+                            key = data.Substring(started, 1 + nonSpace - started);
+                            started = -1;
+                        }
+                        break;
+
+                    case '/':
+                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                            i++;
+
+                            var previousKey = key;
+                            var commentStartIndex = i + 1;
+
+                            ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                            for (i++; i < data.Length && data[i] != '\n'; i++) { }
+
+                            while (commentStartIndex <= i && commentStartIndex < data.Length && char.IsWhiteSpace(data[commentStartIndex])) {
+                                commentStartIndex++;
+                            }
+
+                            var commentLength = i - commentStartIndex;
+                            while (commentLength > 0 && commentStartIndex + commentLength < data.Length && data[commentStartIndex + commentLength] == '\r') {
+                                commentLength--;
+                            }
+
+                            if (currentSection != null && commentLength > 0) {
+                                if (previousKey == null) {
+                                    currentSection.SetCommentary(data.Substring(commentStartIndex, commentLength));
+                                } else if (currentSection.Commentaries?.ContainsKey(previousKey) != true) {
+                                    currentSection.SetCommentary(previousKey, data.Substring(commentStartIndex, commentLength));
+                                }
+                            }
+                            break;
+                        }
+                        goto default;
+
+                    default:
+                        if (!char.IsWhiteSpace(c)) {
+                            nonSpace = i;
+                            if (started == -1) {
+                                started = i;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+        }
+
+        private void ParseStringWithComments(string data) {
+            Clear();
+
+            IniFileSection currentSection = null;
+            var started = -1;
+            var nonSpace = -1;
+            string key = null;
+            for (var i = 0; i < data.Length; i++) {
+                var c = data[i];
+                switch (c) {
+                    case '[':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+
+                        var s = ++i;
+                        if (s == data.Length) break;
+                        for (; i < data.Length && data[i] != ']'; i++) { }
+
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        break;
+
+                    case '\n':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                        break;
+
+                    case '=':
+                        if (started != -1 && key == null && currentSection != null) {
+                            key = data.Substring(started, 1 + nonSpace - started);
+                            started = -1;
+                        }
+                        break;
+
+                    case '/':
+                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                            i++;
+                            goto case ';';
+                        }
+                        goto default;
+
+                    case ';':
+                        var previousKey = key;
+                        var commentStartIndex = i + 1;
+
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                        for (i++; i < data.Length && data[i] != '\n'; i++) { }
+
+                        while (commentStartIndex <= i && char.IsWhiteSpace(data[commentStartIndex])) {
+                            commentStartIndex++;
+                        }
+                        
+                        var commentLength = i - commentStartIndex;
+                        if (currentSection != null && commentLength > 0) {
+                            if (previousKey != null) {
+                                currentSection.SetCommentary(previousKey, data.Substring(commentStartIndex, commentLength));
+                            } else if (currentSection.Count == 0) {
+                                currentSection.SetCommentary(data.Substring(commentStartIndex, commentLength));
+                            }
+                        }
+                        break;
+
+                    default:
+                        if (!char.IsWhiteSpace(c)) {
+                            nonSpace = i;
+                            if (started == -1) {
+                                started = i;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+        }
+
         public static IniFile Parse(string text) {
             var result = new IniFile();
+            result.ParseString(text);
+            return result;
+        }
+
+        public static IniFile Parse(string text, IniFileMode mode) {
+            var result = new IniFile(mode);
             result.ParseString(text);
             return result;
         }
@@ -137,23 +337,38 @@ namespace AcTools.DataFile {
             Content.Clear();
         }
 
-        private static void Prepare(string v, StringBuilder s) {
-            for (var i = 0; i < v.Length; i++) {
-                var c = v[i];
-                switch (c) {
-                    case '[':
-                    case ']':
-                    case ';':
-                        s.Append('_');
-                        break;
-                    default:
-                        s.Append(c);
-                        break;
+        private void Prepare(string v, StringBuilder s) {
+            if (IniFileMode == IniFileMode.ValuesWithSemicolons) {
+                for (var i = 0; i < v.Length; i++) {
+                    var c = v[i];
+                    switch (c) {
+                        case '[':
+                        case ']':
+                            s.Append('_');
+                            break;
+                        default:
+                            s.Append(c);
+                            break;
+                    }
+                }
+            } else {
+                for (var i = 0; i < v.Length; i++) {
+                    var c = v[i];
+                    switch (c) {
+                        case '[':
+                        case ']':
+                        case ';':
+                            s.Append('_');
+                            break;
+                        default:
+                            s.Append(c);
+                            break;
+                    }
                 }
             }
         }
 
-        private static string Prepare(string v) {
+        private string Prepare(string v) {
             var s = new StringBuilder(v.Length);
             Prepare(v, s);
             return s.ToString();
@@ -172,7 +387,7 @@ namespace AcTools.DataFile {
 
                 var commentary = section.Commentary;
                 if (commentary != null) {
-                    s.Append(" ; ");
+                    s.Append(IniFileMode == IniFileMode.ValuesWithSemicolons ? " // " : " ; ");
                     s.Append(commentary);
                 }
 
@@ -185,7 +400,7 @@ namespace AcTools.DataFile {
                     Prepare(sub.Value, s);
 
                     if (commentaries?.TryGetValue(sub.Key, out commentary) == true) {
-                        s.Append(" ; ");
+                        s.Append(IniFileMode == IniFileMode.ValuesWithSemicolons ? " // " : " ; ");
                         s.Append(commentary);
                     }
 
@@ -198,7 +413,7 @@ namespace AcTools.DataFile {
             return s.ToString();
         }
 
-        #region Shitty comment-keeping saving
+        #region Comment-keeping saving
         /// <summary>
         /// This is the shittiest form of saving I can think of.
         /// </summary>
@@ -321,7 +536,7 @@ namespace AcTools.DataFile {
             return SetValue(data, section, key, "");
         }
 
-        private static string AddSection(string data, string sectionName, IniFileSection section) {
+        private string AddSection(string data, string sectionName, IniFileSection section) {
             var s = new StringBuilder(data);
 
             if (data.Length > 0 && data[data.Length - 1] != '\n') {
@@ -366,7 +581,7 @@ namespace AcTools.DataFile {
         #endregion
 
         protected override void SaveTo(string filename, bool backup) {
-            if (OptionKeepComments) {
+            if (IniFileMode == IniFileMode.Comments || OptionKeepComments) {
                 SaveToKeepComments(filename, backup);
             } else {
                 base.SaveTo(filename, backup);
@@ -374,7 +589,7 @@ namespace AcTools.DataFile {
         }
 
         protected override Task SaveToAsync(string filename, bool backup) {
-            if (OptionKeepComments) {
+            if (IniFileMode == IniFileMode.Comments || OptionKeepComments) {
                 SaveToKeepComments(filename, backup);
                 return Task.Delay(0);
             }
@@ -417,24 +632,9 @@ namespace AcTools.DataFile {
             Kernel32.WritePrivateProfileString(section, key, value.Value ? "1" : "0", path);
         }
 
-        [Obsolete]
-        public static string Read(string path, string section, string key) {
-            var rightSection = false;
-            foreach (var line in File.ReadAllLines(path).Select(x => {
-                var i = x.IndexOf(';');
-                return i < 0 ? x.Trim() : x.Substring(0, i).Trim();
-            }).Where(x => x.Length > 0)) {
-                if (line[0] == '[' && line[line.Length - 1] == ']') {
-                    rightSection = line.IndexOf(section, StringComparison.Ordinal) == 1 && line.Length == section.Length + 2;
-                } else if (rightSection && line.StartsWith(key)) {
-                    var at = line.IndexOf('=');
-                    if (at >= 0 && at == key.Length) {
-                        return line.Substring(at + 1);
-                    }
-                }
-            }
-
-            return null;
+        private IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
+            return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
+                                .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}");
         }
 
         /// <summary>
@@ -442,10 +642,8 @@ namespace AcTools.DataFile {
         /// </summary>
         /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
-        public IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
-            return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
-                                .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}")
-                                .TakeWhile(ContainsKey);
+        public IEnumerable<string> GetExistingSectionNames(string prefixName, int startFrom) {
+            return GetSectionNames(prefixName, startFrom).TakeWhile(ContainsKey);
         }
 
         /// <summary>
@@ -454,7 +652,7 @@ namespace AcTools.DataFile {
         /// <param name="prefixName">Prefix</param>
         /// <param name="startFrom">ID of first section</param>
         public void RemoveSections([Localizable(false)] string prefixName, int startFrom = 0) {
-            foreach (var key in GetSectionNames(prefixName, startFrom)) {
+            foreach (var key in GetExistingSectionNames(prefixName, startFrom).ToList()) {
                 Remove(key);
             }
         }
@@ -465,7 +663,34 @@ namespace AcTools.DataFile {
         /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
         public IEnumerable<IniFileSection> GetSections([Localizable(false)] string prefixName, int startFrom = 0) {
-            return GetSectionNames(prefixName, startFrom).Select(key => this[key]);
+            return GetExistingSectionNames(prefixName, startFrom).Select(key => this[key]);
+        }
+
+        public void SetSections<T>([Localizable(false)] string prefixName, IEnumerable<T> source, Action<T, IniFileSection> saveAction) {
+            SetSections(prefixName, 0, source, saveAction);
+        }
+
+        public void SetSections<T>([Localizable(false)] string prefixName, int startFrom, IEnumerable<T> source, Action<T, IniFileSection> saveAction) {
+            var list = source.ToList();
+
+            foreach (var key in GetExistingSectionNames(prefixName, startFrom).Skip(list.Count).ToList()) {
+                Remove(key);
+            }
+
+            list.ForEach(GetSectionNames(prefixName, startFrom), (value, key) => {
+                saveAction(value, this[key]);
+            });
+        }
+
+        public void SetSections([Localizable(false)] string prefixName, IEnumerable<IniFileSection> sections) {
+            SetSections(prefixName, 0, sections);
+        }
+
+        public void SetSections([Localizable(false)] string prefixName, int startFrom, IEnumerable<IniFileSection> sections) {
+            RemoveSections(prefixName, startFrom);
+            sections.ForEach(GetSectionNames(prefixName, startFrom), (section, key) => {
+                this[key] = section;
+            });
         }
 
         public void SetCommentaries(IniCommentariesScheme iniCommentaries) {

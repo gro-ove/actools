@@ -824,6 +824,10 @@ Depth mode: [b]{4}[/b]</value>
     <value> lap</value>
     <comment>Will be pluralized automatically</comment>
   </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> lap</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
   <data name="Common_OpponentsPostfix" xml:space="preserve">
     <value> opponent</value>
     <comment>Will be pluralized automatically</comment>

@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -38,12 +38,13 @@
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
-        <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 8 0" FrameMargin="0 30 0 0" x:Name="Tabs" SaveKey="__serpr.st"
+        <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 8 0 0" x:Name="Tabs" SaveKey="__serpr.st"
                 mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml">
             <mui:ModernTab.Links>
-                <mui:Link DisplayName="Basic" Source="/Pages/ServerPreset/Basic.xaml" />
+                <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
+                <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
                 <mui:Link DisplayName="Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
-                <mui:Link DisplayName="Sessions &amp; Conditions" Source="/Pages/ServerPreset/SessionsWip.xaml" />
+                <mui:Link DisplayName="Sessions &amp; Conditions" Source="/Pages/ServerPreset/Sessions.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </ac:AcObjectBase>

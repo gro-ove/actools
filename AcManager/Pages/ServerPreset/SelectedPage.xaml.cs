@@ -12,7 +12,6 @@ using AcManager.Pages.Selected;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -29,7 +28,7 @@ namespace AcManager.Pages.ServerPreset {
 
         private class ProgressCapacityConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return (value.AsDouble() - 2d) / 10d;
+                return Math.Max((value.AsDouble() - 2d) / 10d, 1d);
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

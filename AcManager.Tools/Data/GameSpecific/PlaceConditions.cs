@@ -15,9 +15,13 @@ namespace AcManager.Tools.Data.GameSpecific {
 
         public const int UnremarkablePlace = 4;
 
-        public int GetTakenPlace(int value) {
+        /// <summary>
+        /// For some of place condition types, better is more, for others — fewer (less).
+        /// </summary>
+        private int GetTakenPlace(int value) {
             switch (Type) {
                 case PlaceConditionsType.Points:
+                case PlaceConditionsType.Wins:
                     return FirstPlaceTarget.HasValue && value >= FirstPlaceTarget ? 1 :
                             SecondPlaceTarget.HasValue && value >= SecondPlaceTarget ? 2 :
                                     ThirdPlaceTarget.HasValue && value >= ThirdPlaceTarget ? 3 :
@@ -46,8 +50,14 @@ namespace AcManager.Tools.Data.GameSpecific {
                 return GetTakenPlace(timeAttack.Points);
             }
 
+            var drag = result.GetExtraByType<Game.ResultExtraDrag>();
+            if (drag != null && Type == PlaceConditionsType.Wins) {
+                return GetTakenPlace(drag.Wins);
+            }
+
             switch (Type) {
                 case PlaceConditionsType.Points:
+                case PlaceConditionsType.Wins:
                     return UnremarkablePlace;
                 case PlaceConditionsType.Position:
                     var place = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.CarPerTakenPlace?.IndexOf(0);
@@ -61,7 +71,7 @@ namespace AcManager.Tools.Data.GameSpecific {
         }
 
         public string GetDescription() {
-            return $"({Type}, Targets=[{FirstPlaceTarget}, {SecondPlaceTarget}, {ThirdPlaceTarget}])";
+            return $@"({Type}, Targets=[{FirstPlaceTarget}, {SecondPlaceTarget}, {ThirdPlaceTarget}])";
         }
     }
 }

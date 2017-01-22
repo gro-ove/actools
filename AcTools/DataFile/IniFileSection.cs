@@ -11,10 +11,10 @@ using JetBrains.Annotations;
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
         [CanBeNull]
-        internal string Commentary { get; private set; }
+        public string Commentary { get; private set; }
 
         [CanBeNull]
-        internal Dictionary<string, string> Commentaries { get; private set; }
+        public Dictionary<string, string> Commentaries { get; private set; }
 
         public void SetCommentary([CanBeNull, LocalizationRequired(false)] string value) {
             Commentary = value;

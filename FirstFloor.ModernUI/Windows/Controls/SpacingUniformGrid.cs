@@ -28,19 +28,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(RowsProperty, value); }
         }
 
-        public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(nameof(HorizontalSpacing), typeof(int),
-                typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+        public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(nameof(HorizontalSpacing), typeof(double),
+                typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        public int HorizontalSpacing {
-            get { return (int)GetValue(HorizontalSpacingProperty); }
+        public double HorizontalSpacing {
+            get { return (double)GetValue(HorizontalSpacingProperty); }
             set { SetValue(HorizontalSpacingProperty, value); }
         }
 
-        public static readonly DependencyProperty VerticalSpacingProperty = DependencyProperty.Register(nameof(VerticalSpacing), typeof(int),
-                typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+        public static readonly DependencyProperty VerticalSpacingProperty = DependencyProperty.Register(nameof(VerticalSpacing), typeof(double),
+                typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        public int VerticalSpacing {
-            get { return (int)GetValue(VerticalSpacingProperty); }
+        public double VerticalSpacing {
+            get { return (double)GetValue(VerticalSpacingProperty); }
             set { SetValue(VerticalSpacingProperty, value); }
         }
         
@@ -142,9 +142,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private int _rows;
         private int _columns;
-        private int _horizontalSpacing;
-        private int _verticalSpacing;
-        private int _totalSpacingWidth;
-        private int _totalSpacingHeight;
+        private double _horizontalSpacing;
+        private double _verticalSpacing;
+        private double _totalSpacingWidth;
+        private double _totalSpacingHeight;
     }
 }

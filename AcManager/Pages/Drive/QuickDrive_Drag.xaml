@@ -20,42 +20,30 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <Grid MaxHeight="320" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-                <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
-                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
+        <UniformGrid MaxHeight="128" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
+            <StackPanel Margin="{StaticResource ElementMargin}">
+                <mui:ValueLabel Value="{Binding MatchesCount}" Content="Total"
+                        Postfix="{Binding MatchesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_RoundPostfix}}" />
+                <Slider Minimum="1" Maximum="20" Value="{Binding MatchesCount}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="4" Grid.Column="0">
-                <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
-                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
-                </CheckBox>
-            </StackPanel>
-
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
+            <StackPanel Margin="{StaticResource ElementMargin}">
                 <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
                 <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"
                         FixedMode="False" PreviewProvider="{Binding}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="4" Grid.Column="1" Margin="{StaticResource ElementMargin}">
-                <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static g:AppStrings.Drive_JumpStartPenalty}" Margin="0 0 0 4" />
-                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding JumpStartPenaltyTypes}" SelectedItem="{Binding JumpStartPenalty}"
-                        mui:ComboBoxAdvancement.DisplayConverter="{x:Static drive:QuickDrive_Race+ViewModel.JumpStartPenaltyTypeToStringConverter}" />
+            <StackPanel Margin="{StaticResource ElementMargin}">
+                <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
+                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+                </CheckBox>
             </StackPanel>
-        </Grid>
+            
+            <StackPanel Margin="{StaticResource ElementMargin}">
+                <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
+                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
+            </StackPanel>
+        </UniformGrid>
 
         <uc:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
     </Grid>

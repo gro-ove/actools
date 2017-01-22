@@ -108,6 +108,26 @@ namespace AcTools.Processes {
             }
         }
 
+        public class ResultExtraDrag : ResultExtra {
+            [JsonProperty(PropertyName = "total")]
+            public int Total;
+
+            [JsonProperty(PropertyName = "wins")]
+            public int Wins;
+
+            [JsonProperty(PropertyName = "runs")]
+            public int Runs;
+
+            [JsonConverter(typeof(MillisecondsToTimeSpanConverter)), JsonProperty(PropertyName = "reaction_time")]
+            public TimeSpan ReactionTime;
+
+            public override bool IsNotCancelled => Runs > 0;
+
+            public override string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled}, Wins/Runs={Wins}/{Runs})";
+            }
+        }
+
         internal class ResultExtraConverter : JsonConverter {
             public override bool CanConvert(Type type) => true;
 
@@ -119,6 +139,9 @@ namespace AcTools.Processes {
                     switch (type) {
                         case "drift":
                             return jo.ToObject<ResultExtraDrift>(serializer);
+
+                        case "drag":
+                            return jo.ToObject<ResultExtraDrag>(serializer);
 
                         case "bestlap":
                             return jo.ToObject<ResultExtraBestLap>(serializer);
@@ -290,6 +313,9 @@ namespace AcTools.Processes {
 
                         case SessionType.Booking:
                             return true;
+
+                        case SessionType.Drag:
+                            return LapsTotalPerCar.FirstOrDefault() > 0;
 
                         default:
                             throw new ArgumentOutOfRangeException();

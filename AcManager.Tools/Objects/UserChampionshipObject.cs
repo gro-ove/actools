@@ -452,7 +452,7 @@ namespace AcManager.Tools.Objects {
         private void UpdateMaxCars() {
             MaxCars = (_extendedRounds?.Select(x => x.Track) ??
                     _rounds.Where(x => x.TrackId != null).Select(x => TracksManager.Instance.GetLayoutByKunosId(x.TrackId)))
-                    .Select(x => x.SpecsPitboxesValue).MaxOr(0);
+                    .Select(x => x.SpecsPitboxesValue).MinOr(0);
         }
 
         private bool _updatingCoherentTime;

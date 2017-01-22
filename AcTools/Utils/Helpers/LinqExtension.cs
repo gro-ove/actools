@@ -647,6 +647,23 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        public static void ForEach<T>([NotNull] this IEnumerable<T> source, Action<T> action) {
+            using (var enumerator = source.GetEnumerator()) {
+                while (enumerator.MoveNext()) {
+                    action(enumerator.Current);
+                }
+            }
+        }
+
+        public static void ForEach<TFirst, TSecond>([NotNull] this IEnumerable<TFirst> source, IEnumerable<TSecond> second, Action<TFirst, TSecond> action) {
+            using (var enumeratorFirst = source.GetEnumerator())
+            using (var enumeratorSecond = second.GetEnumerator()) {
+                while (enumeratorFirst.MoveNext() && enumeratorSecond.MoveNext()) {
+                    action(enumeratorFirst.Current, enumeratorSecond.Current);
+                }
+            }
+        }
+
         public static int AddSorted<T>([NotNull] this IList<T> list, T value, IComparer<T> comparer = null) {
             if (comparer == null) comparer = Comparer<T>.Default;
 

@@ -5,7 +5,6 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Profile;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
@@ -19,7 +18,8 @@ namespace AcManager.Tools.Objects {
     public class SpecialEventObject : KunosEventObjectBase {
         public sealed class AiLevelEntry : Displayable, IWithId<int> {
             private static readonly string[] DisplayNames = {
-               "Easy", "Medium", "Hard",  "Alien"
+                ToolsStrings.DifficultyLevel_Easy, ToolsStrings.DifficultyLevel_Medium,
+                ToolsStrings.DifficultyLevel_Hard, ToolsStrings.DifficultyLevel_Alien
             };
 
             public AiLevelEntry(int index, int aiLevel) {
@@ -74,9 +74,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private string KeyTakenPlace => $"{Id}:TakenPlace";
+        private string KeyTakenPlace => $@"{Id}:TakenPlace";
 
-        private string KeySelectedLevel => $"{Id}:SelectedLevel";
+        private string KeySelectedLevel => $@"{Id}:SelectedLevel";
 
         private string _displayDescription;
 
@@ -91,7 +91,7 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadObjects() {
             base.LoadObjects();
-            DisplayDescription = string.Format("{0} at {1}.", CarObject?.DisplayName ?? CarId, TrackObject?.Name ?? TrackId);
+            DisplayDescription = string.Format(ToolsStrings.SpecialEvent_Description, CarObject?.DisplayName ?? CarId, TrackObject?.Name ?? TrackId);
         }
 
         protected override void LoadData(IniFile ini) {

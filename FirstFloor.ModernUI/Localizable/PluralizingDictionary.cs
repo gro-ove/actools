@@ -24,6 +24,10 @@ namespace FirstFloor.ModernUI.Localizable {
                 return s + "es";
             }
 
+            if (s.EndsWith("y")) {
+                return s.Substring(0, s.Length - 1) + "ies";
+            }
+
             return s + "s";
         }
 

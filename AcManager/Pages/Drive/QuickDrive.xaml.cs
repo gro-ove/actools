@@ -18,6 +18,7 @@ using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
+using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -33,12 +34,11 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive : ILoadableContent {
-        public static bool OptionTestMode = false;
-
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
 
@@ -72,14 +72,6 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
-            
-            if (OptionTestMode) {
-                ModeTab.Links.Add(new Link {
-                    DisplayName = "Test",
-                    IsNew = true,
-                    Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
-                });
-            }
         }
         
         private DispatcherTimer _realConditionsTimer;
@@ -168,10 +160,6 @@ namespace AcManager.Pages.Drive {
                             SelectedModeViewModel = new QuickDrive_Race.ViewModel(!_skipLoading);
                             break;
 
-                        case "/Pages/Drive/QuickDrive_GridTest.xaml":
-                            SelectedModeViewModel = new QuickDrive_GridTest.ViewModel(!_skipLoading);
-                            break;
-
                         case "/Pages/Drive/QuickDrive_Trackday.xaml":
                             SelectedModeViewModel = new QuickDrive_Trackday.ViewModel(!_skipLoading);
                             break;
@@ -182,6 +170,10 @@ namespace AcManager.Pages.Drive {
 
                         case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
                             SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel(!_skipLoading);
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_Drag.xaml":
+                            SelectedModeViewModel = new QuickDrive_Drag.ViewModel(!_skipLoading);
                             break;
 
                         default:
@@ -445,6 +437,7 @@ namespace AcManager.Pages.Drive {
             private ICommand _changeTrackCommand;
 
             public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
+                // var extra = this.SelectedModeViewModel.GetSpecificTrackSelectionPage();
                 SelectedTrack = SelectTrackDialog.Show(SelectedTrack);
             }));
 
@@ -456,10 +449,14 @@ namespace AcManager.Pages.Drive {
                     new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
             internal async Task Go() {
-                _goCommand?.RaiseCanExecuteChanged();
-
                 var selectedMode = SelectedModeViewModel;
                 if (selectedMode == null) return;
+
+                if (!selectedMode.TrackFits &&
+                        ModernDialog.ShowMessage("Most likely, track won’t work with selected mode. Are you sure you want to continue?", ToolsStrings.Common_Warning,
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    return;
+                }
 
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
@@ -497,6 +494,7 @@ namespace AcManager.Pages.Drive {
                 SelectedModeViewModel?.OnSelectedUpdated(SelectedCar, SelectedTrack);
             }
 
+            [CanBeNull]
             public QuickDriveModeViewModel SelectedModeViewModel {
                 get { return _selectedModeViewModel; }
                 set {
@@ -511,8 +509,8 @@ namespace AcManager.Pages.Drive {
 
                     if (_selectedModeViewModel != null) {
                         _selectedModeViewModel.Changed += SelectedModeViewModel_Changed;
+                        OnSelectedUpdated();
                     }
-                    OnSelectedUpdated();
                 }
             }
 

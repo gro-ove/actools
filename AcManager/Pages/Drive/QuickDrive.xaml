@@ -243,8 +243,8 @@
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Race}" Source="/Pages/Drive/QuickDrive_Race.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TrackDay}" Source="/Pages/Drive/QuickDrive_Trackday.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
-                    <!--<mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />-->
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Drive/QuickDrive_Drag.xaml" />
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>
@@ -253,8 +253,26 @@
             <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
             <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
                     Content="{x:Static g:AppStrings.Common_Share}" />
-            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="{x:Static g:AppStrings.Common_Go_RaceTooltip}"
-                    Content="{x:Static g:AppStrings.Common_Go}" />
+            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">
+                <Button.ToolTip>
+                    <mui:BooleanSwitch Value="{Binding SelectedModeViewModel.TrackFits}">
+                        <mui:BooleanSwitch.True>
+                            <TextBlock Text="{x:Static g:AppStrings.Common_Go_RaceTooltip}" />
+                        </mui:BooleanSwitch.True>
+                        <mui:BooleanSwitch.False>
+                            <TextBlock>
+                                <TextBlock.Text>Most likely, track won’t work with selected mode</TextBlock.Text>
+                            </TextBlock>
+                        </mui:BooleanSwitch.False>
+                    </mui:BooleanSwitch>
+                </Button.ToolTip>
+                <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                            Margin="2 2 4 0" VerticalAlignment="Center"
+                            Visibility="{Binding SelectedModeViewModel.TrackFits, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBlock Text="{x:Static g:AppStrings.Common_Go}" />
+                </DockPanel>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

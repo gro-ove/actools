@@ -54,6 +54,8 @@ namespace AcManager.Tools.AcObjectsNew {
         protected override void LoadOrThrow() {
             LoadIniOrThrow();
         }
+        
+        protected virtual IniFileMode IniFileMode => IniFileMode.Normal;
 
         private void LoadIniOrThrow() {
             string text;
@@ -69,7 +71,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             try {
-                IniObject = IniFile.Parse(text);
+                IniObject = IniFile.Parse(text, IniFileMode);
             } catch (Exception) {
                 IniObject = null;
                 AddError(AcErrorType.Data_IniIsDamaged, Path.GetFileName(IniFilename));
@@ -79,7 +81,7 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 LoadData(IniObject);
             } catch (Exception e) {
-                Logging.Warning("LoadIniOrThrow(): " + e);
+                Logging.Warning(e);
             }
         }
 

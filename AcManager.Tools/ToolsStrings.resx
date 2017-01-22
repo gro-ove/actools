@@ -850,7 +850,7 @@
     <value>Can’t execute command</value>
   </data>
   <data name="Session_Drag" xml:space="preserve">
-    <value>Drag</value>
+    <value>Drag Race</value>
   </data>
   <data name="Session_Drift" xml:space="preserve">
     <value>Drift</value>
@@ -1625,5 +1625,34 @@
   </data>
   <data name="RaceGrid_You" xml:space="preserve">
     <value>You</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Easy</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Hard</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+    <comment>For special challenges</comment>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} at {1}.</value>
+    <comment>&lt;Car&gt; at &lt;track&gt;.</comment>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Points</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Wins</value>
   </data>
 </root>

@@ -12,8 +12,6 @@ namespace AcTools.LapTimes {
     }
 
     public class SidekickLapTimesReader : ILapTimesReader {
-        public static readonly string SourceId = "Sidekick";
-
         // http://svn.python.org/projects/python/tags/r32/Lib/pickle.py
         private static bool ReadPickle(BinaryReader reader, out long result) {
             if (reader.ReadByte() != 128 || reader.ReadByte() != 3) {
@@ -98,7 +96,7 @@ namespace AcTools.LapTimes {
             return false;
         }
 
-        public IEnumerable<LapTimeEntry> GetEntries() {
+        protected IEnumerable<LapTimeEntry> GetEntries(string sourceId) {
             var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
             if (!directory.Exists) yield break;
 
@@ -112,10 +110,16 @@ namespace AcTools.LapTimes {
 
                 string carId, trackLayoutId;
                 if (TryToGuessCarAndTrack(file.FullName, out carId, out trackLayoutId)) {
-                    yield return new LapTimeEntry(SourceId, carId, trackLayoutId,
+                    yield return new LapTimeEntry(sourceId, carId, trackLayoutId,
                             file.CreationTime, TimeSpan.FromMilliseconds(time));
                 }
             }
+        }
+
+        public static readonly string SourceId = "Sidekick";
+
+        public virtual IEnumerable<LapTimeEntry> GetEntries() {
+            return GetEntries(SourceId);
         }
 
         public DateTime GetLastModified() {
@@ -126,4 +130,16 @@ namespace AcTools.LapTimes {
 
         public void Dispose() {}
     }
+
+
+    public class RaceEssentialsLapTimesReader : SidekickLapTimesReader {
+        public RaceEssentialsLapTimesReader(string raceEssentialsDirectory, IAcIdsProvider provider) : base(raceEssentialsDirectory, provider) { }
+
+        public new static readonly string SourceId = "RaceEssentials";
+
+        public override IEnumerable<LapTimeEntry> GetEntries() {
+            return GetEntries(SourceId);
+        }
+    }
+
 }

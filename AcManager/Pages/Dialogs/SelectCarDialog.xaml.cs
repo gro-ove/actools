@@ -38,6 +38,16 @@ namespace AcManager.Pages.Dialogs {
 
         private CarSkinObject _selectedSkin;
 
+        public CarSkinObject SelectedSkin {
+            get { return _selectedSkin; }
+            set {
+                if (Equals(value, _selectedSkin)) return;
+                _selectedSkin = value;
+                OnPropertyChanged();
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
         private readonly DelayedPropertyWrapper<CarObject> _selectedCar;
 
         public CarObject SelectedCar {
@@ -115,16 +125,6 @@ namespace AcManager.Pages.Dialogs {
             TunableVersions.ReplaceEverythingBy(new [] { parent }.Where(x => x.Enabled).Union(children));
             if (SelectedTunableVersion == null) {
                 SelectedTunableVersion = SelectedCar;
-            }
-        }
-
-        public CarSkinObject SelectedSkin {
-            get { return _selectedSkin; }
-            set {
-                if (Equals(value, _selectedSkin)) return;
-                _selectedSkin = value;
-                OnPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -209,10 +209,27 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new [] { OkButton, CancelButton };
         }
 
+        [CanBeNull]
         public static CarObject Show(CarObject car = null) {
             var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault());
             dialog.ShowDialog();
             return dialog.IsResultOk ? dialog.SelectedCar : null;
+        }
+
+        [CanBeNull]
+        public static CarObject Show(CarObject car, ref CarSkinObject carSkin) {
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
+                SelectedSkin = car?.SkinsActualList.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
+            };
+
+            dialog.ShowDialog();
+
+            if (dialog.IsResultOk) {
+                carSkin = dialog.SelectedSkin;
+                return dialog.SelectedCar;
+            }
+
+            return null;
         }
 
         private bool _loaded;

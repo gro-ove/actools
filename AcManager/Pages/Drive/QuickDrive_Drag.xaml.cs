@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 
@@ -34,26 +36,14 @@ namespace AcManager.Pages.Drive {
         public class ViewModel : QuickDrive_Race.ViewModel {
             protected override bool IgnoreStartingPosition => true;
 
-            private int _practiceDuration;
+            private int _matchesCount;
 
-            public int PracticeDuration {
-                get { return _practiceDuration; }
+            public int MatchesCount {
+                get { return _matchesCount; }
                 set {
-                    value = value.Clamp(0, 90);
-                    if (Equals(value, _practiceDuration)) return;
-                    _practiceDuration = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private int _qualificationDuration;
-
-            public int QualificationDuration {
-                get { return _qualificationDuration; }
-                set {
-                    value = value.Clamp(5, 90);
-                    if (Equals(value, _qualificationDuration)) return;
-                    _qualificationDuration = value;
+                    value = value.Clamp(0, 50);
+                    if (Equals(value, _matchesCount)) return;
+                    _matchesCount = value;
                     OnPropertyChanged();
                 }
             }
@@ -61,63 +51,48 @@ namespace AcManager.Pages.Drive {
             public ViewModel(bool initialize = true) : base(initialize) {}
 
             private new class SaveableData : QuickDrive_Race.ViewModel.SaveableData {
-                public int? PracticeLength, QualificationLength;
-            }
-            
-            protected new class OldSaveableData : QuickDrive_Race.ViewModel.OldSaveableData {
-                public int? PracticeLength, QualificationLength;
+                public int? MatchesCount;
             }
 
             protected override void Save(QuickDrive_Race.ViewModel.SaveableData result) {
                 base.Save(result);
 
                 var r = (SaveableData)result;
-                r.PracticeLength = PracticeDuration;
-                r.QualificationLength = QualificationDuration;
+                r.MatchesCount = MatchesCount;
             }
 
             protected override void Load(QuickDrive_Race.ViewModel.SaveableData o) {
                 base.Load(o);
-
+                RaceGridViewModel.OpponentsNumber = 1;
+                RaceGridViewModel.AiLevelFixed = true;
                 var r = (SaveableData)o;
-                PracticeDuration = r.PracticeLength ?? 15;
-                QualificationDuration = r.QualificationLength ?? 30;
-            }
-
-            protected override void Load(QuickDrive_Race.ViewModel.OldSaveableData o) {
-                base.Load(o);
-
-                var r = (OldSaveableData)o;
-                PracticeDuration = r.PracticeLength ?? 15;
-                QualificationDuration = r.QualificationLength ?? 30;
+                MatchesCount = r.MatchesCount ?? 10;
             }
 
             protected override void Reset() {
                 base.Reset();
-                PracticeDuration = 15;
-                QualificationDuration = 30;
+                MatchesCount = 10;
+                RaceGridViewModel.OpponentsNumber = 1;
+                RaceGridViewModel.AiLevelFixed = true;
+            }
+
+            protected override void UpdateTrackFits() {
+                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("drag") != false;
             }
 
             protected override void InitializeSaveable() {
-                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Weekend", () => {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Drag", () => {
                     var r = new SaveableData();
                     Save(r);
                     return r;
                 }, Load, Reset);
-                Saveable.RegisterUpgrade<OldSaveableData>(QuickDrive_Race.ViewModel.OldSaveableData.Test, Load);
             }
 
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
-                return new Game.WeekendProperties {
+                return new Game.DragProperties {
                     AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
-                    Penalties = Penalties,
-                    JumpStartPenalty = JumpStartPenalty,
-                    StartingPosition = RaceGridViewModel.StartingPosition == 0
-                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPosition,
-                    RaceLaps = LapsNumber,
-                    BotCars = botCars,
-                    PracticeDuration = PracticeDuration,
-                    QualificationDuration = QualificationDuration
+                    MatchesCount = MatchesCount,
+                    BotCar = botCars.FirstOrDefault()
                 };
             }
         }

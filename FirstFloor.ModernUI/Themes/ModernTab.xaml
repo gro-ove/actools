@@ -64,31 +64,27 @@
         <Setter Property="LinksHorizontalAlignment" Value="Right" />
         <Setter Property="LinksMargin" Value="{DynamicResource HeaderMargin}" />
         <Setter Property="FrameMargin" Value="0" />
-        
+
         <Setter Property="LinksListBoxTemplate">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBox">
-                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
-                        <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="True"
-                                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                        </ScrollViewer>
-                    </Border>
+                    <ScrollViewer x:Name="PART_ScrollViewer" Padding="{TemplateBinding Padding}" Focusable="False" CanContentScroll="False"
+                            HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" PanningMode="Both">
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="c:ModernTab">
                     <c:Cell>
                         <!-- link list -->
-                        <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
+                        <ListBox x:Name="PART_LinkList" VerticalAlignment="Top" ItemsSource="{TemplateBinding Links}"
                                 ItemContainerStyle="{StaticResource ModernTabLinkItem}" ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
                                 ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}"
-                                HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top" Margin="{TemplateBinding LinksMargin}"
+                                HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" Margin="{TemplateBinding LinksMargin}"
                                 Template="{TemplateBinding LinksListBoxTemplate}" />
 
                         <!-- content -->

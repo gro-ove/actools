@@ -243,19 +243,55 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
+        public static IDraggableDestinationConverter GetDestinationConverter(DependencyObject obj) {
+            return (IDraggableDestinationConverter)obj.GetValue(DestinationConverterProperty);
+        }
+
+        public static void SetDestinationConverter(DependencyObject obj, IDraggableDestinationConverter value) {
+            obj.SetValue(DestinationConverterProperty, value);
+        }
+
+        public static readonly DependencyProperty DestinationConverterProperty = DependencyProperty.RegisterAttached("DestinationConverter", typeof(IDraggableDestinationConverter),
+                typeof(Draggable), new UIPropertyMetadata(OnDestinationConverterChanged));
+
+        private static void OnDestinationConverterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            var element = d as ItemsControl;
+            if (element == null || !(e.NewValue is IDraggableDestinationConverter)) return;
+            
+            var newValue = (IDraggableDestinationConverter)e.NewValue;
+            if (newValue != null) {
+                element.Drop += DestinationConverter_Drop;
+                element.AllowDrop = true;
+            } else {
+                element.Drop -= DestinationConverter_Drop;
+                element.AllowDrop = false;
+            }
+        }
+
         private static void Destination_Drop(object sender, DragEventArgs e) {
             var destination = (ItemsControl)sender;
             var format = GetDestination(destination);
-            var widget = e.Data.GetData(format) as IDraggable;
+            var item = e.Data.GetData(format) as IDraggable;
             var source = e.Data.GetData(SourceFormat) as ItemsControl;
+            InnerDrop(source, destination, item, e);
+        }
 
-            if (widget == null || source == null) {
+        private static void DestinationConverter_Drop(object sender, DragEventArgs e) {
+            var destination = (ItemsControl)sender;
+            var converter = GetDestinationConverter(destination);
+            var item = converter?.Convert(e.Data);
+            var source = e.Data.GetData(SourceFormat) as ItemsControl;
+            InnerDrop(source, destination, item, e);
+        }
+
+        private static void InnerDrop([CanBeNull] ItemsControl source, [NotNull] ItemsControl destination, [CanBeNull] object item, DragEventArgs e) {
+            if (item == null) {
                 e.Effects = DragDropEffects.None;
                 return;
             }
 
             var newIndex = destination.GetMouseItemIndex();
-            var type = widget.GetType();
+            var type = item.GetType();
 
             try {
                 if (newIndex == -1) {
@@ -269,8 +305,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         return;
                     }
 
-                    ((IList)source.ItemsSource).Remove(widget);
-                    method.Invoke(destination.ItemsSource, new object[] { widget });
+                    ((IList)source?.ItemsSource)?.Remove(item);
+                    method.Invoke(destination.ItemsSource, new[] { item });
                 } else {
                     var method = (from x in destination.ItemsSource.GetType().GetMethods()
                                   where x.Name == "Insert"
@@ -282,8 +318,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         return;
                     }
 
-                    ((IList)source.ItemsSource).Remove(widget);
-                    method.Invoke(destination.ItemsSource, new object[] { newIndex, widget });
+                    ((IList)source?.ItemsSource)?.Remove(item);
+                    method.Invoke(destination.ItemsSource, new[] { newIndex, item });
                 }
 
                 e.Effects = DragDropEffects.Move;
@@ -292,5 +328,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 e.Effects = DragDropEffects.None;
             }
         }
+    }
+
+    public interface IDraggableDestinationConverter {
+        [CanBeNull]
+        object Convert([NotNull] IDataObject data);
     }
 }

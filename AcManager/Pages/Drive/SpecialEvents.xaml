@@ -231,29 +231,35 @@
         <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding Selected}" HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
-            <StackPanel>
-                <mui:BetterImage Margin="0 0 0 8" Filename="{Binding CarSkin.PreviewImage}" Width="240">
-                    <mui:BetterImage.ToolTip>
-                        <StackPanel Margin="4 8">
-                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
-                            <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
-                                    MaxHeight="320" />
-                        </StackPanel>
-                    </mui:BetterImage.ToolTip>
-                </mui:BetterImage>
+            <mui:SpacingStackPanel Spacing="8" Width="240">
+                <mui:Cell>
+                    <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="240">
+                        <FrameworkElement.ToolTip>
+                            <StackPanel Margin="4 8">
+                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
+                                <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}"
+                                        Width="512" MaxHeight="320" />
+                            </StackPanel>
+                        </FrameworkElement.ToolTip>
+                    </mui:BetterImage>
+                    <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                            Text="{Binding CarObject.DisplayName}" Foreground="White" TextTrimming="CharacterEllipsis" />
+                </mui:Cell>
 
-                <Grid Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <mui:BetterImage Filename="{Binding TrackObject.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
                     <mui:BetterImage Filename="{Binding TrackObject.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
                             HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
-                    <Grid.ToolTip>
+                    <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                            Text="{Binding TrackObject.LayoutName}" Foreground="White" TextTrimming="CharacterEllipsis" />
+                    <FrameworkElement.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding TrackObject.DisplayName}" Margin="0 0 0 4" />
                             <c:TrackBlock Track="{Binding TrackObject}" Width="512" MaxHeight="320" />
                         </StackPanel>
-                    </Grid.ToolTip>
-                </Grid>
-            </StackPanel>
+                    </FrameworkElement.ToolTip>
+                </mui:Cell>
+            </mui:SpacingStackPanel>
         </ScrollViewer>
 
         <Grid Margin="12 0 0 0" Grid.Row="2" Grid.Column="2">
@@ -288,7 +294,7 @@
 
             <StackPanel Grid.Row="2" Margin="0 0 0 24"
                     Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType}" />
+                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType, Converter={StaticResource EnumToDescriptionConverter}}" />
                 <StackPanel Orientation="Horizontal">
                     <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"

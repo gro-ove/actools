@@ -12,6 +12,7 @@
     <c:ExistToVisibilityConverter x:Key="ExistToVisibilityConverter" />
     <c:InvertBooleanConverter x:Key="InvertBooleanConverter" />
     <c:LessToBooleanConverter x:Key="LessToBooleanConverter" />
+    <c:MillisecondsTimeSpanConverter x:Key="MillisecondsTimeSpanConverter" />
     <c:MoreConverter x:Key="MoreConverter" />
     <c:MoreToVisibilityConverter x:Key="MoreToVisibilityConverter" />
     <c:MultiplyConverter x:Key="MultiplyConverter" />

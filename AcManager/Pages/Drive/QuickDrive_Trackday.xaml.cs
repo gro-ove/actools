@@ -43,7 +43,11 @@ namespace AcManager.Pages.Drive {
                 }, Load, Reset);
                 Saveable.RegisterUpgrade<OldSaveableData>(OldSaveableData.Test, Load);
             }
-            
+
+            protected override void UpdateTrackFits() {
+                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            }
+
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
                 return new Game.TrackdayProperties {
                     AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,

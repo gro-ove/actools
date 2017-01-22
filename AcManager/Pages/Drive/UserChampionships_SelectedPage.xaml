@@ -355,44 +355,52 @@
             <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding AcObject}" HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
-                <StackPanel>
-                    <mui:BetterImage Margin="0 0 0 8" Filename="{Binding UserPlayerCarSkin.PreviewImage}" Width="240"
-                            PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
-                        <mui:BetterImage.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
-                                        IsEnabled="{Binding Source={x:Static t:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
-                                        PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
-                            </ContextMenu>
-                        </mui:BetterImage.ContextMenu>
-                        <mui:BetterImage.ToolTip>
-                            <StackPanel Margin="4 8">
-                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding PlayerCar.DisplayName}" Margin="0 0 0 4" />
-                                <c:CarBlock Car="{Binding PlayerCar}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding UserPlayerCarSkin}"
-                                        Width="512" MaxHeight="320" />
-                            </StackPanel>
-                        </mui:BetterImage.ToolTip>
-                    </mui:BetterImage>
+                <mui:SpacingStackPanel Spacing="8">
+                    <mui:Cell>
+                        <mui:BetterImage Filename="{Binding UserPlayerCarSkin.PreviewImage}" Width="240"
+                                PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
+                            <mui:BetterImage.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
+                                            IsEnabled="{Binding Source={x:Static t:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
+                                            PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
+                                </ContextMenu>
+                            </mui:BetterImage.ContextMenu>
+                            <mui:BetterImage.ToolTip>
+                                <StackPanel Margin="4 8">
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding PlayerCar.DisplayName}" Margin="0 0 0 4" />
+                                    <c:CarBlock Car="{Binding PlayerCar}" ShowSkinsAndPreview="False" SelectSkin="False"
+                                            SelectedSkin="{Binding UserPlayerCarSkin}" Width="512" MaxHeight="320" />
+                                </StackPanel>
+                            </mui:BetterImage.ToolTip>
+                        </mui:BetterImage>
+                        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                                Text="{Binding PlayerCar.DisplayName}" Foreground="White" TextTrimming="CharacterEllipsis" />
+                    </mui:Cell>
 
-                    <Border
-                            Visibility="{Binding KunosCareerUserSkin, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ListBox ItemsSource="{Binding PlayerCar.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False"
-                                SelectedItem="{Binding UserPlayerCarSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
-                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
-                                Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                        </ListBox>
-                    </Border>
+                    <ListBox ItemsSource="{Binding PlayerCar.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="False"
+                            SelectedItem="{Binding UserPlayerCarSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
+                            VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel">
+                        <ListBox.Visibility>
+                            <MultiBinding Converter="{StaticResource MultiBooleanToVisibilityConverter}">
+                                <Binding Path="KunosCareerUserSkin" Source="{x:Static t:SettingsHolder.Drive}" />
+                                <Binding Path="ActualHeight" ElementName="ContentGrid" Converter="{StaticResource MoreConverter}" ConverterParameter="564" />
+                            </MultiBinding>
+                        </ListBox.Visibility>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
 
                     <mui:Cell Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding CurrentRound}">
                         <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
                         <mui:BetterImage Filename="{Binding Track.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
+                        <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                                Text="{Binding Track.LayoutName}" Foreground="White" TextTrimming="CharacterEllipsis" />
                         <mui:Cell.ToolTip>
                             <StackPanel Margin="4 8">
                                 <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
@@ -400,7 +408,7 @@
                             </StackPanel>
                         </mui:Cell.ToolTip>
                     </mui:Cell>
-                </StackPanel>
+                </mui:SpacingStackPanel>
             </ScrollViewer>
 
             <Grid Margin="12 0 0 0" Grid.Row="2" Grid.Column="2"

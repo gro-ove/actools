@@ -736,6 +736,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  lap.
+        /// </summary>
+        public static string Common_RoundPostfix {
+            get {
+                return ResourceManager.GetString("Common_RoundPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  sec.
         /// </summary>
         public static string Common_SecondsPostfix {

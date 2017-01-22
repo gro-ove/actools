@@ -102,6 +102,10 @@ namespace AcManager.Pages.Drive {
                 QualificationDuration = 30;
             }
 
+            protected override void UpdateTrackFits() {
+                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            }
+
             protected override void InitializeSaveable() {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Weekend", () => {
                     var r = new SaveableData();

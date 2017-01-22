@@ -1,33 +1,41 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Tools;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent {
+    public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         public class ViewModel : SelectedAcObjectViewModel<PythonAppObject> {
+            public PythonAppConfigs Configs { get; }
+
             public ViewModel([NotNull] PythonAppObject acObject) : base(acObject) {
                 IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
-                AcSettingsHolder.Python.PropertyChanged += Python_PropertyChanged;
+                AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
+                Configs = acObject.GetAppConfigs();
             }
 
-            private void Python_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            private void OnPythonPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
                 if (e.PropertyName == nameof(PythonSettings.Apps)) {
                     IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
                 }
             }
 
             public override void Unload() {
-                AcSettingsHolder.Python.PropertyChanged -= Python_PropertyChanged;
+                Configs.Dispose();
+                AcSettingsHolder.Python.PropertyChanged -= OnPythonPropertyChanged;
                 base.Unload();
             }
 
@@ -72,18 +80,70 @@ namespace AcManager.Pages.Selected {
             _object = PythonAppsManager.Instance.GetById(_id);
         }
 
+        public bool ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = PythonAppsManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            _id = id;
+            _object = obj;
+            SetModel();
+            return true;
+        }
+
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
+            SetModel();
+            InitializeComponent();
+        }
 
+        private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
-            InitializeComponent();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {}
+
+        private void OnFileButtonClick(object sender, RoutedEventArgs e) {
+            var entry = ((FrameworkElement)sender).DataContext as PythonAppConfigFileValue;
+            if (entry == null) return;
+
+            try {
+                if (entry.DirectoryMode) {
+                    var dialog = new FolderBrowserDialog {
+                        ShowNewFolderButton = true,
+                        SelectedPath = entry.Value
+                    };
+
+                    if (dialog.ShowDialog() == DialogResult.OK) {
+                        entry.Value = dialog.SelectedPath;
+                    }
+                } else {
+                    var directory = Path.GetDirectoryName(entry.Value);
+                    if (string.IsNullOrWhiteSpace(directory)) {
+                        directory = _model.SelectedObject.Location;
+                    }
+
+                    var dialog = new OpenFileDialog {
+                        Filter = entry.Filter,
+                        InitialDirectory = directory,
+                        FileName = Path.GetFileName(entry.Value)
+                };
+
+                    if (dialog.ShowDialog() == true) {
+                        entry.Value = dialog.FileName;
+                    }
+                }
+            } catch (ArgumentException ex) {
+                NonfatalError.Notify("Can’t open dialog", ex);
+            }
+        }
     }
 }
