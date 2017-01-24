@@ -99,8 +99,8 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" />
-                        <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
-                                attached:WatermarkService.Watermark="?" />
+                        <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer"
+                                Placeholder="?" />
                     </DockPanel>
 
                     <!-- last row -->
@@ -112,7 +112,7 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
-                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?"
                                 MouseUp="OnVersionInfoBlockClick" />
                     </DockPanel>
                 </Grid>

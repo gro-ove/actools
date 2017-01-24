@@ -2,21 +2,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Loaded="OnLoaded" Background="Black" x:Name="This">
-    <Image Source="{Binding Static, ElementName=This}" Stretch="UniformToFill" />
-    <Border x:Name="VideoWrapper" Opacity="0" IsHitTestVisible="False">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="Hidden">
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3" />
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Visible">
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3" />
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-    </Border>
+    <Viewbox Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <mui:Cell>
+            <Image Source="{Binding Static, ElementName=This}" />
+            <Border x:Name="VideoWrapper" Opacity="0" IsHitTestVisible="False">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup>
+                        <VisualState x:Name="Hidden">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3" />
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Visible">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3" />
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Border>
+        </mui:Cell>
+    </Viewbox>
+    <Border Background="{DynamicResource DynamicBackgroundOverlay}" />
 </mui:Cell>

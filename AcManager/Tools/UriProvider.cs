@@ -10,7 +10,11 @@ namespace AcManager.Tools {
     public class UriProvider : IAcObjectsUriProvider {
         Uri IAcObjectsUriProvider.GetUri(AcObjectNew obj) {
             if (obj is CarObject) {
+#if DEBUG
+                return UriExtension.Create("/Pages/Selected/SelectedCarPage_New.xaml?Id={0}", obj.Id);
+#else
                 return UriExtension.Create("/Pages/Selected/SelectedCarPage.xaml?Id={0}", obj.Id);
+#endif
             }
 
             if (obj is TrackObject) {

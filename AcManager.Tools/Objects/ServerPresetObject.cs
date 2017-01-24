@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Managers;
+using AcTools;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -30,8 +37,314 @@ namespace AcManager.Tools.Objects {
         DriveThrough = 2
     }
 
+    public class ServerSessionEntry : Displayable {
+        private readonly string _onKey, _offKey;
+
+        public sealed override string DisplayName { get; set; }
+
+        public ServerSessionEntry([Localizable(false)] string key, string name, bool isClosable) {
+            _onKey = key;
+            _offKey = $@"__CM_{_onKey}_OFF";
+
+            DisplayName = name;
+            IsClosable = isClosable;
+        }
+
+        public void Load(IniFile config) {
+            IsEnabled = config.ContainsKey(_onKey);
+            Load(IsEnabled ? config[_onKey] : config[_offKey]);
+        }
+
+        protected virtual void Load(IniFileSection section) {
+            ConfigName = section.GetNonEmpty("NAME") ?? DisplayName;
+            Time = TimeSpan.FromMinutes(section.GetDouble("TIME", 5d));
+            IsOpen = section.GetBool("IS_OPEN", true);
+        }
+
+        public void Save(IniFile config) {
+            if (IsEnabled) {
+                Save(config[_onKey]);
+                config.Remove(_offKey);
+            } else {
+                Save(config[_offKey]);
+                config.Remove(_onKey);
+            }
+        }
+
+        protected virtual void Save(IniFileSection section) {
+            section.Set("NAME", string.IsNullOrWhiteSpace(ConfigName) ? DisplayName : ConfigName);
+            section.Set("TIME", Time.TotalMinutes); // round?
+            section.Set("IS_OPEN", IsOpen);
+        }
+
+        private string _configName;
+
+        public string ConfigName {
+            get { return _configName; }
+            set {
+                if (Equals(value, _configName)) return;
+                _configName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isEnabled;
+
+        public bool IsEnabled {
+            get { return _isEnabled; }
+            set {
+                if (Equals(value, _isEnabled)) return;
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private TimeSpan _time;
+        
+        public TimeSpan Time {
+            get { return _time; }
+            set {
+                if (Equals(value, _time)) return;
+                _time = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isOpen;
+
+        public bool IsOpen {
+            get { return _isOpen; }
+            set {
+                if (Equals(value, _isOpen)) return;
+                _isOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsClosable { get; }
+    }
+
+    public enum ServerPresetRaceJoinType {
+        [Description("Close")]
+        Close,
+
+        [Description("Open")]
+        Open,
+
+        [Description("Close at start")]
+        CloseAtStart
+    }
+
+    public class ServerRaceSessionEntry : ServerSessionEntry {
+        public ServerRaceSessionEntry() : base("RACE", ToolsStrings.Session_Race, true) { }
+
+        protected override void Load(IniFileSection section) {
+            base.Load(section);
+            LapsCount = section.GetInt("LAPS", 5);
+            WaitTime = TimeSpan.FromSeconds(section.GetInt("WAIT_TIME", 60));
+            JoinType = section.GetIntEnum("IS_OPEN", ServerPresetRaceJoinType.CloseAtStart);
+        }
+
+        protected override void Save(IniFileSection section) {
+            base.Save(section);
+            section.Set("LAPS", LapsCount);
+            section.Set("WAIT_TIME", WaitTime.TotalSeconds); // round?
+            section.SetIntEnum("IS_OPEN", JoinType);
+        }
+
+        private int _lapsCount;
+
+        public int LapsCount {
+            get { return _lapsCount; }
+            set {
+                if (Equals(value, _lapsCount)) return;
+                _lapsCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private TimeSpan _waitTime;
+
+        public TimeSpan WaitTime {
+            get { return _waitTime; }
+            set {
+                if (Equals(value, _waitTime)) return;
+                _waitTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ServerPresetRaceJoinType _joinType;
+
+        public ServerPresetRaceJoinType JoinType {
+            get { return _joinType; }
+            set {
+                if (Equals(value, _joinType)) return;
+                _joinType = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public class ServerWeatherEntry : NotifyPropertyChanged, IDraggable {
+        private int _index;
+
+        public int Index {
+            get { return _index; }
+            set {
+                if (Equals(value, _index)) return;
+                _index = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ServerWeatherEntry() {
+            WeatherId = WeatherManager.Instance.GetDefault()?.Id;
+            BaseAmbientTemperature = 18d;
+            BaseRoadTemperature = 6d;
+            AmbientTemperatureVariation = 2d;
+            RoadTemperatureVariation = 1d;
+        }
+
+        public ServerWeatherEntry(IniFileSection section) {
+            WeatherId = section.GetNonEmpty("GRAPHICS");
+            BaseAmbientTemperature = section.GetDouble("BASE_TEMPERATURE_AMBIENT", 18d);
+            BaseRoadTemperature = section.GetDouble("BASE_TEMPERATURE_ROAD", 6d);
+            AmbientTemperatureVariation = section.GetDouble("VARIATION_AMBIENT", 2d);
+            RoadTemperatureVariation = section.GetDouble("VARIATION_ROAD", 1d);
+        }
+
+        public void SaveTo(IniFileSection section) {
+            section.Set("GRAPHICS", WeatherId);
+            section.Set("BASE_TEMPERATURE_AMBIENT", BaseAmbientTemperature);
+            section.Set("BASE_TEMPERATURE_ROAD", BaseRoadTemperature);
+            section.Set("VARIATION_AMBIENT", AmbientTemperatureVariation);
+            section.Set("VARIATION_ROAD", RoadTemperatureVariation);
+        }
+
+        private string _weatherId;
+
+        [CanBeNull]
+        public string WeatherId {
+            get { return _weatherId; }
+            set {
+                if (Equals(value, _weatherId)) return;
+                _weatherSet = false;
+                _weather = null;
+                _weatherId = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Weather));
+                OnPropertyChanged(nameof(RecommendedRoadTemperature));
+            }
+        }
+
+        private bool _weatherSet;
+        private WeatherObject _weather;
+        
+        [CanBeNull]
+        public WeatherObject Weather {
+            get {
+                if (!_weatherSet) {
+                    _weatherSet = true;
+                    _weather = WeatherId == null ? null : WeatherManager.Instance.GetById(WeatherId);
+                }
+                return _weather;
+            }
+            set { WeatherId = value?.Id; }
+        }
+
+        private double _baseAmbientTemperature;
+
+        public double BaseAmbientTemperature {
+            get { return _baseAmbientTemperature; }
+            set {
+                value = value.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum).Round(0.1);
+                if (Equals(value, _baseAmbientTemperature)) return;
+                _baseAmbientTemperature = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(RecommendedRoadTemperature));
+            }
+        }
+
+        private double _baseRoadTemperature;
+
+        public double BaseRoadTemperature {
+            get { return _baseRoadTemperature; }
+            set {
+                value = value.Clamp(CommonAcConsts.RoadTemperatureMinimum, CommonAcConsts.RoadTemperatureMaximum).Round(0.1);
+                if (Equals(value, _baseRoadTemperature)) return;
+                _baseRoadTemperature = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _ambientTemperatureVariation;
+
+        public double AmbientTemperatureVariation {
+            get { return _ambientTemperatureVariation; }
+            set {
+                value = value.Clamp(0, 100).Round(0.1);
+                if (Equals(value, _ambientTemperatureVariation)) return;
+                _ambientTemperatureVariation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _roadTemperatureVariation;
+
+        public double RoadTemperatureVariation {
+            get { return _roadTemperatureVariation; }
+            set {
+                value = value.Clamp(0, 100).Round(0.1);
+                if (Equals(value, _roadTemperatureVariation)) return;
+                _roadTemperatureVariation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _time;
+
+        internal int Time {
+            set {
+                _time = value;
+                OnPropertyChanged(nameof(RecommendedRoadTemperature));
+            }
+        }
+
+        public double RecommendedRoadTemperature =>
+                Game.ConditionProperties.GetRoadTemperature(_time, BaseAmbientTemperature, Weather?.TemperatureCoefficient ?? 1d);
+
+        private bool _deleted;
+
+        public bool Deleted {
+            get { return _deleted; }
+            set {
+                if (Equals(value, _deleted)) return;
+                _deleted = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DelegateCommand _deleteCommand;
+
+        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
+            Deleted = true;
+        }));
+
+        public const string DraggableFormat = "Data-ServerWeatherEntry";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
+    }
+
     public class ServerPresetObject : AcIniObject {
-        public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
+        public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
+            Sessions = new ChangeableObservableCollection<ServerSessionEntry>(new[] {
+                new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false), 
+                new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true), 
+                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true), 
+                new ServerRaceSessionEntry(), 
+            });
+        }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
 
@@ -47,6 +360,7 @@ namespace AcManager.Tools.Objects {
         public string ResultsDirectory { get; private set; }
 
         #region Data
+        #region Common fields
         private string _trackId;
 
         public string TrackId {
@@ -220,6 +534,20 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _pickupMode)) return;
                 _pickupMode = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private TimeSpan _raceOverTime;
+
+        public TimeSpan RaceOverTime {
+            get { return _raceOverTime; }
+            set {
+                if (Equals(value, _raceOverTime)) return;
+                _raceOverTime = value;
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
@@ -444,7 +772,39 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+        #endregion
 
+        #region Sessions and conditions
+        private ChangeableObservableCollection<ServerSessionEntry> _sessions;
+
+        public ChangeableObservableCollection<ServerSessionEntry> Sessions {
+            get { return _sessions; }
+            set {
+                if (Equals(value, _sessions)) return;
+
+                if (_sessions != null) {
+                    // _sessions.CollectionChanged -= OnSessionEntriesCollectionChanged;
+                    _sessions.ItemPropertyChanged -= OnSessionEntryPropertyChanged;
+                }
+
+                _sessions = value;
+                OnPropertyChanged();
+
+                if (_sessions != null) {
+                    // _sessions.CollectionChanged += OnSessionEntriesCollectionChanged;
+                    _sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
+                }
+            }
+        }
+
+        private void OnSessionEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (Loaded) {
+                Changed = true;
+            }
+        }
+        #endregion
+
+        #region Driver entries
         private ChangeableObservableCollection<ServerPresetDriverEntry> _driverEntries;
 
         public ChangeableObservableCollection<ServerPresetDriverEntry> DriverEntries {
@@ -453,6 +813,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _driverEntries)) return;
 
                 if (_driverEntries != null) {
+                    _driverEntries.CollectionChanged -= OnDriverEntriesCollectionChanged;
                     _driverEntries.ItemPropertyChanged -= OnDriverEntryPropertyChanged;
                 }
 
@@ -468,18 +829,214 @@ namespace AcManager.Tools.Objects {
 
         private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
             CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
-            Changed = true;
+            if (Loaded) {
+                Changed = true;
+            }
         }
 
-        private void OnDriverEntryPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(ServerPresetDriverEntry.Deleted):
                     DriverEntries.Remove((ServerPresetDriverEntry)sender);
                     return;
             }
 
-            Changed = true;
+            if (Loaded) {
+                Changed = true;
+            }
         }
+        #endregion
+
+        #region Conditions
+        private int _time;
+
+        public int Time {
+            get { return _time; }
+            set {
+                value = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                if (Equals(value, _time)) return;
+                _time = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SunAngle));
+                OnPropertyChanged(nameof(DisplayTime));
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+
+                    UpdateWeatherIndexes();
+                }
+            }
+        }
+
+        public string DisplayTime {
+            get { return $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+            set {
+                int time;
+                if (!FlexibleParser.TryParseTime(value, out time)) return;
+                Time = time;
+            }
+        }
+
+        public double SunAngle {
+            get { return Game.ConditionProperties.GetSunAngle(Time); }
+            set { Time = Game.ConditionProperties.GetSeconds(value).RoundToInt(); }
+        }
+
+        private bool _dynamicTrackEnabled;
+
+        public bool DynamicTrackEnabled {
+            get { return _dynamicTrackEnabled; }
+            set {
+                if (Equals(value, _dynamicTrackEnabled)) return;
+                _dynamicTrackEnabled = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private Game.TrackProperties _trackProperties;
+
+        public Game.TrackProperties TrackProperties {
+            get { return _trackProperties; }
+            set {
+                if (Equals(value, _trackProperties)) return;
+                _trackProperties = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ChangeableObservableCollection<ServerWeatherEntry> _weather;
+
+        public ChangeableObservableCollection<ServerWeatherEntry> Weather {
+            get { return _weather; }
+            set {
+                if (Equals(value, _weather)) return;
+
+                if (_weather != null) {
+                    _weather.CollectionChanged -= OnWeatherCollectionChanged;
+                    _weather.ItemPropertyChanged -= OnWeatherPropertyChanged;
+                }
+
+                _weather = value;
+                OnPropertyChanged();
+
+                if (_weather != null) {
+                    _weather.CollectionChanged += OnWeatherCollectionChanged;
+                    _weather.ItemPropertyChanged += OnWeatherPropertyChanged;
+                    UpdateWeatherIndexes();
+                }
+            }
+        }
+
+        private void OnWeatherCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+            UpdateWeatherIndexes();
+            if (Loaded) {
+                Changed = true;
+            }
+        }
+
+        private void UpdateWeatherIndexes() {
+            if (Weather == null) return;
+            for (var i = 0; i < Weather.Count; i++) {
+                var weather = Weather[i];
+                weather.Index = i;
+                weather.Time = Time;
+            }
+        }
+
+        private void OnWeatherPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ServerWeatherEntry.Index):
+                case nameof(ServerWeatherEntry.RecommendedRoadTemperature):
+                    return;
+                case nameof(ServerWeatherEntry.Deleted):
+                    Weather.Remove((ServerWeatherEntry)sender);
+                    return;
+            }
+
+            if (Loaded) {
+                Changed = true;
+            }
+        }
+        #endregion
+
+        #region Voting and banning
+        private int _kickVoteQuorum;
+
+        public int KickVoteQuorum {
+            get { return _kickVoteQuorum; }
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _kickVoteQuorum)) return;
+                _kickVoteQuorum = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _sessionVoteQuorum;
+
+        public int SessionVoteQuorum {
+            get { return _sessionVoteQuorum; }
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _sessionVoteQuorum)) return;
+                _sessionVoteQuorum = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private TimeSpan _voteDuration;
+
+        public TimeSpan VoteDuration {
+            get { return _voteDuration; }
+            set {
+                if (Equals(value, _voteDuration)) return;
+                _voteDuration = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _blacklistMode;
+
+        public bool BlacklistMode {
+            get { return _blacklistMode; }
+            set {
+                if (Equals(value, _blacklistMode)) return;
+                _blacklistMode = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _maxCollisionsPerKm;
+
+        public int MaxCollisionsPerKm {
+            get { return _maxCollisionsPerKm; }
+            set {
+                value = value.Clamp(-1, 128);
+                if (Equals(value, _maxCollisionsPerKm)) return;
+                _maxCollisionsPerKm = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+        #endregion
         #endregion
 
         protected override void LoadOrThrow() {
@@ -534,6 +1091,7 @@ namespace AcManager.Tools.Objects {
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", false);
+            RaceOverTime = TimeSpan.FromSeconds(section.GetDouble("RACE_OVER_TIME", 60d));
             Capacity = section.GetInt("MAX_CLIENTS", 3);
 
             UdpPort = section.GetInt("UDP_PORT", 9600);
@@ -560,6 +1118,21 @@ namespace AcManager.Tools.Objects {
             MaxBallast = section.GetInt("MAX_BALLAST_KG", 0);
             QualifyLimitPercentage = section.GetInt("QUALIFY_MAX_WAIT_PERC", 120);
             JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
+
+            foreach (var session in Sessions) {
+                session.Load(ini);
+            }
+
+            SunAngle = section.GetDouble("SUN_ANGLE", 0d);
+            DynamicTrackEnabled = ini.ContainsKey(@"DYNAMIC_TRACK");
+            Weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
+            TrackProperties = Game.TrackProperties.Load(DynamicTrackEnabled ? ini["DYNAMIC_TRACK"] : ini["__CM_DYNAMIC_TRACK_OFF"]);
+
+            KickVoteQuorum = section.GetInt("KICK_QUORUM", 85);
+            SessionVoteQuorum = section.GetInt("VOTING_QUORUM", 80);
+            VoteDuration = TimeSpan.FromSeconds(section.GetDouble("VOTE_DURATION", 20d));
+            BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
+            MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
         }
 
         private void LoadEntryListData(IniFile ini) {
@@ -574,6 +1147,7 @@ namespace AcManager.Tools.Objects {
             section.Set("REGISTER_TO_LOBBY", ShowOnLobby);
             section.Set("LOOP_MODE", LoopMode);
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
+            section.Set("RACE_OVER_TIME", RaceOverTime.TotalSeconds.RoundToInt());
             section.Set("MAX_CLIENTS", Capacity);
 
             section.Set("UDP_PORT", UdpPort);
@@ -600,13 +1174,30 @@ namespace AcManager.Tools.Objects {
             section.Set("MAX_BALLAST_KG", MaxBallast);
             section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
             section.SetIntEnum("START_RULE", JumpStart);
+
+            foreach (var session in Sessions) {
+                session.Save(ini);
+            }
+
+            section.Set("SUN_ANGLE", SunAngle.RoundToInt());
+            ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));
+            if (DynamicTrackEnabled) {
+                ini.Remove("__CM_DYNAMIC_TRACK_OFF");
+                (TrackProperties ?? Game.GetDefaultTrackPropertiesPreset().Properties).Set(ini["DYNAMIC_TRACK"]);
+            } else {
+                ini.Remove("DYNAMIC_TRACK");
+                (TrackProperties ?? Game.GetDefaultTrackPropertiesPreset().Properties).Set(ini["__CM_DYNAMIC_TRACK_OFF"]);
+            }
+
+            section.Set("KICK_QUORUM", KickVoteQuorum);
+            section.Set("VOTING_QUORUM", 80);
+            section.Set("VOTE_DURATION", VoteDuration.TotalSeconds.RoundToInt());
+            section.Set("BLACKLIST_MODE", BlacklistMode);
+            section.Set("MAX_CONTACTS_PER_KM", MaxCollisionsPerKm);
         }
 
         public override void Save() {
-            EntryListIniObject.SetSections("CAR", DriverEntries, (entry, section) => {
-                entry.SaveTo(section);
-            });
-
+            EntryListIniObject.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
                 File.WriteAllText(EntryListIniFilename, EntryListIniObject.ToString());
                 base.Save();

@@ -103,8 +103,6 @@ namespace AcManager.Pages.Selected {
                 "Easy", "Average", "Hard", "Very Hard"
             };
 
-            public AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
-
             public BetterObservableCollection<PlacePoints> Points { get; }
 
             public RaceGridViewModel RaceGridViewModel { get; }

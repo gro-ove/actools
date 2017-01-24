@@ -24,7 +24,7 @@
                     </c:BetterTextBox>
                     <Button Margin="0 0 4 0" Padding="2 0 2 0" Focusable="False"
                             Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type c:TagsList}, Mode=FindAncestor}}"
-                            CommandParameter="{Binding}" Content="×" />
+                            CommandParameter="{Binding}" Content="×" BorderThickness="0" />
                 </StackPanel>
             </DataTemplate>
         </c:TagsListDataTemplateSelector.TagDataTemplate>

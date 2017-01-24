@@ -124,15 +124,30 @@
     <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />
     <SolidColorBrush x:Key="WindowBorder" Color="{DynamicResource AccentColor}" Opacity=".5" />
     <SolidColorBrush x:Key="WindowBorderActive" Color="{DynamicResource AccentColor}" />
-    <LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity="0">
+    <SolidColorBrush x:Key="WindowText" Color="#333333" />
+    <SolidColorBrush x:Key="WindowTextReadOnly" Color="#919191" />
+    
+    <!--window background brush (with visual) example:-->
+    <!--<LinearGradientBrush x:Key="WindowHeaderGradient" StartPoint="0, 0" EndPoint="0, 1" Opacity="1">
         <GradientStop Offset="0" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset=".3" Color="{DynamicResource AccentColor}" />
         <GradientStop Offset="1" Color="Transparent" />
-        <!-- TODO -->
     </LinearGradientBrush>
-    <SolidColorBrush x:Key="WindowText" Color="#333333" />
-    <SolidColorBrush x:Key="WindowTextReadOnly" Color="#919191" />
 
-    <Rectangle x:Key="WindowBackgroundContent" x:Shared="False" Height="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top" />
-    <Rectangle x:Key="DialogBackgroundContent" x:Shared="False" />
+    <VisualBrush x:Key="WindowBackgroundContentBrush" Stretch="None" AutoLayoutContent="True" AlignmentX="Left" AlignmentY="Top" ViewboxUnits="Absolute"
+            Viewbox="0,0,96,96" Viewport="0,0,96,3000" ViewportUnits="Absolute" TileMode="Tile">
+        <VisualBrush.Visual>
+            <Rectangle Height="96" Width="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top" />
+        </VisualBrush.Visual>
+    </VisualBrush>-->
+
+    <!--window background brush (with gradient) example:-->
+    <!--<LinearGradientBrush x:Key="WindowBackgroundContentBrush" StartPoint="0 0" EndPoint="0 96" Opacity="1" MappingMode="Absolute">
+        <GradientStop Offset="0" Color="{DynamicResource AccentColor}" />
+        <GradientStop Offset=".3" Color="{DynamicResource AccentColor}" />
+        <GradientStop Offset="1" Color="Transparent" />
+    </LinearGradientBrush>-->
+
+    <x:Null x:Key="WindowBackgroundContentBrush" />
+    <x:Null x:Key="DialogBackgroundContentBrush" />
 </ResourceDictionary>

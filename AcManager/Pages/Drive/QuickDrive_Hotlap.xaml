@@ -31,7 +31,7 @@
 
         <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
             <mui:ValueLabel Postfix="{x:Static c:ControlsStrings.Common_SecondsPostfix}" Margin="0 0 0 4"
-                    Content="{x:Static g:AppStrings.Drive_GhostCarAdvantage}" Mode="Number" Value="{Binding GhostCarAdvantage, StringFormat='{}{0:F2}'}" />
+                    Content="{x:Static g:AppStrings.Drive_GhostCarAdvantage}" mui:BetterTextBox.Mode="Number" Value="{Binding GhostCarAdvantage, StringFormat='{}{0:F2}'}" />
             <Slider Minimum="0" Maximum="5" Value="{Binding GhostCarAdvantage}" />
         </StackPanel>
     </Grid>

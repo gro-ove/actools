@@ -1655,4 +1655,7 @@
   <data name="PlaceConditionType_Wins" xml:space="preserve">
     <value>Wins</value>
   </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Can’t start RHM</value>
+  </data>
 </root>

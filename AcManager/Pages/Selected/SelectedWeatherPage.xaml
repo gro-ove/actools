@@ -79,13 +79,13 @@
 
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
-                                    <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
+                                    <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
                                     <Slider Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
                                             IsSnapToTickEnabled="False" Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
                                             Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
                                 </StackPanel>
                                 <StackPanel Width="120">
-                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number"
+                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number"
                                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}"
                                             Content="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientAirTemperature}" />
                                     <Slider Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}"
@@ -111,7 +111,7 @@
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_Cover_Tooltip}">
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Cover}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Cover}" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
@@ -121,32 +121,32 @@
                                 <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.WeatherEdit_CutOff_Tooltip}" />
                             </DockPanel.ToolTip>
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_CutOff}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_CutOff}" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_Color_Tooltip}">
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Color}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Color}" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_Width_Tooltip}">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsWidth, StringFormat='{}{0:F2}'}" Mode="Number"
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsWidth, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number"
                                     Content="{x:Static t:ToolsStrings.Common_Width}" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsWidth}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_Height_Tooltip}">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsHeight, StringFormat='{}{0:F2}'}" Mode="Number"
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsHeight, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number"
                                     Content="{x:Static t:ToolsStrings.Common_Height}" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsHeight}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_Radius_Tooltip}">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsRadius, StringFormat='{}{0:F2}'}" Mode="Number"
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsRadius, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number"
                                     Content="{x:Static t:ToolsStrings.Common_Radius}" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsRadius}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
@@ -157,7 +157,7 @@
                         </DockPanel>
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_SpeedMultipler_Tooltip}">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultipler}" Mode="Number" Postfix="%"
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultipler}" mui:BetterTextBox.Mode="Number" Postfix="%"
                                     Content="{x:Static t:ToolsStrings.Common_Speed}" />
                             <Slider Minimum="0" Maximum="2" Value="{Binding SelectedObject.CloudsSpeedMultiplerRounded}" TickFrequency="0.2"
                                     TickPlacement="BottomRight" />
@@ -174,13 +174,14 @@
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Brightness}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Brightness}" />
                             <Slider Minimum="0" Maximum="800" TickFrequency="80" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number"
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    mui:BetterTextBox.Mode="Number"
                                     Content="{x:Static g:AppStrings.WeatherEdit_Blend}" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
@@ -196,14 +197,14 @@
 
                         <DockPanel ToolTip="{x:Static g:AppStrings.WeatherEdit_HdrOffMultipler_Tooltip}">
                             <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_HdrOffMultipler}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_HdrOffMultipler}" />
                             <Slider Minimum="0" Maximum="200" TickFrequency="20" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_AngleGamma}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_AngleGamma}" />
                             <Slider Minimum="0" Maximum="500" TickFrequency="50" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>

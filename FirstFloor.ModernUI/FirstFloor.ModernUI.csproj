@@ -245,7 +245,6 @@
     <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
     <Compile Include="Windows\Controls\ProperPasswordBox.cs" />
     <Compile Include="Windows\Controls\TextBlockAutoShrink.cs" />
-    <Compile Include="Windows\Attached\TextBoxAdvancement.cs" />
     <Compile Include="Windows\Attached\FocusAdvancement.cs" />
     <Compile Include="Windows\Attached\InputBindingBehavior.cs" />
     <Compile Include="Windows\Controls\ModernProgressRing.cs" />

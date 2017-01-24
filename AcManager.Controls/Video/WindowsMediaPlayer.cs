@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -111,21 +112,43 @@ namespace AcManager.Controls.Video {
             }
         }
 
-        private void ResetAndPlay() {
-            _mediaPlayer.Position = TimeSpan.Zero;
+        private void ResetAndPlay(TimeSpan position = default(TimeSpan)) {
+            _mediaPlayer.Position = position;
             _mediaPlayer.Play();
         }
 
         public void Play() {
             _active = true;
-            ResetAndPlay();
+            ResetAndPlay(_paused);
 
             if (_mediaPlayer.HasVideo) {
                 Started?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        public void PlayRandomly() {
+            _active = true;
+
+            var duration = _mediaPlayer.NaturalDuration;
+            ResetAndPlay(duration.HasTimeSpan ? 
+                TimeSpan.FromSeconds(MathUtils.Random() * Math.Max(_mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds - 5d, 0d)) :
+                TimeSpan.Zero);
+
+            if (_mediaPlayer.HasVideo) {
+                Started?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private TimeSpan _paused;
+
+        public void Pause() {
+            _paused = _mediaPlayer.Position;
+            _active = false;
+            _mediaPlayer.Pause();
+        }
+
         public void Stop() {
+            _paused = TimeSpan.Zero;
             _active = false;
             _mediaPlayer.Pause();
         }

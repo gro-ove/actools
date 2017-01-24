@@ -32,7 +32,8 @@
                                 Text="{Binding Replay.RecommendedSize, StringFormat={x:Static g:AppStrings.AcSettings_Replays_RecommendedMaximumSizeFormat}, TargetNullValue=?, FallbackValue=?}" />
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding Replay.MaxSize}" Mode="Positive" Postfix=" MB" Content="{x:Static g:AppStrings.AcSettings_Replays_MaximumSize}" />
+                <mui:ValueLabel Value="{Binding Replay.MaxSize}" mui:BetterTextBox.Minimum="1" Postfix=" MB"
+                        Content="{x:Static g:AppStrings.AcSettings_Replays_MaximumSize}" />
                 <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
             </DockPanel>
         </StackPanel>

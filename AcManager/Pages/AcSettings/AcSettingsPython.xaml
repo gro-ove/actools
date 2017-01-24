@@ -53,11 +53,7 @@
         <Label Grid.Column="1" Grid.Row="0" Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" />
         <DataGrid Grid.Column="1" Grid.Row="1" x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
                 Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                IsReadOnly="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible"
-                VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingStackPanel.ScrollUnit="Pixel" VirtualizingStackPanel.CacheLengthUnit="Item"
-                VirtualizingStackPanel.CacheLength="1,1" CanUserResizeColumns="False" CanUserResizeRows="False" CanUserReorderColumns="False"
-                CanUserAddRows="False" CanUserDeleteRows="False">
+                IsReadOnly="False" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="3*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName">
                     <DataGridTemplateColumn.CellTemplate>
@@ -69,14 +65,14 @@
                 <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding PosX}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                            <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding PosY}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                            <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

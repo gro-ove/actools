@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ProcessExtension {
-        private static string GetQuotedArgument(string argument) {
+        private static string GetQuotedArgument([NotNull] string argument) {
             // The argument is processed in reverse character order.
             // Any quotes (except the outer quotes) are escaped with backslash.
             // Any sequences of backslashes preceding a quote (including outer quotes) are doubled in length.
@@ -47,23 +47,25 @@ namespace AcTools.Utils.Helpers {
             return Reverse(resultBuilder.ToString());
         }
 
-        private static bool HasWhitespace(string text) {
+        private static bool HasWhitespace([NotNull] string text) {
             return text.Any(char.IsWhiteSpace);
         }
 
-        private static string Reverse(string text) {
+        private static string Reverse([NotNull] string text) {
             return new string(text.Reverse().ToArray());
         }
 
-        public static Process Start(string filename, IEnumerable<string> args, bool shell = true) {
+        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, bool shell = true) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
             return Process.Start(new ProcessStartInfo {
                 FileName = filename,
-                Arguments = args.Select(GetQuotedArgument).JoinToString(" "),
+                Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "",
                 UseShellExecute = shell
             });
         }
 
-        public static bool HasExitedSafe(this Process process) {
+        public static bool HasExitedSafe([NotNull] this Process process) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryLimitedInformation | Kernel32.ProcessAccessFlags.Synchronize, false, process.Id);
             if (handle == IntPtr.Zero || handle == new IntPtr(-1)) return true;
 
@@ -78,7 +80,8 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        private static async Task WaitForExitAsyncDeeperFallback(Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        private static async Task WaitForExitAsyncDeeperFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             var processId = process.Id;
             while (true) {
                 await Task.Delay(300, cancellationToken);
@@ -92,7 +95,8 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        private static async Task WaitForExitAsyncFallback(Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        private static async Task WaitForExitAsyncFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             try {
                 while (!process.HasExited) {
                     await Task.Delay(300, cancellationToken);
@@ -104,7 +108,8 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static Task WaitForExitAsync(this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        public static Task WaitForExitAsync([NotNull] this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             try {
                 var tcs = new TaskCompletionSource<object>();
                 process.EnableRaisingEvents = true;
@@ -126,7 +131,8 @@ namespace AcTools.Utils.Helpers {
         /// <param name="process">Process.</param>
         /// <returns>Path to process’s executable file.</returns>
         [CanBeNull]
-        public static string GetFilenameSafe(this Process process) {
+        public static string GetFilenameSafe([NotNull] this Process process) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             try {
                 return GetProcessPathUsingPsApi(process.Id) ?? GetProcessPathUsingManagement(process.Id) ??
                         process.MainModule.FileName; // won’t work if processes were compiled for different architectures
@@ -134,7 +140,6 @@ namespace AcTools.Utils.Helpers {
                 return null;
             }
         }
-
 
         [DllImport(@"psapi.dll")]
         private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
@@ -178,15 +183,15 @@ namespace AcTools.Utils.Helpers {
         }
 
         private static bool EnumWindow(IntPtr handle, IntPtr pointer) {
-            GCHandle gch = GCHandle.FromIntPtr(pointer);
-            List<IntPtr> list = gch.Target as List<IntPtr>;
-            if (list == null)
-                throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
+            var gch = GCHandle.FromIntPtr(pointer);
+            var list = gch.Target as List<IntPtr>;
+            if (list == null) throw new InvalidCastException("GCHandle Target could not be cast as List<IntPtr>");
             list.Add(handle);
             return true;
         }
 
-        public static IReadOnlyList<IntPtr> GetWindowsHandles(this Process process) {
+        public static IReadOnlyList<IntPtr> GetWindowsHandles([NotNull] this Process process) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
             var handles = new List<IntPtr>();
             foreach (ProcessThread thread in Process.GetProcessById(process.Id).Threads) {
                 User32.EnumThreadWindows(thread.Id, (hWnd, lParam) => { handles.Add(hWnd); return true; }, IntPtr.Zero);

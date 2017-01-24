@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Sessions" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Assists" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
@@ -7,79 +7,103 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+    <Grid DataContext="{Binding SelectedObject}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-            <StackPanel Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Assists" />
-                <DockPanel>
-                    <Label Content="ABS:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.Abs}" />
-                </DockPanel>
-                <DockPanel ToolTip="Traction control">
-                    <Label Content="TC:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.TractionControl}" />
-                </DockPanel>
-                <CheckBox IsChecked="{Binding SelectedObject.StabilityControl}" ToolTip="AI will help you control the car if enabled">
-                    <Label Content="Stability control" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.AutoClutch}">
-                    <Label Content="Automatic clutch" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.TyreBlankets}">
-                    <Label Content="Tyre blankets" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.ForceVirtualMirror}" ToolTip="Force virtual mirror">
-                    <Label Content="Virtual mirror" />
-                </CheckBox>
-            </StackPanel>
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Assists" />
+            <DockPanel>
+                <Label Content="ABS:" />
+                <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding Abs}" />
+            </DockPanel>
+            <DockPanel ToolTip="Traction control">
+                <Label Content="TC:" />
+                <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding TractionControl}" />
+            </DockPanel>
+            <CheckBox IsChecked="{Binding StabilityControl}" ToolTip="AI will help you control the car if enabled">
+                <Label Content="Stability control" />
+            </CheckBox>
+            <CheckBox IsChecked="{Binding AutoClutch}">
+                <Label Content="Automatic clutch" />
+            </CheckBox>
+            <CheckBox IsChecked="{Binding TyreBlankets}">
+                <Label Content="Tyre blankets" />
+            </CheckBox>
+            <CheckBox IsChecked="{Binding ForceVirtualMirror}" ToolTip="Force virtual mirror">
+                <Label Content="Virtual mirror" />
+            </CheckBox>
 
-            <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Realism" />
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.FuelRate}" Postfix="%" Content="Fuel rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.FuelRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.DamageRate}" Postfix="%" Content="Damage rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.DamageRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.TyreWearRate}" Postfix="%" Content="Tyres wear rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.TyreWearRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.AllowTyresOut}" Content="Allowed tyres out" />
-                    <Slider Minimum="0" Maximum="4" Value="{Binding SelectedObject.AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.MaxBallast}" Postfix=" kg" Content="Max ballast" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.MaxBallast}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.QualifyLimitPercentage}" Postfix="%" Content="Qualify limit" />
-                    <Slider Minimum="100" Maximum="200" Value="{Binding SelectedObject.QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <Label Content="Jump start:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.JumpStarts}" SelectedItem="{Binding SelectedObject.JumpStart}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </DockPanel>
-            </StackPanel>
-        </Grid>
-    </StackPanel>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Voting and banning" />
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding KickVoteQuorum}" Postfix="%" Content="Kick vote quorum" />
+                <Slider Minimum="40" Maximum="90" Value="{Binding KickVoteQuorum}" TickFrequency="5" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding SessionVoteQuorum}" Postfix="%" Content="Session vote quorum" />
+                <Slider Minimum="40" Maximum="90" Value="{Binding SessionVoteQuorum}" TickFrequency="5" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel ToolTip="{Binding VoteDuration, Converter={StaticResource ReadableTimeSpanConverter}}">
+                <mui:ValueLabel Value="{Binding VoteDuration, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Vote duration"
+                        mui:BetterTextBox.Mode="Time" />
+                <Slider Minimum="10" Maximum="60" TickFrequency="5" TickPlacement="BottomRight"
+                        Value="{Binding VoteDuration, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
+            </DockPanel>
+            <CheckBox IsChecked="{Binding BlacklistMode}">
+                <Label Content="Kick players until restart" />
+            </CheckBox>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding MaxCollisionsPerKm, Converter={x:Static local:Assists.SpecialOffForNegativeConverter}}"
+                        mui:BetterTextBox.Mode="IntegerOrLabel" mui:BetterTextBox.ModeLabel="Off" mui:BetterTextBox.ModeLabelValue="-1"
+                        Content="Max contacts per km" />
+                <Slider Minimum="-1" Maximum="9" TickFrequency="1" TickPlacement="BottomRight" Value="{Binding MaxCollisionsPerKm}" />
+            </DockPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Style="{StaticResource SettingsPanel}">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Realism" />
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding FuelRate}" Postfix="%" Content="Fuel rate" />
+                <Slider Minimum="0" Maximum="200" Value="{Binding FuelRate}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding DamageRate}" Postfix="%" Content="Damage rate" />
+                <Slider Minimum="0" Maximum="200" Value="{Binding DamageRate}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding TyreWearRate}" Postfix="%" Content="Tyres wear rate" />
+                <Slider Minimum="0" Maximum="200" Value="{Binding TyreWearRate}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding AllowTyresOut}" Content="Allowed tyres out" />
+                <Slider Minimum="0" Maximum="4" Value="{Binding AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding MaxBallast}" Postfix=" kg" Content="Max ballast" />
+                <Slider Minimum="0" Maximum="200" Value="{Binding MaxBallast}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding QualifyLimitPercentage}" Postfix="%" Content="Qualify limit" />
+                <Slider Minimum="100" Maximum="200" Value="{Binding QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+            <DockPanel>
+                <Label Content="Jump start:" />
+                <ComboBox ItemsSource="{x:Static local:SelectedPage.JumpStarts}" SelectedItem="{Binding JumpStart}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
 </UserControl>

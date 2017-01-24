@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
@@ -284,6 +285,20 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             InnerDrop(source, destination, item, e);
         }
 
+        [CanBeNull]
+        private static IEnumerable GetActualList([CanBeNull] ItemsControl itemsControl) {
+            var list = itemsControl?.ItemsSource;
+            if (list is CompositeCollection) {
+                list = ((CompositeCollection)list).OfType<CollectionContainer>()
+                                                                       .Select(x => x.Collection)
+                                                                       .OfType<ListCollectionView>()
+                                                                       .Select(x => x.SourceCollection)
+                                                                       .FirstOrDefault();
+            }
+
+            return list;
+        }
+
         private static void InnerDrop([CanBeNull] ItemsControl source, [NotNull] ItemsControl destination, [CanBeNull] object item, DragEventArgs e) {
             if (item == null) {
                 e.Effects = DragDropEffects.None;
@@ -294,8 +309,21 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var type = item.GetType();
 
             try {
+                var destinationList = GetActualList(destination) as IList;
+                var sourceList = GetActualList(source) as IList;
+
+                if (destinationList == null) {
+                    Logging.Warning("Can’t find target: " + destination.ItemsSource);
+                    e.Effects = DragDropEffects.None;
+                    return;
+                }
+                
+                if (newIndex >= destinationList.Count) {
+                    newIndex = -1;
+                }
+
                 if (newIndex == -1) {
-                    var method = (from x in destination.ItemsSource.GetType().GetMethods()
+                    var method = (from x in destinationList.GetType().GetMethods()
                                   where x.Name == "Add"
                                   let p = x.GetParameters()
                                   where p.Length == 1 && p[0].ParameterType == type
@@ -305,10 +333,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         return;
                     }
 
-                    ((IList)source?.ItemsSource)?.Remove(item);
-                    method.Invoke(destination.ItemsSource, new[] { item });
+                    sourceList?.Remove(item);
+                    method.Invoke(destinationList, new[] { item });
                 } else {
-                    var method = (from x in destination.ItemsSource.GetType().GetMethods()
+                    var method = (from x in destinationList.GetType().GetMethods()
                                   where x.Name == "Insert"
                                   let p = x.GetParameters()
                                   where p.Length == 2 && p[1].ParameterType == type
@@ -318,8 +346,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         return;
                     }
 
-                    ((IList)source?.ItemsSource)?.Remove(item);
-                    method.Invoke(destination.ItemsSource, new[] { newIndex, item });
+                    sourceList?.Remove(item);
+                    method.Invoke(destinationList, new[] { newIndex, item });
                 }
 
                 e.Effects = DragDropEffects.Move;

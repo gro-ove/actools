@@ -17,11 +17,12 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         #region English
-        private static readonly Regex EnTitleCaseRegex = new Regex(@"^.|\b(?!a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)\w",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex EnTitleCaseRegex =
+                new Regex(@"^[a-z]|\b(?!(?:a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)\b)[a-z]\w+|\b[a-z]\w*$",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static string En(string s, CultureInfo culture) {
-            return EnTitleCaseRegex.Replace(s, m => m.Value.ToUpper(culture));
+            return EnTitleCaseRegex.Replace(s, m => CapitalizeFirst(m.Value, culture));
         }
         #endregion
 

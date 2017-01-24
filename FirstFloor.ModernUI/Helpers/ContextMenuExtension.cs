@@ -6,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -32,7 +31,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             menu.Items.Add(new MenuItem {
-                Header = header,
+                Header = header.ToTitle(),
                 Icon = icon,
                 IsEnabled = isEnabled,
                 Command = command,

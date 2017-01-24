@@ -1,0 +1,178 @@
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Conditions" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:g="clr-namespace:AcManager" xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="WeatherDataTemplate" DataType="{x:Type t:ServerWeatherEntry}">
+                <StackPanel Style="{StaticResource SettingsPanel}" Width="270" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
+                    <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}"
+                            Style="{StaticResource Small}" Margin="0 0 0 8" />
+
+                    <DockPanel>
+                        <Label Content="{x:Static g:AppStrings.Drive_WeatherLabel}" />
+                        <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}" />
+                    </DockPanel>
+
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BaseAmbientTemperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
+                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}" />
+                        <Slider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
+                                Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
+                    </DockPanel>
+
+                    <TextBlock Text="{Binding RecommendedRoadTemperature, StringFormat='{}Recommended road temperature: {0:F1} °C'}"
+                            Style="{StaticResource SettingsPanel.Small}" />
+
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
+                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Road temperature" />
+                        <Slider TickFrequency="3" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}"
+                                Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
+                    </DockPanel>
+
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding AmbientTemperatureVariation, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent" Prefix="±"
+                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Temp. variation" />
+                        <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding AmbientTemperatureVariation}" Minimum="0" Maximum="10" />
+                    </DockPanel>
+
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding RoadTemperatureVariation, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent" Prefix="±"
+                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Road t. variation" />
+                        <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding RoadTemperatureVariation}" Minimum="0" Maximum="10" />
+                    </DockPanel>
+
+                    <Button Content="Delete" Command="{Binding DeleteCommand}"
+                            Visibility="{Binding Index, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,hidden'}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <mui:SpacingStackPanel Spacing="20">
+        <mui:SpacingStackPanel Spacing="4">
+            <mui:ValueLabel Value="{Binding SelectedObject.DisplayTime}" mui:BetterTextBox.Mode="Time" Content="{x:Static g:AppStrings.Drive_Time}" />
+            <Slider Value="{Binding SelectedObject.Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+                    Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
+        </mui:SpacingStackPanel>
+
+        <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding DynamicTrackEnabled}">
+                <Label>
+                    <TextBlock Style="{StaticResource Heading2}" Text="Dynamic Track" />
+                </Label>
+            </CheckBox>
+
+            <mui:SpacingUniformGrid HorizontalSpacing="20" IsEnabled="{Binding DynamicTrackEnabled}">
+                <DockPanel DataContext="{Binding TrackProperties}">
+                    <mui:ValueLabel Value="{Binding SessionStart}" Content="Start value" Postfix="%" />
+                    <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionStart}" />
+                </DockPanel>
+
+                <DockPanel DataContext="{Binding TrackProperties}">
+                    <mui:ValueLabel Value="{Binding Randomness}" Content="Randomness" Postfix="%" />
+                    <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding Randomness}" />
+                </DockPanel>
+
+                <DockPanel DataContext="{Binding TrackProperties}">
+                    <mui:ValueLabel Value="{Binding SessionTransfer}" Content="Transferred" Postfix="%" />
+                    <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight" Value="{Binding SessionTransfer}" />
+                </DockPanel>
+
+                <DockPanel DataContext="{Binding TrackProperties}">
+                    <mui:ValueLabel Value="{Binding LapGain}" Content="Laps to improve" mui:BetterTextBox.Mode="Positive"
+                            Postfix="{Binding LapGain, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
+                    <Slider Minimum="1" Maximum="81" TickFrequency="9" TickPlacement="BottomRight" Value="{Binding LapGain}" />
+                </DockPanel>
+            </mui:SpacingUniformGrid>
+        </StackPanel>
+
+        <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}" Margin="0 -8 0 0">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Weather" />
+
+            <TextBlock Style="{StaticResource SettingsPanel.Small}">
+                <TextBlock.Text>Weather settings are unrelated to the number of enabled sessions: each session will use a randomly selected weather from these.</TextBlock.Text>
+            </TextBlock>
+
+            <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:ServerWeatherEntry.DraggableFormat}"
+                    ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplateSelector>
+                    <c:FlexibleDataTemplateSelector DataTemplate="{StaticResource WeatherDataTemplate}" />
+                </ListBox.ItemTemplateSelector>
+                <i:Interaction.Behaviors>
+                    <mui:HorizontalScrollBehavior />
+                </i:Interaction.Behaviors>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel ScrollUnit="Pixel" IsVirtualizing="True" VirtualizationMode="Recycling" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
+                    <CollectionViewSource x:Key="Rounds" Source="{Binding Weather}" />
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsSource>
+                    <CompositeCollection>
+                        <CollectionContainer Collection="{Binding Source={StaticResource Rounds}}" />
+                        <Border Height="120">
+                            <Border.Resources>
+                                <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+                            </Border.Resources>
+                            <Button BorderThickness="0" Click="OnAddNewRoundButtonClick">
+                                <mui:SpacingStackPanel Spacing="8">
+                                    <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" HorizontalAlignment="Center"
+                                            Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
+                                    <TextBlock Text="Create New" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                                </mui:SpacingStackPanel>
+                            </Button>
+                        </Border>
+                    </CompositeCollection>
+                </ItemsControl.ItemsSource>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <mui:Cell SnapsToDevicePixels="True" Margin="0 0 20 0">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="{TemplateBinding Padding}" />
+                                        <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" VerticalAlignment="Top" Height="4" />
+                                    </mui:Cell>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundHover}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundSelected}" />
+                                        </Trigger>
+                                        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                        <DataTrigger Binding="{Binding Index, FallbackValue=-1}" Value="-1">
+                                            <Setter TargetName="Bd" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
+                                <Setter Property="FontWeight" Value="Normal" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </StackPanel>
+    </mui:SpacingStackPanel>
+</UserControl>
+

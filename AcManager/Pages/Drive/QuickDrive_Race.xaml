@@ -113,16 +113,16 @@
                 <StackPanel.ToolTip>
                     <TextBlock Margin="0 0 0 4">
                         <TextBlock.Text>
-                            <MultiBinding Converter="{x:Static drive:QuickDrive_GridTest.StartingPositionConverter}">
+                            <MultiBinding Converter="{x:Static drive:QuickDrive_Race.StartingPositionConverter}">
                                 <Binding Path="RaceGridViewModel.StartingPositionLimited" />
                                 <Binding Path="RaceGridViewModel.StartingPositionLimit" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                 </StackPanel.ToolTip>
-                <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" Mode="IntegerOrZeroLabel">
+                <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" mui:BetterTextBox.Mode="IntegerOrZeroLabel">
                     <mui:ValueLabel.Value>
-                        <MultiBinding Converter="{x:Static drive:QuickDrive_GridTest.StartingPositionConverter}">
+                        <MultiBinding Converter="{x:Static drive:QuickDrive_Race.StartingPositionConverter}">
                             <Binding Path="RaceGridViewModel.StartingPositionLimited" Mode="TwoWay" />
                             <Binding Path="RaceGridViewModel.StartingPositionLimit" Mode="OneWay" />
                         </MultiBinding>

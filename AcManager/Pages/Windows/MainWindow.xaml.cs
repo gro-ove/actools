@@ -319,6 +319,7 @@ namespace AcManager.Pages.Windows {
         }
 
         void IFancyBackgroundListener.ChangeBackground(string filename) {
+            if (_dynamicBackground != null) return;
             var backgroundContent = BackgroundContent;
             FancyBackgroundManager.UpdateBackground(this, ref backgroundContent);
             if (!ReferenceEquals(backgroundContent, BackgroundContent)) {
@@ -328,7 +329,6 @@ namespace AcManager.Pages.Windows {
 
         private HwndSourceHook _hook;
         private bool _loaded;
-        private DynamicBackground _dynamicBackground;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
@@ -340,30 +340,54 @@ namespace AcManager.Pages.Windows {
             var background = AppArguments.Get(AppFlag.Background);
             if (string.IsNullOrWhiteSpace(background)) {
                 FancyBackgroundManager.Instance.AddListener(this);
+                SetThemeDynamicBackgroundListener();
             } else {
-                if (background.ElementAt(1) != ':') {
-                    background = System.IO.Path.Combine(FilesStorage.Instance.GetDirectory("Themes", "Backgrounds"), background);
+                background = FileUtils.GetFullPath(background, () => FilesStorage.Instance.GetDirectory("Themes", "Backgrounds"));
+                ApplyDynamicBackground(background, AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5));
+            }
+        }
+
+        private DynamicBackground _dynamicBackground;
+
+        private void ApplyDynamicBackground([CanBeNull] string filename, double opacity = 0.5) {
+            if (filename == null) {
+                DisposeHelper.Dispose(ref _dynamicBackground);
+                if (FancyBackgroundManager.Instance.Enabled) {
+                    FancyBackgroundManager.Instance.Recreate(this);
+                } else {
+                    ClearValue(BackgroundContentProperty);
                 }
+            } else {
+                var animatedBackground = Regex.IsMatch(filename, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
+                        filename : null;
+                var staticBackground = animatedBackground == null ? filename : Regex.Replace(filename, @"\.\w+$", @".jpg");
 
-                var animatedBackground = Regex.IsMatch(background, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
-                        background : null;
-                var staticBackground = animatedBackground == null ? background : Regex.Replace(background, @"\.\w+$", @".jpg");
-
-                _dynamicBackground = new DynamicBackground {
-                    Width = 1280,
-                    Height = 720,
+                _dynamicBackground?.Dispose();
+                BackgroundContent = _dynamicBackground = new DynamicBackground {
                     Animated = animatedBackground,
-                    Static = staticBackground
-                };
-
-                BackgroundContent = new Viewbox {
-                    Stretch = Stretch.UniformToFill,
-                    Opacity = AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5),
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Child = _dynamicBackground
+                    Static = staticBackground,
+                    Opacity = opacity
                 };
             }
+        }
+
+        private void UpdateThemeDynamicBackground() {
+            var value = AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackground"] as string;
+            if (value != null) {
+                value = FileUtils.GetFullPath(value, () => FilesStorage.Instance.GetDirectory());
+                ApplyDynamicBackground(value, AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackgroundOpacity"] as double? ?? 0.5);
+            } else {
+                ApplyDynamicBackground(null);
+            }
+        }
+
+        private void SetThemeDynamicBackgroundListener() {
+            UpdateThemeDynamicBackground();
+            AppearanceManager.Current.PropertyChanged += (sender, args) => {
+                if (args.PropertyName == nameof(AppearanceManager.CurrentThemeDictionary)) {
+                    UpdateThemeDynamicBackground();
+                }
+            };
         }
 
         private void UpdateAboutIsNew() {

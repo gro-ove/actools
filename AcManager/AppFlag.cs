@@ -1,11 +1,19 @@
-using Windows.Foundation.Metadata;
-
 namespace AcManager {
     /// <summary>
     /// Taken from command line arguments or from Arguments.txt in app’s data
     /// directory (one argument per line).
     /// </summary>
     public enum AppFlag {
+        /// <summary>
+        /// Delay, after which RHM service will be unloaded after the end of race (time 
+        /// interval or seconds). Default value: 1 minute (because, at least on my PC,
+        /// it appears that RHM a lot of CPU in background). But you can increase it
+        /// if you want.
+        /// Example: --rhm-keep-alive=30:00.
+        /// </summary>
+        [FlagDefaultValue("01:00")]
+        RhmKeepAlive,
+
         /// <summary>
         /// Maximum size of generated track map. Default value is 8192, could be upped
         /// to 16384 (DX11 required), but 16K maps might cause performance issues.
@@ -247,7 +255,8 @@ namespace AcManager {
         DirectRequestTimeout,
 
         /// <summary>
-        /// Less responsible UI, but could be a little bit faster.
+        /// While navigating between pages, load data synchronously (loading might be faster
+        /// without need to switch between cores, but there will be inevitable hung ups as well).
         /// Example: --sync-navigation.
         /// </summary>
         SyncNavigation,
@@ -317,7 +326,8 @@ namespace AcManager {
         NfsPorscheTribute,
 
         /// <summary>
-        /// Specific executable for SSE starter. Example: --sse-name=acs_x86_sse.exe.
+        /// Specific executable for SSE starter.
+        /// Example: --sse-name=acs_x86_sse.exe.
         /// </summary>
         SseName,
 
@@ -340,6 +350,7 @@ namespace AcManager {
         /// default Windows approach will be used (so video will be played using Windows Media Player).
         /// I highly recommend not to use VLC because it’s not very reliable and fast (C#-library isn’t very
         /// good), but don’t forget to enable Windows Media Player and install required codecs first.
+        /// Example: --use-vlc-for-animated-background.
         /// </summary>
         UseVlcForAnimatedBackground,
 

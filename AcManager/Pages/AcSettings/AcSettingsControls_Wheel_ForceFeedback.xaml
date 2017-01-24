@@ -19,13 +19,13 @@
             </CheckBox>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbFilter}" Postfix="%"
-                        Content="{x:Static controls:ControlsStrings.Controls_FilterAxis}" />
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbFilter}" Postfix="%" Content="{x:Static controls:ControlsStrings.Controls_FilterAxis}" />
                 <Slider Minimum="0" Maximum="99" Value="{Binding Controls.WheelFfbFilter}" TickFrequency="11" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbMinForce, StringFormat='{}{0:F1}'}" Mode="Number" Postfix="%" Content="{x:Static controls:ControlsStrings.Controls_MinimumForce}" />
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbMinForce, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
+                        Content="{x:Static controls:ControlsStrings.Controls_MinimumForce}" />
                 <Slider Minimum="0" Maximum="30" Value="{Binding Controls.WheelFfbMinForce}" TickFrequency="3" TickPlacement="BottomRight" />
             </DockPanel>
 

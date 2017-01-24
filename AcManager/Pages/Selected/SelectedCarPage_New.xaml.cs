@@ -1,0 +1,563 @@
+﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using JetBrains.Annotations;
+using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
+using AcManager.Controls.Dialogs;
+using AcManager.Controls.Helpers;
+using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
+using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
+using AcTools.AcdFile;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
+using StringBasedFilter;
+using MenuItem = System.Windows.Controls.MenuItem;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
+
+namespace AcManager.Pages.Selected {
+    public partial class SelectedCarPage_New : ILoadableContent, IParametrizedUriContent, IImmediateContent {
+        public class ViewModel : SelectedAcObjectViewModel<CarObject> {
+            public ViewModel([NotNull] CarObject acObject) : base(acObject) {}
+
+            public override void Load() {
+                base.Load();
+                SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
+            }
+
+            public override void Unload() {
+                base.Unload();
+                SelectedObject.PropertyChanged -= SelectedObject_PropertyChanged;
+                _helper.Dispose();
+            }
+
+            private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(AcCommonObject.Year):
+                        InnerFilterCommand?.RaiseCanExecuteChanged();
+                        break;
+                    case nameof(CarObject.Brand):
+                        if (SettingsHolder.Content.ChangeBrandIconAutomatically) {
+                            var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + @".png");
+                            if (entry.Exists) {
+                                try {
+                                    FileUtils.Recycle(SelectedObject.BrandBadge);
+                                    File.Copy(entry.Filename, SelectedObject.BrandBadge);
+                                } catch (Exception ex) {
+                                    Logging.Warning(ex);
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
+            
+            protected override void FilterExec(string type) {
+                switch (type) {
+                    case "class":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? @"class-" : $"class:{Filter.Encode(SelectedObject.CarClass)}");
+                        break;
+
+                    case "brand":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? @"brand-" : $"brand:{Filter.Encode(SelectedObject.Brand)}");
+                        break;
+
+                    case "power":
+                        FilterRange("power", SelectedObject.SpecsBhp);
+                        break;
+
+                    case "torque":
+                        FilterRange("torque", SelectedObject.SpecsTorque);
+                        break;
+
+                    case "weight":
+                        FilterRange("weight", SelectedObject.SpecsWeight);
+                        break;
+
+                    case "pwratio":
+                        FilterRange("pwratio", SelectedObject.SpecsPwRatio, roundTo: 0.01);
+                        break;
+
+                    case "topspeed":
+                        FilterRange("topspeed", SelectedObject.SpecsTopSpeed);
+                        break;
+
+                    case "acceleration":
+                        FilterRange("acceleration", SelectedObject.SpecsAcceleration, roundTo: 0.1);
+                        break;
+                }
+
+                base.FilterExec(type);
+            }
+
+            #region Open In Showroom
+            private CommandBase _openInShowroomCommand;
+
+            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    OpenInCustomShowroomCommand.Execute(o);
+                    return;
+                }
+
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !CarOpenInShowroomDialog.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
+                    OpenInShowroomOptionsCommand.Execute(null);
+                }
+            }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
+
+            private CommandBase _openInShowroomOptionsCommand;
+
+            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
+                new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
+            }, () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
+
+            private CommandBase _openInCustomShowroomCommand;
+
+            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+                    (_openInCustomShowroomCommand = new AsyncCommand<CustomShowroomMode?>(type => type.HasValue
+                            ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
+                            : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
+
+            private CommandBase _driveCommand;
+
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
+                    DriveOptionsCommand.Execute(null);
+                }
+            }, () => SelectedObject.Enabled));
+
+            private CommandBase _driveOptionsCommand;
+
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+                QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
+            }, () => SelectedObject.Enabled));
+            #endregion
+
+            #region Auto-Update Previews
+            private ICommand _updatePreviewsCommand;
+
+            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new DelegateCommand(() => {
+                new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+            }, () => SelectedObject.Enabled));
+
+            private ICommand _updatePreviewsManuallyCommand;
+
+            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new DelegateCommand(() => {
+                new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.StartManual).ShowDialog();
+            }, () => SelectedObject.Enabled));
+
+            private ICommand _updatePreviewsOptionsCommand;
+
+            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new DelegateCommand(() => {
+                new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.Options).ShowDialog();
+            }, () => SelectedObject.Enabled));
+
+            public static CarUpdatePreviewsDialog.DialogMode GetAutoUpdatePreviewsDialogMode() {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) return CarUpdatePreviewsDialog.DialogMode.Options;
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) return CarUpdatePreviewsDialog.DialogMode.StartManual;
+                return CarUpdatePreviewsDialog.DialogMode.Start;
+            }
+            #endregion
+
+            #region Presets
+            public HierarchicalItemsView ShowroomPresets {
+                get { return _showroomPresets; }
+                set {
+                    if (Equals(value, _showroomPresets)) return;
+                    _showroomPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public HierarchicalItemsView UpdatePreviewsPresets {
+                get { return _updatePreviewsPresets; }
+                set {
+                    if (Equals(value, _updatePreviewsPresets)) return;
+                    _updatePreviewsPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public HierarchicalItemsView QuickDrivePresets {
+                get { return _quickDrivePresets; }
+                set {
+                    if (Equals(value, _quickDrivePresets)) return;
+                    _quickDrivePresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private HierarchicalItemsView _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public void InitializeShowroomPresets() {
+                if (ShowroomPresets == null) {
+                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
+                        CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                    });
+                }
+            }
+
+            public void InitializeQuickDrivePresets() {
+                if (QuickDrivePresets == null) {
+                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
+                        QuickDrive.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                    });
+                }
+            }
+
+            public void InitializeUpdatePreviewsPresets() {
+                if (UpdatePreviewsPresets == null) {
+                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, p => {
+                        new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), p.Filename).ShowDialog();
+                    });
+                }
+            }
+            #endregion
+
+            private CommandBase _manageSkinsCommand;
+
+            public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
+                new CarSkinsDialog(SelectedObject) {
+                    ShowInTaskbar = false
+                }.ShowDialogWithoutBlocking();
+            }));
+
+            private CommandBase _manageSetupsCommand;
+
+            public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
+                new CarSetupsDialog(SelectedObject) {
+                    ShowInTaskbar = false
+                }.ShowDialogWithoutBlocking();
+            }));
+
+            private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
+
+            private CommandBase _readDataCommand;
+
+            public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new DelegateCommand(() => {
+                var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
+                try {
+                    var destination = FileUtils.EnsureUnique(DataDirectory);
+                    Acd.FromFile(source).ExportDirectory(destination);
+                    WindowsHelper.ViewDirectory(destination);
+                } catch (Exception e) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
+                }
+            }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData?.IsPacked == true));
+
+            private CommandBase _packDataCommand;
+
+            public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
+                try {
+                    var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
+                    var exists = File.Exists(destination);
+
+                    if (SelectedObject.Author == AcCommonObject.AuthorKunos && ModernDialog.ShowMessage(
+                            AppStrings.Car_PackKunosDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes ||
+                            SelectedObject.Author != AcCommonObject.AuthorKunos && exists && ModernDialog.ShowMessage(
+                                    AppStrings.Car_PackExistingDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        return;
+                    }
+
+                    if (exists) {
+                        FileUtils.Recycle(destination);
+                    }
+
+                    Acd.FromDirectory(DataDirectory).Save(destination);
+                    WindowsHelper.ViewFile(destination);
+                } catch (Exception e) {
+                    NonfatalError.Notify(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
+                }
+            }, () => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
+
+            private CommandBase _replaceSoundCommand;
+
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async () => {
+                var donor = SelectCarDialog.Show();
+                if (donor == null) return;
+
+                if (string.Equals(donor.Id, SelectedObject.Id, StringComparison.OrdinalIgnoreCase)) {
+                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, "Source and destination are the same.");
+                    return;
+                }
+
+                try {
+                    using (var waiting = new WaitingDialog()) {
+                        waiting.Report();
+
+                        var guids = Path.Combine(donor.Location, @"sfx", @"GUIDs.txt");
+                        var soundbank = Path.Combine(donor.Location, @"sfx", $"{donor.Id}.bank");
+
+                        var newGuilds = Path.Combine(SelectedObject.Location, @"sfx", @"GUIDs.txt");
+                        var newSoundbank = Path.Combine(SelectedObject.Location, @"sfx", $"{SelectedObject.Id}.bank");
+
+                        await Task.Run(() => {
+                            var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
+                                Original = x,
+                                Backup = FileUtils.EnsureUnique($"{x}.bak")
+                            }).ToList();
+
+                            foreach (var oldFile in destinations) {
+                                File.Move(oldFile.Original, oldFile.Backup);
+                            }
+
+                            try {
+                                if (File.Exists(guids) && File.Exists(soundbank)) {
+                                    File.Copy(soundbank, newSoundbank);
+                                    File.WriteAllText(newGuilds, File.ReadAllText(guids).Replace(donor.Id, SelectedObject.Id));
+                                } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
+                                    File.Copy(soundbank, newSoundbank);
+                                    File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
+                                                                     .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
+                                                                             x.EndsWith(@"} bank:/" + donor.Id))
+                                                                     .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
+                                                                     .JoinToString(Environment.NewLine).Replace(donor.Id, SelectedObject.Id));
+                                } else {
+                                    throw new InformativeException(AppStrings.Car_ReplaceSound_WrongCar, AppStrings.Car_ReplaceSound_WrongCar_Commentary);
+                                }
+                            } catch (Exception) {
+                                foreach (var oldFile in destinations) {
+                                    if (File.Exists(oldFile.Original)) {
+                                        File.Delete(oldFile.Original);
+                                    }
+                                    File.Move(oldFile.Backup, oldFile.Original);
+                                }
+                                throw;
+                            }
+                            
+                            FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
+                        });
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
+                }
+            }));
+
+            private AsyncCommand _replaceTyresCommand;
+
+            public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
+                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
+        }
+
+        private string _id;
+
+        void IParametrizedUriContent.OnUri(Uri uri) {
+            _id = uri.GetQueryParam("Id");
+            if (_id == null) {
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
+            }
+        }
+
+        private CarObject _object;
+
+        async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
+            _object = await CarsManager.Instance.GetByIdAsync(_id);
+            if (_object == null) return;
+            await _object.SkinsManager.EnsureLoadedAsync();
+        }
+
+        void ILoadableContent.Load() {
+            _object = CarsManager.Instance.GetById(_id);
+            _object?.SkinsManager.EnsureLoaded();
+        }
+
+        bool IImmediateContent.ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = CarsManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            _object.SkinsManager.EnsureLoadedAsync().Forget();
+
+            _id = id;
+            _object = obj;
+            SetModel();
+            return true;
+        }
+
+        private ViewModel _model;
+
+        void ILoadableContent.Initialize() {
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
+
+            SetModel();
+            InitializeComponent();
+
+            if (SettingsHolder.CustomShowroom.LiteByDefault) {
+                LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
+            } else {
+                LiteCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Alt+H";
+            }
+        }
+
+        private void SetModel() {
+            _model?.Unload();
+            InitializeAcObjectPage(_model = new ViewModel(_object));
+            InputBindings.AddRange(new[] {
+                new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
+                new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
+
+                new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+
+                new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
+                new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
+                new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control)),
+
+                new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
+                new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
+
+                new InputBinding(_model.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
+            });
+        }
+
+        #region Skins
+        private void SelectedSkinPreview_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                e.Handled = true;
+                CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
+            } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                e.Handled = true;
+
+                var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
+                new ImageViewer(
+                        from skin in skins select skin.PreviewImage,
+                        skins.IndexOf(_model.SelectedObject.SelectedSkin),
+                        1022).ShowDialog();
+            }
+        }
+
+        private void SelectedSkinPreview_MouseUp(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+
+            var context = ((FrameworkElement)sender).DataContext;
+            var wrapper = context as AcItemWrapper;
+            OpenSkinContextMenu((wrapper?.Value ?? context) as CarSkinObject);
+        }
+
+        private void OpenSkinContextMenu(CarSkinObject skin) {
+            if (skin == null) return;
+
+            var contextMenu = new ContextMenu {
+                Items = {
+                    new MenuItem {
+                        Header = string.Format(AppStrings.Car_SkinFormat, skin.DisplayName?.Replace(@"_", @"__") ?? @"?"),
+                        StaysOpenOnClick = true
+                    }
+                }
+            };
+
+            var item = new MenuItem { Header = ControlsStrings.Car_OpenInShowroom, InputGestureText = @"Ctrl+H" };
+            item.Click += (sender, args) => CarOpenInShowroomDialog.Run(_model.SelectedObject, skin.Id);
+            contextMenu.Items.Add(item);
+
+            item = new MenuItem { Header = ControlsStrings.Car_OpenInCustomShowroom, InputGestureText = @"Alt+H" };
+            item.Click += (sender, args) => CustomShowroomWrapper.StartAsync(_model.SelectedObject, skin);
+            contextMenu.Items.Add(item);
+
+            contextMenu.Items.Add(new MenuItem {
+                Header = AppStrings.Toolbar_Folder,
+                Command = skin.ViewInExplorerCommand
+            });
+
+            contextMenu.Items.Add(new Separator());
+
+            item = new MenuItem { Header = AppStrings.Toolbar_UpdatePreview };
+            item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] { skin.Id },
+                    ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+            contextMenu.Items.Add(item);
+
+            contextMenu.Items.Add(new Separator());
+
+            item = new MenuItem { Header = AppStrings.Toolbar_ChangeLivery };
+            item.Click += (sender, args) => new LiveryIconEditor(skin).ShowDialog();
+            contextMenu.Items.Add(item);
+
+            item = new MenuItem { Header = AppStrings.Toolbar_GenerateLivery, ToolTip = AppStrings.Solution_GenerateLivery_Details };
+            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Forget();
+            contextMenu.Items.Add(item);
+
+            item = new MenuItem { Header = AppStrings.Toolbar_GenerateRandomLivery, ToolTip = AppStrings.Solution_RandomLivery_Details };
+            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Forget();
+            contextMenu.Items.Add(item);
+
+            contextMenu.Items.Add(new Separator());
+
+            contextMenu.Items.Add(new MenuItem {
+                Header = AppStrings.Car_DeleteSkin,
+                ToolTip = AppStrings.Car_DeleteSkin_Tooltip,
+                Command = skin.DeleteCommand
+            });
+
+            contextMenu.IsOpen = true;
+        }
+        #endregion
+
+        #region Presets (Dynamic Loading)
+        private void ToolbarButtonShowroom_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeShowroomPresets();
+        }
+
+        private void ToolbarButtonQuickDrive_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeQuickDrivePresets();
+        }
+
+        private void ToolbarButtonUpdatePreviews_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeUpdatePreviewsPresets();
+        }
+        #endregion
+
+        #region Icons & Specs
+        private void AcObjectBase_IconMouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                new BrandBadgeEditor((CarObject)SelectedAcObject).ShowDialog();
+            }
+        }
+
+        private void UpgradeIcon_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
+                new UpgradeIconEditor((CarObject)SelectedAcObject).ShowDialog();
+            }
+        }
+
+        private void ParentBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
+                new ChangeCarParentDialog((CarObject)SelectedAcObject).ShowDialog();
+            }
+        }
+
+        private void SpecsInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                e.Handled = true;
+                new CarSpecsEditor((CarObject)SelectedAcObject).ShowDialog();
+            }
+        }
+        #endregion
+    }
+}

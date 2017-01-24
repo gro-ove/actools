@@ -5,5 +5,9 @@
     <c:CarIdToCarWrapperConverter x:Key="CarIdToCarWrapperConverter" />
     <c:CountryIdToImageConverter x:Key="CountryIdToImageConverter" />
     <c:RealismLevelToColorConverter x:Key="RealismLevelToColorConverter" />
+    <c:TimeSpanHhMmConverter x:Key="TimeSpanHhMmConverter" />
+    <c:TimeSpanHhMmSsConverter x:Key="TimeSpanHhMmSsConverter" />
+    <c:TimeSpanMinutesConverter x:Key="TimeSpanMinutesConverter" />
+    <c:TimeSpanSecondsConverter x:Key="TimeSpanSecondsConverter" />
     <c:TrackIdToTrackWrapperConverter x:Key="TrackIdToTrackWrapperConverter" />
 </ResourceDictionary>

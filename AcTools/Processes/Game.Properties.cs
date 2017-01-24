@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -434,17 +435,94 @@ namespace AcTools.Processes {
             }
         }
 
-        public class TrackProperties : RaceIniProperties {
-            public int? Preset;
-            public double? SessionStart, Randomness, LapGain, SessionTransfer;
+        public class TrackProperties : RaceIniProperties, INotifyPropertyChanged {
+            private int? _preset;
+
+            public int? Preset {
+                get { return _preset; }
+                set {
+                    if (value == _preset) return;
+                    _preset = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(TrackPropertiesPreset.Id));
+                }
+            }
+
+            private int? _sessionStart;
+
+            public int? SessionStart {
+                get { return _sessionStart; }
+                set {
+                    if (value.Equals(_sessionStart)) return;
+                    _sessionStart = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _randomness;
+
+            public int? Randomness {
+                get { return _randomness; }
+                set {
+                    if (value.Equals(_randomness)) return;
+                    _randomness = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _lapGain;
+
+            public int? LapGain {
+                get { return _lapGain; }
+                set {
+                    if (value.Equals(_lapGain)) return;
+                    _lapGain = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _sessionTransfer;
+
+            public int? SessionTransfer {
+                get { return _sessionTransfer; }
+                set {
+                    if (value.Equals(_sessionTransfer)) return;
+                    _sessionTransfer = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public static TrackProperties Load(IniFile file) {
+                return Load(file["DYNAMIC_TRACK"]);
+            }
+
+            public static TrackProperties Load(IniFileSection section) {
+                return new TrackProperties {
+                    Preset = section.GetIntNullable("Preset"),
+                    SessionStart = section.GetInt("SESSION_START", 95),
+                    Randomness = section.GetInt("RANDOMNESS", 2),
+                    LapGain = section.GetInt("LAP_GAIN", 10),
+                    SessionTransfer = section.GetInt("SESSION_TRANSFER", 90)
+                };
+            }
 
             public override void Set(IniFile file) {
-                var section = file["DYNAMIC_TRACK"];
+                Set(file["DYNAMIC_TRACK"]);
+            }
+
+            public void Set(IniFileSection section) {
                 section.Set("PRESET", Preset);
                 section.Set("SESSION_START", SessionStart);
                 section.Set("RANDOMNESS", Randomness);
                 section.Set("LAP_GAIN", LapGain);
                 section.Set("SESSION_TRANSFER", SessionTransfer);
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
@@ -480,45 +558,45 @@ namespace AcTools.Processes {
             => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new[] {
                 new TrackPropertiesPreset("Dusty", new TrackProperties {
                     Preset = 0,
-                    SessionStart = 86.0,
-                    Randomness = 1.0,
-                    LapGain = 30.0,
-                    SessionTransfer = 50.0
+                    SessionStart = 86,
+                    Randomness = 1,
+                    LapGain = 30,
+                    SessionTransfer = 50
                 }),
                 new TrackPropertiesPreset("Old", new TrackProperties {
                     Preset = 1,
-                    SessionStart = 89.0,
-                    Randomness = 3.0,
-                    LapGain = 50.0,
-                    SessionTransfer = 80.0
+                    SessionStart = 89,
+                    Randomness = 3,
+                    LapGain = 50,
+                    SessionTransfer = 80
                 }),
                 new TrackPropertiesPreset("Slow", new TrackProperties {
                     Preset = 2,
-                    SessionStart = 96.0,
-                    Randomness = 1.0,
-                    LapGain = 300.0,
-                    SessionTransfer = 80.0
+                    SessionStart = 96,
+                    Randomness = 1,
+                    LapGain = 300,
+                    SessionTransfer = 80
                 }),
                 new TrackPropertiesPreset("Green", new TrackProperties {
                     Preset = 3,
-                    SessionStart = 95.0,
-                    Randomness = 2.0,
-                    LapGain = 132.0,
-                    SessionTransfer = 90.0
+                    SessionStart = 95,
+                    Randomness = 2,
+                    LapGain = 132,
+                    SessionTransfer = 90
                 }),
                 new TrackPropertiesPreset("Fast", new TrackProperties {
                     Preset = 4,
-                    SessionStart = 98.0,
-                    Randomness = 2.0,
-                    LapGain = 700.0,
-                    SessionTransfer = 80.0
+                    SessionStart = 98,
+                    Randomness = 2,
+                    LapGain = 700,
+                    SessionTransfer = 80
                 }),
                 new TrackPropertiesPreset("Optimum", new TrackProperties {
                     Preset = 5,
-                    SessionStart = 100.0,
-                    Randomness = 0.0,
-                    LapGain = 1.0,
-                    SessionTransfer = 100.0
+                    SessionStart = 100,
+                    Randomness = 0,
+                    LapGain = 1,
+                    SessionTransfer = 100
                 })
             });
 

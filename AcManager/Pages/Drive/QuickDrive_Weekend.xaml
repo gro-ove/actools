@@ -115,13 +115,13 @@
             <!--weekends stuff-->
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <mui:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
-                        Mode="IntegerOrZeroLabel" Content="{x:Static t:ToolsStrings.Session_Practice}"
+                        mui:BetterTextBox.Mode="IntegerOrZeroLabel" Content="{x:Static t:ToolsStrings.Session_Practice}"
                         Postfix="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}" />
                 <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
-                <mui:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive" Content="{x:Static t:ToolsStrings.Session_Qualification}"
+                <mui:ValueLabel Value="{Binding QualificationDuration}" mui:BetterTextBox.Minimum="1" Content="{x:Static t:ToolsStrings.Session_Qualification}"
                         Postfix="{Binding QualificationDuration, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}" />
                 <Slider Minimum="5" Maximum="90" Value="{Binding QualificationDuration}" />
             </StackPanel>

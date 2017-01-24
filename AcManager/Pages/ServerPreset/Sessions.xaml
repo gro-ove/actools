@@ -1,85 +1,111 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Assists" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Sessions" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
+    <StackPanel Style="{StaticResource SettingsPanel}">
+        <CheckBox IsChecked="{Binding SelectedObject.PickupMode}">
+            <Label Content="Pickup mode" />
+        </CheckBox>
 
-            <StackPanel Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Assists" />
-                <DockPanel>
-                    <Label Content="ABS:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.Abs}" />
-                </DockPanel>
-                <DockPanel ToolTip="Traction control">
-                    <Label Content="TC:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.TractionControl}" />
-                </DockPanel>
-                <CheckBox IsChecked="{Binding SelectedObject.StabilityControl}" ToolTip="AI will help you control the car if enabled">
-                    <Label Content="Stability control" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.AutoClutch}">
-                    <Label Content="Automatic clutch" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.TyreBlankets}">
-                    <Label Content="Tyre blankets" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding SelectedObject.ForceVirtualMirror}" ToolTip="Force virtual mirror">
-                    <Label Content="Virtual mirror" />
-                </CheckBox>
-            </StackPanel>
+        <CheckBox IsChecked="{Binding SelectedObject.LoopMode}">
+            <Label Content="Loop mode" />
+        </CheckBox>
 
-            <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Realism" />
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.FuelRate}" Postfix="%" Content="Fuel rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.FuelRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.DamageRate}" Postfix="%" Content="Damage rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.DamageRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.TyreWearRate}" Postfix="%" Content="Tyres wear rate" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.TyreWearRate}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.AllowTyresOut}" Content="Allowed tyres out" />
-                    <Slider Minimum="0" Maximum="4" Value="{Binding SelectedObject.AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.MaxBallast}" Postfix=" kg" Content="Max ballast" />
-                    <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.MaxBallast}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.QualifyLimitPercentage}" Postfix="%" Content="Qualify limit" />
-                    <Slider Minimum="100" Maximum="200" Value="{Binding SelectedObject.QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
-                </DockPanel>
-                <DockPanel>
-                    <Label Content="Jump start:" />
-                    <ComboBox ItemsSource="{x:Static local:SelectedPage.JumpStarts}" SelectedItem="{Binding SelectedObject.JumpStart}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+        <DockPanel ToolTip="{Binding SelectedObject.RaceOverTime, Converter={StaticResource ReadableTimeSpanConverter}}">
+            <mui:ValueLabel Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Race over time" />
+            <Slider Minimum="0" Maximum="300" TickFrequency="30" TickPlacement="BottomRight"
+                    Value="{Binding SelectedObject.RaceOverTime, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
+        </DockPanel>
+
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sessions:" />
+        <ItemsControl ItemsSource="{Binding SelectedObject.Sessions}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <mui:SpacingUniformGrid Rows="2" HorizontalSpacing="20" VerticalSpacing="8" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding}" Background="Transparent">
+                        <ContentControl.Resources>
+                            <DataTemplate DataType="{x:Type t:ServerSessionEntry}">
+                                <StackPanel Style="{StaticResource SettingsPanel}">
+                                    <CheckBox IsChecked="{Binding IsEnabled}">
+                                        <Label Content="{Binding DisplayName}" />
+                                    </CheckBox>
+
+                                    <DockPanel>
+                                        <Label Content="Name:" />
+                                        <mui:BetterTextBox Text="{Binding ConfigName}" Placeholder="{Binding DisplayName}" />
+                                    </DockPanel>
+
+                                    <DockPanel ToolTip="{Binding Time, Converter={StaticResource ReadableTimeSpanConverter}}">
+                                        <mui:ValueLabel Value="{Binding Time, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Time"
+                                                mui:BetterTextBox.Mode="Time" />
+                                        <Slider Minimum="1" Maximum="90" TickFrequency="8.9" TickPlacement="BottomRight"
+                                                Value="{Binding Time, Converter={StaticResource TimeSpanMinutesConverter}, ConverterParameter=1}" />
+                                    </DockPanel>
+
+                                    <CheckBox IsChecked="{Binding IsOpen}"
+                                            Visibility="{Binding IsClosable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Label Content="Can join" />
+                                    </CheckBox>
+                                </StackPanel>
                             </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </DockPanel>
-            </StackPanel>
-        </Grid>
+
+                            <DataTemplate DataType="{x:Type t:ServerRaceSessionEntry}">
+                                <StackPanel Style="{StaticResource SettingsPanel}">
+                                    <CheckBox IsChecked="{Binding IsEnabled}">
+                                        <Label Content="{Binding DisplayName}" />
+                                    </CheckBox>
+
+                                    <DockPanel>
+                                        <Label Content="Name:" />
+                                        <mui:BetterTextBox Text="{Binding ConfigName}" Placeholder="{Binding DisplayName}" />
+                                    </DockPanel>
+
+                                    <DockPanel>
+                                        <mui:ValueLabel Value="{Binding LapsCount}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
+                                                Postfix="{Binding LapsCount, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}"
+                                                mui:BetterTextBox.Minimum="1" />
+                                        <Slider Minimum="1" Maximum="36" Value="{Binding LapsCount}" TickFrequency="5" TickPlacement="BottomRight" />
+                                    </DockPanel>
+
+                                    <DockPanel ToolTip="{Binding WaitTime, Converter={StaticResource ReadableTimeSpanConverter}}">
+                                        <mui:ValueLabel Value="{Binding WaitTime, Converter={StaticResource TimeSpanHhMmSsConverter}}" Content="Initial delay"
+                                                mui:BetterTextBox.Mode="Time" />
+                                        <Slider Minimum="1" Maximum="120" TickFrequency="11.9" TickPlacement="BottomRight"
+                                                Value="{Binding WaitTime, Converter={StaticResource TimeSpanSecondsConverter}, ConverterParameter=1}" />
+                                    </DockPanel>
+
+                                    <DockPanel>
+                                        <Label Content="Jump type:" />
+                                        <ComboBox ItemsSource="{x:Static local:SelectedPage.RaceJoinTypes}" SelectedItem="{Binding JoinType}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </DockPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </StackPanel>
 </UserControl>

@@ -130,14 +130,9 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static IValueConverter SpecialPluralizingConverter { get; }
+        public static IValueConverter SpecialPluralizingConverter { get; } = new SpecialPluralizingConverter_Inner();
 
-        public static IValueConverter SpecialSessionConverter { get; }
-
-        static QuickDrive_Weekend () {
-            SpecialPluralizingConverter = new SpecialPluralizingConverter_Inner();
-            SpecialSessionConverter = new SpecialSessionConverter_Inner();
-        }
+        public static IValueConverter SpecialSessionConverter { get; } = new SpecialSessionConverter_Inner();
 
         private class SpecialPluralizingConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

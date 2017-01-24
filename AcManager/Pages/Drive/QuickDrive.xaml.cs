@@ -610,21 +610,21 @@ namespace AcManager.Pages.Drive {
 
         private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
-                    .AddItem("Change Car To Random", Model.RandomCarCommand, @"Ctrl+Alt+1")
-                    .AddItem("Change Skin To Random", Model.RandomCarCommand, @"Ctrl+Alt+R")
-                    .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
+                    .AddItem("Change skin to random", Model.RandomCarCommand, @"Ctrl+Alt+R")
+                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
-                    .AddItem("Open Car In Content Tab", () => {
+                    .AddItem("Open car in Content tab", () => {
                          CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
                      });
         }
 
         private void SelectedTrackContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
-                    .AddItem("Change Track To Random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
-                    .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
+                    .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
+                    .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
-                    .AddItem("Open Track In Content Tab", () => {
+                    .AddItem("Open track in Content tab", () => {
                         TracksListPage.Show(Model.SelectedTrack);
                     }, isEnabled: AppKeyHolder.IsAllRight);
         }
@@ -643,14 +643,14 @@ namespace AcManager.Pages.Drive {
             if (Model.RealConditions) {
                 e.Menu = (TryFindResource(@"RealConditionsContextMenu") as ContextMenu)?
                         .AddSeparator()
-                        .AddItem("Set Random Time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
-                        .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+                        .AddItem("Set random time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             } else {
                 e.Menu = new ContextMenu()
-                        .AddItem("Set Random Time",  Model.RandomTimeCommand, @"Ctrl+Alt+3")
-                        .AddItem("Set Random Weather", Model.RandomWeatherCommand, @"Ctrl+Alt+4")
-                        .AddItem("Set Random Temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
-                        .AddItem("Randomize Everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
+                        .AddItem("Set random time",  Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem("Set random weather", Model.RandomWeatherCommand, @"Ctrl+Alt+4")
+                        .AddItem("Set random temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
+                        .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             }
         }
     }

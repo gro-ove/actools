@@ -1,7 +1,14 @@
 ﻿using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Attached;
+using FlowDirection = System.Windows.FlowDirection;
+using Panel = System.Windows.Controls.Panel;
 
 namespace AcManager.Controls {
     public class PropertiesGrid : Panel {
@@ -73,6 +80,77 @@ namespace AcManager.Controls {
             if (parent != null) {
                 parent.InvalidateArrange();
                 parent.InvalidateVisual();
+            }
+        }
+
+        private readonly ToolTip _toolTip;
+
+        public PropertiesGrid() {
+            Background = new SolidColorBrush(Colors.Transparent);
+            ToolTip = _toolTip = new ToolTip { Visibility = Visibility.Hidden };
+            PreviewMouseRightButtonDown += OnPreviewMouseRightButtonDown;
+            PreviewMouseMove += OnMouseMove;
+        }
+
+        private int GetChildId(MouseEventArgs e, out double relx) {
+            var loc = e.GetPosition(this);
+
+            var row = (loc.Y / _yStep).RoundToInt();
+            var column = (loc.X / _xStep).RoundToInt();
+
+            var id = row * _columns + column;
+            relx = loc.X - column * _xStep;
+
+            return id;
+        }
+
+        private int GetChildId(MouseEventArgs e) {
+            double relx;
+            var id = GetChildId(e, out relx);
+            return relx > _labelWidth ? -1 : id;
+        }
+
+        private int _id = -1;
+
+        private void OnMouseMove(object sender, MouseEventArgs e) {
+            var id = GetChildId(e);
+            if (id == _id) return;
+
+            _id = id;
+
+            var childToolTip = InternalChildren.OfType<FrameworkElement>().ElementAtOrDefault(id)?.ToolTip;
+
+            if (childToolTip == null) {
+                _toolTip.Visibility = Visibility.Hidden;
+            } else {
+                _toolTip.Visibility = Visibility.Visible;
+
+                var toolTip = childToolTip as ToolTip;
+                if (toolTip == null) {
+                    _toolTip.Content = childToolTip;
+                    _toolTip.ContentStringFormat = null;
+                    _toolTip.ContentTemplate = null;
+                    _toolTip.ContentTemplateSelector = null;
+                } else {
+                    _toolTip.Content = toolTip.Content;
+                    _toolTip.ContentStringFormat = toolTip.ContentStringFormat;
+                    _toolTip.ContentTemplate = toolTip.ContentTemplate;
+                    _toolTip.ContentTemplateSelector = toolTip.ContentTemplateSelector;
+                }
+            }
+        }
+
+        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            double relx;
+            var child = InternalChildren.OfType<FrameworkElement>().ElementAtOrDefault(GetChildId(e, out relx));
+            var menu = child?.ContextMenu;
+            if (menu != null) {
+                if (relx < _labelWidth) {
+                    menu.IsOpen = true;
+                    e.Handled = true;
+                } else if (ContextMenuAdvancement.GetPropagateToChildren(child)) {
+                    ContextMenuAdvancement.PropagateToChildren(child);
+                }
             }
         }
 

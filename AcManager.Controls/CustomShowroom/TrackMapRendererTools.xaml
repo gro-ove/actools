@@ -71,17 +71,18 @@
         </CheckBox>
 
         <DockPanel>
-            <mui:ValueLabel Value="{Binding Margin, StringFormat='\{0:F0\}'}" Postfix="px" Mode="Number" DockPanel.Dock="Top" Content="Margin" />
+            <mui:ValueLabel Value="{Binding Margin, StringFormat='\{0:F0\}'}" Postfix="px" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Margin" />
             <Slider Minimum="0" Maximum="20" Value="{Binding Margin}" TickFrequency="5" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
         </DockPanel>
 
         <DockPanel>
-            <mui:ValueLabel Value="{Binding Scale, Converter={StaticResource PercentageConverter}, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number"
-                    DockPanel.Dock="Top" Content="Scale" />
+            <mui:ValueLabel Value="{Binding Scale, Converter={StaticResource PercentageConverter}, StringFormat='\{0:F0\}'}" Postfix="%"
+                    mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scale" />
             <Slider Minimum="20" Maximum="320" Value="{Binding Scale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                     TickFrequency="100" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
         </DockPanel>
 
-        <Button Margin="0 8 0 0" Content="Save Map" ToolTip="Save new map.png and map.ini (original files will be moved to the Recycle Bin)" Command="{Binding SaveCommand}" />
+        <Button Margin="0 8 0 0" Content="Save Map" ToolTip="Save new map.png and map.ini (original files will be moved to the Recycle Bin)"
+                Command="{Binding SaveCommand}" />
     </StackPanel>
 </mui:ModernDialog>

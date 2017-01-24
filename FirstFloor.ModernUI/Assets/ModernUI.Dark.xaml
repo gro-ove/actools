@@ -131,6 +131,6 @@
     <SolidColorBrush x:Key="WindowText" Color="#c1c1c1" />
     <SolidColorBrush x:Key="WindowTextReadOnly" Color="#717171" />
 
-    <Rectangle x:Key="WindowBackgroundContent" x:Shared="False" />
-    <Rectangle x:Key="DialogBackgroundContent" x:Shared="False" />
+    <x:Null x:Key="WindowBackgroundContentBrush" />
+    <x:Null x:Key="DialogBackgroundContentBrush" />
 </ResourceDictionary>

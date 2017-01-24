@@ -18,7 +18,7 @@ namespace AcManager.Controls.UserControls {
             _player = new VideoPlayer(!OptionUseVlc) {
                 Stretch = Stretch.UniformToFill,
                 IsLooped = true,
-                Volume = 1d
+                Volume = 0d
             };
             VideoWrapper.Child = _player;
             _player.Started += OnStart;
@@ -62,7 +62,13 @@ namespace AcManager.Controls.UserControls {
         private bool _loaded, _started;
         private Window _window;
 
-        private async void OnLoaded(object sender, RoutedEventArgs e) {
+        // For cases when used in VisualBrush
+        /*protected override Size MeasureOverride(Size constraint) {
+            Initialize();
+            return base.MeasureOverride(constraint);
+        }*/
+
+        private async void Initialize() {
             if (_loaded) return;
             _loaded = true;
 
@@ -70,13 +76,17 @@ namespace AcManager.Controls.UserControls {
 
             try {
                 _window = Window.GetWindow(this);
-                if (_window == null) return;
+
+                if (_window == null) {
+                    Logging.Warning("Can’t find window");
+                    return;
+                }
 
                 _window.Activated += Window_Activated;
                 _window.Deactivated += Window_Deactivated;
 
                 if (_window.IsActive) {
-                    _player.Play();
+                    _player.PlayRandomly();
                     _started = true;
                 }
             } catch (Exception ex) {
@@ -84,9 +94,13 @@ namespace AcManager.Controls.UserControls {
             }
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            Initialize();
+        }
+
         private void Window_Activated(object sender, EventArgs e) {
             _started = true;
-            _player.Play();
+            _player.PlayRandomly();
         }
 
         private async void Window_Deactivated(object sender, EventArgs e) {

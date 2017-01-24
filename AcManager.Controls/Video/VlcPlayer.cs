@@ -35,8 +35,8 @@ namespace AcManager.Controls.Video {
             try {
                 _playing = false;
 
-                if (_source == null || !File.Exists(_source.OriginalString) || !_active)
-                    return;
+                if (_source == null || !File.Exists(_source.OriginalString) || !_active) return;
+
                 // _vlcPlayer.LoadMediaWithOptions(source, ":avcodec-hw=dxva2");
                 _vlcPlayer.LoadMedia(_source.OriginalString);
                 _vlcPlayer.Play();
@@ -81,6 +81,16 @@ namespace AcManager.Controls.Video {
 
         public void Play() {
             _active = true;
+            _vlcPlayer.BeginStop(Stopped);
+        }
+
+        public void PlayRandomly() {
+            _active = true;
+            _vlcPlayer.BeginStop(Stopped);
+        }
+
+        public void Pause() {
+            _active = false;
             _vlcPlayer.BeginStop(Stopped);
         }
 

@@ -34,7 +34,7 @@
                     </StackPanel>
                     <TextBlock Text="{Binding TakenPlace, Converter={StaticResource OrdinalizingConverter}}" Style="{StaticResource Heading1}" Padding="8"
                             TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" x:Name="TakenPlaceText"
-                            Background="{StaticResource DarkenPanel}" />
+                            Background="{StaticResource DarkenPanel}" Foreground="White" />
                     <Ellipse Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                             Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                 </Grid>

@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Xml;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
@@ -12,6 +14,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
@@ -69,13 +72,31 @@ namespace AcManager.Controls.Presentation {
 
                 _filename = filename;
                 Id = Path.GetFileName(filename);
+                AssetsDirectory = Path.GetDirectoryName(_filename);
             }
 
             public string Id { get; }
 
+            private void ApplyInner() {
+                if (_filename != null) {
+                    var parserContext = new ParserContext {
+                        BaseUri = new Uri(AssetsDirectory ?? "", UriKind.Absolute)
+                    };
+
+                    using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                        AppearanceManager.Current.SetTheme((ResourceDictionary)XamlReader.Load(fs, parserContext));
+                    }
+                } else {
+                    AppearanceManager.Current.SetTheme(Source);
+                }
+            }
+
+            [CanBeNull]
+            public string AssetsDirectory { get; }
+
             public bool Apply() {
                 try {
-                    AppearanceManager.Current.ThemeSource = Source;
+                    ApplyInner();
                     if (_filename != null) {
                         _modified = new FileInfo(_filename).LastWriteTime;
                     }
@@ -98,7 +119,7 @@ namespace AcManager.Controls.Presentation {
                 try {
                     var modified = fileInfo.LastWriteTime;
                     if (modified > _modified) {
-                        AppearanceManager.Current.ThemeSource = Source;
+                        ApplyInner();
                         _modified = modified;
                     }
 
@@ -118,6 +139,7 @@ namespace AcManager.Controls.Presentation {
 
         private void InnerInitialize() {
             AppearanceManager.Current.Initialize();
+            AppearanceManager.Current.ThemeObsolete += OnThemeObsolete;
 
             var theme = ValuesStorage.GetString(KeyTheme);
             InitializeThemesList();
@@ -139,6 +161,10 @@ namespace AcManager.Controls.Presentation {
             } finally {
                 _loading = false;
             }
+        }
+
+        private void OnThemeObsolete(object sender, EventArgs e) {
+            SelectedTheme?.Apply();
         }
 
         #region Bitmap scaling

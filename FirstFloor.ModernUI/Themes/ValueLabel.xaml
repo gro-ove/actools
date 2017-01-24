@@ -10,6 +10,7 @@
     <Style TargetType="{x:Type c:ValueLabel}">
         <Setter Property="Margin" Value="0 0 0 4" />
         <Setter Property="Padding" Value="8 0 0 0" />
+        <Setter Property="c:BetterTextBox.Mode" Value="Integer" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:ValueLabel}">
@@ -17,14 +18,17 @@
                         <TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, StringFormat='{}{0}: '}"
                                 Visibility="{TemplateBinding Content, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
                                 Style="{StaticResource Label}" />
-                        <TextBlock x:Name="PART_Off" Text="Off" Style="{StaticResource Label}" Visibility="Collapsed" />
+                        <TextBlock x:Name="PART_Prefix" Text="{TemplateBinding Prefix}" Style="{StaticResource Label}" />
                         <c:BetterTextBox x:Name="PART_TextBox"
                                 Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=LostFocus, Mode=TwoWay}"
-                                Style="{StaticResource Borderless.Label}" Mode="{TemplateBinding Mode}" />
+                                Style="{StaticResource Borderless.Label}" />
                         <TextBlock x:Name="PART_Postfix" Text="{TemplateBinding Postfix}" Style="{StaticResource Label}" />
                     </StackPanel>
 
                     <ControlTemplate.Triggers>
+                        <Trigger Property="Prefix" Value="{x:Null}">
+                            <Setter TargetName="PART_Prefix" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
                         <Trigger Property="Postfix" Value="{x:Null}">
                             <Setter TargetName="PART_Postfix" Property="Visibility" Value="Collapsed" />
                         </Trigger>
@@ -33,14 +37,33 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="ShowZeroAsOff" Value="True" />
+                                <Condition Property="c:BetterTextBox.Mode" Value="{x:Static c:SpecialMode.IntegerOrZeroLabel}" />
                                 <Condition Property="Value" Value="0" />
                             </MultiTrigger.Conditions>
-
-                            <Setter TargetName="PART_TextBox" Property="Visibility" Value="Hidden" />
                             <Setter TargetName="PART_Postfix" Property="Visibility" Value="Collapsed" />
-                            <Setter TargetName="PART_Off" Property="Visibility" Value="Visible" />
                         </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="c:BetterTextBox.Mode" Value="{x:Static c:SpecialMode.IntegerOrMinusOneLabel}" />
+                                <Condition Property="Value" Value="-1" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Postfix" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding (c:BetterTextBox.Mode), Source={RelativeSource Self}}"
+                                        Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
+                                <Condition Value="True">
+                                    <Condition.Binding>
+                                        <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                                            <Binding Path="Value" RelativeSource="{RelativeSource Self}" />
+                                            <Binding Path="c:BetterTextBox.ModeLabelValue" RelativeSource="{RelativeSource Self}" />
+                                        </MultiBinding>
+                                    </Condition.Binding>
+                                </Condition>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="PART_Postfix" Property="Visibility" Value="Collapsed" />
+                        </MultiDataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

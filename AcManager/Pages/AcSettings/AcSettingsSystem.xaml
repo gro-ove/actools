@@ -53,7 +53,7 @@
             </CheckBox>
 
             <!--session information-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Session information" mui:NewMarkService.New="True" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:AppStrings.AcSettings_SessionInformation}" mui:NewMarkService.New="True" />
 
             <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
                 <CheckBox IsChecked="{Binding SessionInfo.Practice}">
@@ -74,7 +74,7 @@
                 </DockPanel>
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
-                            Postfix="%" Mode="Number" Content="Text opacity" />
+                            Postfix="%" mui:BetterTextBox.Mode="Number" Content="Text opacity" />
                     <Slider Minimum="0" Maximum="100"
                             Value="{Binding SessionInfo.ForegroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             TickFrequency="10" TickPlacement="BottomRight" />
@@ -86,7 +86,7 @@
                 </DockPanel>
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F0}'}"
-                            Postfix="%" Mode="Number" Content="Background opacity" />
+                            Postfix="%" mui:BetterTextBox.Mode="Number" Content="Background opacity" />
                     <Slider Minimum="0" Maximum="100"
                             Value="{Binding SessionInfo.BackgroundOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             TickFrequency="10" TickPlacement="BottomRight" />
@@ -104,7 +104,7 @@
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Skidmarks.Height, StringFormat='{}{0:F3}'}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
-                        Mode="Number" Content="{x:Static AcManager:AppStrings.AcSettings_Skidmarks_Height}" />
+                        mui:BetterTextBox.Mode="Number" Content="{x:Static AcManager:AppStrings.AcSettings_Skidmarks_Height}" />
                 <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
             </DockPanel>
 

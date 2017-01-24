@@ -91,7 +91,8 @@
 
                                                                 <DataTemplate DataType="{x:Type t:PythonAppConfigRangeValue}">
                                                                     <DockPanel>
-                                                                        <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding Value}" Mode="Number"
+                                                                        <mui:ValueLabel Content="{Binding DisplayName}" Value="{Binding Value}"
+                                                                                mui:BetterTextBox.Mode="Number"
                                                                                 Postfix="{Binding Postfix}" Style="{StaticResource ValueLabel}" />
                                                                         <Slider Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Value="{Binding Value}"
                                                                                 TickFrequency="{Binding Tick}" TickPlacement="BottomRight" />

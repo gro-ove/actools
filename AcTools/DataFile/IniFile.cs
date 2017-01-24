@@ -184,6 +184,7 @@ namespace AcTools.DataFile {
                 var c = data[i];
                 switch (c) {
                     case '[':
+                        if (key != null) goto default;
                         ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
 
                         var s = ++i;

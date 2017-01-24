@@ -14,10 +14,27 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum SpecialMode {
-        None, Number, Integer, IntegerOrZeroLabel, Time, Version,
+        /* disabled */
+        None,
+
+        /* numbers */
+        Number,
+        Integer,
 
         [Obsolete]
-        Positive
+        Positive,
+
+        /* complicated strings */
+        Time,
+        Version,
+
+        /* numbers with alternate string for some cases */
+        IntegerOrLabel,
+
+        [Obsolete]
+        IntegerOrZeroLabel,
+        [Obsolete]
+        IntegerOrMinusOneLabel,
     }
 
     public class BetterComboBox : ComboBox {
@@ -85,7 +102,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             public NullPrefixedCollection(IEnumerable collection)
                     // ReSharper disable once PossibleMultipleEnumeration
-                    : base(new [] { NullValue }.Concat(collection.OfType<object>())) {
+                    : base(new[] { NullValue }.Concat(collection.OfType<object>())) {
                 var o = collection as INotifyCollectionChanged;
                 if (o != null) {
                     // ReSharper disable once PossibleMultipleEnumeration
@@ -96,7 +113,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             private void Rebuild() {
-                ReplaceEverythingBy(new [] { NullValue }.Concat(_collection.OfType<object>()));
+                ReplaceEverythingBy(new[] { NullValue }.Concat(_collection.OfType<object>()));
             }
 
             private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -192,8 +209,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(PlaceholderProperty, value); }
         }
 
-        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(SpecialMode), typeof(BetterTextBox));
-
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
@@ -214,8 +229,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 case Key.Up:
                 case Key.Down:
-                    if (Mode != SpecialMode.None) {
-                        var processed = ProcessText(Mode, Text, e.Key == Key.Up ? 1d : -1d, Minimum, Maximum);
+                    if (GetMode(this) != SpecialMode.None) {
+                        var processed = ProcessText(Text, e.Key == Key.Up ? 1d : -1d);
                         if (processed != null) SetTextBoxText(this, processed);
                         e.Handled = true;
                     }
@@ -227,24 +242,64 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public SpecialMode Mode {
-            get { return (SpecialMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+        public static SpecialMode GetMode(DependencyObject obj) {
+            return (SpecialMode)obj.GetValue(ModeProperty);
         }
 
-        public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(nameof(Minimum), typeof(double), typeof(BetterTextBox), new PropertyMetadata(double.NegativeInfinity));
-
-        public double Minimum {
-            get { return (double)GetValue(MinimumProperty); }
-            set { SetValue(MinimumProperty, value); }
+        public static void SetMode(DependencyObject obj, SpecialMode value) {
+            obj.SetValue(ModeProperty, value);
         }
 
-        public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(nameof(Maximum), typeof(double), typeof(BetterTextBox), new PropertyMetadata(double.PositiveInfinity));
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.RegisterAttached("Mode", typeof(SpecialMode),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(SpecialMode.None, FrameworkPropertyMetadataOptions.Inherits));
 
-        public double Maximum {
-            get { return (double)GetValue(MaximumProperty); }
-            set { SetValue(MaximumProperty, value); }
+        public static string GetModeLabel(DependencyObject obj) {
+            return (string)obj.GetValue(ModeLabelProperty);
         }
+
+        public static void SetModeLabel(DependencyObject obj, string value) {
+            obj.SetValue(ModeLabelProperty, value);
+        }
+
+        public static readonly DependencyProperty ModeLabelProperty = DependencyProperty.RegisterAttached("ModeLabel", typeof(string),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
+
+
+        public static double GetModeLabelValue(DependencyObject obj) {
+            return (double)obj.GetValue(ModeLabelValueProperty);
+        }
+
+        public static void SetModeLabelValue(DependencyObject obj, double value) {
+            obj.SetValue(ModeLabelValueProperty, value);
+        }
+
+        public static readonly DependencyProperty ModeLabelValueProperty = DependencyProperty.RegisterAttached("ModeLabelValue", typeof(double),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.Inherits));
+
+
+        public static double GetMinimum(DependencyObject obj) {
+            return (double)obj.GetValue(MinimumProperty);
+        }
+
+        public static void SetMinimum(DependencyObject obj, double value) {
+            obj.SetValue(MinimumProperty, value);
+        }
+
+        public static readonly DependencyProperty MinimumProperty = DependencyProperty.RegisterAttached("Minimum", typeof(double),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(double.NegativeInfinity, FrameworkPropertyMetadataOptions.Inherits));
+
+
+        public static double GetMaximum(DependencyObject obj) {
+            return (double)obj.GetValue(MaximumProperty);
+        }
+
+        public static void SetMaximum(DependencyObject obj, double value) {
+            obj.SetValue(MaximumProperty, value);
+        }
+
+        public static readonly DependencyProperty MaximumProperty = DependencyProperty.RegisterAttached("Maximum", typeof(double),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(double.PositiveInfinity, FrameworkPropertyMetadataOptions.Inherits));
+
 
         internal static void SetTextBoxText(TextBox textBox, string text) {
             var selectionStart = textBox.SelectionStart;
@@ -254,7 +309,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             textBox.SelectionLength = selectionLength;
         }
 
-        internal static string ProcessText(SpecialMode mode, string text, double delta, double minValue, double maxValue) {
+        private int GetLabelValue() {
+            switch (GetMode(this)) {
+#pragma warning disable 612
+                case SpecialMode.IntegerOrMinusOneLabel:
+#pragma warning restore 612
+                    return -1;
+#pragma warning disable 612
+                case SpecialMode.IntegerOrZeroLabel:
+#pragma warning restore 612
+                    return 0;
+                case SpecialMode.IntegerOrLabel:
+                    return (int)Math.Round(GetModeLabelValue(this));
+                default:
+                    return 0;
+            }
+        }
+
+        internal string ProcessText(string text, double delta) {
+            var mode = GetMode(this);
+            var minValue = GetMinimum(this);
+            var maxValue = GetMaximum(this);
+
             switch (mode) {
                 case SpecialMode.Number: {
                     double value;
@@ -301,9 +377,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     return FlexibleParser.ReplaceDouble(text, value);
                 }
 
+                case SpecialMode.IntegerOrLabel:
+#pragma warning disable 612
+                case SpecialMode.IntegerOrMinusOneLabel:
                 case SpecialMode.IntegerOrZeroLabel: {
+#pragma warning restore 612
                     int value;
                     var skip = !FlexibleParser.TryParseInt(text, out value);
+                        
+                    if (skip) {
+                        value = GetLabelValue();
+                    }
 
                     if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
                         delta *= 10.0;
@@ -314,32 +398,60 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
 
                     value = (int)Math.Max(Math.Min((int)(value + delta), maxValue), minValue);
+
+                    var label = GetModeLabel(this);
+                    if (value == GetLabelValue() && label != null) {
+                        return label;
+                    }
+
                     return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
                 }
 
                 case SpecialMode.Time: {
                     var splitted = text.Split(':');
-                    int hours, minutes;
+                    int totalSeconds;
 
-                    if (splitted.Length != 2 || !FlexibleParser.TryParseInt(splitted[0], out hours) || !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
-
-                    var totalMinutes = hours * 60 + minutes;
-
-                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
-                        delta *= 0.5;
+                    switch (splitted.Length) {
+                        case 2: {
+                            int hours, minutes;
+                            if (!FlexibleParser.TryParseInt(splitted[0], out hours) || !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
+                            totalSeconds = (splitted[0].StartsWith(@"-") ? -1 : 1) * (Math.Abs(hours) * 60 + Math.Abs(minutes)) * 60;
+                            break;
+                        }
+                        case 3: {
+                            int hours, minutes, seconds;
+                            if (!FlexibleParser.TryParseInt(splitted[0], out hours) || !FlexibleParser.TryParseInt(splitted[1], out minutes) ||
+                                    !FlexibleParser.TryParseInt(splitted[2], out seconds)) return null;
+                            totalSeconds = (splitted[0].StartsWith(@"-") ? -1 : 1) * (Math.Abs(hours) * 60 + Math.Abs(minutes)) * 60 + Math.Abs(seconds);
+                            break;
+                        }
+                        default:
+                            return null;
                     }
 
-                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
-                        delta *= 6.0;
+                    if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                        delta *= 60;
                     }
 
-                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
-                        delta *= 2.0;
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
+                        delta *= 60;
                     }
 
-                    totalMinutes += (int)(delta * 10);
-                    totalMinutes = (int)Math.Max(Math.Min(totalMinutes, maxValue), minValue);
-                    return $"{totalMinutes / 60:D}:{totalMinutes % 60:D}";
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                        delta *= 15;
+                    }
+
+                    if (double.IsNegativeInfinity(minValue)) {
+                        minValue = 0d;
+                    }
+
+                    totalSeconds += (int)delta;
+                    totalSeconds = (int)Math.Max(Math.Min(totalSeconds, maxValue), minValue);
+
+                    var t = Math.Abs(totalSeconds);
+                    return splitted.Length == 2
+                            ? $@"{(totalSeconds < 0 ? @"-" : "")}{t / 3600:D2}:{t / 60 % 60:D2}"
+                            : $@"{(totalSeconds < 0 ? @"-" : "")}{t / 3600:D2}:{t / 60 % 60:D2}:{t % 60:D2}";
                 }
 
                 case SpecialMode.Version: {

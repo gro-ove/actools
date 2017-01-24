@@ -77,14 +77,14 @@
                     <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
-                                <Binding Path="In"/>
-                                <Binding Path="Out"/>
-                                <Binding Path="FileName"/>
+                                <Binding Path="In" />
+                                <Binding Path="Out" />
+                                <Binding Path="FileName" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                 </DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
+                <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
                 <Slider Minimum="0" Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
                         Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
             </DockPanel>
@@ -204,7 +204,7 @@
 
                                                 <DockPanel Style="{StaticResource DockPanel}">
                                                     <mui:ValueLabel Value="{Binding Transparency, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                                            Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
+                                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
                                                     <Slider Minimum="0" Maximum="100"
                                                             Value="{Binding Transparency, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                                                             TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
@@ -318,14 +318,14 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top"
-                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
+                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
+                            DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top"
-                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
+                            DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
                     <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
@@ -358,14 +358,14 @@
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
-                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" Mode="Number" DockPanel.Dock="Top"
+                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
                             Content="{x:Static t:ToolsStrings.Common_Width}" />
                     <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
-                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" Mode="Number" DockPanel.Dock="Top"
+                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
                             Content="{x:Static t:ToolsStrings.Common_Length}" />
                     <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />

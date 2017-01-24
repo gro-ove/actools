@@ -14,7 +14,7 @@
             </DockPanel>-->
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" Mode="Integer" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_TyresOffset}" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
@@ -22,43 +22,43 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Audio_LevelsHeader}" />
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Master}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelMaster}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelTyres, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelTyres, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Tyres}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelTyres}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelEngine, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelEngine, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Engine}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelEngine}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelSurfaces, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelSurfaces, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Surface}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelSurfaces}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelWind, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelWind, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Wind}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelWind}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelOpponents, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelOpponents, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Opponents}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelOpponents}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Audio.LevelUi, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%"
+                <mui:ValueLabel Value="{Binding Audio.LevelUi, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
                         Content="{x:Static g:AppStrings.AcSettings_Audio_Ui}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelUi}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>

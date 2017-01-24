@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public class ContextMenuAdvancement {
@@ -47,11 +48,15 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             _lastClicked = DateTime.Now;
         }
 
-        private static void PropagateToChildren_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-            var menu = (ContextMenu)((FrameworkElement)sender).GetValue(FrameworkElement.ContextMenuProperty);
+        public static void PropagateToChildren(FrameworkElement parent) {
+            var menu = (ContextMenu)parent.GetValue(FrameworkElement.ContextMenuProperty);
             if (menu != null) {
                 Add(menu);
             }
+        }
+
+        private static void PropagateToChildren_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+            PropagateToChildren((FrameworkElement)sender);
         }
     }
 }

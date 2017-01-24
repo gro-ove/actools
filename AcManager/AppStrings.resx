@@ -3532,4 +3532,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Lap Times Grid</value>
   </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Session information</value>
+  </data>
 </root>

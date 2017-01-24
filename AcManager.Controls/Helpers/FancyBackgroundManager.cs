@@ -46,6 +46,12 @@ namespace AcManager.Controls.Helpers {
             }
         }
 
+        public void Recreate(IFancyBackgroundListener listener) {
+            if (Enabled) {
+                UpdateBackgroundLater(listener).Forget();
+            }
+        }
+
         private async Task UpdateBackgroundLater(IFancyBackgroundListener listener) {
             await Task.Delay(100);
             listener.ChangeBackground(Enabled ? BackgroundFilename : null);

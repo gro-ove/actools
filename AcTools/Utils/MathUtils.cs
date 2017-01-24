@@ -50,6 +50,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static double Round(this double value, double precision = 1d) {
+            if (Equals(precision, 0d)) return value;
             return Math.Round(value / precision) * precision;
         }
 
@@ -60,6 +61,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static double Floor(this double value, double precision = 1d) {
+            if (Equals(precision, 0d)) return value;
             return Math.Floor(value / precision) * precision;
         }
 
@@ -70,6 +72,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static double Ceiling(this double value, double precision = 1d) {
+            if (Equals(precision, 0d)) return value;
             return Math.Ceiling(value / precision) * precision;
         }
 
@@ -80,6 +83,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static int Round(this int value, int precision = 1) {
+            if (Equals(precision, 0)) return value;
             return (int)(Math.Round((double)value / precision) * precision);
         }
 
@@ -90,6 +94,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static int Floor(this int value, int precision = 1) {
+            if (Equals(precision, 0)) return value;
             return (int)(Math.Floor((double)value / precision) * precision);
         }
 
@@ -100,6 +105,7 @@ namespace AcTools.Utils {
         /// <param name="precision"></param>
         /// <returns></returns>
         public static int Ceiling(this int value, int precision = 1) {
+            if (Equals(precision, 0)) return value;
             return (int)(Math.Ceiling((double)value / precision) * precision);
         }
 

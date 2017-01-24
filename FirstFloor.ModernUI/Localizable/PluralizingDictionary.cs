@@ -14,6 +14,8 @@ namespace FirstFloor.ModernUI.Localizable {
                     return "people";
                 case "man":
                     return "men";
+                case "entry":
+                    return "entries";
             }
 
             if (s.EndsWith("o")) {
@@ -22,10 +24,6 @@ namespace FirstFloor.ModernUI.Localizable {
 
             if (s.EndsWith("s") || s.EndsWith("x") || s.EndsWith("ch") || s.EndsWith("sh")) {
                 return s + "es";
-            }
-
-            if (s.EndsWith("y")) {
-                return s.Substring(0, s.Length - 1) + "ies";
             }
 
             return s + "s";

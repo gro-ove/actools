@@ -39,7 +39,7 @@
                                         <Binding Path="Index" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="0" />
                                     </MultiBinding>
                                 </mui:SpacingStackPanel.IsEnabled>
-                                <mui:ValueLabel Value="{Binding Time, Converter={StaticResource AcTimeDisplayConverter}}" Mode="Time"
+                                <mui:ValueLabel Value="{Binding Time, Converter={StaticResource AcTimeDisplayConverter}}" mui:BetterTextBox.Mode="Time"
                                         Content="{x:Static g:AppStrings.Drive_Time}" />
                                 <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
                                         Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
@@ -48,7 +48,7 @@
 
                             <mui:SpacingStackPanel Spacing="4"
                                     Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Background="Transparent"
+                                <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
                                         Postfix="{x:Static ac:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
                                     <mui:ValueLabel.ToolTip>
                                         <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
@@ -61,7 +61,8 @@
                             <mui:SpacingStackPanel Spacing="4"
                                     Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
-                                <ComboBox ItemsSource="{Binding DataContext.WeatherList, ElementName=This}" SelectedItem="{Binding Weather}" />
+                                <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}"
+                                        SelectedItem="{Binding Weather}" />
                             </mui:SpacingStackPanel>
 
                             <mui:SpacingStackPanel Spacing="4">
@@ -179,13 +180,13 @@
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.Rules.Practice, Converter={x:Static dr:QuickDrive_Weekend.SpecialSessionConverter}}"
-                                    Mode="IntegerOrZeroLabel" Content="{x:Static t:ToolsStrings.Session_Practice}"
+                                    mui:BetterTextBox.Mode="IntegerOrZeroLabel" Content="{x:Static t:ToolsStrings.Session_Practice}"
                                     Postfix="{Binding SelectedObject.Rules.Practice, Converter={x:Static dr:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static ac:ControlsStrings.Common_MinutePostfix}}" />
                             <Slider Minimum="0" Maximum="100" Value="{Binding SelectedObject.Rules.Practice}" TickFrequency="10" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.Rules.Qualifying}" Mode="Positive"
+                            <mui:ValueLabel Value="{Binding SelectedObject.Rules.Qualifying}" mui:BetterTextBox.Minimum="1"
                                     Content="{x:Static t:ToolsStrings.Session_Qualification}"
                                     Postfix="{Binding SelectedObject.Rules.Qualifying, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static ac:ControlsStrings.Common_MinutePostfix}}" />
                             <Slider Minimum="4" Maximum="104" Value="{Binding SelectedObject.Rules.Qualifying}" TickFrequency="10" TickPlacement="BottomRight" />
@@ -257,7 +258,7 @@
                 </StackPanel>
 
                 <ListBox mui:Draggable.Enabled="True" SelectionMode="Extended" ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}"
-                        Drop="OnItemsControlDrop" Style="{StaticResource VirtualizingListBox}">
+                        Style="{StaticResource VirtualizingListBox}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"

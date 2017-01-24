@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {
@@ -21,6 +22,7 @@ namespace FirstFloor.ModernUI.Presentation {
         public const string KeySubMenuDraggablePoints = "ModernSubMenuDraggablePoints";
 
         public event EventHandler ThemeChange;
+        public event EventHandler ThemeObsolete;
         
         private AppearanceManager() {
         }
@@ -35,32 +37,37 @@ namespace FirstFloor.ModernUI.Presentation {
             });
         }
 
-        private ResourceDictionary GetThemeDictionary() {
-            // determine the current theme by looking at the app resources and return the first dictionary having the resource key 'WindowBackground' defined.
-            return (from dict in Application.Current.Resources.MergedDictionaries
-                    where dict.Contains(@"WindowBackground")
-                    select dict).FirstOrDefault();
+        public static AppearanceManager Current { get; } = new AppearanceManager();
+
+        private ResourceDictionary _currentThemeDictionary;
+
+        [CanBeNull]
+        public ResourceDictionary CurrentThemeDictionary {
+            get { return _currentThemeDictionary; }
+            private set {
+                if (Equals(value, _currentThemeDictionary)) return;
+                _currentThemeDictionary = value;
+                OnPropertyChanged();
+            }
         }
 
-        public static AppearanceManager Current { get; } = new AppearanceManager();
-        
-        public Uri ThemeSource {
-            get { return GetThemeDictionary()?.Source; }
-            set {
-                if (value == null) throw new ArgumentNullException(nameof(value));
+        public void SetTheme(ResourceDictionary dictionary) {
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
 
-                var oldThemeDict = GetThemeDictionary();
-                var dictionaries = Application.Current.Resources.MergedDictionaries;
-                var themeDict = new ResourceDictionary { Source = value };
-                
-                dictionaries.Add(themeDict);
-                if (oldThemeDict != null) {
-                    dictionaries.Remove(oldThemeDict);
-                }
-
-                OnPropertyChanged(nameof(ThemeSource));
-                ThemeChange?.Invoke(this, EventArgs.Empty);
+            if (dictionary != null) {
+                dictionaries.Add(dictionary);
             }
+
+            if (CurrentThemeDictionary != null) {
+                dictionaries.Remove(CurrentThemeDictionary);
+            }
+
+            CurrentThemeDictionary = dictionary;
+            ThemeChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetTheme(Uri source) {
+            SetTheme(new ResourceDictionary { Source = source });
         }
 
         public bool IdealFormattingMode {
@@ -104,11 +111,14 @@ namespace FirstFloor.ModernUI.Presentation {
                 Application.Current.Resources[KeyAccentColor] = value;
                 Application.Current.Resources[KeyAccent] = new SolidColorBrush(value);
 
-                var themeSource = ThemeSource;
-                if (themeSource != null) {
-                    ThemeSource = themeSource;
+                if (CurrentThemeDictionary != null) {
+                    if (CurrentThemeDictionary.Source != null) {
+                        SetTheme(CurrentThemeDictionary.Source);
+                    } else {
+                        ThemeObsolete?.Invoke(this, EventArgs.Empty);
+                    }
                 }
-                
+
                 OnPropertyChanged();
             }
         }

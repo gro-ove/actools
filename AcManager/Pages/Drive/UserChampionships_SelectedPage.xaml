@@ -58,7 +58,7 @@
                     </StackPanel>
                     <TextBlock Text="{Binding TakenPlace, Converter={StaticResource OrdinalizingConverter}}" Style="{StaticResource Heading1}" Padding="8"
                             TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" x:Name="TakenPlaceText"
-                            Background="{StaticResource DarkenPanel}" />
+                            Background="{StaticResource DarkenPanel}" Foreground="White" />
                     <Ellipse Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                             Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                 </Grid>
@@ -211,7 +211,7 @@
             </DockPanel>
 
             <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AcObject.ExtendedRounds}"
-                    SelectedItem="{Binding AcObject.CurrentRound, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" x:Name="ListBox"
+                    SelectedItem="{Binding AcObject.CurrentRound, Mode=TwoWay}" x:Name="ListBox" ScrollViewer.CanContentScroll="False"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                     ItemTemplate="{StaticResource ItemTemplate}" Margin="-4 0 -4 12" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
                     PreviewMouseDoubleClick="ListBox_OnPreviewMouseDoubleClick" SelectionChanged="ListBox_OnSelectionChanged">

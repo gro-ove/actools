@@ -21,10 +21,12 @@ using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.ServerPreset {
-    public partial class SelectedPage : ILoadableContent, IParametrizedUriContent {
-        public static ServerPresetAssistState[] AssistStates { get; } = Enum.GetValues(typeof(ServerPresetAssistState)).OfType<ServerPresetAssistState>().ToArray();
+    public partial class SelectedPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
+        public static ServerPresetAssistState[] AssistStates { get; } = EnumExtension.GetValues<ServerPresetAssistState>();
 
-        public static ServerPresetJumpStart[] JumpStarts { get; } = Enum.GetValues(typeof(ServerPresetJumpStart)).OfType<ServerPresetJumpStart>().ToArray();
+        public static ServerPresetJumpStart[] JumpStarts { get; } = EnumExtension.GetValues<ServerPresetJumpStart>();
+
+        public static ServerPresetRaceJoinType[] RaceJoinTypes { get; } = EnumExtension.GetValues<ServerPresetRaceJoinType>();
 
         private class ProgressCapacityConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -154,12 +156,36 @@ namespace AcManager.Pages.ServerPreset {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
+            SetModel();
+            InitializeComponent();
+        }
+
+        public bool ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) return false;
+
+            var obj = ServerPresetsManager.Instance.GetById(id);
+            if (obj == null) return false;
+
+            var track = obj.TrackId == null ? null : TracksManager.Instance.GetLayoutById(obj.TrackId, obj.TrackLayoutId);
+            var cars = obj.CarIds.Select(x => CarsManager.Instance.GetById(x)).ToArray();
+
+            _id = id;
+            _object = obj;
+            _track = track;
+            _cars = cars;
+
+            SetModel();
+            return true;
+        }
+
+        private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object, _track, _cars));
             /*InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
             });*/
-            InitializeComponent();
         }
 
         private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {

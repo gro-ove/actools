@@ -263,6 +263,8 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RunRaceInformationWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
             AppArguments.Set(AppFlag.RaceInformationWebserverFile, ref PlayerStatsManager.OptionWebserverFilename);
             PlayerStatsManager.Instance.SetListener();
+
+            AppArguments.Set(AppFlag.RhmKeepAlive, ref RhmService.OptionKeepRunning);
             RhmService.Instance.SetListener();
 
             _hibernator = new AppHibernator();

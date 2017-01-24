@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
@@ -15,6 +16,10 @@ namespace AcManager.Tools.Helpers {
 
             var attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
             return attr?.Description;
+        }
+
+        public static T[] GetValues<T>() where T : struct {
+            return Enum.GetValues(typeof(T)).OfType<T>().ToArray();
         }
     }
 }

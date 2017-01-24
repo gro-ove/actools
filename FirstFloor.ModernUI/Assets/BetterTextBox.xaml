@@ -73,7 +73,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
             </MultiTrigger>
             <Trigger Property="IsEnabled" Value="False">
@@ -114,7 +113,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
                 <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
             </MultiTrigger>
@@ -192,7 +190,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
             </MultiTrigger>
         </Style.Triggers>
@@ -217,7 +214,7 @@
                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                     <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                            BorderThickness="1" Margin="0 -1 0 0">
+                            BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
                         <ScrollViewer x:Name="DropDownScrollViewer">
                             <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -243,6 +240,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
                 <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
             </Trigger>
@@ -261,7 +259,7 @@
                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                     <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                            BorderThickness="1" Margin="0 -1 0 0">
+                            BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
                         <ScrollViewer x:Name="DropDownScrollViewer">
                             <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -290,6 +288,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource InputTextHover}" />
                 <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
             </Trigger>
@@ -315,7 +314,7 @@
                         <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                         <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                                BorderThickness="1" Margin="0 -1 0 0">
+                                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
                             <ScrollViewer x:Name="DropDownScrollViewer">
                                 <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled"
                                         KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -345,7 +344,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
                 <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
             </MultiTrigger>
@@ -376,7 +374,7 @@
                         <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                         <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                                BorderThickness="1" Margin="0 -1 0 0">
+                                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
                             <ScrollViewer x:Name="DropDownScrollViewer">
                                 <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled"
                                         KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -405,7 +403,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
                 <Setter TargetName="Outline" Property="IsAdornerVisible" Value="True" />
             </MultiTrigger>
@@ -468,7 +465,6 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource InputTextHover}" />
             </MultiTrigger>
         </Style.Triggers>

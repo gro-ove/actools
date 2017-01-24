@@ -124,7 +124,7 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_NumberLabel}" />
-                    <TextBox Text="{Binding SelectedObject.SkinNumber}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                    <mui:BetterTextBox Text="{Binding SelectedObject.SkinNumber}" Mode="Integer" />
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Grid.Column="1">
@@ -135,7 +135,7 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />
-                    <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                    <mui:BetterTextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" Mode="Integer" />
                 </DockPanel>
             </Grid>
         </StackPanel>

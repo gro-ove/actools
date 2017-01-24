@@ -33,7 +33,7 @@
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                                 <Border x:Name="SubMenuBorder" BorderBrush="{DynamicResource WindowBorderActive}"
                                         Background="{DynamicResource WindowBackground}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                        BorderThickness="1" Padding="0">
+                                        BorderThickness="1" Padding="0" TextBlock.Foreground="{DynamicResource WindowText}">
                                     <c:Cell x:Name="SubMenu">
                                         <!-- StackPanel holds children of the menu. This is set by IsItemsHost=True -->
                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Continue" />

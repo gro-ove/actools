@@ -42,7 +42,7 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static t:ToolsStrings.AcSettings_View_CameraHeader}" />
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding CameraOnboard.FieldOfView}" Mode="Positive" Postfix="°"
+                <mui:ValueLabel Value="{Binding CameraOnboard.FieldOfView}" mui:BetterTextBox.Minimum="1" Postfix="°"
                         ToolTip="{x:Static g:AppStrings.AcSettings_FieldOfView_Tooltip}" Content="{x:Static g:AppStrings.AcSettings_FieldOfView}" />
                 <Slider Minimum="10" Maximum="120" Value="{Binding CameraOnboard.FieldOfView}" TickFrequency="11" TickPlacement="BottomRight" />
             </DockPanel>
@@ -52,13 +52,13 @@
             </CheckBox>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding CameraOnboard.GlancingSpeed}" Mode="Positive" Postfix="%"
+                <mui:ValueLabel Value="{Binding CameraOnboard.GlancingSpeed}" mui:BetterTextBox.Minimum="1" Postfix="%"
                         Content="{x:Static t:ToolsStrings.AcSettings_View_GlancingSpeed}" />
                 <Slider Minimum="5" Maximum="35" Value="{Binding CameraOnboard.GlancingSpeed}" TickFrequency="3" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding CameraOnboard.GlancingAngle}" Mode="Positive" Postfix="°"
+                <mui:ValueLabel Value="{Binding CameraOnboard.GlancingAngle}" mui:BetterTextBox.Minimum="1" Postfix="°"
                         Content="{x:Static t:ToolsStrings.AcSettings_View_GlancingAngle}" />
                 <Slider Minimum="10" Maximum="90" Value="{Binding CameraOnboard.GlancingAngle}" TickFrequency="8" TickPlacement="BottomRight" />
             </DockPanel>
@@ -66,7 +66,7 @@
             <DockPanel>
                 <mui:ValueLabel Value="{Binding CameraOnboard.HighSpeedShaking, Converter={x:Static hel:AcSettingsHolder.ZeroToOffConverter}}"
                         ShowPostfix="{Binding CameraOnboard.HighSpeedShaking, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}"
-                        Mode="IntegerOrZeroLabel" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_HighspeedShaking}" />
+                        mui:BetterTextBox.Mode="IntegerOrZeroLabel" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_HighspeedShaking}" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding CameraOnboard.HighSpeedShaking}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -78,7 +78,7 @@
             </CheckBox>
 
             <DockPanel Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Mode="Integer" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
+                <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
                 <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceX}" TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -90,19 +90,19 @@
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Column="0">
-                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Mode="Integer" Postfix="%" DockPanel.Dock="Top"
+                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" DockPanel.Dock="Top"
                             Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
                     <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceX}" TickFrequency="30" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel Grid.Column="1">
-                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceY}" Mode="Integer" Postfix="%" DockPanel.Dock="Top"
+                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceY}" Postfix="%" DockPanel.Dock="Top"
                             Content="{x:Static t:ToolsStrings.AcSettings_View_Vertical}" />
                     <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceY}" TickFrequency="30" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel Grid.Column="2">
-                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceZ}" Mode="Integer" Postfix="%" DockPanel.Dock="Top"
+                    <mui:ValueLabel Value="{Binding CameraOnboard.GForceZ}" Postfix="%" DockPanel.Dock="Top"
                             Content="{x:Static t:ToolsStrings.AcSettings_View_Longtudinal}" />
                     <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceZ}" TickFrequency="30" TickPlacement="BottomRight" />
                 </DockPanel>
@@ -126,7 +126,7 @@
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Gameplay.SteeringWheelLimit, Converter={x:Static hel:AcSettingsHolder.ZeroToOffConverter}}"
                         ShowPostfix="{Binding Gameplay.SteeringWheelLimit, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}"
-                        Mode="IntegerOrZeroLabel" Postfix="°" ToolTip="{x:Static t:ToolsStrings.AcSettings_View_SteeringWheelLimit_Tooltip}"
+                        mui:BetterTextBox.Mode="IntegerOrZeroLabel" Postfix="°" ToolTip="{x:Static t:ToolsStrings.AcSettings_View_SteeringWheelLimit_Tooltip}"
                         Content="{x:Static t:ToolsStrings.AcSettings_View_SteeringWheelLimit}" />
                 <Slider Minimum="0" Maximum="450" Value="{Binding Gameplay.SteeringWheelLimit}" TickFrequency="45" TickPlacement="BottomRight" />
             </DockPanel>

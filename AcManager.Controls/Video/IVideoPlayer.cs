@@ -31,7 +31,10 @@ namespace AcManager.Controls.Video {
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
             base.OnVisualParentChanged(oldParent);
+            Initialize();
+        }
 
+        private void Initialize() {
             if (Child == null) {
                 Child = _player.Initialize();
             }
@@ -50,11 +53,21 @@ namespace AcManager.Controls.Video {
         }
 
         public void Play() {
+            Initialize();
             _player.Play();
+        }
+
+        public void PlayRandomly() {
+            Initialize();
+            _player.PlayRandomly();
         }
 
         public void Stop() {
             _player.Stop();
+        }
+
+        public void Pause() {
+            _player.Pause();
         }
 
         public static readonly DependencyProperty AutoPlayProperty = DependencyProperty.Register(nameof(AutoPlay), typeof(bool),
@@ -149,6 +162,10 @@ namespace AcManager.Controls.Video {
         double Volume { get; set; }
 
         void Play();
+
+        void PlayRandomly();
+
+        void Pause();
 
         void Stop();
 

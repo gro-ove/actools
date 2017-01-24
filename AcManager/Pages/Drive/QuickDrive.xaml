@@ -89,7 +89,7 @@
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}">
                     <mui:Cell Margin="0 0 0 4">
-                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
+                        <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
@@ -133,7 +133,7 @@
 
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Background="Transparent"
+                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
                         <mui:ValueLabel.ToolTip>
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />

@@ -309,6 +309,9 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
       <DependentUpon>LapTimes_Table.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
+      <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
@@ -353,9 +356,6 @@
     <Compile Include="Pages\Drive\QuickDrive.Conditions.cs" />
     <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
     <Compile Include="Pages\Drive\QuickDriveModeViewModel.cs" />
-    <Compile Include="Pages\Drive\QuickDrive_GridTest.xaml.cs">
-      <DependentUpon>QuickDrive_GridTest.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Trackday.xaml.cs">
       <DependentUpon>QuickDrive_Trackday.xaml</DependentUpon>
     </Compile>
@@ -397,6 +397,9 @@
     </Compile>
     <Compile Include="Pages\ServerPreset\EntryList.xaml.cs">
       <DependentUpon>EntryList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\Conditions.xaml.cs">
+      <DependentUpon>Conditions.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ServerPreset\Sessions.xaml.cs">
       <DependentUpon>Sessions.xaml</DependentUpon>
@@ -791,6 +794,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Selected\SelectedCarPage_New.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Selected\SelectedUserChampionship.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -868,10 +875,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\QuickDrive_Drift.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\Drive\QuickDrive_GridTest.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1012,6 +1015,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ServerPreset\EntryList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\Conditions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

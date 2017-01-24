@@ -3529,6 +3529,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t start RHM.
+        /// </summary>
+        public static string RhmService_CannotStart {
+            get {
+                return ResourceManager.GetString("RhmService_CannotStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Baidu.
         /// </summary>
         public static string SearchEngine_Baidu {

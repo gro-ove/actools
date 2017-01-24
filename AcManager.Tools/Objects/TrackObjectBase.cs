@@ -20,7 +20,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
     public abstract partial class TrackObjectBase : AcJsonObjectNew, IDraggable {
-        protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
+        protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
 
         public override void PastLoad() {
             base.PastLoad();
@@ -224,8 +224,6 @@ namespace AcManager.Tools.Objects {
         }
 
         private string D(string a, string b) {
-            return a;
-
 #if DEBUG
             return $@"{a} 〈{b}〉";
 #else
@@ -239,7 +237,7 @@ namespace AcManager.Tools.Objects {
             if (Equals(value, 0d)) {
                 return SpecsLength;
             }
-            
+
             return D((value / 1000).Round(0.1) + " km", SpecsLength);
         }
 
@@ -281,17 +279,17 @@ namespace AcManager.Tools.Objects {
         }
 
         [NotNull]
-        public string SpecsInfoDisplay => new [] {
+        public string SpecsInfoDisplay => new[] {
             string.IsNullOrEmpty(SpecsLength) ? null : (_specsLengthDisplay ?? (_specsLengthDisplay = GetSpecsLengthDisplay())),
             string.IsNullOrEmpty(SpecsWidth) ? null : (_specsWidthDisplay ?? (_specsWidthDisplay = GetSpecsWidthDisplay())),
             string.IsNullOrEmpty(SpecsPitboxes) ? null : (_specsPitboxesDisplay ?? (_specsPitboxesDisplay = GetSpecsPitboxesDisplay()))
         }.NonNull().JoinToString(@", ");
-#endregion
-        
+        #endregion
+
         public TimeSpan GuessApproximateLapDuration(CarObject car = null) {
             var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.3).Clamp(20d, 200d);
             return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(30), TimeSpan.FromHours(2));
-        } 
+        }
 
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.TrackTagsList;
@@ -341,7 +339,7 @@ namespace AcManager.Tools.Objects {
 
         public override void SaveData(JObject json) {
             base.SaveData(json);
-            
+
             json[@"city"] = City;
 
             if (GeoTags != null) {
@@ -366,13 +364,13 @@ namespace AcManager.Tools.Objects {
         public string DataDirectory => Path.Combine(MapDirectory, @"data");
 
         public string MapImage => Path.Combine(MapDirectory, @"map.png");
-        
+
         public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models-{LayoutId}.ini");
 
-#region Draggable
+        #region Draggable
         public const string DraggableFormat = "Data-TrackObject";
 
         string IDraggable.DraggableFormat => DraggableFormat;
-#endregion
+        #endregion
     }
 }

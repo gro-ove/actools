@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
@@ -10,10 +10,11 @@ using AcTools.Windows;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.GameProperties {
     public class RhmService : NotifyPropertyChanged, IDisposable {
-        public static TimeSpan OptionKeepRunning = TimeSpan.FromMinutes(1);
+        public static TimeSpan OptionKeepRunning = TimeSpan.Zero;
 
         private static RhmService _instance;
 
@@ -47,14 +48,33 @@ namespace AcManager.Tools.GameProperties {
 
         private async void KeepRunning() {
             do {
-                EnsureRunned();
+                if (!await EnsureRunnedAsync()) {
+                    Logging.Error("Can’t keep RHM service running");
+                    break;
+                }
+
+                if (_process == null) {
+                    Logging.Unexpected();
+                    break;
+                }
+
                 await _process.WaitForExitAsync();
             } while (Active);
         }
 
         private void OnGameEnded(object sender, GameEndedArgs e) {
             Active = false;
-            EnsureStopped();
+            EnsureStoppedLater().Forget();
+        }
+
+        private int _stoppingLaterId;
+
+        private async Task EnsureStoppedLater() {
+            var id = ++_stoppingLaterId;
+            await Task.Delay(OptionKeepRunning);
+            if (id == _stoppingLaterId && !Active) {
+                EnsureStopped();
+            }
         }
 
         private void OnSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -71,25 +91,28 @@ namespace AcManager.Tools.GameProperties {
             if (!SettingsHolder.Drive.RhmIntegration) return false;
 
             if (string.IsNullOrWhiteSpace(SettingsHolder.Drive.RhmLocation)) {
-                NonfatalError.Notify("Can’t start Real Head Motion application", "You forgot to specify its location.");
+                NonfatalError.Notify(ToolsStrings.RhmService_CannotStart, "You forgot to specify its location.");
                 return false;
             }
 
             if (!File.Exists(SettingsHolder.Drive.RhmLocation)) {
-                NonfatalError.Notify("Can’t start Real Head Motion application", "You forgot to specify its location.");
+                NonfatalError.Notify(ToolsStrings.RhmService_CannotStart, "You forgot to specify its location.");
                 return false;
             }
 
             return true;
         }
 
+        [CanBeNull]
         private Process _process;
 
         private bool SetVisibility(bool visible) {
-            var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith("Real Head Motion for Assetto Corsa "));
-            if (handle != default(IntPtr)) {
-                User32.ShowWindow(handle, visible ? User32.WindowShowStyle.Show : User32.WindowShowStyle.Hide);
-                return true;
+            if (_process != null) {
+                var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith(@"Real Head Motion for Assetto Corsa "));
+                if (handle != default(IntPtr)) {
+                    User32.ShowWindow(handle, visible ? User32.WindowShowStyle.Show : User32.WindowShowStyle.Hide);
+                    return true;
+                }
             }
 
             return false;
@@ -100,7 +123,7 @@ namespace AcManager.Tools.GameProperties {
             return Process.GetProcessesByName(name).Any(x => x.Id != _process?.Id);
         }
 
-        private bool RunRhm(bool keepVisible = false) {
+        private async Task<bool> RunRhmAsync(bool keepVisible = false) {
             if (SettingsHolder.Drive.RhmLocation == null) return false;
 
             try {
@@ -110,16 +133,16 @@ namespace AcManager.Tools.GameProperties {
                 });
                 if (_process == null) throw new Exception(@"Process=NULL");
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t start RHM", e);
+                NonfatalError.Notify(ToolsStrings.RhmService_CannotStart, e);
                 return false;
             }
 
             ChildProcessTracker.AddProcess(_process);
             if (keepVisible) return true;
 
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 100; i++) {
                 if (SetVisibility(false)) return true;
-                Thread.Sleep(1);
+                await Task.Delay(10);
             }
 
             NonfatalError.Notify("Can’t find app’s window");
@@ -127,12 +150,12 @@ namespace AcManager.Tools.GameProperties {
             return false;
         }
 
-        private bool EnsureRunned(bool keepVisible = false) {
+        private async Task<bool> EnsureRunnedAsync(bool keepVisible = false) {
             if (SettingsHolder.Drive.RhmLocation == null) return false;
 
             if (_process == null || _process.HasExitedSafe()) {
                 DisposeHelper.Dispose(ref _process);
-                if (!RunRhm(keepVisible)) return false;
+                if (!await RunRhmAsync(keepVisible)) return false;
             }
 
             return true;
@@ -149,11 +172,9 @@ namespace AcManager.Tools.GameProperties {
             DisposeHelper.Dispose(ref _process);
         }
 
-        private DelegateCommand _showSettingsCommand;
+        private AsyncCommand _showSettingsCommand;
 
-        public DelegateCommand ShowSettingsCommand => _showSettingsCommand ?? (_showSettingsCommand = new DelegateCommand(() => {
-            Logging.Here();
-
+        public AsyncCommand ShowSettingsCommand => _showSettingsCommand ?? (_showSettingsCommand = new AsyncCommand(async () => {
             if (!CheckSettings()) return;
 
             if (NonCmInstanceRunned()) {
@@ -161,7 +182,7 @@ namespace AcManager.Tools.GameProperties {
                 return;
             }
 
-            if (!EnsureRunned(true)) return;
+            if (!await EnsureRunnedAsync(true)) return;
             SetVisibility(true);
         }, () => SettingsHolder.Drive.RhmIntegration && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.RhmLocation)));
 

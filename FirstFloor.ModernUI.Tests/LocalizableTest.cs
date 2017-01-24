@@ -1,14 +1,19 @@
 ﻿using System.Globalization;
-using System.Text;
-using System.Threading;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Localizable;
 using FirstFloor.ModernUI.Windows.Converters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FirstFloor.ModernUI.Tests {
     [TestClass]
     public class LocalizableTest {
+        [TestMethod]
+        public void TitleCaseTest() {
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
+            Assert.AreEqual("Abc Def Qwe", "abc def qwe".ToTitle());
+            Assert.AreEqual("A as Because Although if A", "a as because although if a".ToTitle());
+            Assert.AreEqual("The the The", "the the the".ToTitle());
+        }
+
         [TestMethod]
         public void PluralizingTest() {
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");

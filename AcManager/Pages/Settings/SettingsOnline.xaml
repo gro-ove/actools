@@ -77,13 +77,14 @@
 
             <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}"
                     ToolTip="{x:Static g:AppStrings.Settings_Online_PingConcurrency_Tooltip}">
-                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer" Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
+                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" mui:BetterTextBox.Minimum="1"
+                        Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
                 <Slider Minimum="5" Maximum="50" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
-                        Content="{x:Static g:AppStrings.Settings_Online_PingTimeout}" />
+                <mui:ValueLabel Value="{Binding Online.PingTimeout}" mui:BetterTextBox.Minimum="1"
+                        Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Content="{x:Static g:AppStrings.Settings_Online_PingTimeout}" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -100,7 +101,8 @@
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
+                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" mui:BetterTextBox.Minimum="1"
+                        Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
                         Content="{x:Static g:AppStrings.Settings_Online_AddingByIpScanTimeout}" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>

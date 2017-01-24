@@ -97,18 +97,18 @@
                     <mui:BooleanSwitch.True>
                         <StackPanel>
                             <DockPanel Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
+                                <mui:ValueLabel Value="{Binding RangeFrom}" mui:BetterTextBox.Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
                                 <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
                             </DockPanel>
                             <DockPanel Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
+                                <mui:ValueLabel Value="{Binding RangeTo}" mui:BetterTextBox.Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
                                 <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
                             </DockPanel>
                             <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0"
-                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center"
+                                        Padding="0" Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
                                 <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
                             </DockPanel>
                         </StackPanel>
@@ -116,24 +116,24 @@
                     <mui:BooleanSwitch.False>
                         <StackPanel>
                             <DockPanel Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
-                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
+                                <mui:ValueLabel Value="{Binding DegressOfRotation}" mui:BetterTextBox.Mode="Positive" Postfix="°" VerticalAlignment="Center"
+                                        Padding="0" Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
                                 <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None"
                                         IsSnapToTickEnabled="True" />
                             </DockPanel>
                             <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0"
-                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                                <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center"
+                                        Padding="0" Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
                                 <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
                             </DockPanel>
                             <DockPanel Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
+                                <mui:ValueLabel Value="{Binding Filter}" mui:BetterTextBox.Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0"
+                                        Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
                                 <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
                             </DockPanel>
                             <DockPanel Margin="0 0 0 4">
-                                <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                                        DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
+                                <mui:ValueLabel Value="{Binding SpeedSensitivity}" mui:BetterTextBox.Mode="Integer" Postfix="%" VerticalAlignment="Center"
+                                        Padding="0" Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
                                 <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
                             </DockPanel>
                         </StackPanel>

@@ -26,12 +26,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(ValueProperty, value); }
         }
 
-        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(SpecialMode),
-                typeof(ValueLabel), new PropertyMetadata(SpecialMode.Integer));
+        public static readonly DependencyProperty PrefixProperty = DependencyProperty.Register(nameof(Prefix), typeof(string),
+                typeof(ValueLabel));
 
-        public SpecialMode Mode {
-            get { return (SpecialMode)GetValue(ModeProperty); }
-            set { SetValue(ModeProperty, value); }
+        public string Prefix {
+            get { return (string)GetValue(PrefixProperty); }
+            set { SetValue(PrefixProperty, value); }
         }
 
         public static readonly DependencyProperty PostfixProperty = DependencyProperty.Register(nameof(Postfix), typeof(string),

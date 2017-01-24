@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -132,6 +134,7 @@ namespace AcManager.Tools.Objects {
                 if (value == _driverName) return;
                 _driverName = value;
                 OnPropertyChanged();
+                _storeCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -156,6 +159,7 @@ namespace AcManager.Tools.Objects {
                 if (value == _guid) return;
                 _guid = value;
                 OnPropertyChanged();
+                _storeCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -202,8 +206,12 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _storeCommand;
 
         public DelegateCommand StoreCommand => _storeCommand ?? (_storeCommand = new DelegateCommand(() => {
-            ServerPresetsManager.Instance.StoreDriverEntry(this);
-        }));
+            try {
+                ServerPresetsManager.Instance.StoreDriverEntry(this);
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t store driver", e);
+            }
+        }, () => !string.IsNullOrWhiteSpace(Guid) && !string.IsNullOrWhiteSpace(DriverName)));
 
         public const string DraggableFormat = "Data-ServerPresetDriverEntry";
 

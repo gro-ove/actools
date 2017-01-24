@@ -131,8 +131,7 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" />
-                        <TextBox Text="{Binding SelectedTrackConfiguration.Year, TargetNullValue=''}" h:TextBoxAdvancement.SpecialMode="Integer"
-                                h:WatermarkService.Watermark="?" />
+                        <mui:BetterTextBox Text="{Binding SelectedTrackConfiguration.Year, TargetNullValue=''}" Mode="Integer" Placeholder="?" />
                     </DockPanel>
 
                     <!-- second row -->
@@ -163,15 +162,15 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
-                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" h:WatermarkService.Watermark="?"
-                                MouseUp="OnVersionInfoBlockClick" />
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
                     </DockPanel>
 
                     <!-- last row -->
                     <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" />
-                        <TextBlock Text="{Binding SelectedTrackConfiguration.SpecsInfoDisplay, TargetNullValue=''}" MouseDown="SpecsInfoBlock_OnMouseDown"
-                                h:WatermarkService.Watermark="?" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Style="{StaticResource TextBlockValue}" />
+                        <mui:PlaceholderTextBlock Text="{Binding SelectedTrackConfiguration.SpecsInfoDisplay, TargetNullValue=''}"
+                                MouseDown="SpecsInfoBlock_OnMouseDown" Placeholder="?" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                Style="{StaticResource TextBlockValue}" />
                     </DockPanel>
                 </Grid>
 

@@ -882,6 +882,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Session information.
+        /// </summary>
+        public static string AcSettings_SessionInformation {
+            get {
+                return ResourceManager.GetString("AcSettings_SessionInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Skidmarks.
         /// </summary>
         public static string AcSettings_Skidmarks {
@@ -3920,7 +3929,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time multipler.
+        ///   Looks up a localized string similar to Time multiplier.
         /// </summary>
         public static string Drive_TimeMultiplerLabel {
             get {
@@ -9865,7 +9874,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multipler.
+        ///   Looks up a localized string similar to Multiplier.
         /// </summary>
         public static string WeatherEdit_Multipler {
             get {
@@ -9892,7 +9901,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Base speed multipler.
+        ///   Looks up a localized string similar to Base speed multiplier.
         /// </summary>
         public static string WeatherEdit_SpeedMultipler_Tooltip {
             get {

@@ -146,6 +146,7 @@
     <Compile Include="Converters\AcTimeDisplayConverter.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
+    <Compile Include="Converters\TimeSpanConverters.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
     <Compile Include="CustomShowroom\PaintShop.cs" />
@@ -158,6 +159,7 @@
     </Compile>
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="FavouriteButton.cs" />
+    <Compile Include="FlexibleDataTemplateSelector.cs" />
     <Compile Include="Helpers\AppIconService.cs" />
     <Compile Include="Helpers\AppShortcut.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />

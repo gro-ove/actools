@@ -8,6 +8,7 @@ using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using SlimDX;
 
@@ -66,6 +67,8 @@ namespace AcManager.Controls.CustomShowroom {
 
         public static async Task Run(TrackObjectBase track) {
             var modelsFilename = track.ModelsFilename;
+            Logging.Debug(modelsFilename);
+
             string kn5Filename = null;
             if (!File.Exists(modelsFilename)) {
                 modelsFilename = null;
