@@ -21,7 +21,13 @@ namespace AcManager.Tools.AcManagersNew {
     }
 
     public class AcItemWrapper : NotifyPropertyChanged, IWithId {
+        [CanBeNull]
         private readonly IAcWrapperLoader _loader;
+
+        public AcItemWrapper(AcObjectNew value) {
+            _isLoaded = true;
+            _value = value;
+        }
 
         public AcItemWrapper([NotNull]IAcWrapperLoader loader, [NotNull]AcPlaceholderNew initialValue) {
             if (loader == null) throw new ArgumentNullException(nameof(loader));
@@ -33,12 +39,14 @@ namespace AcManager.Tools.AcManagersNew {
 
         public AcObjectNew Loaded() {
             if (IsLoaded) return (AcObjectNew)Value;
+            if (_loader == null) throw new Exception(@"Loader is missing");
             _loader.Load(Value.Id);
             return (AcObjectNew)Value;
         }
 
         public async Task<AcObjectNew> LoadedAsync() {
             if (IsLoaded) return (AcObjectNew)Value;
+            if (_loader == null) throw new Exception(@"Loader is missing");
             await _loader.LoadAsync(Value.Id);
             return (AcObjectNew)Value;
         }

@@ -6,343 +6,23 @@ using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public enum ServerPresetAssistState {
-        Denied = 0,
-        Factory = 1,
-        Forced = 2
-    }
-
-    public enum ServerPresetJumpStart {
-        [LocalizedDescription("JumpStart_CarLocked")]
-        CarLocked = 0,
-
-        [LocalizedDescription("JumpStart_TeleportToPit")]
-        TeleportToPit = 1,
-
-        [LocalizedDescription("JumpStart_DriveThrough")]
-        DriveThrough = 2
-    }
-
-    public class ServerSessionEntry : Displayable {
-        private readonly string _onKey, _offKey;
-
-        public sealed override string DisplayName { get; set; }
-
-        public ServerSessionEntry([Localizable(false)] string key, string name, bool isClosable) {
-            _onKey = key;
-            _offKey = $@"__CM_{_onKey}_OFF";
-
-            DisplayName = name;
-            IsClosable = isClosable;
-        }
-
-        public void Load(IniFile config) {
-            IsEnabled = config.ContainsKey(_onKey);
-            Load(IsEnabled ? config[_onKey] : config[_offKey]);
-        }
-
-        protected virtual void Load(IniFileSection section) {
-            ConfigName = section.GetNonEmpty("NAME") ?? DisplayName;
-            Time = TimeSpan.FromMinutes(section.GetDouble("TIME", 5d));
-            IsOpen = section.GetBool("IS_OPEN", true);
-        }
-
-        public void Save(IniFile config) {
-            if (IsEnabled) {
-                Save(config[_onKey]);
-                config.Remove(_offKey);
-            } else {
-                Save(config[_offKey]);
-                config.Remove(_onKey);
-            }
-        }
-
-        protected virtual void Save(IniFileSection section) {
-            section.Set("NAME", string.IsNullOrWhiteSpace(ConfigName) ? DisplayName : ConfigName);
-            section.Set("TIME", Time.TotalMinutes); // round?
-            section.Set("IS_OPEN", IsOpen);
-        }
-
-        private string _configName;
-
-        public string ConfigName {
-            get { return _configName; }
-            set {
-                if (Equals(value, _configName)) return;
-                _configName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isEnabled;
-
-        public bool IsEnabled {
-            get { return _isEnabled; }
-            set {
-                if (Equals(value, _isEnabled)) return;
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private TimeSpan _time;
-        
-        public TimeSpan Time {
-            get { return _time; }
-            set {
-                if (Equals(value, _time)) return;
-                _time = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isOpen;
-
-        public bool IsOpen {
-            get { return _isOpen; }
-            set {
-                if (Equals(value, _isOpen)) return;
-                _isOpen = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsClosable { get; }
-    }
-
-    public enum ServerPresetRaceJoinType {
-        [Description("Close")]
-        Close,
-
-        [Description("Open")]
-        Open,
-
-        [Description("Close at start")]
-        CloseAtStart
-    }
-
-    public class ServerRaceSessionEntry : ServerSessionEntry {
-        public ServerRaceSessionEntry() : base("RACE", ToolsStrings.Session_Race, true) { }
-
-        protected override void Load(IniFileSection section) {
-            base.Load(section);
-            LapsCount = section.GetInt("LAPS", 5);
-            WaitTime = TimeSpan.FromSeconds(section.GetInt("WAIT_TIME", 60));
-            JoinType = section.GetIntEnum("IS_OPEN", ServerPresetRaceJoinType.CloseAtStart);
-        }
-
-        protected override void Save(IniFileSection section) {
-            base.Save(section);
-            section.Set("LAPS", LapsCount);
-            section.Set("WAIT_TIME", WaitTime.TotalSeconds); // round?
-            section.SetIntEnum("IS_OPEN", JoinType);
-        }
-
-        private int _lapsCount;
-
-        public int LapsCount {
-            get { return _lapsCount; }
-            set {
-                if (Equals(value, _lapsCount)) return;
-                _lapsCount = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private TimeSpan _waitTime;
-
-        public TimeSpan WaitTime {
-            get { return _waitTime; }
-            set {
-                if (Equals(value, _waitTime)) return;
-                _waitTime = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private ServerPresetRaceJoinType _joinType;
-
-        public ServerPresetRaceJoinType JoinType {
-            get { return _joinType; }
-            set {
-                if (Equals(value, _joinType)) return;
-                _joinType = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public class ServerWeatherEntry : NotifyPropertyChanged, IDraggable {
-        private int _index;
-
-        public int Index {
-            get { return _index; }
-            set {
-                if (Equals(value, _index)) return;
-                _index = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ServerWeatherEntry() {
-            WeatherId = WeatherManager.Instance.GetDefault()?.Id;
-            BaseAmbientTemperature = 18d;
-            BaseRoadTemperature = 6d;
-            AmbientTemperatureVariation = 2d;
-            RoadTemperatureVariation = 1d;
-        }
-
-        public ServerWeatherEntry(IniFileSection section) {
-            WeatherId = section.GetNonEmpty("GRAPHICS");
-            BaseAmbientTemperature = section.GetDouble("BASE_TEMPERATURE_AMBIENT", 18d);
-            BaseRoadTemperature = section.GetDouble("BASE_TEMPERATURE_ROAD", 6d);
-            AmbientTemperatureVariation = section.GetDouble("VARIATION_AMBIENT", 2d);
-            RoadTemperatureVariation = section.GetDouble("VARIATION_ROAD", 1d);
-        }
-
-        public void SaveTo(IniFileSection section) {
-            section.Set("GRAPHICS", WeatherId);
-            section.Set("BASE_TEMPERATURE_AMBIENT", BaseAmbientTemperature);
-            section.Set("BASE_TEMPERATURE_ROAD", BaseRoadTemperature);
-            section.Set("VARIATION_AMBIENT", AmbientTemperatureVariation);
-            section.Set("VARIATION_ROAD", RoadTemperatureVariation);
-        }
-
-        private string _weatherId;
-
-        [CanBeNull]
-        public string WeatherId {
-            get { return _weatherId; }
-            set {
-                if (Equals(value, _weatherId)) return;
-                _weatherSet = false;
-                _weather = null;
-                _weatherId = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Weather));
-                OnPropertyChanged(nameof(RecommendedRoadTemperature));
-            }
-        }
-
-        private bool _weatherSet;
-        private WeatherObject _weather;
-        
-        [CanBeNull]
-        public WeatherObject Weather {
-            get {
-                if (!_weatherSet) {
-                    _weatherSet = true;
-                    _weather = WeatherId == null ? null : WeatherManager.Instance.GetById(WeatherId);
-                }
-                return _weather;
-            }
-            set { WeatherId = value?.Id; }
-        }
-
-        private double _baseAmbientTemperature;
-
-        public double BaseAmbientTemperature {
-            get { return _baseAmbientTemperature; }
-            set {
-                value = value.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum).Round(0.1);
-                if (Equals(value, _baseAmbientTemperature)) return;
-                _baseAmbientTemperature = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(RecommendedRoadTemperature));
-            }
-        }
-
-        private double _baseRoadTemperature;
-
-        public double BaseRoadTemperature {
-            get { return _baseRoadTemperature; }
-            set {
-                value = value.Clamp(CommonAcConsts.RoadTemperatureMinimum, CommonAcConsts.RoadTemperatureMaximum).Round(0.1);
-                if (Equals(value, _baseRoadTemperature)) return;
-                _baseRoadTemperature = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _ambientTemperatureVariation;
-
-        public double AmbientTemperatureVariation {
-            get { return _ambientTemperatureVariation; }
-            set {
-                value = value.Clamp(0, 100).Round(0.1);
-                if (Equals(value, _ambientTemperatureVariation)) return;
-                _ambientTemperatureVariation = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _roadTemperatureVariation;
-
-        public double RoadTemperatureVariation {
-            get { return _roadTemperatureVariation; }
-            set {
-                value = value.Clamp(0, 100).Round(0.1);
-                if (Equals(value, _roadTemperatureVariation)) return;
-                _roadTemperatureVariation = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _time;
-
-        internal int Time {
-            set {
-                _time = value;
-                OnPropertyChanged(nameof(RecommendedRoadTemperature));
-            }
-        }
-
-        public double RecommendedRoadTemperature =>
-                Game.ConditionProperties.GetRoadTemperature(_time, BaseAmbientTemperature, Weather?.TemperatureCoefficient ?? 1d);
-
-        private bool _deleted;
-
-        public bool Deleted {
-            get { return _deleted; }
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private DelegateCommand _deleteCommand;
-
-        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            Deleted = true;
-        }));
-
-        public const string DraggableFormat = "Data-ServerWeatherEntry";
-
-        string IDraggable.DraggableFormat => DraggableFormat;
-    }
-
-    public class ServerPresetObject : AcIniObject {
+    public partial class ServerPresetObject : AcIniObject {
         public ServerPresetObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(new[] {
-                new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false), 
-                new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true), 
-                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true), 
-                new ServerRaceSessionEntry(), 
+                new ServerSessionEntry("BOOK", ToolsStrings.Session_Booking, false, false), 
+                new ServerSessionEntry("PRACTICE", ToolsStrings.Session_Practice, true, true), 
+                new ServerSessionEntry("QUALIFY", ToolsStrings.Session_Qualification, true, true), 
+                new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true), 
             });
         }
 
@@ -396,6 +76,7 @@ namespace AcManager.Tools.Objects {
 
         private string _trackLayoutId;
 
+        [CanBeNull]
         public string TrackLayoutId {
             get { return _trackLayoutId; }
             set {
@@ -532,11 +213,29 @@ namespace AcManager.Tools.Objects {
         public bool PickupMode {
             get { return _pickupMode; }
             set {
+                if (!IsPickupModeAvailable) value = false;
                 if (Equals(value, _pickupMode)) return;
                 _pickupMode = value;
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
+
+                    Sessions.GetById("BOOK").IsAvailable = !value;
+                }
+            }
+        }
+
+        private bool _isPickupModeAvailable;
+
+        public bool IsPickupModeAvailable {
+            get { return _isPickupModeAvailable; }
+            set {
+                if (Equals(value, _isPickupModeAvailable)) return;
+                _isPickupModeAvailable = value;
+                OnPropertyChanged();
+
+                if (!value) {
+                    PickupMode = false;
                 }
             }
         }
@@ -798,6 +497,16 @@ namespace AcManager.Tools.Objects {
         }
 
         private void OnSessionEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ServerSessionEntry.IsAvailable):
+                    return;
+                case nameof(ServerSessionEntry.IsEnabled):
+                    if (((IWithId)sender).Id == @"BOOK") {
+                        IsPickupModeAvailable = !((ServerSessionEntry)sender).IsEnabled;
+                    }
+                    break;
+            }
+
             if (Loaded) {
                 Changed = true;
             }
@@ -827,8 +536,12 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+        private void UpdateCarIds() {
             CarIds = _driverEntries.Select(x => x.CarId).Distinct().ToArray();
+        }
+
+        private void OnDriverEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs) {
+            UpdateCarIds();
             if (Loaded) {
                 Changed = true;
             }
@@ -836,6 +549,9 @@ namespace AcManager.Tools.Objects {
 
         private void OnDriverEntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
+                case nameof(ServerPresetDriverEntry.CarId):
+                    UpdateCarIds();
+                    break;
                 case nameof(ServerPresetDriverEntry.Deleted):
                     DriverEntries.Remove((ServerPresetDriverEntry)sender);
                     return;
@@ -1046,6 +762,7 @@ namespace AcManager.Tools.Objects {
 
         private IniFile _entryListIniObject;
 
+        [CanBeNull]
         public IniFile EntryListIniObject {
             get { return _entryListIniObject; }
             set {
@@ -1062,17 +779,19 @@ namespace AcManager.Tools.Objects {
                 text = FileUtils.ReadAllText(EntryListIniFilename);
             } catch (FileNotFoundException) {
                 AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(EntryListIniFilename));
+                ResetEntryListData();
                 return;
             } catch (DirectoryNotFoundException) {
                 AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(EntryListIniFilename));
+                ResetEntryListData();
                 return;
             }
 
             try {
                 EntryListIniObject = IniFile.Parse(text, IniFileMode);
             } catch (Exception) {
-                EntryListIniObject = null;
                 AddError(AcErrorType.Data_IniIsDamaged, Path.GetFileName(EntryListIniFilename));
+                ResetEntryListData();
                 return;
             }
 
@@ -1084,6 +803,12 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void LoadData(IniFile ini) {
+            foreach (var session in Sessions) {
+                session.Load(ini);
+            }
+
+            IsPickupModeAvailable = !Sessions.GetById(@"BOOK").IsEnabled;
+
             var section = ini["SERVER"];
             Name = section.GetPossiblyEmpty("NAME");
             Password = section.GetNonEmpty("PASSWORD");
@@ -1100,7 +825,7 @@ namespace AcManager.Tools.Objects {
             SendIntervalHz = section.GetInt("CLIENT_SEND_INTERVAL_HZ", 18);
             Threads = section.GetInt("NUM_THREADS", 2);
 
-            TrackId = section.GetNonEmpty("TRACK");
+            TrackId = section.GetNonEmpty("TRACK", "imola");
             TrackLayoutId = section.GetNonEmpty("CONFIG_TRACK");
             CarIds = section.GetStrings("CARS", ';');
 
@@ -1119,13 +844,8 @@ namespace AcManager.Tools.Objects {
             QualifyLimitPercentage = section.GetInt("QUALIFY_MAX_WAIT_PERC", 120);
             JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
 
-            foreach (var session in Sessions) {
-                session.Load(ini);
-            }
-
             SunAngle = section.GetDouble("SUN_ANGLE", 0d);
             DynamicTrackEnabled = ini.ContainsKey(@"DYNAMIC_TRACK");
-            Weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
             TrackProperties = Game.TrackProperties.Load(DynamicTrackEnabled ? ini["DYNAMIC_TRACK"] : ini["__CM_DYNAMIC_TRACK_OFF"]);
 
             KickVoteQuorum = section.GetInt("KICK_QUORUM", 85);
@@ -1133,13 +853,29 @@ namespace AcManager.Tools.Objects {
             VoteDuration = TimeSpan.FromSeconds(section.GetDouble("VOTE_DURATION", 20d));
             BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
             MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
+
+            // At least one weather entry is needed in order to launch the server
+            var weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
+            if (weather.Count == 0) {
+                weather.Add(new ServerWeatherEntry());
+            }
+            Weather = weather;
         }
 
         private void LoadEntryListData(IniFile ini) {
             DriverEntries = new ChangeableObservableCollection<ServerPresetDriverEntry>(ini.GetSections("CAR").Select(x => new ServerPresetDriverEntry(x)));
         }
 
+        private void ResetEntryListData() {
+            EntryListIniObject = null;
+            LoadEntryListData(IniFile.Empty);
+        }
+
         public override void SaveData(IniFile ini) {
+            foreach (var session in Sessions) {
+                session.Save(ini);
+            }
+
             var section = ini["SERVER"];
             section.Set("NAME", Name);
             section.Set("PASSWORD", Password);
@@ -1175,10 +911,6 @@ namespace AcManager.Tools.Objects {
             section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
             section.SetIntEnum("START_RULE", JumpStart);
 
-            foreach (var session in Sessions) {
-                session.Save(ini);
-            }
-
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());
             ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));
             if (DynamicTrackEnabled) {
@@ -1197,11 +929,14 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Save() {
-            EntryListIniObject.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+            var ini = EntryListIniObject ?? IniFile.Empty;
+            ini.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
-                File.WriteAllText(EntryListIniFilename, EntryListIniObject.ToString());
+                File.WriteAllText(EntryListIniFilename, ini.ToString());
                 base.Save();
             }
+
+            RemoveError(AcErrorType.Data_IniIsMissing);
         }
     }
 }

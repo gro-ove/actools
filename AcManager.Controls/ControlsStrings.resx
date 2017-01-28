@@ -546,7 +546,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Skin editing mode</value>
   </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
-    <value>Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
+    <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
     <value>Update Ambient Shadows</value>

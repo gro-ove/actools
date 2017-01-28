@@ -90,8 +90,10 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
+        private bool _closeWithoutCancellation;
+
         private void WaitingDialog_Closing(object sender, CancelEventArgs e) {
-            if (_cancellationTokenSource != null) {
+            if (!_closeWithoutCancellation && _cancellationTokenSource != null) {
                 _cancellationTokenSource.Cancel();
                 IsCancelled = true;
             }
@@ -141,9 +143,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             }));
         }
 
+        /// <summary>
+        /// Ensures window is closed, without cancelling task.
+        /// </summary>
         private void EnsureClosed() {
             if (_loaded && !_closed) {
                 _closed = true;
+                _closeWithoutCancellation = true;
                 Close();
             }
         }
@@ -241,7 +247,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
-        void IDisposable.Dispose() {
+        public void Dispose() {
             _disposed = true;
             if (_cancellationTokenSource != null) {
                 _cancellationTokenSource.Dispose();

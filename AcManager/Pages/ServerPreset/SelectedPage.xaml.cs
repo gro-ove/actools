@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,16 +11,25 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
+using AcManager.Tools;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.AcdFile;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
+using SharpCompress.Common;
+using SharpCompress.Writers;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
@@ -120,6 +131,77 @@ namespace AcManager.Pages.ServerPreset {
                         break;
                 }
             }
+
+            [Localizable(false)]
+            private static string GetPackedDataFixReadMe(string serverName, IEnumerable<string> notPacked) {
+                return $@"Packed data for server {serverName}
+
+    Cars:
+{notPacked.Select(x => $"    - {x};").JoinToString("\n").ApartFromLast(";") + "."}
+
+    Installation:
+    - Find AC's content/cars directory;
+    - Unpack there folders to it.
+
+    Don't forget to make a backup if you already have data packed and it's
+different.";
+            }
+
+            private AsyncCommand _goCommand;
+
+            public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(async () => {
+                var notPacked = Cars.Where(x => x.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
+                WaitingDialog waiting = null;
+                try {
+                    if (notPacked.Any() &&
+                            ModernDialog.ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),
+                                    ToolsStrings.ServerPreset_UnpackedDataWarning_Title, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        waiting = new WaitingDialog();
+
+                        using (var memory = new MemoryStream()) {
+                            using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                                var i = 0;
+                                foreach (var car in Cars.Where(x => x.AcdData?.IsPacked == false)) {
+                                    waiting.Report(new AsyncProgressEntry(car.DisplayName, i++, notPacked.Count));
+
+                                    await Task.Delay(50, waiting.CancellationToken);
+                                    if (waiting.CancellationToken.IsCancellationRequested) return;
+
+                                    var dataDirectory = Path.Combine(car.Location, "data");
+                                    var destination = Path.Combine(car.Location, "data.acd");
+                                    Acd.FromDirectory(dataDirectory).Save(destination);
+
+                                    writer.Write(Path.Combine(car.Id, "data.acd"), destination);
+                                }
+
+                                writer.WriteString(@"ReadMe.txt", GetPackedDataFixReadMe(SelectedObject.DisplayName, notPacked));
+                            }
+
+                            var temporary = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
+                                    FileUtils.EnsureFileNameIsValid($@"Fix for {SelectedObject.DisplayName}.zip")));
+                            await FileUtils.WriteAllBytesAsync(temporary, memory.ToArray(), waiting.CancellationToken);
+                            WindowsHelper.ViewFile(temporary);
+                        }
+                    } else {
+                        waiting = new WaitingDialog();
+                    }
+
+                    await SelectedObject.RunServer(waiting, waiting.CancellationToken);
+                } catch (TaskCanceledException) {
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t run server", e);
+                } finally {
+                    waiting?.Dispose();
+                }
+            }, () => SelectedObject.RunServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RunServerCommand));
+
+            private AsyncCommand _restartCommand;
+
+            public AsyncCommand RestartCommand => _restartCommand ?? (_restartCommand = new AsyncCommand(() => {
+                SelectedObject.StopServer();
+                GoCommand.ExecuteAsync().Forget();
+                return Task.Delay(0);
+            }, () => SelectedObject.RestartServerCommand.IsAbleToExecute).ListenOnWeak(SelectedObject.RestartServerCommand));
         }
 
         private string _id;
@@ -182,10 +264,10 @@ namespace AcManager.Pages.ServerPreset {
         private void SetModel() {
             _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object, _track, _cars));
-            /*InputBindings.AddRange(new[] {
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
-            });*/
+            InputBindings.AddRange(new[] {
+                new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.RestartCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+            });
         }
 
         private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {

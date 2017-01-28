@@ -195,21 +195,6 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _serverPresetsManaging;
-
-            public bool ServerPresetsManaging {
-                get {
-                    return _serverPresetsManaging ??
-                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
-                }
-                set {
-                    if (Equals(value, _serverPresetsManaging)) return;
-                    _serverPresetsManaging = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
-                    OnPropertyChanged();
-                }
-            }
-
             private bool? _loadServerInformationDirectly;
 
             public bool LoadServerInformationDirectly {
@@ -323,6 +308,37 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _ignoredInterfaces)) return;
                     _ignoredInterfaces = value.ToList();
                     ValuesStorage.Set("Settings.OnlineSettings.IgnoredInterfaces", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _serverPresetsManaging;
+
+            public bool ServerPresetsManaging {
+                get {
+                    return _serverPresetsManaging ??
+                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
+                }
+                set {
+                    if (Equals(value, _serverPresetsManaging)) return;
+                    _serverPresetsManaging = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _serverPresetsUpdateDataAutomatically;
+
+            public bool ServerPresetsUpdateDataAutomatically {
+                get {
+                    return _serverPresetsUpdateDataAutomatically ??
+                            (_serverPresetsUpdateDataAutomatically = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", true))
+                                    .Value;
+                }
+                set {
+                    if (Equals(value, _serverPresetsUpdateDataAutomatically)) return;
+                    _serverPresetsUpdateDataAutomatically = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsUpdateDataAutomatically", value);
                     OnPropertyChanged();
                 }
             }

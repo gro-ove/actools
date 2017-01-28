@@ -50,6 +50,15 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        public bool MagickOverride {
+            get { return CarNode?.MagickOverride ?? false; }
+            set {
+                if (CarNode == null || Equals(value, CarNode.MagickOverride)) return;
+                CarNode.MagickOverride = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _ambientShadowHighlight;
 
         public bool AmbientShadowHighlight {

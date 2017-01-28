@@ -11,6 +11,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
@@ -56,19 +57,19 @@ namespace AcManager.Controls {
             });
         }
 
-        public static readonly DependencyProperty AddNewCommandProperty = DependencyProperty.Register(nameof(AddNewCommand), typeof(ICommand),
+        public static readonly DependencyProperty AddNewCommandProperty = DependencyProperty.Register(nameof(AddNewCommand), typeof(CommandBase),
                 typeof(AcListPage), new PropertyMetadata(OnAddNewCommandChanged));
 
-        public ICommand AddNewCommand {
-            get { return (ICommand)GetValue(AddNewCommandProperty); }
+        public CommandBase AddNewCommand {
+            get { return (CommandBase)GetValue(AddNewCommandProperty); }
             set { SetValue(AddNewCommandProperty, value); }
         }
 
         private static void OnAddNewCommandChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((AcListPage)o).OnAddNewCommandChanged((ICommand)e.NewValue);
+            ((AcListPage)o).OnAddNewCommandChanged((CommandBase)e.NewValue);
         }
 
-        private void OnAddNewCommandChanged(ICommand newValue) {
+        private void OnAddNewCommandChanged(CommandBase newValue) {
             InputBindings.Clear();
             InputBindings.Add(new InputBinding(newValue, new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
         }
@@ -92,13 +93,13 @@ namespace AcManager.Controls {
 
         private void OnAddButtonClick(object sender, RoutedEventArgs e) {
             var command = AddNewCommand;
-            if (command?.CanExecute(null) == true) {
+            if (command?.IsAbleToExecute == true) {
                 var list = ItemsSource as INotifyCollectionChanged;
                 if (list != null) {
                     list.CollectionChanged += OnAddButtonCollectionChanged;
                 }
 
-                command.Execute(null);
+                ((ICommand)command).Execute(null);
 
                 if (list != null) {
                     list.CollectionChanged -= OnAddButtonCollectionChanged;

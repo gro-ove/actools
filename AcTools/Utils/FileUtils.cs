@@ -377,18 +377,24 @@ namespace AcTools.Utils {
             return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
-        public static string EnsureUnique(string filename, string postfix = "-{0}") {
-            if (!Exists(filename)) return filename;
+        [Localizable(false)]
+        public static string EnsureUnique(string filename, string postfix, bool forcePostfix, int startWith = 1) {
+            if (!forcePostfix && !Exists(filename)) return filename;
             
             var ext = Path.GetExtension(filename) ?? "";
             var start = filename.Substring(0, filename.Length - ext.Length);
 
-            for (var i = 1; i < 99999; i++) {
+            for (var i = startWith; i < 99999; i++) {
                 var result = start + string.Format(postfix, i) + ext;
                 if (!Exists(result)) return result;
             }
 
             throw new Exception("Can’t find unique filename");
+        }
+
+        [Localizable(false)]
+        public static string EnsureUnique(string filename, string postfix = "-{0}") {
+            return EnsureUnique(filename, postfix, false);
         }
 
         public static void CopyRecursive(string source, string destination) {

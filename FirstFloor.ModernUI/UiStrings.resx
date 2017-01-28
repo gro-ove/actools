@@ -612,4 +612,7 @@
   <data name="Common_Descending" xml:space="preserve">
     <value>Descending</value>
   </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>and</value>
+  </data>
 </root>

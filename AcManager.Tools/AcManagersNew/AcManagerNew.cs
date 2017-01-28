@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
@@ -18,6 +17,17 @@ using AcTools.Utils.Helpers;
 #endif
 
 namespace AcManager.Tools.AcManagersNew {
+    public interface ICreatingManager {
+        /// <summary>
+        /// Create a new object.
+        /// </summary>
+        /// <param name="id">If null, random/next ID will be used instead.</param>
+        /// <exception cref="Exception">Can’t create an object because of whatever reason.</exception>
+        /// <returns>Created object.</returns>
+        [NotNull]
+        IAcObjectNew AddNew([CanBeNull] string id = null);
+    }
+
     /// <summary>
     /// “Standart” version — files & watching.
     /// </summary>
@@ -236,7 +246,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (e.Name == null) {
                 var state = Directories.CheckIfEnabled(e.FullPath);
                 ActionExtension.InvokeInMainThreadAsync(() => {
-                    while (InnerWrappersList.Remove(InnerWrappersList.FirstOrDefault(x => x.Value.Enabled == state))) { }
+                    while (InnerWrappersList.Remove(InnerWrappersList.FirstOrDefault(x => x.Value.Enabled == state))) {}
                 });
                 return;
             }

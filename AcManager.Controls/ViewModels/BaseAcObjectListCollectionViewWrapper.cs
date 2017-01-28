@@ -5,6 +5,8 @@ using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -46,6 +48,16 @@ namespace AcManager.Controls.ViewModels {
             ListFilter = listFilter;
             _allowNonSelected = allowNonSelected;
         }
+
+        private DelegateCommand _addNewCommand;
+
+        public DelegateCommand AddNewCommand => _addNewCommand ?? (_addNewCommand = new DelegateCommand(() => {
+            try {
+                (_manager as ICreatingManager)?.AddNew();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t add a new object", e);
+            }
+        }, () => _manager is ICreatingManager, true));
 
         private void List_CollectionReady(object sender, EventArgs e) {
             if (!Loaded) return;

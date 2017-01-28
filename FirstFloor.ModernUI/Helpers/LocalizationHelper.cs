@@ -10,6 +10,18 @@ using FirstFloor.ModernUI.Windows.Converters;
 // Localize me!
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
+        public static string JoinToReadableString(this IEnumerable<string> items) {
+            var list = items as IReadOnlyList<string> ?? items.ToList();
+            switch (list.Count) {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return list[0];
+                default:
+                    return $@"{string.Join(@", ", list.Take(list.Count - 1))} {UiStrings.Common_And} {list.Last()}";
+            }
+        }
+
         public static string ToReadableBoolean(this bool value) {
             return value ? UiStrings.Yes : UiStrings.No;
         }
@@ -120,7 +132,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToSentence(this string s) {
-            return s.Length == 0 ? string.Empty : char.IsLetterOrDigit(s[s.Length - 1]) ? $"{s}." : s;
+            return s.Length == 0 ? string.Empty : char.IsLetterOrDigit(s[s.Length - 1]) ? $@"{s}." : s;
         }
 
         public static string ToReadableKey(this Keys key) {

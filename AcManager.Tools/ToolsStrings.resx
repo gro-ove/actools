@@ -1658,4 +1658,12 @@
   <data name="RhmService_CannotStart" xml:space="preserve">
     <value>Can’t start RHM</value>
   </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Data of {0} is not packed, so users can change it before joining and gain an unfair advantage.
+
+Would you like to pack it before starting the server? But don’t forget to share packed version to clients.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Data is not encrypted</value>
+  </data>
 </root>

@@ -1348,7 +1348,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required).
+        ///   Looks up a localized string similar to Use PSD, XCF, etc. instead if exists (Magick.NET addon is required).
         /// </summary>
         public static string CustomShowroom_EditingMode_Tooltip {
             get {

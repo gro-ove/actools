@@ -18,6 +18,8 @@ namespace AcTools.DataFile {
     }
 
     public class IniFile : AbstractDataFile, IEnumerable<KeyValuePair<string, IniFileSection>> {
+        public static IniFile Empty => new IniFile();
+
         /// <summary>
         /// Saving is much slower when enabled.
         /// </summary>

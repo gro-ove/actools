@@ -467,17 +467,30 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnClosing(object sender, CancelEventArgs e) {
-            var unsaved = Superintendent.Instance.UnsavedChanges();
-            if (unsaved.Count == 0) return;
+            if (SettingsHolder.Online.ServerPresetsManaging && ServerPresetsManager.Instance.IsScanned) {
+                var running = ServerPresetsManager.Instance.LoadedOnly.Where(x => x.IsRunning).ToList();
+                if (running.Count > 0 && ModernDialog.ShowMessage(
+                        $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
+                                running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",
+                        "Some servers are running", MessageBoxButton.OKCancel) != MessageBoxResult.OK) {
+                    e.Cancel = true;
+                    return;
+                }
+            }
 
-            var result = ModernDialog.ShowMessage(
-                    $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
-                            unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
-                    AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Yes) {
-                Superintendent.Instance.SaveAll();
-            } else if (result != MessageBoxResult.No) {
-                e.Cancel = true;
+            var unsaved = Superintendent.Instance.UnsavedChanges();
+            if (unsaved.Count > 0) {
+                switch (ModernDialog.ShowMessage(
+                        $@"{AppStrings.Main_UnsavedChanges}{Environment.NewLine}{Environment.NewLine}{
+                                unsaved.Select(x => $@" • {x}").JoinToString(Environment.NewLine)}",
+                        AppStrings.Main_UnsavedChangesHeader, MessageBoxButton.YesNoCancel)) {
+                            case MessageBoxResult.Yes:
+                                Superintendent.Instance.SaveAll();
+                                break;
+                            case MessageBoxResult.Cancel:
+                                e.Cancel = true;
+                                break;
+                }
             }
         }
 

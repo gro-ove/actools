@@ -202,6 +202,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(BetterTextBox);
         }
 
+        public static readonly DependencyProperty PlaceholderOpacityProperty = DependencyProperty.Register(nameof(PlaceholderOpacity), typeof(double),
+                typeof(BetterTextBox), new FrameworkPropertyMetadata(0.5));
+
+        public double PlaceholderOpacity {
+            get { return (double)GetValue(PlaceholderOpacityProperty); }
+            set { SetValue(PlaceholderOpacityProperty, value); }
+        }
+
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string), typeof(BetterTextBox));
 
         public string Placeholder {

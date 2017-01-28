@@ -108,6 +108,8 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled("Magick");
+
             public CarObject Car { get; }
 
             private CarSkinObject _skin;
@@ -155,14 +157,14 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowIterations = AmbientShadowIterations,
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
                     AmbientShadowFade = AmbientShadowFade,
-                    LiveReload = Renderer.LiveReload,
+                    LiveReload = Renderer.MagickOverride,
                 }, o => {
                     AmbientShadowDiffusion = o.AmbientShadowDiffusion;
                     AmbientShadowBrightness = o.AmbientShadowBrightness;
                     AmbientShadowIterations = o.AmbientShadowIterations;
                     AmbientShadowHideWheels = o.AmbientShadowHideWheels;
                     AmbientShadowFade = o.AmbientShadowFade ?? true;
-                    Renderer.LiveReload = o.LiveReload;
+                    Renderer.MagickOverride = o.LiveReload;
                 }, () => {
                     Reset(false);
                 });
@@ -177,7 +179,7 @@ namespace AcManager.Controls.CustomShowroom {
                 AmbientShadowFade = true;
 
                 if (Renderer != null) {
-                    Renderer.LiveReload = false;
+                    Renderer.MagickOverride = false;
                 }
 
                 if (saveLater) {

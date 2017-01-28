@@ -284,9 +284,14 @@
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
+    <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
+    <Compile Include="Objects\ServerPresetAssistState.cs" />
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
+    <Compile Include="Objects\ServerPresetObject.Running.cs" />
+    <Compile Include="Objects\ServerSessionEntry.cs" />
+    <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Kunos.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />

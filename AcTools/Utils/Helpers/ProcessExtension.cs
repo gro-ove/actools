@@ -102,10 +102,16 @@ namespace AcTools.Utils.Helpers {
                     await Task.Delay(300, cancellationToken);
                     if (cancellationToken.IsCancellationRequested) return;
                 }
-            } catch (Exception) {
-                // throw;
+#if DEBUG
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
                 await WaitForExitAsyncDeeperFallback(process, cancellationToken);
             }
+#else
+            } catch (Exception) {
+                await WaitForExitAsyncDeeperFallback(process, cancellationToken);
+            }
+#endif
         }
 
         public static Task WaitForExitAsync([NotNull] this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
@@ -119,9 +125,16 @@ namespace AcTools.Utils.Helpers {
                 }
 
                 return tcs.Task;
+#if DEBUG
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+                return WaitForExitAsyncFallback(process, cancellationToken);
+            }
+#else
             } catch (Exception) {
                 return WaitForExitAsyncFallback(process, cancellationToken);
             }
+#endif
         }
 
         /// <summary>

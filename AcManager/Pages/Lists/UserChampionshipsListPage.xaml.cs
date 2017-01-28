@@ -28,12 +28,6 @@ namespace AcManager.Pages.Lists {
                 : base(UserChampionshipsManager.Instance, listFilter) {
             }
 
-            private DelegateCommand _addNewCommand;
-
-            public DelegateCommand AddNewCommand => _addNewCommand ?? (_addNewCommand = new DelegateCommand(() => {
-                UserChampionshipsManager.Instance.AddNew();
-            }));
-
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} championship");
         }
     }

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
@@ -213,7 +214,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <returns></returns>
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, Window owner = null) {
             var dlg = new ModernDialog {
-                Title = title,
+                Title = title.ToTitle(),
                 Content = new ScrollViewer {
                     Content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,

@@ -16,7 +16,7 @@
                 <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="0"
                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                 <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Margin="2 0" Padding="{TemplateBinding Padding}"
-                        Opacity="0.5" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+                        Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
             </c:Cell>
         </Border>
         <ControlTemplate.Triggers>
@@ -56,8 +56,8 @@
         <c:Cell>
             <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Padding="{TemplateBinding Padding}" Margin="-2 0"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Padding="{TemplateBinding Padding}" Opacity="0.5"
-                    IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
+            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Padding="{TemplateBinding Padding}"
+                    Opacity="{TemplateBinding PlaceholderOpacity}" IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
         </c:Cell>
         <ControlTemplate.Triggers>
             <MultiTrigger>
@@ -95,8 +95,8 @@
             <c:Cell>
                 <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0"
                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="0.5" IsHitTestVisible="False"
-                        RenderOptions.ClearTypeHint="Enabled" />
+                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
+                        IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
             </c:Cell>
         </c:AdornedControl>
         <ControlTemplate.Triggers>
@@ -134,8 +134,8 @@
         <c:Cell>
             <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="0.5" IsHitTestVisible="False"
-                    RenderOptions.ClearTypeHint="Enabled" />
+            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="{TemplateBinding PlaceholderOpacity}"
+                    IsHitTestVisible="False" RenderOptions.ClearTypeHint="Enabled" />
         </c:Cell>
         <ControlTemplate.Triggers>
             <MultiTrigger>

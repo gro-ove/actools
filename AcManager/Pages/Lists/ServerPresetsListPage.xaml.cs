@@ -4,6 +4,7 @@ using AcManager.Controls.ViewModels;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -22,7 +23,7 @@ namespace AcManager.Pages.Lists {
         }
 
         private class ViewModel : AcListPageViewModel<ServerPresetObject> {
-            public ViewModel(IFilter<ServerPresetObject> listFilter) : base(ServerPresetsManager.Instance, listFilter) {}
+            public ViewModel(IFilter<ServerPresetObject> listFilter) : base(ServerPresetsManager.Instance, listFilter) { }
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_ServerPresets);
         }

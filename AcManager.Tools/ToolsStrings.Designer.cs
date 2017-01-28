@@ -3583,6 +3583,26 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data of {0} is not packed, so users can change it before joining and gain an unfair advantage.
+        ///
+        ///Would you like to pack it before starting the server? But don’t forget to share packed version to clients..
+        /// </summary>
+        public static string ServerPreset_UnpackedDataWarning {
+            get {
+                return ResourceManager.GetString("ServerPreset_UnpackedDataWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data is not encrypted.
+        /// </summary>
+        public static string ServerPreset_UnpackedDataWarning_Title {
+            get {
+                return ResourceManager.GetString("ServerPreset_UnpackedDataWarning_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Booking.
         /// </summary>
         public static string Session_Booking {

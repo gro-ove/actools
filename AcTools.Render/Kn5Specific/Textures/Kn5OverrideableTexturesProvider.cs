@@ -117,6 +117,17 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
+        private bool _magickOverride;
+
+        public bool MagickOverride {
+            get { return _magickOverride; }
+            set {
+                if (Equals(value, _magickOverride)) return;
+                _magickOverride = value;
+                UpdateOverridesLater();
+            }
+        }
+
         private static readonly string[] MagickExtensions = {
             ".bmp",
             ".gif",
@@ -146,7 +157,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             var i = 5;
             byte[] bytes = null;
             var magickMode = texture == null;
-            if (magickMode) {
+            if (MagickOverride && magickMode) {
                 if (!ImageUtils.IsMagickSupported) return;
 
                 var ext = MagickExtensions.FirstOrDefault(x => local.EndsWith(x, StringComparison.Ordinal));
@@ -223,7 +234,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
 
-            if (ImageUtils.IsMagickSupported && LiveReload) {
+            if (ImageUtils.IsMagickSupported && MagickOverride) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
                     byte[] bytes = null;
@@ -250,7 +261,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
 
-            if (ImageUtils.IsMagickSupported && LiveReload) {
+            if (ImageUtils.IsMagickSupported && MagickOverride) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
                     byte[] bytes = null;

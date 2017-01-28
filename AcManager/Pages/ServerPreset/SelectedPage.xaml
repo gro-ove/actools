@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -17,7 +18,7 @@
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open weather's folder (Ctrl+F)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open preset's folder (Ctrl+F)"
                         Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
@@ -26,7 +27,13 @@
                 <Button Content="Pack" Command="{Binding PackCommand}" ToolTip="Pack a new package for quick installation on a remote machine (Ctrl+P)"
                         IsEnabled="False" />
                 <Button Content="Run" Style="{StaticResource Go.ToolBarButton}" Command="{Binding GoCommand}"
-                        ToolTip="Run a new server using this preset (Ctrl+G)" IsEnabled="False" />
+                        ToolTip="Run a new server using this preset (Ctrl+G)"
+                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="Restart" Style="{StaticResource Go.ToolBarButton}" Command="{Binding RestartCommand}"
+                        ToolTip="Restart server using this preset (Ctrl+Shift+G)"
+                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="Stop" Command="{Binding SelectedObject.StopServerCommand}" ToolTip="Stop running server"
+                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -42,15 +49,39 @@
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
-        <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 8 0 0" x:Name="Tabs" SaveKey="__serpr.st"
-                mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml">
-            <mui:ModernTab.Links>
-                <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
-                <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
-                <mui:Link DisplayName="Rules, Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
-                <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
-                <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
+        <mui:Cell>
+            <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 8 0 0" x:Name="Tabs" SaveKey="__serpr.st"
+                    mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml">
+                <mui:ModernTab.Links>
+                    <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
+                    <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
+                    <mui:Link DisplayName="Rules, Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
+                    <mui:Link DisplayName="Conditions" Source="/Pages/ServerPreset/Conditions.xaml" />
+                    <mui:Link DisplayName="Sessions" Source="/Pages/ServerPreset/Sessions.xaml" />
+                </mui:ModernTab.Links>
+            </mui:ModernTab>
+
+            <mui:Cell Background="DarkCyan" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="200" Width="300" Margin="0 4"
+                    Visibility="{Binding SelectedObject.RunningLog, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <ListBox ItemsSource="{Binding SelectedObject.RunningLog}" Style="{StaticResource VirtualizingListBox}" TextBlock.FontSize="10">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <mui:SelectableBbCodeBlock BbCode="{Binding Mode=OneWay}" FontWeight="Normal" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </mui:Cell>
+
+            <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20" MaxWidth="320">
+                <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                            Margin="0 0 8 0" VerticalAlignment="Center" />
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                        <TextBlock.Text>Server is running!</TextBlock.Text>
+                    </TextBlock>
+                </DockPanel>
+            </Border>
+        </mui:Cell>
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

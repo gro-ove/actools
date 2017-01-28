@@ -27,6 +27,9 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
                         </Trigger>
+                        <DataTrigger Binding="{Binding IsShown}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

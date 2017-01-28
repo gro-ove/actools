@@ -11,6 +11,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public static readonly AsyncProgressEntry Indetermitate = new AsyncProgressEntry("", 0d);
         public static readonly AsyncProgressEntry Ready = new AsyncProgressEntry("", 1d);
+        public static readonly AsyncProgressEntry Finished = new AsyncProgressEntry(null, null);
 
         public static AsyncProgressEntry FromStringIndetermitate(string message) {
             return new AsyncProgressEntry(message, 0d);

@@ -1,7 +1,10 @@
-﻿// #define ZIP_SUPPORT
-/* ZIP-support: option to load images from ZIP-archives. With it enabled, BetterImage
+﻿/* ZIP-support: option to load images from ZIP-archives. With it enabled, BetterImage
  * would look for a special separator in file’s path, and if found, load image from
  * a ZIP-archive instead. Experimental feature, don’t know if it’s a good idea or not. */
+// #define ZIP_SUPPORT
+
+/* Warn about EndInit() multithread-related crashes and calculate success rate. */
+// #define DEBUG_ENDINIT_CRASHES
 
 using System;
 using System.Collections.Generic;
@@ -29,11 +32,81 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         Absolute, Relative
     }
 
-    public class BetterImage : Control {
-        public static bool OptionBackgroundLoading = true;
-        public static long OptionCacheTotalSize = 100 * 1000 * 100;
-        public static long OptionCacheLimitSize = 100 * 1000;
+    public interface ICancellable {
+        void Cancel();
+    }
+
+    public interface IThreadPool {
+        [CanBeNull]
+        ICancellable Run([NotNull] Action action);
+    }
+
+    public partial class BetterImage : Control {
+        /// <summary>
+        /// Set true to read files in UI thread without using async IO API.
+        /// </summary>
+        public static bool OptionReadFileSync = false;
+
+        /// <summary>
+        /// Set true to decode all images in the UI thread.
+        /// </summary>
+        public static bool OptionDecodeImageSync = false;
+
+        /// <summary>
+        /// If image’s size is smaller than this, it will be decoded in the UI thread.
+        /// Doesn’t do anything if OptionDecodeImageSync is true.
+        /// </summary>
+        public static int OptionDecodeImageSyncThreshold = 50000; // 50 KB
+
+        /// <summary>
+        /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
+        /// OptionDecodeImageSyncThreshold, how many of these images are allowed to be
+        /// decoded in UI thread per second before switching to non-UI one?
+        /// </summary>
+        public static int OptionMaxSyncDecodedInSecond = 8;
+
+        /// <summary>
+        /// Set true to immediately move decoded image to UI thread from non-UI one.
+        /// Doesn’t do anything if OptionDecodeImageSync is true.
+        /// </summary>
+
+        public static bool OptionDisplayImmediate = false;
+
+        /// <summary>
+        /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
+        /// </summary>
+        public static TimeSpan OptionAdditionalDelay = TimeSpan.FromMilliseconds(30);
+
+        /// <summary>
+        /// Total number of cached images (needed so cache won’t get expanded to like thousands of
+        /// very small images).
+        /// </summary>
+        public static int OptionCacheTotalEntries = 200;
+
+        /// <summary>
+        /// Summary cache size, in bytes.
+        /// </summary>
+        public static long OptionCacheTotalSize = 100 * 1000 * 1000; // 100 MB
+
+        /// <summary>
+        /// Cache threshold per image (bigger images won’t be cached), in bytes.
+        /// </summary>
+        public static long OptionCacheMaxSize = 1000 * 1000; // 1 MB
+
+        /// <summary>
+        /// Cache threshold per image (bigger images won’t be cached), in bytes.
+        /// </summary>
+        public static long OptionCacheMinSize = 50 * 1000; // 50 KB
+
+        /// <summary>
+        /// Mark cached images for debugging and log related information.
+        /// </summary>
         public static bool OptionMarkCached = false;
+
+        /// <summary>
+        /// How to compare cached images’ paths.
+        /// </summary>
+        public static StringComparison OptionCacheStringComparison = StringComparison.Ordinal;
 
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
@@ -55,48 +128,76 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Date = DateTime.Now;
             }
 
+            public BitmapEntry(BitmapSource source) {
+                BitmapSource = source;
+                Width = source.PixelWidth;
+                Height = source.PixelHeight;
+                Downsized = true;
+                Date = DateTime.Now;
+            }
+
             public bool IsBroken => BitmapSource == null;
         }
         #endregion
 
         #region Properties
         public static readonly DependencyProperty ShowBrokenProperty = DependencyProperty.Register(nameof(ShowBroken), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true));
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
+                    ((BetterImage)o)._showBroken = (bool)e.NewValue;
+                }));
+
+        private bool _showBroken = true;
 
         public bool ShowBroken {
-            get { return (bool)GetValue(ShowBrokenProperty); }
+            get { return _showBroken; }
             set { SetValue(ShowBrokenProperty, value); }
         }
 
         public static readonly DependencyProperty HideBrokenProperty = DependencyProperty.Register(nameof(HideBroken), typeof(bool),
-                typeof(BetterImage));
+                typeof(BetterImage), new PropertyMetadata(false, (o, e) => {
+                    ((BetterImage)o)._hideBroken = (bool)e.NewValue;
+                }));
+
+        private bool _hideBroken;
 
         public bool HideBroken {
-            get { return (bool)GetValue(HideBrokenProperty); }
+            get { return _hideBroken; }
             set { SetValue(HideBrokenProperty, value); }
         }
 
         public static readonly DependencyProperty ClearOnChangeProperty = DependencyProperty.Register(nameof(ClearOnChange), typeof(bool),
-                typeof(BetterImage));
+                typeof(BetterImage), new PropertyMetadata(false, (o, e) => {
+                    ((BetterImage)o)._clearOnChange = (bool)e.NewValue;
+                }));
+
+        private bool _clearOnChange;
 
         public bool ClearOnChange {
-            get { return (bool)GetValue(ClearOnChangeProperty); }
+            get { return _clearOnChange; }
             set { SetValue(ClearOnChangeProperty, value); }
         }
 
         public static readonly DependencyProperty DelayedCreationProperty = DependencyProperty.Register(nameof(DelayedCreation), typeof(bool),
-                typeof(BetterImage), new PropertyMetadata(true));
+                typeof(BetterImage), new PropertyMetadata(true, (o, e) => {
+                    ((BetterImage)o)._delayedCreation = (bool)e.NewValue;
+                }));
+
+        private bool _delayedCreation = true;
 
         public bool DelayedCreation {
-            get { return (bool)GetValue(DelayedCreationProperty); }
+            get { return _delayedCreation; }
             set { SetValue(DelayedCreationProperty, value); }
         }
 
         public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(nameof(DecodeHeight), typeof(int),
-                typeof(BetterImage), new PropertyMetadata(-1));
+                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
+                    ((BetterImage)o)._decodeHeight = (int)e.NewValue;
+                }));
+
+        private int _decodeHeight = -1;
 
         public int DecodeHeight {
-            get { return (int)GetValue(DecodeHeightProperty); }
+            get { return _decodeHeight; }
             set { SetValue(DecodeHeightProperty, value); }
         }
 
@@ -107,40 +208,56 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Without cropping, if set to -1 (default value), MaxWidth or Width will be used instead. Set to 0 
         /// if you want to disable this behavior and force full-size decoding. 
         /// </summary>
-        public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(DecodeWidth), typeof(int),
-                typeof(BetterImage), new PropertyMetadata(-1));
-        
+        public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(BetterImage.DecodeWidth), typeof(int),
+                typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
+                    ((BetterImage)o)._decodeWidth = (int)e.NewValue;
+                }));
+
+        private int _decodeWidth = -1;
+
         public int DecodeWidth {
-            get { return (int)GetValue(DecodeWidthProperty); }
+            get { return _decodeWidth; }
             set { SetValue(DecodeWidthProperty, value); }
         }
 
         public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch),
-                typeof(BetterImage));
+                typeof(BetterImage), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
+                    ((BetterImage)o)._stretch = (Stretch)e.NewValue;
+                }));
+
+        private Stretch _stretch = Stretch.Uniform;
 
         public Stretch Stretch {
-            get { return (Stretch)GetValue(StretchProperty); }
+            get { return _stretch; }
             set { SetValue(StretchProperty, value); }
         }
 
         public static readonly DependencyProperty StretchDirectionProperty = DependencyProperty.Register(nameof(StretchDirection), typeof(StretchDirection),
-                typeof(BetterImage));
+                typeof(BetterImage), new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
+                    ((BetterImage)o)._stretchDirection = (StretchDirection)e.NewValue;
+                }));
+
+        private StretchDirection _stretchDirection = StretchDirection.Both;
 
         public StretchDirection StretchDirection {
-            get { return (StretchDirection)GetValue(StretchDirectionProperty); }
+            get { return _stretchDirection; }
             set { SetValue(StretchDirectionProperty, value); }
         }
 
         public static readonly DependencyProperty FilenameProperty = DependencyProperty.Register(nameof(Filename), typeof(string),
                 typeof(BetterImage), new PropertyMetadata(OnFilenameChanged));
 
+        private string _filename;
+
         public string Filename {
-            get { return (string)GetValue(FilenameProperty); }
+            get { return _filename; }
             set { SetValue(FilenameProperty, value); }
         }
 
         private static void OnFilenameChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((BetterImage)o).OnFilenameChanged((string)e.NewValue);
+            var b = (BetterImage)o;
+            b._filename = (string)e.NewValue;
+            b.OnFilenameChanged(b._filename);
         }
 
         public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source), typeof(object),
@@ -175,26 +292,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty CropProperty = DependencyProperty.Register(nameof(Crop), typeof(Rect?),
-                typeof(BetterImage), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, OnCropChanged));
+                typeof(BetterImage), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
+                    var b = (BetterImage)o;
+                    b._crop = (Rect?)e.NewValue;
+
+                    if (b.Filename != null) {
+                        b.OnFilenameChanged(b.Filename);
+                    }
+                }));
 
         private Rect? _crop;
-        
+
         public Rect? Crop {
             get { return _crop; }
             set { SetValue(CropProperty, value); }
         }
 
-        private static void OnCropChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            var b = (BetterImage)o;
-            b._crop = (Rect?)e.NewValue;
-
-            if (b._filename != null) {
-                b.OnFilenameChanged(b._filename);
-            }
-        }
-
-        public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(CropUnits), typeof(ImageCropMode),
-                typeof(BetterImage), new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure, OnCropUnitsChanged));
+        public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(BetterImage.CropUnits), typeof(ImageCropMode),
+                typeof(BetterImage), new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
+                    ((BetterImage)o)._cropUnits = (ImageCropMode)e.NewValue;
+                }));
 
         private ImageCropMode _cropUnits = ImageCropMode.Relative;
 
@@ -203,18 +320,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(CropUnitsProperty, value); }
         }
 
-        private static void OnCropUnitsChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            var b = (BetterImage)o;
-            b._cropUnits = (ImageCropMode)e.NewValue;
-        }
-
         private void SetBitmapEntryDirectly(BitmapEntry value) {
             Filename = null;
-            ++_loading;
-            _current = value;
-            _broken = value.IsBroken;
-            InvalidateMeasure();
-            InvalidateVisual();
+            SetCurrent(value);
         }
 
         private void OnSourceChanged(ImageSource newValue) {
@@ -356,7 +464,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Regular loading
                 using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                     var result = new byte[stream.Length];
-                    await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
+                    await stream.ReadAsync(result, 0, result.Length, cancellation);
                     return result;
                 }
             } catch (FileNotFoundException) {
@@ -367,13 +475,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+#if DEBUG_ENDINIT_CRASHES
+        private static int _successes, _fails;
+#endif
+
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
         private static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
             try {
-                // for more information about WrappingStream: https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
-                using (var stream = new WrappingStream(new MemoryStream(data))) {
+                // WrappingSteam here helps to avoid memory leaks. For more information:
+                // https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
+                using (var memory = new MemoryStream(data))
+                using (var stream = new WrappingStream(memory)) {
                     int width = 0, height = 0;
                     var downsized = false;
 
@@ -392,6 +506,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         downsized = true;
                     }
 
+                    bi.CreateOptions = BitmapCreateOptions.None;
                     bi.CacheOption = BitmapCacheOption.OnLoad;
                     bi.StreamSource = stream;
                     bi.EndInit();
@@ -405,19 +520,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         height = bi.PixelHeight;
                     }
 
+#if DEBUG_ENDINIT_CRASHES
+                    if (attempt == 0) {
+                        ++_successes;
+                    }
+#endif
+
                     return new BitmapEntry(bi, width, height, downsized);
                 }
-            } catch (FileFormatException e) {
-                // I AM THE GOD OF STUPID WORKAROUNDS, AND I BRING YOU, WORKAROUND!
-                if (attempt++ < 2 && e.InnerException is COMException) {
-                    Logging.Warning("Recover attempt: " + attempt);
-                    return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
-                }
+            } catch (FileFormatException e) when (attempt < 2 && e.InnerException is COMException) {
+                // Apparently, EndInit() might crash with FileFormatException when several images are
+                // being loaded in several threads simultaneously. Of course, I could wrap it with lock()
+                // or reduce number of threads in pool to only one since EndInit() is actually the most
+                // time-consuming line here, but it will noticeably damage the performance — most of
+                // the time (to be more specific, 99.1% of calls), it works just fine. So, instead of
+                // making it slow, let’s just try it again and then again (but no more than that, image
+                // could actually be damaged).
+                ++attempt;
 
-                Logging.Warning("Loading failed: " + e);
-                return BitmapEntry.Empty;
+#if DEBUG_ENDINIT_CRASHES
+                ++_fails;
+                Logging.Warning($"Recover attempt: {attempt} (s. rate: {100d * _successes / (_successes + _fails):F1}%)");
+#endif
+
+                return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
             } catch (Exception e) {
-                Logging.Warning("Loading failed: " + e);
+                Logging.Warning(e);
                 return BitmapEntry.Empty;
             }
         }
@@ -450,7 +578,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (app == null) return;
             foreach (var image in app.Windows.OfType<Window>()
                     .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                    .Where(x => string.Equals(x._filename, filename, StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
 #endif
@@ -463,78 +591,118 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public BitmapEntry Value;
         }
 
-        private static readonly List<CacheEntry> Cache = new List<CacheEntry>(100);
+        private static List<CacheEntry> _cache;
+
+        private static List<CacheEntry> Cache => _cache ?? (_cache = new List<CacheEntry>(OptionCacheTotalEntries));
 
         private static void RemoveFromCache(string filename) {
+            var cache = Cache;
+            lock (cache) {
+                for (var i = cache.Count - 1; i >= 0; i--) {
+                    if (string.Equals(
 #if ZIP_SUPPORT
-            lock (Cache) {
-                int i;
-                while ((i = Cache.FindIndex(x => string.Equals(GetActualFilename(x.Key), filename, StringComparison.OrdinalIgnoreCase))) != -1) {
-                    Cache.RemoveAt(i);
-                }
-            }
+                            GetActualFilename(cache[i].Key)
 #else
-            lock (Cache) {
-                var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
-                if (i != -1) {
-                    Cache.RemoveAt(i);
+                            cache[i].Key,
+#endif
+                            filename, OptionCacheStringComparison)) {
+                        cache.RemoveAt(i);
+                    }
                 }
             }
-#endif
         }
 
         private void AddToCache(string filename, BitmapEntry entry) {
             _fromCache = false;
-            if (OptionCacheTotalSize <= 0 || entry.Size > OptionCacheLimitSize) return;
+            if (OptionCacheTotalEntries <= 0 || OptionCacheTotalSize <= 0 ||
+                    entry.Size < OptionCacheMinSize || entry.Size > OptionCacheMaxSize) return;
 
-            lock (Cache) {
-                var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
+            var cache = Cache;
+            var lastIndex = cache.Count - 1;
+
+            lock (cache) {
+                var index = -1;
+                for (var i = lastIndex; i >= 0; i--) {
+                    if (string.Equals(cache[i].Key, filename, OptionCacheStringComparison)) {
+                        index = i;
+                        break;
+                    }
+                }
+                
                 CacheEntry item;
-                if (i == -1) {
+                if (index == -1) {
+                    // item does not exist now, let’s add it
                     item = new CacheEntry {
                         Key = filename,
                         Value = entry
                     };
-                    Cache.Insert(0, item);
+
+                    // if queue is full, remove the first entry to avoid re-creating
+                    // array thing inside of the list
+                    if (cache.Count == OptionCacheTotalEntries) {
+                        if (OptionMarkCached) {
+                            Logging.Debug($"total cached: {cache.Count} entries (capacity: {cache.Capacity})");
+                        }
+
+                        cache.RemoveAt(0);
+                    }
+
+                    cache.Add(item);
                 } else {
-                    item = Cache[i];
+                    // item already exists, let’s update its value
+                    item = cache[index];
                     item.Value = entry;
 
-                    if (i > 0) {
-                        Cache.RemoveAt(i);
-                        Cache.Insert(0, item);
+                    if (index < lastIndex) {
+                        // and move it to the end of removal queue if needed
+                        cache.RemoveAt(index);
+                        cache.Add(item);
                     }
                 }
 
-                // removing old entries
+                // remove old entries
                 var total = item.Value.Size;
-                for (i = 1; i < Cache.Count; i++) {
-                    total += Cache[i].Value.Size;
+                for (var i = lastIndex - 1; i >= 0; i--) {
+                    total += cache[i].Value.Size;
                     if (total > OptionCacheTotalSize) {
-                        Cache.RemoveRange(i, Cache.Count - i);
+                        if (OptionMarkCached) {
+                            Logging.Debug($"total cached size: {total / 1024d / 1024:F2} MB, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
+                        }
+
+                        cache.RemoveRange(0, i + 1);
                         return;
                     }
+                }
+
+                if (OptionMarkCached) {
+                    Logging.Debug($"total cached size: {total / 1024d / 1024:F2} MB, no need to remove anything");
                 }
             }
         }
 
         private static BitmapEntry GetCached(string filename) {
-            lock (Cache) {
-                var i = Cache.FindIndex(x => string.Equals(x.Key, filename, StringComparison.OrdinalIgnoreCase));
-                if (i == -1) return BitmapEntry.Empty;
+            var cache = Cache;
+            var lastIndex = cache.Count - 1;
 
-                var item = Cache[i];
-                if (i > 0) {
-                    Cache.RemoveAt(i);
-                    Cache.Insert(0, item);
+            lock (cache) {
+                for (var i = lastIndex; i >= 0; i--) {
+                    var item = cache[i];
+                    if (string.Equals(item.Key, filename, OptionCacheStringComparison)) {
+                        if (i < lastIndex) {
+                            cache.RemoveAt(i);
+                            cache.Add(item);
+                        }
+
+                        return item.Value;
+                    }
                 }
-
-                return item.Value;
             }
-        }
-#endregion
 
-#region Inner control methods
+            return BitmapEntry.Empty;
+        }
+        #endregion
+
+        #region Inner control methods
         public int InnerDecodeWidth {
             get {
                 var decodeWidth = DecodeWidth;
@@ -553,101 +721,83 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public int InnerDecodeHeight => DecodeHeight;
 
-        private BitmapEntry _current;
-        private int _loading;
-        private bool _broken;
-        private bool _fromCache;
-
         /// <summary>
         /// Reloads image.
         /// </summary>
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
-            if (_filename == null) {
-                _current = BitmapEntry.Empty;
-                _broken = true;
+            if (_currentTask != null) {
+                Logging.Here();
+                _currentTask.Cancel();
+                _currentTask = null;
+            }
+
+            if (Filename == null) {
+                SetCurrent(BitmapEntry.Empty);
                 return false;
             }
 
             if (OptionCacheTotalSize > 0) {
-                var cached = GetCached(_filename);
+                var cached = GetCached(Filename);
                 var innerDecodeWidth = InnerDecodeWidth;
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
-                        var info = new FileInfo(GetActualFilename(_filename));
+                        var info = new FileInfo(GetActualFilename(Filename));
                         if (!info.Exists) {
-                            _current = BitmapEntry.Empty;
-                            _broken = true;
-                            RemoveFromCache(_filename);
+                            SetCurrent(BitmapEntry.Empty, true);
                             return false;
                         }
 
                         if (info.LastWriteTime > cached.Date) {
-                            RemoveFromCache(_filename);
+                            RemoveFromCache(Filename);
                         } else {
-                            _current = cached;
-                            _broken = false;
-                            _fromCache = true;
-                            InvalidateMeasure();
-                            InvalidateVisual();
+                            SetCurrent(cached, true);
                             return false;
                         }
                     } catch (Exception) {
                         // If there will be any problems with FileInfo
-                        _current = BitmapEntry.Empty;
-                        _broken = true;
-                        RemoveFromCache(_filename);
+                        SetCurrent(BitmapEntry.Empty, true);
                         return false;
                     }
                 }
             }
 
             if (DelayedCreation) {
-                if (OptionBackgroundLoading) {
-                    ReloadImageAsync();
-                } else {
-                    ReloadImageAsyncOld();
-                }
+                ReloadImageAsync();
                 return true;
             }
 
-            ++_loading;
-            _current = LoadBitmapSource(_filename, InnerDecodeWidth, InnerDecodeHeight);
-            _broken = _current.BitmapSource == null;
-            if (!_broken) {
-                AddToCache(_filename, _current);
-            }
-
-            InvalidateVisual();
+            SetCurrent(LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight));
             return false;
         }
 
-        private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
+        private BitmapEntry _current;
+        private int _loading;
+        private bool _broken;
+        private bool _fromCache;
 
-        private static void UpdateLoaded() {
-            var now = DateTime.Now;
-            var remove = RecentlyLoaded.TakeWhile(x => now - x > TimeSpan.FromSeconds(3)).Count();
-            if (remove > 0) {
-                RecentlyLoaded.RemoveRange(0, remove);
-            }
+        private void SetCurrent(BitmapEntry value, bool fromCache = false) {
+            ++_loading;
 
-            RecentlyLoaded.Add(now);
-        }
+            _current = value;
+            _broken = value.IsBroken;
+            _fromCache = fromCache;
 
-        private async void ReloadImageAsyncOld() {
-            var loading = ++_loading;
-            _broken = false;
-
-            var current = await LoadBitmapSourceAsync(_filename, InnerDecodeWidth, InnerDecodeHeight);
-            if (loading != _loading) return;
-
-            _current = current;
-            _broken = _current.BitmapSource == null;
-            if (!_broken) {
-                AddToCache(_filename, _current);
+            if (fromCache) {
+                if (_broken && Filename != null) {
+                    RemoveFromCache(Filename);
+                }
+            } else if (!_broken) {
+                AddToCache(Filename, _current);
             }
 
             InvalidateMeasure();
+            InvalidateVisual();
+        }
+
+        private void ClearCurrent() {
+            _current = BitmapEntry.Empty;
+            _broken = false;
             InvalidateVisual();
         }
 
@@ -682,81 +832,94 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #endif
         }
 
+        private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
+
+        private static bool UpdateLoaded() {
+            var now = DateTime.Now;
+
+            for (var i = RecentlyLoaded.Count - 1; i >= 0; i--) {
+                if ((now - RecentlyLoaded[i]).TotalSeconds > 1d) {
+                    RecentlyLoaded.RemoveAt(i);
+                }
+            }
+
+            if (RecentlyLoaded.Count < OptionMaxSyncDecodedInSecond) {
+                RecentlyLoaded.Add(now);
+                return true;
+            }
+
+            return false;
+        }
+
         private async void ReloadImageAsync() {
             var loading = ++_loading;
             _broken = false;
 
-            var filename = _filename;
-            var data = await ReadBytesAsync(filename);
+            var filename = Filename;
 
-            if (loading != _loading || _filename != filename) return;
+            if (OptionAdditionalDelay > TimeSpan.Zero) {
+                await Task.Delay(OptionAdditionalDelay);
+                if (loading != _loading || Filename != filename) return;
+            }
+
+            byte[] data;
+            if (OptionReadFileSync) {
+                data = await ReadBytesAsync(filename);
+                if (loading != _loading || Filename != filename) return;
+            } else {
+                data = File.ReadAllBytes(filename);
+            }
+
             if (data == null) {
-                _current = BitmapEntry.Empty;
-                _broken = true;
-
-                InvalidateMeasure();
-                InvalidateVisual();
+                SetCurrent(BitmapEntry.Empty);
                 return;
             }
 
-            var innerDecodeWidth = InnerDecodeWidth;
-            var innerDecodeHeight = InnerDecodeHeight;
-
-            UpdateLoaded();
-            if (RecentlyLoaded.Count < 2 || data.Length < 1000) {
-                _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
-                _broken = _current.BitmapSource == null;
-                if (!_broken) {
-                    AddToCache(filename, _current);
-                }
-
-                InvalidateMeasure();
-                InvalidateVisual();
+            var decodeWidth = InnerDecodeWidth;
+            var decodeHeight = InnerDecodeHeight;
+            
+            if (data.Length < OptionDecodeImageSyncThreshold && UpdateLoaded()) {
+                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
                 return;
             }
 
-            if (RecentlyLoaded.Count > 5) {
-                await Task.Delay((RecentlyLoaded.Count - 3) * 10);
-                if (loading != _loading || _filename != filename) return;
-            }
+            if (OptionDecodeImageSync) {
+                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
+            } else {
+                _currentTask = ThreadPool.Run(() => {
+                    var current = LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight);
 
-            ThreadPool.QueueUserWorkItem(o => {
-                var current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
-                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
-                    if (loading != _loading || _filename != filename) return;
+                    var result = (Action)(() => {
+                        _currentTask = null;
 
-                    _current = current;
-                    _broken = _current.IsBroken;
-                    if (!_broken) {
-                        AddToCache(filename, _current);
+                        if (loading != _loading || Filename != filename) return;
+                        SetCurrent(current);
+                    });
+
+                    if (OptionDisplayImmediate) {
+                        Dispatcher.Invoke(result);
+                    } else {
+                        Dispatcher.BeginInvoke(DispatcherPriority.Background, result);
                     }
-
-                    InvalidateMeasure();
-                    InvalidateVisual();
-                }));
-            });
+                });
+            }
         }
 
-        private string _filename;
+        private ICancellable _currentTask;
 
         private void OnFilenameChanged(string value) {
-            _filename = value;
-
             if (CollapseIfMissing) {
                 if (File.Exists(GetActualFilename(value))) {
                     Visibility = Visibility.Visible;
                 } else {
                     Visibility = Visibility.Collapsed;
-                    _current = BitmapEntry.Empty;
-                    _broken = false;
+                    SetCurrent(BitmapEntry.Empty);
                     return;
                 }
             }
 
             if (ReloadImage() && ClearOnChange) {
-                _current = BitmapEntry.Empty;
-                _broken = false;
-                InvalidateVisual();
+                ClearCurrent();
             }
         }
 
@@ -889,16 +1052,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var scaleFactor = ComputeScaleFactor(inputSize, size, Stretch, StretchDirection);
             return new Size(size.Width * scaleFactor.Width, size.Height * scaleFactor.Height);
         }
-#endregion
+        #endregion
 
-#region Initialization
+        #region Initialization
         static BetterImage() {
             var style = CreateDefaultStyles();
             StyleProperty.OverrideMetadata(typeof(BetterImage), new FrameworkPropertyMetadata(style));
-            StretchProperty.OverrideMetadata(typeof(BetterImage),
-                    new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
-            StretchDirectionProperty.OverrideMetadata(typeof(BetterImage),
-                    new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure));
             ClipToBoundsProperty.OverrideMetadata(typeof(BetterImage),
                     new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
             BackgroundProperty.OverrideMetadata(typeof(BetterImage),
@@ -913,6 +1072,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             style.Seal();
             return style;
         }
-#endregion
+        #endregion
     }
 }

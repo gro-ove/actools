@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
-    public class ServerPresetsManager : AcManagerNew<ServerPresetObject>, IDisposable {
+    public class ServerPresetsManager : AcManagerNew<ServerPresetObject>, IDisposable, ICreatingManager {
         private static ServerPresetsManager _instance;
 
         public static ServerPresetsManager Instance => _instance ?? (_instance = new ServerPresetsManager());
@@ -142,171 +138,34 @@ namespace AcManager.Tools.Managers {
             return new ServerPresetObject(this, id, enabled);
         }
 
+        public IAcObjectNew AddNew(string id = null) {
+            if (id == null) {
+                id = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Directories.EnabledDirectory, "SERVER"), "_{0:D2}", true, 0)) ?? @"CM_SERVER";
+            }
+
+            var directory = Path.Combine(Directories.EnabledDirectory, id);
+            if (Directory.Exists(directory)) {
+                throw new InformativeException("Can’t add a new object", "This ID is already taken.");
+            }
+
+            using (IgnoreChanges()) {
+                Directory.CreateDirectory(directory);
+                File.WriteAllText(Path.Combine(directory, "server_cfg.ini"), "");
+                File.WriteAllText(Path.Combine(directory, "entry_list.ini"), "");
+
+                var obj = CreateAndLoadAcObject(id, true);
+                InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                UpdateList();
+
+                return obj;
+            }
+        }
+
         public ChangeableObservableCollection<ServerSavedDriver> SavedDrivers { get; }
 
         public void Dispose() {
             _directoryWatcher.EnableRaisingEvents = false;
             _directoryWatcher.Dispose();
         }
-    }
-
-    public sealed class ServerSavedDriver : NotifyPropertyErrorsChanged, IDraggable {
-        public override IEnumerable GetErrors(string propertyName) {
-            switch (propertyName) {
-                case nameof(Guid):
-                    return new[] { "GUID is required" };
-                case nameof(DriverName):
-                    return new[] { "Driver name is required" };
-                default:
-                    return null;
-            }
-        }
-
-        public override bool HasErrors => Guid == string.Empty || DriverName == string.Empty;
-
-        private string _guid;
-
-        [NotNull]
-        public string Guid {
-            get { return _guid; }
-            set {
-                value = value.Trim();
-                if (value == _guid) return;
-                _guid = value;
-                OnPropertyChanged();
-                OnErrorsChanged();
-            }
-        }
-
-        private string _driverName;
-
-        [NotNull]
-        public string DriverName {
-            get { return _driverName; }
-            set {
-                value = value.Trim();
-                if (value == _driverName) return;
-                _driverName = value;
-                OnPropertyChanged();
-                OnErrorsChanged();
-            }
-        }
-
-        private string _teamName;
-
-        [CanBeNull]
-        public string TeamName {
-            get { return _teamName; }
-            set {
-                if (value == _teamName) return;
-                _teamName = value;
-                OnPropertyChanged();
-            }
-        }
-
-        [NotNull]
-        public IReadOnlyDictionary<string, string> Skins { get; }
-
-        [CanBeNull]
-        public string GetCarId() {
-            return Skins.FirstOrDefault().Key;
-        }
-
-        [CanBeNull]
-        public string GetSkinId([NotNull] string carId) {
-            if (carId == null) throw new ArgumentNullException(nameof(carId));
-            return Skins.FirstOrDefault(x => string.Equals(x.Key, carId, StringComparison.OrdinalIgnoreCase)).Value;
-        }
-
-        private ServerSavedDriver(KeyValuePair<string, IniFileSection> pair) {
-            Guid = pair.Key.ApartFromFirst(@"D");
-            DriverName = pair.Value.GetNonEmpty("DRIVERNAME") ?? "Unnamed";
-            TeamName = pair.Value.GetNonEmpty("TEAM");
-            Skins = pair.Value.Where(x => x.Key != @"DRIVERNAME" && x.Key != @"TEAM").ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value);
-        }
-
-        public void Save(IniFile file) {
-            var section = file[@"D" + (string.IsNullOrWhiteSpace(Guid) ? "0" : Guid)];
-            section.Set("DRIVERNAME", string.IsNullOrWhiteSpace(DriverName) ? "Unnamed" : DriverName);
-            section.Set("TEAM", TeamName);
-            foreach (var pair in Skins) {
-                section.Set(pair.Key.ToUpperInvariant(), pair.Value);
-            }
-        }
-
-        internal ServerSavedDriver(ServerPresetDriverEntry driverEntry) {
-            if (driverEntry.Guid == null || driverEntry.DriverName == null) {
-                throw new Exception("GUID and name are required");
-            }
-
-            Guid = driverEntry.Guid;
-            DriverName = driverEntry.DriverName;
-            TeamName = driverEntry.TeamName;
-
-            if (driverEntry.CarSkinId != null) {
-                Skins = new Dictionary<string, string> {
-                    [driverEntry.CarId] = driverEntry.CarSkinId
-                };
-            } else {
-                Skins = new Dictionary<string, string>(0);
-            }
-        }
-
-        private bool Equals(ServerSavedDriver other) {
-            return string.Equals(Guid, other.Guid) && string.Equals(DriverName, other.DriverName) && string.Equals(TeamName, other.TeamName) &&
-                    Skins.SequenceEqual(other.Skins);
-        }
-
-        public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            var a = obj as ServerSavedDriver;
-            return a != null && Equals(a);
-        }
-
-        public override int GetHashCode() {
-            unchecked {
-                var hashCode = Guid.GetHashCode();
-                hashCode = (hashCode * 397) ^ (DriverName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (TeamName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ Skins.Aggregate(0, (current, skin) => current ^ skin.GetHashCode()).GetHashCode();
-                return hashCode;
-            }
-        }
-
-        public static IEnumerable<ServerSavedDriver> Load(string filename) {
-            return File.Exists(filename)
-                    ? new IniFile(filename, IniFileMode.ValuesWithSemicolons).Where(x => x.Key.Length > 1 && x.Key[0] == 'D')
-                                                                             .Select(x => new ServerSavedDriver(x))
-                    : new ServerSavedDriver[0];
-        }
-
-        public void Extend(ServerPresetDriverEntry driverEntry) {
-            var d = (Dictionary<string, string>)Skins;
-            if (driverEntry.CarSkinId != null) {
-                d[driverEntry.CarId] = driverEntry.CarSkinId;
-            }
-        }
-
-        private bool _deleted;
-
-        public bool Deleted {
-            get { return _deleted; }
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private DelegateCommand _deleteCommand;
-
-        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            Deleted = true;
-        }));
-
-        public const string DraggableFormat = "Data-ServerSavedDriver";
-
-        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

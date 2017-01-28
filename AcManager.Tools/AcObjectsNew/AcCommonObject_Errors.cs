@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using AcManager.Tools.AcErrors;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -45,6 +46,7 @@ namespace AcManager.Tools.AcObjectsNew {
             _errors.Add(error);
             if (Errors.Count == 1) {
                 OnPropertyChanged(nameof(HasErrors));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -57,6 +59,7 @@ namespace AcManager.Tools.AcObjectsNew {
             _errors.Remove(_errors.FirstOrDefault(x => x.Type == type));
             if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -65,6 +68,7 @@ namespace AcManager.Tools.AcObjectsNew {
             _errors.Remove(error);
             if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -74,6 +78,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
             if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -86,6 +91,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
             if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
+                CommandManager.InvalidateRequerySuggested();
             }
         }
     }

@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers {
 
         [Localizable(false)]
         public static void ViewFile([NotNull] string filename) {
-            Process.Start("explorer", "/select," + filename);
+            Process.Start("explorer", "/select,\"" + filename + "\"");
         }
 
         [Localizable(false)]

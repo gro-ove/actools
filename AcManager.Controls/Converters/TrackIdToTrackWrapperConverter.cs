@@ -4,7 +4,6 @@ using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Converters {
     [ValueConversion(typeof(string), typeof(AcItemWrapper))]
@@ -15,7 +14,7 @@ namespace AcManager.Controls.Converters {
 
             var delimiter = id.IndexOf('/');
             if (delimiter != -1) {
-                return TracksManager.Instance.GetLayoutById(id);
+                return new AcItemWrapper(TracksManager.Instance.GetLayoutById(id));
                 // id = id.Substring(0, delimiter);
             }
 

@@ -73,7 +73,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected override ITexturesProvider InitializeTextures(IDeviceContextHolder contextHolder) {
-            _texturesProvider = new Kn5OverrideableTexturesProvider(_lodA) { LiveReload = LiveReload };
+            _texturesProvider = new Kn5OverrideableTexturesProvider(_lodA) {
+                LiveReload = LiveReload,
+                MagickOverride = MagickOverride
+            };
+
             if (CurrentSkin != null) {
                 _texturesProvider.SetOverridesDirectory(contextHolder, Path.Combine(_skinsDirectory, CurrentSkin));
             }
@@ -239,6 +243,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _liveReload = value;
                 if (_texturesProvider != null) {
                     _texturesProvider.LiveReload = value;
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _magickOverride;
+
+        public bool MagickOverride {
+            get { return _magickOverride; }
+            set {
+                if (Equals(value, _magickOverride)) return;
+                _magickOverride = value;
+                if (_texturesProvider != null) {
+                    _texturesProvider.MagickOverride = value;
                 }
                 OnPropertyChanged();
             }

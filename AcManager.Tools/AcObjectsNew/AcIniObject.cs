@@ -7,6 +7,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcIniObject : AcCommonObject {
@@ -38,6 +39,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private IniFile _iniObject;
 
+        [CanBeNull]
         public IniFile IniObject {
             get { return _iniObject; }
             private set {
@@ -64,17 +66,19 @@ namespace AcManager.Tools.AcObjectsNew {
                 text = FileUtils.ReadAllText(IniFilename);
             } catch (FileNotFoundException) {
                 AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(IniFilename));
+                ResetData();
                 return;
             } catch (DirectoryNotFoundException) {
                 AddError(AcErrorType.Data_IniIsMissing, Path.GetFileName(IniFilename));
+                ResetData();
                 return;
             }
 
             try {
                 IniObject = IniFile.Parse(text, IniFileMode);
             } catch (Exception) {
-                IniObject = null;
                 AddError(AcErrorType.Data_IniIsDamaged, Path.GetFileName(IniFilename));
+                ResetData();
                 return;
             }
 
@@ -85,12 +89,17 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
+        protected virtual void ResetData() {
+            IniObject = null;
+            LoadData(IniFile.Empty);
+        }
+
         protected abstract void LoadData(IniFile ini);
 
         public abstract void SaveData(IniFile ini);
 
         public override void Save() {
-            var ini = IniObject;
+            var ini = IniObject ?? IniFile.Empty;
             SaveData(ini);
 
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {

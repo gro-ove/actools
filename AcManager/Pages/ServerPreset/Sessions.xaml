@@ -15,7 +15,7 @@
     </UserControl.Resources>
 
     <StackPanel Style="{StaticResource SettingsPanel}">
-        <CheckBox IsChecked="{Binding SelectedObject.PickupMode}">
+        <CheckBox IsChecked="{Binding SelectedObject.PickupMode}" IsEnabled="{Binding SelectedObject.IsPickupModeAvailable}">
             <Label Content="Pickup mode" />
         </CheckBox>
 
@@ -33,7 +33,7 @@
         <ItemsControl ItemsSource="{Binding SelectedObject.Sessions}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <mui:SpacingUniformGrid Rows="2" HorizontalSpacing="20" VerticalSpacing="8" />
+                    <mui:SpacingUniformGrid Columns="2" Rows="2" HorizontalSpacing="20" VerticalSpacing="8" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
@@ -41,7 +41,7 @@
                     <ContentControl Content="{Binding}" Background="Transparent">
                         <ContentControl.Resources>
                             <DataTemplate DataType="{x:Type t:ServerSessionEntry}">
-                                <StackPanel Style="{StaticResource SettingsPanel}">
+                                <StackPanel Style="{StaticResource SettingsPanel}" Margin="0" IsEnabled="{Binding IsAvailable}">
                                     <CheckBox IsChecked="{Binding IsEnabled}">
                                         <Label Content="{Binding DisplayName}" />
                                     </CheckBox>
@@ -66,7 +66,7 @@
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type t:ServerRaceSessionEntry}">
-                                <StackPanel Style="{StaticResource SettingsPanel}">
+                                <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
                                     <CheckBox IsChecked="{Binding IsEnabled}">
                                         <Label Content="{Binding DisplayName}" />
                                     </CheckBox>
@@ -91,7 +91,7 @@
                                     </DockPanel>
 
                                     <DockPanel>
-                                        <Label Content="Jump type:" />
+                                        <Label Content="Join type:" />
                                         <ComboBox ItemsSource="{x:Static local:SelectedPage.RaceJoinTypes}" SelectedItem="{Binding JoinType}">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>

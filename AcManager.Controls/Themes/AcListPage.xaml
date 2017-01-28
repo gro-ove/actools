@@ -61,7 +61,7 @@
                             <DockPanel Grid.Row="1">
                                 <mui:ModernButton x:Name="AddCarButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                                         ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
-                                        Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                                        Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
                                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
                             </DockPanel>
                         </Grid>

@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Managers {
-    public class UserChampionshipsManager : AcManagerFileSpecific<UserChampionshipObject> {
+    public class UserChampionshipsManager : AcManagerFileSpecific<UserChampionshipObject>, ICreatingManager {
         private static UserChampionshipsManager _instance;
 
         public static UserChampionshipsManager Instance => _instance ?? (_instance = new UserChampionshipsManager());
@@ -275,43 +275,46 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public void AddNew() {
-            try {
-                var newId = Guid.NewGuid() + UserChampionshipObject.FileExtension;
-                var filename = Path.Combine(Directories.EnabledDirectory, newId);
-                var defaultFilename = Path.Combine(AcRootDirectory.Instance.RequireValue, "launcher", "themes", "default", "modules", "champs", "default.json");
+        public IAcObjectNew AddNew(string id = null) {
+            var newId = Guid.NewGuid() + UserChampionshipObject.FileExtension;
+            var filename = Path.Combine(Directories.EnabledDirectory, newId);
 
-                var data = File.Exists(defaultFilename) ? File.ReadAllText(defaultFilename) : @"{
+            if (File.Exists(filename)) {
+                throw new InformativeException("Can’t add a new object", "This ID is already taken.");
+            }
+
+            var defaultFilename = Path.Combine(AcRootDirectory.Instance.RequireValue, @"launcher", @"themes", @"default", @"modules", @"champs", @"default.json");
+
+            var data = File.Exists(defaultFilename) ? File.ReadAllText(defaultFilename) : @"{
 ""name"":""My championship"",
 ""rules"":{""practice"":30,""qualifying"":60,""points"":[10,8,6,3,2,1],""penalties"":true,""jumpstart"":1},
 ""opponents"":[{""name"":""PLAYER"",""skin"":""red_white"",""car"":""abarth500""}],
 ""rounds"":[{""track"":""magione"",""laps"":10,""weather"":4,""surface"":3}],
 ""maxCars"":18}";
 
-                var parsed = JObject.Parse(data);
-                var name = parsed.GetStringValueOnly("name");
-                if (EnabledOnly.Any(x => x.Name == name)) {
-                    for (var i = 1; i < 999; i++) {
-                        var candidate = $@"{name} ({i})";
-                        if (EnabledOnly.All(x => x.Name != candidate)) {
-                            name = candidate;
-                            break;
-                        }
+            var parsed = JObject.Parse(data);
+            var name = parsed.GetStringValueOnly("name");
+            if (EnabledOnly.Any(x => x.Name == name)) {
+                for (var i = 1; i < 999; i++) {
+                    var candidate = $@"{name} ({i})";
+                    if (EnabledOnly.All(x => x.Name != candidate)) {
+                        name = candidate;
+                        break;
                     }
-
-                    parsed[@"name"] = name;
-                    data = parsed.ToString(Formatting.Indented);
                 }
 
+                parsed[@"name"] = name;
+                data = parsed.ToString(Formatting.Indented);
+            }
+
+            using (IgnoreChanges()) {
                 File.WriteAllText(filename, data);
 
-                using (IgnoreChanges()) {
-                    var obj = CreateAndLoadAcObject(newId, true);
-                    InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                    UpdateList();
-                }
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t add a new object", e);
+                var obj = CreateAndLoadAcObject(newId, true);
+                InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                UpdateList();
+
+                return obj;
             }
         }
 

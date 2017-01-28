@@ -100,7 +100,8 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.LiveReload}" ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}">
+            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}" ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}"
+                    IsEnabled="{Binding MagickNetEnabled}">
                 <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
             </CheckBox>
 
