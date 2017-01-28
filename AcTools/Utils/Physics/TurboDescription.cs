@@ -11,13 +11,22 @@ namespace AcTools.Utils.Physics {
         [CanBeNull]
         public IReadOnlyList<TurboControllerDescription> Controllers;
 
+        private double GetBoost(double rpm) {
+            if (Controllers == null) return MaxBoost;
+
+            var boost = 0d;
+            for (var i = Controllers.Count - 1; i >= 0; i--) {
+                var controller = Controllers[i];
+                boost = controller.Process(rpm, boost);
+            }
+            return boost;
+        }
+
         [Pure]
         public double CalculateMultipler(double rpm) {
             var baseLevel = Math.Min(1, Math.Pow(rpm / ReferenceRpm, Gamma));
-            var boost = Controllers?.Aggregate<TurboControllerDescription, double>(
-                    0, /* zero, because apparently AC resets boost to zero if controllers file exists */
-                    (current, t) => t.Process(rpm, current)) ?? MaxBoost;
-            return Math.Min(Wastegate, boost * baseLevel);
+            var result = GetBoost(rpm) * baseLevel;
+            return Equals(Wastegate, 0d) ? Math.Min(Wastegate, result) : result;
         }
 
         [Pure, NotNull]
