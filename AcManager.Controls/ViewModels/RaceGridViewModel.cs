@@ -534,16 +534,20 @@ namespace AcManager.Controls.ViewModels {
             foreach (var entry in FilesStorage.Instance.GetContentDirectory(ContentCategory.GridTypes)) {
                 CandidatesGridMode.SetNamespace(entry.Name);
 
-                var list = JsonConvert.DeserializeObject<List<CandidatesGridMode>>(FileUtils.ReadAllText(entry.Filename));
-                if (list.Any() && !dataAdded) {
-                    items.Add(new Separator());
-                    dataAdded = true;
-                }
+                try {
+                    var list = JsonConvert.DeserializeObject<List<CandidatesGridMode>>(FileUtils.ReadAllText(entry.Filename));
+                    if (list.Any() && !dataAdded) {
+                        items.Add(new Separator());
+                        dataAdded = true;
+                    }
 
-                if (entry.Name == "GridTypes") {
-                    items.AddRange(list);
-                } else {
-                    items.Add(new HierarchicalGroup(entry.Name, list));
+                    if (entry.Name == "GridTypes") {
+                        items.AddRange(list);
+                    } else {
+                        items.Add(new HierarchicalGroup(entry.Name, list));
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify($"Can’t add modes from “{Path.GetFileName(entry.Filename)}”", e);
                 }
             }
 

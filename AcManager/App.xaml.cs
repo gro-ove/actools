@@ -230,10 +230,8 @@ namespace AcManager {
             BbCodeBlock.OptionEmojiProvider = InternalUtils.GetEmojiProvider();
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
-
-            AppArguments.Set(AppFlag.LoadImagesInBackground, ref BetterImage.OptionBackgroundLoading);
+            
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
-            AppArguments.SetSize(AppFlag.ImagesCacheLimitPerImage, ref BetterImage.OptionCacheLimitSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;

@@ -427,7 +427,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Save (handles all exceptions inside).
+        /// Safe (handles all exceptions inside).
+        /// </summary>
+        [CanBeNull]
+        private static byte[] ReadBytes([CanBeNull] string filename) {
+            if (filename == null) return null;
+
+            try {
+#if ZIP_SUPPORT
+                // Loading from ZIP file
+                string zipFilename, entryName;
+                if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
+                    using (var zip = ZipFile.OpenRead(zipFilename)) {
+                        var entry = zip.Entries.First(x => x.Name == entryName);
+                        using (var s = entry.Open())
+                        using (var m = new MemoryStream((int)entry.Length)) {
+                            s.CopyTo(m);
+                            return m.ToArray();
+                        }
+                    }
+                }
+#endif
+
+                // Loading from application resources (I think, there is an issue here)
+                if (filename.StartsWith(@"/")) {
+                    var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
+                    if (stream != null) {
+                        using (stream) {
+                            var result = new byte[stream.Length];
+                            stream.Read(result, 0, (int)stream.Length);
+                            return result;
+                        }
+                    }
+                }
+
+                // Regular loading
+                return File.ReadAllBytes(filename);
+            } catch (FileNotFoundException) {
+                return null;
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Safe (handles all exceptions inside).
         /// </summary>
         [ItemCanBeNull]
         private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default(CancellationToken)) {
@@ -864,10 +909,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             byte[] data;
             if (OptionReadFileSync) {
+                data = ReadBytes(filename);
+            } else {
                 data = await ReadBytesAsync(filename);
                 if (loading != _loading || Filename != filename) return;
-            } else {
-                data = File.ReadAllBytes(filename);
             }
 
             if (data == null) {
