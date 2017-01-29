@@ -9,6 +9,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Miscellaneous {
     /// <summary>
@@ -56,7 +57,7 @@ namespace AcManager.Pages.Miscellaneous {
 
             public AsyncCommand RebuildOverallCommand => _rebuildOverallCommand ?? (_rebuildOverallCommand = new AsyncCommand(async () => {
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Rebuilding…");
+                    waiting.Report("Recalculating…");
                     await PlayerStatsManager.Instance.RebuildOverall();
                 }
             }));
@@ -88,7 +89,7 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         private void NewSessionAdded(object sender, PlayerStatsManager.SessionStatsEventArgs e) {
-            if (_filter != null) {
+            if (_filter != null && PlayerStatsManager.FilterTest(_filter, e.Stats)) {
                 Model.Stats.Extend(e.Stats);
             }
         }

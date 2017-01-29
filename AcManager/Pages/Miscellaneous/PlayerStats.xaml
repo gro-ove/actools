@@ -18,10 +18,10 @@
 
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Margin="20 20 20 0">
-            <Button DockPanel.Dock="Right" Command="{Binding RebuildOverallCommand}" Content="Rebuild Stats" Margin="4 0 0 0" />
+            <Button DockPanel.Dock="Right" Command="{Binding RebuildOverallCommand}" Content="Recalculate" Margin="4 0 0 0" />
             <mui:Cell>
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, might not work properly.</mui:BbCodeBlock>
+                <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, might not work properly. Please, press Recalculate button if numbers will get weird.</mui:BbCodeBlock>
             </mui:Cell>
         </DockPanel>
 

@@ -7,6 +7,7 @@ using AcManager.Tools.SharedMemory;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SlimDX;
 
@@ -135,6 +136,7 @@ namespace AcManager.Tools.Profile {
                 return s.ToString();
             }
 
+            [NotNull]
             public static SessionStats Deserialize(string data) {
                 try {
                     using (var textReader = new StringReader(data)) {
@@ -249,6 +251,16 @@ namespace AcManager.Tools.Profile {
                     return JsonConvert.DeserializeObject<SessionStats>(data);
                 }
             }
+
+            [CanBeNull]
+            public static SessionStats TryDeserialize(string data) {
+                try {
+                    return Deserialize(data);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                    return null;
+                }
+            }
         }
 
         /// <summary>
@@ -343,10 +355,10 @@ namespace AcManager.Tools.Profile {
                 var graphics = current.Graphics;
                 var info = current.StaticInfo;
 
-                if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
+                /*if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
                     CurrentStatus = Status.NotLive;
                     return;
-                }
+                }*/
 
                 if (CarId == null) {
                     CarId = info.CarModel;

@@ -42,8 +42,11 @@
                 <mui:BbCodeBlock Margin="0 8 0 40" BbCode="{x:Static g:AppStrings.About_ContactInformation}" />
 
                 <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ThanksForTranslationHeader}" />
-                <mui:SelectableBbCodeBlock Margin="0 8 0 0"
+                <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}"
                         BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Shijie Zhang (St3fan), Stanislav Minakov." />
+
+                <TextBlock Style="{StaticResource Heading2}" Text="Special thanks for ideas and testing to:" />
+                <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}" BbCode="MadMax, MicaLovesKPOP, Peter Boese." />
             </StackPanel>
         </ScrollViewer>
 

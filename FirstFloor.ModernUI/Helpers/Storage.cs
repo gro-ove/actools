@@ -380,7 +380,7 @@ namespace FirstFloor.ModernUI.Helpers {
     }
 
     [Localizable(false)]
-    public class Storage : NotifyPropertyChanged, IStorage {
+    public class Storage : NotifyPropertyChanged, IStorage, IDisposable {
         private readonly Dictionary<string, string> _storage;
         private readonly string _filename;
         private readonly string _encryptionKey;
@@ -401,12 +401,17 @@ namespace FirstFloor.ModernUI.Helpers {
             _useDeflate = useDeflate;
 
             Load();
+            Exit += OnExit;
+        }
 
-            ExitEvent += (sender, args) => {
-                if (_dirty) {
-                    Save();
-                }
-            };
+        private void OnExit(object sender, EventArgs e) {
+            if (_dirty) {
+                Save();
+            }
+        }
+
+        public void Dispose() {
+            Exit -= OnExit;
         }
 
         public int Count => _storage.Count;
@@ -634,10 +639,10 @@ namespace FirstFloor.ModernUI.Helpers {
             PreviosSaveTime = sw.Elapsed;
         }
 
-        private static event EventHandler ExitEvent;
+        public static event EventHandler Exit;
 
         public static void SaveBeforeExit() {
-            ExitEvent?.Invoke(null, EventArgs.Empty);
+            Exit?.Invoke(null, EventArgs.Empty);
         }
 
         private bool _dirty;
@@ -657,27 +662,34 @@ namespace FirstFloor.ModernUI.Helpers {
         [Pure]
         public string GetString([LocalizationRequired(false)] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            string value;
-            return _storage.TryGetValue(key, out value) ? value : defaultValue;
+            lock (_storage) {
+                string value;
+                return _storage.TryGetValue(key, out value) ? value : defaultValue;
+            }
         }
 
         public IEnumerable<string> GetStringList(string key, IEnumerable<string> defaultValue = null) {
             string value;
-            if (_storage.TryGetValue(key, out value) && !string.IsNullOrEmpty(value)) {
-                var s = value.Split('\n');
-                for (var i = s.Length - 1; i >= 0; i--) {
-                    s[i] = Decode(s[i]);
+
+            lock (_storage) {
+                if (!_storage.TryGetValue(key, out value) || string.IsNullOrEmpty(value)) {
+                    return defaultValue ?? new string[] { };
                 }
-                return s;
             }
 
-            return defaultValue ?? new string[] { };
+            var s = value.Split('\n');
+            for (var i = s.Length - 1; i >= 0; i--) {
+                s[i] = Decode(s[i]);
+            }
+            return s;
         }
 
         [Pure]
         public bool Contains([ LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return _storage.ContainsKey(key);
+            lock (_storage) {
+                return _storage.ContainsKey(key);
+            }
         }
 
         public void SetString([LocalizationRequired(false)] string key, string value) {
@@ -713,7 +725,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public string GetEncryptedString([LocalizationRequired(false)] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (_encryptionKey == null || !_storage.ContainsKey(key)) return defaultValue;
+
+            if (_encryptionKey == null || !Contains(key)) return defaultValue;
             var result = StringCipher.Decrypt(GetString(key, defaultValue), key + _encryptionKey);
             return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : defaultValue;
         }
@@ -744,16 +757,34 @@ namespace FirstFloor.ModernUI.Helpers {
                 foreach (var key in keys.Where(predicate)) {
                     _storage.Remove(key);
                 }
-
-                Dirty();
-                OnPropertyChanged(nameof(Count));
             }
+
+            Dirty();
+            ActionExtension.InvokeInMainThread(() => {
+                OnPropertyChanged(nameof(Count));
+            });
+        }
+
+        public void CopyFrom(Storage source) {
+            lock (_storage) {
+                _storage.Clear();
+                foreach (var pair in source) {
+                    _storage[pair.Key] = pair.Value;
+                }
+            }
+
+            Dirty();
+            ActionExtension.InvokeInMainThread(() => {
+                OnPropertyChanged(nameof(Count));
+            });
         }
 
         public IEnumerable<string> Keys => _storage.Keys;
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator() {
-            return _storage.GetEnumerator();
+            lock (_storage) {
+                return _storage.GetEnumerator();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator() {

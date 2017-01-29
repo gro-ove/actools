@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers.Online {
                         Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
                     }
 
-                    await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).Select(async x => {
+                    await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).ToList().Select(async x => {
                         // ReSharper disable once AccessToDisposedClosure
                         if (linked.IsCancellationRequested) return;
 
