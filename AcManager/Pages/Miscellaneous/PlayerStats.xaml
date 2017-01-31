@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:m="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" d:DataContext="{d:DesignInstance m:PlayerStats+ViewModel}">
+        SizeChanged="OnSizeChanged" d:DataContext="{d:DesignInstance m:PlayerStats+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,13 +17,12 @@
     </UserControl.Resources>
 
     <DockPanel>
-        <DockPanel DockPanel.Dock="Top" Margin="20 20 20 0">
+        <c:MessageBlock DockPanel.Dock="Top" Margin="20 20 20 0" Visibility="{Binding Filter, Converter={StaticResource NullToVisibilityConverter}}">
             <Button DockPanel.Dock="Right" Command="{Binding RebuildOverallCommand}" Content="Recalculate" Margin="4 0 0 0" />
-            <mui:Cell>
-                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, might not work properly. Please, press Recalculate button if numbers will get weird.</mui:BbCodeBlock>
-            </mui:Cell>
-        </DockPanel>
+            <mui:BbCodeBlock TextWrapping="Wrap" VerticalAlignment="Center">
+                <mui:BbCodeBlock.BbCode>Still WIP, might not work properly. Please, press Recalculate button if numbers will get weird.</mui:BbCodeBlock.BbCode>
+            </mui:BbCodeBlock>
+        </c:MessageBlock>
 
         <mui:Switch Value="{Binding Stats.SessionsCount}">
             <TextBlock mui:Switch.When="0" Text="Sessions not found." Style="{StaticResource Heading1}" Margin="20" />

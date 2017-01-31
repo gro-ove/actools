@@ -13,16 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class WeatherListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new WeatherListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(WeatherObjectTester.Instance, filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(WeatherObjectTester.Instance, filter));
             InitializeComponent();
         }
 
-        private void WeatherListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((WeatherListPageViewModel)DataContext).Unload();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private class WeatherListPageViewModel : AcListPageViewModel<WeatherObject> {
-            public WeatherListPageViewModel(IFilter<WeatherObject> listFilter)
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
+        }
+
+        private class ViewModel : AcListPageViewModel<WeatherObject> {
+            public ViewModel(IFilter<WeatherObject> listFilter)
                 : base(WeatherManager.Instance, listFilter) {
             }
 

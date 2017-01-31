@@ -586,6 +586,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #if DEBUG_ENDINIT_CRASHES
                 ++_fails;
                 Logging.Warning($"Recover attempt: {attempt} (s. rate: {100d * _successes / (_successes + _fails):F1}%)");
+#else
+                if (attempt > 1) {
+                    Logging.Warning($"Recover attempt: {attempt}");
+                }
 #endif
 
                 return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);

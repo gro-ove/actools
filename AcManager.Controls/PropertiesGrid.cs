@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -239,7 +240,7 @@ namespace AcManager.Controls {
             var totalSpacingX = _spacing * (_columns - 1);
             var totalSpacingY = _spacing * (_rows - 1);
 
-            var childConstraint = new Size(constraint.Width / _columns - totalSpacingX - _labelWidth, constraint.Height / _rows - totalSpacingY);
+            var childConstraint = new Size(Math.Max(constraint.Width / _columns - totalSpacingX - _labelWidth, 0d), Math.Max(constraint.Height / _rows - totalSpacingY, 0d));
             var maxChildDesiredWidth = 0.0;
             var maxChildDesiredHeight = 0.0;
             
@@ -269,13 +270,13 @@ namespace AcManager.Controls {
             var totalSpacingY = _spacing * (_rows - 1);
 
             _xStep = (arrangeSize.Width - totalSpacingX) / _columns;
-            _yStep = (arrangeSize.Height - totalSpacingY) / _rows;
+            _yStep = Math.Max((arrangeSize.Height - totalSpacingY) / _rows, 0d);
             _labelTextOffset = (_yStep + _labelPadding.Top - _labelPadding.Bottom) / 2;
 
             var xBound = arrangeSize.Width - 1.0;
 
             // TODO: fix me
-            var childBounds = new Rect(_labelWidth, 0, _xStep - _labelWidth, _yStep);
+            var childBounds = new Rect(_labelWidth, 0, Math.Max(_xStep - _labelWidth, 0d), _yStep);
 
             _xStep += _spacing;
             _yStep += _spacing;

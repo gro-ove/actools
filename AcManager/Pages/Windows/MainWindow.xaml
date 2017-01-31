@@ -40,9 +40,16 @@
 
         <!--lap times-->
         <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
+        <mui:LinkGroupFilterable x:Name="LapTimesGrid"  GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
                 Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
+            <mui:LinkGroupFilterable.FixedLinks>
+                <mui:Link DisplayName="Kunos Cars Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
+                <mui:Link DisplayName="Kunos Cars &amp; Tracks Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
+                <mui:Link DisplayName="Mods Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
+            </mui:LinkGroupFilterable.FixedLinks>
+        </mui:LinkGroupFilterable>
+        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
@@ -66,8 +73,7 @@
         </mui:LinkGroup>
 
         <!--server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
-        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}"
-                Source="/Pages/Lists/ServerPresetsListPage.xaml" />
+        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
         <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
                 Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />
 

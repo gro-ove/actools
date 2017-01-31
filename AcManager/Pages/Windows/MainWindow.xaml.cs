@@ -126,6 +126,10 @@ namespace AcManager.Pages.Windows {
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
 
             Activated += OnActivated;
+
+#if DEBUG
+            LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Table.xaml", UriKind.Relative);
+#endif
         }
 
         private void OnActivated(object sender, EventArgs e) {

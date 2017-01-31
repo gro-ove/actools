@@ -1,5 +1,5 @@
-﻿<ac:AcListPage x:Class="AcManager.Pages.Lists.UserChampionshipsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<c:AcListPage x:Class="AcManager.Pages.Lists.UserChampionshipsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:li="clr-namespace:AcManager.Pages.Lists" mc:Ignorable="d" FocusVisualStyle="{x:Null}" Unloaded="OnUnloaded" Style="{StaticResource ContentRoot}"
-        d:DataContext="{d:DesignInstance li:UserChampionshipsListPage+ViewModel}" ItemsSource="{Binding MainList}" AddNewCommand="{Binding AddNewCommand}" />
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:li="clr-namespace:AcManager.Pages.Lists" xmlns:c="http://acstuff.ru/app/controls"
+        mc:Ignorable="d" Unloaded="OnUnloaded" Style="{StaticResource ContentRoot}" d:DataContext="{d:DesignInstance li:UserChampionshipsListPage+ViewModel}"
+        ItemsSource="{Binding MainList}" AddNewCommand="{Binding AddNewCommand}" SaveScrollKey="UserChampionshipsListPage.Scroll" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
@@ -8,9 +10,13 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
+using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
@@ -92,7 +98,7 @@ namespace AcManager.Tools.SemiGui {
 
             var online = properties.ModeProperties as Game.OnlineProperties;
             if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
-                var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);
+                var filter = Filter.Create(new GameWrapper.StringTester(), SettingsHolder.Live.SrsAutoMask, true);
                 if (filter.Test(online.ServerName)) {
                     Logging.Write("Looks like this is a SRS server, let’s use SRS name");
                     properties.SetAdditional(new SrsMark {
@@ -128,6 +134,10 @@ namespace AcManager.Tools.SemiGui {
 
             if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDisableAppAutomatically) {
                 PrepareRaceModeRsr(properties);
+            }
+
+            if (SettingsHolder.Drive.SidekickIntegration && properties.BasicProperties?.CarId != null) {
+                SidekickHelper.UpdateSidekickDatabase(properties.BasicProperties.CarId);
             }
 
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
@@ -190,7 +200,7 @@ namespace AcManager.Tools.SemiGui {
                             properties.SetKeyboardListener = true;
                         }
 
-                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), cancellationToken);
+                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new GameWrapper.ProgressHandler(ui), cancellationToken);
                     }
 
                     Logging.Write($"Result: {result?.GetDescription() ?? @"<NULL>"}");

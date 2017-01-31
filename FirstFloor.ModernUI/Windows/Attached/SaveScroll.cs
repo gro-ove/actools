@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
@@ -24,23 +25,22 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 var newValue = (string)e.NewValue;
                 if (newValue != null) {
                     if (e.OldValue == null) {
-                        scrollViewer.ScrollChanged += Element_ScrollChanged;
+                        scrollViewer.ScrollChanged += OnScroll;
+                        scrollViewer.ScrollChanged += OnViewportResize;
                     }
 
                     if (scrollViewer.IsLoaded) {
-                        var k = GetProperKey(scrollViewer);
-                        if (k != null) {
-                            scrollViewer.ScrollToVerticalOffset(ValuesStorage.GetDouble(k));
-                        }
+                        LoadScroll(scrollViewer);
                     } else {
-                        scrollViewer.Loaded += ScrollViewer_Loaded;
+                        scrollViewer.Loaded += OnLoaded;
                     }
                 } else {
                     if (e.OldValue == null) {
-                        scrollViewer.ScrollChanged -= Element_ScrollChanged;
+                        scrollViewer.ScrollChanged -= OnScroll;
+                        scrollViewer.ScrollChanged -= OnViewportResize;
                     }
 
-                    scrollViewer.Loaded -= ScrollViewer_Loaded;
+                    scrollViewer.Loaded -= OnLoaded;
                 }
             }
         }
@@ -83,21 +83,37 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return r == null ? null : @".scroll:" + r;
         }
 
-        private static void ScrollViewer_Loaded(object sender, RoutedEventArgs e) {
-            var c = (ScrollViewer)sender;
-            c.Loaded -= ScrollViewer_Loaded;
+        private static DateTime _lastScrolled;
 
-            var k = GetProperKey(sender);
+        private static void LoadScroll(ScrollViewer viewer) {
+            var k = GetProperKey(viewer);
             if (k != null) {
-                c.ScrollToVerticalOffset(ValuesStorage.GetDouble(k));
+                _lastScrolled = DateTime.Now;
+                viewer.ScrollToVerticalOffset(ValuesStorage.GetDouble(k));
             }
         }
 
-        private static void Element_ScrollChanged(object sender, ScrollChangedEventArgs e) {
+        private static void OnLoaded(object sender, RoutedEventArgs e) {
+            var c = (ScrollViewer)sender;
+            c.Loaded -= OnLoaded;
+            LoadScroll(c);
+        }
+
+        private static void OnScroll(object sender, ScrollChangedEventArgs e) {
             var c = (ScrollViewer)sender;
             var k = GetProperKey(sender);
-            if (k != null) {
-                ValuesStorage.Set(k, c.VerticalOffset);
+            if ((DateTime.Now - _lastScrolled).TotalSeconds > 0.5) {
+                c.ScrollChanged -= OnViewportResize;
+                if (k != null) {
+                    ValuesStorage.Set(k, c.VerticalOffset);
+                }
+            }
+        }
+
+        private static void OnViewportResize(object sender, ScrollChangedEventArgs e) {
+            if (Equals(e.ViewportHeightChange, 0d)) {
+                var c = (ScrollViewer)sender;
+                LoadScroll(c);
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcJsonObjectPage : SelectedAcObjectPage {
@@ -19,10 +20,15 @@ namespace AcManager.Pages.Selected {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
 
-                new ModernPopup {
-                    Content = new PopupAuthor((ISelectedAcObjectViewModel)DataContext),
-                    PlacementTarget = sender as UIElement
-                }.IsOpen = true;
+                if (Keyboard.Modifiers != ModifierKeys.Control) {
+                    new ModernPopup {
+                        Content = new PopupAuthor((ISelectedAcObjectViewModel)DataContext),
+                        PlacementTarget = sender as UIElement,
+                        StaysOpen = false
+                    }.IsOpen = true;
+                } else if (SelectedAcJsonObject.Url != null) {
+                    WindowsHelper.ViewInBrowser(SelectedAcJsonObject.Url);
+                }
             }
         }
 

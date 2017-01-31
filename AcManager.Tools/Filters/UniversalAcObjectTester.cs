@@ -1,12 +1,8 @@
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
-    /// <summary>
-    /// Kind of obsolete.
-    /// </summary>
     public class UniversalAcObjectTester : ITester<AcObjectNew> {
         public static readonly UniversalAcObjectTester Instance = new UniversalAcObjectTester();
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,12 +19,19 @@ using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
+using AcManager.Tools.SharedMemory;
+using AcTools;
 using AcTools.AcdFile;
+using AcTools.LapTimes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Utils.Physics;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -33,22 +42,100 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage_New : ILoadableContent, IParametrizedUriContent, IImmediateContent {
+        public static bool OptionExtendedMode;
+
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
-            public ViewModel([NotNull] CarObject acObject) : base(acObject) {}
+            private double? _totalDrivenDistance;
+
+            public double? TotalDrivenDistance {
+                get { return _totalDrivenDistance; }
+                set {
+                    if (Equals(value, _totalDrivenDistance)) return;
+                    _totalDrivenDistance = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public ViewModel([NotNull] CarObject acObject) : base(acObject) {
+                TotalDrivenDistance = SelectedObject.TotalDrivenDistance / 1e3;
+                InitializeLater().Forget();
+            }
+
+            public async Task InitializeLater() {
+                SoundDonorId = await SelectedObject.GetSoundOrigin();
+
+                await Task.Delay(500);
+                await LapTimesManager.Instance.UpdateAsync();
+                UpdateLapTimes();
+            }
+
+            private void UpdateLapTimes() {
+                LapTimes = new BetterObservableCollection<LapTimeWrapped>(
+                        LapTimesManager.Instance.Entries.Where(x => x.CarId == SelectedObject.Id)
+                                       .OrderBy(x => PlayerStatsManager.Instance.GetDistanceDrivenAtTrackAcId(x.TrackAcId))
+                                       .Take(10)
+                                       .Select(x => new LapTimeWrapped(x)));
+            }
+
+            private BetterObservableCollection<LapTimeWrapped> _lapTimes;
+
+            public BetterObservableCollection<LapTimeWrapped> LapTimes {
+                get { return _lapTimes; }
+                set {
+                    if (Equals(value, _lapTimes)) return;
+                    _lapTimes = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _soundDonorId;
+
+            [CanBeNull]
+            public string SoundDonorId {
+                get { return _soundDonorId; }
+                set {
+                    if (Equals(value, _soundDonorId)) return;
+                    _soundDonorId = value;
+                    OnPropertyChanged();
+
+                    _soundDonor = new Lazy<CarObject>(() => SoundDonorId == null ? null : CarsManager.Instance.GetById(SoundDonorId));
+                    OnPropertyChanged(nameof(SoundDonor));
+                }
+            }
+
+            public CarObject SoundDonor => _soundDonor?.Value;
+            private Lazy<CarObject> _soundDonor;
 
             public override void Load() {
                 base.Load();
-                SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
+                SelectedObject.PropertyChanged += OnObjectPropertyChanged;
+                LapTimesManager.Instance.NewEntryAdded += OnNewLapTimeAdded;
             }
 
             public override void Unload() {
                 base.Unload();
-                SelectedObject.PropertyChanged -= SelectedObject_PropertyChanged;
+                SelectedObject.PropertyChanged -= OnObjectPropertyChanged;
+                LapTimesManager.Instance.NewEntryAdded -= OnNewLapTimeAdded;
                 _helper.Dispose();
+                ShowroomPresets = QuickDrivePresets = UpdatePreviewsPresets = null;
             }
 
-            private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnNewLapTimeAdded(object sender, EventArgs e) {
+                Logging.Here();
+                UpdateLapTimes();
+            }
+
+            private void OnObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
+                    case nameof(CarObject.TotalDrivenDistance):
+                        TotalDrivenDistance = SelectedObject.TotalDrivenDistance / 1e3;
+                        break;
+                    case nameof(CarObject.SpecsBhp):
+                    case nameof(CarObject.SpecsWeight):
+                        if (RecalculatePwRatioAutomatically) {
+                            RecalculatePwRatioCommand.Execute();
+                        }
+                        break;
                     case nameof(AcCommonObject.Year):
                         InnerFilterCommand?.RaiseCanExecuteChanged();
                         break;
@@ -71,11 +158,11 @@ namespace AcManager.Pages.Selected {
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "class":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? @"class-" : $"class:{Filter.Encode(SelectedObject.CarClass)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? @"class-" : $@"class:{Filter.Encode(SelectedObject.CarClass)}");
                         break;
 
                     case "brand":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? @"brand-" : $"brand:{Filter.Encode(SelectedObject.Brand)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? @"brand-" : $@"brand:{Filter.Encode(SelectedObject.Brand)}");
                         break;
 
                     case "power":
@@ -100,6 +187,10 @@ namespace AcManager.Pages.Selected {
 
                     case "acceleration":
                         FilterRange("acceleration", SelectedObject.SpecsAcceleration, roundTo: 0.1);
+                        break;
+
+                    case "driven":
+                        FilterDistance("driven", SelectedObject.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
                         break;
                 }
 
@@ -290,71 +381,309 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _replaceSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async () => {
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() => {
                 var donor = SelectCarDialog.Show();
-                if (donor == null) return;
-
-                if (string.Equals(donor.Id, SelectedObject.Id, StringComparison.OrdinalIgnoreCase)) {
-                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, "Source and destination are the same.");
-                    return;
-                }
-
-                try {
-                    using (var waiting = new WaitingDialog()) {
-                        waiting.Report();
-
-                        var guids = Path.Combine(donor.Location, @"sfx", @"GUIDs.txt");
-                        var soundbank = Path.Combine(donor.Location, @"sfx", $"{donor.Id}.bank");
-
-                        var newGuilds = Path.Combine(SelectedObject.Location, @"sfx", @"GUIDs.txt");
-                        var newSoundbank = Path.Combine(SelectedObject.Location, @"sfx", $"{SelectedObject.Id}.bank");
-
-                        await Task.Run(() => {
-                            var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
-                                Original = x,
-                                Backup = FileUtils.EnsureUnique($"{x}.bak")
-                            }).ToList();
-
-                            foreach (var oldFile in destinations) {
-                                File.Move(oldFile.Original, oldFile.Backup);
-                            }
-
-                            try {
-                                if (File.Exists(guids) && File.Exists(soundbank)) {
-                                    File.Copy(soundbank, newSoundbank);
-                                    File.WriteAllText(newGuilds, File.ReadAllText(guids).Replace(donor.Id, SelectedObject.Id));
-                                } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
-                                    File.Copy(soundbank, newSoundbank);
-                                    File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
-                                                                     .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
-                                                                             x.EndsWith(@"} bank:/" + donor.Id))
-                                                                     .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
-                                                                     .JoinToString(Environment.NewLine).Replace(donor.Id, SelectedObject.Id));
-                                } else {
-                                    throw new InformativeException(AppStrings.Car_ReplaceSound_WrongCar, AppStrings.Car_ReplaceSound_WrongCar_Commentary);
-                                }
-                            } catch (Exception) {
-                                foreach (var oldFile in destinations) {
-                                    if (File.Exists(oldFile.Original)) {
-                                        File.Delete(oldFile.Original);
-                                    }
-                                    File.Move(oldFile.Backup, oldFile.Original);
-                                }
-                                throw;
-                            }
-                            
-                            FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
-                        });
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
-                }
+                return donor == null ? Task.Delay(0) : SelectedObject.ReplaceSound(donor);
             }));
 
             private AsyncCommand _replaceTyresCommand;
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
                     (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
+
+            #region Specs editor
+            private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
+            private bool _recalculatePwRatioAutomatically = ValuesStorage.GetBool(KeyRecalculatePwRatioAutomatically, true);
+
+            public bool RecalculatePwRatioAutomatically {
+                get { return _recalculatePwRatioAutomatically; }
+                set {
+                    if (Equals(value, _recalculatePwRatioAutomatically)) return;
+                    _recalculatePwRatioAutomatically = value;
+                    OnPropertyChanged();
+
+                    ValuesStorage.Set(KeyRecalculatePwRatioAutomatically, value);
+                    if (value) {
+                        RecalculatePwRatioCommand.Execute();
+                    }
+                }
+            }
+
+            private DelegateCommand _recalculatePwRatioCommand;
+
+            public DelegateCommand RecalculatePwRatioCommand => _recalculatePwRatioCommand ?? (_recalculatePwRatioCommand = new DelegateCommand(() => {
+                var obj = SelectedObject;
+
+                double power, weight;
+                if (!FlexibleParser.TryParseDouble(obj.SpecsBhp, out power) ||
+                        !FlexibleParser.TryParseDouble(obj.SpecsWeight, out weight)) return;
+
+                var ratio = weight / power;
+                obj.SpecsPwRatio = SpecsFormat(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
+            }));
+
+            private DelegateCommand _recalculateWeightCommand;
+
+            public DelegateCommand RecalculateWeightCommand => _recalculateWeightCommand ?? (_recalculateWeightCommand = new DelegateCommand(() => {
+                var data = SelectedObject.AcdData;
+                var weight = data?.GetIniFile("car.ini")["BASIC"].GetInt("TOTALMASS", 0);
+                if (weight == null || data.IsEmpty || weight < CommonAcConsts.DriverWeight) {
+                    MessageBox.Show("Data is damaged", ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
+                    return;
+                }
+
+                SelectedObject.SpecsWeight = SpecsFormat(AppStrings.CarSpecs_Weight_FormatTooltip,
+                        (weight.Value - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
+            }));
+
+            private static string SpecsFormat(string format, object value) {
+                return format.Replace(@"…", value.ToInvariantString());
+            }
+
+            private DelegateCommand<string> _fixFormatCommand;
+
+            public DelegateCommand<string> FixFormatCommand => _fixFormatCommand ?? (_fixFormatCommand = new DelegateCommand<string>(key => {
+                if (key == null) {
+                    foreach (var k in new[] { @"power", @"torque", @"weight", @"topspeed", @"acceleration", @"pwratio" }) {
+                        FixFormat(k);
+                    }
+                } else {
+                    FixFormat(key);
+                }
+            }, key => key == null || !IsFormatCorrect(key)));
+
+            [NotNull]
+            private static string GetFormat(string key) {
+                switch (key) {
+                    case "power":
+                        return AppStrings.CarSpecs_Power_FormatTooltip;
+                    case "torque":
+                        return AppStrings.CarSpecs_Torque_FormatTooltip;
+                    case "weight":
+                        return AppStrings.CarSpecs_Weight_FormatTooltip;
+                    case "topspeed":
+                        return AppStrings.CarSpecs_MaxSpeed_FormatTooltip;
+                    case "acceleration":
+                        return AppStrings.CarSpecs_Acceleration_FormatTooltip;
+                    case "pwratio":
+                        return AppStrings.CarSpecs_PwRatio_FormatTooltip;
+                    default:
+                        return @"…";
+                }
+            }
+
+            [CanBeNull]
+            private string GetSpecsValue(string key) {
+                switch (key) {
+                    case "power":
+                        return SelectedObject.SpecsBhp;
+                    case "torque":
+                        return SelectedObject.SpecsTorque;
+                    case "weight":
+                        return SelectedObject.SpecsWeight;
+                    case "topspeed":
+                        return SelectedObject.SpecsTopSpeed;
+                    case "acceleration":
+                        return SelectedObject.SpecsAcceleration;
+                    case "pwratio":
+                        return SelectedObject.SpecsPwRatio;
+                    default:
+                        return null;
+                }
+            }
+            
+            private void SetSpecsValue(string key, string value) {
+                switch (key) {
+                    case "power":
+                        SelectedObject.SpecsBhp = value;
+                        return;
+                    case "torque":
+                        SelectedObject.SpecsTorque = value;
+                        return;
+                    case "weight":
+                        SelectedObject.SpecsWeight = value;
+                        return;
+                    case "topspeed":
+                        SelectedObject.SpecsTopSpeed = value;
+                        return;
+                    case "acceleration":
+                        SelectedObject.SpecsAcceleration = value;
+                        return;
+                    case "pwratio":
+                        SelectedObject.SpecsPwRatio = value;
+                        return;
+                    default:
+                        Logging.Warning("Unexpected key: " + key);
+                        return;
+                }
+            }
+
+            private bool IsFormatCorrect(string key) {
+                var format = GetFormat(key);
+                var value = GetSpecsValue(key);
+                return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
+            }
+
+            private static readonly Regex FixAccelerationRegex = new Regex(@"0\s*[-–—]\s*\d\d+", RegexOptions.Compiled);
+
+            private void FixFormat(string key) {
+                var format = GetFormat(key);
+                var value = GetSpecsValue(key);
+                if (value == null) return;
+
+                value = FixAccelerationRegex.Replace(value, "");
+
+                double actualValue;
+                var replacement = FlexibleParser.TryParseDouble(value, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
+                value = SpecsFormat(format, replacement);
+                SetSpecsValue(key, value);
+            }
+
+            private DelegateCommand _scaleCurvesCommand;
+
+            public DelegateCommand ScaleCurvesCommand => _scaleCurvesCommand ?? (_scaleCurvesCommand = new DelegateCommand(() => {
+                var o = SelectedObject;
+
+                var power = FlexibleParser.TryParseDouble(o.SpecsBhp);
+                var torque = FlexibleParser.TryParseDouble(o.SpecsTorque);
+                if (!power.HasValue && !torque.HasValue) {
+                    ModernDialog.ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
+                    return;
+                }
+
+                Lut powerCurve = null, torqueCurve = null;
+
+                if (!torque.HasValue) {
+                    powerCurve = o.SpecsPowerCurve?.ToLut();
+                    if (powerCurve != null) {
+                        powerCurve.ScaleToSelf(power.Value);
+
+                        var temporaryCurve = TorquePhysicUtils.PowerToTorque(powerCurve);
+                        temporaryCurve.UpdateBoundingBox();
+                        torque = temporaryCurve.MaxY;
+                    } else return;
+                } else if (!power.HasValue) {
+                    torqueCurve = o.SpecsTorqueCurve?.ToLut();
+                    if (torqueCurve != null) {
+                        torqueCurve.ScaleToSelf(torque.Value);
+
+                        var temporaryCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
+                        temporaryCurve.UpdateBoundingBox();
+                        power = temporaryCurve.MaxY;
+                    } else return;
+                }
+
+                if (powerCurve == null) {
+                    powerCurve = o.SpecsPowerCurve?.ToLut();
+                    powerCurve?.ScaleToSelf(power.Value);
+                }
+
+                if (torqueCurve == null) {
+                    torqueCurve = o.SpecsTorqueCurve?.ToLut();
+                    torqueCurve?.ScaleToSelf(torque.Value);
+                }
+
+                if (powerCurve != null) {
+                    o.SpecsPowerCurve = new GraphData(powerCurve);
+                }
+
+                if (torqueCurve != null) {
+                    o.SpecsTorqueCurve = new GraphData(torqueCurve);
+                }
+            }));
+
+            private DelegateCommand _recalculateAndScaleCurvesCommand;
+
+            public DelegateCommand RecalculateAndScaleCurvesCommand => _recalculateAndScaleCurvesCommand ??
+                    (_recalculateAndScaleCurvesCommand = new DelegateCommand(() => {
+                        var o = SelectedObject;
+
+                        var power = FlexibleParser.TryParseDouble(o.SpecsBhp);
+                        var torque = FlexibleParser.TryParseDouble(o.SpecsTorque);
+                        if (!power.HasValue && !torque.HasValue) {
+                            ModernDialog.ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
+                            return;
+                        }
+
+                        var data = o.AcdData;
+                        if (data == null) {
+                            NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
+                            return;
+                        }
+
+                        Lut torqueCurve, powerCurve;
+                        try {
+                            torqueCurve = TorquePhysicUtils.LoadCarTorque(data);
+                            powerCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
+                        } catch (Exception ex) {
+                            NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
+                            return;
+                        }
+
+                        if (power.HasValue) {
+                            powerCurve.ScaleToSelf(power.Value);
+                        }
+
+                        if (torque.HasValue) {
+                            torqueCurve.ScaleToSelf(torque.Value);
+                        }
+
+                        if (!torque.HasValue) {
+                            var temporaryCurve = TorquePhysicUtils.PowerToTorque(powerCurve);
+                            temporaryCurve.UpdateBoundingBox();
+                            torque = temporaryCurve.MaxY;
+
+                            torqueCurve.ScaleToSelf(torque.Value);
+                        } else if (!power.HasValue) {
+                            var temporaryCurve = TorquePhysicUtils.TorqueToPower(torqueCurve);
+                            temporaryCurve.UpdateBoundingBox();
+                            power = temporaryCurve.MaxY;
+
+                            powerCurve.ScaleToSelf(power.Value);
+                        }
+                        
+                        o.SpecsPowerCurve = new GraphData(powerCurve);
+                        o.SpecsTorqueCurve = new GraphData(torqueCurve);
+                    }));
+
+            private DelegateCommand _recalculateCurvesCommand;
+
+            public DelegateCommand RecalculateCurvesCommand => _recalculateCurvesCommand ?? (_recalculateCurvesCommand = new DelegateCommand(() => {
+                var o = SelectedObject;
+
+                var dlg = new CarTransmissionLossSelector(o);
+                dlg.ShowDialog();
+                if (!dlg.IsResultOk) return;
+
+                var lossMultipler = 100.0 / (100.0 - dlg.Value);
+
+                var data = o.AcdData;
+                if (data == null) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
+                    return;
+                }
+
+                Lut torque;
+                try {
+                    torque = TorquePhysicUtils.LoadCarTorque(data);
+                } catch (Exception ex) {
+                    NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
+                    return;
+                }
+
+                torque.TransformSelf(x => x.Y * lossMultipler);
+                var power = TorquePhysicUtils.TorqueToPower(torque);
+
+                o.SpecsTorqueCurve = new GraphData(torque);
+                o.SpecsPowerCurve = new GraphData(power);
+
+                if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    // MaxY values were updated while creating new GraphData instances above
+                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                }
+            }));
+            #endregion
         }
 
         private string _id;
@@ -401,6 +730,7 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
+            UpdateExtendedMode();
 
             if (SettingsHolder.CustomShowroom.LiteByDefault) {
                 LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
@@ -419,6 +749,9 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
+                new InputBinding(_model.RecalculatePwRatioCommand, new KeyGesture(Key.W, ModifierKeys.Alt)),
+                new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
+
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
 
@@ -436,7 +769,7 @@ namespace AcManager.Pages.Selected {
         }
 
         #region Skins
-        private void SelectedSkinPreview_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
                 CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
@@ -538,7 +871,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void UpgradeIcon_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnUpgradeIconClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new UpgradeIconEditor((CarObject)SelectedAcObject).ShowDialog();
@@ -559,5 +892,57 @@ namespace AcManager.Pages.Selected {
             }
         }
         #endregion
+
+        private bool _extendedMode;
+
+        public bool ExtendedMode {
+            get { return _extendedMode; }
+            set {
+                if (Equals(value, _extendedMode)) return;
+                _extendedMode = value;
+
+                Decorator oldParent, newParent;
+                if (value) {
+                    oldParent = SkinsListCompactModeParent;
+                    newParent = SkinsListExtendedModeParent;
+                } else {
+                    oldParent = SkinsListExtendedModeParent;
+                    newParent = SkinsListCompactModeParent;
+                }
+
+                oldParent.Child = null;
+                oldParent.Visibility = Visibility.Collapsed;
+                newParent.Child = SkinsList;
+                newParent.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void UpdateExtendedMode() {
+            ExtendedMode = OptionExtendedMode && ActualHeight > 800d;
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            UpdateExtendedMode();
+        }
+
+        private void OnPowerGraphContextMenuClick(object sender, ContextMenuButtonEventArgs e) {
+            e.Menu = new ContextMenu()
+                .AddItem(AppStrings.CarSpecs_ScaleCurvesToPowerTorqueHeader, _model.ScaleCurvesCommand,
+                    toolTip: AppStrings.CarSpecs_ScaleCurvesToPowerTorque_Tooltip)
+                .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader, _model.RecalculateAndScaleCurvesCommand,
+                    toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip)
+                .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataOnlyHeader, _model.RecalculateCurvesCommand,
+                    toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip);
+        }
+
+        public static readonly string TatuusId = @"tatuusfa1";
+
+        private void OnSoundBlockClick(object sender, MouseButtonEventArgs e) {
+            if (_model.SoundDonorId == TatuusId) {
+                ModernDialog.ShowMessage(
+                        $"Most likely, sound is not from {_model.SoundDonor.DisplayName ?? _model.SoundDonorId}, but instead it’s based on Kunos sample soundbank and its author forgot to change GUIDs before compiling it. Usually it’s not a problem, but in a race with two different cars having same GUIDs, one of them will use sound of another one.\n\nIf you’re the author, please, consider [url=\"https://www.youtube.com/watch?v=BdKsHBn8wh4\"]fixing it[/url].",
+                        ToolsStrings.Common_Warning, MessageBoxButton.OK);
+            }
+        }
     }
 }

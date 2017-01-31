@@ -14,22 +14,22 @@ namespace AcManager.Pages.Lists {
     public partial class CarsListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new CarsListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(CarObjectTester.Instance, filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(CarObjectTester.Instance, filter));
             InitializeComponent();
         }
 
-        private CarsListPageViewModel Model => (CarsListPageViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
-        private void CarsListPage_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             Model.Load();
         }
 
-        private void CarsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             Model.Unload();
         }
 
-        private class CarsListPageViewModel : AcListPageViewModel<CarObject> {
-            public CarsListPageViewModel(IFilter<CarObject> listFilter)
+        private class ViewModel : AcListPageViewModel<CarObject> {
+            public ViewModel(IFilter<CarObject> listFilter)
                     : base(CarsManager.Instance, listFilter) {}
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Cars);

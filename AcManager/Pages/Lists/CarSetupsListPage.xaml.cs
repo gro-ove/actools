@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
@@ -20,6 +21,14 @@ namespace AcManager.Pages.Lists {
             if (_carId == null) {
                 throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            Model.Load();
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            Model.Unload();
         }
 
         private string _carId;
@@ -45,16 +54,16 @@ namespace AcManager.Pages.Lists {
         }
 
         public void Initialize() {
-            DataContext = new CarSetupsListPageViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSetupObjectTester.Instance, _filter));
+            DataContext = new ViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSetupObjectTester.Instance, _filter));
             InitializeComponent();
         }
 
-        public CarSetupsListPageViewModel Model => (CarSetupsListPageViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
-        public class CarSetupsListPageViewModel : AcListPageViewModel<CarSetupObject> {
+        public class ViewModel : AcListPageViewModel<CarSetupObject> {
             public CarObject SelectedCar { get; private set; }
 
-            public CarSetupsListPageViewModel([NotNull] CarObject car, IFilter<CarSetupObject> listFilter)
+            public ViewModel([NotNull] CarObject car, IFilter<CarSetupObject> listFilter)
                     : base(car.SetupsManager, listFilter) {
                 SelectedCar = car;
             }

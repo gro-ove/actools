@@ -13,16 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class PpFiltersListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new PpFiltersListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
             InitializeComponent();
         }
 
-        private void PpFiltersListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((PpFiltersListPageViewModel)DataContext).Unload();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private class PpFiltersListPageViewModel : AcListPageViewModel<PpFilterObject> {
-            public PpFiltersListPageViewModel(IFilter<PpFilterObject> listFilter)
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
+        }
+
+        private class ViewModel : AcListPageViewModel<PpFilterObject> {
+            public ViewModel(IFilter<PpFilterObject> listFilter)
                 : base(PpFiltersManager.Instance, listFilter) {
             }
 

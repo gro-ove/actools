@@ -5,12 +5,15 @@ using System.Linq;
 using System.Windows;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Data {
     public class GraphData {
+        [NotNull]
         private readonly Lut _points;
 
+        [NotNull]
         public IReadOnlyList<LutPoint> Points => _points;
 
         private IReadOnlyList<Point> _normalizedValuesArray;
@@ -28,7 +31,7 @@ namespace AcManager.Tools.Data {
 
         public readonly double MinX, MaxX, MinY, MaxY;
 
-        public GraphData(Lut points) {
+        public GraphData([NotNull] Lut points) {
             _points = points;
 
             if (Points.Count == 0) {
@@ -61,17 +64,12 @@ namespace AcManager.Tools.Data {
             return values;
         }
 
-        public GraphData ScaleTo(double maxY) {
-            var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY/MaxY;
-            return ScaleBy(multipler);
-        }
-
-        public GraphData ScaleBy(double multipler) {
-            return new GraphData(_points.Transform(x => x.Y * multipler));
-        }
-
         public JArray ToJArray() {
             return new JArray(Points.Select(x => new JArray(x.X, x.Y)).ToArray<object>());
+        }
+
+        public Lut ToLut() {
+            return new Lut(_points);
         }
     }
 }

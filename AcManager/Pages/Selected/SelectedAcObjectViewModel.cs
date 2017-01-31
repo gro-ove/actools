@@ -90,7 +90,7 @@ namespace AcManager.Pages.Selected {
         private CommandBase _filterTagCommand;
 
         public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => {
-            NewFilterTab($"tag:{Filter.Encode(o)}");
+            NewFilterTab($@"#{Filter.Encode(o)}");
         }, o => o != null));
 
         [CanBeNull]
@@ -101,8 +101,17 @@ namespace AcManager.Pages.Selected {
         protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
             var delta = (relative ? range * value : range) / 2d;
             NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
-                    $"{key}={value.Round(roundTo).ToInvariantString()}" :
+                    $@"{key}={value.Round(roundTo).ToInvariantString()}" :
                     string.Format(@"{0}>{1} & {0}<{2}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
+                            ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
+        }
+
+        protected void FilterDistance([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+            value /= 1e3;
+            var delta = (relative ? range * value : range) / 2d;
+            NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
+                    $@"{key}={value.Round(roundTo).ToInvariantString()}km" :
+                    string.Format(@"{0}>{1}km & {0}<{2}km", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
                             ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
         }
 
@@ -111,7 +120,7 @@ namespace AcManager.Pages.Selected {
             if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out actual)) {
                 FilterRange(key, actual, range, relative, roundTo);
             } else {
-                NewFilterTab($"{key}-");
+                NewFilterTab($@"{key}-");
             }
         }
 
@@ -120,7 +129,18 @@ namespace AcManager.Pages.Selected {
             switch (type) {
                 case "author":
                     if (jsonObject == null) return;
-                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? @"author-" : $"author:{Filter.Encode(jsonObject.Author)}");
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? @"author-" : $@"author:{Filter.Encode(jsonObject.Author)}");
+                    break;
+
+                case "origin":
+                    if (jsonObject == null) return;
+                    if (jsonObject.Author != AcCommonObject.AuthorKunos) {
+                        NewFilterTab(@"k-");
+                    } else if (jsonObject.Dlc != null) {
+                        NewFilterTab(@"dlc:" + jsonObject.Dlc.DisplayName);
+                    } else {
+                        NewFilterTab(@"k+");
+                    }
                     break;
 
                 case "age":
@@ -129,11 +149,11 @@ namespace AcManager.Pages.Selected {
 
                 case "country":
                     if (jsonObject == null) return;
-                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Country) ? @"country-" : $"country:{Filter.Encode(jsonObject.Country)}");
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Country) ? @"country-" : $@"country:{Filter.Encode(jsonObject.Country)}");
                     break;
 
                 case "year":
-                    NewFilterTab(SelectedObject.Year.HasValue ? $"year:{SelectedObject.Year}" : @"year-");
+                    NewFilterTab(SelectedObject.Year.HasValue ? $@"year:{SelectedObject.Year}" : @"year-");
                     break;
 
                 case "decade":
@@ -142,7 +162,7 @@ namespace AcManager.Pages.Selected {
                     }
 
                     var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;
-                    NewFilterTab($"year>{start - 1} & year<{start + 10}");
+                    NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                     break;
             }
         }

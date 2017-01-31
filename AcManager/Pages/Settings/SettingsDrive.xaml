@@ -142,6 +142,12 @@
             <!--game-related events-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
+            <CheckBox IsChecked="{Binding Drive.SidekickIntegration}" mui:NewMarkService.New="True">
+                <Label>
+                    <Label.Content>Extend Sidekick’s tyres information if needed</Label.Content>
+                </Label>
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />
             </CheckBox>

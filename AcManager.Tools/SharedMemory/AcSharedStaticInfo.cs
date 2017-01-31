@@ -5,31 +5,38 @@ using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.SharedMemory {
+    public class AcSharedConsts {
+        public const int VersionSize = 15;
+        public const int IdSize = 33;
+        public const int LayoutIdSize = 15;
+        public const int NameSize = 33;
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode), Serializable]
     public class AcSharedStaticInfo {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.VersionSize)]
         public string SharedMemoryVersion;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.VersionSize)]
         public string AssettoCorsaVersion;
 
         // session static info
         public int NumberOfSessions;
         public int NumberOfCars;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.IdSize)]
         public string CarModel;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.IdSize)]
         public string Track;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.NameSize)]
         public string PlayerName;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.NameSize)]
         public string PlayerSurname;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.NameSize)]
         public string PlayerNickname;
 
         public int SectorCount;
@@ -81,7 +88,7 @@ namespace AcManager.Tools.SharedMemory {
         // added in 1.7.2
         public float TrackSplineLength;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.LayoutIdSize)]
         public string TrackConfiguration;
 
         // added 1.10.2

@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Presentation {
     public class LinkGroup : Displayable {
         private string _groupKey;
 
-        public string Id => $"{GroupKey}__{DisplayName}";
+        public string Id => $@"{GroupKey}__{DisplayName}";
 
         private string KeySelected => @"LinkGroup.Selected_" + Id;
 

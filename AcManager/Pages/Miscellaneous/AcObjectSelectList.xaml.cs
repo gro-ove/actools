@@ -11,6 +11,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -38,7 +39,7 @@ namespace AcManager.Pages.Miscellaneous {
         event EventHandler<ItemChosenEventArgs<T>> ItemChosen;
     }
 
-    public partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemControl<AcObjectNew>, ITitleable, IParametrizedUriContent {
+    public sealed partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemControl<AcObjectNew>, ITitleable, IParametrizedUriContent {
         public string Title { get; set; }
 
         public string Filter { get; private set; }
@@ -56,6 +57,9 @@ namespace AcManager.Pages.Miscellaneous {
 
             DataContext = this;
             InitializeComponent();
+
+            List.UserFiltersKey = $@"AcObjectListBox:FiltersHistory:{type}";
+            SaveScroll.SetKey(List, $@".AcObjectSelectList.scroll:{type}:{Filter}");
         }
 
         private AcObjectNew _selectedItem;
@@ -65,9 +69,11 @@ namespace AcManager.Pages.Miscellaneous {
             set {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
+
                 if (value == null) {
-                    Logging.Debug(value);
+                    Logging.Unexpected("Null?");
                 }
+
                 OnPropertyChanged();
             }
         }
@@ -81,7 +87,7 @@ namespace AcManager.Pages.Miscellaneous {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 

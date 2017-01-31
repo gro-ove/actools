@@ -48,6 +48,10 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
+        protected override KunosDlcInformation GetDlc() {
+            return null;
+        }
+
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.ShowroomTagsList;
         }

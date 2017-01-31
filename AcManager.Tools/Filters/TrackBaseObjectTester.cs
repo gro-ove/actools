@@ -3,7 +3,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class TrackBaseObjectTester : ITester<TrackObjectBase> {
-        public static TrackBaseObjectTester Instance = new TrackBaseObjectTester();
+        public static readonly TrackBaseObjectTester Instance = new TrackBaseObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
@@ -38,11 +38,11 @@ namespace AcManager.Tools.Filters {
 
         public bool Test(TrackObjectBase obj, string key, ITestEntry value) {
             switch (key) {
+                case null:
+                    return value.Test(obj.Id) || value.Test(obj.LayoutName);
+
                 case "city":
                     return value.Test(obj.City);
-
-                case "dlc":
-                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
 
                 case "geotags":
                     return value.Test(obj.GeoTags?.ToString());

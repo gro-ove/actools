@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+        xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
     <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
@@ -31,7 +32,8 @@
         </Setter>
     </Style>
 
-    <system:Double x:Key="FancyScrollBar.Width">4</system:Double>
+    <system:Double x:Key="FancyScrollBar.Width">2</system:Double>
+    <system:Double x:Key="FancyScrollBar.ScaleMultipler">4</system:Double>
 
     <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
@@ -51,21 +53,37 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb">
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb"
+                                        RenderTransformOrigin="1 0">
                                     <Thumb.RenderTransform>
-                                        <ScaleTransform CenterX="4" ScaleX="1" ScaleY="1" />
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
                                     </Thumb.RenderTransform>
                                 </Thumb>
                             </Track.Thumb>
                         </Track>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger Property="attached:FancyScrollHelper.Outsize" Value="True">
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
+                        </Trigger>
+                        <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
+                            <Setter TargetName="PART_Track" Property="HorizontalAlignment" Value="Left" />
+                            <Setter TargetName="Bg" Property="Margin" Value="-12 0 0 0" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="attached:FancyScrollHelper.Outsize" Value="True" />
+                                <Condition Property="attached:FancyScrollHelper.InvertLocation" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="1 0" />
+                        </MultiTrigger>
+                        <Trigger Property="attached:FancyScrollHelper.IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                                To="2" BeginTime="0:0:0.12" Duration="0:0:0.08" />
+                                                To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -102,21 +120,37 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb">
+                                <Thumb x:Name="PART_Thumb" Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}"
+                                        RenderTransformOrigin="0 1">
                                     <Thumb.RenderTransform>
-                                        <ScaleTransform CenterY="4" ScaleX="1" ScaleY="1" />
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
                                     </Thumb.RenderTransform>
                                 </Thumb>
                             </Track.Thumb>
                         </Track>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger Property="attached:FancyScrollHelper.Outsize" Value="True">
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
+                        </Trigger>
+                        <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
+                            <Setter TargetName="PART_Track" Property="VerticalAlignment" Value="Top" />
+                            <Setter TargetName="Bg" Property="Margin" Value="0 -12 0 0" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="attached:FancyScrollHelper.Outsize" Value="True" />
+                                <Condition Property="attached:FancyScrollHelper.InvertLocation" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 1" />
+                        </MultiTrigger>
+                        <Trigger Property="attached:FancyScrollHelper.IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                                To="2" BeginTime="0:0:0.12" Duration="0:0:0.08" />
+                                                To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -152,6 +186,14 @@
                                         Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource FancyScrollBarVertical}" />
                             </c:Cell>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PART_VerticalScrollBar" Property="attached:FancyScrollHelper.IsMouseOver" Value="True" />
+                                </Trigger>
+                                <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
+                                    <Setter TargetName="PART_VerticalScrollBar" Property="HorizontalAlignment" Value="Left" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -171,6 +213,14 @@
                                         Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                         ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource FancyScrollBarHorizontal}" />
                             </c:Cell>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PART_HorizontalScrollBar" Property="attached:FancyScrollHelper.IsMouseOver" Value="True" />
+                                </Trigger>
+                                <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
+                                    <Setter TargetName="PART_HorizontalScrollBar" Property="VerticalAlignment" Value="Top" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

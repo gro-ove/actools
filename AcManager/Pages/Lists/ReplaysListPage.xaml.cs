@@ -13,20 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class ReplaysListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new ReplaysListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(ReplayObjectTester.Instance, filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(ReplayObjectTester.Instance, filter));
             InitializeComponent();
         }
 
-        private void ReplaysListPage_OnLoaded(object sender, RoutedEventArgs e) {
-            ((ReplaysListPageViewModel)DataContext).Load();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private void ReplaysListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((ReplaysListPageViewModel)DataContext).Unload();
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
         }
 
-        private class ReplaysListPageViewModel : AcListPageViewModel<ReplayObject> {
-            public ReplaysListPageViewModel(IFilter<ReplayObject> listFilter)
+        private class ViewModel : AcListPageViewModel<ReplayObject> {
+            public ViewModel(IFilter<ReplayObject> listFilter)
                     : base(ReplaysManager.Instance, listFilter) {}
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Replays);

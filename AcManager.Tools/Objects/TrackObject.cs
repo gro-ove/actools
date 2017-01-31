@@ -171,8 +171,10 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         /// <param name="idWithLayout">Id with layout id ("ks_nordschleife/touristenfahrten")</param>
         /// <returns></returns>
+        [CanBeNull]
         public TrackObjectBase GetLayoutById(string idWithLayout) {
-            return MultiLayouts?.FirstOrDefault(x => x.IdWithLayout.Equals(idWithLayout, StringComparison.OrdinalIgnoreCase));
+            return MultiLayouts?.FirstOrDefault(x => x.IdWithLayout.Equals(idWithLayout, StringComparison.OrdinalIgnoreCase)) ??
+                    (idWithLayout == Id ? this : null);
         }
 
         /// <summary>
@@ -180,6 +182,7 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         /// <param name="layoutId">Layout id ("touristenfahrten", not "ks_nordschleife/touristenfahrten"!)</param>
         /// <returns></returns>
+        [CanBeNull]
         public TrackObjectBase GetLayoutByLayoutId(string layoutId) {
             return MultiLayouts?.FirstOrDefault(x => x.LayoutId?.Equals(layoutId, StringComparison.OrdinalIgnoreCase) == true);
         }
@@ -285,7 +288,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string DisplayName => MultiLayouts?.Count > 1 ?
-                $"{_commonName} ({MultiLayouts.Count})" : base.DisplayName;
+                $@"{_commonName} ({MultiLayouts.Count})" : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;
 

@@ -339,6 +339,7 @@ namespace AcManager.Controls {
                         TitleColor = OxyColors.White,
                         TicklineColor = OxyColors.White,
                         AxislineColor = OxyColors.White,
+                        Minimum = 0d,
                         Position = AxisPosition.Bottom
                     },
                     new LinearAxis {
@@ -348,6 +349,7 @@ namespace AcManager.Controls {
                         TitleColor = PowerColor,
                         TicklineColor = PowerColor,
                         AxislineColor = PowerColor,
+                        Minimum = 0d,
                         Position = AxisPosition.Right
                     },
                     new LinearAxis {
@@ -357,6 +359,7 @@ namespace AcManager.Controls {
                         TitleColor = TorqueColor,
                         TicklineColor = TorqueColor,
                         AxislineColor = TorqueColor,
+                        Minimum = 0d,
                         Position = AxisPosition.Left
                     }
                 },

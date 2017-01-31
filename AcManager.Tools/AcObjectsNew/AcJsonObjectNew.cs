@@ -29,12 +29,12 @@ namespace AcManager.Tools.AcObjectsNew {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
 
             if (obj.Version == null && obj.Author == null) {
-                return obj.Url != null ? $"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(obj.Url)}[/url]" : null;
+                return obj.Url != null ? $@"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(obj.Url)}[/url]" : null;
             }
 
             var result = obj.Author == null ? obj.Version
                     : obj.Version == null ? obj.Author : $"{obj.Author} ({obj.Version})";
-            return obj.Url != null ? $"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(result)}[/url]" : result;
+            return obj.Url != null ? $@"[url={BbCodeBlock.EncodeAttribute(obj.Url)}]{BbCodeBlock.Encode(result)}[/url]" : result;
         }
     }
 
@@ -323,6 +323,28 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public virtual string VersionInfoDisplay => this.GetVersionInfoDisplay();
+        #endregion
+
+        #region DLC-related stuff
+        private KunosDlcInformation _dlc;
+        private bool _dlcSet;
+
+        [CanBeNull]
+        public KunosDlcInformation Dlc {
+            get {
+                if (!_dlcSet) {
+                    _dlcSet = true;
+                    if (Author == AuthorKunos) {
+                        _dlc = GetDlc();
+                    }
+                }
+
+                return _dlc;
+            }
+        }
+
+        [CanBeNull]
+        protected abstract KunosDlcInformation GetDlc();
         #endregion
     }
 }

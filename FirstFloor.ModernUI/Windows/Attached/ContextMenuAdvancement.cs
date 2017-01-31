@@ -3,10 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
-    public class ContextMenuAdvancement {
+    public static class ContextMenuAdvancement {
         internal static readonly List<ContextMenu> ParentContextMenu = new List<ContextMenu>();
         private static DateTime _lastClicked;
 

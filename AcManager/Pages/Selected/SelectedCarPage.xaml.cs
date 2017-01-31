@@ -290,65 +290,9 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _replaceSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async () => {
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() => {
                 var donor = SelectCarDialog.Show();
-                if (donor == null) return;
-
-                if (string.Equals(donor.Id, SelectedObject.Id, StringComparison.OrdinalIgnoreCase)) {
-                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, "Source and destination are the same.");
-                    return;
-                }
-
-                try {
-                    using (var waiting = new WaitingDialog()) {
-                        waiting.Report();
-
-                        var guids = Path.Combine(donor.Location, @"sfx", @"GUIDs.txt");
-                        var soundbank = Path.Combine(donor.Location, @"sfx", $"{donor.Id}.bank");
-
-                        var newGuilds = Path.Combine(SelectedObject.Location, @"sfx", @"GUIDs.txt");
-                        var newSoundbank = Path.Combine(SelectedObject.Location, @"sfx", $"{SelectedObject.Id}.bank");
-
-                        await Task.Run(() => {
-                            var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
-                                Original = x,
-                                Backup = FileUtils.EnsureUnique($"{x}.bak")
-                            }).ToList();
-
-                            foreach (var oldFile in destinations) {
-                                File.Move(oldFile.Original, oldFile.Backup);
-                            }
-
-                            try {
-                                if (File.Exists(guids) && File.Exists(soundbank)) {
-                                    File.Copy(soundbank, newSoundbank);
-                                    File.WriteAllText(newGuilds, File.ReadAllText(guids).Replace(donor.Id, SelectedObject.Id));
-                                } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
-                                    File.Copy(soundbank, newSoundbank);
-                                    File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
-                                                                     .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
-                                                                             x.EndsWith(@"} bank:/" + donor.Id))
-                                                                     .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
-                                                                     .JoinToString(Environment.NewLine).Replace(donor.Id, SelectedObject.Id));
-                                } else {
-                                    throw new InformativeException(AppStrings.Car_ReplaceSound_WrongCar, AppStrings.Car_ReplaceSound_WrongCar_Commentary);
-                                }
-                            } catch (Exception) {
-                                foreach (var oldFile in destinations) {
-                                    if (File.Exists(oldFile.Original)) {
-                                        File.Delete(oldFile.Original);
-                                    }
-                                    File.Move(oldFile.Backup, oldFile.Original);
-                                }
-                                throw;
-                            }
-                            
-                            FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
-                        });
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
-                }
+                return donor == null ? Task.Delay(0) : SelectedObject.ReplaceSound(donor);
             }));
 
             private AsyncCommand _replaceTyresCommand;

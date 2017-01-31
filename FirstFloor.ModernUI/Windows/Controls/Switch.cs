@@ -5,7 +5,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class Switch : ListSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+                typeof(Switch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public object Value {
             get { return GetValue(ValueProperty); }

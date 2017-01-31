@@ -80,7 +80,7 @@ namespace FirstFloor.ModernUI.Helpers {
                         Instance.UpdateUnseen();
                     }
                 } catch (Exception e) {
-                    Logging.Error("NotifyInner(): " + e);
+                    Logging.Error(e);
                 } finally {
                     _active = false;
                     _previous = DateTime.Now;

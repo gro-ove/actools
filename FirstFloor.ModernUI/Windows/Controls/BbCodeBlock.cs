@@ -240,6 +240,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public SelectableBbCodeBlock() {
             // ensures the implicit BbCodeBlock style is used
             DefaultStyleKey = typeof(SelectableBbCodeBlock);
+            IsDocumentEnabled = true;
 
             AddHandler(FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
             AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(OnRequestNavigate));

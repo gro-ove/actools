@@ -32,11 +32,10 @@ namespace AcManager.Tools.Filters {
         }
 
         public bool Test(AcObjectNew obj, string key, ITestEntry value) {
-            if (key == null) {
-                return value.Test(obj.Id) || value.Test(obj.DisplayName);
-            }
-
             switch (key) {
+                case null:
+                    return value.Test(obj.Id) || value.Test(obj.DisplayName);
+
                 case "id":
                     return value.Test(obj.Id);
 
@@ -45,9 +44,10 @@ namespace AcManager.Tools.Filters {
 
                 case "enabled":
                     return value.Test(obj.Enabled);
-            }
 
-            return false;
+                default:
+                    return false;
+            }
         }
     }
 }

@@ -327,7 +327,7 @@ namespace AcManager.Tools.Helpers.Api {
             if (result.Durations != null && result.SessionTypes != null) {
                 for (var i = 0; i < result.Durations.Length; i++) {
                     if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race &&
-                            result.Durations[i] < 200 /* usual value was 60, but it’s not enough */) {
+                            result.Durations[i] < 6000 /* usual value from the original launcher is 60, but it’s not enough */) {
                         result.Durations[i] *= 60;
                     }
                 }
@@ -356,7 +356,7 @@ namespace AcManager.Tools.Helpers.Api {
                 }
             }
 
-            throw new Exception("Out of servers");
+            throw new Exception(@"Out of servers");
         }
 
         [ItemNotNull]
@@ -401,22 +401,22 @@ namespace AcManager.Tools.Helpers.Api {
                         return new BookingResult(TimeSpan.FromSeconds(FlexibleParser.ParseDouble(split[1])));
 
                     case "ILLEGAL CAR":
-                        return new BookingResult("Please, select a car supported by the server");
+                        return new BookingResult(ToolsStrings.Online_BookingResult_IllegalCar);
 
                     case "INCORRECT PASSWORD":
-                        return new BookingResult("The password is not valid");
+                        return new BookingResult(ToolsStrings.Online_BookingResult_IncorrectPassword);
 
                     case "CLOSED":
-                        return new BookingResult("Booking is closed");
+                        return new BookingResult(ToolsStrings.Online_BookingResult_Closed);
 
                     case "BLACKLISTED":
-                        return new BookingResult("You have been blacklisted on this server");
+                        return new BookingResult(ToolsStrings.Online_BookingResult_Blacklisted);
 
                     case "SERVER FULL":
-                        return new BookingResult("Server is full");
+                        return new BookingResult(ToolsStrings.Online_BookingResult_ServerFull);
 
                     default:
-                        return new BookingResult($"Server says: “{response}”");
+                        return new BookingResult(string.Format(ToolsStrings.Online_BookingResult_UnsupportedNonOkMessage, response));
                 }
             } catch (WebException e) {
                 Logging.Warning($"Cannot book: {requestUri}, {e.Message}");

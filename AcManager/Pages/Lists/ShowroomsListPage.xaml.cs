@@ -13,20 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class ShowroomsListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new ShowroomsListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(ShowroomObjectTester.Instance, filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(ShowroomObjectTester.Instance, filter));
             InitializeComponent();
         }
 
-        private void ShowroomsListPage_OnLoaded(object sender, RoutedEventArgs e) {
-            ((ShowroomsListPageViewModel)DataContext).Load();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private void ShowroomsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((ShowroomsListPageViewModel)DataContext).Unload();
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
         }
 
-        private class ShowroomsListPageViewModel : AcListPageViewModel<ShowroomObject> {
-            public ShowroomsListPageViewModel(IFilter<ShowroomObject> listFilter)
+        private class ViewModel : AcListPageViewModel<ShowroomObject> {
+            public ViewModel(IFilter<ShowroomObject> listFilter)
                 : base(ShowroomsManager.Instance, listFilter) {
             }
 

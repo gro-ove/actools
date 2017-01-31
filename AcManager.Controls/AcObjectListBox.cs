@@ -34,6 +34,14 @@ namespace AcManager.Controls {
             set { SetValue(UserFilterProperty, value); }
         }
 
+        public static readonly DependencyProperty UserFiltersKeyProperty = DependencyProperty.Register(nameof(UserFiltersKey), typeof(string),
+                typeof(AcObjectListBox), new PropertyMetadata(@"AcObjectListBox:FiltersHistory"));
+
+        public string UserFiltersKey {
+            get { return (string)GetValue(UserFiltersKeyProperty); }
+            set { SetValue(UserFiltersKeyProperty, value); }
+        }
+
         private static void OnFilterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((AcObjectListBox)d).UpdateFilter();
         }

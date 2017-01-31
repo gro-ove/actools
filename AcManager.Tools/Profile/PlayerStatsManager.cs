@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -32,14 +34,14 @@ namespace AcManager.Tools.Profile {
         private static RaceWebServer _webServer;
 
         private readonly string _storageFilename, _sessionsFilename;
-        private Storage _storage3;
-        private List<SessionsStatsEntry> _sessions3;
+        private Storage _storage;
+        private List<SessionsStatsEntry> _sessions;
 
         private Storage GetMainStorage() {
-            return _storage3 ?? (_storage3 = new Storage(_storageFilename));
+            return _storage ?? (_storage = new Storage(_storageFilename));
         }
 
-        private bool IsSessionsStorageReady => _sessions3 != null;
+        private bool IsSessionsStorageReady => _sessions != null;
 
         private static void ParseSessions(byte[] data, int i, int l, ICollection<SessionsStatsEntry> result) {
             var count = i - l;
@@ -66,46 +68,46 @@ namespace AcManager.Tools.Profile {
         }
 
         private List<SessionsStatsEntry> GetSessionsStorage() {
-            if (_sessions3 == null) {
+            if (_sessions == null) {
                 if (File.Exists(_sessionsFilename)) {
                     try {
                         var data = File.ReadAllBytes(_sessionsFilename);
-                        _sessions3 = ParseSessions(data);
+                        _sessions = ParseSessions(data);
                     } catch (Exception e) {
                         NonfatalError.Notify("Can’t read sessions", e);
-                        _sessions3 = new List<SessionsStatsEntry>();
+                        _sessions = new List<SessionsStatsEntry>();
                     }
                 } else {
-                    _sessions3 = new List<SessionsStatsEntry>();
+                    _sessions = new List<SessionsStatsEntry>();
                 }
 
                 Storage.Exit += OnStorageExit;
             }
 
-            return _sessions3;
+            return _sessions;
         }
 
         private async Task<List<SessionsStatsEntry>> GetSessionsStorageAsync() {
-            if (_sessions3 == null) {
+            if (_sessions == null) {
                 if (File.Exists(_sessionsFilename)) {
                     try {
                         var data = await FileUtils.ReadAllBytesAsync(_sessionsFilename);
-                        _sessions3 = await Task.Run(() => ParseSessions(data));
+                        _sessions = await Task.Run(() => ParseSessions(data));
                     } catch (Exception e) {
                         NonfatalError.Notify("Can’t read sessions", e);
-                        _sessions3 = new List<SessionsStatsEntry>();
+                        _sessions = new List<SessionsStatsEntry>();
                     }
                 } else {
-                    _sessions3 = new List<SessionsStatsEntry>();
+                    _sessions = new List<SessionsStatsEntry>();
                 }
             }
 
-            return _sessions3;
+            return _sessions;
         }
 
         public void SaveSessions() {
             using (var writer = File.CreateText(_sessionsFilename)) {
-                foreach (var entry in _sessions3) {
+                foreach (var entry in _sessions) {
                     writer.WriteLine(entry.Serialized);
                 }
             }
@@ -113,7 +115,7 @@ namespace AcManager.Tools.Profile {
 
         public async Task SaveSessionsAsync() {
             using (var writer = File.CreateText(_sessionsFilename)) {
-                foreach (var entry in _sessions3) {
+                foreach (var entry in _sessions) {
                     await writer.WriteLineAsync(entry.Serialized);
                 }
             }
@@ -192,6 +194,8 @@ namespace AcManager.Tools.Profile {
             }
         }
 
+        private readonly Dictionary<string, OverallStats> _prepared = new Dictionary<string, OverallStats>();
+
         private WatchingSessionStats _current;
         private SessionStats _last;
 
@@ -210,11 +214,10 @@ namespace AcManager.Tools.Profile {
             _sessionsFilename = FilesStorage.Instance.GetFilename("Progress", "Profile (Sessions).data");
 
             if (File.Exists(_storageFilename) && !File.Exists(_sessionsFilename)) {
-                var storage = GetMainStorage();
-
                 Logging.Debug("Converting stats to new format…");
 
                 using (var writer = File.AppendText(_sessionsFilename)) {
+                    var storage = GetMainStorage();
                     foreach (var source in storage.Where(x => x.Key.StartsWith(KeySessionStatsPrefix)).ToList()) {
                         writer.WriteLine(source.Value);
                         storage.Remove(source.Key);
@@ -264,15 +267,16 @@ namespace AcManager.Tools.Profile {
             var sessions = (await GetSessionsStorageAsync()).ToList();
             await Task.Run(() => {
                 for (var i = 0; i < sessions.Count; i++) {
-                    newOverall.Extend(sessions[i].Parsed);
+                    var session = sessions[i].Parsed;
+                    if (session != null) {
+                        newOverall.Extend(session);
+                    }
                 }
             });
 
             Overall.CopyFrom(newOverall);
             newStorage.SetObject(KeyOverall, Overall);
-
-            var storage = GetMainStorage();
-            storage.CopyFrom(newStorage);
+            GetMainStorage().CopyFrom(newStorage);
         }
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {
@@ -281,6 +285,37 @@ namespace AcManager.Tools.Profile {
                 _webServer.PublishStatsData(_current);
                 _webServer.PublishSharedData(e.Current);
             }
+        }
+
+        private void ExtendOveralls(SessionStats current) {
+            var storage = GetMainStorage();
+            Overall.Extend(current);
+            storage.SetObject(KeyOverall, Overall);
+
+            foreach (var holded in _holdedList) {
+                holded.Extend(current);
+            }
+        }
+
+        private void AppendSession(SessionStats current) {
+            if (IsSessionsStorageReady) {
+                GetSessionsStorage().Add(new SessionsStatsEntry(current));
+            }
+
+            using (var writer = File.AppendText(_sessionsFilename)) {
+                writer.WriteLine(current.Serialize());
+            }
+        }
+
+        private static void UpdateCarDrivenDistance(SessionStats current) {
+            if (current.CarId == null) return;
+            (CarsManager.Instance.GetWrapperById(current.CarId)?.Value as CarObject)?.RaiseTotalDrivenDistanceChanged();
+        }
+
+        private static void UpdateTrackDrivenDistance(SessionStats current) {
+            if (current.TrackId == null) return;
+            (TracksManager.Instance.GetWrappedByIdWithLayout(current.TrackId)?.Value as TrackObject)?
+                    .GetLayoutById(current.TrackId)?.RaiseTotalDrivenDistanceChanged();
         }
 
         private void Apply(SessionStats current) {
@@ -295,17 +330,10 @@ Avg speed: {current.AverageSpeed:F1} kmh
 Fuel burnt: {current.FuelBurnt:F2}l ({current.FuelConsumption:F2} liters per 100 km)
 Gone offroad: {current.GoneOffroad} time(s)");
 
-            var storage = GetMainStorage();
-            Overall.Extend(current);
-            storage.SetObject(KeyOverall, Overall);
-            
-            if (IsSessionsStorageReady) {
-                GetSessionsStorage().Add(new SessionsStatsEntry(current));
-            }
-
-            using (var writer = File.AppendText(_sessionsFilename)) {
-                writer.WriteLine(current.Serialize());
-            }
+            ExtendOveralls(current);
+            AppendSession(current);
+            UpdateCarDrivenDistance(current);
+            UpdateTrackDrivenDistance(current);
         }
 
         public void Dispose() {
@@ -318,17 +346,18 @@ Gone offroad: {current.GoneOffroad} time(s)");
             }
 
             public bool Test(SessionStats obj, string key, ITestEntry value) {
-                if (key == null) {
-                    if (value.Test(obj.CarId) || value.Test(obj.TrackId)) return true;
-
-                    var track = TracksManager.Instance.GetLayoutById(obj.TrackId);
-                    if (track != null && value.Test(track.Name)) return true;
-
-                    var car = CarsManager.Instance.GetById(obj.CarId);
-                    if (car != null && value.Test(car.DisplayName)) return true;
-                }
-
                 switch (key) {
+                    case null:
+                        if (value.Test(obj.CarId) || value.Test(obj.TrackId)) return true;
+
+                        var track = obj.TrackId == null ? null : TracksManager.Instance.GetLayoutById(obj.TrackId);
+                        if (track != null && value.Test(track.Name)) return true;
+
+                        var car = obj.CarId == null ? null : CarsManager.Instance.GetById(obj.CarId);
+                        if (car != null && value.Test(car.DisplayName)) return true;
+
+                        return false;
+
                     case "d":
                     case "duration":
                     case "time":
@@ -352,20 +381,21 @@ Gone offroad: {current.GoneOffroad} time(s)");
                     case "maxspeed":
                     case "topspeed":
                         return value.Test(obj.MaxSpeed);
-                }
 
-                return false;
+                    default:
+                        return false;
+                }
             }
 
             public bool TestChild(SessionStats obj, string key, IFilter filter) {
                 switch (key) {
                     case null:
                     case "car":
-                        var car = CarsManager.Instance.GetById(obj.CarId);
+                        var car = obj.CarId == null ? null : CarsManager.Instance.GetById(obj.CarId);
                         return car != null && filter.Test(CarObjectTester.Instance, car);
 
                     case "track":
-                        var track = TracksManager.Instance.GetLayoutById(obj.TrackId);
+                        var track = obj.TrackId == null ? null : TracksManager.Instance.GetLayoutById(obj.TrackId);
                         return track != null && filter.Test(TrackBaseObjectTester.Instance, track);
                 }
 
@@ -373,44 +403,78 @@ Gone offroad: {current.GoneOffroad} time(s)");
             }
         }
 
-        public static bool FilterTest([NotNull] string filterValue, [NotNull] SessionStats stats) {
-            if (filterValue == null) throw new ArgumentNullException(nameof(filterValue));
-            return Filter.Create(new SessionStatsTester(), filterValue).Test(stats);
-        }
+        private readonly HoldedList<OverallStats> _holdedList = new HoldedList<OverallStats>(4);
 
-        public OverallStats GetFiltered([NotNull] string filterValue) {
+        public Holder<OverallStats> GetFiltered([NotNull] string filterValue) {
             if (filterValue == null) throw new ArgumentNullException(nameof(filterValue));
-            
-            var result = new OverallStats();
-            var filter = Filter.Create(new SessionStatsTester(), filterValue);
 
+            var result = new FilteredStats(filterValue);
             foreach (var source in GetSessionsStorage()) {
                 var stats = source.Parsed;
-                if (stats != null && filter.Test(stats)) {
+                if (stats != null) {
                     result.Extend(stats);
                 }
             }
 
-            return result;
+            return _holdedList.Get(result);
         }
 
-        public async Task<OverallStats> GetFilteredAsync(string filterValue) {
+        public async Task<Holder<OverallStats>> GetFilteredAsync(string filterValue) {
             if (filterValue == null) throw new ArgumentNullException(nameof(filterValue));
-            
-            var storage = (await GetSessionsStorageAsync()).ToList();
-            return await Task.Run(() => {
-                var result = new OverallStats();
-                var filter = Filter.Create(new SessionStatsTester(), filterValue);
 
+            var storage = (await GetSessionsStorageAsync()).ToList();
+            return _holdedList.Get(await Task.Run(() => {
+                var result = new FilteredStats(filterValue);
                 for (var i = 0; i < storage.Count; i++) {
                     var stats = storage[i].Parsed;
-                    if (stats != null && filter.Test(stats)) {
+                    if (stats != null) {
                         result.Extend(stats);
                     }
                 }
 
                 return result;
-            });
+            }));
+        }
+
+        public IEnumerable<string> GetCarsIds() {
+            return GetMainStorage().Where(x => x.Key.StartsWith(KeyDistancePerCarPrefix))
+                                   .Select(x => x.Key.Substring(KeyDistancePerCarPrefix.Length));
+        }
+
+        public double GetDistanceDrivenByCar(string carId) {
+            return GetMainStorage().GetDouble(KeyDistancePerCarPrefix + carId);
+        }
+
+        public IEnumerable<string> GetTrackLayoutsIds() {
+            return GetMainStorage().Where(x => x.Key.StartsWith(KeyDistancePerTrackPrefix))
+                                   .Select(x => x.Key.Substring(KeyDistancePerTrackPrefix.Length));
+        }
+
+        public double GetDistanceDrivenAtTrack(string trackLayoutId) {
+            return GetMainStorage().GetDouble(KeyDistancePerTrackPrefix + trackLayoutId);
+        }
+
+        private static IEnumerable<string> FixAcTrackId(string acTrackId) {
+            yield return acTrackId;
+
+            var i = 0;
+            while (true) {
+                i = acTrackId.IndexOf('-', i + 1);
+                if (i == -1 || i == acTrackId.Length - 1) yield break;
+                yield return acTrackId.Substring(0, i) + '/' + acTrackId.Substring(i + 1);
+            }
+        }
+
+        public double GetDistanceDrivenAtTrackAcId(string trackLayoutId) {
+            var storage = GetMainStorage();
+            foreach (var f in FixAcTrackId(trackLayoutId)) {
+                var k = KeyDistancePerTrackPrefix + f;
+                if (storage.Contains(k)) {
+                    return storage.GetDouble(k);
+                }
+            }
+
+            return 0d;
         }
     }
 }

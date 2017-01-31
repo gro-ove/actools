@@ -49,7 +49,7 @@
                             <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                                     VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
-                                    ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}">
+                                    ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" mui:SaveScroll.Key="{TemplateBinding SaveScrollKey}">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel"

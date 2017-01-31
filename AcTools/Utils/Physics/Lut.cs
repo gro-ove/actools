@@ -41,7 +41,7 @@ namespace AcTools.Utils.Physics {
 
         public Lut(int capacity) : base(capacity) { }
 
-        public Lut(IEnumerable<LutPoint> collection) : base(collection) { }
+        public Lut(IEnumerable<LutPoint> collection) : base(collection) {}
 
         [Pure, NotNull]
         public Lut Transform(Func<LutPoint, double> fn) {
@@ -207,6 +207,28 @@ namespace AcTools.Utils.Physics {
             }
 
             return result;
+        }
+        
+        [NotNull, Pure]
+        public Lut ScaleTo(double maxY) {
+            UpdateBoundingBox();
+            var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
+            return ScaleBy(multipler);
+        }
+
+        [NotNull, Pure]
+        public Lut ScaleBy(double multipler) {
+            return new Lut(Transform(x => x.Y * multipler));
+        }
+        
+        public void ScaleToSelf(double maxY) {
+            UpdateBoundingBox();
+            var multipler = Math.Abs(MaxY) < 0.001 ? 1.0 : maxY / MaxY;
+            ScaleBySelf(multipler);
+        }
+        
+        public void ScaleBySelf(double multipler) {
+            TransformSelf(x => x.Y * multipler);
         }
 
         [Pure]

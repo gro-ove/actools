@@ -66,8 +66,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance :
                 new SingleChildEnumerator(_child);
 
-        protected override Size MeasureOverride(Size constraint) {
+        protected void UpdateActiveChild() {
             SetActiveChild(GetChild());
+        }
+
+        protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            var b = sender as BaseSwitch;
+            if (b == null) return;
+
+            b.UpdateActiveChild();
+            b.InvalidateMeasure();
+            b.InvalidateVisual();
+        }
+
+        protected override Size MeasureOverride(Size constraint) {
+            UpdateActiveChild();
 
             var e = _child;
             if (e == null) return Size.Empty;
@@ -92,7 +105,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as UIElement;
             if (element != null) {
-                (VisualTreeHelper.GetParent(element) as BaseSwitch)?.InvalidateMeasure();
+                (VisualTreeHelper.GetParent(element) as BaseSwitch)?.UpdateActiveChild();
             }
         }
     }

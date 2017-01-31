@@ -1666,4 +1666,34 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
     <value>Data is not encrypted</value>
   </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Please, select a car supported by the server</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>The password is not valid</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Booking is closed</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>You have been blacklisted on this server</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Server is full</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Server says: “{0}”</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Selected car doesn’t have proper sound</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Select some other car.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Can’t replace car’s sound</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Make sure there is enough space and original files could be removed.</value>
+  </data>
 </root>

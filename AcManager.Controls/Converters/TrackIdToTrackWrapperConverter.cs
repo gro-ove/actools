@@ -14,7 +14,7 @@ namespace AcManager.Controls.Converters {
 
             var delimiter = id.IndexOf('/');
             if (delimiter != -1) {
-                return new AcItemWrapper(TracksManager.Instance.GetLayoutById(id));
+                return new AcItemWrapper(TracksManager.Instance.GetLayoutByShortenId(id));
                 // id = id.Substring(0, delimiter);
             }
 

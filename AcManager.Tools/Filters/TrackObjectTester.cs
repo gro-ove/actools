@@ -3,7 +3,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class TrackObjectTester : ITester<TrackObject> {
-        public static TrackObjectTester Instance = new TrackObjectTester();
+        public static readonly TrackObjectTester Instance = new TrackObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {

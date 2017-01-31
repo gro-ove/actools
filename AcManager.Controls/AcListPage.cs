@@ -91,6 +91,14 @@ namespace AcManager.Controls {
             }
         }
 
+        public static readonly DependencyProperty SaveScrollKeyProperty = DependencyProperty.Register(nameof(SaveScrollKey), typeof(string),
+                typeof(AcListPage));
+
+        public string SaveScrollKey {
+            get { return (string)GetValue(SaveScrollKeyProperty); }
+            set { SetValue(SaveScrollKeyProperty, value); }
+        }
+
         private void OnAddButtonClick(object sender, RoutedEventArgs e) {
             var command = AddNewCommand;
             if (command?.IsAbleToExecute == true) {

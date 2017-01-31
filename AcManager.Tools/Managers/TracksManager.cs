@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SharedMemory;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -28,10 +29,20 @@ namespace AcManager.Tools.Managers {
             return base.GetById(id.Contains('/') ? id.Split('/')[0] : id);
         }
 
+        /// <summary>
+        /// If ID is a Layout ID, main object will be returned!
+        /// </summary>
+        /// <param name="id">ID or Layout ID.</param>
+        /// <returns>Track with provided ID (or main object in case of Layout ID).</returns>
         public override Task<TrackObject> GetByIdAsync(string id) {
             return base.GetByIdAsync(id.Contains('/') ? id.Split('/')[0] : id);
         }
-        
+
+        [CanBeNull]
+        public AcItemWrapper GetWrappedByIdWithLayout([NotNull] string id) {
+            return GetWrapperById(id.Contains('/') ? id.Split('/')[0] : id);
+        }
+
         [CanBeNull]
         public AcItemWrapper GetWrapperByKunosId([NotNull] string id) {
             var layout = GetWrapperById(id);
@@ -95,6 +106,29 @@ namespace AcManager.Tools.Managers {
         public TrackObjectBase GetLayoutById([NotNull] string id) {
             if (!id.Contains('/')) return base.GetById(id);
             return base.GetById(id.Split('/')[0])?.GetLayoutById(id);
+        }
+
+        /// <summary>
+        /// Specially for some damaged entries collected by the old version of PlayerStatsManager. The new
+        /// one is still can record shorten IDs, but now — only when race.ini changed after  the start, 
+        /// and how can that happen?
+        /// </summary>
+        [CanBeNull]
+        public TrackObjectBase GetLayoutByShortenId([NotNull] string id) {
+            if (!id.Contains('/')) return base.GetById(id);
+
+            var s = id.Split('/');
+            var b = base.GetById(s[0]);
+            if (b == null) return null;
+
+            var r = b.GetLayoutById(id);
+            if (r != null) return r;
+
+            if (s[1].Length == AcSharedConsts.LayoutIdSize && b.MultiLayouts != null) {
+                return b.MultiLayouts.FirstOrDefault(l => l.LayoutId?.StartsWith(s[1]) == true);
+            }
+
+            return null;
         }
 
         [ItemCanBeNull]

@@ -46,6 +46,9 @@ namespace AcManager.Tools.Filters {
 
         public bool Test(AcJsonObjectNew obj, string key, ITestEntry value) {
             switch (key) {
+                case "dlc":
+                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
+
                 case "desc":
                 case "description":
                     return value.Test(obj.Description);

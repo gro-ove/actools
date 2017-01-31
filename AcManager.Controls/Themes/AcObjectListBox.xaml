@@ -16,15 +16,16 @@
                         <DockPanel DockPanel.Dock="Top" Margin="8"
                                 Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="{x:Static ac:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
-                            <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                    mui:WatermarkService.Watermark="*"
-                                    Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
+                                    Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}"
+                                    SaveKey="{TemplateBinding UserFiltersKey}" />
                         </DockPanel>
                         <ListBox x:Name="PART_ListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1" VirtualizingPanel.CacheLengthUnit="Page"
                                 VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
                                 SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
-                                ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}" />
+                                ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}"
+                                mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}" />
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>

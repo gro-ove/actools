@@ -23,8 +23,8 @@
                 <Label Content="Simple filtering" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.DeleteConfirmation}" ToolTip="Keep in mind that all removed content always can be restored from Recycle Bin">
-                <Label Content="Confirm before removal" />
+            <CheckBox IsChecked="{Binding Holder.DeleteConfirmation}" ToolTip="{x:Static g:AppStrings.Settings_Content_ConfirmBeforeRemoval_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Content_ConfirmBeforeRemoval}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.ScrollAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically_Tooltip}">
@@ -63,11 +63,15 @@
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.CarsYearPostfix}">
-                <Label Content="Add year postfix to cars’ names" />
+                <Label Content="{x:Static g:AppStrings.Settings_Content_AddYearPostfix}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}" ToolTip="I hope AC won’t brake because of it with some future update">
                 <Label Content="Remove skin’s priority field on saving" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.NewLayout}" ToolTip="New layout for Content/Cars page" mui:NewMarkService.New="True">
+                <Label Content="New layout" />
             </CheckBox>
 
             <!--showrooms specific-->

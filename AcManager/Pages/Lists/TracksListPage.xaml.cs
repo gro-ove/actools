@@ -15,20 +15,20 @@ namespace AcManager.Pages.Lists {
     public partial class TracksListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new TracksListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(TrackObjectTester.Instance, filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(TrackObjectTester.Instance, filter));
             InitializeComponent();
         }
 
-        private void TracksListPage_OnLoaded(object sender, RoutedEventArgs e) {
-            ((TracksListPageViewModel)DataContext).Load();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private void TracksListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((TracksListPageViewModel)DataContext).Unload();
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
         }
 
-        private class TracksListPageViewModel : AcListPageViewModel<TrackObject> {
-            public TracksListPageViewModel(IFilter<TrackObject> listFilter)
+        private class ViewModel : AcListPageViewModel<TrackObject> {
+            public ViewModel(IFilter<TrackObject> listFilter)
                 : base(TracksManager.Instance, listFilter) {
             }
 

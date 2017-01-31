@@ -4,6 +4,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using StringBasedFilter;
 
 namespace AcManager.Tools.Profile {
     public partial class PlayerStatsManager {
@@ -11,6 +12,20 @@ namespace AcManager.Tools.Profile {
         /// Velocity by Y axis.
         /// </summary>
         public static float OptionTyreWearScale = 10f;
+
+        public class FilteredStats : OverallStats {
+            private static IFilter<SessionStats> _filter;
+
+            public FilteredStats(string filter) : base(new Storage()) {
+                _filter = Filter.Create(new SessionStatsTester(), filter);
+            }
+
+            public override void Extend(SessionStats session) {
+                if (_filter.Test(session)) {
+                    base.Extend(session);
+                }
+            }
+        }
 
         public class OverallStats : NotifyPropertyChanged {
             private double _maxDistancePerCar;
@@ -36,13 +51,14 @@ namespace AcManager.Tools.Profile {
             /// <summary>
             /// Don’t forget to set Storage later if needed.
             /// </summary>
+            [JsonConstructor]
             public OverallStats() { }
 
             public OverallStats(IStorage storage) {
                 Storage = storage;
             }
 
-            [JsonIgnore, CanBeNull]
+            [JsonIgnore]
             public IStorage Storage { get; set; }
 
             [JsonProperty]
@@ -319,36 +335,40 @@ namespace AcManager.Tools.Profile {
             [JsonIgnore]
             public double TotalTyreWearRounded => Math.Floor(TotalTyreWear * OptionTyreWearScale);
 
-            public void Extend(SessionStats session) {
-                /* extremums */
+            private void UpdateMaxDistancePerCar([NotNull] SessionStats session) {
+                var drivenDistance = Storage.GetDouble(KeyDistancePerCarPrefix + session.CarId) + session.Distance;
+                Storage.Set(KeyDistancePerCarPrefix + session.CarId, drivenDistance);
+
+                if (session.CarId == MaxDistancePerCarCarId) {
+                    MaxDistancePerCar += session.Distance;
+                } else if (drivenDistance > MaxDistancePerCar) {
+                    MaxDistancePerCar = drivenDistance;
+                    MaxDistancePerCarCarId = session.CarId;
+                }
+            }
+
+            private void UpdateMaxDistancePerTrack([NotNull] SessionStats session) {
+                var drivenDistance = Storage.GetDouble(KeyDistancePerTrackPrefix + session.TrackId) + session.Distance;
+                Storage.Set(KeyDistancePerTrackPrefix + session.TrackId, drivenDistance);
+
+                if (session.TrackId == MaxDistancePerTrackTrackId) {
+                    MaxDistancePerTrack += session.Distance;
+                } else if (drivenDistance > MaxDistancePerTrack) {
+                    MaxDistancePerTrack = drivenDistance;
+                    MaxDistancePerTrackTrackId = session.TrackId;
+                }
+            }
+
+            public virtual void Extend([NotNull] SessionStats session) {
+                /* per car/track */
                 if (Storage == null) {
                     Storage = new Storage();
                 }
 
-                {
-                    var drivenDistance = Storage.GetDouble(KeyDistancePerCarPrefix + session.CarId) + session.Distance;
-                    Storage.Set(KeyDistancePerCarPrefix + session.CarId, drivenDistance);
+                UpdateMaxDistancePerCar(session);
+                UpdateMaxDistancePerTrack(session);
 
-                    if (session.CarId == MaxDistancePerCarCarId) {
-                        MaxDistancePerCar += session.Distance;
-                    } else if (drivenDistance > MaxDistancePerCar) {
-                        MaxDistancePerCar = drivenDistance;
-                        MaxDistancePerCarCarId = session.CarId;
-                    }
-                }
-
-                {
-                    var drivenDistance = Storage.GetDouble(KeyDistancePerTrackPrefix + session.TrackId) + session.Distance;
-                    Storage.Set(KeyDistancePerTrackPrefix + session.TrackId, drivenDistance);
-
-                    if (session.TrackId == MaxDistancePerTrackTrackId) {
-                        MaxDistancePerTrack += session.Distance;
-                    } else if (drivenDistance > MaxDistancePerTrack) {
-                        MaxDistancePerTrack = drivenDistance;
-                        MaxDistancePerTrackTrackId = session.TrackId;
-                    }
-                }
-
+                /* extremums */
                 if (session.MaxSpeed > MaxSpeed) {
                     MaxSpeed = session.MaxSpeed;
                     MaxSpeedCarId = session.CarId;
@@ -383,6 +403,7 @@ namespace AcManager.Tools.Profile {
             }
 
             public void CopyFrom(OverallStats updated) {
+                Storage = updated.Storage;
                 foreach (var p in typeof(OverallStats).GetProperties().Where(p => p.CanWrite)) {
                     p.SetValue(this, p.GetValue(updated, null), null);
                 }

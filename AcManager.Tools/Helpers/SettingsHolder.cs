@@ -583,6 +583,18 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+            
+            private List<string> _ignoredInterfaces;
+
+            public IEnumerable<string> IgnoredInterfaces {
+                get { return _ignoredInterfaces ?? (_ignoredInterfaces = ValuesStorage.GetStringList("Settings.OnlineSettings.IgnoredInterfaces").ToList()); }
+                set {
+                    if (Equals(value, _ignoredInterfaces)) return;
+                    _ignoredInterfaces = value.ToList();
+                    ValuesStorage.Set("Settings.OnlineSettings.IgnoredInterfaces", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _hideWhileRacing;
 
@@ -607,6 +619,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _copyFilterToSystemForOculus)) return;
                     _copyFilterToSystemForOculus = value;
                     ValuesStorage.Set("Settings.DriveSettings.CopyFilterToSystemForOculus", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sidekickIntegration;
+
+            public bool SidekickIntegration {
+                get { return _sidekickIntegration ?? (_sidekickIntegration = ValuesStorage.GetBool("Settings.DriveSettings.SidekickIntegration", true)).Value; }
+                set {
+                    if (Equals(value, _sidekickIntegration)) return;
+                    _sidekickIntegration = value;
+                    ValuesStorage.Set("Settings.DriveSettings.SidekickIntegration", value);
                     OnPropertyChanged();
                 }
             }
@@ -1058,6 +1082,18 @@ namespace AcManager.Tools.Helpers {
 
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
+
+            private bool? _newLayout;
+
+            public bool NewLayout {
+                get { return _newLayout ?? (_newLayout = ValuesStorage.GetBool("Settings.ContentSettings.NewLayout", true)).Value; }
+                set {
+                    if (Equals(value, _newLayout)) return;
+                    _newLayout = value;
+                    ValuesStorage.Set("Settings.ContentSettings.NewLayout", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private int? _loadingConcurrency;
 

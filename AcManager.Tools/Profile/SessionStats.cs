@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
+using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -40,10 +42,10 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public DateTime StartedAt { get; internal set; }
 
-            [JsonProperty]
+            [JsonProperty, CanBeNull]
             public string CarId { get; internal set; }
 
-            [JsonProperty]
+            [JsonProperty, CanBeNull]
             public string TrackId { get; internal set; }
 
             [JsonProperty]
@@ -340,6 +342,31 @@ namespace AcManager.Tools.Profile {
             private Stopwatch _statusStopwatch;
             #endregion
 
+            [CanBeNull]
+            private string ThisOr([CanBeNull] string s, int limit, ref IniFile raceIni, string key) {
+                if (s?.Length == limit) {
+                    // ID could be shorten, let’s try to find a longer version
+                    var actual = (raceIni ?? (raceIni = new IniFile(FileUtils.GetRaceIniFilename())))["RACE"].GetNonEmpty(key);
+                    if (actual != null && actual.StartsWith(s)) {
+                        return actual;
+                    }
+                }
+
+                return s;
+            }
+
+            [NotNull]
+            private string GetCarId(AcSharedStaticInfo info, [CanBeNull] ref IniFile raceIni) {
+                return ThisOr(info.CarModel, AcSharedConsts.IdSize, ref raceIni, @"MODEL") ?? "";
+            }
+
+            [NotNull]
+            private string GetTrackLayoutId(AcSharedStaticInfo info, [CanBeNull] ref IniFile raceIni) {
+                var trackBaseId = ThisOr(info.Track, AcSharedConsts.IdSize, ref raceIni, @"TRACK") ?? "";
+                var layoutId = ThisOr(info.TrackConfiguration, AcSharedConsts.LayoutIdSize, ref raceIni, @"CONFIG_TRACK");
+                return string.IsNullOrWhiteSpace(layoutId) ? trackBaseId : $@"{trackBaseId}/{layoutId}";
+            }
+
             public void Extend(AcShared previous, AcShared current, TimeSpan time) {
                 if (current == null) {
                     _offroad = false;
@@ -361,9 +388,9 @@ namespace AcManager.Tools.Profile {
                 }*/
 
                 if (CarId == null) {
-                    CarId = info.CarModel;
-                    TrackId = string.IsNullOrWhiteSpace(info.TrackConfiguration) ? info.Track :
-                            $@"{info.Track}/{info.TrackConfiguration}";
+                    IniFile raceIni = null;
+                    CarId = GetCarId(info, ref raceIni);
+                    TrackId = GetTrackLayoutId(info, ref raceIni);
                     Penalties = info.PenaltiesEnabled == 1;
                 }
 

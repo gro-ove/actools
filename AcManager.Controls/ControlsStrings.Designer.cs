@@ -61,7 +61,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author, version &amp; URL.
+        ///   Looks up a localized string similar to Author, version &amp; URL (Ctrl+click to follow the link if set).
         /// </summary>
         public static string AcObject_Author_Tooltip {
             get {

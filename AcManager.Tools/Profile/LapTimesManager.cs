@@ -10,6 +10,7 @@ using AcTools.LapTimes;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -33,6 +34,8 @@ namespace AcManager.Tools.Profile {
         public void SetListener() {
             GameWrapper.Ended += OnRaceFinished;
         }
+
+        public event EventHandler NewEntryAdded;
 
         private void OnRaceFinished(object sender, GameEndedArgs e) {
             var basic = e.StartProperties.BasicProperties;
@@ -66,9 +69,13 @@ namespace AcManager.Tools.Profile {
                     }
                 }
             }
-            
+
             if (time.HasValue && carId != null && trackId != null) {
+                Logging.Here();
                 AddEntry(new LapTimeEntry(SourceId, carId, trackId, DateTime.Now, time.Value));
+                NewEntryAdded?.Invoke(this, EventArgs.Empty);
+            } else {
+                Logging.Warning($"Can’t save new lap time: time={time}, car={carId}, track={trackId}");
             }
         }
 

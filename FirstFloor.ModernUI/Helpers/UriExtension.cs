@@ -8,13 +8,13 @@ namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
     public static class UriExtension {
         [Pure, NotNull]
-        public static Uri FromFilenameSafe(string filename) {
+        public static Uri FromFilenameSafe([NotNull] string filename) {
             return new Uri(filename.Replace("%", "%25"));
             // return new Uri(filename);
         }
 
         [Pure, NotNull, StringFormatMethod("uri")]
-        public static string Format(string uri, params object[] args) {
+        public static string Format([NotNull] string uri, params object[] args) {
             return string.Format(uri, args.Select(x => {
                 if (x == null || x is double || x is float || x is int) return x;
                 return Uri.EscapeDataString(x.ToString());
@@ -28,12 +28,12 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="args">Arguments (will be escaped)</param>
         /// <returns>Relative URI</returns>
         [Pure, NotNull, StringFormatMethod("uri")]
-        public static Uri Create(string uri, params object[] args) {
+        public static Uri Create([NotNull] string uri, params object[] args) {
             return new Uri(Format(uri, args), UriKind.Relative);
         }
 
         [Pure, NotNull]
-        public static Uri AddQueryParam(this Uri uri, Dictionary<string, object> dictionary) {
+        public static Uri AddQueryParam([NotNull] this Uri uri, [CanBeNull] Dictionary<string, object> dictionary) {
             if (dictionary == null) return uri;
 
             var query = string.Join("&", from param in dictionary
@@ -44,7 +44,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure, NotNull]
-        public static Uri AddQueryParam(this Uri uri, string key, object value) {
+        public static Uri AddQueryParam([NotNull] this Uri uri, [NotNull] string key, object value) {
             if (value == null) return uri;
 
             var query = key + "=" + Uri.EscapeDataString(value.ToString());
@@ -53,7 +53,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure, CanBeNull]
-        public static string GetQueryParam(this Uri uri, [Localizable(false)] string key) {
+        public static string GetQueryParam([NotNull] this Uri uri, [NotNull, Localizable(false)] string key) {
             key = key + "=";
             return (from s in uri.ToString().Split('?', '&')
                     where s.StartsWith(key)
@@ -68,7 +68,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
-        public static T GetQueryParamEnum<T>(this Uri uri, string key) where T : struct, IConvertible {
+        public static T GetQueryParamEnum<T>([NotNull] this Uri uri, string key) where T : struct, IConvertible {
             var value = uri.GetQueryParam(key);
             if (value == null) return default(T);
             return (T)Enum.Parse(typeof(T), value);

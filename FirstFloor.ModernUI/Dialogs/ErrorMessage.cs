@@ -9,12 +9,13 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Dialogs {
     public static class ErrorMessage {
         public static void Show(NonfatalErrorEntry entry) {
-            var text = (entry.Exception == null ? $"{entry.DisplayName}." : $"{entry.DisplayName}:\n\n[b][mono]{entry.Exception.Message}[/mono][/b]") +
+            var text = (entry.Exception == null
+                    ? $"{entry.DisplayName.TrimEnd('.')}." : $"{entry.DisplayName.TrimEnd('.')}:\n\n[b][mono]{entry.Exception.Message}[/mono][/b]") +
                     (entry.Commentary == null ? "" : $"\n\n[i]{entry.Commentary}[/i]");
             var dlg = new ModernDialog {
                 Title = UiStrings.Common_Oops,
                 Content = new ScrollViewer {
-                    Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                    Content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },

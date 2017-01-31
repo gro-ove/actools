@@ -128,8 +128,8 @@
     <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Commands.cs" />
     <Compile Include="AcObjectsNew\AcIniObject.cs" />
-    <Compile Include="AcObjectsNew\AcJsonObjectNew_Commands.cs" />
-    <Compile Include="AcObjectsNew\AcJsonObjectNew_Tags.cs" />
+    <Compile Include="AcObjectsNew\AcJsonObjectNew.Commands.cs" />
+    <Compile Include="AcObjectsNew\AcJsonObjectNew.Tags.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew.cs" />
     <Compile Include="AcObjectsNew\AcObjectEventArgs.cs" />
     <Compile Include="AcObjectsNew\AcObjectEventHandler.cs" />
@@ -269,6 +269,7 @@
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
+    <Compile Include="Holder.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
     <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />
@@ -287,11 +288,14 @@
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
+    <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\CarObject.Stats.cs" />
     <Compile Include="Objects\ServerPresetAssistState.cs" />
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
     <Compile Include="Objects\ServerSessionEntry.cs" />
     <Compile Include="Objects\ServerWeatherEntry.cs" />
+    <Compile Include="Objects\TrackObjectBase.Stats.cs" />
     <Compile Include="Objects\TrackObjectBase.Kunos.cs" />
     <Compile Include="Objects\UserChampionshipDriver.cs" />
     <Compile Include="Objects\UserChampionshipObject.cs" />
@@ -347,6 +351,7 @@
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
     <Compile Include="SemiGui\GameStartedArgs.cs" />
     <Compile Include="SemiGui\IBookingUi.cs" />
+    <Compile Include="Helpers\SidekickHelper.cs" />
     <Compile Include="SharedMemory\AcFlagType.cs" />
     <Compile Include="SharedMemory\AcSharedSessionType.cs" />
     <Compile Include="SharedMemory\AcSharedMemoryStatus.cs" />

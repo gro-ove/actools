@@ -1329,18 +1329,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Car_PackExistingDataMessage" xml:space="preserve">
     <value>Packed data already exists. Replace it?[br][br]Original “data.acd” will be moved to the Recycle Bin.</value>
   </data>
-  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
-    <value>Selected car doesn’t have proper sound</value>
-  </data>
-  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
-    <value>Select some other car.</value>
-  </data>
-  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
-    <value>Can’t replace car’s sound</value>
-  </data>
-  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
-    <value>Make sure there is enough space and original files could be removed.</value>
-  </data>
   <data name="Common_CannotFindObjectById" xml:space="preserve">
     <value>Can’t find object with provided ID</value>
   </data>
@@ -2372,7 +2360,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>One More Thing</value>
   </data>
   <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
-    <value>You have to specify power and torque values first</value>
+    <value>You have to specify power and torque values first.</value>
   </data>
   <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
     <value>Scale Curves To Power/Torque Values</value>
@@ -3534,5 +3522,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="AcSettings_SessionInformation" xml:space="preserve">
     <value>Session information</value>
+  </data>
+  <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
+    <value>Add year postfix to cars’ names</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Confirm before removal</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>Keep in mind that all removed content always can be restored from Recycle Bin</value>
   </data>
 </root>

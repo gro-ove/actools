@@ -16,7 +16,7 @@ namespace AcManager.Tools.Objects {
                 try {
                     _kunosCarsIds = File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.Value))
                                        .Select(x => x.Split('/'))
-                                       .Where(x => x.Length > 3 && x[1] == "cars" && x[0].EndsWith("event:"))
+                                       .Where(x => x.Length > 3 && x[1] == @"cars" && x[0].EndsWith(@"event:"))
                                        .Select(x => x[2].ToLowerInvariant())
                                        .Distinct()
                                        .ToArray();
@@ -29,37 +29,24 @@ namespace AcManager.Tools.Objects {
             return _kunosCarsIds.Contains(id);
         }
 
-        private KunosDlcInformation _dlc;
-        private bool _dlcSet;
-
-        [CanBeNull]
-        public KunosDlcInformation Dlc {
-            get {
-                if (!_dlcSet) {
-                    _dlcSet = true;
-
-                    if (Author == AuthorKunos) {
-                        var dlcs = DataProvider.Instance.DlcInformations;
-                        for (var i = dlcs.Length - 1; i >= 0; i--) {
-                            var dlc = dlcs[i];
-                            if (dlc.Cars.Contains(Id)) {
-                                _dlc = dlc;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                return _dlc;
-            }
-        }
-
         public override string VersionInfoDisplay {
             get {
                 var dlc = Dlc;
                 return dlc != null ? $@"{AuthorKunos} ([url=""http://store.steampowered.com/app/{dlc.Id}/""]{dlc.ShortName}[/url])" :
                         base.VersionInfoDisplay;
             }
+        }
+
+        protected override KunosDlcInformation GetDlc() {
+            var dlcs = DataProvider.Instance.DlcInformations;
+            for (var i = dlcs.Length - 1; i >= 0; i--) {
+                var dlc = dlcs[i];
+                if (dlc.Cars.Contains(Id)) {
+                    return dlc;
+                }
+            }
+
+            return null;
         }
     }
 }

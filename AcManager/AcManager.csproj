@@ -300,6 +300,9 @@
     <Compile Include="Pages\Lists\UserChampionshipsListPage.xaml.cs">
       <DependentUpon>UserChampionshipsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Miscellaneous\MostUsed.xaml.cs">
+      <DependentUpon>MostUsed.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Miscellaneous\PlayerStats.xaml.cs">
       <DependentUpon>PlayerStats.xaml</DependentUpon>
     </Compile>
@@ -781,6 +784,10 @@
     <Page Include="Pages\Lists\UserChampionshipsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Miscellaneous\MostUsed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Miscellaneous\PlayerStats.xaml">
       <SubType>Designer</SubType>

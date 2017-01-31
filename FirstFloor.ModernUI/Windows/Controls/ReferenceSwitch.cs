@@ -5,7 +5,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(nameof(NonNull))]
     public class ReferenceSwitch : BaseSwitch {
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(nameof(Value), typeof(object),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public object Value {
             get { return GetValue(ValueProperty); }
@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty NullProperty = DependencyProperty.Register(nameof(Null), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement Null {
             get { return (UIElement)GetValue(NullProperty); }
@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty NonNullProperty = DependencyProperty.Register(nameof(NonNull), typeof(UIElement),
-                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+                typeof(ReferenceSwitch), new FrameworkPropertyMetadata(null, OnChildDefiningPropertyChanged));
 
         public UIElement NonNull {
             get { return (UIElement)GetValue(NonNullProperty); }

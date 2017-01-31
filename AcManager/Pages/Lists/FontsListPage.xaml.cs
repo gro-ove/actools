@@ -13,16 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class FontsListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new FontsListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
             InitializeComponent();
         }
 
-        private void FontsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((FontsListPageViewModel)DataContext).Unload();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private class FontsListPageViewModel : AcListPageViewModel<FontObject> {
-            public FontsListPageViewModel(IFilter<FontObject> listFilter)
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
+        }
+
+        private class ViewModel : AcListPageViewModel<FontObject> {
+            public ViewModel(IFilter<FontObject> listFilter)
                 : base(FontsManager.Instance, listFilter) {
             }
 

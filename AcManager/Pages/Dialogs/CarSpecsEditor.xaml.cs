@@ -165,8 +165,8 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            TorqueGraph = TorqueGraph.ScaleTo(torque);
-            PowerGraph = PowerGraph.ScaleTo(power);
+            TorqueGraph = new GraphData(TorqueGraph.ToLut().ScaleTo(torque));
+            PowerGraph = new GraphData(PowerGraph.ToLut().ScaleTo(power));
         }
 
         private void RecalculateAndScaleCurves(object sender, RoutedEventArgs e) {
@@ -191,8 +191,12 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            TorqueGraph = new GraphData(torque).ScaleTo(maxTorque);
-            PowerGraph = new GraphData(torque.Transform(x => x.X * x.Y)).ScaleTo(maxPower);
+            torque.ScaleToSelf(maxTorque);
+            TorqueGraph = new GraphData(torque);
+
+            torque.TransformSelf(x => x.X * x.Y);
+            torque.ScaleToSelf(maxPower);
+            PowerGraph = new GraphData(torque);
         }
 
         private void RecalculateCurves(object sender, RoutedEventArgs e) {

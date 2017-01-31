@@ -2,22 +2,20 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Profile;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using StringBasedFilter;
 
 namespace AcManager.Pages.Miscellaneous {
-    /// <summary>
-    /// Interaction logic for LapTimes.xaml
-    /// </summary>
     public partial class PlayerStats : ILoadableContent, IParametrizedUriContent {
         private string _filter;
-        private PlayerStatsManager.OverallStats _stats;
+        private Holder<PlayerStatsManager.OverallStats> _stats;
 
         public void OnUri(Uri uri) {
             _filter = uri.GetQueryParam("Filter");
@@ -32,16 +30,18 @@ namespace AcManager.Pages.Miscellaneous {
                 if (cancellationToken.IsCancellationRequested) return;
             }
 
-            _stats = _filter == null ? PlayerStatsManager.Instance.Overall : await PlayerStatsManager.Instance.GetFilteredAsync(_filter);
+            _stats = _filter == null ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : await PlayerStatsManager.Instance.GetFilteredAsync(_filter);
+            this.OnActualUnload(() => _stats.Dispose());
         }
 
         public void Load() {
-            _stats = _filter == null ? PlayerStatsManager.Instance.Overall : PlayerStatsManager.Instance.GetFiltered(_filter);
+            _stats = _filter == null ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : PlayerStatsManager.Instance.GetFiltered(_filter);
+            this.OnActualUnload(() => _stats.Dispose());
         }
 
         public void Initialize() {
             InitializeComponent();
-            DataContext = new ViewModel(_stats);
+            DataContext = new ViewModel(_stats.Value, _filter);
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -49,8 +49,11 @@ namespace AcManager.Pages.Miscellaneous {
         public class ViewModel : NotifyPropertyChanged {
             public PlayerStatsManager.OverallStats Stats { get; }
 
-            public ViewModel(PlayerStatsManager.OverallStats stats) {
+            public string Filter { get; }
+
+            public ViewModel(PlayerStatsManager.OverallStats stats, string filter) {
                 Stats = stats;
+                Filter = filter;
             }
 
             private AsyncCommand _rebuildOverallCommand;
@@ -71,26 +74,6 @@ namespace AcManager.Pages.Miscellaneous {
                     _columns = value;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        private bool _loaded;
-
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
-            _loaded = true;
-            PlayerStatsManager.Instance.NewSessionAdded += NewSessionAdded;
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (!_loaded) return;
-            _loaded = false;
-            PlayerStatsManager.Instance.NewSessionAdded -= NewSessionAdded;
-        }
-
-        private void NewSessionAdded(object sender, PlayerStatsManager.SessionStatsEventArgs e) {
-            if (_filter != null && PlayerStatsManager.FilterTest(_filter, e.Stats)) {
-                Model.Stats.Extend(e.Stats);
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 
@@ -9,61 +10,50 @@ namespace AcManager.Tools {
     [Localizable(false)]
     public class UriProvider : IAcObjectsUriProvider {
         Uri IAcObjectsUriProvider.GetUri(AcObjectNew obj) {
-            if (obj is CarObject) {
-#if DEBUG
-                return UriExtension.Create("/Pages/Selected/SelectedCarPage_New.xaml?Id={0}", obj.Id);
-#else
-                return UriExtension.Create("/Pages/Selected/SelectedCarPage.xaml?Id={0}", obj.Id);
-#endif
+            switch (obj?.GetType().Name) {
+                case nameof(CarObject):
+                    return UriExtension.Create(
+                            SettingsHolder.Content.NewLayout ? "/Pages/Selected/SelectedCarPage_New.xaml?Id={0}" :
+                                    "/Pages/Selected/SelectedCarPage.xaml?Id={0}",
+                            obj.Id);
+
+                case nameof(TrackObject):
+                case nameof(TrackObjectBase):
+                case nameof(TrackExtraLayoutObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedTrackPage.xaml?Id={0}", obj.Id);
+
+                case nameof(ShowroomObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedShowroomPage.xaml?Id={0}", obj.Id);
+
+                case nameof(WeatherObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedWeatherPage.xaml?Id={0}", obj.Id);
+
+                case nameof(ReplayObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedReplayPage.xaml?Id={0}", obj.Id);
+
+                case nameof(FontObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedFontPage.xaml?Id={0}", obj.Id);
+
+                case nameof(PpFilterObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedPpFilterPage.xaml?Id={0}", obj.Id);
+
+                case nameof(PythonAppObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedPythonAppPage.xaml?Id={0}", obj.Id);
+
+                case nameof(UserChampionshipObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedUserChampionship.xaml?Id={0}", obj.Id);
+
+                case nameof(CarSkinObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedCarSkinPage.xaml?Id={0}&CarId={1}", obj.Id, ((CarSkinObject)obj).CarId);
+
+                case nameof(CarSetupObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedCarSetupPage.xaml?Id={0}&CarId={1}", obj.Id, ((CarSetupObject)obj).CarId);
+
+                case nameof(ServerPresetObject):
+                    return UriExtension.Create("/Pages/ServerPreset/SelectedPage.xaml?Id={0}", obj.Id);
             }
 
-            if (obj is TrackObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedTrackPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is ShowroomObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedShowroomPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is WeatherObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedWeatherPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is ReplayObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedReplayPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is FontObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedFontPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is PpFilterObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedPpFilterPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is PythonAppObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedPythonAppPage.xaml?Id={0}", obj.Id);
-            }
-
-            if (obj is UserChampionshipObject) {
-                return UriExtension.Create("/Pages/Selected/SelectedUserChampionship.xaml?Id={0}", obj.Id);
-            }
-
-            var carSkinObject = obj as CarSkinObject;
-            if (carSkinObject != null) {
-                return UriExtension.Create("/Pages/Selected/SelectedCarSkinPage.xaml?Id={0}&CarId={1}", carSkinObject.Id, carSkinObject.CarId);
-            }
-
-            var carSetupObject = obj as CarSetupObject;
-            if (carSetupObject != null) {
-                return UriExtension.Create("/Pages/Selected/SelectedCarSetupPage.xaml?Id={0}&CarId={1}", carSetupObject.Id, carSetupObject.CarId);
-            }
-
-            if (obj is ServerPresetObject) {
-                return UriExtension.Create("/Pages/ServerPreset/SelectedPage.xaml?Id={0}", obj.Id);
-            }
-
-            throw new NotImplementedException("Not supported type: " + obj.GetType());
+            throw new NotImplementedException("Not supported type: " + obj?.GetType().Name);
         }
     }
 }

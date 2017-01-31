@@ -2029,42 +2029,6 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t replace car’s sound.
-        /// </summary>
-        public static string Car_ReplaceSound_CannotReplace {
-            get {
-                return ResourceManager.GetString("Car_ReplaceSound_CannotReplace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure there is enough space and original files could be removed..
-        /// </summary>
-        public static string Car_ReplaceSound_CannotReplace_Commentary {
-            get {
-                return ResourceManager.GetString("Car_ReplaceSound_CannotReplace_Commentary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selected car doesn’t have proper sound.
-        /// </summary>
-        public static string Car_ReplaceSound_WrongCar {
-            get {
-                return ResourceManager.GetString("Car_ReplaceSound_WrongCar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select some other car..
-        /// </summary>
-        public static string Car_ReplaceSound_WrongCar_Commentary {
-            get {
-                return ResourceManager.GetString("Car_ReplaceSound_WrongCar_Commentary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Skin: {0}.
         /// </summary>
         public static string Car_SkinFormat {
@@ -2578,7 +2542,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have to specify power and torque values first.
+        ///   Looks up a localized string similar to You have to specify power and torque values first..
         /// </summary>
         public static string CarSpecs_SpecifyPowerAndTorqueFirst {
             get {
@@ -6111,6 +6075,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add year postfix to cars’ names.
+        /// </summary>
+        public static string Settings_Content_AddYearPostfix {
+            get {
+                return ResourceManager.GetString("Settings_Content_AddYearPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cars:.
         /// </summary>
         public static string Settings_Content_CarsHeader {
@@ -6125,6 +6098,24 @@ namespace AcManager {
         public static string Settings_Content_ChangeBrandIcon {
             get {
                 return ResourceManager.GetString("Settings_Content_ChangeBrandIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm before removal.
+        /// </summary>
+        public static string Settings_Content_ConfirmBeforeRemoval {
+            get {
+                return ResourceManager.GetString("Settings_Content_ConfirmBeforeRemoval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep in mind that all removed content always can be restored from Recycle Bin.
+        /// </summary>
+        public static string Settings_Content_ConfirmBeforeRemoval_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Content_ConfirmBeforeRemoval_Tooltip", resourceCulture);
             }
         }
         

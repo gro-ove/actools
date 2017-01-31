@@ -10,21 +10,28 @@ namespace AcManager.Tools.Profile {
     public class LapTimeWrapped : NotifyPropertyChanged {
         public LapTimeWrapped(LapTimeEntry entry) {
             Entry = entry;
-            Prepare().Forget();
-        }
-
-        private async Task Prepare() {
-            Car = await CarsManager.Instance.GetByIdAsync(Entry.CarId);
-            Track = await TracksManager.Instance.GetLayoutByKunosIdAsync(Entry.TrackId);
         }
 
         public LapTimeEntry Entry { get; }
+
+        private bool _preparedCar;
+
+        private async Task PrepareCar() {
+            if (!_preparedCar) {
+                _preparedCar = true;
+                Car = await CarsManager.Instance.GetByIdAsync(Entry.CarId);
+            }
+            Track = await TracksManager.Instance.GetLayoutByKunosIdAsync(Entry.TrackId);
+        }
 
         private CarObject _car;
 
         [CanBeNull]
         public CarObject Car {
-            get { return _car; }
+            get {
+                PrepareCar().Forget();
+                return _car;
+            }
             set {
                 if (Equals(value, _car)) return;
                 _car = value;
@@ -32,11 +39,23 @@ namespace AcManager.Tools.Profile {
             }
         }
 
+        private bool _preparedTrack;
+
+        private async Task PrepareTrack() {
+            if (!_preparedTrack) {
+                _preparedTrack = true;
+                Track = await TracksManager.Instance.GetLayoutByKunosIdAsync(Entry.TrackId);
+            }
+        }
+
         private TrackObjectBase _track;
 
         [CanBeNull]
         public TrackObjectBase Track {
-            get { return _track; }
+            get {
+                PrepareTrack().Forget();
+                return _track;
+            }
             set {
                 if (Equals(value, _track)) return;
                 _track = value;

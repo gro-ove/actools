@@ -1447,6 +1447,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t replace car’s sound.
+        /// </summary>
+        public static string Car_ReplaceSound_CannotReplace {
+            get {
+                return ResourceManager.GetString("Car_ReplaceSound_CannotReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure there is enough space and original files could be removed..
+        /// </summary>
+        public static string Car_ReplaceSound_CannotReplace_Commentary {
+            get {
+                return ResourceManager.GetString("Car_ReplaceSound_CannotReplace_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected car doesn’t have proper sound.
+        /// </summary>
+        public static string Car_ReplaceSound_WrongCar {
+            get {
+                return ResourceManager.GetString("Car_ReplaceSound_WrongCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select some other car..
+        /// </summary>
+        public static string Car_ReplaceSound_WrongCar_Commentary {
+            get {
+                return ResourceManager.GetString("Car_ReplaceSound_WrongCar_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car’s parent is missing.
         /// </summary>
         public static string CarParentIsMissing {
@@ -3045,6 +3081,60 @@ namespace AcManager.Tools {
         public static string OfficialStarter_UpdateAC {
             get {
                 return ResourceManager.GetString("OfficialStarter_UpdateAC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have been blacklisted on this server.
+        /// </summary>
+        public static string Online_BookingResult_Blacklisted {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_Blacklisted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Booking is closed.
+        /// </summary>
+        public static string Online_BookingResult_Closed {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_Closed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, select a car supported by the server.
+        /// </summary>
+        public static string Online_BookingResult_IllegalCar {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_IllegalCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password is not valid.
+        /// </summary>
+        public static string Online_BookingResult_IncorrectPassword {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_IncorrectPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server is full.
+        /// </summary>
+        public static string Online_BookingResult_ServerFull {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_ServerFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server says: “{0}”.
+        /// </summary>
+        public static string Online_BookingResult_UnsupportedNonOkMessage {
+            get {
+                return ResourceManager.GetString("Online_BookingResult_UnsupportedNonOkMessage", resourceCulture);
             }
         }
         

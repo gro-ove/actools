@@ -21,6 +21,11 @@ namespace AcManager.Tools.Filters {
                 case "parent":
                     return nameof(CarObject.Parent);
 
+                case "dd":
+                case "driven":
+                case "drivendistance":
+                    return nameof(CarObject.TotalDrivenDistance);
+
                 case "bhp":
                 case "power":
                     return nameof(CarObject.SpecsBhp);
@@ -67,9 +72,6 @@ namespace AcManager.Tools.Filters {
                 case "brand":
                     return value.Test(obj.Brand);
 
-                case "dlc":
-                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
-
                 case "newbrand":
                     if (_list == null) {
                         _list = FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges).Select(x => x.Name).ToList();
@@ -81,6 +83,11 @@ namespace AcManager.Tools.Filters {
 
                 case "parent":
                     return value.Test(obj.Parent?.DisplayName);
+
+                case "dd":
+                case "driven":
+                case "drivendistance":
+                    return value.Test(obj.TotalDrivenDistance);
 
                 case "bhp":
                 case "power":

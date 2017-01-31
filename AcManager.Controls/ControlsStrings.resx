@@ -163,7 +163,7 @@
     <value>Specs:</value>
   </data>
   <data name="AcObject_Author_Tooltip" xml:space="preserve">
-    <value>Author, version &amp; URL</value>
+    <value>Author, version &amp; URL (Ctrl+click to follow the link if set)</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Open In Showroom</value>

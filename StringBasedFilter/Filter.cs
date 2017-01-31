@@ -38,7 +38,8 @@ namespace StringBasedFilter {
         // to read how the whole system works, so here you go
         public static bool OptionSimpleMatching = false;
 
-        public static IFilter<T> Create<T>(ITester<T> tester, [Localizable(false)] string filter, bool strictMode = false) {
+        [NotNull]
+        public static IFilter<T> Create<T>([NotNull] ITester<T> tester, [NotNull, Localizable(false)] string filter, bool strictMode = false) {
             return new Filter<T>(tester, filter, strictMode);
         }
 

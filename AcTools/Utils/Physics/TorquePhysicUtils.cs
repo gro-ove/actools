@@ -24,9 +24,15 @@ namespace AcTools.Utils.Physics {
 
         [Pure]
         public static double TorqueToPower(double torque, double rpm) {
-            return rpm*torque*TorqueRpmToBhpMultipler;
+            return rpm * torque * TorqueRpmToBhpMultipler;
         }
 
+        [Pure]
+        public static double PowerToTorque(double power, double rpm) {
+            return Equals(rpm, 0d) ? 0d : power / rpm / TorqueRpmToBhpMultipler;
+        }
+
+        [NotNull]
         public static Lut TorqueToPower(Lut torque, int detalization = 100) {
             torque.UpdateBoundingBox();
 
@@ -60,6 +66,40 @@ namespace AcTools.Utils.Physics {
             return result.Optimize();
         }
 
+        [NotNull]
+        public static Lut PowerToTorque(Lut torque, int detalization = 100) {
+            torque.UpdateBoundingBox();
+
+            var startFrom = torque.MinX;
+            var limit = torque.MaxX;
+
+            var result = new Lut();
+
+            var previousTorquePoint = 0;
+            var previousRpm = 0d;
+            for (var i = 0; i <= detalization; i++) {
+                var rpm = detalization == 0 ? limit : (limit - startFrom) * i / detalization + startFrom;
+
+                for (var j = previousTorquePoint; j < torque.Count; j++) {
+                    var p = torque[j];
+
+                    if (p.X > rpm) {
+                        previousTorquePoint = j > 0 ? j - 1 : 0;
+                        break;
+                    }
+
+                    if ((i == 0 || p.X > previousRpm) && p.X < rpm) {
+                        result.Add(new LutPoint(p.X, PowerToTorque(p.Y, p.X)));
+                    }
+                }
+                
+                result.Add(new LutPoint(rpm, PowerToTorque(torque.InterpolateLinear(rpm), rpm)));
+                previousRpm = rpm;
+            }
+
+            return result.Optimize();
+        }
+
         [CanBeNull]
         private static IReadOnlyList<TurboControllerDescription> ReadControllers(IniFile file) {
             if (file.IsEmptyOrDamaged()) return null;
@@ -71,7 +111,8 @@ namespace AcTools.Utils.Physics {
             if (file.IsEmptyOrDamaged()) return new TurboDescription[0];
             return file.GetSections("TURBO").Select(TurboDescription.FromIniSection).ToList();
         }
-        
+
+        [NotNull]
         public static Lut LoadCarTorque([NotNull] IDataWrapper data, bool considerLimiter = true, int detalization = 100) {
             /* read torque curve and engine params */
             var torqueFile = data.GetLutFile("power.lut");

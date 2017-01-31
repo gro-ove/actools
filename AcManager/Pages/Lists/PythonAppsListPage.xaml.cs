@@ -13,16 +13,20 @@ namespace AcManager.Pages.Lists {
     public partial class PythonAppsListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new PythonAppsListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
+            DataContext = new ViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
             InitializeComponent();
         }
 
-        private void PythonAppsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((PythonAppsListPageViewModel)DataContext).Unload();
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Load();
         }
 
-        private class PythonAppsListPageViewModel : AcListPageViewModel<PythonAppObject> {
-            public PythonAppsListPageViewModel(IFilter<PythonAppObject> listFilter)
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
+        }
+
+        private class ViewModel : AcListPageViewModel<PythonAppObject> {
+            public ViewModel(IFilter<PythonAppObject> listFilter)
                 : base(PythonAppsManager.Instance, listFilter) {
             }
 
