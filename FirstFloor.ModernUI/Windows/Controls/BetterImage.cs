@@ -56,7 +56,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// If image’s size is smaller than this, it will be decoded in the UI thread.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
-        public static int OptionDecodeImageSyncThreshold = 50000; // 50 KB
+        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
 
         /// <summary>
         /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
@@ -73,6 +73,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static bool OptionDisplayImmediate = false;
 
         /// <summary>
+        /// Before loading cached entity, check if according file exists and was not updated.
+        /// </summary>
+        public static bool OptionEnsureCacheIsFresh = true;
+
+        /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!
         /// </summary>
         public static TimeSpan OptionAdditionalDelay = TimeSpan.FromMilliseconds(30);
@@ -81,7 +86,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Total number of cached images (needed so cache won’t get expanded to like thousands of
         /// very small images).
         /// </summary>
-        public static int OptionCacheTotalEntries = 200;
+        public static int OptionCacheTotalEntries = 500;
 
         /// <summary>
         /// Summary cache size, in bytes.
@@ -94,9 +99,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static long OptionCacheMaxSize = 1000 * 1000; // 1 MB
 
         /// <summary>
-        /// Cache threshold per image (bigger images won’t be cached), in bytes.
+        /// Cache threshold per image (smaller images won’t be cached), in bytes.
         /// </summary>
-        public static long OptionCacheMinSize = 50 * 1000; // 50 KB
+        public static long OptionCacheMinSize = 500; // 500 B
 
         /// <summary>
         /// Mark cached images for debugging and log related information.
@@ -791,14 +796,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var innerDecodeWidth = InnerDecodeWidth;
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
-                        var info = new FileInfo(GetActualFilename(Filename));
-                        if (!info.Exists) {
-                            SetCurrent(BitmapEntry.Empty, true);
-                            return false;
-                        }
+                        if (OptionEnsureCacheIsFresh) {
+                            var info = new FileInfo(GetActualFilename(Filename));
+                            if (!info.Exists) {
+                                SetCurrent(BitmapEntry.Empty, true);
+                                return false;
+                            }
 
-                        if (info.LastWriteTime > cached.Date) {
-                            RemoveFromCache(Filename);
+                            if (info.LastWriteTime > cached.Date) {
+                                RemoveFromCache(Filename);
+                            } else {
+                                SetCurrent(cached, true);
+                                return false;
+                            }
                         } else {
                             SetCurrent(cached, true);
                             return false;

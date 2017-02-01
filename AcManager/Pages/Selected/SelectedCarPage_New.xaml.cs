@@ -42,7 +42,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage_New : ILoadableContent, IParametrizedUriContent, IImmediateContent {
-        public static bool OptionExtendedMode;
+        public static bool OptionExtendedMode = true;
 
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
             private double? _totalDrivenDistance;
@@ -914,11 +914,16 @@ namespace AcManager.Pages.Selected {
                 oldParent.Visibility = Visibility.Collapsed;
                 newParent.Child = SkinsList;
                 newParent.Visibility = Visibility.Visible;
+
+                SkinsList.ItemsPanel = TryFindResource(value ? @"ExtendedSkinsPanel" : @"CompactSkinsPanel") as ItemsPanelTemplate;
+                ScrollViewer.SetHorizontalScrollBarVisibility(SkinsList, value ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
+                ScrollViewer.SetVerticalScrollBarVisibility(SkinsList, value ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
+                HorizontalScrollBehavior.IsEnabled = !value;
             }
         }
 
         private void UpdateExtendedMode() {
-            ExtendedMode = OptionExtendedMode && ActualHeight > 800d;
+            ExtendedMode = OptionExtendedMode && ActualWidth > 1200d;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -927,12 +932,12 @@ namespace AcManager.Pages.Selected {
 
         private void OnPowerGraphContextMenuClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
-                .AddItem(AppStrings.CarSpecs_ScaleCurvesToPowerTorqueHeader, _model.ScaleCurvesCommand,
-                    toolTip: AppStrings.CarSpecs_ScaleCurvesToPowerTorque_Tooltip)
-                .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader, _model.RecalculateAndScaleCurvesCommand,
-                    toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip)
-                .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataOnlyHeader, _model.RecalculateCurvesCommand,
-                    toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip);
+                    .AddItem(AppStrings.CarSpecs_ScaleCurvesToPowerTorqueHeader, _model.ScaleCurvesCommand,
+                            toolTip: AppStrings.CarSpecs_ScaleCurvesToPowerTorque_Tooltip)
+                    .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader, _model.RecalculateAndScaleCurvesCommand,
+                            toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip)
+                    .AddItem(AppStrings.CarSpecs_RecalculateCurvesUsingDataOnlyHeader, _model.RecalculateCurvesCommand,
+                            toolTip: AppStrings.CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip);
         }
 
         public static readonly string TatuusId = @"tatuusfa1";

@@ -14,6 +14,14 @@
             <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
             <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
             <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
+
+            <ItemsPanelTemplate x:Key="CompactSkinsPanel">
+                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" CacheLength="8,8"
+                        CacheLengthUnit="Item" />
+            </ItemsPanelTemplate>
+            <ItemsPanelTemplate x:Key="ExtendedSkinsPanel">
+                <WrapPanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" />
+            </ItemsPanelTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -108,12 +116,10 @@
         </c:AcObjectBase.ToolBars>
 
         <StackPanel>
-            <Border x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" Visibility="Collapsed" />
-
             <Grid Margin="0 0 0 12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" MaxWidth="800" />
-                    <ColumnDefinition Width="1*" MinWidth="240" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
 
                 <mui:Cell MaxWidth="800">
@@ -121,21 +127,15 @@
                             PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp"
                             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
                             MaxWidth="800" />
-                    <Border x:Name="SkinsListCompactModeParent" Margin="4" VerticalAlignment="Top">
+                    <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
                         <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}"
-                                ScrollViewer.VerticalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True" Height="36"
-                                ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True"
-                                VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.CacheLength="4,4"
-                                VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScrollHelper.InvertLocation="True" mui:FancyScrollHelper.Outsize="True">
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
+                                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel"
+                                VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item"
+                                mui:FancyScrollHelper.InvertLocation="True" mui:FancyScrollHelper.Outsize="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
                             <i:Interaction.Behaviors>
-                                <mui:HorizontalScrollBehavior />
+                                <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
                             </i:Interaction.Behaviors>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel"
-                                            CacheLength="4,4" CacheLengthUnit="Item" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type t:AcItemWrapper}">
                                     <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
@@ -151,8 +151,10 @@
                 </mui:Cell>
 
                 <!-- description -->
-                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
-                        Grid.Column="1" Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}}" Margin="20 0 0 0" />
+                <DockPanel Grid.Column="1" Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}}" Margin="20 0 0 0">
+                    <Border DockPanel.Dock="Top" x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" MaxHeight="180" Visibility="Collapsed" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap" />
+                </DockPanel>
             </Grid>
 
             <!-- data section -->

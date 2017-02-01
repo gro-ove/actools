@@ -13,6 +13,35 @@
 
     <ScrollViewer x:Name="ScrollViewer">
         <StackPanel>
+            <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
+                <DockPanel>
+                    <Label Content="User-entered years:" />
+                    <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Sidekick databases:" />
+                    <Button Command="{Binding UpdateSidekickDatabaseCommand}" Content="Update Both"
+                            ToolTip="Update tyres and brakes information for all cars installed and enabled" />
+                </DockPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
+                    <DockPanel>
+                        <Label Content="Magick.NET:" />
+                        <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="DH:" />
+                        <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="Test:" />
+                        <Button Command="{Binding TestCommand}" Content="Test" />
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
+
             <!--controls test-->
             <mui:BbCodeBlock Style="{StaticResource Heading1}">🐱 This 😛 is 👩‍👩‍👦‍👦 just 😼 a 🤖 text 🌵 with 🐟 a 🍳 bunch 🚔 of 🚘 those 🚦 modern 🙆🏾 smilies 👮🏿 thanks 🚴🏻 to ⁉ EmojiOne 🇱🇦🇭🇹🇫🇮 pack 🍷</mui:BbCodeBlock>
 
@@ -135,29 +164,6 @@
                     <Label Content="PasswordBox, borderless:" Width="200" DockPanel.Dock="Left" />
                     <mui:ProperPasswordBox Placeholder="Placeholder" VisiblePassword="True" Style="{StaticResource ProperPasswordBox.Borderless}" />
                 </DockPanel>
-            </StackPanel>
-
-            <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-                <DockPanel>
-                    <Label Content="User-entered years:" />
-                    <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
-                </DockPanel>
-
-                <StackPanel>
-                    <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
-                    <DockPanel>
-                        <Label Content="Magick.NET:" />
-                        <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Label Content="DH:" />
-                        <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Label Content="Test:" />
-                        <Button Command="{Binding TestCommand}" Content="Test" />
-                    </DockPanel>
-                </StackPanel>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

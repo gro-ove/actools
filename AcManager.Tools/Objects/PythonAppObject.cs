@@ -117,7 +117,7 @@ namespace AcManager.Tools.Objects {
             _valuesIniFile = values ?? ini;
 
             Filename = filename;
-            _defaultsFilename = ini.SourceFilename;
+            _defaultsFilename = ini.Filename;
             if (_defaultsFilename == Filename) {
                 _defaultsFilename = null;
             }

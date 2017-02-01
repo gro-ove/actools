@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using AcTools.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,26 +25,26 @@ namespace AcTools.Tests {
                     FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
         }
 
+        private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
+
+        private static string TestDir => GetTestDir();
+
         [TestMethod]
         public void EnsureUniqueTest() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var a = Path.Combine(testDir, "a");
+            var a = Path.Combine(TestDir, "a");
             Assert.AreEqual(a, FileUtils.EnsureUnique(a));
 
-            var b = Path.Combine(testDir, "b");
-            Assert.AreEqual(Path.Combine(testDir, "b-1"), FileUtils.EnsureUnique(b));
+            var b = Path.Combine(TestDir, "b");
+            Assert.AreEqual(Path.Combine(TestDir, "b-1"), FileUtils.EnsureUnique(b));
 
-            var bt = Path.Combine(testDir, "b.txt");
-            Assert.AreEqual(Path.Combine(testDir, "b-1.txt"), FileUtils.EnsureUnique(bt));
+            var bt = Path.Combine(TestDir, "b.txt");
+            Assert.AreEqual(Path.Combine(TestDir, "b-1.txt"), FileUtils.EnsureUnique(bt));
 
-            var c = Path.Combine(testDir, "c");
-            Assert.AreEqual(Path.Combine(testDir, "c-3"), FileUtils.EnsureUnique(c));
+            var c = Path.Combine(TestDir, "c");
+            Assert.AreEqual(Path.Combine(TestDir, "c-3"), FileUtils.EnsureUnique(c));
 
-            var ct = Path.Combine(testDir, "c.txt");
-            Assert.AreEqual(Path.Combine(testDir, "c-2.txt"), FileUtils.EnsureUnique(ct));
+            var ct = Path.Combine(TestDir, "c.txt");
+            Assert.AreEqual(Path.Combine(TestDir, "c-2.txt"), FileUtils.EnsureUnique(ct));
         }
     }
 }

@@ -635,6 +635,36 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _sidekickUpdateExistingKunos;
+
+            public bool SidekickUpdateExistingKunos {
+                get {
+                    return _sidekickUpdateExistingKunos ??
+                            (_sidekickUpdateExistingKunos = ValuesStorage.GetBool("Settings.DriveSettings.SidekickUpdateExistingKunos", false)).Value;
+                }
+                set {
+                    if (Equals(value, _sidekickUpdateExistingKunos)) return;
+                    _sidekickUpdateExistingKunos = value;
+                    ValuesStorage.Set("Settings.DriveSettings.SidekickUpdateExistingKunos", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sidekickUpdateExistingMods;
+
+            public bool SidekickUpdateExistingMods {
+                get {
+                    return _sidekickUpdateExistingMods ??
+                            (_sidekickUpdateExistingMods = ValuesStorage.GetBool("Settings.DriveSettings.SidekickUpdateExistingMods", true)).Value;
+                }
+                set {
+                    if (Equals(value, _sidekickUpdateExistingMods)) return;
+                    _sidekickUpdateExistingMods = value;
+                    ValuesStorage.Set("Settings.DriveSettings.SidekickUpdateExistingMods", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _preCommand;
 
             public string PreCommand {

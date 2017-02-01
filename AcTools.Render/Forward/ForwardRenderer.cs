@@ -179,8 +179,11 @@ namespace AcTools.Render.Forward {
                 result = _buffer.View;
             }
 
+            PrepareForFinalPass();
             DeviceContext.ClearRenderTargetView(RenderTargetView, ColorTransparent);
-            if (UseFxaa) {
+            if (!Equals(OutputDownscaleMultipler, 1d)) {
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView, true);
+            } else if (UseFxaa) {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             } else {
                 DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
@@ -190,17 +193,15 @@ namespace AcTools.Render.Forward {
         public bool KeepFxaaWhileShooting;
 
         public override Image Shot(int multipler) {
-            if (KeepFxaaWhileShooting) {
-                return base.Shot(multipler);
-            } else {
-                var useFxaa = UseFxaa;
-                UseFxaa = false;
+            if (KeepFxaaWhileShooting) return base.Shot(multipler);
 
-                try {
-                    return base.Shot(multipler);
-                } finally {
-                    UseFxaa = useFxaa;
-                }
+            var useFxaa = UseFxaa;
+            UseFxaa = false;
+
+            try {
+                return base.Shot(multipler);
+            } finally {
+                UseFxaa = useFxaa;
             }
         }
 

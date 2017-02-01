@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -13,7 +17,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using SharpCompress.Archives.Zip;
+using ZipArchive = SharpCompress.Archives.Zip.ZipArchive;
 
 namespace AcManager.Tools.Miscellaneous {
     public static class Fixes {
@@ -58,6 +62,65 @@ namespace AcManager.Tools.Miscellaneous {
                     File.WriteAllBytes(PpFiltersManager.Instance.DefaultFilename, entry.OpenEntryStream().ReadAsBytesAndDispose());
                 }
             }, cancellation); 
+        }
+
+        private static byte[] Decompress(byte[] data) {
+            return new DeflateStream(new MemoryStream(data), CompressionMode.Decompress).ReadAsBytesAndDispose();
+        }
+
+        public static Func<CancellationToken, Task> FixOldFlames(IEnumerable<string> carIds) {
+            return cancellation => Task.Run(() => {
+                var flamesTextures = CmApiProvider.GetData("static/get/flames");
+
+                foreach (var car in carIds.Select(x => CarsManager.Instance.GetById(x)).Where(x => x != null)) {
+                    if (cancellation.IsCancellationRequested) return;
+
+                    var data = car.AcdData;
+                    if (data == null || data.IsEmpty) continue;
+
+                    var flames = data.GetIniFile("flames.ini");
+                    var header = flames["HEADER"];
+                    header.Set("EDIT_BIG", false);
+                    header.Set("EDIT_STATE", 4);
+                    header.Set("BURN_FUEL_MULT", 10);
+                    header.Set("FLASH_THRESHOLD", 7);
+
+                    foreach (var section in flames.GetSections("FLAME")) {
+                        section.Set("IS_LEFT", section.GetVector3("POSITION").FirstOrDefault() < 0d);
+                        section.Set("GROUP", 0);
+                    }
+
+                    flames.Save();
+                    Logging.Write($"Fixed: flames.ini of {car.DisplayName}");
+
+                    var flamesPresetsEncoded = @"jdPBjoIwEAbgOwlvUjedgSJ74MDGgia4kFIPaja8/1s4BVdaW1IPcIDhy/Dzcz/K+iDVX5qMp5uczpdOV5AmaXIflBy" +
+                            @"lnkZdKz1xGtDq1LZSVTxN+qahexX/4ux54AKYS4JGr4M0c6r9qVAIBiVnIGgOfRosGgI0vGR4wmDByBnOk3tfRkvG0NLluvQ+sPTLLm1b/h6cO" +
+                            @"PJIHEVg628aWl7NdSG2cbG6+bbrhmFgjHw/8F0MuMJ2u74ftosBbEfn2V5jhsxdGrBkIpDFTG8Wg5pkbDR9Kj6xTWxv+GY3stnO6alMrLZwQ7Ft" +
+                            @"J5Omq8ejE0rwM3I/bqt4/2mDL8d+Fp59JLuBLHSsInb3Ap0mGpatHw==";
+                    var flamesPresets = data.GetRawFile(@"flame_presets.ini");
+                    flamesPresets.Content = Encoding.UTF8.GetString(new DeflateStream(
+                            new MemoryStream(Convert.FromBase64String(flamesPresetsEncoded)),
+                            CompressionMode.Decompress).ReadAsBytesAndDispose());
+                    flamesPresets.Save();
+                    Logging.Write($"Fixed: flame_presets.ini of {car.DisplayName}");
+
+                    var flamesDirectory = Path.Combine(car.Location, @"texture", @"flames");
+                    flamesTextures.ExtractAsArchiveTo(flamesDirectory);
+                }
+            }, cancellation);
+        }
+
+        public static Func<CancellationToken, Task> FixMissingFlamesTextures(IEnumerable<string> carIds) {
+            return cancellation => Task.Run(() => {
+                var flamesTextures = CmApiProvider.GetData("static/get/flames");
+
+                foreach (var car in carIds.Select(x => CarsManager.Instance.GetById(x)).Where(x => x != null)) {
+                    if (cancellation.IsCancellationRequested) return;
+
+                    var flamesDirectory = Path.Combine(car.Location, @"texture", @"flames");
+                    flamesTextures.ExtractAsArchiveTo(flamesDirectory);
+                }
+            }, cancellation);
         }
     }
 
@@ -120,7 +183,17 @@ namespace AcManager.Tools.Miscellaneous {
 
             // TRANSLATE ME
             [Description("Game might be obsolete")]
-            GameMightBeObsolete
+            GameMightBeObsolete,
+
+            [Description("Model is obsolete; please, consider updating flames to the second version")]
+            FlamesV1TextureNotFound,
+
+            [Description("Flames textures are missing")]
+            FlamesFlashTexturesAreMissing
+        }
+
+        private static IEnumerable<string> GetCarsIds(string log) {
+            return Regex.Matches(log, @"content/cars/(\w+)").Cast<Match>().Select(x => x.Groups[1].Value).Distinct().ToList();
         }
 
         [CanBeNull]
@@ -138,6 +211,18 @@ namespace AcManager.Tools.Miscellaneous {
 
                 if (log.Contains(@"ERROR: Cannot create suspension type")) {
                     return new WhatsGoingOn(WhatsGoingOnType.GameMightBeObsolete);
+                }
+
+                if (log.Contains(@"Flame V1: texture not found")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.FlamesV1TextureNotFound) {
+                        Fix = Fixes.FixOldFlames(GetCarsIds(log))
+                    };
+                }
+
+                if (log.Contains(@"FlameStart : Flash textures are missing!")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.FlamesFlashTexturesAreMissing) {
+                        Fix = Fixes.FixMissingFlamesTextures(GetCarsIds(log))
+                    };
                 }
                 
                 if (log.Contains(@"COULD NOT FIND SUSPENSION OBJECT SUSP_")) {

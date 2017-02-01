@@ -7,7 +7,7 @@ namespace AcTools.DataFile {
         public RawDataFile(string filename) : base(filename) {}
         public RawDataFile() {}
 
-        public string Content { get; private set; }
+        public string Content { get; set; }
 
         protected override void ParseString(string file) {
             Content = file;

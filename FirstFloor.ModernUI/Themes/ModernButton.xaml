@@ -45,7 +45,7 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextPressed}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource ModernButtonBorderPressed}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource ModernButtonIconBackgroundPressed}" />
+                <Setter Property="Background" Value="{DynamicResource ModernButtonIconBackgroundPressed}" />
                 <Setter Property="Foreground" Value="{DynamicResource ModernButtonIconForegroundPressed}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">

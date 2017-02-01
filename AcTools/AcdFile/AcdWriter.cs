@@ -8,9 +8,9 @@ namespace AcTools.AcdFile {
         [NotNull]
         private readonly AcdEncryption _enc;
 
-        public AcdWriter(string filename) : this(filename, File.Open(filename, FileMode.CreateNew)) {}
+        public AcdWriter([NotNull] string filename) : this(filename, File.Open(filename, FileMode.Create, FileAccess.Write)) {}
 
-        public AcdWriter(string filename, Stream output) : base(output) {
+        public AcdWriter([NotNull] string filename, [NotNull] Stream output) : base(output) {
             _enc = AcdEncryption.FromAcdFilename(filename);
         }
 
@@ -19,7 +19,7 @@ namespace AcTools.AcdFile {
             Write(Encoding.ASCII.GetBytes(value));
         }
 
-        public void Write(AcdEntry entry) {
+        public void Write([NotNull] AcdEntry entry) {
             Write(entry.Name);
             Write(entry.Data.Length);
 

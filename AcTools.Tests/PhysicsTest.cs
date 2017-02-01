@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -10,13 +11,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace AcTools.Tests {
     [TestClass]
     public class PhysicsTest {
+        private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
+
+        private static string TestDir => GetTestDir();
+
         [TestMethod]
         public void TurboTest() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var data = new DataDirectoryWrapper(Path.Combine(testDir, "physics", "turbo_test"));
+            var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "turbo_test"));
             var torque = TorquePhysicUtils.LoadCarTorque(data);
 
             Assert.AreEqual(100d, torque.InterpolateLinear(0d), 0.1);
@@ -28,11 +29,7 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void CtrlTest() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var data = new DataDirectoryWrapper(Path.Combine(testDir, "physics", "ctrl_test"));
+            var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "ctrl_test"));
             var torque = TorquePhysicUtils.LoadCarTorque(data);
 
             Assert.AreEqual(100d, torque.InterpolateLinear(0d), 0.1);
@@ -48,11 +45,7 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void InterpolationMode() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var data = new DataDirectoryWrapper(Path.Combine(testDir, "physics", "two_points"));
+            var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "two_points"));
 
             var powerLutPointsOnly = TorquePhysicUtils.LoadCarTorque(data, false, 0);
             Assert.AreEqual(100d, powerLutPointsOnly.InterpolateLinear(0d), 0.1);
@@ -71,11 +64,7 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void NegativePoint() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var data = new DataDirectoryWrapper(Path.Combine(testDir, "physics", "negative_point"));
+            var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "negative_point"));
 
             var powerLutPointsOnly = TorquePhysicUtils.LoadCarTorque(data);
             Assert.AreEqual(100, powerLutPointsOnly.InterpolateLinear(-100d), 0.1);
@@ -85,11 +74,7 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void ConsiderLimiterMode() {
-            var testDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            while (!testDir.EndsWith("AcTools.Tests") && testDir.Length > 4) testDir = Path.GetDirectoryName(testDir);
-            testDir = Path.Combine(testDir, "test");
-
-            var data = new DataDirectoryWrapper(Path.Combine(testDir, "physics", "two_points"));
+            var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "two_points"));
 
             var notConsider = TorquePhysicUtils.LoadCarTorque(data, false, 0);
             Assert.AreEqual(160, notConsider.InterpolateLinear(3000d), 0.1);

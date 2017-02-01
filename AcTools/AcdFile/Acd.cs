@@ -15,6 +15,8 @@ namespace AcTools.AcdFile {
         [CanBeNull]
         private byte[] _packedBytes;
 
+        public bool IsPacked => _packedFile != null;
+
         private Acd(string packedFile, string unpackedDirectory) {
             _packedBytes = packedFile == null ? null : File.ReadAllBytes(packedFile);
             _packedFile = packedFile;
@@ -101,13 +103,30 @@ namespace AcTools.AcdFile {
             }
         }
 
-        public void Save(string filename) {
+        /// <summary>
+        /// Works only if loaded from ACD-file!
+        /// </summary>
+        public void Save([CanBeNull] string filename = null) {
+            if (!IsPacked) throw new Exception("Can’t do, not packed");
+
+            filename = filename ?? _packedFile;
+            if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
+
             EnsureFullyLoaded();
             using (var writer = new AcdWriter(filename)) {
                 foreach (var entry in _entries.Values) {
                     writer.Write(entry);
                 }
             }
+        }
+
+        /// <summary>
+        /// Works only if loaded from directory!
+        /// </summary>
+        public string GetFilename(string entryName) {
+            if (IsPacked) throw new Exception("Can’t do, packed");
+            if (_unpackedDirectory == null) throw new Exception("Can’t do, unpacked directory not set");
+            return Path.Combine(_unpackedDirectory, entryName);
         }
 
         public static Acd FromDirectory(string dir) {

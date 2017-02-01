@@ -46,6 +46,26 @@
 		}
 	}
 
+	SamplerState samInputImageHq {
+		Filter = ANISOTROPIC;
+		MaxAnisotropy = 16;
+
+		AddressU = WRAP;
+		AddressV = WRAP;
+	};
+
+	float4 ps_CopyHq(PS_IN pin) : SV_Target {
+		return gInputMap.SampleLevel(samInputImageHq, pin.Tex, 2.5);
+	}
+
+	technique10 CopyHq {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CopyHq()));
+		}
+	}
+
 	float4 ps_CopyNoAlpha(PS_IN pin) : SV_Target {
 		return float4(gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0).rgb, 1.0);
 	}

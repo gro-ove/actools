@@ -27,15 +27,15 @@
                 <Label Content="{x:Static AcManager:AppStrings.AcSettings_System_Logging}" />
             </CheckBox>
 
-            <DockPanel>
-                <Label Content="{x:Static AcManager:AppStrings.AcSettings_System_ScreenshotsFormatLabel}" />
-                <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
             <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}"
                     mui:NewMarkService.New="True">
                 <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
             </CheckBox>
+
+            <DockPanel>
+                <Label Content="{x:Static AcManager:AppStrings.AcSettings_System_ScreenshotsFormatLabel}" />
+                <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
 
             <Grid Margin="0 20 0 8">
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />

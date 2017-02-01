@@ -11,10 +11,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -60,6 +63,24 @@ namespace AcManager.Pages.Settings {
                     ModernDialog.ShowMessage("d: " + ValuesStorage.Storage.Decrypt(s[0], s[1]));
                 }
             }));
+
+            private AsyncCommand _updateSidekickDatabaseCommand;
+
+            public AsyncCommand UpdateSidekickDatabaseCommand => _updateSidekickDatabaseCommand ?? (_updateSidekickDatabaseCommand = new AsyncCommand(async () => {
+                using (var w = new WaitingDialog("Updating…")) {
+                    var cancellation = w.CancellationToken;
+
+                    w.Report("Loading cars…");
+                    await CarsManager.Instance.EnsureLoadedAsync();
+
+                    var list = CarsManager.Instance.EnabledOnly.ToList();
+                    for (var i = 0; i < list.Count && !cancellation.IsCancellationRequested; i++) {
+                        var car = list[i];
+                        w.Report(new AsyncProgressEntry(car.DisplayName, i, list.Count));
+                        await Task.Run(() => { SidekickHelper.UpdateSidekickDatabase(car.Id); });
+                    }
+                }
+            }, () => AcSettingsHolder.Python.IsActivated(SidekickHelper.SidekickAppId)));
 
             private ICommand _magickNetMemoryLeakingCommand;
 

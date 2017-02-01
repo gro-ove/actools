@@ -44,7 +44,9 @@
             </CheckBox>
 
             <!--shared memory-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="AC's shared memory" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+                <TextBlock.Text>AC’s shared memory:</TextBlock.Text>
+            </TextBlock>
 
             <CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
                 <Label Content="Watch for AC shared memory" ToolTip="Used for proper hibernation and other stuff" />
@@ -124,9 +126,9 @@
 
             <!--real head motion-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
-                <Run Text="Real Head Motion" />
-                <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
-                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink>
+                <Run Text="Real Head Motion:" />
+                <!-- TODO <Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+                        CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink>-->
             </TextBlock>
 
             <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
@@ -140,13 +142,25 @@
             </DockPanel>
 
             <!--game-related events-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
-
-            <CheckBox IsChecked="{Binding Drive.SidekickIntegration}" mui:NewMarkService.New="True">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
+            <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
                 <Label>
                     <Label.Content>Extend Sidekick’s tyres information if needed</Label.Content>
                 </Label>
             </CheckBox>
+            <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingKunos}">
+                <Label>
+                    <Label.Content>Update entries for Kunos cars if different</Label.Content>
+                </Label>
+            </CheckBox>
+            <CheckBox IsChecked="{Binding Drive.SidekickUpdateExistingMods}">
+                <Label>
+                    <Label.Content>Update entries for mods if different</Label.Content>
+                </Label>
+            </CheckBox>
+
+            <!--game-related events-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_EventsHeader}" />
 
             <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />

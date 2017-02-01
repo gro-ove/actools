@@ -10,6 +10,8 @@ using AcTools.Windows;
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
         private readonly ForwardKn5ObjectRenderer _renderer;
+        private readonly double _resolutionMultiplicator;
+        private double _actualResolutionMultiplicator;
 
         private bool _editMode;
 
@@ -27,9 +29,31 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900) : base(renderer, title, width, height) {
-            _renderer = renderer;
+        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900,
+                double resolutionMultiplicator = 1d) : base(renderer, title, width, height) {
             Form.MouseDoubleClick += OnMouseDoubleClick;
+
+            _renderer = renderer;
+
+            if (resolutionMultiplicator < 0) {
+                _resolutionMultiplicator = -resolutionMultiplicator;
+                _actualResolutionMultiplicator = 1d;
+            } else {
+                _resolutionMultiplicator = resolutionMultiplicator;
+                _actualResolutionMultiplicator = resolutionMultiplicator;
+            }
+
+            UpdateSize();
+        }
+
+        private void UpdateSize() {
+            Renderer.Width = (int)(Form.ClientSize.Width * _actualResolutionMultiplicator);
+            Renderer.Height = (int)(Form.ClientSize.Height * _actualResolutionMultiplicator);
+            Renderer.OutputDownscaleMultipler = 1 / _actualResolutionMultiplicator;
+        }
+
+        protected override void OnResize(object sender, EventArgs eventArgs) {
+            UpdateSize();
         }
 
         private void OnMouseDoubleClick(object sender, MouseEventArgs e) {
@@ -135,6 +159,12 @@ namespace AcTools.Render.Wrapper {
 
                 case Keys.F:
                     _renderer.UseFxaa = !_renderer.UseFxaa;
+                    break;
+
+                case Keys.M:
+                    _actualResolutionMultiplicator = Equals(_actualResolutionMultiplicator, _resolutionMultiplicator) ? 1d :
+                            _resolutionMultiplicator;
+                    UpdateSize();
                     break;
 
                 case Keys.W:

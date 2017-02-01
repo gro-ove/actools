@@ -267,23 +267,23 @@ namespace AcManager {
 
             _hibernator = new AppHibernator();
             _hibernator.SetListener();
-
+            
             AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {
             public void Catch(AbstractDataFile file, int line) {
-                if (file.Mode == AbstractDataFile.StorageMode.AcdFile) {
-                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed, file.UnpackedFilename, line),
-                            ToolsStrings.SyntaxError_Commentary);
-                } else {
-                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.SourceFilename), line),
+                if (file.Mode == AbstractDataFile.StorageMode.UnpackedFile && file.Filename != null) {
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.Filename), line),
                             ToolsStrings.SyntaxError_Commentary, null, new[] {
                                 new NonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
-                                    WindowsHelper.OpenFile(file.SourceFilename);
+                                    WindowsHelper.OpenFile(file.Filename);
                                     return Task.Delay(0, token);
                                 })
                             });
+                } else {
+                    NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed, file.Name, line),
+                            ToolsStrings.SyntaxError_Commentary);
                 }
             }
         }

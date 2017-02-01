@@ -71,6 +71,24 @@ namespace AcTools.Render.Base {
             }
         }
 
+        private double _outputDownscaleMultipler = 1d;
+
+        /// <summary>
+        /// Be careful with this option! Don’t forget to call PrepareForFinalPass() if you’re
+        /// using it and remember — Z-buffer will be in original (bigger) size, but output buffer
+        /// will be smaller.
+        /// </summary>
+        public double OutputDownscaleMultipler {
+            get { return _outputDownscaleMultipler; }
+            set {
+                if (Equals(value, _outputDownscaleMultipler)) return;
+                _outputDownscaleMultipler = value;
+                _resized = true;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
         public float AspectRatio => (float)_width / _height;
 
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
@@ -208,14 +226,17 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
 
+            var width = (int)(_width * _outputDownscaleMultipler);
+            var height = (int)(_height * _outputDownscaleMultipler);
+
             if (_swapChain != null) {
-                _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, _width, _height,
+                _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, width, height,
                         Format.Unknown, SwapChainFlags.None);
                 _renderBuffer = Resource.FromSwapChain<Texture2D>(_swapChain, 0);
             } else {
                 _renderBuffer = new Texture2D(Device, new Texture2DDescription {
-                    Width = _width,
-                    Height = _height,
+                    Width = width,
+                    Height = height,
                     MipLevels = 1,
                     ArraySize = 1,
                     Format = WpfMode ? Format.B8G8R8A8_UNorm : Format.R8G8B8A8_UNorm,
@@ -232,8 +253,8 @@ namespace AcTools.Render.Base {
                 Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
                 ArraySize = 1,
                 MipLevels = 1,
-                Width = _width,
-                Height = _height,
+                Width = Width,
+                Height = Height,
                 SampleDescription = SampleDescription,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
@@ -243,10 +264,10 @@ namespace AcTools.Render.Base {
 
             _depthView = new DepthStencilView(Device, _depthBuffer);
             DeviceContext.Rasterizer.SetViewports(Viewport);
-            ResetTargets();
-
-            DeviceContext.OutputMerger.DepthStencilState = null;
             Sprite?.RefreshViewport();
+
+            ResetTargets();
+            DeviceContext.OutputMerger.DepthStencilState = null;
 
             ResizeInner();
             DeviceContextHolder.OnResize(Width, Height);
@@ -254,9 +275,17 @@ namespace AcTools.Render.Base {
             InitiallyResized = true;
         }
 
+        protected void PrepareForFinalPass() {
+            if (!Equals(1d, _outputDownscaleMultipler)) {
+                DeviceContext.Rasterizer.SetViewports(OutputViewport);
+            }
+        }
+
         protected bool InitiallyResized { get; private set; }
 
         public Viewport Viewport => new Viewport(0, 0, _width, _height, 0.0f, 1.0f);
+
+        public Viewport OutputViewport => new Viewport(0, 0, (int)(_width * _outputDownscaleMultipler), (int)(_height * _outputDownscaleMultipler), 0.0f, 1.0f);
 
         protected abstract void ResizeInner();
 
@@ -289,6 +318,10 @@ namespace AcTools.Render.Base {
 
             if (_frameMonitor.Tick()) {
                 OnPropertyChanged(nameof(FramesPerSecond));
+            }
+
+            if (!Equals(1d, _outputDownscaleMultipler)) {
+                DeviceContext.Rasterizer.SetViewports(Viewport);
             }
 
             DrawInner();

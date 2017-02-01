@@ -20,6 +20,27 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        public static void ExtractAsArchiveTo(this Stream stream, string destination, ExtractionOptions options = null) {
+            options = options ?? new ExtractionOptions {
+                Overwrite = true,
+                ExtractFullPath = true
+            };
+
+            using (var reader = ReaderFactory.Open(stream)) {
+                while (reader.MoveToNextEntry()) {
+                    if (!reader.Entry.IsDirectory) {
+                        reader.WriteEntryToDirectory(destination, options);
+                    }
+                }
+            }
+        }
+
+        public static void ExtractAsArchiveTo(this byte[] bytes, string destination, ExtractionOptions options = null) {
+            using (var stream = new MemoryStream(bytes)) {
+                stream.ExtractAsArchiveTo(destination, options);
+            }
+        }
+
         public static IArchive Open(string filename, string password) {
             var archive = ArchiveFactory.Open(filename);
             if (password == null) return archive;

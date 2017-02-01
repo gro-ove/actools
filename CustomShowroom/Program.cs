@@ -127,7 +127,8 @@ namespace CustomShowroom {
                 using (var renderer = new ForwardKn5ObjectRenderer(kn5File)) {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
-                    new LiteShowroomWrapper(renderer).Run();
+                    
+                    new LiteShowroomWrapper(renderer, resolutionMultiplicator: -2d).Run();
                 }
             } else if (options.Mode == Mode.TrackMap) {
                 using (var renderer = new TrackMapPreparationRenderer(kn5File)) {

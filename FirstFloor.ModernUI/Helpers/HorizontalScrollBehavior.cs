@@ -10,6 +10,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public bool IsInverted { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         protected override void OnAttached() {
             base.OnAttached();
             AssociatedObject.Loaded += OnLoaded;
@@ -33,10 +35,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
-            if (!e.Handled) {
+            if (!e.Handled && IsEnabled) {
                 _scrollViewer.ScrollToHorizontalOffset(IsInverted ?
                         _scrollViewer.HorizontalOffset + e.Delta :
                         _scrollViewer.HorizontalOffset - e.Delta);
+                e.Handled = true;
             }
         }
     }

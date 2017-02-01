@@ -46,7 +46,7 @@
                         BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Shijie Zhang (St3fan), Stanislav Minakov." />
 
                 <TextBlock Style="{StaticResource Heading2}" Text="Special thanks for ideas and testing to:" />
-                <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}" BbCode="MadMax, MicaLovesKPOP, Peter Boese, Topuz." />
+                <mui:SelectableBbCodeBlock Margin="0 8 0 0" FontSize="{DynamicResource SmallFontSize}" BbCode="MadMat, MicaLovesKPOP, Peter Boese, Topuz." />
             </StackPanel>
         </ScrollViewer>
 

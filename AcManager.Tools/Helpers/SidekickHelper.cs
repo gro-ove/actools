@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Physics;
@@ -11,7 +13,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public static class SidekickHelper {
-        private static readonly string SidekickAppId = @"Sidekick";
+        public static readonly string SidekickAppId = @"Sidekick";
         private static readonly Regex SidekickNameRegex = new Regex(@"\W+", RegexOptions.Compiled);
 
         [CanBeNull]
@@ -65,8 +67,10 @@ namespace AcManager.Tools.Helpers {
             return changed;
         }
 
-        private static void UpdateSidekickCompounds(string appDirectory, DataWrapper wrapper, string carId) {
-            var sidekickCompounds = new IniFile(Path.Combine(appDirectory, @"compounds", @"compounds.ini"), IniFileMode.ValuesWithSemicolons);
+        private static void UpdateSidekickCompounds(string appDirectory, DataWrapper wrapper, string carId, 
+            bool separateFiles, bool updateIfChanged) {
+            var sidekickCompounds = new IniFile(Path.Combine(appDirectory, @"compounds", separateFiles ? $@"{carId}.ini" : @"compounds.ini"),
+                    IniFileMode.ValuesWithSemicolons);
             var tyres = wrapper.GetIniFile("tyres.ini");
             var changed = false;
 
@@ -87,8 +91,10 @@ namespace AcManager.Tools.Helpers {
 
                 var name = SidekickNameRegex.Replace($@"{sectionFront.GetNonEmpty("NAME")}_{sectionFront.GetNonEmpty("SHORT_NAME")}", "_").TrimEnd('_')
                                             .ToLowerInvariant();
-                var sidekickSection = sidekickCompounds[$@"{carId}_{name}"];
-
+                var sidekickSectionName = $@"{carId}_{name}";
+                if (sidekickCompounds.ContainsKey(sidekickSectionName) && !updateIfChanged) continue;
+                
+                var sidekickSection = sidekickCompounds[sidekickSectionName];
                 if (idealPressureFront > 0d && !Equals(sidekickSection.GetDouble("IDEAL_PRESSURE_F", 0d), idealPressureFront)) {
                     sidekickSection.Set("IDEAL_PRESSURE_F", idealPressureFront);
                     changed = true;
@@ -108,7 +114,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        private static void UpdateSidekickBrakes(string appDirectory, DataWrapper wrapper, string carId) {
+        private static void UpdateSidekickBrakes(string appDirectory, DataWrapper wrapper, string carId, bool separateFiles, bool updateIfChanged) {
             var brakes = wrapper.GetIniFile("brakes.ini");
 
             var frontCurve = brakes["TEMPS_FRONT"].GetLut("PERF_CURVE");
@@ -119,7 +125,10 @@ namespace AcManager.Tools.Helpers {
                 return;
             }
 
-            var sidekickBrakes = new IniFile(Path.Combine(appDirectory, @"brakes", @"brakes.ini"), IniFileMode.ValuesWithSemicolons);
+            var sidekickBrakes = new IniFile(Path.Combine(appDirectory, @"brakes", separateFiles ? $@"{carId}.ini" : @"brakes.ini"),
+                    IniFileMode.ValuesWithSemicolons);
+            if (sidekickBrakes.ContainsKey(carId) && !updateIfChanged) return;
+
             var section = sidekickBrakes[carId];
             if (SetRange(section, @"MIN_OPTIMAL_TEMP_F", @"MAX_OPTIMAL_TEMP_F", GetOptimalRange(frontCurve)) |
                     SetRange(section, @"MIN_OPTIMAL_TEMP_R", @"MAX_OPTIMAL_TEMP_R", GetOptimalRange(rearCurve))) {
@@ -128,15 +137,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static void UpdateSidekickDatabase([NotNull] string carId) {
+        public static void UpdateSidekickDatabase([NotNull] CarObject car, bool? separateFiles = null) {
             var directory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId);
             if (!Directory.Exists(directory)) return;
-
-            var car = CarsManager.Instance.GetById(carId);
-            if (car == null) {
-                Logging.Write($"Car “{carId}” not found");
-                return;
-            }
 
             if (!AcSettingsHolder.Python.IsActivated(SidekickAppId)) {
                 Logging.Write("App is not active");
@@ -148,8 +151,23 @@ namespace AcManager.Tools.Helpers {
                 return;
             }
 
-            UpdateSidekickCompounds(directory, car.AcdData, car.Id);
-            UpdateSidekickBrakes(directory, car.AcdData, car.Id);
+            var kunosCar = car.Author == AcCommonObject.AuthorKunos;
+            var separateFilesActual = separateFiles ?? !kunosCar;
+            var updateIfChanged = kunosCar ? SettingsHolder.Drive.SidekickUpdateExistingKunos :
+                    SettingsHolder.Drive.SidekickUpdateExistingMods;
+
+            UpdateSidekickCompounds(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
+            UpdateSidekickBrakes(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
+        }
+
+        public static void UpdateSidekickDatabase([NotNull] string carId, bool? separateFiles = null) {
+            var car = CarsManager.Instance.GetById(carId);
+            if (car == null) {
+                Logging.Write($"Car “{carId}” not found");
+                return;
+            }
+
+            UpdateSidekickDatabase(car, separateFiles);
         }
     }
 }
