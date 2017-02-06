@@ -21,7 +21,7 @@
         <Setter Property="LabelPadding" Value="8 1 0 0" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>
-    
+
     <Style TargetType="{x:Type ac:CustomTrackerControl}" BasedOn="{StaticResource {x:Type oxy:TrackerControl}}">
         <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
@@ -98,7 +98,7 @@
                         <mui:Cell>
                             <Grid x:Name="PART_Grid" />
                             <mui:BooleanSwitch Value="{TemplateBinding IsEmpty}">
-                                <Border Background="#99333333" VerticalAlignment="Center" Padding="20">
+                                <Border Background="#99333333" TextBlock.Foreground="White" VerticalAlignment="Center" Padding="20">
                                     <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" TextAlignment="Center" />
                                 </Border>
                             </mui:BooleanSwitch>

@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System;
+using System.IO;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -15,11 +15,14 @@ namespace AcTools.AcdFile {
         }
 
         public override void Write(string value) {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             Write(value.Length);
             Write(Encoding.ASCII.GetBytes(value));
         }
 
         public void Write([NotNull] AcdEntry entry) {
+            if (entry == null) throw new ArgumentNullException(nameof(entry));
+
             Write(entry.Name);
             Write(entry.Data.Length);
 

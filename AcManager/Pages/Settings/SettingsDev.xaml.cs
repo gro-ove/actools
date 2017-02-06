@@ -15,6 +15,9 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.SemiGui;
+using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -81,6 +84,13 @@ namespace AcManager.Pages.Settings {
                     }
                 }
             }, () => AcSettingsHolder.Python.IsActivated(SidekickHelper.SidekickAppId)));
+
+            private AsyncCommand _startDirectCommand;
+
+            public AsyncCommand StartDirectCommand => _startDirectCommand ?? (_startDirectCommand =
+                    new AsyncCommand(() => GameWrapper.StartAsync(new Game.StartProperties {
+                        PreparedConfig = new IniFile(FileUtils.GetRaceIniFilename())
+                    })));
 
             private ICommand _magickNetMemoryLeakingCommand;
 

@@ -12,11 +12,13 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.ContentRepair;
 using JetBrains.Annotations;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -588,7 +590,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void SelectPhase(Phase phase, string errorMessage = null, AcLogHelper.WhatsGoingOn whatsGoingOn = null) {
+        private void SelectPhase(Phase phase, string errorMessage = null, WhatsGoingOn whatsGoingOn = null) {
             CurrentPhase = phase;
 
             switch (phase) {

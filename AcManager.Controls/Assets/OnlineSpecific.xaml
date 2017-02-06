@@ -389,34 +389,8 @@
 
     <Style x:Key="SimpledListItemContainer" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}" />
 
-    <Style x:Key="DetailedListItemContainer" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <mui:Cell Background="Transparent" SnapsToDevicePixels="True">
-                        <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                Margin="{TemplateBinding Padding}" />
-                    </mui:Cell>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundHover}" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundSelected}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
-                <Setter Property="FontWeight" Value="Normal" />
-            </Trigger>
-        </Style.Triggers>
+    <Style x:Key="DetailedListItemContainer" TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Left}">
+        <Setter Property="Padding" Value="2" />
     </Style>
 
     <!--quick filter buttons-->

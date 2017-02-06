@@ -52,8 +52,12 @@ namespace AcManager.Pages.Drive {
             WeatherManager.Instance.EnsureLoaded();
         }
 
+        private static WeakReference<QuickDrive> _current;
+
         public void Initialize() {
             DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            _current = new WeakReference<QuickDrive>(this);
+
             InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
@@ -212,7 +216,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private static T GetRandomObject<T>(BaseAcManager<T> manager, string currentId) where T : AcObjectNew {
-                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElement();
+                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault() ?? currentId;
                 return manager.GetById(id) ?? manager.GetDefault();
             }
 
@@ -265,7 +269,7 @@ namespace AcManager.Pages.Drive {
 
             public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
                 var track = GetRandomObject(TracksManager.Instance, SelectedTrack.Id);
-                SelectedTrack = track.MultiLayouts?.RandomElement() ?? track;
+                SelectedTrack = track.MultiLayouts?.RandomElementOrDefault() ?? track;
             }));
 
             public int TimeMultiplerMinimum => 0;
@@ -571,6 +575,16 @@ namespace AcManager.Pages.Drive {
         private static TrackObjectBase _selectNextTrack;
 
         public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null) {
+            QuickDrive current;
+            if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
+                var vm = current.Model;
+                vm.SelectedCar = car ?? vm.SelectedCar;
+                vm.SelectedTrack = track ?? vm.SelectedTrack;
+                if (vm.SelectedCar != null && carSkinId != null) {
+                    vm.SelectedCar.SelectedSkin = vm.SelectedCar.GetSkinById(carSkinId);
+                }
+            }
+
             var mainWindow = Application.Current?.MainWindow as MainWindow;
             if (mainWindow == null) return;
 
@@ -594,6 +608,7 @@ namespace AcManager.Pages.Drive {
 
             Model.SelectedCar = carObject ?? raceGridEntry.Car;
             e.Effects = DragDropEffects.Copy;
+            e.Handled = true;
         }
 
         private void OnTrackBlockDrop(object sender, DragEventArgs e) {
@@ -606,6 +621,7 @@ namespace AcManager.Pages.Drive {
 
             Model.SelectedTrack = trackObject;
             e.Effects = DragDropEffects.Copy;
+            e.Handled = true;
         }
 
         private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {

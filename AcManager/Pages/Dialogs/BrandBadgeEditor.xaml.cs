@@ -94,8 +94,10 @@ namespace AcManager.Pages.Dialogs {
 
         private void BrandBadgeEditor_OnDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            ApplyFile(files[0]);
+            var file = ((string[])e.Data.GetData(DataFormats.FileDrop))?.FirstOrDefault();
+            if (file != null) {
+                ApplyFile(file);
+            }
         }
 
         private void ApplyFile(string filename) {

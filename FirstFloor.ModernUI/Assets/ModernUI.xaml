@@ -42,6 +42,7 @@
     <Color x:Key="AccentColor">#1ba1e2</Color>
     <Color x:Key="GoColor">Lime</Color>
     <Color x:Key="ErrorColor">DarkOrange</Color>
+    <sys:Double x:Key="BackgroundAccentOpacity">0.18</sys:Double>
 
     <SolidColorBrush x:Key="Accent" Color="{DynamicResource AccentColor}" />
     <SolidColorBrush x:Key="Go" Color="{DynamicResource GoColor}" />

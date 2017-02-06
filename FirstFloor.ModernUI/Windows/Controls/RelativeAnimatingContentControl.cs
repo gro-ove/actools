@@ -81,26 +81,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (_specialAnimations == null) {
                     _specialAnimations = new List<AnimationValueAdapter>();
 
-                    foreach (VisualStateGroup group in VisualStateManager.GetVisualStateGroups(this)) {
-                        if (group == null) {
-                            continue;
-                        }
-                        foreach (VisualState state in group.States) {
-                            if (state != null) {
-                                Storyboard sb = state.Storyboard;
+                    var visualStateGroups = VisualStateManager.GetVisualStateGroups(this);
+                    if (visualStateGroups != null) {
+                        foreach (VisualStateGroup group in visualStateGroups) {
+                            if (group == null) continue;
+                            foreach (VisualState state in group.States) {
+                                var sb = state?.Storyboard;
+                                if (sb == null) continue;
 
-                                if (sb != null) {
-                                    // Examine all children of the storyboards,
-                                    // looking for either type of double
-                                    // animation.
-                                    foreach (Timeline timeline in sb.Children) {
-                                        DoubleAnimation da = timeline as DoubleAnimation;
-                                        DoubleAnimationUsingKeyFrames dakeys = timeline as DoubleAnimationUsingKeyFrames;
-                                        if (da != null) {
-                                            ProcessDoubleAnimation(da);
-                                        } else if (dakeys != null) {
-                                            ProcessDoubleAnimationWithKeys(dakeys);
-                                        }
+                                // Examine all children of the storyboards,
+                                // looking for either type of double
+                                // animation.
+                                foreach (var timeline in sb.Children) {
+                                    var da = timeline as DoubleAnimation;
+                                    var dakeys = timeline as DoubleAnimationUsingKeyFrames;
+                                    if (da != null) {
+                                        ProcessDoubleAnimation(da);
+                                    } else if (dakeys != null) {
+                                        ProcessDoubleAnimationWithKeys(dakeys);
                                     }
                                 }
                             }
@@ -112,18 +110,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 UpdateKnownAnimations();
 
                 // HACK: force storyboard to use new values
-                foreach (VisualStateGroup group in VisualStateManager.GetVisualStateGroups(this)) {
-                    if (group == null) {
-                        continue;
-                    }
-                    foreach (VisualState state in group.States) {
-                        if (state != null) {
-                            Storyboard sb = state.Storyboard;
+                {
+                    var visualStateGroups = VisualStateManager.GetVisualStateGroups(this);
+                    if (visualStateGroups != null) {
+                        foreach (VisualStateGroup group in visualStateGroups) {
+                            if (group == null) continue;
 
-                            if (sb != null) {
+                            foreach (VisualState state in group.States) {
+                                var sb = state?.Storyboard;
+
                                 // need to kick the storyboard, otherwise new values are not taken into account.
                                 // it’s sad, really don’t want to start storyboards in vsm, but I see no other option
-                                sb.Begin(this);
+                                sb?.Begin(this);
                             }
                         }
                     }
@@ -136,7 +134,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// size of the control.
         /// </summary>
         private void UpdateKnownAnimations() {
-            foreach (AnimationValueAdapter adapter in _specialAnimations) {
+            foreach (var adapter in _specialAnimations) {
                 adapter.UpdateWithNewDimension(_knownWidth, _knownHeight);
             }
         }
@@ -171,7 +169,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // Look for a special value in the From property.
             if (da.From.HasValue) {
-                var d = DoubleAnimationFromAdapter.GetDimensionFromIdentifyingValue(da.To.Value);
+                var d = DoubleAnimationFromAdapter.GetDimensionFromIdentifyingValue(da.From.Value);
                 if (d.HasValue) {
                     _specialAnimations.Add(new DoubleAnimationFromAdapter(d.Value, da));
                 }
@@ -291,8 +289,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             /// <returns>Returns a double animation dimension if the number was
             /// contained an identifying value; otherwise, returns null.</returns>
             public static DoubleAnimationDimension? GetDimensionFromIdentifyingValue(double number) {
-                double floor = Math.Floor(number);
-                double remainder = number - floor;
+                var floor = Math.Floor(number);
+                var remainder = number - floor;
 
                 if (remainder >= .1 - SimpleDoubleComparisonEpsilon && remainder <= .1 + SimpleDoubleComparisonEpsilon) {
                     return DoubleAnimationDimension.Width;
@@ -310,7 +308,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             /// <param name="width">The width of the control.</param>
             /// <param name="height">The height of the control.</param>
             public override void UpdateWithNewDimension(double width, double height) {
-                double size = Dimension == DoubleAnimationDimension.Width ? width : height;
+                var size = Dimension == DoubleAnimationDimension.Width ? width : height;
                 UpdateValue(size);
             }
 
@@ -333,7 +331,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             /// </summary>
             /// <returns>Returns the value of the property.</returns>
             protected override double GetValue() {
-                return (double)Instance.To;
+                return Instance.To ?? 0d;
             }
 
             /// <summary>
@@ -362,7 +360,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             /// </summary>
             /// <returns>Returns the value of the property.</returns>
             protected override double GetValue() {
-                return (double)Instance.From;
+                return Instance.From ?? 0d;
             }
 
             /// <summary>

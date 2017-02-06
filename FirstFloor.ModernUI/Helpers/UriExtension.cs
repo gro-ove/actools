@@ -61,6 +61,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
+        public static bool GetQueryParamBool([NotNull] this Uri uri, [NotNull, Localizable(false)] string key) {
+            return string.Equals(uri.GetQueryParam(key), "true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Pure]
         public static bool SamePath([NotNull] this Uri a, [NotNull] Uri b) {
             if (a == null) throw new ArgumentNullException(nameof(a));
             if (b == null) throw new ArgumentNullException(nameof(b));

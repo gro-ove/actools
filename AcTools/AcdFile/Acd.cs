@@ -36,13 +36,19 @@ namespace AcTools.AcdFile {
                     entry = File.Exists(filename) ? new AcdEntry {
                         Name = entryName,
                         Data =  File.ReadAllBytes(filename)
-                    } : null;
+                    } : new AcdEntry {
+                        Name = entryName,
+                        Data = new byte[0]
+                    };
                 } else {
                     var data = ReadPacked(entryName);
                     entry = data != null ? new AcdEntry {
                         Name = entryName,
                         Data = data
-                    } : null;
+                    } : new AcdEntry {
+                        Name = entryName,
+                        Data = new byte[0]
+                    };
                 }
 
                 _entries[entryName] = entry;
@@ -93,7 +99,7 @@ namespace AcTools.AcdFile {
             } else if (_unpackedDirectory != null) {
                 foreach (var file in Directory.GetFiles(_unpackedDirectory)) {
                     var name = Path.GetFileName(file);
-                    if (name != null && !_entries.ContainsKey(name)) {
+                    if (name != null && (!_entries.ContainsKey(name) || _entries[name] == null)) {
                         _entries[name] = new AcdEntry {
                             Name = name,
                             Data = File.ReadAllBytes(file)

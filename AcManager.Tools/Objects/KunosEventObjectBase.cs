@@ -420,7 +420,7 @@ namespace AcManager.Tools.Objects {
                 }
 
                 if (CarSkin == null) {
-                    CarSkin = (CarSkinObject)CarObject.SkinsManager.WrappersList.RandomElement().Loaded();
+                    CarSkin = (CarSkinObject)CarObject.SkinsManager.WrappersList.RandomElementOrDefault()?.Loaded();
                 }
             } else {
                 RemoveError(AcErrorType.Data_KunosCareerCarSkinIsMissing);

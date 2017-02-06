@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using AcTools.Utils.Helpers;
@@ -10,6 +9,17 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
+        public IniFileSection(IniFileSection original) : base(original) {
+            Commentary = original.Commentary;
+            Commentaries = original.Commentaries == null ? null : new Dictionary<string, string>(original.Commentaries);
+        }
+
+        public IniFileSection() {}
+
+        public IniFileSection Clone() {
+            return new IniFileSection(this);
+        }
+
         [CanBeNull]
         public string Commentary { get; private set; }
 
@@ -71,16 +81,6 @@ namespace AcTools.DataFile {
             return GetNonEmpty(key) ?? defaultValue;
         }
 
-        /// <summary>
-        /// Warning! Throws exception if value is missing!
-        /// </summary>
-        [Obsolete, Pure]
-        public bool GetBool([NotNull, LocalizationRequired(false)] string key) {
-            if (!ContainsKey(key)) throw new Exception("Value is missing!");
-            var value = GetPossiblyEmpty(key);
-            return value == "1";
-        }
-
         [Pure]
         public bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue) {
             if (!ContainsKey(key)) return defaultValue;
@@ -113,14 +113,6 @@ namespace AcTools.DataFile {
             return result.Length == 3 ? result : new float[3];
         }
 
-        /// <summary>
-        /// Warning! Throws exception if value is missing!
-        /// </summary>
-        [Obsolete, Pure]
-        public double GetDouble([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseDouble(GetPossiblyEmpty(key));
-        }
-
         [Pure]
         public double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseDouble(GetPossiblyEmpty(key));
@@ -131,14 +123,6 @@ namespace AcTools.DataFile {
             return FlexibleParser.ParseDouble(GetPossiblyEmpty(key), defaultValue);
         }
 
-        /// <summary>
-        /// Warning! Throws exception if value is missing!
-        /// </summary>
-        [Obsolete, Pure]
-        public int GetInt([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseInt(GetPossiblyEmpty(key));
-        }
-
         [Pure]
         public int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseInt(GetPossiblyEmpty(key));
@@ -147,14 +131,6 @@ namespace AcTools.DataFile {
         [Pure]
         public int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
             return FlexibleParser.TryParseInt(GetPossiblyEmpty(key)) ?? defaultValue;
-        }
-
-        /// <summary>
-        /// Warning! Throws exception if value is missing!
-        /// </summary>
-        [Obsolete, Pure]
-        public long GetLong([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseLong(GetPossiblyEmpty(key));
         }
 
         [Pure]
@@ -171,19 +147,6 @@ namespace AcTools.DataFile {
         public Lut GetLut([NotNull, LocalizationRequired(false)] string key) {
             var value = GetNonEmpty(key);
             return value == null ? null : Lut.FromValue(value);
-        }
-
-        /// <summary>
-        /// Warning! Throws exception if value is missing! Doesn’t tranform strings in any way.
-        /// </summary>
-        [Obsolete, Pure]
-        public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
-            if (!typeof(T).IsEnum) {
-                throw new ArgumentException("T must be an enumerated type");
-            }
-
-            var value = GetPossiblyEmpty(key);
-            return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
         /// <summary>

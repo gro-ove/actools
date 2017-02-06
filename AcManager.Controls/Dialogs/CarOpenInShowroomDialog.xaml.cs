@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using AcManager.ContentRepair;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;

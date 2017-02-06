@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Selected;
@@ -14,8 +15,8 @@ using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -459,7 +460,7 @@ namespace AcManager.Pages.Dialogs {
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
 
-                var whatsGoingOn = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn>();
+                var whatsGoingOn = _properties?.GetAdditional<WhatsGoingOn>();
                 fixButton = this.CreateFixItButton(whatsGoingOn?.Solution);
                 Model.ErrorMessage = whatsGoingOn?.GetDescription();
             } else {

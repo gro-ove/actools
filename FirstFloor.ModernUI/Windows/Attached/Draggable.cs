@@ -11,8 +11,50 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
+    public class DraggableMovedEventArgs : EventArgs {
+        public DraggableMovedEventArgs(string format, object draggable) {
+            Format = format;
+            Draggable = draggable;
+        }
+
+        public string Format { get; }
+
+        public object Draggable { get; }
+    }
+
     public static class Draggable {
         public const string SourceFormat = "Data-Source";
+
+        private static readonly DraggableEvents Events = new DraggableEvents();
+
+        private class DraggableEvents {
+            public event EventHandler<DraggableMovedEventArgs> DragStartedInner;
+            public event EventHandler<DraggableMovedEventArgs> DragEndedInner;
+
+            internal void RaiseDragStarted(string format, object obj) {
+                DragStartedInner?.Invoke(this, new DraggableMovedEventArgs(format, obj));
+            }
+
+            internal void RaiseDragEnded(string format, object obj) {
+                DragEndedInner?.Invoke(this, new DraggableMovedEventArgs(format, obj));
+            }
+        }
+
+        /// <summary>
+        /// Weak event.
+        /// </summary>
+        public static event EventHandler<DraggableMovedEventArgs> DragStarted {
+            add { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragStartedInner), value); }
+            remove { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragStartedInner), value); }
+        }
+
+        /// <summary>
+        /// Weak event.
+        /// </summary>
+        public static event EventHandler<DraggableMovedEventArgs> DragEnded {
+            add { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragEndedInner), value); }
+            remove { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragEndedInner), value); }
+        }
 
         public static bool GetEnabled(FrameworkElement obj) {
             return (bool)obj.GetValue(EnabledProperty);
@@ -46,6 +88,17 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         public static readonly DependencyProperty KeepSelectionProperty = DependencyProperty.RegisterAttached("KeepSelection", typeof(bool),
                 typeof(Draggable), new PropertyMetadata(false));
+
+        public static bool GetIsDestinationHighlighted(DependencyObject obj) {
+            return (bool)obj.GetValue(IsDestinationHighlightedProperty);
+        }
+
+        public static void SetIsDestinationHighlighted(DependencyObject obj, bool value) {
+            obj.SetValue(IsDestinationHighlightedProperty, value);
+        }
+
+        public static readonly DependencyProperty IsDestinationHighlightedProperty = DependencyProperty.RegisterAttached("IsDestinationHighlighted", typeof(bool),
+                typeof(Draggable), new FrameworkPropertyMetadata(false));
 
         private static void OnEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = (FrameworkElement)d;
@@ -121,6 +174,26 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return null;
         }
 
+        private static void MarkDestinations(string format) {
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var destination in app.Windows.OfType<Window>()
+                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<FrameworkElement>)
+                    .Where(x => string.Equals(GetDestination(x), format, StringComparison.Ordinal))) {
+                SetIsDestinationHighlighted(destination, true);
+            }
+        }
+
+        private static void UnmarkDestinations() {
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var destination in app.Windows.OfType<Window>()
+                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<FrameworkElement>)
+                    .Where(GetIsDestinationHighlighted)) {
+                SetIsDestinationHighlighted(destination, false);
+            }
+        }
+
         private static bool MoveDraggable([CanBeNull] FrameworkElement element, [CanBeNull] IDraggable draggable) {
             if (element == null || draggable == null) return false;
 
@@ -129,6 +202,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
                 var data = new DataObject();
                 data.SetData(draggable.DraggableFormat, draggable);
+                MarkDestinations(draggable.DraggableFormat);
+                Events.RaiseDragStarted(draggable.DraggableFormat, draggable);
 
                 var source = PrepareItem(element);
                 if (source != null) {
@@ -140,6 +215,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 }
             } finally {
                 _dragging = false;
+                UnmarkDestinations();
+                Events.RaiseDragEnded(draggable.DraggableFormat, draggable);
             }
 
             return true;
@@ -310,7 +387,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             try {
                 var destinationList = GetActualList(destination) as IList;
-                var sourceList = GetActualList(source) as IList;
+                var ss = GetActualList(source);
+                var sourceList = ss as IList;
 
                 if (destinationList == null) {
                     Logging.Warning("Can’t find target: " + destination.ItemsSource);

@@ -166,7 +166,8 @@ namespace AcManager.Tools.Objects {
                 OnImageChangedValue(UpgradeIcon);
             } else if (FileUtils.IsAffected(filename, Path.Combine(Location, "data.acd"))) {
                 // TODO: data directory?
-                UpdateAcdData();
+                // TODO: ensure data wasn’t changed by CM first!
+                // UpdateAcdData();
             }
 
             return true;

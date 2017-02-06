@@ -1,22 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows.Input;
-using AcManager.Tools.Data;
-using AcManager.Tools.Data.GameSpecific;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools;
-using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Objects {
@@ -46,12 +38,18 @@ namespace AcManager.Tools.Objects {
 
         private TrackObjectBase _track;
 
-        [JsonIgnore]
+        [JsonIgnore, CanBeNull]
         public TrackObjectBase Track {
             get { return _track; }
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
+
+                if (value != null) {
+                    TrackId = value.IdWithLayout;
+                    OnPropertyChanged(nameof(TrackId));
+                }
+
                 OnPropertyChanged();
 
                 if (Description == null) {
@@ -60,8 +58,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        [JsonProperty(@"track")]
-        public string TrackId => Track?.IdWithLayout;
+        [JsonProperty(@"track"), NotNull]
+        public string TrackId { get; set; }
+
+        [NotNull]
+        public string KunosTrackId => TrackId.Replace('/', '-');
 
         private int _time = ((CommonAcConsts.TimeMinimum + CommonAcConsts.TimeMaximum) / 2).Round();
 
@@ -109,7 +110,7 @@ namespace AcManager.Tools.Objects {
 
         private WeatherObject _weather;
 
-        [JsonIgnore]
+        [JsonIgnore, CanBeNull]
         public WeatherObject Weather {
             get { return _weather; }
             set {
@@ -168,10 +169,14 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public UserChampionshipRoundExtended() { }
+        public UserChampionshipRoundExtended(TrackObjectBase track) {
+            TrackId = track.KunosIdWithLayout;
+            Track = track;
+        }
 
         [JsonConstructor]
         public UserChampionshipRoundExtended(string track, string weather, int surface) {
+            TrackId = track;
             Track = TracksManager.Instance.GetLayoutById(track);
             Weather = WeatherManager.Instance.GetById(weather);
             TrackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(surface) ?? Game.GetDefaultTrackPropertiesPreset();

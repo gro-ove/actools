@@ -635,7 +635,7 @@ namespace AcTools.DataFile {
             Kernel32.WritePrivateProfileString(section, key, value.Value ? "1" : "0", path);
         }
 
-        private IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
+        public static IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
             return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
                                 .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}");
         }

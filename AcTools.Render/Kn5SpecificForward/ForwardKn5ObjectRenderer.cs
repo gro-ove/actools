@@ -178,7 +178,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 _temp = new Kn5RenderableCar(Kn5, _carDirectory,
                         Matrix.RotationY(MathUtils.Random(0f, 3.14f)) * Matrix.Translation(MathUtils.Random(-2f, 2f), 0f, MathUtils.Random(-2f, 2f)),
-                        CarNode?.Skins?.RandomElement()) {
+                        CarNode?.Skins?.RandomElementOrDefault()) {
                             CurrentLod = Enumerable.Range(0, LodsCount).RandomElement(),
                             LightsEnabled = MathUtils.Random() > 0.5
                         };

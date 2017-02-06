@@ -154,8 +154,12 @@ namespace AcManager.Pages.Dialogs {
                     kn5.Nodes.First(x => x.Name == @"0" && x.NodeClass == Kn5NodeClass.Mesh).CastShadows = InShadow;
 
                     var material = kn5.Materials.Values.First(x => x.Name == @"0");
-                    material.GetPropertyByName("ksAmbient").ValueA = InShadow ? 3f : 1f;
-                    material.GetPropertyByName("ksDiffuse").ValueA = InShadow ? 0f : 2f;
+
+                    var ambient = material.GetPropertyByName("ksAmbient");
+                    if (ambient != null) ambient.ValueA = InShadow ? 3f : 1f;
+
+                    var diffuse = material.GetPropertyByName("ksDiffuse");
+                    if (diffuse != null) diffuse.ValueA = InShadow ? 0f : 2f;
 
                     kn5.Save(Path.Combine(location, ResultId + ".kn5"));
                 }

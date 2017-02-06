@@ -170,7 +170,7 @@ namespace AcManager.Tools.Objects {
                             AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.GetNonEmpty("SKIN"));
                         }
 
-                        carSkin = (CarSkinObject)car.SkinsManager.WrappersList.RandomElement().Loaded();
+                        carSkin = (CarSkinObject)car.SkinsManager.WrappersList.RandomElementOrDefault()?.Loaded();
                     }
                 }
 

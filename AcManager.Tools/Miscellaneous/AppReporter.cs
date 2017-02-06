@@ -218,6 +218,10 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     throw new Exception("Size limit exceeded");
                 }
 
+#if DEBUG
+                File.WriteAllBytes(FilesStorage.Instance.GetTemporaryFilename("Data.zip"), data);
+#endif
+
                 InternalUtils.SendData(memory.ToArray(), $@"Name: {GetUserName()}
 Operating system: {GetWindowsName()}
 App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);

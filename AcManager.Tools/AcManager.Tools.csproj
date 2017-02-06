@@ -196,6 +196,10 @@
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
+    <Compile Include="Helpers\AcLog\AcLogHelper.cs" />
+    <Compile Include="Helpers\AcLog\IAcLogHelperExtension.cs" />
+    <Compile Include="Helpers\AcLog\WhatsGoingOn.cs" />
+    <Compile Include="Helpers\AcLog\WhatsGoingOnType.cs" />
     <Compile Include="Helpers\AcSettingsControls\BaseEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\IDirectInputEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\IEntry.cs" />
@@ -328,7 +332,6 @@
     <Compile Include="GameProperties\ReplaysExtensionSetter.cs" />
     <Compile Include="Managers\SpecialEventsManager.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
-    <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Miscellaneous\LocalePackageManifest.cs" />
     <Compile Include="Miscellaneous\LocaleUpdater.cs" />
     <Compile Include="Miscellaneous\SharedLocaleReader.cs" />
@@ -513,6 +516,7 @@
       <LastGenOutput>ToolsStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>

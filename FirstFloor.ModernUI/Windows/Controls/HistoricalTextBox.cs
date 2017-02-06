@@ -1,4 +1,6 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,10 +17,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public HistoricalTextBox() {
             DefaultStyleKey = typeof(HistoricalTextBox);
-            
+
+            AddHandler(FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
             AddHandler(ContentElement.LostFocusEvent, new RoutedEventHandler(OnLostFocus));
             AddHandler(TextBoxBase.TextChangedEvent, new RoutedEventHandler(OnTextChanged));
             ItemsSource = _filtersHistory;
+
+            SetCurrentValue(DefaultItemsProperty, new ObservableCollection<string>());
+        }
+
+        private bool _dirty;
+
+        private void OnLoaded(object o, EventArgs e) {
+            Update();
+        }
+
+        private void UpdateDirty() {
+            _dirty = true;
+            Update();
+        }
+
+        public static readonly DependencyProperty DefaultItemsProperty = DependencyProperty.Register(nameof(DefaultItems), typeof(ObservableCollection<string>),
+                typeof(HistoricalTextBox), new PropertyMetadata(OnDefaultItemsChanged));
+
+        public ObservableCollection<string> DefaultItems {
+            get { return (ObservableCollection<string>)GetValue(DefaultItemsProperty); }
+            set { SetValue(DefaultItemsProperty, value); }
+        }
+
+        private static void OnDefaultItemsChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((HistoricalTextBox)o).OnDefaultItemsChanged((ObservableCollection<string>)e.OldValue, (ObservableCollection<string>)e.NewValue);
+        }
+
+        private void OnDefaultItemsChanged(ObservableCollection<string> oldValue, ObservableCollection<string> newValue) {
+            if (oldValue != null) {
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.RemoveHandler(oldValue, nameof(oldValue.CollectionChanged),
+                        OnCollectionChanged);
+            }
+            UpdateDirty();
+            if (newValue != null) {
+                WeakEventManager<INotifyCollectionChanged, NotifyCollectionChangedEventArgs>.AddHandler(newValue, nameof(newValue.CollectionChanged),
+                        OnCollectionChanged);
+            }
+        }
+
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            UpdateDirty();
         }
 
         protected override void OnDropDownOpened(EventArgs e) {
@@ -93,12 +137,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((HistoricalTextBox)o).OnSaveKeyChanged((string)e.NewValue);
+            ((HistoricalTextBox)o).UpdateDirty();
         }
 
-        
-        private void OnSaveKeyChanged(string newValue) {
-            _filtersHistory.ReplaceEverythingBy(newValue == null ? new string[0] : ValuesStorage.GetStringList(newValue));
+        private void Update() {
+            if (!IsLoaded || !_dirty) return;
+
+            var saveKey = SaveKey;
+            var items = saveKey == null ? new string[0] : ValuesStorage.GetStringList(saveKey);
+            var defaultItems = DefaultItems;
+            if (defaultItems.Count > 0) {
+                items = items.Union(defaultItems);
+            }
+
+            _filtersHistory.ReplaceEverythingBy_Direct(items);
+
+            _dirty = false;
         }
 
         public static readonly DependencyProperty MaxSizeProperty = DependencyProperty.Register(nameof(MaxSize), typeof(int),

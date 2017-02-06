@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;

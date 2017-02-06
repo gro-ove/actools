@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public class Kn5Material {
@@ -25,8 +25,14 @@ namespace AcTools.Kn5File {
             public float[] ValueD;
         }
 
+        [CanBeNull]
         public ShaderProperty GetPropertyByName([Localizable(false)] string name) {
-            return ShaderProperties.FirstOrDefault(t => t.Name == name);
+            for (var i = 0; i < ShaderProperties.Length; i++) {
+                var t = ShaderProperties[i];
+                if (t.Name == name) return t;
+            }
+
+            return null;
         }
 
         public class TextureMapping {
@@ -34,8 +40,14 @@ namespace AcTools.Kn5File {
             public int Slot;
         }
 
+        [CanBeNull]
         public TextureMapping GetMappingByName(string name) {
-            return TextureMappings.FirstOrDefault(t => t.Name == name);
+            for (int i = 0; i < TextureMappings.Length; i++) {
+                var t = TextureMappings[i];
+                if (t.Name == name) return t;
+            }
+
+            return null;
         }
     }
 

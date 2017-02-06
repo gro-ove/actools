@@ -143,6 +143,9 @@ namespace FirstFloor.ModernUI.Commands {
                     result = (T)(object)value;
                     return true;
                 }
+            }else if(typeof(T) == typeof(Uri)) {
+                result = (T)(object)new Uri(asString, UriKind.RelativeOrAbsolute);
+                return true;
             }
 
             result = default(T);

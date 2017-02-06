@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
@@ -269,6 +270,7 @@ namespace AcManager {
             _hibernator.SetListener();
             
             AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
+            CommonFixes.Initialize();
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {

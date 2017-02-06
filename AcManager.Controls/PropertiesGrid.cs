@@ -18,15 +18,15 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(PropertiesGrid),
-                new FrameworkPropertyMetadata(2, FrameworkPropertyMetadataOptions.AffectsMeasure));
+                new FrameworkPropertyMetadata(2, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public int Columns {
             get { return (int)GetValue(ColumnsProperty); }
             set { SetValue(ColumnsProperty, value); }
         }
 
-        public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(double),
-                typeof(PropertiesGrid));
+        public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(double), typeof(PropertiesGrid),
+                new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public double Spacing {
             get { return (double)GetValue(SpacingProperty); }
@@ -34,7 +34,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(nameof(LabelWidth), typeof(double), typeof(PropertiesGrid),
-                new FrameworkPropertyMetadata(80d, FrameworkPropertyMetadataOptions.AffectsMeasure));
+                new FrameworkPropertyMetadata(80d, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public double LabelWidth {
             get { return (double)GetValue(LabelWidthProperty); }
@@ -209,7 +209,6 @@ namespace AcManager.Controls {
             _labelFontSize = (double)GetValue(TextBlock.FontSizeProperty);
             _formattingMode = (TextFormattingMode)GetValue(TextOptions.TextFormattingModeProperty);
             _labelPadding = LabelPadding;
-            _labelWidth = LabelWidth;
             _labelTextWidth = _labelWidth - _labelPadding.Left - _labelPadding.Right;
         }
 
@@ -217,6 +216,7 @@ namespace AcManager.Controls {
             _columns = Columns;
             _rows = 0;
             _spacing = Spacing;
+            _labelWidth = LabelWidth;
 
             _nonCollapsedCount = 0;
             for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
@@ -237,13 +237,13 @@ namespace AcManager.Controls {
             UpdateComputedValues();
 
             if (_columns == 0 || _rows == 0) return default(Size);
-            var totalSpacingX = _spacing * (_columns - 1);
+            var totalSpacingX = _spacing * (_columns - 1) + _labelWidth * _columns;
             var totalSpacingY = _spacing * (_rows - 1);
 
-            var childConstraint = new Size(Math.Max(constraint.Width / _columns - totalSpacingX - _labelWidth, 0d), Math.Max(constraint.Height / _rows - totalSpacingY, 0d));
-            var maxChildDesiredWidth = 0.0;
-            var maxChildDesiredHeight = 0.0;
-            
+            var childConstraint = new Size(Math.Max(constraint.Width - totalSpacingX, 0d) / _columns, Math.Max((constraint.Height - totalSpacingY) / _rows, 0d));
+            var maxChildDesiredWidth = 0d;
+            var maxChildDesiredHeight = 0d;
+
             for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
                 var child = InternalChildren[i];
                 
@@ -259,7 +259,7 @@ namespace AcManager.Controls {
                 }
             }
 
-            return new Size(maxChildDesiredWidth * _columns + totalSpacingX + _labelWidth, maxChildDesiredHeight * _rows + totalSpacingY);
+            return new Size(maxChildDesiredWidth * _columns + totalSpacingX, maxChildDesiredHeight * _rows + totalSpacingY);
         }
         
         protected override Size ArrangeOverride(Size arrangeSize) {
@@ -270,12 +270,10 @@ namespace AcManager.Controls {
             var totalSpacingY = _spacing * (_rows - 1);
 
             _xStep = (arrangeSize.Width - totalSpacingX) / _columns;
-            _yStep = Math.Max((arrangeSize.Height - totalSpacingY) / _rows, 0d);
+            _yStep = Math.Max(arrangeSize.Height - totalSpacingY, 0d) / _rows;
             _labelTextOffset = (_yStep + _labelPadding.Top - _labelPadding.Bottom) / 2;
 
             var xBound = arrangeSize.Width - 1.0;
-
-            // TODO: fix me
             var childBounds = new Rect(_labelWidth, 0, Math.Max(_xStep - _labelWidth, 0d), _yStep);
 
             _xStep += _spacing;

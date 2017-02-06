@@ -8,7 +8,7 @@ namespace AcManager.Tools.Helpers {
 
         [NotNull]
         public static string AppVersion => _appVersion ??
-                                    (_appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).FileVersion);
+                                    (_appVersion = FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion);
 
 #if DEBUG
 #if PLATFORM_X86

@@ -262,8 +262,8 @@ namespace AcManager.Tools.Helpers.Api {
                 if (temperatureValue == null || weatherNode == null) throw new Exception("Invalid response");
 
                 var temperature = FlexibleParser.ParseDouble(temperatureValue);
-                var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attribute(@"number").Value, NumberStyles.Any, CultureInfo.InvariantCulture));
-                var description = weatherNode.Attribute(@"value").Value;
+                var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attribute(@"number")?.Value, NumberStyles.Any, CultureInfo.InvariantCulture));
+                var description = weatherNode.Attribute(@"value")?.Value;
                 var icon = weatherNode.Attribute(@"icon")?.Value;
                 var iconUri = icon == null ? null : string.Format(IconUri, icon);
                 return new WeatherDescription(type, temperature, description, iconUri);

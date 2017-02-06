@@ -69,7 +69,7 @@
 
             <mui:SpacingUniformGrid Columns="2" Rows="2" VerticalSpacing="8" HorizontalSpacing="8">
                 <DockPanel>
-                    <Label Content="Text color:" />
+                    <Label Content="Text color:" Width="108" />
                     <mui:ColorPicker Color="{Binding SessionInfo.ForegroundColor}" />
                 </DockPanel>
                 <DockPanel>
@@ -81,7 +81,7 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <Label Content="Background color:" />
+                    <Label Content="Background color:" Width="108" />
                     <mui:ColorPicker Color="{Binding SessionInfo.BackgroundColor}" />
                 </DockPanel>
                 <DockPanel>

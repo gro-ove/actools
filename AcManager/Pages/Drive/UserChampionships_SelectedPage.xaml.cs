@@ -202,11 +202,12 @@ namespace AcManager.Pages.Drive {
                 };
 
                 var multipler = SettingsHolder.Drive.KunosCareerUserAiLevel ? _acObject.UserAiLevelMultipler : 1d;
+                var trackId = round.TrackId.Split('/');
                 await GameWrapper.StartAsync(new Game.StartProperties(new Game.BasicProperties {
                     CarId = _acObject.PlayerCarId,
                     CarSkinId = _acObject.PlayerCarSkinId,
-                    TrackId = round.Track.Id,
-                    TrackConfigurationId = round.Track.LayoutId
+                    TrackId = trackId[0],
+                    TrackConfigurationId = trackId.ElementAtOrDefault(1)
                 }, o?.ToGameProperties(), conditions, round.TrackProperties.Properties, new Game.WeekendProperties {
                     AiLevel = 100,
                     RaceLaps = round.LapsCount,

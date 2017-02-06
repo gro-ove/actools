@@ -28,7 +28,7 @@ namespace CustomShowroom {
 
         private static void ExtractUv(string kn5, string extractUvTexture) {
             using (var renderer = new UvRenderer(kn5)) {
-                var dir = Path.GetDirectoryName(kn5);
+                var dir = Path.GetDirectoryName(kn5) ?? "";
                 var output = Path.Combine(dir, "extracted_uv.png");
                 renderer.Shot(output, extractUvTexture);
                 Process.Start(output);
@@ -63,7 +63,7 @@ namespace CustomShowroom {
             if (!Parser.Default.ParseArguments(args, options)) return 1;
 
             var filename = Assembly.GetEntryAssembly().Location;
-            if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
+            if (options.Verbose || filename?.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
                     || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
                 var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
                 try {

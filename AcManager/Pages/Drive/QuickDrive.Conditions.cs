@@ -379,7 +379,7 @@ namespace AcManager.Pages.Drive {
                 candidates = candidates.Where(x => x.Type == closest).ToList();
                 var footprint = candidates.Select(x => x.Id).JoinToString(';');
                 if (footprint != _weatherCandidatesFootprint || !candidates.Contains(weather)) {
-                    weather = candidates.RandomElement();
+                    weather = candidates.RandomElementOrDefault();
                     _weatherCandidatesFootprint = footprint;
                 }
 

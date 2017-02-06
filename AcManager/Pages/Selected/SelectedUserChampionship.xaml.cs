@@ -339,8 +339,7 @@ namespace AcManager.Pages.Selected {
 
                 var lastLength = last?.Track?.GuessApproximateLapDuration().TotalSeconds * last?.LapsCount;
                 var lapsCount = lastLength.HasValue ? (int)(lastLength.Value / track.GuessApproximateLapDuration().TotalSeconds) : 2;
-                SelectedObject.ExtendedRounds.Add(new UserChampionshipRoundExtended {
-                    Track = track,
+                SelectedObject.ExtendedRounds.Add(new UserChampionshipRoundExtended (track){
                     Weather = last?.Weather ?? WeatherManager.Instance.GetDefault(),
                     TrackProperties = last?.TrackProperties ?? Game.DefaultTrackPropertiesPresets[0],
                     LapsCount = lapsCount

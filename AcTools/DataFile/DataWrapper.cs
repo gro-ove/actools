@@ -62,30 +62,42 @@ namespace AcTools.DataFile {
         public bool IsEmpty => _acd == null;
 
         public IniFile GetIniFile([Localizable(false)] string name) {
-            AbstractDataFile cached;
-            if (_cache.TryGetValue(name, out cached)) return (IniFile)cached;
+            lock (_cache) {
+                AbstractDataFile cached;
+                if (_cache.TryGetValue(name, out cached) && cached is IniFile) {
+                    return (IniFile)cached;
+                }
 
-            var result = new IniFile(_carDirectory, name, _acd);
-            _cache[name] = result;
-            return result;
+                var result = new IniFile(_carDirectory, name, _acd);
+                _cache[name] = result;
+                return result;
+            }
         }
 
         public LutDataFile GetLutFile(string name) {
-            AbstractDataFile cached;
-            if (_cache.TryGetValue(name, out cached)) return (LutDataFile)cached;
+            lock (_cache) {
+                AbstractDataFile cached;
+                if (_cache.TryGetValue(name, out cached) && cached is LutDataFile) {
+                    return (LutDataFile)cached;
+                }
 
-            var result = new LutDataFile(_carDirectory, name, _acd);
-            _cache[name] = result;
-            return result;
+                var result = new LutDataFile(_carDirectory, name, _acd);
+                _cache[name] = result;
+                return result;
+            }
         }
 
         public RawDataFile GetRawFile(string name) {
-            AbstractDataFile cached;
-            if (_cache.TryGetValue(name, out cached)) return (RawDataFile)cached;
+            lock (_cache) {
+                AbstractDataFile cached;
+                if (_cache.TryGetValue(name, out cached) && cached is RawDataFile) {
+                    return (RawDataFile)cached;
+                }
 
-            var result = new RawDataFile(_carDirectory, name, _acd);
-            _cache[name] = result;
-            return result;
+                var result = new RawDataFile(_carDirectory, name, _acd);
+                _cache[name] = result;
+                return result;
+            }
         }
 
         public static DataWrapper FromDirectory(string carDirectory) {

@@ -247,8 +247,19 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
-            var list = enumerable as IList<T> ?? enumerable.ToList();
-            return list.ElementAt(MathUtils.Random(0, list.Count));
+            var list = enumerable.ToIReadOnlyListIfItIsNot();
+            var random = MathUtils.Random(0, list.Count);
+            return list[random];
+        }
+
+        [Pure, CanBeNull]
+        public static T RandomElementOrDefault<T>([NotNull] this IEnumerable<T> enumerable) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            var list = enumerable.ToIReadOnlyListIfItIsNot();
+            if (list.Count == 0) return default(T);
+
+            var random = MathUtils.Random(0, list.Count);
+            return list[random];
         }
 
         [Pure, NotNull]

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Miscellaneous;
@@ -266,8 +267,8 @@ namespace AcManager.Tools.Managers.Online {
 
             var now = DateTime.Now;
             await GameWrapper.StartAsync(properties);
-            var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn>();
-            WrongPassword = whatsGoingOn?.Type == AcLogHelper.WhatsGoingOnType.OnlineWrongPassword;
+            var whatsGoingOn = properties.GetAdditional<WhatsGoingOn>();
+            WrongPassword = whatsGoingOn?.Type == WhatsGoingOnType.OnlineWrongPassword;
 
             if (whatsGoingOn == null) {
                 LastConnected = now;

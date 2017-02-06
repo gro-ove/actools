@@ -162,11 +162,13 @@ namespace AcTools.Processes {
                 section.Set("SERVER_PORT", ServerPort);
                 
                 if (ServerName != null) {
-                    if (!Regex.IsMatch(ServerName, @"^[\w -]+$")) {
+                    /*if (!Regex.IsMatch(ServerName, @"^[\w -]+$")) {
                         AcToolsLogging.Write($"(Warning) For safety reasons, can’t set server name to “{ServerName}”");
                     } else {
                         section.Set("SERVER_NAME", ServerName);
-                    }
+                    }*/
+
+                    section.Set("SERVER_NAME", ServerName);
                 } else {
                     section.Remove("SERVER_NAME");
                 }

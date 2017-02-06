@@ -479,7 +479,7 @@ namespace AcManager.Tools.Objects {
                         time += Rules.Qualifying * 60 + interval;
                     }
 
-                    var approximateLapDuration = (int)round.Track.GuessApproximateLapDuration(playerCar).TotalSeconds;
+                    var approximateLapDuration = (int)(round.Track?.GuessApproximateLapDuration(playerCar).TotalSeconds ?? 150d);
                     time = (time + approximateLapDuration * round.LapsCount + interval).Ceiling(15 * 60);
 
                     if (time > CommonAcConsts.TimeMaximum - 60 * 60) {
@@ -742,8 +742,7 @@ namespace AcManager.Tools.Objects {
                 var weather = (WeatherObject)WeatherManager.Instance.WrappersList.Where(y => y.Value.Enabled).ElementAtOrDefault(x.Weather)?.Loaded() ??
                         WeatherManager.Instance.GetDefault();
                 var trackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(x.Surface) ?? Game.GetDefaultTrackPropertiesPreset();
-                return new UserChampionshipRoundExtended {
-                    Track = track,
+                return new UserChampionshipRoundExtended (track) {
                     LapsCount = x.LapsCount,
                     TrackProperties = trackProperties,
                     Weather = weather
@@ -794,7 +793,7 @@ namespace AcManager.Tools.Objects {
             // Save rounds
             if (_extendedRounds != null) {
                 json[@"rounds"] = JArray.FromObject(_extendedRounds.Select(x =>
-                        new UserChampionshipRound(x.Track.KunosIdWithLayout,
+                        new UserChampionshipRound(x.Track?.KunosIdWithLayout ?? x.TrackId.Replace('/', '-'),
                                 x.LapsCount,
                                 WeatherManager.Instance.WrappersList.FindIndex(y => ReferenceEquals(y.Value, x.Weather)),
                                 Game.DefaultTrackPropertiesPresets.IndexOf(x.TrackProperties))));

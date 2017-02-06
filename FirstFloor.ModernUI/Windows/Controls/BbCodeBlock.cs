@@ -68,8 +68,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(EmojiSupportProperty, value); }
         }
 
-        private bool _dirty;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BbCodeBlock"/> class.
         /// </summary>
@@ -93,6 +91,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             ((BbCodeBlock)o).UpdateDirty();
         }
+
+        private bool _dirty;
 
         private void OnLoaded(object o, EventArgs e) {
             Update();

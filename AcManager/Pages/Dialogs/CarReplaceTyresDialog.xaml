@@ -1,36 +1,270 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarReplaceTyresDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Found Tyres" SizeToContent="Manual"
-        Width="400" Height="800" MinWidth="320" MinHeight="240" LocationAndSizeKey=".carReplaceTyresDialog"
-        d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}">
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Found Tyres" SizeToContent="Manual"
+        Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="99999" MaxHeight="99999" LocationAndSizeKey=".carReplaceTyresDialog"
+        ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" x:Name="This">
+    <mui:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-    <ListBox ItemsSource="{Binding Tyres}" Style="{StaticResource VirtualizingListBox}">
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <Border TextBlock.FontWeight="Normal" Height="40">
-                    <DockPanel VerticalAlignment="Center">
-                        <TextBlock DockPanel.Dock="Top">
-                            <Run Text="{Binding DisplayName, Mode=OneWay}" FontWeight="Bold" />
-                            <Run FontSize="11">from</Run>
-                            <Run Text="{Binding Source.DisplayName, Mode=OneWay}" FontWeight="Bold" />
-                        </TextBlock>
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Version, StringFormat='{}Version: {0}'}" Style="{StaticResource Small}" Margin="20 0"
-                                Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                        <mui:BooleanSwitch Value="{Binding RearTyres}" DockPanel.Dock="Left">
-                            <mui:BooleanSwitch.True>
-                                <TextBlock DockPanel.Dock="Top" Text="Rear tyres" Style="{StaticResource Small}" Margin="20 0" />
-                            </mui:BooleanSwitch.True>
-                            <mui:BooleanSwitch.False>
-                                <TextBlock DockPanel.Dock="Top" Text="Front tyres" Style="{StaticResource Small}" Margin="20 0" />
-                            </mui:BooleanSwitch.False>
+            <Style x:Key="TyresCell" TargetType="Border">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+                <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonText}" />
+                <Setter Property="mui:Draggable.Destination" Value="{x:Static di:CarReplaceTyresDialog+TyresEntry.DraggableFormat}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+                        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonTextHover}" />
+                    </Trigger>
+                    <Trigger Property="Button.IsPressed" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+                        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonTextPressed}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <DataTemplate x:Key="TyresSetDataTemplate" DataType="{x:Type di:CarReplaceTyresDialog+TyresSet}">
+                <Border TextBlock.FontWeight="Normal" Height="120" Padding="8 4">
+                    <Border.ContextMenu>
+                        <mui:InheritingContextMenu>
+                            <!--<MenuItem Header="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" />-->
+                            <MenuItem Header="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding DeleteCommand}" />
+                        </mui:InheritingContextMenu>
+                    </Border.ContextMenu>
+
+                    <mui:Cell>
+                        <mui:BooleanSwitch HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4" Panel.ZIndex="10">
+                            <mui:BooleanSwitch.Value>
+                                <MultiBinding Converter="{StaticResource OrConverter}">
+                                    <Binding Path="DifferentTyres" />
+                                    <Binding Path="Dublicate" />
+                                </MultiBinding>
+                            </mui:BooleanSwitch.Value>
+                            <mui:SpacingStackPanel Background="#99333333" TextBlock.Foreground="White">
+                                <DockPanel Visibility="{Binding DifferentTyres, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Background="Transparent" Margin="4 2">
+                                    <DockPanel.ToolTip>Different tyres might cause car to drive badly and unexpectedly</DockPanel.ToolTip>
+                                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
+                                            Stretch="Uniform" Margin="2 2 4 0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Different tyres" FontSize="10" />
+                                </DockPanel>
+                                <DockPanel Visibility="{Binding Dublicate, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent"
+                                        Margin="4 2">
+                                    <DockPanel.ToolTip>This set is exact copy of some previous one, it won’t be saved</DockPanel.ToolTip>
+                                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
+                                            Stretch="Uniform" Margin="2 2 4 0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Dublicate" FontSize="10" />
+                                </DockPanel>
+                            </mui:SpacingStackPanel>
                         </mui:BooleanSwitch>
-                        <TextBlock DockPanel.Dock="Left" Text="{Binding Source.Author, StringFormat='{}Made by {0}'}" Style="{StaticResource Small}"
-                                Margin="20 0"
-                                Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
+                        <DockPanel VerticalAlignment="Center">
+                            <!--position (draggable set)-->
+                            <DockPanel DockPanel.Dock="Left" Margin="0 0 8 0" Background="Transparent">
+                                <RadioButton ToolTip="Default set" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0 0 4 0"
+                                        IsChecked="{Binding DefaultSet}" />
+                                <!--<Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 0 4 0" Stretch="Uniform"
+                                    Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                                    Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />-->
+                                <TextBlock Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
+                            </DockPanel>
+
+                            <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
+                                    Padding="2" Command="{Binding DeleteCommand}"
+                                    Visibility="{Binding DeleteCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8" HorizontalAlignment="Center" StrokeThickness="1"
+                                        Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" VerticalAlignment="Center" />
+                            </Button>
+
+                            <!--tyres per place (draggable tyres)-->
+                            <c:PropertiesGrid Columns="1" LabelWidth="60" Spacing="4">
+                                <Border c:PropertiesGrid.Label="Front:" mui:Draggable.Data="{Binding Front}" AllowDrop="True" Drop="OnFrontSlotDrop"
+                                        Style="{StaticResource TyresCell}" PreviewMouseLeftButtonDown="OnFrontSlotMouseDown">
+                                    <mui:Cell>
+                                        <DockPanel Margin="8 4">
+                                            <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 2 4 -2" Stretch="Uniform"
+                                                    Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                                                    Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                                            <TextBlock Text="{Binding Front.DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Front.DisplaySource}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" />
+                                        </DockPanel>
+                                        <Border Margin="-1" BorderThickness="1" BorderBrush="Transparent"
+                                                ToolTip="{Binding Front.DisplayOffsetFrontDescription}">
+                                            <TextBlock DataContext="{Binding Front.AppropriateLevelFront}" Text="{Binding}" Padding="4 2" Width="20"
+                                                    TextAlignment="Center" HorizontalAlignment="Right" Margin="4 0" Style="{StaticResource Label}"
+                                                    Foreground="Black"
+                                                    Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}" />
+                                        </Border>
+                                        <Border Margin="-1" BorderThickness="1"
+                                                DataContext="{Binding DataContext.MovingTyres.AppropriateLevelFront, ElementName=This}"
+                                                BorderBrush="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}"
+                                                Visibility="{Binding (mui:Draggable.IsDestinationHighlighted), RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center" HorizontalAlignment="Right"
+                                                    Margin="4 -2 6 2" Style="{StaticResource Label}" Foreground="Black"
+                                                    Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect Opacity="0.4" Color="Black" Direction="-90" BlurRadius="4" ShadowDepth="2" />
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                        </Border>
+                                    </mui:Cell>
+                                </Border>
+                                <Border c:PropertiesGrid.Label="Rear:" mui:Draggable.Data="{Binding Rear}" Style="{StaticResource TyresCell}" AllowDrop="True"
+                                        Drop="OnRearSlotDrop" PreviewMouseLeftButtonDown="OnRearSlotMouseDown">
+                                    <mui:Cell>
+                                        <DockPanel Margin="8 4">
+                                            <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 2 4 -2" Stretch="Uniform"
+                                                    Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                                                    Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                                            <TextBlock Text="{Binding Rear.DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Rear.DisplaySource}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" />
+                                        </DockPanel>
+                                        <Border Margin="-1" BorderThickness="1" BorderBrush="Transparent" ToolTip="{Binding Rear.DisplayOffsetRearDescription}">
+                                            <TextBlock DataContext="{Binding Rear.AppropriateLevelRear}" Text="{Binding}" Padding="4 2" Width="20"
+                                                    TextAlignment="Center" HorizontalAlignment="Right" Margin="4 0" Style="{StaticResource Label}"
+                                                    Foreground="Black"
+                                                    Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}" />
+                                        </Border>
+                                        <Border Margin="-1" BorderThickness="1"
+                                                DataContext="{Binding DataContext.MovingTyres.AppropriateLevelRear, ElementName=This}"
+                                                BorderBrush="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}"
+                                                Visibility="{Binding (mui:Draggable.IsDestinationHighlighted), RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <TextBlock Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center" HorizontalAlignment="Right"
+                                                    Margin="4 -2 6 2" Style="{StaticResource Label}" Foreground="Black"
+                                                    Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect Opacity="0.4" Color="Black" Direction="-90" BlurRadius="4" ShadowDepth="2" />
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                        </Border>
+                                    </mui:Cell>
+                                </Border>
+                            </c:PropertiesGrid>
+                        </DockPanel>
+                    </mui:Cell>
+                </Border>
+            </DataTemplate>
+
+            <DataTemplate x:Key="TyresEntryDataTemplate" DataType="{x:Type di:CarReplaceTyresDialog+TyresEntry}">
+                <Border TextBlock.FontWeight="Normal" Height="60">
+                    <DockPanel VerticalAlignment="Center">
+                        <mui:SpacingStackPanel Spacing="2" VerticalAlignment="Center" DockPanel.Dock="Left" Width="32" Margin="0 0 8 0">
+                            <Border Padding="4 2" ToolTip="{Binding DisplayOffsetFrontDescription}"
+                                    Background="{Binding AppropriateLevelFront, Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                                <TextBlock Text="{Binding AppropriateLevelFront, StringFormat='{}F.: {0}'}" Style="{StaticResource Label}" Foreground="Black"
+                                        TextAlignment="Center" />
+                            </Border>
+                            <Border Padding="4 2" ToolTip="{Binding DisplayOffsetRearDescription}"
+                                    Background="{Binding AppropriateLevelRear, Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                                <TextBlock Text="{Binding AppropriateLevelRear, StringFormat='{}R.: {0}'}" Style="{StaticResource Label}" Foreground="Black"
+                                        TextAlignment="Center" />
+                            </Border>
+                        </mui:SpacingStackPanel>
+
+                        <TextBlock DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" Margin="0 3 0 0">
+                                <Run Text="{Binding DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                                <Run FontSize="11">from</Run>
+                                <Run Text="{Binding Source.DisplayName, Mode=OneWay}" FontWeight="Bold" />
+                        </TextBlock>
+
+                        <mui:SpacingUniformGrid HorizontalSpacing="20" Margin="20 0" Rows="1">
+                            <TextBlock DockPanel.Dock="Left" Style="{StaticResource Small}"
+                                    Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                <Run>Version:</Run>
+                                <Run Text="{Binding Version, Mode=OneWay}" Foreground="{DynamicResource Error}"
+                                        ToolTip="Not compatible with current version, existing entries have to be removed if used" Background="Transparent">
+                                    <Run.Style>
+                                        <Style TargetType="Run">
+                                            <Style.Triggers>
+                                                <DataTrigger Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
+                                                            <Binding Path="Version" />
+                                                            <Binding Path="DataContext.SetsVersion" ElementName="This" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Go}" />
+                                                    <Setter Property="ToolTip" Value="Compatible with current version" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Run.Style>
+                                </Run>
+                            </TextBlock>
+                            <TextBlock Text="{Binding DisplayPosition}" Style="{StaticResource Small}" />
+                            <TextBlock Text="{Binding Source.Author, StringFormat='{}Made by {0}'}" Style="{StaticResource Small}"
+                                    Visibility="{Binding Source.Author, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                    TextTrimming="CharacterEllipsis" />
+                        </mui:SpacingUniformGrid>
                     </DockPanel>
                 </Border>
             </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+        </ResourceDictionary>
+    </mui:ModernDialog.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="200" Width="400" />
+            <ColumnDefinition Width="9" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Margin="0 0 8 0">
+            <DockPanel DockPanel.Dock="Top" Margin="0 0 0 20">
+                <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="0 0 8 0" Filename="{Binding Car.BrandBadge}" />
+                <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
+            </DockPanel>
+
+            <c:PropertiesGrid Columns="1" LabelWidth="120" Spacing="4" LabelPadding="8 0 0 0" DockPanel.Dock="Top">
+                <TextBlock c:PropertiesGrid.Label="Current version:" Text="{Binding SetsVersion}" TextTrimming="CharacterEllipsis" />
+                <TextBlock c:PropertiesGrid.Label="Front tyres:" Text="{Binding OriginalTyresFront.DisplayParams}" TextTrimming="CharacterEllipsis" />
+                <TextBlock c:PropertiesGrid.Label="Rear tyres:" Text="{Binding OriginalTyresRear.DisplayParams}" TextTrimming="CharacterEllipsis" />
+            </c:PropertiesGrid>
+
+            <TextBlock Text="Existing sets:" Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Margin="0 4 0 4" />
+
+            <ListBox ItemsSource="{Binding Sets}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
+                    mui:Draggable.DestinationConverter="{Binding}" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}"
+                    ItemTemplate="{StaticResource TyresSetDataTemplate}" />
+        </DockPanel>
+
+        <Border Grid.Column="0" Background="#99333333" TextBlock.Foreground="White" VerticalAlignment="Bottom" Padding="20 8" Margin="20"
+                HorizontalAlignment="Center" IsHitTestVisible="False"
+                Visibility="{Binding MovingTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <TextBlock Text="Hold Shift to swap tyres" Style="{StaticResource Small}" TextAlignment="Center" />
+        </Border>
+
+        <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarReplaceTyresDialog" />
+
+        <DockPanel Grid.Column="2" Margin="8 0 0 0">
+            <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
+                <TextBlock Text="Unique tyres found:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+                <TextBlock Text="{Binding TyresView.Count}" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
+                <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+                <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
+                        Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="carreplacetyresdialog.filter">
+                    <mui:HistoricalTextBox.DefaultItems>
+                        <sys:String>street</sys:String>
+                        <sys:String>slicks</sys:String>
+                        <sys:String>!grade:F &amp; !grade:E</sys:String>
+                        <sys:String>version:7</sys:String>
+                        <sys:String>slicks &amp; v:7</sys:String>
+                        <sys:String>car(#race)</sys:String>
+                    </mui:HistoricalTextBox.DefaultItems>
+                </mui:HistoricalTextBox>
+            </DockPanel>
+            <ListBox ItemsSource="{Binding TyresView}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
+                    ItemTemplate="{StaticResource TyresEntryDataTemplate}" />
+        </DockPanel>
+    </Grid>
 </mui:ModernDialog>

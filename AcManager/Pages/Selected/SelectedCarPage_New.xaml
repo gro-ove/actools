@@ -62,8 +62,8 @@
                         </CompositeCollection>
                     </mui:ButtonWithComboBox.MenuItems>
                 </mui:ButtonWithComboBox>
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
+                <!--<Separator />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />-->
                 <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_CarSkins_Tooltip}" />
@@ -110,8 +110,9 @@
                         Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
-                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}"
-                        Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Separator />
+                <Button Content="Migration Helper" Command="{Binding MigrationHelperCommand}" />
+                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 
@@ -448,16 +449,17 @@
                                 </mui:PlaceholderTextBlock>
 
                                 <DockPanel c:PropertiesGrid.Label="Sound:" Background="Transparent" PreviewMouseLeftButtonUp="OnSoundBlockClick"
-                                        Visibility="{Binding SoundDonorId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                        Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                                     <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
                                             Stretch="Uniform" Margin="2 2 4 0" VerticalAlignment="Center"
-                                            Visibility="{Binding SoundDonorId, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static sel:SelectedCarPage_New.TatuusId}}" />
-                                    <mui:ReferenceSwitch Value="{Binding SoundDonor}">
+                                            Visibility="{Binding SelectedObject.SoundDonorId, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static sel:SelectedCarPage_New.TatuusId}}" />
+                                    <mui:ReferenceSwitch Value="{Binding SelectedObject.SoundDonor}">
                                         <mui:ReferenceSwitch.Null>
-                                            <TextBlock Text="{Binding SoundDonorId}" />
+                                            <TextBlock Text="{Binding SelectedObject.SoundDonorId}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                                         </mui:ReferenceSwitch.Null>
                                         <mui:ReferenceSwitch.NonNull>
-                                            <TextBlock Text="{Binding SoundDonor.DisplayName}" />
+                                            <TextBlock Text="{Binding SelectedObject.SoundDonor.DisplayName}" TextWrapping="NoWrap"
+                                                    TextTrimming="CharacterEllipsis" />
                                         </mui:ReferenceSwitch.NonNull>
                                     </mui:ReferenceSwitch>
                                 </DockPanel>

@@ -25,7 +25,7 @@ namespace AcManager.Tools.Objects {
         private static Regex _guidsRegex;
         private static Dictionary<string, string> _kunosGuids;
 
-        private async Task ReadKunosGuids() {
+        private async Task ReadKunosGuidsAsync() {
             if (_guidsRegex == null) {
                 _guidsRegex = new Regex(@"^\{(\w{8}(?:-\w{4}){3}-\w{12})\}\s+event:/cars/(\w+)/e", RegexOptions.Compiled);
             }
@@ -44,17 +44,24 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private bool _soundOriginSet;
-        private string _soundOrigin;
+        private bool _soundDonorSet;
+        private string _soundDonorId;
+
+        [CanBeNull]
+        public string SoundDonorId => _soundDonorId;
+
+        [CanBeNull]
+        public CarObject SoundDonor => _soundDonor?.Value;
+        private Lazy<CarObject> _soundDonor;
 
         [ItemCanBeNull]
         public async Task<string> GetSoundOrigin() {
-            if (_soundOriginSet) return _soundOrigin;
-            _soundOriginSet = true;
+            if (_soundDonorSet) return _soundDonorId;
+            _soundDonorSet = true;
 
             try {
                 if (_kunosGuids == null) {
-                    await ReadKunosGuids().ConfigureAwait(false);
+                    await ReadKunosGuidsAsync().ConfigureAwait(false);
                     if (_kunosGuids == null) return null;
                 }
 
@@ -67,8 +74,11 @@ namespace AcManager.Tools.Objects {
 
                 foreach (var line in lines) {
                     var m = _guidsRegex.Match(line);
-                    if (m.Success && m.Groups[2].Value == Id && _kunosGuids.TryGetValue(m.Groups[1].Value, out _soundOrigin)) {
-                        return _soundOrigin;
+                    if (m.Success && m.Groups[2].Value == Id && _kunosGuids.TryGetValue(m.Groups[1].Value, out _soundDonorId)) {
+                        _soundDonor = new Lazy<CarObject>(() => SoundDonorId == null ? null : CarsManager.Instance.GetById(SoundDonorId));
+                        OnPropertyChanged(nameof(SoundDonorId));
+                        OnPropertyChanged(nameof(SoundDonor));
+                        return _soundDonorId;
                     }
                 }
 
@@ -131,6 +141,9 @@ namespace AcManager.Tools.Objects {
 
                         FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
                     });
+
+                    _soundDonorSet = true;
+                    _soundDonorId = donor.Id;
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Car_ReplaceSound_CannotReplace, ToolsStrings.Car_ReplaceSound_CannotReplace_Commentary, e);

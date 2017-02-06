@@ -14,6 +14,7 @@ using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
@@ -62,8 +63,7 @@ namespace AcManager.Pages.Selected {
             }
 
             public async Task InitializeLater() {
-                SoundDonorId = await SelectedObject.GetSoundOrigin();
-
+                await SelectedObject.GetSoundOrigin();
                 await Task.Delay(500);
                 await LapTimesManager.Instance.UpdateAsync();
                 UpdateLapTimes();
@@ -87,24 +87,6 @@ namespace AcManager.Pages.Selected {
                     OnPropertyChanged();
                 }
             }
-
-            private string _soundDonorId;
-
-            [CanBeNull]
-            public string SoundDonorId {
-                get { return _soundDonorId; }
-                set {
-                    if (Equals(value, _soundDonorId)) return;
-                    _soundDonorId = value;
-                    OnPropertyChanged();
-
-                    _soundDonor = new Lazy<CarObject>(() => SoundDonorId == null ? null : CarsManager.Instance.GetById(SoundDonorId));
-                    OnPropertyChanged(nameof(SoundDonor));
-                }
-            }
-
-            public CarObject SoundDonor => _soundDonor?.Value;
-            private Lazy<CarObject> _soundDonor;
 
             public override void Load() {
                 base.Load();
@@ -390,6 +372,27 @@ namespace AcManager.Pages.Selected {
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
                     (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
+
+            private AsyncCommand _migrationHelperCommand;
+
+            public AsyncCommand MigrationHelperCommand => _migrationHelperCommand ?? (_migrationHelperCommand = new AsyncCommand(() => {
+                var dialog = new ModernDialog {
+                    Title = "Migration Helper",
+                    SizeToContent = SizeToContent.Manual,
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    LocationAndSizeKey = @"lsMigrationHelper",
+                    MinWidth = 800,
+                    MinHeight = 480,
+                    Width = 800,
+                    Height = 640,
+                    MaxWidth = 99999,
+                    MaxHeight = 99999,
+                    Content = new ModernFrame {
+                        Source = UriExtension.Create("/Pages/ContentTools/MigrationHelper.xaml?Id={0}&Models=True", SelectedObject.Id)
+                    }
+                };
+                return dialog.ShowAndWaitAsync();
+            }));
 
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
@@ -943,9 +946,10 @@ namespace AcManager.Pages.Selected {
         public static readonly string TatuusId = @"tatuusfa1";
 
         private void OnSoundBlockClick(object sender, MouseButtonEventArgs e) {
-            if (_model.SoundDonorId == TatuusId) {
+            var obj = _model.SelectedObject;
+            if (obj.SoundDonorId == TatuusId) {
                 ModernDialog.ShowMessage(
-                        $"Most likely, sound is not from {_model.SoundDonor.DisplayName ?? _model.SoundDonorId}, but instead it’s based on Kunos sample soundbank and its author forgot to change GUIDs before compiling it. Usually it’s not a problem, but in a race with two different cars having same GUIDs, one of them will use sound of another one.\n\nIf you’re the author, please, consider [url=\"https://www.youtube.com/watch?v=BdKsHBn8wh4\"]fixing it[/url].",
+                        $"Most likely, sound is not from {obj.SoundDonor?.DisplayName ?? obj.SoundDonorId}, but instead it’s based on Kunos sample soundbank and its author forgot to change GUIDs before compiling it. Usually it’s not a problem, but in a race with two different cars having same GUIDs, one of them will use sound of another one.\n\nIf you’re the author, please, consider [url=\"https://www.youtube.com/watch?v=BdKsHBn8wh4\"]fixing it[/url].",
                         ToolsStrings.Common_Warning, MessageBoxButton.OK);
             }
         }

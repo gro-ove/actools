@@ -479,6 +479,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AcManager.ContentRepair\AcManager.ContentRepair.csproj">
+      <Project>{CC98A959-9317-4C44-A2AF-4361F1BA167C}</Project>
+      <Name>AcManager.ContentRepair</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>

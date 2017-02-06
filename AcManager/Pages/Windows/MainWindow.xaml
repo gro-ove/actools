@@ -71,6 +71,11 @@
                 <!--<mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />-->
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
+        <mui:LinkGroup GroupKey="content" DisplayName="Tools">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
 
         <!--server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
         <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml" />

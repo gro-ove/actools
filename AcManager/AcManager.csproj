@@ -297,6 +297,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\ToolsListPage.xaml.cs">
+      <DependentUpon>ToolsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\UserChampionshipsListPage.xaml.cs">
       <DependentUpon>UserChampionshipsListPage.xaml</DependentUpon>
     </Compile>
@@ -431,6 +434,9 @@
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ContentTools\MigrationHelper.xaml.cs">
+      <DependentUpon>MigrationHelper.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
@@ -445,6 +451,7 @@
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
+    <Compile Include="Tools\ContentRepairUi\CarObsoleteTyresRepair.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
@@ -781,6 +788,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\ToolsListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Lists\UserChampionshipsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1093,6 +1104,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ContentTools\MigrationHelper.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1336,6 +1351,10 @@
     <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
       <Project>{e1c50bb6-5b63-4917-b5e0-836f38061811}</Project>
       <Name>AcManager.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.ContentRepair\AcManager.ContentRepair.csproj">
+      <Project>{cc98a959-9317-4c44-a2af-4361f1ba167c}</Project>
+      <Name>AcManager.ContentRepair</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcManager.LargeFilesSharing\AcManager.LargeFilesSharing.csproj">
       <Project>{fb438f1b-be94-494a-bd40-b6c08f0a5598}</Project>

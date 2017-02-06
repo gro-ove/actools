@@ -25,6 +25,11 @@
                             ToolTip="Update tyres and brakes information for all cars installed and enabled" />
                 </DockPanel>
 
+                <DockPanel>
+                    <Label Content="Start with current race.ini:" />
+                    <Button Command="{Binding StartDirectCommand}" Content="Start" />
+                </DockPanel>
+
                 <StackPanel>
                     <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
                     <DockPanel>
