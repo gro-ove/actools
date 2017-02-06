@@ -108,14 +108,8 @@ namespace AcTools.AcdFile {
                 }
             }
         }
-
-        /// <summary>
-        /// Works only if loaded from ACD-file!
-        /// </summary>
-        public void Save([CanBeNull] string filename = null) {
-            if (!IsPacked) throw new Exception("Can’t do, not packed");
-
-            filename = filename ?? _packedFile;
+        
+        public void Save([NotNull] string filename) {
             if (filename == null) throw new Exception("Filename not specified (shouldn’t happen)");
 
             EnsureFullyLoaded();
