@@ -1,16 +1,31 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 
 namespace StringBasedFilter.Parsing {
+    public class FilterParams {
+        public static readonly FilterParams Defaults = new FilterParams();
+
+        public bool StrictMode { get; set; } = false;
+
+        public Func<string, string> ValueConversion { get; set; } =
+            s => s.StartsWith("#") ? "tag:" + s.Substring(1) : s;
+    }
+
     internal class FilterParser {
-        internal bool StrictMode;
+        [NotNull]
+        private readonly FilterParams _params;
 
         private int _pos;
         private string _filter;
 
         [ItemCanBeNull]
         private List<string> _properties;
+
+        public FilterParser([CanBeNull] FilterParams filterParams) {
+            _params = filterParams ?? FilterParams.Defaults;
+        }
 
         internal FilterTreeNode Parse(string filter, out string[] properies) {
             _pos = 0;
@@ -147,7 +162,7 @@ namespace StringBasedFilter.Parsing {
                         node = NextNode();
                         _pos++;
 
-                        node = new FilterTreeNodeChild(value, node, StrictMode);
+                        node = new FilterTreeNodeChild(value, node, _params);
                         _properties = oldProperties;
                         s = value;
                     } else {
@@ -163,7 +178,7 @@ namespace StringBasedFilter.Parsing {
             }
 
             if (node == null) {
-                node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), StrictMode, out s);
+                node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), _params, out s);
             }
 
             if (!_properties.Contains(s)) {

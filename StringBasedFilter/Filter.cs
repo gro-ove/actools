@@ -11,7 +11,7 @@ namespace StringBasedFilter {
     internal class Filter<T> : Filter, IFilter<T> {
         private readonly ITester<T> _tester;
 
-        public Filter(ITester<T> tester, string filter, bool strictMode) : base(filter, strictMode) {
+        public Filter(ITester<T> tester, string filter, FilterParams filterParams) : base(filter, filterParams) {
             _tester = tester;
         }
 
@@ -39,8 +39,33 @@ namespace StringBasedFilter {
         public static bool OptionSimpleMatching = false;
 
         [NotNull]
-        public static IFilter<T> Create<T>([NotNull] ITester<T> tester, [NotNull, Localizable(false)] string filter, bool strictMode = false) {
-            return new Filter<T>(tester, filter, strictMode);
+        public static IFilter<T> Create<T>([NotNull] ITester<T> tester, [NotNull, Localizable(false)] string filter, bool strictMode) {
+            return new Filter<T>(tester, filter, new FilterParams {
+                StrictMode = strictMode
+            });
+        }
+
+        [NotNull]
+        public static IFilter<T> Create<T>([NotNull] ITester<T> tester, [NotNull, Localizable(false)] string filter, FilterParams filterParams = null) {
+            return new Filter<T>(tester, filter, filterParams);
+        }
+
+        /// <summary>
+        /// Untyped version with variable ITester.
+        /// </summary>
+        [NotNull]
+        public static IFilter Create([NotNull, Localizable(false)] string filter, bool strictMode) {
+            return new Filter(filter, new FilterParams {
+                StrictMode = strictMode
+            });
+        }
+
+        /// <summary>
+        /// Untyped version with variable ITester.
+        /// </summary>
+        [NotNull]
+        public static IFilter Create([NotNull, Localizable(false)] string filter, FilterParams filterParams = null) {
+            return new Filter(filter, filterParams);
         }
 
         [NotNull]
@@ -74,14 +99,12 @@ namespace StringBasedFilter {
 
         public string Source { get; }
 
-        internal Filter(string filter, bool strictMode) {
+        internal Filter(string filter, FilterParams filterParams) {
             Source = filter;
-            _testTree = new FilterParser {
-                StrictMode = strictMode
-            }.Parse(filter, out _keys);
+            _testTree = new FilterParser(filterParams).Parse(filter, out _keys);
         }
 
-        internal Filter(FilterTreeNode tree, bool strictMode) {
+        internal Filter(FilterTreeNode tree) {
             _testTree = tree;
             _keys = new string[0];
         }

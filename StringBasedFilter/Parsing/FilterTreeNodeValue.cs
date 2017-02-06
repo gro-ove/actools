@@ -73,52 +73,53 @@ namespace StringBasedFilter.Parsing {
 
         private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>=+-])\s*", RegexOptions.Compiled);
 
-        public static FilterTreeNode Create(string value, bool strictMode, out string keyName) {
+        public static FilterTreeNode Create(string value, FilterParams filterParams, out string keyName) {
             ITestEntry testEntry;
 
-            if (value.Length > 0 && value[0] == '#') {
-                keyName = "tag";
-                testEntry = CreateTestEntry(value.Substring(1), true, false);
-            } else {
-                var match = ParsingRegex.Match(value);
-                if (match.Success) {
-                    keyName = match.Groups[1].Value.ToLower();
-                    var op = match.Groups[3].Value[0];
-                    var end = value.Substring(match.Length).TrimStart();
+            value = filterParams.ValueConversion(value);
+            if (value == null) {
+                keyName = null;
+                return new FilterTreeNodeEmpty();
+            }
 
-                    if (match.Groups[2].Success) {
-                        var parser = new FilterParser();
-                        string[] properties;
-                        return new FilterTreeNodeChild(keyName, parser.Parse($"{match.Groups[2].Value.Substring(1)}{op}{end}", out properties), strictMode);
-                    }
+            var match = ParsingRegex.Match(value);
+            if (match.Success) {
+                keyName = match.Groups[1].Value.ToLower();
+                var op = match.Groups[3].Value[0];
+                var end = value.Substring(match.Length).TrimStart();
 
-                    switch (op) {
-                        case ':':
-                            testEntry = CreateTestEntry(end, true, false);
-                            break;
-                        case '+':
-                            testEntry = new BooleanTestEntry(true);
-                            break;
-                        case '-':
-                            testEntry = new BooleanTestEntry(false);
-                            break;
-                        case '<':
-                            testEntry = CreateNumericTestEntry(Operator.Less, keyName, end);
-                            break;
-                        case '>':
-                            testEntry = CreateNumericTestEntry(Operator.More, keyName, end);
-                            break;
-                        case '=':
-                            testEntry = CreateNumericTestEntry(Operator.Equal, keyName, end);
-                            break;
-                        default:
-                            testEntry = new ConstTestEntry(false);
-                            break;
-                    }
-                } else {
-                    keyName = null;
-                    testEntry = CreateTestEntry(value, false, strictMode);
+                if (match.Groups[2].Success) {
+                    var parser = new FilterParser(filterParams);
+                    string[] properties;
+                    return new FilterTreeNodeChild(keyName, parser.Parse($"{match.Groups[2].Value.Substring(1)}{op}{end}", out properties), filterParams);
                 }
+
+                switch (op) {
+                    case ':':
+                        testEntry = CreateTestEntry(end, true, false);
+                        break;
+                    case '+':
+                        testEntry = new BooleanTestEntry(true);
+                        break;
+                    case '-':
+                        testEntry = new BooleanTestEntry(false);
+                        break;
+                    case '<':
+                        testEntry = CreateNumericTestEntry(Operator.Less, keyName, end);
+                        break;
+                    case '>':
+                        testEntry = CreateNumericTestEntry(Operator.More, keyName, end);
+                        break;
+                    case '=':
+                        testEntry = CreateNumericTestEntry(Operator.Equal, keyName, end);
+                        break;
+                    default:
+                        testEntry = new ConstTestEntry(false);
+                        break;
+                }
+            } else {
+                keyName = null;
+                testEntry = CreateTestEntry(value, false, filterParams.StrictMode);
             }
 
             return new FilterTreeNodeValue(keyName, testEntry);
