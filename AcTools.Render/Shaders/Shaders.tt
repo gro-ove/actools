@@ -5,6 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.IO" #>
+<#@ import namespace="System.IO.Compression" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Resources" #>
 <#@ import namespace="System.Text" #>
@@ -32,6 +33,15 @@ using SlimDX.Direct3D11;
 	string rootNamespace = null;
 	string resultNamespace = null;
 	string resxName = null;
+
+/* COMPRESSION */
+	Func<byte[], byte[]> Compress = data => {
+		MemoryStream output = new MemoryStream();
+		using (var dstream = new DeflateStream(output, CompressionLevel.Optimal)){
+			dstream.Write(data, 0, data.Length);
+		}
+		return output.ToArray();
+	};
 
 /* LOOKING FOR CSPROJ TO FIND PROJECT’S ROOT DIRECTORY */
 	var projectRoot = dataFolder;
@@ -121,7 +131,10 @@ namespace <#= resultNamespace #> {
 		}
 	
 		if (File.Exists(h)) File.Delete(h);
-		File.Move(c, h);
+
+		File.WriteAllBytes(h, Compress(File.ReadAllBytes(c)));
+		File.Delete(c);
+
 		if (w.Length > 0){
 			File.WriteAllText(v, w);
 		} else {

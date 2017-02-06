@@ -33,6 +33,22 @@ namespace AcManager.Tools {
         public T Value { get; }
     }
 
+    public class HoldedList : HoldedList<object> {
+        public HoldedList(int capacity) : base(capacity) { }
+
+        /// <summary>
+        /// Use Get() instead!
+        /// </summary>
+        public new IDisposable Get([CanBeNull] object value) {
+            return Get();
+        }
+
+        [NotNull]
+        public IDisposable Get() {
+            return base.Get(new object());
+        }
+    }
+
     public class HoldedList<T> : IReadOnlyList<T> {
         private readonly List<T> _holded;
 
@@ -40,7 +56,7 @@ namespace AcManager.Tools {
             _holded = new List<T>(capacity);
         }
 
-        [CanBeNull, ContractAnnotation(@"value: null => null")]
+        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
         public Holder<T> Get([CanBeNull] T value) {
             if (ReferenceEquals(value, null)) return null;
 
