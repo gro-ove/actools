@@ -27,8 +27,14 @@ namespace StringBasedFilter.TestEntries {
                 case Operator.Less:
                     return i < _value;
 
+                case Operator.LessEqual:
+                    return i <= _value;
+
                 case Operator.More:
                     return i > _value;
+
+                case Operator.MoreEqual:
+                    return i >= _value;
 
                 case Operator.Equal:
                     return i == _value;

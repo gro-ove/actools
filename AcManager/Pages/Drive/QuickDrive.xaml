@@ -203,28 +203,17 @@
             <mui:SpacingStackPanel Width="160" Margin="0 0 20 0" Spacing="8">
                 <c:UserPresetsControl UserPresetable="{Binding AssistsViewModel}" ShowSaveButton="False" />
 
-                <Grid DataContext="{Binding AssistsViewModel}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <DockPanel DataContext="{Binding AssistsViewModel}">
+                    <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+                        <c:ModernPopup Padding="16 12 16 16">
+                            <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+                        </c:ModernPopup>
+                    </mui:ContextMenuButton>
 
                     <CheckBox IsChecked="{Binding TyreBlankets}" VerticalAlignment="Center">
                         <Label Content="{x:Static g:AppStrings.Drive_TyreBlankets}" />
                     </CheckBox>
-
-                    <ToggleButton Grid.Column="1" x:Name="AssistsButton" Content="…"
-                            IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
-                        <ToggleButton.ToolTip>
-                            <c:AssistsDescription />
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
-
-                    <c:ModernPopup Grid.Column="1" x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}"
-                            IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
-                        <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
-                    </c:ModernPopup>
-                </Grid>
+                </DockPanel>
 
                 <CheckBox IsChecked="{Binding SelectedCar.SpecificControlsPreset}" Margin="0 20 0 0">
                     <Label Content="Car-specific controls" />

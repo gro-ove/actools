@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 using StringBasedFilter.TestEntries;
 using StringBasedFilter.Utils;
@@ -71,47 +71,44 @@ namespace StringBasedFilter.Parsing {
             }
         }
 
-        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>=+-])\s*", RegexOptions.Compiled);
-
         public static FilterTreeNode Create(string value, FilterParams filterParams, out string keyName) {
             ITestEntry testEntry;
 
-            value = filterParams.ValueConversion(value);
-            if (value == null) {
-                keyName = null;
-                return new FilterTreeNodeEmpty();
+            if (filterParams.ValueConversion != null) {
+                value = filterParams.ValueConversion(value);
+                if (value == null) {
+                    keyName = null;
+                    return new FilterTreeNodeEmpty();
+                }
             }
 
-            var match = ParsingRegex.Match(value);
-            if (match.Success) {
-                keyName = match.Groups[1].Value.ToLower();
-                var op = match.Groups[3].Value[0];
-                var end = value.Substring(match.Length).TrimStart();
+            var splitted = filterParams.ValueSplitFunc(value);
+            if (splitted != null) {
+                keyName = splitted.PropertyKey;
 
-                if (match.Groups[2].Success) {
+                if (splitted.ChildKey != null) {
+                    var fakeFilter = $"{splitted.PropertyKey}{splitted.ComparingOperation}{splitted.PropertyValue}";
                     var parser = new FilterParser(filterParams);
                     string[] properties;
-                    return new FilterTreeNodeChild(keyName, parser.Parse($"{match.Groups[2].Value.Substring(1)}{op}{end}", out properties), filterParams);
+                    return new FilterTreeNodeChild(splitted.ChildKey, parser.Parse(fakeFilter, out properties), filterParams);
                 }
 
-                switch (op) {
-                    case ':':
-                        testEntry = CreateTestEntry(end, true, false);
+                switch (splitted.ComparingOperation) {
+                    case FilterComparingOperation.IsSame:
+                        testEntry = CreateTestEntry(splitted.PropertyValue, true, false);
                         break;
-                    case '+':
-                        testEntry = new BooleanTestEntry(true);
+                    case FilterComparingOperation.IsTrue:
+                        testEntry = filterParams.BooleanTestFactory(true);
                         break;
-                    case '-':
-                        testEntry = new BooleanTestEntry(false);
+                    case FilterComparingOperation.IsFalse:
+                        testEntry = filterParams.BooleanTestFactory(false);
                         break;
-                    case '<':
-                        testEntry = CreateNumericTestEntry(Operator.Less, keyName, end);
-                        break;
-                    case '>':
-                        testEntry = CreateNumericTestEntry(Operator.More, keyName, end);
-                        break;
-                    case '=':
-                        testEntry = CreateNumericTestEntry(Operator.Equal, keyName, end);
+                    case FilterComparingOperation.LessThan:
+                    case FilterComparingOperation.MoreThan:
+                    case FilterComparingOperation.LessThanOrEqualTo:
+                    case FilterComparingOperation.MoreThanOrEqualTo:
+                    case FilterComparingOperation.EqualTo:
+                        testEntry = CreateNumericTestEntry((Operator)splitted.ComparingOperation, keyName, splitted.PropertyValue);
                         break;
                     default:
                         testEntry = new ConstTestEntry(false);

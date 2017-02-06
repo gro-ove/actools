@@ -682,8 +682,8 @@ namespace AcManager.Pages.Selected {
 
                 if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     // MaxY values were updated while creating new GraphData instances above
-                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
-                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
+                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
                 }
             }));
             #endregion

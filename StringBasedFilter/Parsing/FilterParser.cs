@@ -1,16 +1,103 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using StringBasedFilter.TestEntries;
 
 namespace StringBasedFilter.Parsing {
+    public enum FilterComparingOperation {
+        IsSame = ':',
+        IsTrue = '+',
+        IsFalse = '-',
+        MoreThan = '>',
+        LessThan = '<',
+        MoreThanOrEqualTo = '≥',
+        LessThanOrEqualTo = '≤',
+        EqualTo = '=',
+    }
+
+    public class FilterPropertyValue {
+        [CanBeNull]
+        public string ChildKey { get; set; }
+
+        [NotNull]
+        public string PropertyKey { get; }
+
+        public FilterComparingOperation ComparingOperation { get; }
+
+        [NotNull]
+        public string PropertyValue { get; }
+
+        public FilterPropertyValue([NotNull] string propertyKey, FilterComparingOperation comparingOperation, [NotNull] string propertyValue) {
+            PropertyKey = propertyKey;
+            ComparingOperation = comparingOperation;
+            PropertyValue = propertyValue;
+        }
+
+        public FilterPropertyValue([NotNull] string propertyKey, FilterComparingOperation comparingOperation) {
+            PropertyKey = propertyKey;
+            ComparingOperation = comparingOperation;
+            PropertyValue = "";
+        }
+    }
+
+    [CanBeNull]
+    public delegate FilterPropertyValue ValueSplitFunc([NotNull] string value);
+
+    [NotNull]
+    public delegate ITestEntry BooleanTestFactory(bool value);
+
+    [NotNull]
+    public delegate string ValueConversion([NotNull] string rawValue);
+
     public class FilterParams {
+        /// <summary>
+        /// Params used by default, changeable.
+        /// </summary>
         public static readonly FilterParams Defaults = new FilterParams();
 
-        public bool StrictMode { get; set; } = false;
+        public bool StrictMode { get; set; }
 
-        public Func<string, string> ValueConversion { get; set; } =
+        /// <summary>
+        /// Converts input value before splitting if needed. Can be null.
+        /// </summary>
+        [CanBeNull]
+        public ValueConversion ValueConversion { get; set; } =
             s => s.StartsWith("#") ? "tag:" + s.Substring(1) : s;
+
+        /// <summary>
+        /// Either splits value to three parts: child key (optional), property key and comparing operation
+        /// or returns null for simple mode without key.
+        /// </summary>
+        [NotNull]
+        public ValueSplitFunc ValueSplitFunc { get; set; } = DefaultValueSplitFunc.Default;
+        
+        /// <summary>
+        /// Default factory for boolean testers, override to make auto-conversion more strict/flexible.
+        /// </summary>
+        [NotNull]
+        public BooleanTestFactory BooleanTestFactory { get; set; } = b => new BooleanTestEntry(b);
+    }
+
+    internal static class DefaultValueSplitFunc {
+        private static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>≥≤=+-])\s*", RegexOptions.Compiled);
+
+        public static FilterPropertyValue Default(string s) {
+            var match = ParsingRegex.Match(s);
+            if (!match.Success) return null;
+
+            var key = match.Groups[1].Value.ToLower();
+            var operation = (FilterComparingOperation)match.Groups[3].Value[0];
+            var value = s.Substring(match.Length).TrimStart();
+
+            if (match.Groups[2].Success) {
+                var actualKey = match.Groups[2].Value.Substring(1).ToLower();
+                return new FilterPropertyValue(actualKey, operation, value) { ChildKey = key };
+            }
+
+            return new FilterPropertyValue(key, operation, value);
+        }
     }
 
     internal class FilterParser {

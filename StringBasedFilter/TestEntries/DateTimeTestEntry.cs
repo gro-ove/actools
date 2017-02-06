@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
@@ -8,7 +9,7 @@ namespace StringBasedFilter.TestEntries {
         private readonly bool _exact;
 
         public override string ToString() {
-            return (_op == Operator.Less ? "<" : _op == Operator.Equal ? "=" : ">") + _value;
+            return ((char)_op).ToString(CultureInfo.InvariantCulture) + _value;
         }
 
         internal DateTimeTestEntry(Operator op, DateTime value, bool exact = true) {
@@ -47,6 +48,12 @@ namespace StringBasedFilter.TestEntries {
 
                 case Operator.Equal:
                     return delta == 0;
+
+                case Operator.LessEqual:
+                    return delta <= 0;
+
+                case Operator.MoreEqual:
+                    return delta >= 0;
 
                 default:
                     return false;

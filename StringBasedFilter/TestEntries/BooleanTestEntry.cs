@@ -24,13 +24,13 @@ namespace StringBasedFilter.TestEntries {
         public bool Test(string value) {
             return _value != string.IsNullOrEmpty(value);
         }
-
+        
         public bool Test(TimeSpan value) {
-            return Test(value.ToString());
+            return Test(value > default(TimeSpan));
         }
 
         public bool Test(DateTime value) {
-            return Test(value.ToString(CultureInfo.CurrentUICulture));
+            return Test(value > default(DateTime));
         }
     }
 }

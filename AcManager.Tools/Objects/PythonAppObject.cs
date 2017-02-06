@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,13 +11,14 @@ using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using StringBasedFilter;
+using StringBasedFilter.Parsing;
 
 namespace AcManager.Tools.Objects {
     public class PythonAppObject : AcCommonObject {
-        public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
+        public PythonAppObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         protected override void LoadOrThrow() {
             Name = Id;
@@ -55,17 +57,17 @@ namespace AcManager.Tools.Objects {
                     _configs = null;*/
                 });
 
-                foreach (var config in _configs) {
-                    config.PropertyChanged += OnConfigPropertyChanged;
-                }
+                _configs.ValueChanged += OnConfigsValueChanged;
             }
 
             return _configs;
         }
 
-        private void OnConfigPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (_configs != null && e.PropertyName == nameof(PythonAppConfig.Changed) && ((PythonAppConfig)sender).Changed) {
+        private void OnConfigsValueChanged(object sender, EventArgs e) {
+            if (_configs != null) {
                 UpdateChanged();
+            } else {
+                ((PythonAppConfigs)sender).ValueChanged -= OnConfigsValueChanged;
             }
         }
 
@@ -74,32 +76,140 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (_configs != null && (DateTime.Now - _lastSaved).TotalSeconds > 3d) {
-                for (var i = _configs.Count - 1; i >= 0; i--) {
-                    var config = _configs[i];
-                    if (config.IsAffectedBy(filename)) {
-                        var changed = _configs[i].Changed;
-                        _configs[i].PropertyChanged -= OnConfigPropertyChanged;
-                        _configs[i] = PythonAppConfig.Create(config.Filename, Location, true);
-                        _configs[i].PropertyChanged += OnConfigPropertyChanged;
-                        if (changed) {
-                            UpdateChanged();
-                        }
-                    }
-                }
+            if (_configs != null && (DateTime.Now - _lastSaved).TotalSeconds > 3d && _configs.HandleChanged(Location, filename)) {
+                UpdateChanged();
+                return true;
             }
 
             return base.HandleChangedFile(filename);
         }
     }
 
-    public class PythonAppConfigs : BetterObservableCollection<PythonAppConfig>, IDisposable {
+    public class PythonAppConfigs : ObservableCollection<PythonAppConfig>, IDisposable {
+        public event EventHandler ValueChanged;
+
         private readonly Action _disposalAction;
 
         public PythonAppConfigs(string location, Action disposalAction) : base(Directory.GetFiles(location, "*.ini", SearchOption.AllDirectories)
                                                                                         .Select(file => PythonAppConfig.Create(file, location, false))
                                                                                         .Where(cfg => cfg != null)) {
             _disposalAction = disposalAction;
+            UpdateEnabled();
+
+            foreach (var config in this) {
+                config.ValueChanged += OnValueChanged;
+            }
+        }
+
+        public bool HandleChanged(string location, string filename) {
+            var result = false;
+            var updated = false;
+
+            for (var i = Count - 1; i >= 0; i--) {
+                var config = this[i];
+                if (config.IsAffectedBy(filename)) {
+                    if (config.Changed) {
+                        result = true;
+                    }
+
+                    config.ValueChanged -= OnValueChanged;
+                    this[i] = PythonAppConfig.Create(config.Filename, location, true);
+                    this[i].ValueChanged += OnValueChanged;
+
+                    updated = true;
+                }
+            }
+
+            if (updated) {
+                UpdateEnabled();
+            }
+
+            return result;
+        }
+
+        private void OnValueChanged(object sender, EventArgs e) {
+            UpdateEnabled();
+            ValueChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private class ValueProvider : IPythonAppConfigValueProvider {
+            private readonly ObservableCollection<PythonAppConfig> _root;
+            private List<PythonAppConfigSection> _config;
+            private Collection<PythonAppConfigValue> _section;
+
+            public ValueProvider(ObservableCollection<PythonAppConfig> root) {
+                _root = root;
+            }
+
+            private static int LastIndexOf(string key) {
+                int i0 = key.LastIndexOf('/'), i1 = key.LastIndexOf('\\');
+                return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
+            }
+
+            private static int LastIndexOf(string key, int from) {
+                int i0 = key.LastIndexOf('/', from), i1 = key.LastIndexOf('\\', from);
+                return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
+            }
+
+            private static void Parse(string key, out string param, out string section, out string file) {
+                var paramSep = LastIndexOf(key);
+                if (paramSep <= 0) {
+                    param = paramSep == -1 ? key : key.Substring(1);
+                    section = file = null;
+                    return;
+                }
+
+                param = key.Substring(paramSep + 1);
+
+                var sectionSep = LastIndexOf(key, paramSep - 1);
+                if (sectionSep <= 0) {
+                    section = sectionSep == -1 ? key.Substring(0, paramSep) : key.Substring(1, paramSep - 1);
+                    file = null;
+                    return;
+                }
+
+                section = key.Substring(sectionSep + 1, paramSep - sectionSep - 1);
+                file = key.Substring(0, sectionSep);
+            }
+
+            public string Get(string key) {
+                string param, section, file;
+                Parse(key, out param, out section, out file);
+
+                var sections = file == null ? _config : _root.FirstOrDefault(x => string.Equals(x.DisplayName, file, StringComparison.OrdinalIgnoreCase))?.Sections;
+                if (sections == null) return null;
+
+                var values = section == null ? _section : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
+                return values?.FirstOrDefault(x => string.Equals(x.OriginalKey, param))?.Value;
+            }
+
+            public void SetConfig(List<PythonAppConfigSection> config) {
+                _config = config;
+            }
+
+            public void SetSection(Collection<PythonAppConfigValue> section) {
+                _section = section;
+            }
+        }
+
+        public void UpdateEnabled() {
+            var provider = new ValueProvider(this);
+            for (var i = 0; i < Count; i++) {
+                var config = this[i];
+                provider.SetConfig(config.Sections);
+
+                for (var j = config.Sections.Count - 1; j >= 0; j--) {
+                    var section = config.Sections[j];
+                    provider.SetSection(section);
+
+                    for (var k = section.Count - 1; k >= 0; k--) {
+                        var value = section[k];
+                        if (value.IsEnabledTest != null) {
+                            value.IsEnabled = value.IsEnabledTest(provider);
+                        }
+                    }
+                }
+            }
         }
 
         public void Dispose() {
@@ -113,6 +223,8 @@ namespace AcManager.Tools.Objects {
         private readonly string _defaultsFilename;
         private readonly IniFile _valuesIniFile;
 
+        public event EventHandler ValueChanged;
+
         private PythonAppConfig(string filename, IniFile ini, string name, IniFile values = null) {
             _valuesIniFile = values ?? ini;
 
@@ -123,7 +235,7 @@ namespace AcManager.Tools.Objects {
             }
 
             DisplayName = name;
-            Sections = new BetterObservableCollection<PythonAppConfigSection>(ini.Select(x => new PythonAppConfigSection(x, values?[x.Key])));
+            Sections = new List<PythonAppConfigSection>(ini.Select(x => new PythonAppConfigSection(x, values?[x.Key])));
 
             foreach (var value in Sections.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
@@ -142,7 +254,10 @@ namespace AcManager.Tools.Objects {
         }
 
         private void OnValuePropertyChanged(object sender, PropertyChangedEventArgs e) {
-            Changed = true;
+            if (e.PropertyName == nameof(PythonAppConfigValue.Value)) {
+                Changed = true;
+                ValueChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Save() {
@@ -161,7 +276,7 @@ namespace AcManager.Tools.Objects {
             return FileUtils.IsAffected(changed, Filename) || _defaultsFilename != null && FileUtils.IsAffected(changed, _defaultsFilename);
         }
 
-        public BetterObservableCollection<PythonAppConfigSection> Sections { get; }
+        public List<PythonAppConfigSection> Sections { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]
         public static PythonAppConfig Create(string filename, string pythonAppLocation, bool force) {
@@ -194,7 +309,7 @@ namespace AcManager.Tools.Objects {
         }
     }
 
-    public class PythonAppConfigSection : BetterObservableCollection<PythonAppConfigValue> {
+    public class PythonAppConfigSection : ObservableCollection<PythonAppConfigValue> {
         public string Key { get; }
 
         public string DisplayName { get; }
@@ -207,14 +322,11 @@ namespace AcManager.Tools.Objects {
 
             var commentary = pair.Value.Commentary;
             DisplayName = commentary?.Trim() ?? PythonAppConfig.ConvertKeyToName(pair.Key);
-
-            for (var i = Count - 1; i >= 0; i--) {
-                var value = this[i];
-                if (value.ParentKey != null) {
-                    value.SetParent(this.GetByIdOrDefault(value.ParentKey));
-                }
-            }
         }
+    }
+
+    public interface IPythonAppConfigValueProvider {
+        string Get(string key);
     }
 
     public class PythonAppConfigValue : Displayable, IWithId {
@@ -222,7 +334,7 @@ namespace AcManager.Tools.Objects {
 
         string IWithId.Id => OriginalKey;
 
-        public string ParentKey { get; private set; }
+        public Func<IPythonAppConfigValueProvider, bool> IsEnabledTest { get; private set; }
 
         [CanBeNull]
         public string ToolTip { get; private set; }
@@ -240,7 +352,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private bool _enabledInverse;
+        // private bool _enabledInverse;
         private bool _isEnabled = true;
 
         public bool IsEnabled {
@@ -269,7 +381,7 @@ namespace AcManager.Tools.Objects {
         private static readonly Regex OptionValueRegex = new Regex(@"^(.+)(?:\s+is\s+|=)(.+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex DependentRegex = new Regex(@"^(?:(.+);)?\s*(?:(not available)|(only)) with [""`'“”]?([\w-]+)[""`'“”]?",
+        private static readonly Regex DependentRegex = new Regex(@"^(?:(.+);)?\s*(?:(not available)|(only)) with (.+)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex DisabledRegex = new Regex(@"^(?:0|off|disabled|false|no|none)$",
@@ -278,69 +390,104 @@ namespace AcManager.Tools.Objects {
         private static readonly Regex FileRegex = new Regex(@"^(?:(dir|directory|folder|path)|(?:file|filename)(?:\s+\((.+)\))?$)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        protected PythonAppConfigValue() {}
+        internal class CustomBooleanTestEntry : ITestEntry {
+            private readonly bool _value;
 
-        private void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip, Tuple<string, bool> dependentKeyDisabled) {
+            public CustomBooleanTestEntry(bool b) {
+                _value = b;
+            }
+
+            public bool Test(bool value) {
+                return value == _value;
+            }
+
+            public bool Test(double value) {
+                return _value != Equals(value, 0.0);
+            }
+
+            public bool Test(string value) {
+                return Test(value != null && !DisabledRegex.IsMatch(value));
+            }
+
+            public bool Test(TimeSpan value) {
+                return Test(value > default(TimeSpan));
+            }
+
+            public bool Test(DateTime value) {
+                return Test(value > default(DateTime));
+            }
+        }
+
+        protected PythonAppConfigValue() { }
+
+        private void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip, Func<IPythonAppConfigValueProvider, bool> isEnabledTest) {
             OriginalKey = key;
             DisplayName = name;
             ToolTip = toolTip ?? key;
             Value = value;
-
-            ParentKey = dependentKeyDisabled?.Item1;
-            _enabledInverse = dependentKeyDisabled?.Item2 ?? false;
-        }
-
-        [CanBeNull]
-        private PythonAppConfigValue _parent;
-
-        internal void SetParent(PythonAppConfigValue value) {
-            if (_parent != null) {
-                _parent.PropertyChanged -= OnParentPropertyChanged;
-            }
-
-            _parent = value;
-            UpdateIsEnabled();
-
-            if (_parent != null) {
-                _parent.PropertyChanged += OnParentPropertyChanged;
-            }
-        }
-
-        private void UpdateIsEnabled() {
-            if (_parent == null) {
-                IsEnabled = true;
-                return;
-            }
-
-            var b = _parent as PythonAppConfigBoolValue;
-            if (b != null) {
-                IsEnabled = b.Value ^ _enabledInverse;
-            }
-
-            IsEnabled = !DisabledRegex.IsMatch(_parent.Value) ^ _enabledInverse;
-        }
-
-        private void OnParentPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(Value)) {
-                UpdateIsEnabled();
-            }
+            IsEnabledTest = isEnabledTest;
         }
 
         public static PythonAppConfigValue Create(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] string actualValue) {
             string name = null, toolTip = null;
-            Tuple<string, bool> dependentKeyDisabled = null;
-            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref dependentKeyDisabled);
+            Func<IPythonAppConfigValueProvider, bool> isEnabledTest = null;
+            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest);
 
             if (string.IsNullOrEmpty(name)) {
                 name = PythonAppConfig.ConvertKeyToName(pair.Key);
             }
 
-            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, dependentKeyDisabled);
+            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest);
             return result;
         }
 
+        private class TesterInner : ITester<IPythonAppConfigValueProvider> {
+            public string ParameterFromKey(string key) {
+                return key;
+            }
+
+            public bool Test(IPythonAppConfigValueProvider obj, string key, ITestEntry value) {
+                return key == null || value.Test(obj.Get(key));
+            }
+        }
+
+        public static Func<IPythonAppConfigValueProvider, bool> CreateDisabledFunc(string query, bool invert) {
+            query = query
+                    .Replace(" and ", " & ")
+                    .Replace(" or ", " | ")
+                    .Replace(" not ", " ! ");
+
+            var filter = Filter.Create(new TesterInner(), query, new FilterParams {
+                StrictMode = true,
+                BooleanTestFactory = b => new CustomBooleanTestEntry(b),
+                ValueSplitFunc = ValueSplitFunc.Custom,
+                ValueConversion = null
+            });
+
+            if (invert) return p => !filter.Test(p);
+            return filter.Test;
+        }
+
+        internal static class ValueSplitFunc {
+            private static readonly Regex ParsingRegex = new Regex(@"^(.+?)([:<>≥≤=+-])\s*", RegexOptions.Compiled);
+
+            private static string ClearKey(string key) {
+                return key?.Trim().Trim('"', '\'', '`', '“', '”');
+            }
+
+            public static FilterPropertyValue Custom(string s) {
+                var match = ParsingRegex.Match(s);
+                if (!match.Success) return new FilterPropertyValue(ClearKey(s), FilterComparingOperation.IsTrue);
+
+                var key = match.Groups[1].Value;
+                var operation = (FilterComparingOperation)match.Groups[2].Value[0];
+                var value = s.Substring(match.Length);
+                return new FilterPropertyValue(ClearKey(key), operation, ClearKey(value));
+            }
+        }
+
         private static PythonAppConfigValue CreateInner(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] ref string name,
-                [CanBeNull] ref string toolTip, [CanBeNull] ref Tuple<string, bool> dependentKeyDisabled) {
+                [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest) {
             var value = pair.Value;
             if (commentary != null) {
                 var match = ValueCommentaryRegex.Match(commentary);
@@ -359,9 +506,7 @@ namespace AcManager.Tools.Objects {
                         var dependent = DependentRegex.Match(description);
                         if (dependent.Success) {
                             description = dependent.Groups[1].Value;
-                            var parent = dependent.Groups[4].Value;
-                            var disabledWhen = dependent.Groups[2].Success;
-                            dependentKeyDisabled = new Tuple<string, bool>(parent, disabledWhen);
+                            isEnabledTest = CreateDisabledFunc(dependent.Groups[4].Value.Trim(), dependent.Groups[2].Success);
                         }
 
                         if (NumberRegex.IsMatch(description)) {
@@ -394,8 +539,6 @@ namespace AcManager.Tools.Objects {
                                 }).ToArray());
                             }
                         }
-
-                        // var typeDescription
                     }
                 }
             }
@@ -409,13 +552,21 @@ namespace AcManager.Tools.Objects {
                 case "false":
                     return new PythonAppConfigBoolValue("true", "false");
 
+                case "TRUE":
+                case "FALSE":
+                    return new PythonAppConfigBoolValue("TRUE", "FALSE");
+
+                case "On":
+                case "Off":
+                    return new PythonAppConfigBoolValue("On", "Off");
+
                 case "on":
                 case "off":
                     return new PythonAppConfigBoolValue("on", "off");
 
-                case "TRUE":
-                case "FALSE":
-                    return new PythonAppConfigBoolValue("TRUE", "FALSE");
+                case "ON":
+                case "OFF":
+                    return new PythonAppConfigBoolValue("ON", "OFF");
             }
 
             return new PythonAppConfigValue();

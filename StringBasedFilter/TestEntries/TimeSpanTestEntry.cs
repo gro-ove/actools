@@ -29,8 +29,14 @@ namespace StringBasedFilter.TestEntries {
                 case Operator.Less:
                     return i < _value.TotalSeconds;
 
+                case Operator.LessEqual:
+                    return i <= _value.TotalSeconds;
+
                 case Operator.More:
                     return i > _value.TotalSeconds;
+
+                case Operator.MoreEqual:
+                    return i >= _value.TotalSeconds;
 
                 case Operator.Equal:
                     return Math.Abs(i - _value.TotalSeconds) < 0.001;
