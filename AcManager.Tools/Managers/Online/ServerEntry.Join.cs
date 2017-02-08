@@ -8,9 +8,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.Profile;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
@@ -76,9 +74,10 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private void AvailableUpdate() {
+        public void AvailableUpdate() {
             NonAvailableReasons = GetNonAvailableReasons().ToList();
             IsAvailable = NonAvailableReasons.Count == 0;
+            UpdateAutoJoinAvailable();
         }
 
         private bool _isBooked;
@@ -192,9 +191,9 @@ namespace AcManager.Tools.Managers.Online {
             return true;
         }
 
-        private CommandBase _joinCommand;
+        private AsyncCommand<object> _joinCommand;
 
-        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand<object>(Join,
+        public AsyncCommand<object> JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand<object>(Join,
                 o => ReferenceEquals(o, ForceJoin) || IsAvailable));
 
         private CommandBase _cancelBookingCommand;

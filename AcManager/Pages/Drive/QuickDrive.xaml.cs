@@ -627,7 +627,7 @@ namespace AcManager.Pages.Drive {
         private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
-                    .AddItem("Change skin to random", Model.RandomCarCommand, @"Ctrl+Alt+R")
+                    .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Open car in Content tab", () => {

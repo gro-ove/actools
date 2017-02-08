@@ -1,0 +1,4 @@
+name: ExifWorks
+url: https://www.codeproject.com/Articles/4956/The-ExifWorks-class
+content: ../AdornedControl/LICENSE
+sid: 9_-865240484_-1001197761

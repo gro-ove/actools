@@ -62,7 +62,7 @@ namespace AcManager.Pages.Selected {
                                 throw new Exception(AppStrings.Common_ShootingCancelled);
                             }
 
-                            ImageUtils.ApplyPreview(Path.Combine(resultDirectory, "0.bmp"), SelectedObject.PreviewImage, true);
+                            ImageUtils.ApplyPreview(Path.Combine(resultDirectory, "0.bmp"), SelectedObject.PreviewImage, true, null);
                         }
                     } catch (Exception e) {
                         NonfatalError.Notify(AppStrings.Showroom_CannotUpdatePreview, e);

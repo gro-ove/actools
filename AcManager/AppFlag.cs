@@ -5,6 +5,17 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Period for checking if there is an available slot using Auto-Join mode
+        /// in Online section. Will be used only if smaller than auto-update period set
+        /// in Settings. Default value: 5 seconds. Not sure if there is any sense for
+        /// you to make it smaller unless you use immediate starters, such as UI Module
+        /// or SSE.
+        /// Example: --auto-connect-period=00:02.
+        /// </summary>
+        [FlagDefaultValue("00:05")]
+        AutoConnectPeriod,
+
+        /// <summary>
         /// Delay, after which RHM service will be unloaded after the end of race (time 
         /// interval or seconds). Default value: 1 minute (because, at least on my PC,
         /// it appears that RHM a lot of CPU in background). But you can increase it

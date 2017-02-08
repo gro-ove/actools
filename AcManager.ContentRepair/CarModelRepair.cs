@@ -72,7 +72,7 @@ namespace AcManager.ContentRepair {
             return kn5.Materials.Values
                       .Where(value => value.ShaderName.Contains(@"MultiMap") &&
                               value.GetPropertyByName("sunSpecular")?.ValueA > 0.5f &&
-                              value.GetPropertyByName("useDetail")?.ValueA == 1f)
+                              value.GetPropertyByName("useDetail")?.ValueA >= 1f)
                       .Select(x => x.GetPropertyByName("fresnelMaxLevel"))
                       .Where(x => x != null && x.ValueA >= 0.2);
         }

@@ -85,7 +85,7 @@
 
     <!--car & track previews-->
     <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
-        <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
+        <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4" TextBlock.Foreground="{DynamicResource WindowText}">
             <mui:BooleanSwitch.True>
                 <StackPanel>
                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />

@@ -11,6 +11,8 @@ namespace AcManager.Pages.AcSettings {
         public class ViewModel : NotifyPropertyChanged {
             internal ViewModel() { }
 
+            public CameraManagerSettings CameraManager => AcSettingsHolder.CameraManager;
+
             public CameraOnboardSettings CameraOnboard => AcSettingsHolder.CameraOnboard;
 
             public GameplaySettings Gameplay => AcSettingsHolder.Gameplay;

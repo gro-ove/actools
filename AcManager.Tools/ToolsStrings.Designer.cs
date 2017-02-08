@@ -3085,6 +3085,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Admin password:.
+        /// </summary>
+        public static string Online_AdminPassword {
+            get {
+                return ResourceManager.GetString("Online_AdminPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have been blacklisted on this server.
         /// </summary>
         public static string Online_BookingResult_Blacklisted {
@@ -3349,11 +3358,56 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you disable it, you can always turn it on in online settings.
+        /// </summary>
+        public static string Online_ShowAdminPasswordInput_Tooltip {
+            get {
+                return ResourceManager.GetString("Online_ShowAdminPasswordInput_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Admin Password Input.
+        /// </summary>
+        public static string Online_ShowAdminPasswordInputHeader {
+            get {
+                return ResourceManager.GetString("Online_ShowAdminPasswordInputHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trying to ping to find out HTTP port….
         /// </summary>
         public static string Online_TryingToFindOutHttpPort {
             get {
                 return ResourceManager.GetString("Online_TryingToFindOutHttpPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You’re booked on this server.
+        /// </summary>
+        public static string Online_YouAreBookedOnThisServer {
+            get {
+                return ResourceManager.GetString("Online_YouAreBookedOnThisServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You’re on this server.
+        /// </summary>
+        public static string Online_YouAreOnThisServer {
+            get {
+                return ResourceManager.GetString("Online_YouAreOnThisServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (You).
+        /// </summary>
+        public static string Online_YouFormat {
+            get {
+                return ResourceManager.GetString("Online_YouFormat", resourceCulture);
             }
         }
         

@@ -140,8 +140,12 @@ namespace AcTools.Utils {
 
         public static float Random(float minValue, float maxValue) => (float)(Random(maxValue - minValue) + minValue);
 
-        public static TimeSpan Max(TimeSpan a, TimeSpan b) {
+        public static TimeSpan Max(this TimeSpan a, TimeSpan b) {
             return a > b ? a : b;
+        }
+
+        public static TimeSpan Min(this TimeSpan a, TimeSpan b) {
+            return a < b ? a : b;
         }
     }
 }

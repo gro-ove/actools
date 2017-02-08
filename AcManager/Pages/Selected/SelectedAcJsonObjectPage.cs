@@ -4,6 +4,7 @@ using System.Windows.Input;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcJsonObjectPage : SelectedAcObjectPage {
@@ -17,6 +18,8 @@ namespace AcManager.Pages.Selected {
         }
 
         protected virtual void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
+            if (SelectedAcJsonObject.Author == AcCommonObject.AuthorKunos) return;
+
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
 

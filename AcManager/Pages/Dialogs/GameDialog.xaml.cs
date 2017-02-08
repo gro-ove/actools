@@ -32,6 +32,7 @@ namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
         [Localizable(false)]
         private static readonly GoodShuffle<string> ProgressStyles = GoodShuffle.Get(new[] {
+            // from default FirstFloor.ModernUI set
             "RotatingPlaneProgressRingStyle",
             "DoubleBounceProgressRingStyle",
             "WaveProgressRingStyle",
@@ -39,7 +40,14 @@ namespace AcManager.Pages.Dialogs {
             "PulseProgressRingStyle",
             "ChasingDotsProgressRingStyle",
             "ThreeBounceProgressRingStyle",
-            "CircleProgressRingStyle"
+            "CircleProgressRingStyle",
+
+            // from LoadingIndicators.WPF
+            "LoadingArcsProgressRingStyle",
+            "LoadingArcsRingProgressRingStyle",
+
+            // custom
+            "BallWithPlatformProgressRingStyle",
         });
 
         private ViewModel Model => (ViewModel)DataContext;

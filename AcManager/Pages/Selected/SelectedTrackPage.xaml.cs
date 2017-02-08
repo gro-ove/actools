@@ -130,7 +130,8 @@ namespace AcManager.Pages.Selected {
                 if (shot == null) return;
 
                 try {
-                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth);
+                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 
+                        CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth, null);
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
@@ -148,7 +149,8 @@ namespace AcManager.Pages.Selected {
 
                 if (dialog.ShowDialog() == true) {
                     try {
-                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth);
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage,
+                                CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth, null);
                     } catch (Exception e) {
                         NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                     }

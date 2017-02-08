@@ -83,6 +83,29 @@ namespace StringBasedFilter.Tests {
         }
 
         [TestMethod]
+        public void QuotesTest() {
+            var em0 = Filter.Create(new StringTester(), "!");
+            Assert.IsFalse(em0.Test("!"));
+            Assert.IsFalse(em0.Test("a!"));
+            Assert.IsFalse(em0.Test("!a"));
+
+            var ema = Filter.Create(new StringTester(), "\\!");
+            Assert.IsTrue(ema.Test("!"));
+            Assert.IsFalse(ema.Test("a!"));
+            Assert.IsTrue(ema.Test("!a"));
+
+            var em1 = Filter.Create(new StringTester(), "`!`");
+            Assert.IsTrue(em1.Test("!"));
+            Assert.IsTrue(em1.Test("a!"));
+            Assert.IsTrue(em1.Test("!a"));
+
+            var em2 = Filter.Create(new StringTester(), "\"!\""); 
+            Assert.IsTrue(em2.Test("!"));
+            Assert.IsFalse(em2.Test("a!"));
+            Assert.IsFalse(em2.Test("!a"));
+        }
+
+        [TestMethod]
         public void DevTest() {
             var filter = Filter.Create(new StringTester(), "A & B(Q)");
 

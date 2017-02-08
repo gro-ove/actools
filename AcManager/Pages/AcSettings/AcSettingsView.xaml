@@ -110,6 +110,11 @@
 
             <!--view-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static t:ToolsStrings.AcSettings_View_ViewHeader}" />
+            
+            <DockPanel>
+                <Label Content="Fade color" />
+                <mui:ColorPicker Color="{Binding CameraManager.FadeColor}" />
+            </DockPanel>
 
             <CheckBox IsChecked="{Binding Video.HideArms}">
                 <Label Content="{x:Static t:ToolsStrings.AcSettings_View_HideDriverArms}" />

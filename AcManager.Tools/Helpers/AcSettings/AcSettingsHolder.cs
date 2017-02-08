@@ -124,6 +124,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static CameraOnboardSettings CameraOnboard => _cameraOnboard ?? (_cameraOnboard = new CameraOnboardSettings());
 
 
+        private static CameraManagerSettings _cameraManager;
+        public static CameraManagerSettings CameraManager => _cameraManager ?? (_cameraManager = new CameraManagerSettings());
+
+
         private static ControlsSettings _controls;
         public static ControlsSettings Controls {
             get {

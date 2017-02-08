@@ -257,6 +257,10 @@
     <Compile Include="Pages\AcSettings\AcSettingsGeneral.xaml.cs">
       <DependentUpon>AcSettingsGeneral.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ContentTools\BatchPreviewsUpdater.xaml.cs">
+      <DependentUpon>BatchPreviewsUpdater.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ContentTools\ContentTool.cs" />
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -287,6 +291,7 @@
     <Compile Include="Pages\Dialogs\OnlineNewDriverTag.xaml.cs">
       <DependentUpon>OnlineNewDriverTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -715,6 +720,10 @@
     <Page Include="Pages\AcSettings\AcSettingsGeneral.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ContentTools\BatchPreviewsUpdater.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
       <SubType>Designer</SubType>

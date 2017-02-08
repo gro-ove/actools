@@ -441,10 +441,10 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         /// <summary>
-        /// Without saving.
+        /// Without saving. Please, check for FixedCar value before calling this method.
         /// </summary>
         /// <param name="value">New value.</param>
-        private bool SetSelectedCarEntry([CanBeNull] CarEntry value) {
+        public bool SetSelectedCarEntry([CanBeNull] CarEntry value) {
             if (value == null) value = Cars?.FirstOrDefault(x => x.IsAvailable) ?? Cars?.FirstOrDefault();
             if (Equals(value, _selectedCarEntry)) return false;
             _selectedCarEntry = value;

@@ -12,6 +12,16 @@ using ImageMagick;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {
+    public class AcPreviewImageInformation {
+        [CanBeNull]
+        public string Name { get; set; }
+
+        [CanBeNull]
+        public string Style { get; set; }
+
+        public string ExifStyle => Style == null ? null : "Style: " + Style;
+    }
+
     public static partial class ImageUtils {
         private static bool? _isMagickSupported;
 
@@ -116,15 +126,16 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ApplyPreview(string source, string destination, bool resize) {
+        public static void ApplyPreview(string source, string destination, bool resize, [CanBeNull] AcPreviewImageInformation information) {
             if (resize) {
-                ApplyPreview(source, destination, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
+                ApplyPreview(source, destination, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, information);
             } else {
-                ApplyPreview(source, destination);
+                ApplyPreview(source, destination, 0, 0, information);
             }
         }
 
-        public static void ApplyPreviewImageMagick(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
+        public static void ApplyPreviewImageMagick(string source, string destination, double maxWidth, double maxHeight,
+                [CanBeNull] AcPreviewImageInformation information) {
             using (var image = new MagickImage(source)) {
                 if (maxWidth > 0d || maxHeight > 0d) {
                     var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
@@ -146,17 +157,23 @@ namespace AcTools.Utils {
                     }
                 }
 
+                var profile = image.GetExifProfile();
+                profile.SetValue(ExifTag.Software, AcToolsInformation.Name);
+                profile.SetValue((ExifTag)800, information?.Name);
+                profile.SetValue(ExifTag.UserComment, information?.ExifStyle);
+
                 image.Write(destination);
             }
         }
 
-        public static void ApplyPreview(string source, string destination, double maxWidth = 0d, double maxHeight = 0d, bool keepOriginal = false) {
+        public static void ApplyPreview(string source, string destination, double maxWidth, double maxHeight, [CanBeNull] AcPreviewImageInformation information,
+                bool keepOriginal = false) {
             if (File.Exists(destination)) {
                 File.Delete(destination);
             }
 
             if (IsMagickAsseblyLoaded) {
-                ApplyPreviewImageMagick(source, destination, maxWidth, maxHeight);
+                ApplyPreviewImageMagick(source, destination, maxWidth, maxHeight, information);
             } else {
                 var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
                 var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, 100L) } };
@@ -171,14 +188,20 @@ namespace AcTools.Utils {
                         using (var image = Image.FromFile(source)) {
                             var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
                             graphics.DrawImage(image, (int)(0.5 * ((int)maxWidth - k * image.Width)),
-                                               (int)(0.5 * ((int)maxHeight - k * image.Height)),
-                                               (int)(k * image.Width), (int)(k * image.Height));
+                                    (int)(0.5 * ((int)maxHeight - k * image.Height)),
+                                    (int)(k * image.Width), (int)(k * image.Height));
                         }
+
+                        var exif = new ExifWorks(bitmap) {
+                            Software = AcToolsInformation.Name,
+                            Title = information?.Name,
+                            UserComment = information?.ExifStyle
+                        };
 
                         bitmap.Save(destination, encoder, parameters);
                     }
                 } else {
-                    using (var image = Image.FromFile(source)) {
+                    using (var image = (Bitmap)Image.FromFile(source)) {
                         image.Save(destination, encoder, parameters);
                     }
                 }
@@ -195,17 +218,17 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ApplyPreviews(string acRoot, string carName, string source, bool resize) {
+        public static void ApplyPreviews(string acRoot, string carName, string source, bool resize, [CanBeNull] AcPreviewImageInformation information) {
             foreach (var file in Directory.GetFiles(source, "*.bmp")) {
                 var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName,
                         Path.GetFileNameWithoutExtension(file));
                 if (!Directory.Exists(skinDirectory)) continue;
-                ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize);
+                ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize, information);
             }
         }
 
-        public static async Task ApplyPreviewsAsync(string acRoot, string carName, string source, bool resize, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task ApplyPreviewsAsync(string acRoot, string carName, string source, bool resize, [CanBeNull] AcPreviewImageInformation information,
+                IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             var files = Directory.GetFiles(source, "*.bmp");
             for (var i = 0; i < files.Length; i++) {
                 var file = files[i];
@@ -214,7 +237,9 @@ namespace AcTools.Utils {
                 if (!Directory.Exists(skinDirectory)) continue;
 
                 progress?.Report(new Tuple<string, double?>(id, (double)i / files.Length));
-                await Task.Run(() => { ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize); }, cancellation);
+                await Task.Run(() => {
+                    ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize, information);
+                }, cancellation);
                 if (cancellation.IsCancellationRequested) return;
             }
 

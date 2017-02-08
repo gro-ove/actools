@@ -81,6 +81,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     GForceY = GForceX;
                     GForceZ = GForceX;
                 }
+
+                AcSettingsHolder.CameraManager.GForceX = value;
             }
         }
 
@@ -93,6 +95,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _gForceY)) return;
                 _gForceY = value;
                 OnPropertyChanged();
+
+                AcSettingsHolder.CameraManager.GForceY = value;
             }
         }
 
@@ -105,6 +109,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _gForceZ)) return;
                 _gForceZ = value;
                 OnPropertyChanged();
+
+                AcSettingsHolder.CameraManager.GForceZ = value;
             }
         }
 
@@ -117,6 +123,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _highSpeedShaking)) return;
                 _highSpeedShaking = value;
                 OnPropertyChanged();
+
+                AcSettingsHolder.CameraManager.HighSpeedShaking = value;
             }
         }
 

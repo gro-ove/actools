@@ -33,6 +33,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -389,7 +390,7 @@ namespace AcManager.Pages.Windows {
             UpdateThemeDynamicBackground();
             AppearanceManager.Current.PropertyChanged += (sender, args) => {
                 if (args.PropertyName == nameof(AppearanceManager.CurrentThemeDictionary)) {
-                    UpdateThemeDynamicBackground();
+                    ActionExtension.InvokeInMainThreadAsync(UpdateThemeDynamicBackground);
                 }
             };
         }

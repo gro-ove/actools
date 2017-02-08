@@ -250,7 +250,7 @@ namespace AcManager.Pages.Selected {
                 if (shot == null) return;
 
                 try {
-                    ImageUtils.ApplyPreview(shot, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
+                    ImageUtils.ApplyPreview(shot, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, null);
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
@@ -268,7 +268,7 @@ namespace AcManager.Pages.Selected {
 
                 if (dialog.ShowDialog() == true) {
                     try {
-                        ImageUtils.ApplyPreview(dialog.FileName, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, null);
                     } catch (Exception e) {
                         NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                     }

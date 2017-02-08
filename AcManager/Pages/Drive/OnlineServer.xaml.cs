@@ -22,6 +22,7 @@ using AcManager.Tools.Managers.Online;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -34,6 +35,8 @@ using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
 namespace AcManager.Pages.Drive {
     public partial class OnlineServer : IParametrizedUriContent, IImmediateContent {
+        public static TimeSpan OptionAutoConnectPeriod = TimeSpan.FromSeconds(5d);
+
         private Holder<ServerEntry> _holder;
         private Sublist<MenuItem> _sourcesMenuItems;
 
@@ -75,7 +78,7 @@ namespace AcManager.Pages.Drive {
             UpdateCarsView();
             UpdateIcons();
             UpdateBindings();
-            Model.Entry.PropertyChanged += Entry_PropertyChanged;
+            Model.Entry.PropertyChanged += OnEntryPropertyChanged;
             ResizingStuff();
         }
 
@@ -133,13 +136,14 @@ namespace AcManager.Pages.Drive {
                 entry.Update(ServerEntry.UpdateMode.Normal).Forget();
             }
 
-            Model.Entry.PropertyChanged -= Entry_PropertyChanged;
+            Model.AutoJoinActive = false;
+            Model.Entry.PropertyChanged -= OnEntryPropertyChanged;
             Model.ChangeEntry(entry);
             UpdateCarsView();
             UpdateIcons();
             UpdateBindings();
             UpdateCheckedMenuItems();
-            Model.Entry.PropertyChanged += Entry_PropertyChanged;
+            Model.Entry.PropertyChanged += OnEntryPropertyChanged;
             return true;
         }
 
@@ -230,7 +234,12 @@ namespace AcManager.Pages.Drive {
             }
 
             var now = DateTime.Now;
-            if (now - entry.PreviousUpdateTime > (entry.IsBooked ? TimeSpan.FromSeconds(1) : SettingsHolder.Online.RefreshPeriod.TimeSpan)) {
+            var updateTime = entry.IsBooked ? TimeSpan.FromSeconds(1) : SettingsHolder.Online.RefreshPeriod.TimeSpan;
+            if (Model.AutoJoinActive) {
+                updateTime = updateTime.Min(OptionAutoConnectPeriod);
+            }
+
+            if (now - entry.PreviousUpdateTime >= updateTime - TimeSpan.FromSeconds(0.1)) {
                 return true;
             }
 
@@ -244,7 +253,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnTick(object sender, EventArgs e) {
-            if (Application.Current?.MainWindow?.IsActive != true) return;
+            if (Application.Current?.MainWindow?.IsActive != true && !Model.AutoJoinActive) return;
 
             Model.Entry.OnTick();
             if (RequiresUpdate()) {
@@ -260,7 +269,7 @@ namespace AcManager.Pages.Drive {
             ToolBar.IsActive = !ToolBar.IsActive;
         }
 
-        public class ViewModel : NotifyPropertyChanged, IComparer {
+        public partial class ViewModel : NotifyPropertyChanged, IComparer {
             private ServerEntry _entry;
 
             [NotNull]
@@ -369,7 +378,7 @@ namespace AcManager.Pages.Drive {
             if (_timer != null) return;
 
             _timer = new DispatcherTimer {
-                Interval = TimeSpan.FromSeconds(1),
+                Interval = TimeSpan.FromSeconds(0.5),
                 IsEnabled = true
             };
             _timer.Tick += OnTick;
@@ -381,7 +390,7 @@ namespace AcManager.Pages.Drive {
             _timer?.Stop();
             _timer = null;
 
-            Model.Entry.PropertyChanged -= Entry_PropertyChanged;
+            Model.Entry.PropertyChanged -= OnEntryPropertyChanged;
             DisposeHelper.Dispose(ref _holder);
 
             if (_listsButtonInitialized) {
@@ -389,7 +398,9 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnEntryPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            Model.OnPropertyChanged(e);
+
             switch (e.PropertyName) {
                 case nameof(ServerEntry.Status):
                     UpdateCarsView();

@@ -134,6 +134,7 @@
     <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
+    <Compile Include="Windows\Controls\LazySwitch.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />

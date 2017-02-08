@@ -615,4 +615,43 @@
   <data name="Common_And" xml:space="preserve">
     <value>and</value>
   </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Favourite</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Unfavourite</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Unhide</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Manage Lists…</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Invite</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Cancel Booking</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Share a link to this server so your friends could quickly join you (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Include Password</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Add server to favourites list (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Remove server from favourites list (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Add server to hidden servers list (search for “@hidden” to open it)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Remove server from hidden servers list</value>
+  </data>
 </root>

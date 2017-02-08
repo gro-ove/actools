@@ -1696,4 +1696,22 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
     <value>Make sure there is enough space and original files could be removed.</value>
   </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>You’re booked on this server</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>You’re on this server</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (You)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Admin password:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Show Admin Password Input</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>If you disable it, you can always turn it on in online settings</value>
+  </data>
 </root>

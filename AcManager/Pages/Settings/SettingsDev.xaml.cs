@@ -115,7 +115,7 @@ namespace AcManager.Pages.Settings {
                     var i = 0;
                     while (!w.CancellationToken.IsCancellationRequested) {
                         await Task.Run(() => {
-                            ImageUtils.ApplyPreviewImageMagick(from, to, 1022, 575);
+                            ImageUtils.ApplyPreviewImageMagick(from, to, 1022, 575, new AcPreviewImageInformation());
                         });
                         w.Report(PluralizingConverter.PluralizeExt(++i, "Copied {0} time"));
                         await Task.Delay(10);

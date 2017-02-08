@@ -67,10 +67,19 @@ namespace AcManager.Tools.Helpers {
             return changed;
         }
 
-        private static void UpdateSidekickCompounds(string appDirectory, DataWrapper wrapper, string carId, 
-            bool separateFiles, bool updateIfChanged) {
-            var sidekickCompounds = new IniFile(Path.Combine(appDirectory, @"compounds", separateFiles ? $@"{carId}.ini" : @"compounds.ini"),
-                    IniFileMode.ValuesWithSemicolons);
+        private static void Prepare(string filename) {
+            var directory = Path.GetDirectoryName(filename);
+            if (directory != null && !Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        private static void UpdateSidekickCompounds(string appDirectory, DataWrapper wrapper, string carId,
+                bool separateFiles, bool updateIfChanged) {
+            var filename = Path.Combine(appDirectory, @"compounds", separateFiles ? $@"{carId}.ini" : @"compounds.ini");
+            Prepare(filename);
+
+            var sidekickCompounds = new IniFile(filename, IniFileMode.ValuesWithSemicolons);
             var tyres = wrapper.GetIniFile("tyres.ini");
             var changed = false;
 
@@ -93,7 +102,7 @@ namespace AcManager.Tools.Helpers {
                                             .ToLowerInvariant();
                 var sidekickSectionName = $@"{carId}_{name}";
                 if (sidekickCompounds.ContainsKey(sidekickSectionName) && !updateIfChanged) continue;
-                
+
                 var sidekickSection = sidekickCompounds[sidekickSectionName];
                 if (idealPressureFront > 0d && !Equals(sidekickSection.GetDouble("IDEAL_PRESSURE_F", 0d), idealPressureFront)) {
                     sidekickSection.Set("IDEAL_PRESSURE_F", idealPressureFront);
@@ -125,8 +134,10 @@ namespace AcManager.Tools.Helpers {
                 return;
             }
 
-            var sidekickBrakes = new IniFile(Path.Combine(appDirectory, @"brakes", separateFiles ? $@"{carId}.ini" : @"brakes.ini"),
-                    IniFileMode.ValuesWithSemicolons);
+            var filename = Path.Combine(appDirectory, @"brakes", separateFiles ? $@"{carId}.ini" : @"brakes.ini");
+            Prepare(filename);
+
+            var sidekickBrakes = new IniFile(filename, IniFileMode.ValuesWithSemicolons);
             if (sidekickBrakes.ContainsKey(carId) && !updateIfChanged) return;
 
             var section = sidekickBrakes[carId];
@@ -138,26 +149,30 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static void UpdateSidekickDatabase([NotNull] CarObject car, bool? separateFiles = null) {
-            var directory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId);
-            if (!Directory.Exists(directory)) return;
+            try {
+                var directory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), SidekickAppId);
+                if (!Directory.Exists(directory)) return;
 
-            if (!AcSettingsHolder.Python.IsActivated(SidekickAppId)) {
-                Logging.Write("App is not active");
-                return;
+                if (!AcSettingsHolder.Python.IsActivated(SidekickAppId)) {
+                    Logging.Write("App is not active");
+                    return;
+                }
+
+                if (car.AcdData?.IsEmpty != false) {
+                    Logging.Write("Data is damaged");
+                    return;
+                }
+
+                var kunosCar = car.Author == AcCommonObject.AuthorKunos;
+                var separateFilesActual = separateFiles ?? !kunosCar;
+                var updateIfChanged = kunosCar ? SettingsHolder.Drive.SidekickUpdateExistingKunos :
+                        SettingsHolder.Drive.SidekickUpdateExistingMods;
+
+                UpdateSidekickCompounds(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
+                UpdateSidekickBrakes(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
+            } catch (Exception e) {
+                Logging.Error(e);
             }
-
-            if (car.AcdData?.IsEmpty != false) {
-                Logging.Write("Data is damaged");
-                return;
-            }
-
-            var kunosCar = car.Author == AcCommonObject.AuthorKunos;
-            var separateFilesActual = separateFiles ?? !kunosCar;
-            var updateIfChanged = kunosCar ? SettingsHolder.Drive.SidekickUpdateExistingKunos :
-                    SettingsHolder.Drive.SidekickUpdateExistingMods;
-
-            UpdateSidekickCompounds(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
-            UpdateSidekickBrakes(directory, car.AcdData, car.Id, separateFilesActual, updateIfChanged);
         }
 
         public static void UpdateSidekickDatabase([NotNull] string carId, bool? separateFiles = null) {

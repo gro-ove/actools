@@ -28,13 +28,9 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.ContentTools {
-    public partial class MigrationHelper : INotifyPropertyChanged, IParametrizedUriContent {
+    public partial class MigrationHelper {
         static MigrationHelper() {
             CarRepair.AddType<CarObsoleteTyresRepair>();
-        }
-
-        public enum Stage {
-            Loading, Ready, Empty
         }
 
         public class ObsoleteDetails : NotifyPropertyChanged {
@@ -137,7 +133,19 @@ namespace AcManager.Pages.ContentTools {
             #endregion
         }
 
-        #region Testing
+        #region Loading
+
+        private bool _models;
+        private string _filter, _id;
+
+        protected override void InitializeOverride(Uri uri) {
+            _models = uri.GetQueryParamBool("Models");
+            _filter = uri.GetQueryParam("Filter");
+            _id = uri.GetQueryParam("Id");
+
+            InitializeComponent();
+        }
+
         [CanBeNull]
         private static ObsoleteDetails GetDetails(CarObject car, bool models, bool allowEmpty) {
             if (car.AcdData?.IsEmpty != false) return null;
@@ -145,79 +153,49 @@ namespace AcManager.Pages.ContentTools {
             var list = CarRepair.GetObsoletableAspects(car, models).ToList();
             return allowEmpty || list.Count > 0 ? new ObsoleteDetails(car, list) : null;
         }
-        #endregion
 
-        #region Loading
-        private CancellationTokenSource _cancellation;
-
-        public async Task Load(bool models, [CanBeNull] string filterValue, string id) {
-            CurrentStage = Stage.Loading;
-
-            if (id != null) {
-                var car = CarsManager.Instance.GetById(id);
+        protected override async Task<bool> LoadOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            if (_id != null) {
+                var car = CarsManager.Instance.GetById(_id);
                 if (car != null) {
-                    ProgressValue = AsyncProgressEntry.Indetermitate;
+                    progress.Report(AsyncProgressEntry.Indetermitate);
                     ObsoleteCars = new List<ObsoleteDetails> {
-                        await Task.Run(() => GetDetails(car, models, true))
+                        await Task.Run(() => GetDetails(car, _models, true))
                     };
                 } else {
                     ObsoleteCars = new List<ObsoleteDetails>();
                 }
             } else {
                 var entries = new List<ObsoleteDetails>();
-                var filter = filterValue == null ? null : Filter.Create(CarObjectTester.Instance, filterValue);
-                using (_cancellation = new CancellationTokenSource()) {
-                    ProgressValue = AsyncProgressEntry.FromStringIndetermitate("Loading cars…");
-                    await CarsManager.Instance.EnsureLoadedAsync();
+                var filter = _filter == null ? null : Filter.Create(CarObjectTester.Instance, _filter);
 
-                    IEnumerable<CarObject> carsEnumerable = CarsManager.Instance.LoadedOnly.OrderBy(x => x.Name);
-                    if (filter != null) {
-                        carsEnumerable = carsEnumerable.Where(filter.Test);
-                    }
+                progress.Report(AsyncProgressEntry.FromStringIndetermitate("Loading cars…"));
+                await CarsManager.Instance.EnsureLoadedAsync();
 
-                    var cars = carsEnumerable.ToList();
-                    for (var i = 0; i < cars.Count; i++) {
-                        var car = cars[i];
-                        ProgressValue = new AsyncProgressEntry(car.Name, i, cars.Count);
+                IEnumerable<CarObject> carsEnumerable = CarsManager.Instance.LoadedOnly.OrderBy(x => x.Name);
+                if (filter != null) {
+                    carsEnumerable = carsEnumerable.Where(filter.Test);
+                }
 
-                        try {
-                            var details = await Task.Run(() => GetDetails(car, models, false));
-                            if (details != null) {
-                                entries.Add(details);
-                            }
-                        } catch (Exception e) {
-                            NonfatalError.Notify($"Can’t check {car.DisplayName}", e);
+                var cars = carsEnumerable.ToList();
+                for (var i = 0; i < cars.Count; i++) {
+                    var car = cars[i];
+                    progress.Report(new AsyncProgressEntry(car.Name, i, cars.Count));
+
+                    try {
+                        var details = await Task.Run(() => GetDetails(car, _models, false));
+                        if (details != null) {
+                            entries.Add(details);
                         }
+                    } catch (Exception e) {
+                        NonfatalError.Notify($"Can’t check {car.DisplayName}", e);
                     }
                 }
 
-                _cancellation = null;
                 ObsoleteCars = entries;
             }
 
-            CurrentStage = ObsoleteCars.Count > 0 ? Stage.Ready : Stage.Empty;
-        }
-
-        private Stage _currentStage;
-
-        public Stage CurrentStage {
-            get { return _currentStage; }
-            set {
-                if (Equals(value, _currentStage)) return;
-                _currentStage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private AsyncProgressEntry _progressValue;
-
-        public AsyncProgressEntry ProgressValue {
-            get { return _progressValue; }
-            set {
-                if (Equals(value, _progressValue)) return;
-                _progressValue = value;
-                OnPropertyChanged();
-            }
+            return ObsoleteCars.Count > 0;
         }
         #endregion
 
@@ -247,18 +225,6 @@ namespace AcManager.Pages.ContentTools {
         }
         #endregion
 
-        public void OnUri(Uri uri) {
-            var models = uri.GetQueryParamBool("Models");
-            var filter = uri.GetQueryParam("Filter");
-            var id = uri.GetQueryParam("Id");
-
-            InitializeComponent();
-            DataContext = this;
-
-            this.OnActualUnload(() => _cancellation?.Cancel());
-            Load(models, filter, id).Forget();
-        }
-
         private bool _warned;
 
         private void OnFixButtonClick(object sender, RoutedEventArgs e) {
@@ -271,13 +237,6 @@ namespace AcManager.Pages.ContentTools {
             }
 
             aspect.FixCommand.ExecuteAsync().Forget();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

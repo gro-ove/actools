@@ -219,7 +219,7 @@
                     <Label Content="Car-specific controls" />
                 </CheckBox>
 
-                <mui:LazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" ResourceKey="CarSpecificControlsComboBox" />
+                <mui:BooleanLazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" TrueResourceKey="CarSpecificControlsComboBox" />
             </mui:SpacingStackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"

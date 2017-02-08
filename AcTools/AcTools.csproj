@@ -135,6 +135,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\AcFixer.cs" />
+    <Compile Include="Utils\ExifWorks.cs" />
     <Compile Include="Utils\FileUtils_Async.cs" />
     <Compile Include="Utils\FileUtils_Paths.cs" />
     <Compile Include="Utils\FileUtils_Load.cs" />

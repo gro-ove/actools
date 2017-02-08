@@ -1357,6 +1357,123 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Favourite.
+        /// </summary>
+        public static string Toolbar_Favourite {
+            get {
+                return ResourceManager.GetString("Toolbar_Favourite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add server to favourites list (Ctrl+D).
+        /// </summary>
+        public static string Toolbar_Favourite_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Favourite_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        public static string Toolbar_Hide {
+            get {
+                return ResourceManager.GetString("Toolbar_Hide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add server to hidden servers list (search for “@hidden” to open it).
+        /// </summary>
+        public static string Toolbar_Hide_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Hide_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invite.
+        /// </summary>
+        public static string Toolbar_Invite {
+            get {
+                return ResourceManager.GetString("Toolbar_Invite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include Password.
+        /// </summary>
+        public static string Toolbar_Invite_IncludePasswordHeader {
+            get {
+                return ResourceManager.GetString("Toolbar_Invite_IncludePasswordHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share a link to this server so your friends could quickly join you (Ctrl+Page Up).
+        /// </summary>
+        public static string Toolbar_Invite_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Invite_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Booking.
+        /// </summary>
+        public static string Toolbar_OnlineCancelBooking {
+            get {
+                return ResourceManager.GetString("Toolbar_OnlineCancelBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Lists….
+        /// </summary>
+        public static string Toolbar_OnlineManageLists {
+            get {
+                return ResourceManager.GetString("Toolbar_OnlineManageLists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unfavourite.
+        /// </summary>
+        public static string Toolbar_Unfavourite {
+            get {
+                return ResourceManager.GetString("Toolbar_Unfavourite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove server from favourites list (Ctrl+D).
+        /// </summary>
+        public static string Toolbar_Unfavourite_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Unfavourite_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unhide.
+        /// </summary>
+        public static string Toolbar_Unhide {
+            get {
+                return ResourceManager.GetString("Toolbar_Unhide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove server from hidden servers list.
+        /// </summary>
+        public static string Toolbar_Unhide_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Unhide_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation requires the UI thread.
         /// </summary>
         public static string UIThreadRequired {

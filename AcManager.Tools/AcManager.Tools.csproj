@@ -209,6 +209,7 @@
     <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcFormEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcSettingsHolder.cs" />
+    <Compile Include="Helpers\AcSettings\CameraManagerSettings.cs" />
     <Compile Include="Helpers\AcSettings\ExposureSettings.cs" />
     <Compile Include="Helpers\AcSettings\GameplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GhostSettings.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Managers\Online\IOnlineSource.cs" />
     <Compile Include="Managers\Online\KunosOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineSourceWrapper.cs" />
+    <Compile Include="Managers\Online\ServerEntry.AutoJoin.cs" />
     <Compile Include="Managers\Online\ServerEntry.Properties.cs" />
     <Compile Include="Managers\Online\ServerEntry.Classes.cs" />
     <Compile Include="Managers\Online\ServerEntry.Join.cs" />

@@ -117,7 +117,7 @@ namespace PreviewUpdater {
                                 Console.WriteLine("    Applying previews from: " + shotted);
                             }
 
-                            ImageUtils.ApplyPreviews(acRoot, id, shotted, true);
+                            ImageUtils.ApplyPreviews(acRoot, id, shotted, true, null);
                         } else {
                             if (options.Verbose) {
                                 Console.WriteLine("    Nothing shotted");

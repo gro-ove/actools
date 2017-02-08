@@ -491,12 +491,16 @@ namespace AcManager.Controls {
             _hasErrorsGroup.Value = n.HasErrors || !n.IsFullyLoaded;
         }
 
-        private bool _password;
+        private bool? _password;
 
         private void UpdatePasswordState(ServerEntry n) {
-            if (_password != n.PasswordRequired && _passwordIcon != null) {
-                _password = n.PasswordRequired;
-                _passwordIcon.Visibility = _password ? Visibility.Visible : Visibility.Collapsed;
+            if (_password != n.PasswordRequired) {
+                if (_passwordIcon != null) {
+                    _password = n.PasswordRequired;
+                    _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
+                }
+            } else if (_passwordIcon == null) {
+                _password = null;
             }
         }
 

@@ -524,7 +524,11 @@ namespace AcManager.Pages.Dialogs {
                 Owner = Application.Current?.MainWindow
             }) {
                 try {
-                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);
+                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews,
+                            new AcPreviewImageInformation {
+                                Name = SelectedCar.DisplayName,
+                                Style = Path.GetFileNameWithoutExtension(UserPresetsControl.SelectedPresetFilename)
+                            }, waiting, waiting.CancellationToken);
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.CarPreviews_CannotSave, e);
                 }

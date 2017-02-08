@@ -16,6 +16,7 @@ using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Pages.Windows;
 using AcManager.Plugins;
 using AcManager.Properties;
@@ -126,6 +127,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
             AppArguments.Set(AppFlag.NfsPorscheTribute, ref RaceGridViewModel.OptionNfsPorscheNames);
             AppArguments.Set(AppFlag.KeepIniComments, ref IniFile.OptionKeepComments);
+            AppArguments.Set(AppFlag.AutoConnectPeriod, ref OnlineServer.OptionAutoConnectPeriod);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();
