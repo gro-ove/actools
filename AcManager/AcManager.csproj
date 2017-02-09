@@ -1604,6 +1604,7 @@
     <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="About\Licenses\ExifWorks\ExifWorks.txt" />
     <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
     <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />
     <Content Include="About\Licenses\AvalonEdit\AvalonEdit.txt" />

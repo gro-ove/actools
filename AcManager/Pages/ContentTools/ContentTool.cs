@@ -91,7 +91,11 @@ namespace AcManager.Pages.ContentTools {
                 Path = new PropertyPath(nameof(CurrentStage))
             });
 
-            this.OnActualUnload(() => _cancellation?.Cancel());
+            this.OnActualUnload(() => {
+                _cancellation?.Cancel();
+                DisposeOverride();
+            });
+
             Load().Forget();
         }
 
@@ -99,6 +103,8 @@ namespace AcManager.Pages.ContentTools {
         /// Call InitializeComponent() here.
         /// </summary>
         protected abstract void InitializeOverride(Uri uri);
+
+        protected virtual void DisposeOverride() {}
 
         public event PropertyChangedEventHandler PropertyChanged;
 

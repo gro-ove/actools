@@ -43,6 +43,17 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string _actualName;
+
+        public string ActualName {
+            get { return _actualName; }
+            set {
+                if (Equals(value, _actualName)) return;
+                _actualName = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Sets properties based on loaded information.
         /// </summary>
@@ -66,6 +77,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!IsFullyLoaded || information != null) {
                 DisplayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName);
+                ActualName = baseInformation.Name ?? Id;
             }
 
             if (information == null) {

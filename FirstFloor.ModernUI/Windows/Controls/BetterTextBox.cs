@@ -44,7 +44,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public BetterComboBox() {
             DefaultStyleKey = typeof(BetterComboBox);
-            PreviewMouseWheel += ComboBox_PreviewMouseWheel;
+            PreviewMouseWheel += OnMouseWheel;
+            Loaded += OnLoaded;
         }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
@@ -55,7 +56,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(PlaceholderProperty, value); }
         }
 
-        private void ComboBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
             if (IsDropDownOpen) return;
 
             e.Handled = true;
@@ -90,9 +91,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetValue(Selector.SelectedItemProperty, newValue ?? NullValue);
         }
 
+        public static bool IgnoreUnloadedChanges = false;
+        private bool _updateSelectedItemLater;
+
         protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
             base.OnSelectionChanged(e);
-            SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+            if (!IgnoreUnloadedChanges || IsLoaded) {
+                SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+            } else {
+                _updateSelectedItemLater = true;
+            }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_updateSelectedItemLater) {
+                _updateSelectedItemLater = false;
+                SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+            }
         }
 
         public static readonly object NullValue = new object();

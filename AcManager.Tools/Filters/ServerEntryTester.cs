@@ -101,7 +101,7 @@ namespace AcManager.Tools.Filters {
         public bool Test(ServerEntry obj, string key, ITestEntry value) {
             if (key == null) {
                 return SettingsHolder.Content.SimpleFiltering && value.Test(obj.TrackId) ||
-                        value.Test(obj.Id) || value.Test(obj.DisplayName);
+                        value.Test(obj.Id) || value.Test(obj.DisplayName) || SettingsHolder.Online.FixNames && value.Test(obj.ActualName);
             }
 
             switch (key) {

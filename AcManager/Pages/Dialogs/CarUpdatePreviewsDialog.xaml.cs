@@ -12,7 +12,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
-using AcManager.ContentRepair;
 using JetBrains.Annotations;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
@@ -22,7 +21,6 @@ using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Processes;
@@ -176,6 +174,11 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        public static SettingEntry[] Modes { get; } = {
+            new SettingEntry("Default", "Default Mode (Using Original Showroom)"),
+            new SettingEntry("GT5-like", "Style similar to Gran Turismo 5"),
+        };
+
         public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
 
         private IWithId _selectedFilter;
@@ -247,15 +250,24 @@ namespace AcManager.Pages.Dialogs {
         #endregion
 
         #region Shooting
-        public CarObject SelectedCar { get; set; }
+        private AsyncProgressEntry _seriesProgress;
 
-        private string _status;
-
-        public string Status {
-            get { return _status; }
+        public AsyncProgressEntry SeriesProgress {
+            get { return _seriesProgress; }
             set {
-                if (Equals(value, _status)) return;
-                _status = value;
+                if (Equals(value, _seriesProgress)) return;
+                _seriesProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AsyncProgressEntry _progress;
+
+        public AsyncProgressEntry Progress {
+            get { return _progress; }
+            set {
+                if (Equals(value, _progress)) return;
+                _progress = value;
                 OnPropertyChanged();
             }
         }
@@ -374,11 +386,44 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private readonly string _loadPreset;
-        private readonly string[] _skinIds;
 
-        public CarUpdatePreviewsDialog(CarObject carObject, string[] skinIds, DialogMode mode, string loadPreset = null) {
-            SelectedCar = carObject;
-            _skinIds = skinIds;
+        [NotNull]
+        private readonly List<ToUpdate> _toUpdate;
+
+        public class ToUpdate {
+            [NotNull]
+            public CarObject Car { get; }
+
+            [CanBeNull]
+            public string[] SkinIds { get; }
+
+            public ToUpdate([NotNull] CarObject car, [CanBeNull] string[] skinIds) {
+                Car = car;
+                SkinIds = skinIds;
+            }
+        }
+
+        private bool _applyImmediately;
+
+        public bool ApplyImmediately {
+            get { return _applyImmediately; }
+            set {
+                if (Equals(value, _applyImmediately)) return;
+                _applyImmediately = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public CarUpdatePreviewsDialog(CarObject carObject, [CanBeNull] string[] skinIds, DialogMode mode, string loadPreset = null)
+                : this(new List<ToUpdate> { new ToUpdate(carObject, skinIds) }, mode, loadPreset) {}
+
+        public CarUpdatePreviewsDialog([NotNull] List<ToUpdate> toUpdate, DialogMode mode, string loadPreset = null, bool applyImmediately = false) {
+            if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
+            if (toUpdate.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(toUpdate));
+
+            ApplyImmediately = applyImmediately;
+
+            _toUpdate = toUpdate;
             _mode = mode;
             _loadPreset = loadPreset;
 
@@ -452,13 +497,13 @@ namespace AcManager.Pages.Dialogs {
         public CarUpdatePreviewsDialog(CarObject carObject, DialogMode mode, string loadPreset = null)
             : this(carObject, null, mode, loadPreset) { }
 
-        public static void Run(CarObject carObject, string[] skinIds, string presetFilename) {
+        /*public static void Run(CarObject carObject, string[] skinIds, string presetFilename) {
             new CarUpdatePreviewsDialog(carObject, skinIds, DialogMode.Start).ShowDialog();
         }
 
         public static void RunPreset(CarObject carObject, string[] skinIds, string presetFilename) {
             new CarUpdatePreviewsDialog(carObject, skinIds, DialogMode.Start, presetFilename).ShowDialog();
-        }
+        }*/
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loadPreset == null) {
@@ -478,7 +523,7 @@ namespace AcManager.Pages.Dialogs {
             if (_mode == DialogMode.Options) {
                 SelectPhase(Phase.Options);
             } else {
-                RunShootingProcess(_mode == DialogMode.StartManual);
+                RunShootingProcess(_mode == DialogMode.StartManual).Forget();
             }
         }
 
@@ -515,18 +560,21 @@ namespace AcManager.Pages.Dialogs {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
-                Apply();
+                Apply().Forget();
             }
         }
 
-        private async void Apply() {
+        private async Task Apply() {
+            if (_resultDirectory == null) return;
+
             using (var waiting = new WaitingDialog {
                 Owner = Application.Current?.MainWindow
             }) {
                 try {
-                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews,
+                    var car = _toUpdate[0].Car;
+                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.RequireValue, car.Id, _resultDirectory, ResizePreviews,
                             new AcPreviewImageInformation {
-                                Name = SelectedCar.DisplayName,
+                                Name = car.DisplayName,
                                 Style = Path.GetFileNameWithoutExtension(UserPresetsControl.SelectedPresetFilename)
                             }, waiting, waiting.CancellationToken);
                 } catch (Exception e) {
@@ -536,7 +584,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public enum Phase {
-            Options, Waiting, Result, Error
+            Options, Waiting, Result, ResultSummary, Error
         }
 
         private Phase _currentPhase;
@@ -599,43 +647,34 @@ namespace AcManager.Pages.Dialogs {
 
             switch (phase) {
                 case Phase.Options:
-                    OptionsPhase.Visibility = Visibility.Visible;
-                    WaitingPhase.Visibility = Visibility.Collapsed;
-                    ResultPhase.Visibility = Visibility.Collapsed;
-                    ErrorPhase.Visibility = Visibility.Collapsed;
-                    Resize(540d, 400d, false);
-                    var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual, () => RunShootingProcess(true), () => CanBeSaved);
+                    Resize(540d, 460d, false);
+                    var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual,
+                            new AsyncCommand(() => RunShootingProcess(true), () => CanBeSaved).ListenOnWeak(this, nameof(CanBeSaved)));
                     manual.ToolTip = AppStrings.CarPreviews_Manual_Tooltip;
                     Buttons = new[] {
-                        CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, () => RunShootingProcess(), () => CanBeSaved),
-                        manual,
+                        CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go,
+                                new AsyncCommand(() => RunShootingProcess(), () => CanBeSaved).ListenOnWeak(this, nameof(CanBeSaved))),
+                        ApplyImmediately ? null : manual,
                         CloseButton
                     };
                     break;
 
                 case Phase.Waiting:
-                    OptionsPhase.Visibility = Visibility.Collapsed;
-                    WaitingPhase.Visibility = Visibility.Visible;
-                    ResultPhase.Visibility = Visibility.Collapsed;
-                    ErrorPhase.Visibility = Visibility.Collapsed;
                     Resize(540d, 400d, false);
                     Buttons = new[] { CancelButton };
                     break;
 
                 case Phase.Result:
-                    OptionsPhase.Visibility = Visibility.Collapsed;
-                    WaitingPhase.Visibility = Visibility.Collapsed;
-                    ResultPhase.Visibility = Visibility.Visible;
-                    ErrorPhase.Visibility = Visibility.Collapsed;
                     Resize(540d, 400d, true);
                     Buttons = new[] { OkButton, CancelButton };
                     break;
 
+                case Phase.ResultSummary:
+                    Resize(540d, Errors.Count > 0 ? 600d : 400d, true);
+                    Buttons = new[] { OkButton };
+                    break;
+
                 case Phase.Error:
-                    OptionsPhase.Visibility = Visibility.Collapsed;
-                    WaitingPhase.Visibility = Visibility.Collapsed;
-                    ResultPhase.Visibility = Visibility.Collapsed;
-                    ErrorPhase.Visibility = Visibility.Visible;
                     Resize(null, null, false);
                     ErrorMessage = (whatsGoingOn?.GetDescription() ?? errorMessage)?.ToSentence();
                     if (whatsGoingOn?.Fix != null) {
@@ -663,9 +702,92 @@ namespace AcManager.Pages.Dialogs {
 
         private CancellationTokenSource _cancellationTokenSource;
 
+        [CanBeNull]
         private string _resultDirectory;
 
-        private async void RunShootingProcess(bool manualMode = false) {
+        public class ErrorDescription {
+            public ErrorDescription(ToUpdate toUpdate, string message, WhatsGoingOn whatsGoingOn) {
+                ToUpdate = toUpdate;
+                Message = message;
+                WhatsGoingOn = whatsGoingOn;
+            }
+
+            public ToUpdate ToUpdate { get; }
+
+            public string Message { get; }
+
+            public WhatsGoingOn WhatsGoingOn { get; }
+        }
+
+        public BetterObservableCollection<ErrorDescription> Errors { get; } = new BetterObservableCollection<ErrorDescription>();
+
+        private async Task ShootCar([NotNull] ToUpdate toUpdate, string filterId, bool manualMode, bool applyImmediately, CancellationToken cancellation) {
+            if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
+
+            try {
+                _currentCar = toUpdate.Car;
+                _resultDirectory = await Showroom.ShotAsync(new Showroom.ShotProperties {
+                    AcRoot = AcRootDirectory.Instance.Value,
+                    CarId = toUpdate.Car.Id,
+                    ShowroomId = SelectedShowroom.Id,
+                    SkinIds = toUpdate.SkinIds,
+                    Filter = filterId,
+                    Fxaa = EnableFxaa,
+                    SpecialResolution = UseSpecialResolution,
+                    MaximizeVideoSettings = MaximizeVideoSettings,
+                    Mode = manualMode ? Showroom.ShotMode.ClassicManual : Showroom.ShotMode.Fixed,
+                    UseBmp = true,
+                    DisableWatermark = DisableWatermark,
+                    DisableSweetFx = DisableSweetFx,
+                    ClassicCameraDx = 0.0,
+                    ClassicCameraDy = 0.0,
+                    ClassicCameraDistance = 5.5,
+                    FixedCameraPosition = CameraPosition,
+                    FixedCameraLookAt = CameraLookAt,
+                    FixedCameraFov = CameraFov,
+                    FixedCameraExposure = CameraExposure ?? 0d,
+                }, this, cancellation);
+                if (cancellation.IsCancellationRequested) return;
+            } catch (ProcessExitedException e) when (applyImmediately) {
+                Errors.Add(new ErrorDescription(toUpdate, e.Message, AcLogHelper.TryToDetermineWhatsGoingOn())); 
+                return;
+            }
+
+            if (applyImmediately) {
+                if (_resultDirectory == null) {
+                    Errors.Add(new ErrorDescription(toUpdate, AppStrings.CarPreviews_SomethingWentWrong, AcLogHelper.TryToDetermineWhatsGoingOn()));
+                } else {
+                    Progress = AsyncProgressEntry.Indetermitate;
+                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.RequireValue, toUpdate.Car.Id, _resultDirectory, ResizePreviews,
+                            new AcPreviewImageInformation {
+                                Name = toUpdate.Car.DisplayName,
+                                Style = Path.GetFileNameWithoutExtension(UserPresetsControl.SelectedPresetFilename)
+                            }, new Progress<Tuple<string, double?>>(t => {
+                                Progress = new AsyncProgressEntry($"Applying freshly made previews ({t.Item1})…", t.Item2);
+                            }), cancellation);
+                }
+            } else {
+                if (_resultDirectory == null) {
+                    SelectPhase(Phase.Error, AppStrings.CarPreviews_SomethingWentWrong, AcLogHelper.TryToDetermineWhatsGoingOn());
+                    return;
+                }
+
+                ResultPreviewComparisons = new ObservableCollection<ResultPreviewComparison>(
+                        Directory.GetFiles(_resultDirectory, "*.*").Select(x => {
+                            var id = (Path.GetFileNameWithoutExtension(x) ?? "").ToLower();
+                            return new ResultPreviewComparison {
+                                Name = toUpdate.Car.GetSkinById(id)?.DisplayName ?? id,
+
+                                /* custom paths, because theoretically skin might no longer exist at this point */
+                                LiveryImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"livery.png"),
+                                OriginalImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"preview.jpg"),
+                                UpdatedImage = x
+                            };
+                        }));
+            }
+        }
+
+        private async Task RunShootingProcess(bool manualMode = false) {
             if (SelectedShowroom == null) {
                 if (ShowMessage(AppStrings.CarPreviews_ShowroomIsMissingOptions, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes) {
@@ -692,12 +814,13 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            if (SelectedCar.Enabled == false || _skinIds?.Any(x => SelectedCar.SkinsManager.GetWrapperById(x)?.Value.Enabled == false) == true) {
+            if (_toUpdate.Any(u => !u.Car.Enabled ||
+                    u.SkinIds?.Any(x => u.Car.SkinsManager.GetWrapperById(x)?.Value.Enabled == false) == true)) {
                 SelectPhase(Phase.Error, AppStrings.CarPreviews_CannotUpdateForDisabled);
                 return;
             }
 
-            Status = UiStrings.Common_PleaseWait;
+            Progress = AsyncProgressEntry.FromStringIndetermitate(UiStrings.Common_PleaseWait);
             SelectPhase(Phase.Waiting);
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -715,49 +838,24 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 var begin = DateTime.Now;
-                _resultDirectory = await Showroom.ShotAsync(new Showroom.ShotProperties {
-                    AcRoot = AcRootDirectory.Instance.Value,
-                    CarId = SelectedCar.Id,
-                    ShowroomId = SelectedShowroom.Id,
-                    SkinIds = _skinIds,
-                    Filter = filterId,
-                    Fxaa = EnableFxaa,
-                    SpecialResolution = UseSpecialResolution,
-                    MaximizeVideoSettings = MaximizeVideoSettings,
-                    Mode = manualMode ? Showroom.ShotMode.ClassicManual : Showroom.ShotMode.Fixed,
-                    UseBmp = true,
-                    DisableWatermark = DisableWatermark,
-                    DisableSweetFx = DisableSweetFx,
-                    ClassicCameraDx = 0.0,
-                    ClassicCameraDy = 0.0,
-                    ClassicCameraDistance = 5.5,
-                    FixedCameraPosition = CameraPosition,
-                    FixedCameraLookAt = CameraLookAt,
-                    FixedCameraFov = CameraFov,
-                    FixedCameraExposure = CameraExposure ?? 0d,
-                }, this, _cancellationTokenSource.Token);
-                TakenTime = DateTime.Now - begin;
 
-                if (_resultDirectory == null) {
-                    SelectPhase(Phase.Error, AppStrings.CarPreviews_SomethingWentWrong, AcLogHelper.TryToDetermineWhatsGoingOn());
-                    return;
+                if (_toUpdate.Count > 1 && !ApplyImmediately) {
+                    throw new Exception("Can’t apply previews later if there are more than one car");
+                }
+                
+                for (var i = 0; i < _toUpdate.Count; i++) {
+                    var toUpdate = _toUpdate[i];
+                    SeriesProgress = new AsyncProgressEntry(toUpdate.Car.DisplayName, i, _toUpdate.Count);
+
+                    await ShootCar(toUpdate, filterId, manualMode, ApplyImmediately, _cancellationTokenSource.Token);
+                    if (_cancellationTokenSource.IsCancellationRequested) {
+                        SelectPhase(Phase.Error, AppStrings.CarPreviews_CancelledMessage);
+                        return;
+                    }
                 }
 
-                ResultPreviewComparisons = new ObservableCollection<ResultPreviewComparison>(
-                    Directory.GetFiles(_resultDirectory, "*.*").Select(x => {
-                        var id = (Path.GetFileNameWithoutExtension(x) ?? "").ToLower();
-                        return new ResultPreviewComparison {
-                            Name = SkinDisplayName(id),
-
-                            /* because theoretically skin could be non-existed at this point */
-                            LiveryImage = Path.Combine(SelectedCar.Location, @"skins", id, @"livery.png"),
-                            OriginalImage = Path.Combine(SelectedCar.Location, @"skins", id, @"preview.jpg"),
-                            UpdatedImage = x
-                        };
-                    })
-                );
-
-                SelectPhase(Phase.Result);
+                TakenTime = DateTime.Now - begin;
+                SelectPhase(ApplyImmediately ? Phase.ResultSummary : Phase.Result);
             } catch (ShotingCancelledException e) {
                 SelectPhase(Phase.Error, e.UserCancelled ? AppStrings.CarPreviews_CancelledMessage : e.Message);
 
@@ -787,13 +885,13 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private string SkinDisplayName(string skinId) {
-            var skin = SelectedCar.GetSkinById(skinId);
-            return skin == null ? skinId : skin.DisplayName;
-        }
+        private CarObject _currentCar;
 
         public void Report(Showroom.ShootingProgress value) {
-            Status = string.Format(AppStrings.CarPreviews_Progress, SkinDisplayName(value.SkinId), value.SkinNumber + 1, value.TotalSkins);
+            Progress = new AsyncProgressEntry(
+                string.Format(AppStrings.CarPreviews_Progress, _currentCar?.GetSkinById(value.SkinId)?.DisplayName ?? value.SkinId, value.SkinNumber + 1,
+                    value.TotalSkins),
+                value.SkinNumber, value.TotalSkins);
         }
 
         private void ImageViewer(bool showUpdated) {

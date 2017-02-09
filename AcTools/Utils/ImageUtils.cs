@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
 using JetBrains.Annotations;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace AcTools.Utils {
     public class AcPreviewImageInformation {
@@ -157,11 +159,18 @@ namespace AcTools.Utils {
                     }
                 }
 
-                var profile = image.GetExifProfile();
+                var profile = new ExifProfile();
                 profile.SetValue(ExifTag.Software, AcToolsInformation.Name);
-                profile.SetValue((ExifTag)800, information?.Name);
-                profile.SetValue(ExifTag.UserComment, information?.ExifStyle);
 
+                if (information?.ExifStyle != null) {
+                    profile.SetValue(ExifTag.Artist, information.ExifStyle);
+                }
+
+                if (information?.Name != null) {
+                    profile.SetValue(ExifTag.ImageDescription, information.Name);
+                }
+
+                image.AddProfile(profile);
                 image.Write(destination);
             }
         }
@@ -194,8 +203,8 @@ namespace AcTools.Utils {
 
                         var exif = new ExifWorks(bitmap) {
                             Software = AcToolsInformation.Name,
-                            Title = information?.Name,
-                            UserComment = information?.ExifStyle
+                            Description = information?.Name,
+                            Artist = information?.ExifStyle
                         };
 
                         bitmap.Save(destination, encoder, parameters);
@@ -218,7 +227,8 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ApplyPreviews(string acRoot, string carName, string source, bool resize, [CanBeNull] AcPreviewImageInformation information) {
+        public static void ApplyPreviews([NotNull] string acRoot, [NotNull] string carName, [NotNull] string source, bool resize,
+                [CanBeNull] AcPreviewImageInformation information) {
             foreach (var file in Directory.GetFiles(source, "*.bmp")) {
                 var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName,
                         Path.GetFileNameWithoutExtension(file));
@@ -227,7 +237,8 @@ namespace AcTools.Utils {
             }
         }
 
-        public static async Task ApplyPreviewsAsync(string acRoot, string carName, string source, bool resize, [CanBeNull] AcPreviewImageInformation information,
+        public static async Task ApplyPreviewsAsync([NotNull] string acRoot, [NotNull] string carName, [NotNull] string source, bool resize,
+                [CanBeNull] AcPreviewImageInformation information,
                 IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             var files = Directory.GetFiles(source, "*.bmp");
             for (var i = 0; i < files.Length; i++) {

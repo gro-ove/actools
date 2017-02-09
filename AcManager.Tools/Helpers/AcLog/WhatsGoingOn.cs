@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcLog {
     public class WhatsGoingOn {
@@ -12,6 +13,7 @@ namespace AcManager.Tools.Helpers.AcLog {
         /// <summary>
         /// Throws an exception if fixing failed.
         /// </summary>
+        [CanBeNull]
         public Func<CancellationToken, Task> Fix { get; set; }
 
         public WhatsGoingOn(WhatsGoingOnType type, params object[] arguments) {
@@ -26,6 +28,6 @@ namespace AcManager.Tools.Helpers.AcLog {
         private NonfatalErrorSolution _solution;
 
         public NonfatalErrorSolution Solution => _solution ?? (Fix == null ? null :
-                _solution = new NonfatalErrorSolution(null, null, Fix, () => Fix != null));
+                _solution = new NonfatalErrorSolution(null, null, Fix));
     }
 }

@@ -11,6 +11,16 @@
     <Border x:Key="DialogBackgroundContent" x:Shared="False" Background="{DynamicResource DialogBackgroundContentBrush}" />
 
     <Style TargetType="c:ModernDialog">
+        <Style.Resources>
+            <!--<Style x:Key="BottomRow" TargetType="FrameworkElement">
+                <Setter Property="Margin" Value="0 -46 200 -172" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>-->
+
+            <HorizontalAlignment x:Key="BottomRowAlignment">Right</HorizontalAlignment>
+        </Style.Resources>
+
         <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
@@ -58,24 +68,21 @@
                                             </StackPanel>
 
                                             <!-- buttons -->
-                                            <Grid DockPanel.Dock="Bottom" Margin="{TemplateBinding ButtonsMargin}" Panel.ZIndex="1">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <ContentControl HorizontalAlignment="Right" Content="{TemplateBinding ButtonsRowContent}" />
-                                                <ItemsControl Grid.Column="1" ItemsSource="{TemplateBinding Buttons}">
+                                            <DockPanel x:Name="PART_BottomRow" DockPanel.Dock="Bottom" Margin="{TemplateBinding ButtonsMargin}" Panel.ZIndex="1"
+                                                    HorizontalAlignment="Right">
+                                                <ItemsControl DockPanel.Dock="Right" ItemsSource="{TemplateBinding Buttons}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <StackPanel Orientation="Horizontal" />
                                                         </ItemsPanelTemplate>
                                                     </ItemsControl.ItemsPanel>
                                                 </ItemsControl>
-                                            </Grid>
+                                                <ContentControl HorizontalAlignment="Right" Content="{TemplateBinding ButtonsRowContent}" />
+                                            </DockPanel>
 
                                             <!-- content -->
-                                            <c:TransitioningContentControl Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" />
+                                            <c:TransitioningContentControl x:Name="PART_Content" Margin="{TemplateBinding Padding}"
+                                                    Content="{TemplateBinding Content}" />
                                         </DockPanel>
 
                                         <Rectangle x:Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />

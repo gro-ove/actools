@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 
@@ -77,23 +76,6 @@ namespace AcManager.Tools.GameProperties {
 
         protected override bool SetOverride(WeatherObject weather) {
             return Replacements.Aggregate(false, (current, replacement) => replacement.Apply(weather) || current);
-        }
-
-        protected override void DisposeOverride() {
-            Revert();
-        }
-    }
-
-    public class CarSpecificControlsPresetHelper : CarSpecificHelperBase {
-        private const string BackupPostfix = "_backup_cm_carspec";
-
-        public static void Revert() {
-            new TemporaryFileReplacement(null, AcSettingsHolder.Controls.Filename, BackupPostfix).Revert();
-        }
-
-        protected override bool SetOverride(CarObject car) {
-            return car.SpecificControlsPreset && car.ControlsPresetFilename != null &&
-                    new TemporaryFileReplacement(car.ControlsPresetFilename, AcSettingsHolder.Controls.Filename, BackupPostfix).Apply();
         }
 
         protected override void DisposeOverride() {

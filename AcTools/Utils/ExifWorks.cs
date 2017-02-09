@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Reflection;
 using System.Text;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils {
     /// <summary>
@@ -226,7 +229,7 @@ namespace AcTools.Utils {
             GpsDestDistRef = 0x19,
             GpsDestDist = 0x1a
         }
-        
+
         /// <summary>
         /// Real position of 0th row and column of picture.
         /// </summary>
@@ -240,7 +243,7 @@ namespace AcTools.Utils {
             RightBottom = 7,
             LftBottom = 8
         }
-        
+
         /// <summary>
         /// Exposure programs.
         /// </summary>
@@ -254,7 +257,7 @@ namespace AcTools.Utils {
             Portrait = 7,
             Landscape = 8
         }
-        
+
         /// <summary>
         /// Exposure metering modes.
         /// </summary>
@@ -278,7 +281,7 @@ namespace AcTools.Utils {
             FiredButNoStrobeReturned = 5,
             FiredAndStrobeReturned = 7
         }
-        
+
         /// <summary>
         /// Possible light sources (white balance).
         /// </summary>
@@ -328,7 +331,7 @@ namespace AcTools.Utils {
             public string ToString(string delimiter = "/") {
                 return Numerator + delimiter + Denominator;
             }
-            
+
             /// <summary>
             /// Converts rational to double precision real number.
             /// </summary>
@@ -444,6 +447,20 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
+        /// Subject (EXIF Subject).
+        /// </summary>
+        public string Subject {
+            get { return GetPropertyString(TagNames.ExifSubjectDist); }
+            set {
+                try {
+                    SetPropertyString(TagNames.SoftwareUsed, value);
+                } catch (Exception ex) {
+                    AcToolsLogging.Write(ex);
+                }
+            }
+        }
+
+        /// <summary>
         /// Orientation of image (EXIF Orientation).
         /// </summary>
         public Orientations Orientation {
@@ -518,7 +535,7 @@ namespace AcTools.Utils {
                 }
             }
         }
-        
+
         public int Width => _image.Width;
 
         public int Height => _image.Height;
@@ -557,7 +574,7 @@ namespace AcTools.Utils {
                 }
             }
         }
-        
+
         public string UserComment {
             get { return GetPropertyString(TagNames.ExifUserComment); }
             set {
@@ -684,7 +701,7 @@ namespace AcTools.Utils {
                 if (!Enum.IsDefined(typeof(FlashModes), x)) return FlashModes.NotFired;
 
                 var name = Enum.GetName(typeof(FlashModes), x);
-                return name == null ? FlashModes.NotFired :(FlashModes)Enum.Parse(typeof(FlashModes), name);
+                return name == null ? FlashModes.NotFired : (FlashModes)Enum.Parse(typeof(FlashModes), name);
             }
         }
 
@@ -700,12 +717,12 @@ namespace AcTools.Utils {
                 return name == null ? LightSources.Unknown : (LightSources)Enum.Parse(typeof(LightSources), name);
             }
         }
-        
+
         /// <summary>
         /// Checks if current image has specified certain property.
         /// </summary>
         public bool IsPropertyDefined(TagNames pid) {
-            return Convert.ToBoolean(Array.IndexOf(_image.PropertyIdList, pid) > -1);
+            return Convert.ToBoolean(Array.IndexOf(_image.PropertyIdList, (int)pid) > -1);
         }
 
         /// <summary>
@@ -779,11 +796,15 @@ namespace AcTools.Utils {
             SetProperty(pid, data, ExifDataTypes.SignedLong);
         }
 
+        private static T CreateInstance<T>(params object[] args) {
+            return (T)typeof(T).Assembly.CreateInstance(typeof(T).FullName, false, BindingFlags.Instance | BindingFlags.NonPublic, null, args, null, null);
+        }
+
         /// <summary>
         /// Sets specified propery in raw form.
         /// </summary>
         public void SetProperty(TagNames pid, byte[] data, ExifDataTypes type) {
-            var p = _image.PropertyItems[0];
+            var p = CreateInstance<PropertyItem>();
             p.Id = (int)pid;
             p.Value = data;
             p.Type = (short)type;
@@ -795,8 +816,7 @@ namespace AcTools.Utils {
         /// Reads Int32 from EXIF bytes.
         /// </summary>
         private int GetInt32(byte[] b) {
-            if (b.Length < 4)
-                throw new ArgumentException("Data too short (4 bytes expected)", "b");
+            if (b.Length < 4) throw new ArgumentException("Data too short (4 bytes expected)", "b");
             return b[3] << 24 | b[2] << 16 | b[1] << 8 | b[0];
         }
 
@@ -804,8 +824,7 @@ namespace AcTools.Utils {
         /// Reads Int16 from EXIF bytes.
         /// </summary>
         private short GetInt16(byte[] b) {
-            if (b.Length < 2)
-                throw new ArgumentException("Data too short (2 bytes expected)", "b");
+            if (b.Length < 2) throw new ArgumentException("Data too short (2 bytes expected)", "b");
             return (short)((b[1] << 8) | b[0]);
         }
 
@@ -814,8 +833,7 @@ namespace AcTools.Utils {
         /// </summary>
         private string GetString(byte[] b) {
             var r = _encoding.GetString(b);
-            if (r.Length > 0 && r[r.Length - 1] == '\0')
-                r = r.Substring(0, r.Length - 1);
+            if (r.Length > 0 && r[r.Length - 1] == '\0') r = r.Substring(0, r.Length - 1);
             return r;
         }
 

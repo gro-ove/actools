@@ -13,8 +13,8 @@
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
-    <mui:Cell>
-        <DockPanel x:Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <mui:Switch Value="{Binding CurrentPhase}">
+        <DockPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Options}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <!--first two rows-->
             <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -24,12 +24,19 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
+
+                <!--first column, showroom & filter-->
+                <StackPanel Margin="0 0 0 8" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                    <TextBlock Margin="0 0 0 4" Text="Mode:" Style="{StaticResource Label.Padding}" />
+                    <mui:BetterComboBox IsEditable="False" Margin="4 0 4 0" SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}" />
+                </StackPanel>
 
                 <!--first column, showroom & filter-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" />
-                    <mui:BetterComboBox IsReadOnly="True" Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
+                    <mui:BetterComboBox IsEditable="False" Margin="4 0 4 0" SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}">
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                                 <Setter Property="ToolTip" Value="{StaticResource ShowroomPreviewToolTip}" />
@@ -122,11 +129,26 @@
                 </StackPanel>
             </Grid>
         </DockPanel>
-        <StackPanel x:Name="WaitingPhase" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-            <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" />
-            <TextBlock Text="{Binding Status}" />
+
+        <mui:SpacingStackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Waiting}" Orientation="Vertical" VerticalAlignment="Center"
+                Spacing="20" Margin="20 0">
+            <mui:SpacingStackPanel Spacing="8" Visibility="{Binding ApplyImmediately, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar Maximum="1" Value="{Binding SeriesProgress.Progress, Mode=OneWay}" IsIndeterminate="{Binding SeriesProgress.IsIndeterminate}"
+                        Height="4" />
+                <TextBlock Text="{Binding SeriesProgress.Message}" HorizontalAlignment="Center" />
+            </mui:SpacingStackPanel>
+            <mui:SpacingStackPanel Spacing="8">
+                <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4" />
+                <TextBlock Text="{Binding Progress.Message}" HorizontalAlignment="Center" />
+            </mui:SpacingStackPanel>
+        </mui:SpacingStackPanel>
+
+        <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Error}" Orientation="Vertical" VerticalAlignment="Center">
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_Error}" Style="{StaticResource Heading1}" />
+            <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
         </StackPanel>
-        <StackPanel x:Name="ResultPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
+
+        <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Result}" Orientation="Vertical" VerticalAlignment="Center">
             <ListBox ItemsSource="{Binding ResultPreviewComparisonsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
                     ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="True" MaxHeight="76">
                 <ListBox.ItemsPanel>
@@ -156,11 +178,30 @@
             <TextBlock Margin="0 8 0 0" Style="{StaticResource Small}"
                     Text="{Binding DisplayTakenTime, StringFormat={x:Static g:AppStrings.CarPreviews_TakenTime}}" />
         </StackPanel>
-        <StackPanel x:Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
-            <TextBlock Text="{x:Static c:ControlsStrings.Common_Error}" Style="{StaticResource Heading1}" />
-            <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
+
+        <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.ResultSummary}" Orientation="Vertical" VerticalAlignment="Center">
+            <TextBlock Text="Done" Style="{StaticResource Heading1}" />
+
+            <mui:SpacingStackPanel Visibility="{Binding Errors.Count, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 20 0 0" Spacing="8">
+                <TextBlock Text="{Binding Errors.Count, StringFormat='Encountered errors: {0}'}" />
+                <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding Errors}" MaxHeight="240">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="4" Height="80">
+                                <Button DataContext="{Binding WhatsGoingOn.Solution}" DockPanel.Dock="Right" Margin="4 0 0 0" Content="{Binding DisplayName}"
+                                        Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                        Command="{Binding}" />
+                                <TextBlock Text="{Binding ToUpdate.Car.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Heading2}" />
+                                <TextBlock Text="{Binding Message}" DockPanel.Dock="Top" Margin="0 4 0 0" />
+                                <TextBlock Text="{Binding WhatsGoingOn.Type, Converter={StaticResource EnumToDescriptionConverter}}" Margin="0 4 0 0"
+                                        Visibility="{Binding WhatsGoingOn, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </mui:SpacingStackPanel>
         </StackPanel>
-    </mui:Cell>
+    </mui:Switch>
 
     <mui:ModernDialog.ButtonsRowContent>
         <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding}"

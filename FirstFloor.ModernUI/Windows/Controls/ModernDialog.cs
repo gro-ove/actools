@@ -88,7 +88,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return CreateExtraDialogButton(content, new DelegateCommand(action));
         }
 
-        public Button CreateExtraStyledDialogButton(string styleKey, string content, ICommand command) {
+        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, ICommand command) {
             return new Button {
                 Content = content /*.ToLower()*/,
                 MinHeight = 21,
@@ -320,6 +320,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var element = (FrameworkElement)sender;
             var value = GetButtonBehavior(element);
             (GetWindow(element) as ModernDialog)?.CloseCommand.Execute(value);
+        }
+
+        private FrameworkElement _bottomRow;
+        private double _offsetX, _offsetY;
+
+        private void UpdateBottomRowStyle() {
+            if (_bottomRow == null) return;
+
+            var offsetX = _bottomRow.ActualWidth;
+            var offsetY = _bottomRow.ActualHeight;
+            if (Math.Abs(offsetX - _offsetX) < 0.5 && Math.Abs(offsetY - _offsetY) < 0.5) return;
+
+            _offsetX = offsetX;
+            _offsetY = offsetY;
+
+            var style = new Style(typeof(FrameworkElement));
+            var bottomMargin = -40 - _offsetY;
+            style.Setters.Add(new Setter(MarginProperty, new Thickness(0d, 0d, _offsetX, bottomMargin)));
+            style.Setters.Add(new Setter(HeightProperty, _offsetY));
+            style.Setters.Add(new Setter(HorizontalAlignmentProperty, HorizontalAlignment.Right));
+            style.Seal();
+
+            Resources[@"BottomRow"] = style;
+        }
+
+        public override void OnApplyTemplate() {
+            if (_bottomRow != null) {
+                _bottomRow.SizeChanged -= OnBottomRowSizeChanged;
+            }
+
+            base.OnApplyTemplate();
+            
+            _bottomRow = GetTemplateChild("PART_BottomRow") as FrameworkElement;
+            if (_bottomRow != null) {
+                _bottomRow.SizeChanged += OnBottomRowSizeChanged;
+                UpdateBottomRowStyle();
+            }
+        }
+
+        private void OnBottomRowSizeChanged(object sender, SizeChangedEventArgs e) {
+            UpdateBottomRowStyle();
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds) {
+            var res = base.ArrangeOverride(arrangeBounds);
+            return res;
         }
     }
 

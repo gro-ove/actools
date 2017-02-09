@@ -15,6 +15,8 @@ namespace AcTools.Processes {
         public class ShotProperties {
             public string AcRoot;
             public string ShowroomId, CarId;
+
+            [CanBeNull]
             public string[] SkinIds;
 
             public ShotMode Mode;

@@ -24,6 +24,12 @@
                 <Label Content="Integrate Minorating" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Online.FixNames}">
+                <Label>
+                    <Label.Content>Fix names from prefixes like “AAA…”</Label.Content>
+                </Label>
+            </CheckBox>
+
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
                 <Button Content="Manage Lists" Command="{Binding ManageListsCommand}" />
                 <Button Content="Manage Drivers Tags" Command="{Binding ManageDriversTagsCommand}" />

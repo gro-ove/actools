@@ -13,11 +13,27 @@ namespace FirstFloor.ModernUI.Helpers {
         [NotNull]
         public string DisplayName { get; }
 
-        public NonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [NotNull] Func<CancellationToken, Task> execute, Func<bool> canExecute = null)
-                : base(() => Task.Delay(0), canExecute) {
+        private bool _solved;
+
+        public bool Solved {
+            get { return _solved; }
+            set {
+                if (value == _solved) return;
+                _solved = value;
+                OnPropertyChanged();
+                RaiseCanExecuteChanged();
+            }
+        }
+
+        public NonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute)
+                : base(() => Task.Delay(0), () => execute != null) {
             _entry = entry;
             _execute = execute;
             DisplayName = displayName ?? "Fix It";
+        }
+
+        protected override bool CanExecuteOverride() {
+            return base.CanExecuteOverride() && !Solved;
         }
 
         protected override async Task ExecuteInner() {
@@ -32,6 +48,8 @@ namespace FirstFloor.ModernUI.Helpers {
                 NonfatalError.Notify("Can’t solve the issue", e);
                 return;
             }
+
+            Solved = true;
 
             if (_entry != null) {
                 NonfatalError.Instance.Errors.Remove(_entry);

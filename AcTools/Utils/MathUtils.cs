@@ -18,6 +18,7 @@ namespace AcTools.Utils {
         public static double Cos(this double v) => Math.Cos(v);
         public static float Cos(this float v) => (float)Math.Cos(v);
 
+        public static int Abs(this int v) => v < 0 ? -v : v;
         public static double Abs(this double v) => v < 0d ? -v : v;
         public static float Abs(this float v) => v < 0f ? -v : v;
 

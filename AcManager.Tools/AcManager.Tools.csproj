@@ -182,6 +182,7 @@
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
+    <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
