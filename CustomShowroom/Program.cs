@@ -6,8 +6,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Windows.Forms;
+using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
@@ -124,11 +126,20 @@ namespace CustomShowroom {
             }
             
             if (options.Mode == Mode.Lite) {
-                using (var renderer = new ForwardKn5ObjectRenderer(kn5File)) {
+                using (var renderer = new ForwardKn5ObjectRenderer(new CarDescription(kn5File))) {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
-                    
-                    new LiteShowroomWrapper(renderer, resolutionMultiplicator: -2d).Run();
+                    renderer.UseSsaa = options.UseSsaa;
+                    new LiteShowroomWrapper(renderer).Run();
+                }
+            } else if (options.Mode == Mode.Dark) {
+                using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File))) {
+                    renderer.UseSprite = true;
+                    renderer.VisibleUi = true;
+                    renderer.UseMsaa = options.UseMsaa;
+                    renderer.UseFxaa = options.UseFxaa;
+                    renderer.UseSsaa = options.UseSsaa;
+                    new LiteShowroomWrapper(renderer).Run();
                 }
             } else if (options.Mode == Mode.TrackMap) {
                 using (var renderer = new TrackMapPreparationRenderer(kn5File)) {

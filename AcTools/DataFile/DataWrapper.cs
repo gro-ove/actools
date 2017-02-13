@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using AcTools.AcdFile;
+using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public interface IDataWrapper {
@@ -36,10 +39,11 @@ namespace AcTools.DataFile {
         }
     }
 
-    public class DataWrapper : IDataWrapper {
+    public class DataWrapper : IDataWrapper, INotifyPropertyChanged {
         private readonly string _carDirectory;
-        private readonly Acd _acd;
         private readonly Dictionary<string, AbstractDataFile> _cache;
+
+        private Acd _acd;
 
         private DataWrapper(string carDirectory) {
             _carDirectory = carDirectory;
@@ -53,13 +57,70 @@ namespace AcTools.DataFile {
                 var dataDirectory = Path.Combine(carDirectory, "data");
                 if (Directory.Exists(dataDirectory)) {
                     _acd = Acd.FromDirectory(dataDirectory);
+                } else {
+                    IsEmpty = true;
                 }
             }
         }
 
-        public bool IsPacked { get; }
+        public void Refresh([CanBeNull] string localName) {
+            lock (_cache) {
+                if (localName == null) {
+                    _cache.Clear();
+                } else if (_cache.ContainsKey(localName)) {
+                    _cache.Remove(localName);
+                }
 
-        public bool IsEmpty => _acd == null;
+                var dataAcd = Path.Combine(_carDirectory, "data.acd");
+                if (File.Exists(dataAcd)) {
+                    if (!IsPacked) {
+                        _cache.Clear();
+                    }
+
+                    _acd = Acd.FromFile(dataAcd);
+                    IsPacked = true;
+                    IsEmpty = false;
+                } else {
+                    if (IsPacked) {
+                        _cache.Clear();
+                    }
+
+                    IsPacked = false;
+
+                    var dataDirectory = Path.Combine(_carDirectory, "data");
+                    if (Directory.Exists(dataDirectory)) {
+                        _acd = Acd.FromDirectory(dataDirectory);
+                        IsEmpty = false;
+                    } else {
+                        IsEmpty = true;
+                    }
+                }
+
+                OnDataChanged(localName);
+            }
+        }
+
+        private bool _isPacked;
+
+        public bool IsPacked {
+            get { return _isPacked; }
+            private set {
+                if (value == _isPacked) return;
+                _isPacked = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isEmpty;
+
+        public bool IsEmpty {
+            get { return _isEmpty; }
+            private set {
+                if (value == _isEmpty) return;
+                _isEmpty = value;
+                OnPropertyChanged();
+            }
+        }
 
         public IniFile GetIniFile([Localizable(false)] string name) {
             lock (_cache) {
@@ -100,12 +161,35 @@ namespace AcTools.DataFile {
             }
         }
 
-        public static DataWrapper FromDirectory(string carDirectory) {
+        [NotNull]
+        public static DataWrapper FromDirectory([NotNull] string carDirectory) {
             if (!Directory.Exists(carDirectory)) {
                 throw new DirectoryNotFoundException(carDirectory);
             }
 
             return new DataWrapper(carDirectory);
         }
+
+        public event EventHandler<DataChangedEventArgs> DataChanged;
+
+        private void OnDataChanged([CanBeNull] string localName) {
+            DataChanged?.Invoke(this, new DataChangedEventArgs(localName));
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class DataChangedEventArgs : EventArgs {
+        public DataChangedEventArgs(string propertyName) {
+            PropertyName = propertyName;
+        }
+
+        [CanBeNull]
+        public string PropertyName { get; }
     }
 }

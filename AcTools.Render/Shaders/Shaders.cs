@@ -626,7 +626,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechCombine, TechBloom;
+		public EffectTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechCombine, TechBloom, TechBloomHighThreshold;
 
 		public EffectResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap;
 		public EffectVectorVariable FxPixel { get; private set; }
@@ -642,6 +642,7 @@ namespace AcTools.Render.Shaders {
 			TechCopy = E.GetTechniqueByName("Copy");
 			TechCombine = E.GetTechniqueByName("Combine");
 			TechBloom = E.GetTechniqueByName("Bloom");
+			TechBloomHighThreshold = E.GetTechniqueByName("BloomHighThreshold");
 
 			for (var i = 0; i < TechDownsampling.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechDownsampling.GetPassByIndex(i).Description.Signature;
@@ -654,6 +655,41 @@ namespace AcTools.Render.Shaders {
 			FxBloomMap = E.GetVariableByName("gBloomMap").AsResource();
 			FxPixel = E.GetVariableByName("gPixel").AsVector();
 			FxCropImage = E.GetVariableByName("gCropImage").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
+	public class EffectPpLensFlares : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT;
+        public InputLayout LayoutPT;
+
+		public EffectTechnique TechGhosts;
+
+		public EffectResourceVariable FxInputMap;
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpLensFlares");
+			E = new Effect(device, _b);
+
+			TechGhosts = E.GetTechniqueByName("Ghosts");
+
+			for (var i = 0; i < TechGhosts.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechGhosts.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (PpLensFlares, PT, Ghosts) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
 		}
 
         public void Dispose() {
@@ -776,6 +812,8 @@ namespace AcTools.Render.Shaders {
         public struct MapsMaterial {
             public float DetailsUvMultipler;
             public float DetailsNormalBlend;
+            public float SunSpecular;
+            public float SunSpecularExp;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(MapsMaterial));
         }
@@ -805,22 +843,28 @@ namespace AcTools.Render.Shaders {
 		public const bool EnableShadows = true;
 		public const int NumSplits = 1;
 		public const int ShadowMapSize = 2048;
+		public const int MaxBones = 32;
 		private ShaderBytecode _b;
 		public Effect E;
 
-        public ShaderSignature InputSignaturePT, InputSignaturePNTG;
-        public InputLayout LayoutPT, LayoutPNTG;
+        public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
+        public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechDiffMaps, TechGl, TechAmbientShadow, TechMirror, TechFlatMirror;
+		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatGround;
 
 		public EffectMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectMatrixVariable FxWorld { get; private set; }
 		public EffectMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectMatrixVariable FxBoneTransforms { get; private set; }
 		public EffectResourceVariable FxShadowMaps, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxReflectionCubemap;
 		public EffectScalarVariable FxFlatMirrored;
 		public EffectVectorVariable FxEyePosW { get; private set; }
 		public EffectVectorVariable FxLightDir { get; private set; }
+		public EffectVectorVariable FxLightColor { get; private set; }
+		public EffectVectorVariable FxAmbientDown { get; private set; }
+		public EffectVectorVariable FxAmbientRange { get; private set; }
+		public EffectVectorVariable FxBackgroundColor { get; private set; }
 		public EffectVariable FxMaterial, FxReflectiveMaterial, FxMapsMaterial, FxAlphaMaterial, FxNmUvMultMaterial;
 
 		public void Initialize(Device device) {
@@ -834,11 +878,14 @@ namespace AcTools.Render.Shaders {
 			TechNmUvMult = E.GetTechniqueByName("NmUvMult");
 			TechAtNm = E.GetTechniqueByName("AtNm");
 			TechMaps = E.GetTechniqueByName("Maps");
+			TechSkinnedMaps = E.GetTechniqueByName("SkinnedMaps");
 			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
 			TechGl = E.GetTechniqueByName("Gl");
+			TechSkinnedGl = E.GetTechniqueByName("SkinnedGl");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechMirror = E.GetTechniqueByName("Mirror");
 			TechFlatMirror = E.GetTechniqueByName("FlatMirror");
+			TechFlatGround = E.GetTechniqueByName("FlatGround");
 
 			for (var i = 0; i < TechAmbientShadow.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechAmbientShadow.GetPassByIndex(i).Description.Signature;
@@ -850,11 +897,17 @@ namespace AcTools.Render.Shaders {
 			}
 			if (InputSignaturePNTG == null) throw new System.Exception("input signature (DarkMaterial, PNTG, Standard) == null");
 			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
+			for (var i = 0; i < TechSkinnedMaps.Description.PassCount && InputSignaturePNTGW4B == null; i++) {
+				InputSignaturePNTGW4B = TechSkinnedMaps.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePNTGW4B == null) throw new System.Exception("input signature (DarkMaterial, PNTGW4B, SkinnedMaps) == null");
+			LayoutPNTGW4B = new InputLayout(device, InputSignaturePNTGW4B, InputLayouts.VerticePNTGW4B.InputElementsValue);
 
 			FxShadowViewProj = E.GetVariableByName("gShadowViewProj").AsMatrix();
 			FxWorld = E.GetVariableByName("gWorld").AsMatrix();
 			FxWorldInvTranspose = E.GetVariableByName("gWorldInvTranspose").AsMatrix();
 			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
+			FxBoneTransforms = E.GetVariableByName("gBoneTransforms").AsMatrix();
 			FxShadowMaps = E.GetVariableByName("gShadowMaps").AsResource();
 			FxDiffuseMap = E.GetVariableByName("gDiffuseMap").AsResource();
 			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
@@ -865,6 +918,10 @@ namespace AcTools.Render.Shaders {
 			FxFlatMirrored = E.GetVariableByName("gFlatMirrored").AsScalar();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
 			FxLightDir = E.GetVariableByName("gLightDir").AsVector();
+			FxLightColor = E.GetVariableByName("gLightColor").AsVector();
+			FxAmbientDown = E.GetVariableByName("gAmbientDown").AsVector();
+			FxAmbientRange = E.GetVariableByName("gAmbientRange").AsVector();
+			FxBackgroundColor = E.GetVariableByName("gBackgroundColor").AsVector();
 			FxMaterial = E.GetVariableByName("gMaterial");
 			FxReflectiveMaterial = E.GetVariableByName("gReflectiveMaterial");
 			FxMapsMaterial = E.GetVariableByName("gMapsMaterial");
@@ -878,6 +935,8 @@ namespace AcTools.Render.Shaders {
             LayoutPT.Dispose();
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
+			InputSignaturePNTGW4B.Dispose();
+            LayoutPNTGW4B.Dispose();
             E.Dispose();
             _b.Dispose();
         }
@@ -1000,6 +1059,41 @@ namespace AcTools.Render.Shaders {
             LayoutPT.Dispose();
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
+	public class EffectSpecialDebugLines : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePC;
+        public InputLayout LayoutPC;
+
+		public EffectTechnique TechMain;
+
+		public EffectMatrixVariable FxWorldViewProj { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialDebugLines");
+			E = new Effect(device, _b);
+
+			TechMain = E.GetTechniqueByName("Main");
+
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePC == null; i++) {
+				InputSignaturePC = TechMain.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePC == null) throw new System.Exception("input signature (SpecialDebugLines, PC, Main) == null");
+			LayoutPC = new InputLayout(device, InputSignaturePC, InputLayouts.VerticePC.InputElementsValue);
+
+			FxWorldViewProj = E.GetVariableByName("gWorldViewProj").AsMatrix();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePC.Dispose();
+            LayoutPC.Dispose();
             E.Dispose();
             _b.Dispose();
         }

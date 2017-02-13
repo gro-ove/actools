@@ -8,11 +8,11 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using ImageMagick;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -37,8 +37,13 @@ namespace AcTools.Render.Kn5SpecificForward {
     }
 
     public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer, IPaintShopRenderer {
-        public ToolsKn5ObjectRenderer(string mainKn5Filename, string carDirectory = null) : base(mainKn5Filename, carDirectory) {
+        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) {
             UseSprite = false;
+        }
+
+        protected override void ClearBeforeChangingCar() {
+            SelectedObject = null;
+            base.ClearBeforeChangingCar();
         }
 
         public bool LiveReload {
@@ -123,15 +128,13 @@ namespace AcTools.Render.Kn5SpecificForward {
             AmbientShadowSizeChanged = true;
         }
 
-        protected override void DrawSpritesInner() { }
-
         private TargetResourceTexture _outlineBuffer;
         private TargetResourceDepthTexture _outlineDepthBuffer;
 
         protected override void ResizeInner() {
             base.ResizeInner();
-            _outlineBuffer?.Resize(DeviceContextHolder, Width, Height);
-            _outlineDepthBuffer?.Resize(DeviceContextHolder, Width, Height);
+            _outlineBuffer?.Resize(DeviceContextHolder, Width, Height, null);
+            _outlineDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
         protected override void DrawPrepare() {
@@ -151,7 +154,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             var effect = DeviceContextHolder.GetEffect<EffectPpOutline>();
             effect.FxDepthMap.SetResource(_outlineDepthBuffer.View);
-            effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
+            effect.FxScreenSize.Set(new Vector4(ActualWidth, ActualHeight, 1f / ActualWidth, 1f / ActualHeight));
             DeviceContextHolder.PrepareQuad(effect.LayoutPT);
             effect.TechOutline.DrawAllPasses(DeviceContext, 6);
         }
@@ -200,16 +203,17 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private void PrepareOutlineBuffer() {
             if (_outlineBuffer != null) return;
-            _outlineBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+            _outlineBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _outlineDepthBuffer = TargetResourceDepthTexture.Create();
 
             if (!InitiallyResized) return;
-            _outlineBuffer.Resize(DeviceContextHolder, Width, Height);
-            _outlineDepthBuffer.Resize(DeviceContextHolder, Width, Height);
+            _outlineBuffer.Resize(DeviceContextHolder, Width, Height, null);
+            _outlineDepthBuffer.Resize(DeviceContextHolder, Width, Height, null);
         }
 
         private Kn5RenderableObject _selectedObject;
 
+        [CanBeNull]
         public Kn5RenderableObject SelectedObject {
             get { return _selectedObject; }
             set {
@@ -249,7 +253,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private readonly List<Kn5RenderableObject> _previousSelectedObjects = new List<Kn5RenderableObject>();
 
         public void OnClick(Vector2 mousePosition) {
-            var ray = Camera.GetPickingRay(mousePosition, new Vector2(Width, Height));
+            var ray = Camera.GetPickingRay(mousePosition, new Vector2(ActualWidth, ActualHeight));
 
             var nodes = Scene.SelectManyRecursive(x => x as RenderableList)
                              .OfType<Kn5RenderableObject>()
@@ -339,8 +343,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return SaveAndDispose(filename, new MagickImage(new MagickColor(color) { A = (ushort)(ushort.MaxValue * alpha) }, 16, 16));
         }
 
-        public bool OverrideTextureFlakes(string textureName, Color color) {
-            // TODO: improve renderer so flakes will be visible?
+        public virtual bool OverrideTextureFlakes(string textureName, Color color) {
             return OverrideTexture(textureName, color);
         }
 

@@ -12,7 +12,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class AmbientShadowMaterialSimple : IRenderableMaterial {
         private readonly Kn5AmbientShadowMaterialDescription _description;
         private EffectDarkMaterial _effect;

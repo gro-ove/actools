@@ -14,7 +14,7 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
         private BlendState _transparentBlendState, _addBlendState;
-        private RasterizerState _doubleSidedState, _invertedState;
+        private RasterizerState _doubleSidedState, _invertedState, _wireframeState, _wireframeInvertedState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -104,6 +104,24 @@ namespace AcTools.Render.Base {
                     IsDepthClipEnabled = true
                 }));
 
+        public RasterizerState WireframeState => _wireframeState ?? (_wireframeState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Wireframe,
+                    CullMode = CullMode.Back,
+                    IsFrontCounterclockwise = false,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true
+                }));
+
+        public RasterizerState WireframeInvertedState => _wireframeInvertedState ?? (_wireframeInvertedState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Wireframe,
+                    CullMode = CullMode.Back,
+                    IsFrontCounterclockwise = true,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true
+                }));
+
         public void Dispose() {
             DisposeHelper.Dispose(ref _normalDepthState);
             DisposeHelper.Dispose(ref _readOnlyDepthState);
@@ -114,6 +132,8 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _addBlendState);
             DisposeHelper.Dispose(ref _doubleSidedState);
             DisposeHelper.Dispose(ref _invertedState);
+            DisposeHelper.Dispose(ref _wireframeState);
+            DisposeHelper.Dispose(ref _wireframeInvertedState);
         }
     }
 }

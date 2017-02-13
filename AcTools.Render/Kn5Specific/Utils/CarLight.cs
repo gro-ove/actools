@@ -1,44 +1,61 @@
-using System.Linq;
-using AcTools.DataFile;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
+using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Utils {
     public class CarLight {
-        public CarLightType Type { get; private set; }
-
         [CanBeNull]
-        public string Name { get; private set; }
-
-        public Vector3 Emissive { get; private set; }
-
-        public bool IsEnabled {
-            get { return _isEnabled; }
-            set {
-                if (Equals(_isEnabled, value)) return;
-
-                _isEnabled = value;
-                OnEnabledChanged(_isEnabled);
-            }
-        }
-
-        protected virtual void OnEnabledChanged(bool value) {
-            Node?.SetEmissive(_isEnabled ? Emissive : (Vector3?)null);
-        }
-
-        [CanBeNull]
-        public IKn5RenderableObject Node { get; private set; }
+        public CarData.LightObject Description { get; set; }
 
         private bool _isEnabled;
 
-        public virtual void Initialize(CarLightType type, RenderableList main, IniFileSection section) {
-            Type = type;
-            Name = section.GetNonEmpty("NAME");
-            Emissive = section.GetVector3("COLOR").Select(y => (float)y).ToArray().ToVector3();
-            Node = main.GetByName(Name);
+        public bool IsHeadlightEnabled {
+            get { return _isEnabled; }
+            set {
+                if (Equals(_isEnabled, value)) return;
+                _isEnabled = value;
+                UpdateEmissive();
+            }
+        }
+
+        private bool _isBrakeEnabled;
+
+        public bool IsBrakeEnabled {
+            get { return _isBrakeEnabled; }
+            set {
+                if (Equals(value, _isBrakeEnabled)) return;
+                _isBrakeEnabled = value;
+                UpdateEmissive();
+            }
+        }
+
+        private void UpdateEmissive() {
+            if (!IsHeadlightEnabled && !IsBrakeEnabled || Description == null) {
+                SetEmissive(default(Vector3));
+            } else if (IsHeadlightEnabled) {
+                if (IsBrakeEnabled) {
+                    SetEmissive(Description.HeadlightColor.LengthSquared() > Description.BrakeColor.LengthSquared() ?
+                            Description.HeadlightColor : Description.BrakeColor);
+                } else {
+                    SetEmissive(Description.HeadlightColor);
+                }
+            } else if (IsBrakeEnabled) {
+                SetEmissive(Description.BrakeColor);
+            }
+        }
+
+        protected virtual void SetEmissive(Vector3 value) {
+            Node?.SetEmissive(value);
+        }
+
+        [CanBeNull]
+        protected IKn5RenderableObject Node { get; private set; }
+
+        public virtual void Initialize([NotNull] CarData.LightObject description, RenderableList main) {
+            Description = description;
+            Node = main.GetByName(description.Name);
         }
     }
 }

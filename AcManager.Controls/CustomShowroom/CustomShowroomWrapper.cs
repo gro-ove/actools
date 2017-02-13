@@ -8,8 +8,10 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Render.Kn5Specific;
+using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
@@ -68,14 +70,24 @@ namespace AcManager.Controls.CustomShowroom {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report(ControlsStrings.CustomShowroom_Loading);
 
+                    var description = new CarDescription(kn5, carDirectory, carObject?.AcdData);
                     if (toolboxMode) {
-                        renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
+                        renderer = await Task.Run(() => new DarkKn5ObjectRenderer(description) {
+                            UseMsaa = false,
+                            UseSsaa = false,
+                            FlatMirror = true,
+                            VisibleUi = false,
+                            UseSprite = false,
+                            /*BackgroundColor = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
+                            AmbientDown = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
+                            AmbientUp = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),*/
+                        });
                         wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
                     } else {
                         Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
                         Logging.Warning($"Found location: “{carObject?.Location ?? @"NULL"}”");
 
-                        renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
+                        renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(description));
                         wrapper = new LiteShowroomWrapper(renderer);
 
                         if (skinId != null) {

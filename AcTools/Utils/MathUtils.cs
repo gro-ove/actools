@@ -78,6 +78,17 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
+        /// For example: Round(0.342, 0.05) → 0.35.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static float Round(this float value, float precision = 1f) {
+            if (Equals(precision, 0f)) return value;
+            return (float)(Math.Round(value / precision) * precision);
+        }
+
+        /// <summary>
         /// For example: Round(340, 25) → 350.
         /// </summary>
         /// <param name="value"></param>

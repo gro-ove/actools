@@ -19,7 +19,7 @@ namespace AcTools.Render.Base.Utils {
                     effect.Initialize(holder.Device);
 
                     format = loaded.Format;
-                    output.Resize(holder, loaded.Width, loaded.Height);
+                    output.Resize(holder, loaded.Width, loaded.Height, null);
 
                     holder.DeviceContext.ClearRenderTargetView(output.TargetView, Color.Transparent);
                     holder.DeviceContext.OutputMerger.SetTargets(output.TargetView);

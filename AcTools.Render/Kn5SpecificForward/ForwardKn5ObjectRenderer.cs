@@ -1,10 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Reflections;
+using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific;
@@ -50,23 +58,48 @@ namespace AcTools.Render.Kn5SpecificForward {
                     };
 
                     Camera.LookAt(orbit.Position, orbit.Target, orbit.Up);
+                    PrepareCamera(Camera);
                 } else {
                     Camera = _resetCamera.Clone();
+                    PrepareCamera(Camera);
                 }
 
                 Camera.SetLens(AspectRatio);
             }
         }
 
-        public Kn5 Kn5 { get; }
-        private readonly string _carDirectory;
+        public void SetCamera(Vector3 from, Vector3 to, float fovY) {
+            var orbit = CameraOrbit ?? CreateCamera(Scene);
 
-        public ForwardKn5ObjectRenderer(string mainKn5Filename, string carDirectory = null) {
-            _carDirectory = carDirectory;
-            Kn5 = Kn5.FromFile(mainKn5Filename);
+            Camera = new FpsCamera(fovY) {
+                NearZ = orbit.NearZ,
+                FarZ = orbit.FarZ
+            };
+
+            Camera.LookAt(from, to, Vector3.UnitY);
+            PrepareCamera(Camera);
         }
 
-        private string _selectSkin;
+        protected virtual void PrepareCamera(BaseCamera camera) { }
+
+        public bool AsyncTexturesLoading { get; set; } = true;
+
+        public bool AllowSkinnedObjects { get; set; } = false;
+
+        public Kn5 Kn5 { get; private set; }
+        private CarDescription _car;
+        private readonly string _showroomKn5Filename;
+
+        public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
+            _car = car;
+            _showroomKn5Filename = showroomKn5Filename;
+            Kn5 = Kn5.FromFile(_car.MainKn5File);
+        }
+
+        public int CacheSize { get; } = 0;
+        
+        private bool _selectSkinLater;
+        private string _selectSkin = Kn5RenderableCar.DefaultSkin;
 
         public void SelectPreviousSkin() {
             CarNode?.SelectPreviousSkin(DeviceContextHolder);
@@ -108,29 +141,270 @@ namespace AcTools.Render.Kn5SpecificForward {
             IsDirty = true;
         }
 
+        private RenderableList _carWrapper;
+        private CarDescription _loadingCar;
+
+        private class PreviousCar {
+            public string Id;
+            public List<IRenderableObject> Objects;
+        }
+
+        private readonly List<PreviousCar> _previousCars = new List<PreviousCar>(2);
+
+        private void ClearExisting() {
+            if (_car != null && CacheSize > 0) {
+                var existing = _previousCars.FirstOrDefault(x => x.Id == _car.MainKn5File);
+                if (existing != null) {
+                    _previousCars.Remove(existing);
+                    _previousCars.Add(existing);
+                } else if (_carWrapper.OfType<Kn5RenderableCar>().Any()) {
+                    if (_previousCars.Count >= CacheSize) {
+                        var toRemoval = _previousCars[0];
+                        toRemoval.Objects.DisposeEverything();
+                        _previousCars.RemoveAt(0);
+                    }
+
+                    _previousCars.Add(new PreviousCar {
+                        Id = _car.MainKn5File,
+                        Objects = _carWrapper.ToList()
+                    });
+
+                    _carWrapper.Clear();
+                    return;
+                }
+            }
+
+            _carWrapper.DisposeEverything();
+        }
+
+        protected virtual void ClearBeforeChangingCar() { }
+
+        private static void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
+            newCar.LightsEnabled = oldCar?.LightsEnabled == true;
+            newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled == true;
+            newCar.SteerDeg = oldCar?.SteerDeg ?? 0f;
+        }
+
+        public void SetCar(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin) {
+            ClearBeforeChangingCar();
+
+            try {
+                _loadingCar = car;
+
+                if (_carWrapper == null) {
+                    _car = car;
+                    return;
+                }
+                
+                if (car == null) {
+                    ClearExisting();
+                    CarNode = null;
+                    _car = null;
+                    Scene.UpdateBoundingBox();
+                    return;
+                }
+
+                Kn5RenderableCar loaded;
+
+                var previous = _previousCars.FirstOrDefault(x => x.Id == car.MainKn5File);
+                if (previous != null) {
+                    _previousCars.Remove(previous);
+
+                    ClearExisting();
+                    _carWrapper.AddRange(previous.Objects);
+                    _car = car;
+                    loaded = previous.Objects.OfType<Kn5RenderableCar>().First();
+                    CopyValues(loaded, CarNode);
+                    CarNode = loaded;
+                    if (_selectSkinLater) {
+                        CarNode.SelectSkin(DeviceContextHolder, _selectSkin);
+                        _selectSkinLater = false;
+                    } else {
+                        CarNode.SelectSkin(DeviceContextHolder, skinId);
+                    }
+                    Scene.UpdateBoundingBox();
+                    return;
+                }
+                
+                loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
+                        asyncTexturesLoading: AsyncTexturesLoading, allowSkinnedObjects: AllowSkinnedObjects);
+                _selectSkinLater = false;
+                CopyValues(loaded, CarNode);
+
+                ClearExisting();
+
+                _carWrapper.Add(loaded);
+                ExtendCar(loaded, _carWrapper);
+
+                _car = car;
+                _selectSkin = null;
+                CarNode = loaded;
+                Scene.UpdateBoundingBox();
+            } catch (Exception e) {
+                MessageBox.Show(e.ToString());
+                throw;
+            } finally {
+                if (ReferenceEquals(_loadingCar, car)) {
+                    _loadingCar = null;
+                }
+            }
+        }
+
+        public async Task SetCarAsync(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin,
+                CancellationToken cancellationToken = default(CancellationToken)) {
+            ClearBeforeChangingCar();
+
+            try {
+                _loadingCar = car;
+
+                if (_carWrapper == null) {
+                    _car = car;
+                    return;
+                }
+
+                if (car == null) {
+                    ClearExisting();
+                    CarNode = null;
+                    _car = null;
+                    Scene.UpdateBoundingBox();
+                    return;
+                }
+
+                Kn5RenderableCar loaded = null;
+
+                var previous = _previousCars.FirstOrDefault(x => x.Id == car.MainKn5File);
+                if (previous != null) {
+                    _previousCars.Remove(previous);
+
+                    ClearExisting();
+                    _carWrapper.AddRange(previous.Objects);
+                    _car = car;
+                    loaded = previous.Objects.OfType<Kn5RenderableCar>().First();
+                    CopyValues(loaded, CarNode);
+                    CarNode = loaded;
+                    if (_selectSkinLater) {
+                        CarNode.SelectSkin(DeviceContextHolder, _selectSkin);
+                        _selectSkinLater = false;
+                    } else {
+                        CarNode.SelectSkin(DeviceContextHolder, skinId);
+                    }
+                    Scene.UpdateBoundingBox();
+                    return;
+                }
+
+                await car.LoadAsync();
+                if (cancellationToken.IsCancellationRequested) return;
+
+                await Task.Run(() => {
+                    loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
+                            asyncTexturesLoading: AsyncTexturesLoading);
+                    _selectSkinLater = false;
+                    if (cancellationToken.IsCancellationRequested) return;
+
+                    CopyValues(loaded, CarNode);
+                    if (cancellationToken.IsCancellationRequested) return;
+
+                    loaded.Draw(DeviceContextHolder, null, SpecialRenderMode.InitializeOnly);
+                });
+
+                if (cancellationToken.IsCancellationRequested || _loadingCar != car) {
+                    loaded?.Dispose();
+                    return;
+                }
+
+                ClearExisting();
+
+                _carWrapper.Add(loaded);
+                ExtendCar(loaded, _carWrapper);
+
+                _car = car;
+                _selectSkin = null;
+                CarNode = loaded;
+                Scene.UpdateBoundingBox();
+            } catch (Exception e) {
+                MessageBox.Show(e.ToString());
+                throw;
+            } finally {
+                if (ReferenceEquals(_loadingCar, car)) {
+                    _loadingCar = null;
+                }
+            }
+        }
+
         [CanBeNull]
         public Kn5RenderableCar CarNode { get; private set; }
+
+        public bool PauseRotation { get; set; } = false;
+
+        public bool CubemapReflection { get; set; } = false;
+
+        public bool EnableShadows { get; set; } = false;
+
+        [CanBeNull]
+        private ReflectionCubemap _reflectionCubemap;
+
+        [CanBeNull]
+        private ShadowsDirectional _shadows;
+
+        protected virtual IMaterialsFactory GetMaterialsFactory() {
+            return new MaterialsProviderSimple();
+        }
+
+        protected virtual void ExtendCar(Kn5RenderableCar car, RenderableList carWrapper) { }
 
         protected override void InitializeInner() {
             base.InitializeInner();
 
-            DeviceContextHolder.Set<IMaterialsFactory>(new MaterialsProviderSimple());
+            DeviceContextHolder.Set(GetMaterialsFactory());
 
-            CarNode = new Kn5RenderableCar(Kn5, _carDirectory, Matrix.Identity, null);
-            if (_selectLod.HasValue) {
-                CarNode.CurrentLod = _selectLod.Value;
+            if (_showroomKn5Filename != null) {
+                var kn5 = Kn5.FromFile(_showroomKn5Filename);
+                Scene.Insert(0, new Kn5RenderableFile(kn5, Matrix.Identity));
             }
 
-            _selectLod = null;
-            _selectSkin = null;
+            _carWrapper = new RenderableList();
+            Scene.Add(_carWrapper);
 
-            OnPropertyChanged(nameof(CarNode));
+            if (_car != null) {
+                CarNode = new Kn5RenderableCar(_car, Matrix.Identity, _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
+                        asyncTexturesLoading: AsyncTexturesLoading, allowSkinnedObjects: AllowSkinnedObjects);
+                _selectSkinLater = false;
+                _carWrapper.Add(CarNode);
 
-            Scene.Add(CarNode);
+                ExtendCar(CarNode, _carWrapper);
+            }
+
+            // Scene.Add(new Kn5RenderableFile(Kn5.FromFile(_carKn5), Matrix.Identity));
+
             Scene.UpdateBoundingBox();
 
-            Camera = CreateCamera(CarNode);
-            _resetCamera = (CameraOrbit)Camera.Clone();
+            if (CubemapReflection) {
+                _reflectionCubemap = CreateReflectionCubemap();
+                _reflectionCubemap?.Initialize(DeviceContextHolder);
+            }
+
+            if (EnableShadows) {
+                _shadows = CreateShadows();
+                _shadows?.Initialize(DeviceContextHolder);
+            }
+
+            if (Camera == null) {
+                Camera = CreateCamera(CarNode);
+                _resetCamera = (CameraOrbit)Camera.Clone();
+                PrepareCamera(Camera);
+            }
+
+            DeviceContextHolder.SceneUpdated += OnSceneUpdated;
+        }
+
+        [CanBeNull]
+        protected virtual ReflectionCubemap CreateReflectionCubemap() {
+            return null;
+        }
+
+        [CanBeNull]
+        protected virtual ShadowsDirectional CreateShadows() {
+            return null;
         }
 
         private static CameraOrbit CreateCamera(IRenderableObject node) {
@@ -162,29 +436,63 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        // crash test
-        private int _i = -1;
-        private Kn5RenderableCar _temp;
+        public bool CarBrakeLightsEnabled {
+            get { return CarNode?.BrakeLightsEnabled == true; }
+            set {
+                if (CarNode != null) {
+                    CarNode.BrakeLightsEnabled = value;
+                }
+            }
+        }
+
+        protected virtual Vector3 ReflectionCubemapPosition => CarNode?.BoundingBox?.GetCenter() ?? Vector3.Zero;
+
+        private Vector3? _previousShadowsTarget;
+
+        private Vector3 _light = Vector3.Normalize(new Vector3(0.2f, 1.0f, 0.8f));
+
+        private Vector3 Light {
+            get { return _light; }
+            set {
+                value = Vector3.Normalize(value);
+                if (Equals(_light, value)) return;
+
+                _light = value;
+                _shadowsDirty = true;
+            }
+        }
+
+        private bool _shadowsDirty, _reflectionCubemapDirty;
+
+        private void OnSceneUpdated(object sender, EventArgs e) {
+            _shadowsDirty = true;
+        }
+
+        protected virtual void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
+            var center = ReflectionCubemapPosition;
+            if (_shadows != null && (_previousShadowsTarget != center || _shadowsDirty)) {
+                _previousShadowsTarget = center;
+                _shadows.Update(-Light, center);
+                _shadows.DrawScene(DeviceContextHolder, this);
+                _shadowsDirty = false;
+            }
+
+            if (_reflectionCubemap != null && (_reflectionCubemap.Update(center) || _reflectionCubemapDirty)) {
+                _reflectionCubemap.DrawScene(DeviceContextHolder, this);
+                _reflectionCubemapDirty = false;
+            }
+
+            DrawPrepareEffect(eyesPosition, light, _shadows, _reflectionCubemap);
+        }
+
+        protected virtual void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, [CanBeNull] ShadowsDirectional shadows,
+                [CanBeNull] ReflectionCubemap reflection) {
+            DeviceContextHolder.GetEffect<EffectSimpleMaterial>().FxEyePosW.Set(ActualCamera.Position);
+        }
 
         protected override void DrawPrepare() {
             base.DrawPrepare();
-            DeviceContextHolder.GetEffect<EffectSimpleMaterial>().FxEyePosW.Set(ActualCamera.Position);
-
-            if (_i >= 0 && ++_i % 50 == 0) {
-                if (_temp != null) {
-                    Scene.Remove(_temp);
-                    _temp.Dispose();
-                }
-
-                _temp = new Kn5RenderableCar(Kn5, _carDirectory,
-                        Matrix.RotationY(MathUtils.Random(0f, 3.14f)) * Matrix.Translation(MathUtils.Random(-2f, 2f), 0f, MathUtils.Random(-2f, 2f)),
-                        CarNode?.Skins?.RandomElementOrDefault()) {
-                            CurrentLod = Enumerable.Range(0, LodsCount).RandomElement(),
-                            LightsEnabled = MathUtils.Random() > 0.5
-                        };
-                Scene.Add(_temp);
-                Scene.UpdateBoundingBox();
-            }
+            DrawPrepare(ActualCamera.Position, Light);
         }
 
         private TextBlockRenderer _textBlock;
@@ -249,6 +557,9 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             }
         }
 
+        protected virtual Vector3 AutoAdjustedTarget =>
+                new Vector3(-0.2f * (CameraOrbit?.Position.X ?? 0f), -0.1f * (CameraOrbit?.Position.Y ?? 0f), 0f);
+
         private float _elapsedCamera;
 
         protected override void OnTick(float dt) {
@@ -286,13 +597,17 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             }
 
             if (AutoAdjustTarget && CameraOrbit != null) {
-                var t = _resetCamera.Target + new Vector3(-0.2f * CameraOrbit.Position.X, -0.1f * CameraOrbit.Position.Y, 0f);
+                var t = _resetCamera.Target + AutoAdjustedTarget;
                 CameraOrbit.Target += (t - CameraOrbit.Target) / 2f;
             }
         }
 
         public override void Dispose() {
             DisposeHelper.Dispose(ref _textBlock);
+            DisposeHelper.Dispose(ref _shadows);
+            DisposeHelper.Dispose(ref _reflectionCubemap);
+            _previousCars.SelectMany(x => x.Objects).DisposeEverything();
+            _previousCars.Clear();
             base.Dispose();
         }
     }

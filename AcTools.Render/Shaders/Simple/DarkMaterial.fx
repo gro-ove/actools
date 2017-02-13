@@ -36,6 +36,9 @@ static const dword IS_CARPAINT = 32;
 struct MapsMaterial {
 	float DetailsUvMultipler;
 	float DetailsNormalBlend;
+
+	float SunSpecular;
+	float SunSpecularExp;
 };
 
 Texture2D gMapsMap;
@@ -71,6 +74,11 @@ cbuffer cbPerObject : register(b0) {
 cbuffer cbPerFrame {
 	float3 gEyePosW;
 	float3 gLightDir;
+
+	float3 gLightColor;
+	float3 gAmbientDown;
+	float3 gAmbientRange;
+	float3 gBackgroundColor;
 }
 
 // real reflection (not used by default)
@@ -122,6 +130,15 @@ struct VS_IN {
 	float3 TangentL   : TANGENT;
 };
 
+struct skinned_VS_IN {
+	float3 PosL         : POSITION;
+	float3 NormalL      : NORMAL;
+	float2 Tex          : TEXCOORD;
+	float3 TangentL     : TANGENT;
+	float3 BoneWeights  : BLENDWEIGHTS;
+	float4 BoneIndices  : BLENDINDICES;
+};
+
 struct PS_IN {
 	float4 PosH       : SV_POSITION;
 	float3 PosW       : POSITION;
@@ -145,12 +162,76 @@ PS_IN vs_main(VS_IN vin) {
 	return vout;
 }
 
-float GetReflection(float3 reflected, float specularExp) {
-	float edge = specularExp / 10.0 + 1.0;
+#define MAX_BONES 32
+
+cbuffer cbSkinned {
+	float4x4 gBoneTransforms[MAX_BONES];
+};
+
+PS_IN vs_skinned(skinned_VS_IN vin) {
+	float weight0 = vin.BoneWeights.x;
+	float weight1 = vin.BoneWeights.y;
+	float weight2 = vin.BoneWeights.z;
+	float weight3 = 1.0f - (weight0 + weight1 + weight2);
+
+	float4x4 bone0 = gBoneTransforms[(int)vin.BoneIndices.x];
+	float4x4 bone1 = gBoneTransforms[(int)vin.BoneIndices.y];
+	float4x4 bone2 = gBoneTransforms[(int)vin.BoneIndices.z];
+	float4x4 bone3 = gBoneTransforms[(int)vin.BoneIndices.w];
+
+	// offset position by bone matrices, using weights to scale
+	float4 p = weight0 * mul(float4(vin.PosL, 1.0f), bone0);
+	p += weight1 * mul(float4(vin.PosL, 1.0f), bone1);
+	p += weight2 * mul(float4(vin.PosL, 1.0f), bone2);
+	p += weight3 * mul(float4(vin.PosL, 1.0f), bone3);
+	p.w = 1.0f;
+
+	// offset normal by bone matrices, using weights to scale
+	float4 n = weight0 * mul(float4(vin.NormalL, 0.0f), bone0);
+	n += weight1 * mul(float4(vin.NormalL, 0.0f), bone1);
+	n += weight2 * mul(float4(vin.NormalL, 0.0f), bone2);
+	n += weight3 * mul(float4(vin.NormalL, 0.0f), bone3);
+	n.w = 0.0f;
+
+	// offset tangent by bone matrices, using weights to scale
+	float4 t = weight0 * mul(float4(vin.TangentL, 0.0f), bone0);
+	t += weight1 * mul(float4(vin.TangentL, 0.0f), bone1);
+	t += weight2 * mul(float4(vin.TangentL, 0.0f), bone2);
+	t += weight3 * mul(float4(vin.TangentL, 0.0f), bone3);
+	t.w = 0.0f;
+
+	PS_IN vout;
+
+	vout.PosW = mul(p, gWorld).xyz;
+	vout.NormalW = mul(n, (float3x3)gWorldInvTranspose);
+	vout.TangentW = mul(t, (float3x3)gWorldInvTranspose);
+	vout.BitangentW = mul(cross(n, t), (float3x3)gWorldInvTranspose);
+
+	vout.PosH = mul(p, gWorldViewProj);
+	vout.Tex = vin.Tex;
+
+	return vout;
+}
+
+float GetFakeHorizon(float3 d, float e) {
+	return saturate((d.y + 0.02) * 5.0 * e) * saturate(1 - pow(d.y * 1.5, 2)) * 0.4;
+}
+
+float saturate(float v, float e) {
+	return saturate(v * e + 0.5);
+}
+
+float GetFakeStudioLights(float3 d, float e) {
 	return (
-		saturate((0.3 - abs(0.6 - reflected.y)) * edge) +
-		saturate((0.1 - abs(0.1 - reflected.y)) * edge)
-	) * saturate((0.3 - abs(0.6 - sin(reflected.x * 16.0) - 0.5)) * edge) * 1.2;
+		saturate(0.3 - abs(0.6 - d.y), e) +
+		saturate(0.1 - abs(0.1 - d.y), e)
+	) * saturate(0.3 - abs(0.1 + sin(d.x * 11.0)), e);
+}
+
+float3 GetReflection(float3 reflected, float specularExp) {
+	float edge = specularExp / 10.0 + 1.0;
+	float fake = saturate(GetFakeHorizon(reflected, edge) + GetFakeStudioLights(reflected, edge));
+	return gBackgroundColor * (1 - fake) * 1.2 + fake * 1.6;
 }
 
 #define HAS_FLAG(x) ((gMaterial.Flags & x) == x)
@@ -162,63 +243,72 @@ void AlphaTest(float alpha) {
 
 //////////////// Simple lighting
 
-#define gLightMultipler 0.4
-#define gAmbientDown float3(0.3, 0.5, 0.7)*1.2
-#define gAmbientRange float3(0.3, 0.1, -0.2)*1.2
+float GetNDotH(float3 normal, float3 position) {
+	float3 toEye = normalize(gEyePosW - position);
+	float3 halfway = normalize(toEye + gLightDir);
+	return saturate(dot(halfway, normal));
+}
 
-float3 CalculateBaseLight(float3 normal) {
+float CalculateSpecularLight(float nDotH, float exp, float level) {
+	return pow(nDotH, max(exp, 0.1)) * level;
+}
+
+float CalculateSpecularLight(float3 normal, float3 position) {
+	float nDotH = GetNDotH(normal, position);
+	return CalculateSpecularLight(nDotH, gMaterial.SpecularExp, gMaterial.Specular);
+}
+
+float CalculateSpecularLight_Maps(float3 normal, float3 position, float specularExpMultipler) {
+	float nDotH = GetNDotH(normal, position);
+	return CalculateSpecularLight(nDotH, gMaterial.SpecularExp * specularExpMultipler, gMaterial.Specular) +
+		CalculateSpecularLight(nDotH, gMapsMaterial.SunSpecularExp * specularExpMultipler, gMapsMaterial.SunSpecular);
+}
+
+float GetDiffuseMultipler(float3 normal, out float3 ambient) {
 	if (gFlatMirrored) {
 		normal.y = -normal.y;
 	}
 
 	float up = saturate(normal.y * 0.5 + 0.5);
-	float3 ambient = gAmbientDown + up * gAmbientRange;
-	return (gMaterial.Ambient + gMaterial.Diffuse * (saturate(dot(normal, gLightDir)) * gLightMultipler + ambient));
+	ambient = gAmbientDown + up * gAmbientRange;
+
+	return saturate(dot(normal, gLightDir));
 }
 
-float3 CalculateBaseLight_ConsiderShadows(float3 normal, float3 position) {
+float GetDiffuseMultipler_ConsiderShadows(float3 normal, float3 position, out float3 ambient) {
 	if (gFlatMirrored) {
 		normal.y = -normal.y;
 		position.y = -position.y;
 	}
 
 	float up = saturate(normal.y * 0.5 + 0.5);
-	float3 ambient = gAmbientDown + up * gAmbientRange;
-	return (gMaterial.Ambient + gMaterial.Diffuse * (saturate(dot(normal, gLightDir)) * gLightMultipler * GetShadow(position) + ambient));
-}
+	ambient = gAmbientDown + up * gAmbientRange;
 
-float3 CalculateSpecularLight(float3 normal, float3 position) {
-	float3 toEye = normalize(gEyePosW - position);
-	float3 halfway = normalize(toEye + gLightDir);
-	float nDotH = saturate(dot(halfway, normal));
-	return pow(nDotH, max(gMaterial.SpecularExp, 0.1)) * gMaterial.Specular;
-}
-
-float3 CalculateSpecularLight_Maps(float3 normal, float3 position, float specularMultipler, float specularExpMultipler) {
-	float3 toEye = normalize(gEyePosW - position);
-	float3 halfway = normalize(toEye + gLightDir);
-	float nDotH = saturate(dot(halfway, normal));
-	return pow(nDotH, max(gMaterial.SpecularExp * specularExpMultipler, 0.1)) * gMaterial.Specular * specularMultipler;
+	return saturate(dot(normal, gLightDir)) * GetShadow(position);
 }
 
 float3 CalculateLight(float3 normal, float3 position) {
+	float3 ambient;
 #if ENABLE_SHADOWS == true
-	return CalculateBaseLight_ConsiderShadows(normal, position) + CalculateSpecularLight(normal, position)
-		+ gMaterial.Emissive;
+	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
 #else
-	return CalculateBaseLight(normal) + CalculateSpecularLight(normal, position)
-		+ gMaterial.Emissive;
+	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
 #endif
+
+	float3 specular = CalculateSpecularLight(normal, position);
+	return gMaterial.Ambient * ambient + (gMaterial.Diffuse + specular) * gLightColor * diffuseMultipler + gMaterial.Emissive;
 }
 
 float3 CalculateLight_Maps(float3 normal, float3 position, float specularMultipler, float specularExpMultipler) {
+	float3 ambient;
 #if ENABLE_SHADOWS == true
-	return CalculateBaseLight_ConsiderShadows(normal, position) + CalculateSpecularLight_Maps(normal, position, specularMultipler, specularExpMultipler)
-		+ gMaterial.Emissive;
+	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
 #else
-	return CalculateBaseLight(normal) + CalculateSpecularLight_Maps(normal, position, specularMultipler, specularExpMultipler)
-		+ gMaterial.Emissive;
+	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
 #endif
+
+	float3 specular = CalculateSpecularLight_Maps(normal, position, specularExpMultipler) * specularMultipler;
+	return gMaterial.Ambient * ambient + (gMaterial.Diffuse + specular) * gLightColor * diffuseMultipler + gMaterial.Emissive;
 }
 
 //////////////// Different material types
@@ -312,7 +402,7 @@ void CalculateLighted_Maps(PS_IN pin, float txMapsSpecularMultipler, float txMap
 float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normalW);
-	float refl = GetReflection(reflected, gMaterial.SpecularExp);
+	float3 refl = GetReflection(reflected, gMaterial.SpecularExp);
 
 	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
 	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
@@ -325,13 +415,17 @@ float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, flo
 		float reflectionMultipler) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normalW);
-	float refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
 
 	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
 	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
 	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
 
-	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val * reflectionMultipler;
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1 - val;
+	}
+
+	return lighted + refl * val * reflectionMultipler;
 }
 
 //// Standart
@@ -448,6 +542,14 @@ technique10 Maps {
 	}
 }
 
+technique10 SkinnedMaps {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+	}
+}
+
 float4 ps_DiffMaps(PS_IN pin) : SV_Target{
 	float alpha, mask; float3 lighted, normal;
 	CalculateLighted_DiffMaps(pin, lighted, alpha, normal);
@@ -464,7 +566,7 @@ technique10 DiffMaps {
 
 //// GL
 
-float4 ps_Gl(PS_IN pin) : SV_Target{
+float4 ps_Gl(PS_IN pin) : SV_Target {
 	return float4(normalize(pin.NormalW), 1.0);
 }
 
@@ -476,6 +578,13 @@ technique10 Gl {
 	}
 }
 
+technique10 SkinnedGl {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
+	}
+}
 
 //////////////// Misc stuff
 
@@ -494,8 +603,8 @@ technique10 AmbientShadow {
 float4 ps_Mirror(PS_IN pin) : SV_Target {
 	float3 toEyeW = normalize(gEyePosW - pin.PosW);
 	float3 reflected = reflect(-toEyeW, pin.NormalW);
-	float refl = GetReflection(reflected, gMaterial.SpecularExp);
-	return float4(refl, refl, refl, 1.0);
+	float3 refl = GetReflection(reflected, 500) * 0.8;
+	return float4(refl, 1.0);
 }
 
 technique10 Mirror {
@@ -506,6 +615,10 @@ technique10 Mirror {
 	}
 }
 
+float GetShadowSafe(float3 posW) {
+	return dot(posW, posW) > 1000 ? 1 : GetShadow(posW);
+}
+
 float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
 	float3 eyeW = gEyePosW - pin.PosW;
 	float3 toEyeW = normalize(eyeW);
@@ -513,10 +626,8 @@ float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
 	float fresnel = 0.11 + 0.52 * pow(dot(toEyeW, normal), 4);
 	float distance = length(eyeW);
 
-	float light = saturate(dot(normal, gLightDir)) * gLightMultipler * GetShadow(pin.PosW);
-	return float4(
-		light, light, light,
-		fresnel * saturate(1 - distance / 60));
+	float3 light = saturate(dot(normal, gLightDir)) * GetShadowSafe(pin.PosW) * gLightColor;
+	return float4(light, fresnel * saturate(1 - distance / 60));
 }
 
 technique10 FlatMirror {
@@ -524,5 +635,40 @@ technique10 FlatMirror {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_FlatMirror()));
+	}
+}
+
+float GetDiffuseMultipler_ConsiderShadows_Safe(float3 normal, float3 position, out float3 ambient) {
+	float up = saturate(normal.y * 0.5 + 0.5);
+	ambient = gAmbientDown + up * gAmbientRange;
+
+	return saturate(dot(normal, gLightDir)) * GetShadowSafe(position);
+}
+
+float4 ps_FlatGround(pt_PS_IN pin) : SV_Target {
+	float3 normal = float3(0, 1, 0);
+	float3 position = pin.PosW;
+
+	float3 ambient;
+#if ENABLE_SHADOWS == true
+	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows_Safe(normal, position, ambient);
+#else
+	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+#endif
+
+	float nDotH = GetNDotH(normal, position);
+	float specular = CalculateSpecularLight(nDotH, 50, 0.5);
+
+	float distance = length(gEyePosW - position);
+
+	float3 light = 0.4 * (gAmbientDown + 0.2 * gAmbientRange) + (0.5 + specular) * gLightColor * diffuseMultipler;
+	return float4(light, saturate(1.5 - distance / 60));
+}
+
+technique10 FlatGround {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatGround()));
 	}
 }

@@ -119,6 +119,10 @@ namespace AcTools.DataFile {
         private void UpdateAcd(bool backup) {
             if (_acd != null) {
                 if (_acd.IsPacked) {
+                    if (Filename == null) {
+                        throw new Exception("File wasn’t loaded to be saved like this");
+                    }
+
                     _acd.SetEntry(Name, Stringify());
                     _acd.Save(Filename);
                 } else {

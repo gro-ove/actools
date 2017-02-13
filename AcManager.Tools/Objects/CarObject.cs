@@ -164,10 +164,20 @@ namespace AcManager.Tools.Objects {
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
-            } else if (FileUtils.IsAffected(filename, Path.Combine(Location, "data.acd")) ||
-                    FileUtils.IsAffected(filename, Path.Combine(Location, "data")) && _acdData?.IsPacked != true) {
-                // TODO: think of something
-                // UpdateAcdData();
+            } else if (_acdDataRead && FileUtils.IsAffected(Path.Combine(Location, "data.acd"), filename)) {
+                if (_acdData == null) {
+                    _acdDataRead = false;
+                    OnPropertyChanged(nameof(AcdData));
+                } else {
+                    _acdData.Refresh(null);
+                }
+            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.IsAffected(Path.Combine(Location, "data"), filename)) {
+                if (_acdData == null) {
+                    _acdDataRead = false;
+                    OnPropertyChanged(nameof(AcdData));
+                } else {
+                    _acdData.Refresh(FileUtils.GetRelativePath(filename, Path.Combine(Location, "data")).ToLowerInvariant());
+                }
             }
 
             return true;
@@ -386,7 +396,7 @@ namespace AcManager.Tools.Objects {
 
                     result.Append(val.Replace(' ', ' '));
                 }
-
+                
                 return result.Length > 0 ? result.ToString() : null;
             }
         }

@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -38,8 +40,7 @@ namespace AcTools.Render.Base {
 
         public bool IsDirty { get; set; }
 
-        private int _width;
-        private int _height;
+        private int _width, _height;
         private bool _resized = true;
         private SpriteRenderer _sprite;
 
@@ -49,47 +50,77 @@ namespace AcTools.Render.Base {
 
         public bool SpriteInitialized => _sprite != null;
 
-        public int Width {
-            get { return _width; }
-            set {
-                if (Equals(_width, value)) return;
-                _width = value;
-                _resized = true;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        public int Height {
-            get { return _height; }
-            set {
-                if (Equals(_height, value)) return;
-                _height = value;
-                _resized = true;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _outputDownscaleMultipler = 1d;
+        private double _resolutionMultipler = 1d;
+        private double _previousResolutionMultipler = 2d;
 
         /// <summary>
         /// Be careful with this option! Don’t forget to call PrepareForFinalPass() if you’re
         /// using it and remember — Z-buffer will be in original (bigger) size, but output buffer
         /// will be smaller.
         /// </summary>
-        public double OutputDownscaleMultipler {
-            get { return _outputDownscaleMultipler; }
+        public double ResolutionMultipler {
+            get { return _resolutionMultipler; }
             set {
-                if (Equals(value, _outputDownscaleMultipler)) return;
-                _outputDownscaleMultipler = value;
+                if (value < 0d) {
+                    _previousResolutionMultipler = -value;
+                    return;
+                }
+
+                if (Equals(value, _resolutionMultipler)) return;
+                _resolutionMultipler = value;
+
+                if (!Equals(value, 1d)) {
+                    _previousResolutionMultipler = value;
+                }
+
+                UpdateSampleDescription();
+
                 _resized = true;
                 IsDirty = true;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Width));
+                OnPropertyChanged(nameof(Height));
+                OnPropertyChanged(nameof(OutputDownscaleMultipler));
+                OnPropertyChanged(nameof(UseSsaa));
             }
         }
 
-        public float AspectRatio => (float)_width / _height;
+        public bool UseSsaa {
+            get { return !Equals(1d, _resolutionMultipler); }
+            set { ResolutionMultipler = value ? _previousResolutionMultipler : 1d; }
+        }
+
+        public int ActualWidth => _width;
+
+        public int Width {
+            get { return (int)(_width * ResolutionMultipler); }
+            set {
+                if (Equals(_width, value)) return;
+                _width = value;
+                _resized = true;
+                IsDirty = true;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ActualWidth));
+            }
+        }
+
+        public int ActualHeight => _height;
+
+        public int Height {
+            get { return (int)(_height * ResolutionMultipler); }
+            set {
+                if (Equals(_height, value)) return;
+                _height = value;
+                _resized = true;
+                IsDirty = true;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ActualHeight));
+            }
+        }
+
+        public double OutputDownscaleMultipler => 1 / ResolutionMultipler;
+
+        public float AspectRatio => (float)ActualWidth / ActualHeight;
 
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -115,7 +146,48 @@ namespace AcTools.Render.Base {
             Configuration.DetectDoubleDispose = false;
         }
 
-        public bool UseMsaa { get; set; }
+        private SampleDescription GetMsaaDescription(Device device) {
+            var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, MsaaSampleCount);
+            return new SampleDescription(MsaaSampleCount, msaaQuality - 1);
+        }
+
+        private bool _useMsaa;
+
+        public bool UseMsaa {
+            get { return _useMsaa; }
+            set {
+                if (value == _useMsaa) return;
+                _useMsaa = value;
+                OnPropertyChanged();
+                UpdateSampleDescription();
+            }
+        }
+
+        private int _msaaSampleCount = 4;
+
+        public int MsaaSampleCount {
+            get { return _msaaSampleCount; }
+            set {
+                if (Equals(value, _msaaSampleCount)) return;
+                _msaaSampleCount = value;
+                OnPropertyChanged();
+                UpdateSampleDescription();
+            }
+        }
+
+        private void UpdateSampleDescription() {
+            if (_deviceContextHolder == null) return;
+
+            var sampleDescription = UseMsaa && !UseSsaa ? GetMsaaDescription(Device) : new SampleDescription(1, 0);
+            if (sampleDescription != SampleDescription) {
+                SampleDescription = sampleDescription;
+                if (_swapChain != null) {
+                    RecreateSwapChain();
+                } else {
+                    _resized = true;
+                }
+            }
+        }
 
         public bool WpfMode { get; set; }
 
@@ -138,9 +210,8 @@ namespace AcTools.Render.Base {
                 throw new Exception($"Direct3D Feature {FeatureLevel} unsupported");
             }
 
-            if (UseMsaa) {
-                var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
-                SampleDescription = new SampleDescription(4, msaaQuality - 1);
+            if (UseMsaa && !UseSsaa) {
+                SampleDescription = GetMsaaDescription(device);
             }
 
             return device;
@@ -207,6 +278,23 @@ namespace AcTools.Render.Base {
             Initialized = true;
         }
 
+        private void RecreateSwapChain() {
+            _swapChainDescription = new SwapChainDescription {
+                BufferCount = 2,
+                ModeDescription = new ModeDescription(0, 0, new Rational(60, 1), Format.R8G8B8A8_UNorm),
+                IsWindowed = true,
+                OutputHandle = _swapChainDescription.OutputHandle,
+                SampleDescription = SampleDescription,
+                SwapEffect = SwapEffect.Discard,
+                Usage = Usage.RenderTargetOutput
+            };
+
+            _swapChain.Dispose();
+            _swapChain = new SwapChain(Device.Factory, Device, _swapChainDescription);
+
+            _resized = true;
+        }
+
         protected abstract void InitializeInner();
 
         private Texture2D _renderBuffer;
@@ -219,24 +307,24 @@ namespace AcTools.Render.Base {
         public Texture2D DepthBuffer => _depthBuffer;
 
         protected virtual void Resize() {
-            if (_width == 0 || _height == 0) return;
+            var width = Width;
+            var height = Height;
+
+            if (width == 0 || height == 0) return;
 
             DisposeHelper.Dispose(ref _renderBuffer);
             DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
 
-            var width = (int)(_width * _outputDownscaleMultipler);
-            var height = (int)(_height * _outputDownscaleMultipler);
-
             if (_swapChain != null) {
-                _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, width, height,
+                _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, ActualWidth, ActualHeight,
                         Format.Unknown, SwapChainFlags.None);
                 _renderBuffer = Resource.FromSwapChain<Texture2D>(_swapChain, 0);
             } else {
                 _renderBuffer = new Texture2D(Device, new Texture2DDescription {
-                    Width = width,
-                    Height = height,
+                    Width = ActualWidth,
+                    Height = ActualHeight,
                     MipLevels = 1,
                     ArraySize = 1,
                     Format = WpfMode ? Format.B8G8R8A8_UNorm : Format.R8G8B8A8_UNorm,
@@ -253,8 +341,8 @@ namespace AcTools.Render.Base {
                 Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
                 ArraySize = 1,
                 MipLevels = 1,
-                Width = Width,
-                Height = Height,
+                Width = width,
+                Height = height,
                 SampleDescription = SampleDescription,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
@@ -270,22 +358,20 @@ namespace AcTools.Render.Base {
             DeviceContext.OutputMerger.DepthStencilState = null;
 
             ResizeInner();
-            DeviceContextHolder.OnResize(Width, Height);
+            DeviceContextHolder.OnResize(width, height);
 
             InitiallyResized = true;
         }
 
         protected void PrepareForFinalPass() {
-            if (!Equals(1d, _outputDownscaleMultipler)) {
-                DeviceContext.Rasterizer.SetViewports(OutputViewport);
-            }
+            DeviceContext.Rasterizer.SetViewports(OutputViewport);
         }
 
         protected bool InitiallyResized { get; private set; }
 
-        public Viewport Viewport => new Viewport(0, 0, _width, _height, 0.0f, 1.0f);
+        public Viewport Viewport => new Viewport(0, 0, Width, Height, 0.0f, 1.0f);
 
-        public Viewport OutputViewport => new Viewport(0, 0, (int)(_width * _outputDownscaleMultipler), (int)(_height * _outputDownscaleMultipler), 0.0f, 1.0f);
+        public Viewport OutputViewport => new Viewport(0, 0, ActualWidth, ActualHeight, 0.0f, 1.0f);
 
         protected abstract void ResizeInner();
 
@@ -320,9 +406,7 @@ namespace AcTools.Render.Base {
                 OnPropertyChanged(nameof(FramesPerSecond));
             }
 
-            if (!Equals(1d, _outputDownscaleMultipler)) {
-                DeviceContext.Rasterizer.SetViewports(Viewport);
-            }
+            DeviceContext.Rasterizer.SetViewports(Viewport);
 
             DrawInner();
             if (SpriteInitialized) {
@@ -392,20 +476,44 @@ namespace AcTools.Render.Base {
         }
 
         public virtual Image Shot(int multipler) {
-            var width = Width;
-            var height = Height;
+            var width = ActualWidth;
+            var height = ActualHeight;
 
             Width = width * multipler;
             Height = height * multipler;
-            Draw();
 
-            Width = width;
-            Height = height;
+            using (var stream = new System.IO.MemoryStream()) {
+                if (UseMsaa) {
+                    var sampleDescription = SampleDescription;
+                    SampleDescription = new SampleDescription(1, 0);
 
-            var stream = new System.IO.MemoryStream();
-            Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
-            stream.Position = 0;
-            return Image.FromStream(stream);
+                    if (_swapChain != null) {
+                        RecreateSwapChain();
+                    }
+
+                    /*var target = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                    target.Resize(DeviceContextHolder, width, height, null);
+
+                    var renderView = _renderView;
+                    _renderView = target.TargetView;*/
+
+                    Draw();
+
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
+
+                    // _renderView = renderView;
+                    SampleDescription = sampleDescription;
+                } else {
+                    Draw();
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
+                }
+
+                Width = width;
+                Height = height;
+
+                stream.Position = 0;
+                return Image.FromStream(stream);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

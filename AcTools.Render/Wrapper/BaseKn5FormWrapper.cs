@@ -226,8 +226,16 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.L:
-                    if (!args.Control && !args.Alt && !args.Shift) {
-                        Kn5ObjectRenderer.CarLightsEnabled = !Kn5ObjectRenderer.CarLightsEnabled;
+                    if (!args.Shift) {
+                        if (!args.Control) {
+                            Kn5ObjectRenderer.CarLightsEnabled = !Kn5ObjectRenderer.CarLightsEnabled;
+                            if (!args.Alt) {
+                                Kn5ObjectRenderer.CarBrakeLightsEnabled = Kn5ObjectRenderer.CarLightsEnabled;
+                            }
+                        } else if (!args.Alt){
+                            Kn5ObjectRenderer.CarBrakeLightsEnabled = !Kn5ObjectRenderer.CarBrakeLightsEnabled;
+                        }
+
                         Renderer.IsDirty = true;
                     }
                     break;

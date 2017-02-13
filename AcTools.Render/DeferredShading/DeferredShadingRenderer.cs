@@ -66,17 +66,17 @@ namespace AcTools.Render.DeferredShading {
         protected override void ResizeInner() {
             base.ResizeInner();
 
-            _gDepthBuffer.Resize(DeviceContextHolder, Width, Height);
-            _gBufferBase.Resize(DeviceContextHolder, Width, Height);
-            _gBufferNormal.Resize(DeviceContextHolder, Width, Height);
-            _gBufferMaps.Resize(DeviceContextHolder, Width, Height);
+            _gDepthBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _gBufferBase.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _gBufferNormal.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _gBufferMaps.Resize(DeviceContextHolder, Width, Height, SampleDescription);
 
-            _temporaryDepthBuffer.Resize(DeviceContextHolder, Width, Height);
-            _temporaryBuffer0.Resize(DeviceContextHolder, Width, Height);
-            _temporaryBuffer1.Resize(DeviceContextHolder, Width, Height);
-            _temporaryBuffer2.Resize(DeviceContextHolder, Width, Height);
-            _temporaryBuffer3.Resize(DeviceContextHolder, Width, Height);
-            _outputBuffer.Resize(DeviceContextHolder, Width, Height);
+            _temporaryDepthBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _temporaryBuffer0.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _temporaryBuffer1.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _temporaryBuffer2.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _temporaryBuffer3.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _outputBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
         }
 
         protected override void DrawPrepare() {

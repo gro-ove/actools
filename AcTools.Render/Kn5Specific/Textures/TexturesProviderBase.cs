@@ -5,8 +5,6 @@ using AcTools.Utils.Helpers;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public abstract class TexturesProviderBase : ITexturesProvider {
-        public static bool OptionOverrideAsync = false;
-
         protected readonly Dictionary<string, IRenderableTexture> Textures = new Dictionary<string, IRenderableTexture>();
 
         protected abstract IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key);

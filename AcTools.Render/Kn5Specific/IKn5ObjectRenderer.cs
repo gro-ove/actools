@@ -22,6 +22,8 @@ namespace AcTools.Render.Kn5Specific {
 
         bool CarLightsEnabled { get; set; }
 
+        bool CarBrakeLightsEnabled { get; set; }
+
         void SelectPreviousSkin();
 
         void SelectNextSkin();

@@ -5,7 +5,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using JetBrains.Annotations;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleAtNm : Kn5MaterialSimple {
         private IRenderableTexture _txNormal;
 

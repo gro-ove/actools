@@ -71,7 +71,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
                 if (UseFxaa) {
                     using (var buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                        buffer.Resize(DeviceContextHolder, Width, Height);
+                        buffer.Resize(DeviceContextHolder, Width, Height, null);
 
                         DeviceContext.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
                         DeviceContext.OutputMerger.SetTargets(buffer.TargetView);

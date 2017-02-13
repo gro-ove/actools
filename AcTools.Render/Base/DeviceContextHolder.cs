@@ -21,12 +21,15 @@ namespace AcTools.Render.Base {
 
         T GetEffect<T>() where T : IEffectWrapper, new();
 
+        [NotNull]
         IRenderableMaterial GetMaterial(object key);
 
         [NotNull]
         CommonStates States { get; }
 
         void RaiseUpdateRequired();
+
+        void RaiseSceneUpdated();
     }
 
     public class DeviceContextHolder : IDeviceContextHolder, IDisposable {
@@ -174,9 +177,15 @@ namespace AcTools.Render.Base {
         }
 
         public event EventHandler UpdateRequired;
+        public event EventHandler SceneUpdated;
 
         public void RaiseUpdateRequired() {
             UpdateRequired?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RaiseSceneUpdated() {
+            UpdateRequired?.Invoke(this, EventArgs.Empty);
+            SceneUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         private CommonStates _states;

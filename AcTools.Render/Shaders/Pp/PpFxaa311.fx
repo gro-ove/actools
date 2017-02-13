@@ -3,7 +3,7 @@
 	Texture2D gDepthMap;
 
 	SamplerState samInputImage {
-		Filter = MIN_MAG_LINEAR_MIP_POINT;
+		Filter = MIN_MAG_MIP_LINEAR;
 		AddressU = CLAMP;
 		AddressV = CLAMP;
 	};

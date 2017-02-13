@@ -28,9 +28,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _material.Initialize(contextHolder);
         }
 
-        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!_material.Prepare(contextHolder, mode)) return;
-            base.DrawInner(contextHolder, camera, mode);
+            base.DrawOverride(contextHolder, camera, mode);
 
             _material.SetMatrices(Matrix.Identity, camera);
             _material.Draw(contextHolder, Indices.Length, mode);

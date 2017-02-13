@@ -50,7 +50,9 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (!inner.StartsWith(@"skins\") || // sfx\…, data\…
+            if (inner.StartsWith(@"data\")) return false;
+
+            if (!inner.StartsWith(@"skins\") && !inner.StartsWith(@"data\") || // sfx\…
                     inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png
                     inner.EndsWith(@".dds", StringComparison.OrdinalIgnoreCase)) {
                 return true;

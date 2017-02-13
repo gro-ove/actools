@@ -4,7 +4,7 @@
 	Texture2D gDepthMap;
 
 	SamplerState samInputImage {
-		Filter = MIN_MAG_LINEAR_MIP_POINT;
+		Filter = MIN_MAG_MIP_LINEAR;
 		AddressU = CLAMP;
 		AddressV = CLAMP;
 	};
@@ -35,7 +35,7 @@
 	}
 
 	float4 ps_Copy(PS_IN pin) : SV_Target {
-		return gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
+		return gInputMap.Sample(samInputImage, pin.Tex);
 	}
 
 	technique10 Copy {
@@ -48,14 +48,61 @@
 
 	SamplerState samInputImageHq {
 		Filter = ANISOTROPIC;
-		MaxAnisotropy = 16;
+		MaxAnisotropy = 8;
 
 		AddressU = WRAP;
 		AddressV = WRAP;
 	};
 
+	float4 SampleBicubic(Texture2D tex, sampler texSampler, float2 uv){
+		//--------------------------------------------------------------------------------------
+		// Calculate the center of the texel to avoid any filtering
+
+		float2 textureDimensions = gScreenSize.xy;
+		float2 invTextureDimensions = gScreenSize.zw;
+
+		uv *= textureDimensions;
+
+		float2 texelCenter = floor(uv - 0.5f) + 0.5f;
+		float2 fracOffset = uv - texelCenter;
+		float2 fracOffset_x2 = fracOffset * fracOffset;
+		float2 fracOffset_x3 = fracOffset * fracOffset_x2;
+
+		//--------------------------------------------------------------------------------------
+		// Calculate the filter weights (B-Spline Weighting Function)
+
+		float2 weight0 = fracOffset_x2 - 0.5f * (fracOffset_x3 + fracOffset);
+		float2 weight1 = 1.5f * fracOffset_x3 - 2.5f * fracOffset_x2 + 1.f;
+		float2 weight3 = 0.5f * (fracOffset_x3 - fracOffset_x2);
+		float2 weight2 = 1.f - weight0 - weight1 - weight3;
+
+		//--------------------------------------------------------------------------------------
+		// Calculate the texture coordinates
+
+		float2 scalingFactor0 = weight0 + weight1;
+		float2 scalingFactor1 = weight2 + weight3;
+
+		float2 f0 = weight1 / (weight0 + weight1);
+		float2 f1 = weight3 / (weight2 + weight3);
+
+		float2 texCoord0 = texelCenter - 1.f + f0;
+		float2 texCoord1 = texelCenter + 1.f + f1;
+
+		texCoord0 *= invTextureDimensions;
+		texCoord1 *= invTextureDimensions;
+
+		//--------------------------------------------------------------------------------------
+		// Sample the texture
+
+		return tex.Sample(texSampler, float2(texCoord0.x, texCoord0.y)) * scalingFactor0.x * scalingFactor0.y +
+			tex.Sample(texSampler, float2(texCoord1.x, texCoord0.y)) * scalingFactor1.x * scalingFactor0.y +
+			tex.Sample(texSampler, float2(texCoord0.x, texCoord1.y)) * scalingFactor0.x * scalingFactor1.y +
+			tex.Sample(texSampler, float2(texCoord1.x, texCoord1.y)) * scalingFactor1.x * scalingFactor1.y;
+	}
+
 	float4 ps_CopyHq(PS_IN pin) : SV_Target {
-		return gInputMap.SampleLevel(samInputImageHq, pin.Tex, 2.5);
+		//return SampleBicubic(gInputMap, samInputImage, pin.Tex);
+		return gInputMap.Sample(samInputImageHq, pin.Tex);
 	}
 
 	technique10 CopyHq {

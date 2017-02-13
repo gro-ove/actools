@@ -7,8 +7,9 @@ namespace AcTools.Render.Base.TargetTextures {
 
         private TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
 
-        public override void Resize(DeviceContextHolder holder, int width, int height) {
-            base.Resize(holder, width, height);
+        public override void Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
+            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return;
+            base.Resize(holder, width, height, sample);
 
             DepthView = new DepthStencilView(holder.Device, Texture, new DepthStencilViewDescription {
                 Flags = DepthStencilViewFlags.None,
@@ -36,15 +37,26 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public static TargetResourceDepthTexture Create() {
             return new TargetResourceDepthTexture(new Texture2DDescription {
-                MipLevels = 1,
                 ArraySize = 1,
+                MipLevels = 1,
                 Format = Format.R24G8_Typeless,
-                SampleDescription = DefaultSampleDescription,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil | BindFlags.ShaderResource,
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None
             });
+
+            /*
+                ArraySize = 1,
+                MipLevels = 1,
+                Width = width,
+                Height = height,
+                SampleDescription = SampleDescription,
+                Usage = ResourceUsage.Default,
+                BindFlags = BindFlags.DepthStencil,
+                CpuAccessFlags = CpuAccessFlags.None,
+                OptionFlags = ResourceOptionFlags.None
+            */
         }
     }
 }

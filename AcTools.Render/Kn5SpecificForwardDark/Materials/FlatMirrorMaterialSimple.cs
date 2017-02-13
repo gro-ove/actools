@@ -6,26 +6,25 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using SlimDX;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class FlatMirrorMaterialSimple : IRenderableMaterial {
+        private readonly bool _groundMode;
         private EffectDarkMaterial _effect;
 
-        internal FlatMirrorMaterialSimple() {}
+        internal FlatMirrorMaterialSimple(bool groundMode) {
+            _groundMode = groundMode;
+        }
 
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDarkMaterial>();
         }
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent) return false;
+            if (mode != SpecialRenderMode.Simple) return false;
             
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
-
-            if (mode != SpecialRenderMode.Outline) {
-                contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
-                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
-            }
-
+            contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
+            contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
             return true;
         }
 
@@ -35,7 +34,7 @@ namespace ArcadeCorsa.Render.DarkRenderer.Materials {
         }
 
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            _effect.TechFlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (_groundMode ? _effect.TechFlatGround : _effect.TechFlatMirror).DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }

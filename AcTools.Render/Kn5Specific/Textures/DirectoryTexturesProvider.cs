@@ -11,13 +11,19 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class DirectoryTexturesProvider : TexturesProviderBase {
+        private readonly bool _asyncLoading;
+        private readonly bool _asyncOverride;
+
         [CanBeNull]
         private string _directory;
 
         private IDeviceContextHolder _holder;
         private FileSystemWatcher _watcher;
 
-        public DirectoryTexturesProvider() {}
+        public DirectoryTexturesProvider(bool asyncLoading, bool asyncOverride) {
+            _asyncLoading = asyncLoading;
+            _asyncOverride = asyncOverride;
+        }
 
         public void ClearDirectory() {
             if (_watcher != null) {
@@ -139,14 +145,19 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             // TODO
-            await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
+            if (_asyncLoading) {
+                await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
+            } else {
+                ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
+            }
+
             _holder.RaiseUpdateRequired();
         }
 
         private Task UpdateOverridesAsync(string textureName = null) {
             if (_holder == null || _directory == null) return Task.Delay(0);
 
-            if (OptionOverrideAsync) {
+            if (_asyncOverride) {
                 return Task.WhenAll(Textures.Values
                                              .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
                                              .OfType<RenderableTexture>().Select(async texture => {
@@ -190,7 +201,13 @@ namespace AcTools.Render.Kn5Specific.Textures {
             if (!File.Exists(filename)) return null;
 
             var result = new RenderableTexture { Resource = null };
-            result.LoadAsync(contextHolder.Device, filename).Forget();
+
+            if (_asyncLoading) {
+                result.LoadAsync(contextHolder.Device, filename).Forget();
+            } else {
+                result.Load(contextHolder.Device, filename);
+            }
+
             return Textures[filename] = result;
         }
 

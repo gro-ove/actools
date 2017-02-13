@@ -76,7 +76,7 @@ namespace AcTools.Render.Base.Objects {
             _indicesBuffer = new Buffer(contextHolder.Device, _indicesStream, ibd);
         }
 
-        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             var assembler = contextHolder.DeviceContext.InputAssembler;
             assembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             assembler.SetVertexBuffers(0, _verticesBufferBinding);

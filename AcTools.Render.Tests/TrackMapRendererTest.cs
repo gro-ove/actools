@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Wrapper;
@@ -62,7 +63,7 @@ namespace AcTools.Render.Tests {
                 return;
             }
 
-            using (var renderer = new ForwardKn5ObjectRenderer(path)) {
+            using (var renderer = new ForwardKn5ObjectRenderer(new CarDescription(path))) {
                 renderer.UseMsaa = false;
                 renderer.UseFxaa = true;
                 new LiteShowroomWrapper(renderer).Run();

@@ -16,6 +16,7 @@ using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificDeferred {
@@ -81,18 +82,18 @@ namespace AcTools.Render.Kn5SpecificDeferred {
         }
 
         public class DeferredCarLight : CarLight, ILight {
+            [CanBeNull]
             private PointLight[] _lights;
 
-            protected override void OnEnabledChanged(bool value) {
-                base.OnEnabledChanged(value);
+            protected override void SetEmissive(Vector3 value) {
+                base.SetEmissive(value);
 
-                if (value && _lights == null) {
-                    _lights = CreateLights();
-                }
+                _lights?.DisposeEverything();
+                _lights = value == default(Vector3) ? null : CreateLights(value);
             }
 
             public void Draw(DeviceContextHolder holder, ICamera camera, SpecialLightMode mode) {
-                if (!IsEnabled || _lights == null) return;
+                if (_lights == null) return;
                 foreach (var light in _lights) {
                     light.Draw(holder, camera, mode);
                 }
@@ -104,7 +105,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                 public int Count;
             }
 
-            private PointLight[] CreateLights() {
+            private PointLight[] CreateLights(Vector3 emissive) {
                 if (Node?.BoundingBox.HasValue != true) return null;
 
                 var inv = Matrix.Invert(Matrix.Transpose(Node.ParentMatrix));
@@ -156,14 +157,14 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                     }
                 }
 
-                var emissive = Emissive;
-                var limit = Type == CarLightType.Headlight ? 120f : 90f;
+                var headlight = emissive.X / 4 < emissive.Y;
+                var limit = headlight ? 90f : 120f;
                 if (emissive.GetBrightness() > limit) {
                     emissive *= limit / emissive.GetBrightness();
                 }
 
                 return list.Select(x => new PointLight {
-                    Position = x.Position + x.Normal * (0.15f + emissive.GetBrightness() * (Type == CarLightType.Headlight ? 0.007f : 0.003f)),
+                    Position = x.Position + x.Normal * (0.15f + emissive.GetBrightness() * (headlight ? 0.007f : 0.003f)),
                     Radius = 1.6f,
                     Specular = false,
                     Color = emissive / 500f
@@ -179,9 +180,9 @@ namespace AcTools.Render.Kn5SpecificDeferred {
         private class DeferredRenderableCar : Kn5RenderableCar {
             private readonly List<ILight> _lights;
 
-            public DeferredRenderableCar(Kn5 kn5, string rootDirectory, Matrix matrix, string selectSkin = null, bool scanForSkins = true,
+            public DeferredRenderableCar(CarDescription car, Matrix matrix, string selectSkin = null, bool scanForSkins = true,
                     float shadowsHeight = 0, List<ILight> lights = null)
-                    : base(kn5, rootDirectory, matrix, selectSkin ?? DefaultSkin, scanForSkins, shadowsHeight) {
+                    : base(car, matrix, selectSkin ?? DefaultSkin, scanForSkins, shadowsHeight) {
                 _lights = lights;
             }
 
@@ -197,6 +198,15 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             set {
                 if (_car != null) {
                     _car.LightsEnabled = value;
+                }
+            }
+        }
+
+        public bool CarBrakeLightsEnabled {
+            get { return _car?.BrakeLightsEnabled == true; }
+            set {
+                if (_car != null) {
+                    _car.BrakeLightsEnabled = value;
                 }
             }
         }
@@ -226,7 +236,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             }
 
             if (_kn5.Length > 1) {
-                _car = new DeferredRenderableCar(_kn5[0], null, Matrix.Identity, shadowsHeight: 0.001f, lights: Lights) {
+                _car = new DeferredRenderableCar(CarDescription.FromKn5(_kn5[0]), Matrix.Identity, shadowsHeight: 0.001f, lights: Lights) {
                     IsReflectable = false
                 };
                 Scene.Add(_car);

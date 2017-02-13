@@ -12,13 +12,17 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5OverrideableTexturesProvider : Kn5TexturesProvider {
+        private readonly bool _asyncOverride;
+
         [CanBeNull]
         private string _directory;
 
         private IDeviceContextHolder _holder;
         private FileSystemWatcher _watcher;
 
-        public Kn5OverrideableTexturesProvider([NotNull] Kn5 kn5) : base(kn5) {}
+        public Kn5OverrideableTexturesProvider([NotNull] Kn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading) {
+            _asyncOverride = asyncOverride;
+        }
 
         public void ClearOverridesDirectory() {
             if (_watcher != null) {
@@ -209,12 +213,27 @@ namespace AcTools.Render.Kn5Specific.Textures {
             var result = new RenderableTexture(key) { Resource = null };
 
             byte[] data;
-            if (_kn5.TexturesData.TryGetValue(key, out data)) {
-                result.LoadAsync(contextHolder.Device, data).Forget();
+            if (Kn5.TexturesData.TryGetValue(key, out data)) {
+                if (AsyncLoading) {
+                    result.LoadAsync(contextHolder.Device, data).Forget();
+                } else {
+                    result.Load(contextHolder.Device, data);
+                }
             }
 
-            LoadOverrideAsync(contextHolder, result, key).Forget();
+            if (AsyncLoading) {
+                LoadOverrideAsync(contextHolder, result, key).Forget();
+            } else {
+                LoadOverride(contextHolder, result, key);
+            }
             return result;
+        }
+
+        private bool LoadOverride(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
+            var overrided = GetOverridedData(textureName);
+            if (overrided == null) return false;
+            texture.LoadOverride(contextHolder.Device, overrided);
+            return true;
         }
 
         private async Task<bool> LoadOverrideAsync(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
@@ -286,7 +305,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private Task UpdateOverridesAsync(string textureName = null) {
             if (_holder == null) return Task.Delay(0);
 
-            if (OptionOverrideAsync) {
+            if (_asyncOverride) {
                 return Task.WhenAll(Textures.Values
                                              .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
                                              .OfType<RenderableTexture>().Select(async texture => {

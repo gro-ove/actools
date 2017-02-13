@@ -133,6 +133,13 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                     break;
 
+                case Keys.Space:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;
+                        args.Handled = true;
+                    }
+                    break;
+
                 case Keys.Tab:
                     if (!args.Control && !args.Alt && !args.Shift) {
                         args.Handled = true;

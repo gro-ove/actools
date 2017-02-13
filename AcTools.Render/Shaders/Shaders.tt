@@ -232,8 +232,12 @@ namespace <#= resultNamespace #> {
 				).FirstOrDefault();
 			if (techName == null) continue;
 			
-			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT)\b").Cast<Match>().Select(x => x.Value);
-			var result = string.Join("", types.Select(x => x == "TANGENT" ? "G" : "" + x[0])).Trim();
+			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT|BLENDWEIGHTS?|BLENDINDICES)\b").Cast<Match>().Select(x => x.Value);
+			var result = string.Join("", types.Select(x => 
+					x == "TANGENT" ? "G" : 
+					x == "BLENDWEIGHT" ? "W2" : 
+					x == "BLENDWEIGHTS" ? "W4" : 
+					"" + x[0])).Trim();
 			if (result.Length == 0) continue;
 			tls.Add(new {
 				Type = result,

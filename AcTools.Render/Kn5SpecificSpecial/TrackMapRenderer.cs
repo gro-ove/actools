@@ -118,6 +118,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public bool CarLightsEnabled { get; set; }
 
+        public bool CarBrakeLightsEnabled { get; set; }
+
         public void SelectPreviousSkin() {}
 
         public void SelectNextSkin() {}
@@ -314,8 +316,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected override void ResizeInner() {
-            _buffer0.Resize(DeviceContextHolder, Width, Height);
-            _buffer1.Resize(DeviceContextHolder, Width, Height);
+            _buffer0.Resize(DeviceContextHolder, Width, Height, null);
+            _buffer1.Resize(DeviceContextHolder, Width, Height, null);
             ResetCamera();
         }
 

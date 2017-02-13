@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
+using AcTools.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
 using Debug = System.Diagnostics.Debug;
@@ -8,28 +10,29 @@ using Debug = System.Diagnostics.Debug;
 namespace AcTools.Render.Base.Utils {
     public static class SlimDxExtension {
         public static BoundingBox ToBoundingBox(this IEnumerable<Vector3> vertices) {
-            var ie = vertices.GetEnumerator();
-            if (!ie.MoveNext()) return new BoundingBox();
+            using (var ie = vertices.GetEnumerator()) {
+                if (!ie.MoveNext()) return new BoundingBox();
 
-            var v = ie.Current;
-            var minX = v.X;
-            var minY = v.Y;
-            var minZ = v.Z;
-            var maxX = v.X;
-            var maxY = v.Y;
-            var maxZ = v.Z;
+                var v = ie.Current;
+                var minX = v.X;
+                var minY = v.Y;
+                var minZ = v.Z;
+                var maxX = v.X;
+                var maxY = v.Y;
+                var maxZ = v.Z;
 
-            while (ie.MoveNext()) {
-                var n = ie.Current;
-                if (minX > n.X) minX = n.X;
-                if (minY > n.Y) minY = n.Y;
-                if (minZ > n.Z) minZ = n.Z;
-                if (maxX < n.X) maxX = n.X;
-                if (maxY < n.Y) maxY = n.Y;
-                if (maxZ < n.Z) maxZ = n.Z;
+                while (ie.MoveNext()) {
+                    var n = ie.Current;
+                    if (minX > n.X) minX = n.X;
+                    if (minY > n.Y) minY = n.Y;
+                    if (minZ > n.Z) minZ = n.Z;
+                    if (maxX < n.X) maxX = n.X;
+                    if (maxY < n.Y) maxY = n.Y;
+                    if (maxZ < n.Z) maxZ = n.Z;
+                }
+
+                return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
             }
-
-            return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
         }
 
         public static BoundingBox ExtendBy(this BoundingBox bb, BoundingBox next) {
@@ -54,6 +57,14 @@ namespace AcTools.Render.Base.Utils {
 
         public static Vector3 GetXyz(this Vector4 vec) {
             return new Vector3(vec.X, vec.Y, vec.Z);
+        }
+
+        public static Vector3 ToVector3(this Color color) {
+            return new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
+        }
+
+        public static Vector4 ToVector4(this Color color) {
+            return new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
         }
 
         public static float GetBrightness(this Vector3 vec) {
@@ -87,6 +98,10 @@ namespace AcTools.Render.Base.Utils {
 
         public static Vector3 ToVector3(this float[] vec3) {
             return new Vector3(vec3[0], vec3[1], vec3[2]);
+        }
+
+        public static Vector4 ToVector4(this float[] vec3) {
+            return new Vector4(vec3[0], vec3[1], vec3[2], vec3[3]);
         }
 
         public static Vector3 ToVector3FixX(this float[] vec3) {
@@ -123,6 +138,28 @@ namespace AcTools.Render.Base.Utils {
             };
         }
 
+        public static Matrix ToMatrix(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33,
+                float m34, float m41, float m42, float m43, float m44) {
+            return new Matrix {
+                M11 = m11,
+                M12 = m12,
+                M13 = m13,
+                M14 = m14,
+                M21 = m21,
+                M22 = m22,
+                M23 = m23,
+                M24 = m24,
+                M31 = m31,
+                M32 = m32,
+                M33 = m33,
+                M34 = m34,
+                M41 = m41,
+                M42 = m42,
+                M43 = m43,
+                M44 = m44
+            };
+        }
+
         public static Matrix ToMatrixFixX(this float[] mat4x4) {
             var matrix = mat4x4.ToMatrix();
 
@@ -130,11 +167,25 @@ namespace AcTools.Render.Base.Utils {
             Quaternion rotation;
             matrix.Decompose(out scale, out rotation, out translation);
             translation.X *= -1;
+
             var axis = rotation.Axis;
+            var angle = rotation.Angle;
+
+            if (angle.Abs() < 0.0001f) {
+                return Matrix.Scaling(scale) * Matrix.Translation(translation);
+            }
+
             axis.Y *= -1;
             axis.Z *= -1;
-            rotation = Quaternion.RotationAxis(axis, rotation.Angle);
-            return Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
+            rotation = Quaternion.RotationAxis(axis, angle);
+
+            var result = Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
+            if (float.IsNaN(result[0, 0])) {
+                AcToolsLogging.Write("CAN’T FIX MATRIX! PLEASE, SEND THE MODEL TO THE DEVELOPER");
+                return matrix;
+            }
+
+            return result;
         }
 
         public static ushort[] ToIndicesFixX(this ushort[] indices) {

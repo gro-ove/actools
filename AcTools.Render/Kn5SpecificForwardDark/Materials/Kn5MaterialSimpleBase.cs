@@ -10,8 +10,9 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleBase : IRenderableMaterial {
         public bool IsBlending { get; }
 
@@ -39,10 +40,13 @@ namespace ArcadeCorsa.Render.DarkRenderer.Materials {
 
         public virtual void Initialize(IDeviceContextHolder contextHolder) {
             Effect = contextHolder.GetEffect<EffectDarkMaterial>();
+            InputLayout = Effect.LayoutPNTG;
         }
 
+        protected InputLayout InputLayout { get; set; }
+
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
+            contextHolder.DeviceContext.InputAssembler.InputLayout = InputLayout;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;

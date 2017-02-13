@@ -36,6 +36,7 @@ namespace AcTools.Kn5File {
             /// <summary>
             /// IDs of bones. "-1" if there is no binding!
             /// </summary>
+            /// <remarks>Yes! Those are floats! There is no mistake here!</remarks>
             public float[] Indices;
         }
 

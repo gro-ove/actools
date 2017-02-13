@@ -63,20 +63,12 @@ namespace AcTools.Utils {
 
         [CanBeNull, Pure]
         public static string GetMainCarFilename(string carDir) {
-            var iniFile = new IniFile(carDir, "lods.ini");
-            if (!iniFile.IsEmptyOrDamaged()) {
-                var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
-                if (fromData != null) {
-                    return Path.Combine(carDir, fromData);
-                }
-            }
-            
-            return Directory.GetFiles(carDir, "*.kn5").MaxEntryOrDefault(x => new FileInfo(x).Length);
+            return GetMainCarFilename(carDir, (DataWrapper)null);
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename(string carDir, DataWrapper data) {
-            var iniFile = data.GetIniFile("lods.ini");
+        public static string GetMainCarFilename(string carDir, [CanBeNull] DataWrapper data) {
+            var iniFile = data?.GetIniFile("lods.ini") ?? new IniFile(carDir, "lods.ini");
             if (!iniFile.IsEmptyOrDamaged()) {
                 var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
                 if (fromData != null) {

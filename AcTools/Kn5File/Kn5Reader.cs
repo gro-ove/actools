@@ -191,6 +191,8 @@ namespace AcTools.Kn5File {
 
                         node.VerticeWeights[i] = new Kn5Node.VerticeWeight {
                             Weights = ReadSingle4D(),
+
+                            // Yes! Those are floats!
                             Indices = ReadSingle4D()
                         };
                     }

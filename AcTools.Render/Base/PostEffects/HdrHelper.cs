@@ -30,12 +30,12 @@ namespace AcTools.Render.Base.PostEffects {
 
             _averateColor = Enumerable.Range(0, 2).Select(x => {
                 var t = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                t.Resize(holder, 1, 1);
+                t.Resize(holder, 1, 1, null);
                 return t;
             }).ToArray();
 
             _newAverageColor = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-            _newAverageColor.Resize(holder, 1, 1);
+            _newAverageColor.Resize(holder, 1, 1, null);
 
             _bloomTexture = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
             _tempTexture = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
@@ -47,12 +47,12 @@ namespace AcTools.Render.Base.PostEffects {
 
             var i = 4 * 3;
             foreach (var texture in _textures) {
-                texture.Resize(holder, Math.Max(width / i, 1), Math.Max(height / i, 1));
+                texture.Resize(holder, Math.Max(width / i, 1), Math.Max(height / i, 1), null);
                 i *= 4;
             }
 
-            _bloomTexture.Resize(holder, width, height);
-            _tempTexture.Resize(holder, width, height);
+            _bloomTexture.Resize(holder, width, height, null);
+            _tempTexture.Resize(holder, width, height, null);
         }
 
         private int _currentTexture;

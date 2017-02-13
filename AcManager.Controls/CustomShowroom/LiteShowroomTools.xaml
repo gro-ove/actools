@@ -4,10 +4,11 @@
         xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False"
         d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Topmost="True" Loaded="OnLoaded" Unloaded="OnUnloaded" Width="250"
-        SizeToContent="Height">
+        SizeToContent="Height" MaxHeight="800">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -17,7 +18,7 @@
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
-    <mui:Switch Value="{Binding Mode}" Margin="-4 -8 -4 -20">
+    <mui:LazySwitch Value="{Binding Mode}" Margin="-4 -8 -4 -20">
         <FrameworkElement.Resources>
             <ResourceDictionary>
                 <Style x:Key="DockPanel" TargetType="{x:Type DockPanel}">
@@ -38,220 +39,287 @@
                 </Style>
 
                 <Style TargetType="{x:Type DockPanel}" BasedOn="{StaticResource DockPanel}" />
-            </ResourceDictionary>
-        </FrameworkElement.Resources>
 
-        <StackPanel mui:Switch.When="{x:Static cs:LiteShowroomTools+Mode.Main}">
-            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
-            <DockPanel>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
-                <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
-            </DockPanel>
-            <DockPanel>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
-                <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
-            </DockPanel>
-            <DockPanel>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
-            </DockPanel>
+                <mui:SpacingStackPanel x:Key="VisualSettings" Spacing="4">
+                    <DockPanel Margin="0 0 0 4">
+                        <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
+                                ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                        <TextBlock Text="Settings:" Style="{StaticResource Heading2}" />
+                    </DockPanel>
 
-            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarLightsEnabled}">
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Lights}" />
-            </CheckBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Wireframe}" />
-            </CheckBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.BlurredNodesActive}" IsEnabled="{Binding Renderer.CarNode.HasBlurredNodes}">
-                <Label Content="Blurred rims" />
-            </CheckBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.CockpitLrActive}" IsEnabled="{Binding Renderer.CarNode.HasCockpitBoth}">
-                <Label Content="Low-resolution cockpit" />
-            </CheckBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.SeatbeltOnActive}" IsEnabled="{Binding Renderer.CarNode.HasSeatbeltOn}">
-                <Label Content="Seatbelt" />
-            </CheckBox>
-            <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}" Margin="0 4 0 0">
-                <DockPanel.ToolTip>
-                    <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
-                                <Binding Path="In" />
-                                <Binding Path="Out" />
-                                <Binding Path="FileName" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
-                <Slider Minimum="0" Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
-                        Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
-            </DockPanel>
+                    <DockPanel>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
+                        <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
+                    </DockPanel>
 
-            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-            <ComboBox ItemsSource="{Binding Car.EnabledOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel Height="18">
-                            <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
-                            <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
-                        </DockPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}" ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}"
-                    IsEnabled="{Binding MagickNetEnabled}">
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
-            </CheckBox>
+                    <DockPanel IsEnabled="{Binding Renderer.SuperResolutionMode, Converter={StaticResource InvertBooleanConverter}}">
+                        <Label Content="MSAA:" />
+                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.MsaaModes}"
+                                DisplayMemberPath="DisplayName" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="SSAA:" />
+                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.SsaaModes}"
+                                DisplayMemberPath="DisplayName" />
+                    </DockPanel>
+                    <CheckBox IsChecked="{Binding Renderer.UseFxaa}" IsEnabled="{Binding Renderer.IsFxaaAvailable}">
+                        <Label Content="FXAA" />
+                    </CheckBox>
+                    <!--<CheckBox IsChecked="{Binding Renderer.UseSmaa}" IsEnabled="{Binding Renderer.IsSmaaAvailable}">
+                        <Label Content="SMAA" />
+                    </CheckBox>-->
 
-            <Button Margin="0 20 0 0" Command="{Binding ToggleSkinModeCommand}" Content="Modify Skin" />
-            <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
-                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-            <Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
-                    ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />
+                    <TextBlock Text="Params:" Style="{StaticResource Heading2}" />
 
-            <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
-                    <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
-                </Button>
-            </StackPanel>
-        </StackPanel>
+                    <DockPanel>
+                        <Label Content="Background:" />
+                        <mui:ColorPicker Color="{Binding BackgroundColor}" />
+                    </DockPanel>
 
-        <StackPanel mui:Switch.When="{x:Static cs:LiteShowroomTools+Mode.Selected}">
-            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SelectedHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-            <DockPanel>
-                <DockPanel.InputBindings>
-                    <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
-                </DockPanel.InputBindings>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
-                <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
-            </DockPanel>
-            <DockPanel>
-                <DockPanel.InputBindings>
-                    <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
-                </DockPanel.InputBindings>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
-            </DockPanel>
-            <DockPanel>
-                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
-                        Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_TexturesLabel}" />
-                <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel Margin="8 0 0 0">
-                                <Button DockPanel.Dock="Right" Height="20" Padding="4 0"
-                                        Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}" CommandParameter="{Binding}"
-                                        Content="…" />
-                                <Label VerticalAlignment="Center" Width="90">
-                                    <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
-                                </Label>
-                                <TextBlock Text="{Binding TextureName}" />
-                            </DockPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </DockPanel>
+                    <DockPanel>
+                        <Label Content="Light:" />
+                        <mui:ColorPicker Color="{Binding LightColor}" />
+                    </DockPanel>
 
-            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-            <DockPanel>
-                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                <TextBlock Text="{Binding Renderer.SelectedObject.TrianglesCount}" />
-            </DockPanel>
-        </StackPanel>
+                    <DockPanel>
+                        <Label Content="Ambient (u.):" />
+                        <mui:ColorPicker Color="{Binding AmbientUpColor}" />
+                    </DockPanel>
 
-        <StackPanel mui:Switch.When="{x:Static cs:LiteShowroomTools+Mode.Skin}">
-            <DockPanel>
-                <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                        IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                        ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                <TextBlock Text="Modify Skin" Style="{StaticResource Heading2}" />
-            </DockPanel>
+                    <DockPanel>
+                        <Label Content="Ambient (d.):" />
+                        <mui:ColorPicker Color="{Binding AmbientDownColor}" />
+                    </DockPanel>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" MaxHeight="400">
-                <ItemsControl ItemsSource="{Binding SkinItems}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl Content="{Binding}" Margin="0 8 0 0">
-                                <ContentControl.Resources>
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+ColoredItem}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Enabled}">
-                                                <Label Content="{Binding DisplayName}" />
-                                            </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding DarkRenderer.FlatMirror}">
+                        <Label Content="Mirror" />
+                    </CheckBox>
+                </mui:SpacingStackPanel>
 
-                                            <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <Label Content="Color:" />
-                                                    <mui:ColorPicker Color="{Binding Color}" />
-                                                </DockPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
+                <StackPanel x:Key="Main">
+                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
+                    <DockPanel>
+                        <mui:ModernButton Margin="4 0 0 -20" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                IconHeight="10" IconData="{StaticResource GearIconData}" Command="{Binding SelectModeCommand}"
+                                CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" DockPanel.Dock="Right" />
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
+                        <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
+                        <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
+                        <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
+                    </DockPanel>
 
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+TintedWindows}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Enabled}">
-                                                <Label Content="{Binding DisplayName}" />
-                                            </CheckBox>
+                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.LightsEnabled}">
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Lights}" />
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.BrakeLightsEnabled}">
+                        <Label Content="Brake lights" />
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Wireframe}" />
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.BlurredNodesActive}" IsEnabled="{Binding Renderer.CarNode.HasBlurredNodes}">
+                        <Label Content="Blurred rims" />
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.CockpitLrActive}" IsEnabled="{Binding Renderer.CarNode.HasCockpitBoth}">
+                        <Label Content="Low-resolution cockpit" />
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarNode.SeatbeltOnActive}" IsEnabled="{Binding Renderer.CarNode.HasSeatbeltOn}">
+                        <Label Content="Seatbelt" />
+                    </CheckBox>
+                    <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}" Margin="0 4 0 0">
+                        <DockPanel.ToolTip>
+                            <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
+                                        <Binding Path="In" />
+                                        <Binding Path="Out" />
+                                        <Binding Path="FileName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DockPanel.ToolTip>
+                        <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
+                        <Slider Minimum="0" Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
+                                Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
+                    </DockPanel>
+                    <DockPanel Margin="0 4 0 0">
+                        <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                Content="Steer (pseudo)" Postfix="°" />
+                        <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="BottomRight" />
+                    </DockPanel>
 
-                                            <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <Label Content="Color:" />
-                                                    <mui:ColorPicker Color="{Binding Color}" />
-                                                </DockPanel>
+                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <ComboBox ItemsSource="{Binding Car.EnabledOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Height="18">
+                                    <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                    <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}"
+                            ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}">
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
+                    </CheckBox>
 
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <mui:ValueLabel Value="{Binding Transparency, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
-                                                    <Slider Minimum="0" Maximum="100"
-                                                            Value="{Binding Transparency, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                                                            TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-                                                </DockPanel>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
+                    <Button Margin="0 20 0 0" Command="{Binding ToggleSkinModeCommand}" Content="Modify Skin" />
+                    <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
+                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                    <Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
+                            ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />
 
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+CarPaint}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Enabled}">
-                                                <Label Content="{Binding DisplayName}" />
-                                            </CheckBox>
+                    <StackPanel
+                            Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                        <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
+                            <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
 
-                                            <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <Label Content="Color:" />
-                                                    <mui:ColorPicker Color="{Binding Color}" />
-                                                </DockPanel>
+                <StackPanel x:Key="Selected">
+                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SelectedHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <DockPanel>
+                        <DockPanel.InputBindings>
+                            <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
+                        </DockPanel.InputBindings>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
+                        <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
+                    </DockPanel>
+                    <DockPanel>
+                        <DockPanel.InputBindings>
+                            <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
+                        </DockPanel.InputBindings>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
+                        <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
+                                Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_TexturesLabel}" />
+                        <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel Margin="8 0 0 0">
+                                        <Button DockPanel.Dock="Right" Height="20" Padding="4 0"
+                                                Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
+                                                CommandParameter="{Binding}" Content="…" />
+                                        <Label VerticalAlignment="Center" Width="90">
+                                            <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
+                                        </Label>
+                                        <TextBlock Text="{Binding TextureName}" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
 
-                                                <CheckBox IsChecked="{Binding Flakes}"
-                                                        Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                    <Label Content="Add flakes" />
-                                                </CheckBox>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
+                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <DockPanel>
+                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
+                        <TextBlock Text="{Binding Renderer.SelectedObject.TrianglesCount}" />
+                    </DockPanel>
+                </StackPanel>
 
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+ComplexCarPaint}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Enabled}">
-                                                <Label Content="{Binding DisplayName}" />
-                                            </CheckBox>
+                <StackPanel x:Key="Skin">
+                    <DockPanel>
+                        <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
+                                Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                        <TextBlock Text="Modify Skin" Style="{StaticResource Heading2}" />
+                    </DockPanel>
 
-                                            <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <Label Content="Color:" />
-                                                    <mui:ColorPicker Color="{Binding Color}" />
-                                                </DockPanel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" MaxHeight="400">
+                        <ItemsControl ItemsSource="{Binding SkinItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding}" Margin="0 8 0 0">
+                                        <ContentControl.Resources>
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+ColoredItem}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Enabled}">
+                                                        <Label Content="{Binding DisplayName}" />
+                                                    </CheckBox>
 
-                                                <CheckBox IsChecked="{Binding Flakes}"
-                                                        Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                    <Label Content="Add flakes" />
-                                                </CheckBox>
+                                                    <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
+                                                        <DockPanel Style="{StaticResource DockPanel}">
+                                                            <Label Content="Color:" />
+                                                            <mui:ColorPicker Color="{Binding Color}" />
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
 
-                                                <!--<DockPanel Style="{StaticResource DockPanel}">
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+TintedWindows}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Enabled}">
+                                                        <Label Content="{Binding DisplayName}" />
+                                                    </CheckBox>
+
+                                                    <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
+                                                        <DockPanel Style="{StaticResource DockPanel}">
+                                                            <Label Content="Color:" />
+                                                            <mui:ColorPicker Color="{Binding Color}" />
+                                                        </DockPanel>
+
+                                                        <DockPanel Style="{StaticResource DockPanel}">
+                                                            <mui:ValueLabel Value="{Binding Transparency, Converter={StaticResource PercentageConverter}}"
+                                                                    Postfix="%" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Transparency" />
+                                                            <Slider Minimum="0" Maximum="100"
+                                                                    Value="{Binding Transparency, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                                    TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+CarPaint}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Enabled}">
+                                                        <Label Content="{Binding DisplayName}" />
+                                                    </CheckBox>
+
+                                                    <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
+                                                        <DockPanel Style="{StaticResource DockPanel}">
+                                                            <Label Content="Color:" />
+                                                            <mui:ColorPicker Color="{Binding Color}" />
+                                                        </DockPanel>
+
+                                                        <CheckBox IsChecked="{Binding Flakes}"
+                                                                Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                            <Label Content="Add flakes" />
+                                                        </CheckBox>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+ComplexCarPaint}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Enabled}">
+                                                        <Label Content="{Binding DisplayName}" />
+                                                    </CheckBox>
+
+                                                    <StackPanel Margin="8 0 0 0" IsEnabled="{Binding Enabled}">
+                                                        <DockPanel Style="{StaticResource DockPanel}">
+                                                            <Label Content="Color:" />
+                                                            <mui:ColorPicker Color="{Binding Color}" />
+                                                        </DockPanel>
+
+                                                        <CheckBox IsChecked="{Binding Flakes}"
+                                                                Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                            <Label Content="Add flakes" />
+                                                        </CheckBox>
+
+                                                        <!--<DockPanel Style="{StaticResource DockPanel}">
                                                     <mui:ValueLabel Value="{Binding Reflection, Converter={StaticResource PercentageConverter}}" Postfix="%"
                                                             Mode="Number" DockPanel.Dock="Top" Content="Reflection" />
                                                     <Slider Minimum="0" Maximum="100"
@@ -274,116 +342,131 @@
                                                             Value="{Binding Specular, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                                                             TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                                                 </DockPanel>-->
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </DataTemplate>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
 
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+TransparentIfFlagged}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Flag}">
-                                                <Label Content="{Binding DisplayName}" />
-                                            </CheckBox>
-                                        </StackPanel>
-                                    </DataTemplate>
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+TransparentIfFlagged}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Flag}">
+                                                        <Label Content="{Binding DisplayName}" />
+                                                    </CheckBox>
+                                                </StackPanel>
+                                            </DataTemplate>
 
-                                    <DataTemplate DataType="{x:Type cs:PaintShop+PaintableItem}">
-                                        <StackPanel>
-                                            <CheckBox IsChecked="{Binding Enabled}">
-                                                <Label Content="{Binding DisplayName, StringFormat='{}{0} (not supported yet)'}" />
-                                            </CheckBox>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ContentControl.Resources>
-                            </ContentControl>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                                            <DataTemplate DataType="{x:Type cs:PaintShop+PaintableItem}">
+                                                <StackPanel>
+                                                    <CheckBox IsChecked="{Binding Enabled}">
+                                                        <Label Content="{Binding DisplayName, StringFormat='{}{0} (not supported yet)'}" />
+                                                    </CheckBox>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ContentControl.Resources>
+                                    </ContentControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
 
-            <Button Command="{Binding SkinSaveChangesCommand}" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
-        </StackPanel>
-
-        <StackPanel mui:Switch.When="{x:Static cs:LiteShowroomTools+Mode.AmbientShadows}">
-            <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                <StackPanel.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}" Command="{Binding AmbientShadowResetCommand}" />
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
-
-                <DockPanel>
-                    <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                            IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Command="{Binding MainModeCommand}"
-                            ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
-                </DockPanel>
-
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                            DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
-                    <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                            DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                    <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
-                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
-                    <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
-                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
-                </CheckBox>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
-                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
-                </CheckBox>
-                <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
-                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-            </StackPanel>
-
-            <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                <StackPanel.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}"
-                                Command="{Binding AmbientShadowSizeResetCommand}" />
-                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" Command="{Binding AmbientShadowSizeFitCommand}" />
-                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" Command="{Binding AmbientShadowSizeSaveCommand}" />
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
-
-                <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
-                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                            Content="{x:Static t:ToolsStrings.Common_Width}" />
-                    <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
-                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                            Content="{x:Static t:ToolsStrings.Common_Length}" />
-                    <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
-                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Highlight}" />
-                </CheckBox>
-
-                <DockPanel>
-                    <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
-                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" />
-                    <Button Command="{Binding AmbientShadowSizeSaveCommand}"
-                            FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
+                    <Button Command="{Binding SkinSaveChangesCommand}" Margin="0 20 0 0"
                             Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
-                </DockPanel>
-            </StackPanel>
-        </StackPanel>
-    </mui:Switch>
+                </StackPanel>
+
+                <StackPanel x:Key="AmbientShadows">
+                    <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}"
+                                        Command="{Binding AmbientShadowResetCommand}" />
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
+
+                        <DockPanel>
+                            <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                    IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
+                                    Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
+                        </DockPanel>
+
+                        <DockPanel>
+                            <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
+                                    DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
+                            <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="False" />
+                        </DockPanel>
+                        <DockPanel>
+                            <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
+                                    DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                            <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="False" />
+                        </DockPanel>
+                        <DockPanel>
+                            <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
+                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
+                            <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="False" />
+                        </DockPanel>
+                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
+                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
+                        </CheckBox>
+                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
+                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
+                        </CheckBox>
+                        <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
+                                Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                    </StackPanel>
+
+                    <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}"
+                                        Command="{Binding AmbientShadowSizeResetCommand}" />
+                                <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}"
+                                        Command="{Binding AmbientShadowSizeFitCommand}" />
+                                <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
+                                        Command="{Binding AmbientShadowSizeSaveCommand}" />
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
+
+                        <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}"
+                                Margin="0 12 0 0" />
+                        <DockPanel>
+                            <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
+                                    Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                    Content="{x:Static t:ToolsStrings.Common_Width}" />
+                            <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="False" />
+                        </DockPanel>
+                        <DockPanel>
+                            <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
+                                    Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                    Content="{x:Static t:ToolsStrings.Common_Length}" />
+                            <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="False" />
+                        </DockPanel>
+
+                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
+                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Highlight}" />
+                        </CheckBox>
+
+                        <DockPanel>
+                            <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
+                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" />
+                            <Button Command="{Binding AmbientShadowSizeSaveCommand}"
+                                    FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
+                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
+                        </DockPanel>
+                    </StackPanel>
+                </StackPanel>
+            </ResourceDictionary>
+        </FrameworkElement.Resources>
+
+        <mui:LazySwitch.Definitions>
+            <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Main}" ResourceKey="Main" />
+            <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" ResourceKey="VisualSettings" />
+            <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Selected}" ResourceKey="Selected" />
+            <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Skin}" ResourceKey="Skin" />
+            <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.AmbientShadows}" ResourceKey="AmbientShadows" />
+        </mui:LazySwitch.Definitions>
+    </mui:LazySwitch>
 </mui:ModernDialog>

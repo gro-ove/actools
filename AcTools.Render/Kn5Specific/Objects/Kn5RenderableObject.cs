@@ -17,7 +17,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         [NotNull]
         Kn5Node OriginalNode { get; }
 
-        void SwitchToMirror(IDeviceContextHolder holder);
+        void SetMirrorMode(IDeviceContextHolder holder, bool enabled);
+
+        void SetDebugMode(IDeviceContextHolder holder, bool enabled);
 
         void SetEmissive(Vector3? color);
     }
@@ -73,10 +75,43 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public void SwitchToMirror(IDeviceContextHolder holder) {
-            _material = holder.GetMaterial(BasicMaterials.MirrorKey);
-            if (IsInitialized) {
-                _material.Initialize(holder);
+        private IRenderableMaterial Material => _debugMaterial ?? _mirrorMaterial ?? _material;
+
+        [CanBeNull]
+        private IRenderableMaterial _mirrorMaterial;
+        private bool _mirrorMaterialInitialized;
+
+        public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {
+            if (enabled == (_mirrorMaterial != null)) return;
+
+            if (enabled) {
+                _mirrorMaterial = holder.GetMaterial(BasicMaterials.MirrorKey);
+                if (IsInitialized) {
+                    _mirrorMaterial.Initialize(holder);
+                    _mirrorMaterialInitialized = true;
+                }
+            } else {
+                _mirrorMaterialInitialized = false;
+                DisposeHelper.Dispose(ref _mirrorMaterial);
+            }
+        }
+
+        [CanBeNull]
+        private IRenderableMaterial _debugMaterial;
+        private bool _debugMaterialInitialized;
+
+        public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {
+            if (enabled == (_debugMaterial != null)) return;
+
+            if (enabled) {
+                _debugMaterial = holder.GetMaterial(BasicMaterials.DebugKey);
+                if (IsInitialized) {
+                    _debugMaterial.Initialize(holder);
+                    _debugMaterialInitialized = true;
+                }
+            } else {
+                _debugMaterialInitialized = false;
+                DisposeHelper.Dispose(ref _debugMaterial);
             }
         }
 
@@ -95,9 +130,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
             _material.Initialize(contextHolder);
             _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
+
+            if (_mirrorMaterial != null && !_mirrorMaterialInitialized) {
+                _mirrorMaterialInitialized = true;
+                _mirrorMaterial.Initialize(contextHolder);
+            }
+
+            if (_debugMaterial != null && !_debugMaterialInitialized) {
+                _debugMaterialInitialized = true;
+                _debugMaterial.Initialize(contextHolder);
+            }
         }
 
-        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (_isTransparent &&
                     mode != SpecialRenderMode.Outline &&
                     mode != SpecialRenderMode.SimpleTransparent &&
@@ -106,16 +151,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     mode != SpecialRenderMode.DeferredTransparentMask) return;
 
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
-            if (!_material.Prepare(contextHolder, mode)) return;
 
-            base.DrawInner(contextHolder, camera, mode);
+            var material = Material;
+            if (!material.Prepare(contextHolder, mode)) return;
+
+            base.DrawOverride(contextHolder, camera, mode);
 
             if (Emissive.HasValue) {
-                (_material as IEmissiveMaterial)?.SetEmissiveNext(Emissive.Value);
+                (material as IEmissiveMaterial)?.SetEmissiveNext(Emissive.Value);
             }
 
-            _material.SetMatrices(ParentMatrix, camera);
-            _material.Draw(contextHolder, Indices.Length, mode);
+            material.SetMatrices(ParentMatrix, camera);
+            material.Draw(contextHolder, Indices.Length, mode);
         }
 
         public override BaseRenderableObject Clone() {
@@ -124,6 +171,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public override void Dispose() {
             DisposeHelper.Dispose(ref _material);
+            DisposeHelper.Dispose(ref _mirrorMaterial);
+            DisposeHelper.Dispose(ref _debugMaterial);
             base.Dispose();
         }
 
@@ -138,7 +187,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             public override bool IsReflectable => _original.IsReflectable;
 
-            protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
                 if (_original._isTransparent &&
                         mode != SpecialRenderMode.Outline &&
                         mode != SpecialRenderMode.SimpleTransparent &&
@@ -147,16 +196,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         mode != SpecialRenderMode.DeferredTransparentMask) return;
 
                 if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows || _original._material == null) return;
-                if (!_original._material.Prepare(contextHolder, mode)) return;
 
-                base.DrawInner(contextHolder, camera, mode);
+                var material = _original.Material;
+                if (!material.Prepare(contextHolder, mode)) return;
+
+                base.DrawOverride(contextHolder, camera, mode);
 
                 if (_original.Emissive.HasValue) {
-                    (_original._material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
+                    (material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
                 }
 
-                _original._material.SetMatrices(ParentMatrix, camera);
-                _original._material.Draw(contextHolder, Indices.Length, mode);
+                material.SetMatrices(ParentMatrix, camera);
+                material.Draw(contextHolder, Indices.Length, mode);
             }
 
             public override BaseRenderableObject Clone() {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Render.Base.Materials {
     public class SharedMaterials : IDisposable {
@@ -10,6 +11,7 @@ namespace AcTools.Render.Base.Materials {
             _provider = provider;
         }
 
+        [NotNull]
         protected virtual IRenderableMaterial CreateMaterial(object key) {
             return _provider.CreateMaterial(key);
         }

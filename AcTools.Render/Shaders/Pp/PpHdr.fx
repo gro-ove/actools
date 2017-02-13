@@ -106,7 +106,11 @@
 // combine
 	float4 ps_Combine (PS_IN pin) : SV_Target {
 		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
-		return float4(saturate(value), 1.0);
+		return float4(value, 1.0);
+
+		/*float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		return float4(min(saturate(value), 0.5), 1.0);*/
+		//return float4(ToneReinhard(value, 1.5, 0.56, 1.2), 1);
 	}
 
 	technique10 Combine {
@@ -127,5 +131,18 @@
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_4_0, ps_Bloom() ) );
+		}
+	}
+
+// bloom
+	float4 ps_BloomHighThreshold(PS_IN pin) : SV_Target {
+		return saturate(tex(pin.Tex) - 1.5);
+	}
+
+	technique10 BloomHighThreshold {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( CompileShader( ps_4_0, ps_BloomHighThreshold() ) );
 		}
 	}

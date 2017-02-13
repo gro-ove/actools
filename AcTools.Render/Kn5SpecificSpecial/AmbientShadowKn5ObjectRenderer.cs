@@ -12,6 +12,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -24,7 +25,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public class AmbientShadowKn5ObjectRenderer : BaseRenderer {
         private readonly Kn5 _kn5;
         private readonly RenderableList _scene;
-        private readonly DataWrapper _data;
+        private readonly CarData _carData;
         private RenderableList _carNode;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
@@ -33,7 +34,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public AmbientShadowKn5ObjectRenderer(Kn5 kn5, string carLocation = null) {
             _kn5 = kn5;
-            _data = DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(kn5.OriginalFilename));
+            _carData = new CarData(DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(kn5.OriginalFilename) ?? ""));
             _scene = new RenderableList();
         }
 
@@ -68,13 +69,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void LoadAmbientShadowSize() {
-            var iniFile = _data.GetIniFile("ambient_shadows.ini");
-            _ambientBodyShadowSize = new Vector3(
-                    (float)iniFile["SETTINGS"].GetDouble("WIDTH", 1d), 1.0f,
-                    (float)iniFile["SETTINGS"].GetDouble("LENGTH", 1d));
-
-            //_ambientBodyShadowSize.X = (bb.GetSize().X + 0.2f) / 2f;
-            //_ambientBodyShadowSize.Z = (bb.GetSize().Z + 0.2f) / 2f;
+            _ambientBodyShadowSize = _carData.GetBodyShadowSize();
         }
 
         private void InitializeBuffers() {
@@ -107,11 +102,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Height = size;
             Resize();
 
-            _shadowBuffer.Resize(DeviceContextHolder, shadowResolution, shadowResolution);
+            _shadowBuffer.Resize(DeviceContextHolder, shadowResolution, shadowResolution, null);
             _shadowViewport = new Viewport(0, 0, _shadowBuffer.Width, _shadowBuffer.Height, 0, 1.0f);
 
-            _summBuffer.Resize(DeviceContextHolder, size, size);
-            _tempBuffer.Resize(DeviceContextHolder, size, size);
+            _summBuffer.Resize(DeviceContextHolder, size, size, null);
+            _tempBuffer.Resize(DeviceContextHolder, size, size, null);
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, new Color4(0f, 0f, 0f, 0f));
         }
 
@@ -236,33 +231,29 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private sealed class SpecialCameraOrtho : CameraOrtho {
-            public override bool Visible(BoundingBox box) {
-                return true;
-            }
-        }
-
         private void SetBodyShadowCamera() {
             _shadowSize = _ambientBodyShadowSize * (1f + 2f * BodyPadding / BodySize);
             var size = Math.Max(_shadowSize.X, _shadowSize.Z) * 2f;
-            _shadowCamera = new SpecialCameraOrtho {
+            _shadowCamera = new CameraOrtho {
                 Width = size,
                 Height = size,
                 NearZ = 0.001f,
-                FarZ = size + 20f
+                FarZ = size + 20f,
+                DisableFrustum = true
             };
             _shadowCamera.SetLens(1f);
             _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
         private void SetWheelShadowCamera() {
-            _shadowSize = Kn5RenderableCar.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize);
+            _shadowSize = _carData.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize);
             var size = Math.Max(_shadowSize.X, _shadowSize.Z) * 2f;
-            _shadowCamera = new SpecialCameraOrtho {
+            _shadowCamera = new CameraOrtho {
                 Width = size,
                 Height = size,
                 NearZ = 0.001f,
-                FarZ = size + 20f
+                FarZ = size + 20f,
+                DisableFrustum = true
             };
             _shadowCamera.SetLens(1f);
             _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
@@ -390,7 +381,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticeP>, IKn5RenderableObject {
         public Kn5Node OriginalNode { get; }
 
-        public void SwitchToMirror(IDeviceContextHolder holder) {}
+        public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {}
+
+        public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {}
 
         public void SetEmissive(Vector3? color) {}
 
@@ -433,11 +426,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _material.Initialize(contextHolder);
         }
 
-        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return;
             if (!_material.Prepare(contextHolder, mode)) return;
 
-            base.DrawInner(contextHolder, camera, mode);
+            base.DrawOverride(contextHolder, camera, mode);
 
             _material.SetMatrices(ParentMatrix, camera);
             _material.Draw(contextHolder, Indices.Length, mode);

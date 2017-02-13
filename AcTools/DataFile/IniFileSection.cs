@@ -124,6 +124,16 @@ namespace AcTools.DataFile {
         }
 
         [Pure]
+        public float? GetFloatNullable([NotNull, LocalizationRequired(false)] string key) {
+            return (float?)FlexibleParser.TryParseDouble(GetPossiblyEmpty(key));
+        }
+
+        [Pure]
+        public float GetFloat([NotNull, LocalizationRequired(false)] string key, float defaultValue) {
+            return (float)FlexibleParser.ParseDouble(GetPossiblyEmpty(key), defaultValue);
+        }
+
+        [Pure]
         public int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseInt(GetPossiblyEmpty(key));
         }

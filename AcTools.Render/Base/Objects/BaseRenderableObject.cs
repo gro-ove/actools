@@ -37,7 +37,7 @@ namespace AcTools.Render.Base.Objects {
             }
 
             if (mode != SpecialRenderMode.InitializeOnly) {
-                DrawInner(contextHolder, camera, mode);
+                DrawOverride(contextHolder, camera, mode);
             }
         }
 
@@ -45,7 +45,7 @@ namespace AcTools.Render.Base.Objects {
 
         protected abstract void Initialize(IDeviceContextHolder contextHolder);
 
-        protected abstract void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
+        protected abstract void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
 
         public abstract BaseRenderableObject Clone();
 

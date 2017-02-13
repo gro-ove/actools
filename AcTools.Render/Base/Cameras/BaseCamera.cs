@@ -78,7 +78,9 @@ namespace AcTools.Render.Base.Cameras {
         public abstract void UpdateViewMatrix();
 
         public abstract void Save();
+
         public abstract void Restore();
+
         public abstract BaseCamera Clone();
 
         public virtual void SetLens(float aspect) {
@@ -103,7 +105,10 @@ namespace AcTools.Render.Base.Cameras {
 
         protected Frustum Frustum;
 
+        public bool DisableFrustum { get; set; }
+
         public virtual bool Visible(BoundingBox box) {
+            if (DisableFrustum) return true;
             if (Frustum == null) throw new Exception("Call SetLens() first");
             return Frustum.Intersect(box) > 0;
         }

@@ -2,8 +2,8 @@ using System;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Kn5Specific.Materials;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
-    public class MaterialsProviderSimple : IMaterialsFactory {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
+    public class MaterialsProviderDark : IMaterialsFactory {
         public IRenderableMaterial CreateMaterial(object key) {
             var kn5 = key as Kn5MaterialDescription;
             if (kn5 != null) {
@@ -19,7 +19,13 @@ namespace ArcadeCorsa.Render.DarkRenderer.Materials {
                 case BasicMaterials.MirrorKey:
                     return new Kn5MaterialSimpleMirror();
                 case BasicMaterials.FlatMirrorKey:
-                    return new FlatMirrorMaterialSimple();
+                    return new FlatMirrorMaterialSimple(false);
+                case BasicMaterials.FlatGroundKey:
+                    return new FlatMirrorMaterialSimple(true);
+                case BasicMaterials.DebugKey:
+                    return new DebugMaterial();
+                case BasicMaterials.DebugLinesKey:
+                    return new DebugLinesMaterial();
             }
 
             throw new NotSupportedException($@"Key not supported: {key}");
@@ -30,7 +36,10 @@ namespace ArcadeCorsa.Render.DarkRenderer.Materials {
                 return new InvisibleMaterial();
             }
 
-            // return new Kn5MaterialSimpleGl(description);
+            var shader = description.Material?.ShaderName;
+            if (shader == null) {
+                return new InvisibleMaterial();
+            }
 
             switch (description.Material?.ShaderName) {
                 case "ksBrokenGlass":
@@ -80,10 +89,14 @@ namespace ArcadeCorsa.Render.DarkRenderer.Materials {
                     return new Kn5MaterialSimpleAlpha(description);
 
                 case "ksSkinnedMesh":
-                    // TODO
-                    return new Kn5MaterialSimpleMaps(description);
+                case "ksSkinnedMesh_NMDetaill":
+                    return new Kn5MaterialSimpleSkinnedMaps(description);
 
                 default:
+                    if (shader.IndexOf("skinned", StringComparison.OrdinalIgnoreCase) != -1) {
+                        return new Kn5MaterialSimpleSkinnedGl(description);
+                    }
+
                     return new Kn5MaterialSimple(description);
             }
         }

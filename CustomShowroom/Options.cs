@@ -6,15 +6,18 @@ namespace CustomShowroom {
     public class Options {
         [Option('m', "mode", DefaultValue =
 #if DEBUG
-                Mode.Lite
+                Mode.Dark
 #else
-            Mode.Lite
+                Mode.Dark
 #endif
-                , HelpText = "App mode (Custom for fanciness or Lite for work).")]
+                , HelpText = "App mode (apart from superior Dark, there are Fancy and Lite for special purposes).")]
         public Mode Mode { get; set; }
 
-        [Option('a', "msaa", DefaultValue = false, HelpText = "Use MSAA (only for Lite Showroom mode).")]
+        [Option("msaa", DefaultValue = false, HelpText = "Use MSAA (only for Lite/Dark Showroom modes).")]
         public bool UseMsaa { get; set; }
+
+        [Option('a', "ssaa", DefaultValue = false, HelpText = "Use SSAA (only for Lite/Dark Showroom modes).")]
+        public bool UseSsaa { get; set; }
 
         [Option('x', "fxaa", DefaultValue = true, HelpText = "Use FXAA.")]
         public bool UseFxaa { get; set; }

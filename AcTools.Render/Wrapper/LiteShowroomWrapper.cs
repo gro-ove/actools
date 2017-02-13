@@ -2,16 +2,17 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using AcTools.Render.Base;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using SlimDX;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
         private readonly ForwardKn5ObjectRenderer _renderer;
-        private readonly double _resolutionMultiplicator;
-        private double _actualResolutionMultiplicator;
 
         private bool _editMode;
 
@@ -29,27 +30,17 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900,
-                double resolutionMultiplicator = 1d) : base(renderer, title, width, height) {
+        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900)
+                : base(renderer, title, width, height) {
             Form.MouseDoubleClick += OnMouseDoubleClick;
 
             _renderer = renderer;
-
-            if (resolutionMultiplicator < 0) {
-                _resolutionMultiplicator = -resolutionMultiplicator;
-                _actualResolutionMultiplicator = 1d;
-            } else {
-                _resolutionMultiplicator = resolutionMultiplicator;
-                _actualResolutionMultiplicator = resolutionMultiplicator;
-            }
-
             UpdateSize();
         }
 
         private void UpdateSize() {
-            Renderer.Width = (int)(Form.ClientSize.Width * _actualResolutionMultiplicator);
-            Renderer.Height = (int)(Form.ClientSize.Height * _actualResolutionMultiplicator);
-            Renderer.OutputDownscaleMultipler = 1 / _actualResolutionMultiplicator;
+            Renderer.Width = Form.ClientSize.Width;
+            Renderer.Height = Form.ClientSize.Height;
         }
 
         protected override void OnResize(object sender, EventArgs eventArgs) {
@@ -86,6 +77,22 @@ namespace AcTools.Render.Wrapper {
             Renderer.Height = Form.ClientSize.Height;
         }
 
+        protected override void OnTick(object sender, TickEventArgs args) {
+            base.OnTick(sender, args);
+            
+            if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) {
+                if (_renderer.CarNode == null) return;
+
+                if (User32.IsKeyPressed(Keys.Left)) {
+                    _renderer.CarNode.SteerDeg += (30f - _renderer.CarNode.SteerDeg) / 20f;
+                }
+
+                if (User32.IsKeyPressed(Keys.Right)) {
+                    _renderer.CarNode.SteerDeg += (-30f - _renderer.CarNode.SteerDeg) / 20f;
+                }
+            }
+        }
+
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
             if (args.KeyCode == Keys.F2 && !args.Control && !args.Alt && !args.Shift || args.KeyCode == Keys.Escape && EditMode) {
                 EditMode = !EditMode;
@@ -119,7 +126,7 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.F8:
-                    if (!_renderer.UseMsaa) {
+                    {
                         int multipler;
                         bool downscale;
 
@@ -158,13 +165,19 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.F:
-                    _renderer.UseFxaa = !_renderer.UseFxaa;
+                    if (args.Control && !args.Alt && !args.Shift) {
+                        _renderer.UseSmaa = !_renderer.UseSmaa;
+                    } else {
+                        _renderer.UseFxaa = !_renderer.UseFxaa;
+                    }
                     break;
 
                 case Keys.M:
-                    _actualResolutionMultiplicator = Equals(_actualResolutionMultiplicator, _resolutionMultiplicator) ? 1d :
-                            _resolutionMultiplicator;
-                    UpdateSize();
+                    if (args.Control && !args.Alt && !args.Shift) {
+                        _renderer.UseSsaa = !_renderer.UseSsaa;
+                    } else {
+                        _renderer.UseMsaa = !_renderer.UseMsaa;
+                    }
                     break;
 
                 case Keys.W:
@@ -206,6 +219,20 @@ namespace AcTools.Render.Wrapper {
                 case Keys.PageDown:
                     if (!args.Control && args.Alt && !args.Shift) {
                         _renderer.SelectNextLod();
+                    }
+                    break;
+
+                case Keys.U:
+                    if (args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.MeshDebug = !d.MeshDebug;
+                        }
+                    } else if (!args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.SuspensionDebug = !d.SuspensionDebug;
+                        }
                     }
                     break;
             }

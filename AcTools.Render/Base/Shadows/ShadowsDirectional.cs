@@ -12,7 +12,7 @@ namespace AcTools.Render.Base.Shadows {
     public class ShadowsDirectional : IDisposable {
         public const float ClipDistance = 50f;
 
-        public class CameraOrthoShadow : CameraOrtho {
+        public sealed class CameraOrthoShadow : CameraOrtho {
             private readonly CameraOrtho _innerCamera;
 
             public CameraOrthoShadow SmallerCamera;
@@ -115,7 +115,7 @@ namespace AcTools.Render.Base.Shadows {
 
         public void Initialize(DeviceContextHolder holder) {
             foreach (var split in Splits) {
-                split.Buffer.Resize(holder, _mapSize, _mapSize);
+                split.Buffer.Resize(holder, _mapSize, _mapSize, null);
             }
 
             _rasterizerState = RasterizerState.FromDescription(holder.Device, new RasterizerStateDescription {
@@ -123,9 +123,9 @@ namespace AcTools.Render.Base.Shadows {
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
-                DepthBias = 1000,
+                DepthBias = 2,
                 DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = 1.0f
+                SlopeScaledDepthBias = 0.2f
             });
 
             _depthStencilState = DepthStencilState.FromDescription(holder.Device, new DepthStencilStateDescription {

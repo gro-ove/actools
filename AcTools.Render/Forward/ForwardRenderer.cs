@@ -12,6 +12,8 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Forward {
     public abstract class ForwardRenderer : SceneRenderer {
+        public Color BackgroundColor { get; set; } = Color.Gray;
+
         private bool _useInterpolationCamera;
 
         public bool UseInterpolationCamera {
@@ -35,9 +37,43 @@ namespace AcTools.Render.Forward {
             }
         }
 
+        private bool _isFxaaAvailable;
+
+        public bool IsFxaaAvailable {
+            get { return _isFxaaAvailable; }
+            set {
+                if (Equals(value, _isFxaaAvailable)) return;
+                _isFxaaAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsSmaaAvailable => false;
+
+        private bool _useSmaa;
+
+        public bool UseSmaa {
+            get { return _useSmaa; }
+            set {
+                if (!IsSmaaAvailable || Equals(value, _useSmaa)) return;
+                _useSmaa = value;
+
+                DisposeHelper.Dispose(ref _bufferSmaa);
+                if (value) {
+                    _bufferSmaa = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                }
+
+                if (!InitiallyResized) return;
+                ResizeBuffers();
+
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _showWireframe;
 
-        public bool ShowWireframe {
+        public virtual bool ShowWireframe {
             get { return _showWireframe; }
             set {
                 if (Equals(_showWireframe, value)) return;
@@ -59,19 +95,38 @@ namespace AcTools.Render.Forward {
                 DisposeHelper.Dispose(ref _buffer);
                 DisposeHelper.Dispose(ref _buffer1);
                 DisposeHelper.Dispose(ref _buffer2);
+                DisposeHelper.Dispose(ref _buffer3);
 
                 if (_useBloom) {
-                    _buffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float, SampleDescription);
-                    _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
-                    _buffer2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+                    _buffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                    _buffer2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                    _buffer3 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
                 } else {
-                    _buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+                    _buffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                 }
 
                 if (!InitiallyResized) return;
-                _buffer.Resize(DeviceContextHolder, Width, Height);
-                _buffer1?.Resize(DeviceContextHolder, Width, Height);
-                _buffer2?.Resize(DeviceContextHolder, Width, Height);
+                ResizeBuffers();
+
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _useLensFlares;
+
+        public bool UseLensFlares {
+            get { return _useLensFlares; }
+            set {
+                if (Equals(value, _useLensFlares)) return;
+                _useLensFlares = value;
+                if (value) {
+                    UseBloom = true;
+                }
+                
+                //if (!InitiallyResized) return;
+                //ResizeBuffers();
 
                 IsDirty = true;
                 OnPropertyChanged();
@@ -80,33 +135,26 @@ namespace AcTools.Render.Forward {
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        private TargetResourceTexture _buffer, _buffer1, _buffer2;
-        private RasterizerState _wireframeRasterizerState;
+        private TargetResourceTexture _buffer, _buffer1, _buffer2, _buffer3, _bufferSmaa;
 
         protected TargetResourceTexture InnerBuffer => _buffer;
 
         protected override void InitializeInner() {
             UseBloom = true;
+        }
 
-            _wireframeRasterizerState = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
-                FillMode = FillMode.Wireframe,
-                CullMode = CullMode.Back,
-                IsFrontCounterclockwise = false,
-                IsAntialiasedLineEnabled = false,
-                IsDepthClipEnabled = true
-            });
+        private void ResizeBuffers() {
+            _buffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _buffer1?.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
+            _buffer3?.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
+            _buffer2?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+            _bufferSmaa?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
         }
 
         protected override void ResizeInner() {
             base.ResizeInner();
-            
-            _buffer.Resize(DeviceContextHolder, Width, Height);
-            _buffer1?.Resize(DeviceContextHolder, Width, Height);
-            _buffer2?.Resize(DeviceContextHolder, Width, Height);
+            ResizeBuffers();
         }
-
-        private EffectPpHdr _hdr;
-        private BlurHelper _blur;
 
         protected virtual void DrawAfter() { }
 
@@ -115,15 +163,15 @@ namespace AcTools.Render.Forward {
         private readonly InterpolationCamera _interpolationCamera = new InterpolationCamera(5f);
 
         protected override void OnTick(float dt) {
+            IsFxaaAvailable = !UseMsaa || UseSsaa;
+
             if (UseInterpolationCamera) {
                 _interpolationCamera.Update(Camera, dt);
             }
         }
 
-        public Color BackgroundColor { get; set; } = Color.Gray;
-
         public virtual RasterizerState GetRasterizerState() {
-            return ShowWireframe ? _wireframeRasterizerState : null;
+            return ShowWireframe ? DeviceContextHolder.States.WireframeState : null;
         }
 
         protected virtual void DrawScene() {
@@ -137,6 +185,10 @@ namespace AcTools.Render.Forward {
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
         }
+
+        private EffectPpHdr _hdr;
+        private BlurHelper _blur;
+        private EffectPpLensFlares _lensFlares;
 
         protected override void DrawInner() {
             DrawPrepare();
@@ -153,27 +205,76 @@ namespace AcTools.Render.Forward {
             DeviceContext.Rasterizer.State = null;
 
             ShaderResourceView result;
-            if (UseBloom) {
+            if (UseLensFlares) {
+                // prepare effects
+                if (_lensFlares == null) {
+                    _lensFlares = DeviceContextHolder.GetEffect<EffectPpLensFlares>();
+                }
+
                 if (_hdr == null) {
                     _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
                     _blur = DeviceContextHolder.GetHelper<BlurHelper>();
                 }
 
+                // filter bright areas by high threshold to downscaled buffer #1
+                DeviceContext.Rasterizer.SetViewports(_buffer1.Viewport);
                 DeviceContext.OutputMerger.SetTargets(_buffer1.TargetView);
                 DeviceContext.ClearRenderTargetView(_buffer1.TargetView, ColorTransparent);
 
                 DeviceContextHolder.PrepareQuad(_hdr.LayoutPT);
                 _hdr.FxInputMap.SetResource(_buffer.View);
-                _hdr.TechBloom.DrawAllPasses(DeviceContext, 6);
-                
-                _blur.Blur(DeviceContextHolder, _buffer1, _buffer2, 1f, 2);
+                _hdr.TechBloomHighThreshold.DrawAllPasses(DeviceContext, 6);
 
+
+                DeviceContext.Rasterizer.SetViewports(_buffer3.Viewport);
+                DeviceContext.OutputMerger.SetTargets(_buffer3.TargetView);
+                DeviceContext.ClearRenderTargetView(_buffer3.TargetView, ColorTransparent);
+
+                DeviceContextHolder.PrepareQuad(_lensFlares.LayoutPT);
+                _lensFlares.FxInputMap.SetResource(_buffer1.View);
+                _lensFlares.TechGhosts.DrawAllPasses(DeviceContext, 6);
+
+                // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one 
+                _blur.Blur(DeviceContextHolder, _buffer3, _buffer1, 2f, 2);
+
+                // combine original buffer and buffer #1 with blurred bright areas to buffer #2
+                DeviceContext.Rasterizer.SetViewports(_buffer2.Viewport);
+                DeviceContext.OutputMerger.SetTargets(_buffer2.TargetView);
+
+                _hdr.FxInputMap.SetResource(_buffer.View);
+                _hdr.FxBloomMap.SetResource(_buffer3.View);
+                _hdr.TechCombine.DrawAllPasses(DeviceContext, 6);
+
+                // buffer #2 is ready
+                result = _buffer2.View;
+            } else if (UseBloom) {
+                // prepare effects
+                if (_hdr == null) {
+                    _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+                    _blur = DeviceContextHolder.GetHelper<BlurHelper>();
+                }
+
+                // filter bright areas by high threshold to downscaled buffer #1
+                DeviceContext.Rasterizer.SetViewports(_buffer1.Viewport);
+                DeviceContext.OutputMerger.SetTargets(_buffer1.TargetView);
+                DeviceContext.ClearRenderTargetView(_buffer1.TargetView, ColorTransparent);
+
+                DeviceContextHolder.PrepareQuad(_hdr.LayoutPT);
+                _hdr.FxInputMap.SetResource(_buffer.View);
+                _hdr.TechBloomHighThreshold.DrawAllPasses(DeviceContext, 6);
+
+                // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one
+                _blur.Blur(DeviceContextHolder, _buffer1, _buffer3, 0.5f, 2);
+
+                // combine original buffer and buffer #1 with blurred bright areas to buffer #2
+                DeviceContext.Rasterizer.SetViewports(_buffer2.Viewport);
                 DeviceContext.OutputMerger.SetTargets(_buffer2.TargetView);
 
                 _hdr.FxInputMap.SetResource(_buffer.View);
                 _hdr.FxBloomMap.SetResource(_buffer1.View);
                 _hdr.TechCombine.DrawAllPasses(DeviceContext, 6);
 
+                // buffer #2 is ready
                 result = _buffer2.View;
             } else {
                 result = _buffer.View;
@@ -181,11 +282,18 @@ namespace AcTools.Render.Forward {
 
             PrepareForFinalPass();
             DeviceContext.ClearRenderTargetView(RenderTargetView, ColorTransparent);
-            if (!Equals(OutputDownscaleMultipler, 1d)) {
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView, true);
-            } else if (UseFxaa) {
+            if (UseSsaa) {
+                if (UseFxaa) {
+                    DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
+                } else {
+                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView, true);
+                }
+            } else if (UseFxaa && !UseMsaa) {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
-            } else {
+            } else if (IsSmaaAvailable && UseSmaa) {
+                var temporary = result == _buffer.View ? _buffer2 : _buffer;
+                DeviceContextHolder.GetHelper<SmaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView, temporary, _bufferSmaa);
+            } else { 
                 DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             }
         }
@@ -214,10 +322,11 @@ namespace AcTools.Render.Forward {
         protected virtual void DrawSpritesInner() {}
 
         public override void Dispose() {
-            DisposeHelper.Dispose(ref _wireframeRasterizerState);
             DisposeHelper.Dispose(ref _buffer);
             DisposeHelper.Dispose(ref _buffer1);
             DisposeHelper.Dispose(ref _buffer2);
+            DisposeHelper.Dispose(ref _buffer3);
+            DisposeHelper.Dispose(ref _bufferSmaa);
             base.Dispose();
         }
     }

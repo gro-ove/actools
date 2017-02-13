@@ -60,11 +60,11 @@ namespace AcTools.Render.Temporary {
             _effectMiniCube = contextHolder.GetEffect<EffectTestingCube>();
         }
 
-        protected override void DrawInner(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return;
 
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effectMiniCube.LayoutPC;
-            base.DrawInner(contextHolder, camera, mode);
+            base.DrawOverride(contextHolder, camera, mode);
 
             _effectMiniCube.FxWorldViewProj.SetMatrix(ParentMatrix * camera.ViewProj);
             _effectMiniCube.TechCube.DrawAllPasses(contextHolder.DeviceContext, Indices.Length);

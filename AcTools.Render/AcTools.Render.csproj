@@ -95,6 +95,7 @@
     <Compile Include="Base\Materials\IMaterialsFactory.cs" />
     <Compile Include="Base\Objects\BaseRenderableObject.cs" />
     <Compile Include="Base\Objects\IRenderableObject.cs" />
+    <Compile Include="Base\Objects\LinesRenderableObject.cs" />
     <Compile Include="Base\Objects\RenderableList.cs" />
     <Compile Include="Base\Objects\SpecialRenderMode.cs" />
     <Compile Include="Base\PostEffects\BlurHelper.cs" />
@@ -118,17 +119,35 @@
     <Compile Include="Base\Shaders\IEffectScreenSizeWrapper.cs" />
     <Compile Include="Base\Shaders\IEffectWrapper.cs" />
     <Compile Include="Base\Shaders\IFxMatrixVariable.cs" />
+    <Compile Include="Data\CarData.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Paintshop.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkPreviewsUpdater.cs" />
+    <Compile Include="Base\Objects\DebugLinesObject.cs" />
+    <Compile Include="Kn5SpecificForwardDark\FlatMirror.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\AmbientShadowMaterialSimple.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\DebugLinesMaterial.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\DebugMaterial.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\FlatMirrorMaterialSimple.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimple.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAlpha.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAtNm.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleBase.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleDiffMaps.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleGl.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleMaps.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleMirror.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleNm.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleNmMult.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5SkinnedObject.cs" />
     <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\Kn5TexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\TexturesProviderBase.cs" />
-    <Compile Include="Shaders\Shaders.cs">
-      <DependentUpon>Shaders.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Base\QuadBuffers.cs" />
     <Compile Include="Base\Shadows\IShadowsDraw.cs" />
     <Compile Include="Base\Shadows\ShadowsDirectional.cs" />
@@ -196,8 +215,17 @@
     <Compile Include="Kn5Specific\Textures\IRenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\Kn5OverrideableTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Utils\CarLight.cs" />
-    <Compile Include="Kn5Specific\Utils\CarLightType.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableFile.cs" />
+    <Compile Include="Shaders\Shaders.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shaders.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SmaaResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SmaaResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Temporary\Logging.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
@@ -228,7 +256,9 @@
     <Content Include="Shaders\Includes\Deferred.fx" />
     <Content Include="Shaders\Includes\FXAA_311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
+    <Content Include="Shaders\Includes\Shadows.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
+    <Content Include="Shaders\Pp\PpLensFlares.fx" />
     <Content Include="Shaders\Pp\PpOutline.fx" />
     <Content Include="Shaders\Pp\PpSmaa.fx" />
     <Content Include="Shaders\Pp\PpFxaa311.fx" />
@@ -238,8 +268,10 @@
     <Content Include="Shaders\Forward\KunosShader.fx" />
     <Content Include="Shaders\Deferred\DeferredGObject.fx" />
     <Content Include="Shaders\Pp\PpBasic.fx" />
+    <Content Include="Shaders\Simple\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
+    <Content Include="Shaders\Special\SpecialDebugLines.fx" />
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
     <Content Include="Shaders\Special\SpecialUv.fx" />
@@ -257,13 +289,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Shaders.resources" />
+    <None Include="SmaaResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SmaaResources.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <TransformOnBuild>true</TransformOnBuild>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
+    <PreBuildEvent>cd "$(ProjectDir)\Shaders" &amp; zsh -c "~/bin/t4auto Shaders.tt *(F)"
+vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <PostBuildEvent>vsincver --trick-date=$(TargetPath) $(ProjectDir)</PostBuildEvent>

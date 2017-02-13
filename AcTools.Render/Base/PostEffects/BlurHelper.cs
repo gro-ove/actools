@@ -18,20 +18,26 @@ namespace AcTools.Render.Base.PostEffects {
             _effect = holder.GetEffect<EffectPpBlur>();
         }
 
-        public void OnResize(DeviceContextHolder holder) {
-            var width = holder.Width;
-            var height = holder.Height;
+        public void OnResize(DeviceContextHolder holder) {}
+
+        private int _width, _height;
+
+        private void Resize(int width, int height) {
+            if (width == _width && _height == height) return;
+
+            _width = width;
+            _height = height;
 
             var bloomBlur = 8f;
             CalculateGaussian(1f / width, 0, bloomBlur, out _hosw, out _hoso);
             CalculateGaussian(0, 1f / height, bloomBlur, out _vosw, out _voso);
         }
 
-        static float ComputeGaussian(float n, float theta) {
+        private static float ComputeGaussian(float n, float theta) {
             return MathF.Exp(-n * n / (2.0f * theta * theta)) / MathF.Sqrt(2.0f * MathF.PI * theta);
         }
 
-        public static void CalculateGaussian(float dx, float dy, float force, out float[] weightsParameter, out Vector4[] offsetsParameter) {
+        private static void CalculateGaussian(float dx, float dy, float force, out float[] weightsParameter, out Vector4[] offsetsParameter) {
             // Look up how many samples our gaussian blur effect supports.
             const int sampleCount = EffectPpBlur.SampleCount;
 
@@ -84,11 +90,7 @@ namespace AcTools.Render.Base.PostEffects {
             offsetsParameter = sampleOffsets.Select(x => new Vector4(x, 0, 0)).ToArray();
         }
 
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view) {
-            BlurHorizontally(holder, view, 2.0f);
-        }
-
-        public void BlurHorizontally(DeviceContextHolder holder, ShaderResourceView view, float power) {
+        private void BlurHorizontally(DeviceContextHolder holder, ShaderResourceView view, float power) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
 
@@ -99,7 +101,7 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
-        public void BlurVertically(DeviceContextHolder holder, ShaderResourceView view, float power) {
+        private void BlurVertically(DeviceContextHolder holder, ShaderResourceView view, float power) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
 
@@ -110,18 +112,33 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        /// <summary>
+        /// Width and height will be set accordingly to source and temporary params.
+        /// </summary>
         public void Blur(DeviceContextHolder holder, TargetResourceTexture source, TargetResourceTexture temporary, float power = 1f, int iterations = 1,
                 TargetResourceTexture target = null) {
             for (var i = 0; i < iterations; i++) {
+                Resize(temporary.Width, temporary.Height);
+                holder.DeviceContext.Rasterizer.SetViewports(temporary.Viewport);
                 holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
                 BlurHorizontally(holder, (i == 0 ? null : target?.View) ?? source.View, power);
 
+                if (target != null) {
+                    Resize(target.Width, target.Height);
+                }
+
+                holder.DeviceContext.Rasterizer.SetViewports(target?.Viewport ?? source.Viewport);
                 holder.DeviceContext.OutputMerger.SetTargets(target?.TargetView ?? source.TargetView);
                 BlurVertically(holder, temporary.View, power);
             }
         }
 
+        /// <summary>
+        /// Width and height will be taken from DeviceContextHolder.
+        /// </summary>
         public void BlurReflectionHorizontally(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView mapsView) {
+            Resize(holder.Width, holder.Height);
+
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
 
@@ -133,7 +150,12 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechReflectionGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        /// <summary>
+        /// Width and height will be taken from DeviceContextHolder.
+        /// </summary>
         public void BlurReflectionVertically(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView mapsView) {
+            Resize(holder.Width, holder.Height);
+
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
 

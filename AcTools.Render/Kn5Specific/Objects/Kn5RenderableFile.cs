@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -8,24 +10,34 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Objects {
+    public interface IKn5Model {
+        [CanBeNull]
+        IKn5RenderableObject GetNodeByName([NotNull] string name);
+
+        Kn5RenderableList GetDummyByName([NotNull] string name);
+    }
+
     /* Despite holding references to SharedMaterials and ITexturesProvider, this
      * thing doesn’t need to be disposed — those references are managed outside,
      * and this thing is just a relatively convinient way to pass them down 
      * rendering tree */
-
     public class Kn5LocalDeviceContextHolder : IDeviceContextHolder {
         private readonly IDeviceContextHolder _mainHolder;
         private readonly SharedMaterials _sharedMaterials;
         private readonly ITexturesProvider _texturesProvider;
+        private readonly IKn5Model _model;
 
-        public Kn5LocalDeviceContextHolder(IDeviceContextHolder mainHolder, SharedMaterials sharedMaterials, ITexturesProvider texturesProvider) {
+        public Kn5LocalDeviceContextHolder(IDeviceContextHolder mainHolder, SharedMaterials sharedMaterials, ITexturesProvider texturesProvider,
+                IKn5Model model) {
             _mainHolder = mainHolder;
             _sharedMaterials = sharedMaterials;
             _texturesProvider = texturesProvider;
+            _model = model;
         }
         public Device Device => _mainHolder.Device;
 
@@ -38,6 +50,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             if (typeof(T) == typeof(SharedMaterials)) {
                 return _sharedMaterials as T;
+            }
+
+            if (typeof(T) == typeof(IKn5Model)) {
+                return _model as T;
             }
 
             return _mainHolder.Get<T>();
@@ -56,18 +72,68 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public void RaiseUpdateRequired() {
             _mainHolder.RaiseUpdateRequired();
         }
+
+        public void RaiseSceneUpdated() {
+            _mainHolder.RaiseSceneUpdated();
+        }
     }
 
-    public class Kn5RenderableFile : RenderableList {
-        public readonly Kn5 OriginalFile;
-        public readonly Kn5RenderableList RootObject;
+    public class Kn5RenderableFile : RenderableList, IKn5Model {
+        protected readonly bool AllowSkinnedObjects;
+        protected readonly bool AsyncTexturesLoading;
 
-        public Kn5RenderableFile(Kn5 kn5, Matrix matrix) : base(kn5.OriginalFilename, matrix) {
+        public readonly Kn5 OriginalFile;
+
+        private Kn5RenderableList _rootObject;
+        private List<Kn5RenderableList> _dummies;
+
+        protected Kn5RenderableList RootObject {
+            get { return _rootObject; }
+            set {
+                if (_rootObject != null) {
+                    _rootObject.MatrixChanged -= OnRootObjectMatrixChanged;
+                }
+
+                _dummies = null;
+                _rootObject = value;
+
+                InvalidateModelMatrixInverted();
+                if (_rootObject != null) {
+                    _rootObject.MatrixChanged += OnRootObjectMatrixChanged;
+                }
+            }
+        }
+
+        public List<Kn5RenderableList> Dummies => _dummies ?? (_dummies = RootObject.GetAllChildren().OfType<Kn5RenderableList>().ToList());
+
+        public Kn5RenderableFile(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, bool allowSkinnedObjects = false) : base(kn5.OriginalFilename, matrix) {
+            AllowSkinnedObjects = allowSkinnedObjects;
             OriginalFile = kn5;
-            RootObject = (Kn5RenderableList)Convert(kn5.RootNode);
+            AsyncTexturesLoading = asyncTexturesLoading;
+            RootObject = (Kn5RenderableList)Convert(kn5.RootNode, AllowSkinnedObjects);
             Add(RootObject);
         }
-        
+
+        private void OnRootObjectMatrixChanged(object sender, EventArgs e) {
+            InvalidateModelMatrixInverted();
+        }
+
+        private bool _modelMatrixInvertedDirty;
+
+        protected void InvalidateModelMatrixInverted() {
+            _modelMatrixInvertedDirty = true;
+        }
+
+        public void UpdateModelMatrixInverted() {
+            if (!_modelMatrixInvertedDirty) return;
+            _modelMatrixInvertedDirty = false;
+
+            var inverted = Matrix.Invert(RootObject.Matrix);
+            foreach (var dummy in Dummies) {
+                dummy.ModelMatrixInverted = inverted;
+            }
+        }
+
         protected Kn5SharedMaterials SharedMaterials;
         protected ITexturesProvider TexturesProvider;
         protected IDeviceContextHolder LocalHolder;
@@ -77,14 +143,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected virtual ITexturesProvider InitializeTextures(IDeviceContextHolder contextHolder) {
-            return new Kn5TexturesProvider(OriginalFile);
+            return new Kn5TexturesProvider(OriginalFile, AsyncTexturesLoading);
         }
 
-        protected virtual IDeviceContextHolder InitializeLocalHolder(IDeviceContextHolder contextHolder) {
-            return new Kn5LocalDeviceContextHolder(contextHolder, SharedMaterials, TexturesProvider);
+        protected IDeviceContextHolder InitializeLocalHolder(IDeviceContextHolder contextHolder) {
+            return new Kn5LocalDeviceContextHolder(contextHolder, SharedMaterials, TexturesProvider, this);
         }
 
         protected void DrawInitialize(IDeviceContextHolder contextHolder) {
+            UpdateModelMatrixInverted();
             if (LocalHolder == null) {
                 SharedMaterials = InitializeMaterials(contextHolder);
                 TexturesProvider = InitializeTextures(contextHolder);
@@ -106,18 +173,36 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref TexturesProvider);
         }
 
-        public static IRenderableObject Convert(Kn5Node node) {
+        public static IRenderableObject Convert(Kn5Node node, bool allowSkinnedObjects) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node);
+                    return new Kn5RenderableList(node, n => Convert(n, allowSkinnedObjects));
 
                 case Kn5NodeClass.Mesh:
+                    return new Kn5RenderableObject(node);
+
                 case Kn5NodeClass.SkinnedMesh:
+                    if (allowSkinnedObjects) {
+                        return new Kn5SkinnedObject(node);
+                    }
                     return new Kn5RenderableObject(node);
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public virtual IKn5RenderableObject GetNodeByName(string name) {
+            return this.GetByName(name);
+        }
+
+        public virtual Kn5RenderableList GetDummyByName(string name) {
+            var dummies = Dummies;
+            for (var i = 0; i < dummies.Count; i++) {
+                var x = dummies[i];
+                if (x.Name == name) return x;
+            }
+            return null;
         }
     }
 }

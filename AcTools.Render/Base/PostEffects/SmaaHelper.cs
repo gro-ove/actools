@@ -16,10 +16,10 @@ namespace AcTools.Render.Base.PostEffects {
 
         public void OnInitialize(DeviceContextHolder holder) {
             _effect = holder.GetEffect<EffectPpSmaa>();
-
-            throw new NotSupportedException();
-            // _areasTexMap = ShaderResourceView.FromMemory(holder.Device, Resources.AreaTexDX10);
-            // _searchTexMap = ShaderResourceView.FromMemory(holder.Device, Resources.SearchTex);
+            
+            throw new NotImplementedException();
+            //_areasTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.AreaTexDX10);
+            //_searchTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.SearchTex);
         }
 
         public void OnResize(DeviceContextHolder holder) {}

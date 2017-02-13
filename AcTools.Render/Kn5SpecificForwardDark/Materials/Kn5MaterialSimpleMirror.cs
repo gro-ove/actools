@@ -7,7 +7,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using SlimDX;
 
-namespace ArcadeCorsa.Render.DarkRenderer.Materials {
+namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleMirror : IRenderableMaterial, IEmissiveMaterial {
         public bool IsBlending => false;
         
