@@ -146,22 +146,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             DrawInitialize(contextHolder);
 
-            if (!_currentLodObject.Prepared) {
-                _currentLodObject.Prepared = true;
-
-                if (_currentLodObject.Materials == null) {
-                    if (_currentLodObject.NonDefaultKn5 == null) {
-                        _currentLodObject.Materials = SharedMaterials;
-                        _currentLodObject.Holder = LocalHolder;
-                    } else {
-                        _currentLodObject.Materials = new Kn5SharedMaterials(contextHolder, _currentLodObject.NonDefaultKn5);
-                        _currentLodObject.Holder = new Kn5LocalDeviceContextHolder(contextHolder, _currentLodObject.Materials, TexturesProvider, this);
-                    }
-                }
-
-                LoadMirrors(contextHolder);
-            }
-
+            _currentLodObject.EnsurePrepared(LocalHolder, contextHolder, SharedMaterials, TexturesProvider, this);
             RootObject.Draw(_currentLodObject.Holder, camera, mode, filter);
 
             if (Skins != null && !_skinsWatcherSet) {
@@ -212,7 +197,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (lod == null) {
                     throw new Exception($"LOD #{value} not found");
                 }
-                
+
+                var debugMode = _currentLodObject.DebugMode;
                 Remove(_currentLodObject.Renderable);
                 if (!_lodsObjects.TryGetValue(value, out _currentLodObject)) {
                     var path = Path.GetFullPath(Path.Combine(_rootDirectory, lod.FileName));
@@ -236,6 +222,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 ReupdatePreudoSteer();
                 UpdateTogglesInformation();
                 UpdateBoundingBox();
+                _currentLodObject.DebugMode = debugMode;
+
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CurrentLodInformation));
 
@@ -244,26 +232,70 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private class LodObject : IDisposable {
-            public readonly Kn5 NonDefaultKn5;
             public readonly Kn5RenderableList Renderable;
             public Kn5SharedMaterials Materials;
             internal IDeviceContextHolder Holder;
-            public bool Prepared;
             internal Dictionary<string, Matrix> OriginalMatrices;
+            private readonly Kn5 _nonDefaultKn5;
+            private bool _prepared;
 
             public LodObject(Kn5RenderableList rootObject) {
-                NonDefaultKn5 = null;
+                _nonDefaultKn5 = null;
                 Renderable = rootObject;
             }
 
             public LodObject(Kn5 kn5, bool allowSkinnedObjects) {
-                NonDefaultKn5 = kn5;
+                _nonDefaultKn5 = kn5;
                 Renderable = (Kn5RenderableList)Convert(kn5.RootNode, allowSkinnedObjects);
             }
 
             public void Dispose() {
                 Materials?.Dispose();
                 Renderable?.Dispose();
+            }
+
+            public void EnsurePrepared(IDeviceContextHolder localHolder, IDeviceContextHolder globalHolder, Kn5SharedMaterials materials,
+                    ITexturesProvider texturesProvider, IKn5Model model) {
+                if (_prepared) return;
+                _prepared = true;
+
+                if (Materials == null) {
+                    if (_nonDefaultKn5 == null) {
+                        Materials = materials;
+                        Holder = localHolder;
+                    } else {
+                        Materials = new Kn5SharedMaterials(globalHolder, _nonDefaultKn5);
+                        Holder = new Kn5LocalDeviceContextHolder(globalHolder, Materials, texturesProvider, model);
+                    }
+
+                    if (_debugModeSetLater) {
+                        SetDebugMode(Holder, true);
+                        _debugModeSetLater = false;
+                    }
+                }
+            }
+
+            private bool _debugMode, _debugModeSetLater;
+
+            internal bool DebugMode {
+                get { return _debugMode; }
+                set {
+                    if (Equals(value, _debugMode)) return;
+                    _debugMode = value;
+
+                    if (Holder != null || !value) {
+                        SetDebugMode(Holder, value);
+                        _debugModeSetLater = false;
+                    } else {
+                        _debugModeSetLater = true;
+                    }
+                }
+            }
+
+            private void SetDebugMode(IDeviceContextHolder localHolder, bool enabled) {
+                foreach (var node in Renderable.GetAllChildren().OfType<IKn5RenderableObject>()) {
+                    node.SetDebugMode(localHolder, enabled);
+                }
             }
         }
 
@@ -834,10 +866,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             switch (e.PropertyName) {
                 case null:
+                    ReloadSteeringWheelLock();
                     LoadMirrors(holder);
                     ResetLights();
                     ResetAmbientShadowSize();
                     ReloadSuspension();
+                    break;
+                case "car.ini":
+                    ReloadSteeringWheelLock();
                     break;
                 case "mirrors.ini":
                     LoadMirrors(holder);
@@ -916,8 +952,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _wheelLfCon = con;
             var delta = con - position;
 
-            //var camber = Matrix.RotationZ((left ? -1000f : 1000f) * suspension.StaticCamber * MathF.PI / 180f);
             var transform = Matrix.Translation(-delta) * Matrix.RotationAxis(rotationAxis, angle * MathF.PI / 180f) * Matrix.Translation(delta);
+            //var camber = Matrix.RotationZ((left ? -1000f : 1000f) * suspension.StaticCamber * MathF.PI / 180f);
             // node.LocalMatrix = Matrix.RotationAxis(rotationAxis, _steerDeg * MathF.PI / 180f) * Matrix.Translation(Vector3.Transform(suspension.RefPoint, pack.GraphicOffset).GetXyz());
             // node.LocalMatrix = transform * Matrix.Translation(Vector3.Transform(suspension.RefPoint, pack.GraphicOffset).GetXyz());
             // node.LocalMatrix = transform * Matrix.Translation(position);
@@ -929,15 +965,48 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var namePostfix = left ? "LF" : "RF";
 
             var range = (angle.Abs() / 30f).Saturate();
-            angle += (left ? -15f : 15f) * MathF.Pow(range, 2f);
+            angle += (left ? -1.5f : 1.5f) * MathF.Pow(range, 2f);
 
             var wheelMatrix = GetSteerWheelMatrix($@"WHEEL_{namePostfix}", pack, suspension, angle);
             if (!wheelMatrix.HasValue) return;
 
-            foreach (var node in new[] { "HUB", "WHEEL", "SUSP", "DISC" }.Select(x => GetDummyByName($@"{x}_{namePostfix}")).NonNull()) {
-                node.LocalMatrix = wheelMatrix.Value *
-                    Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
+            foreach (var node in new[] { "HUB" }.Select(x => GetDummyByName($@"{x}_{namePostfix}")).NonNull()) {
+                node.LocalMatrix = (GetSteerWheelMatrix(node.Name, pack, suspension, angle) ?? wheelMatrix.Value) *
+                        Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
             }
+
+            foreach (var node in new[] { "WHEEL", "SUSP", "DISC" }.Select(x => GetDummyByName($@"{x}_{namePostfix}")).NonNull()) {
+                node.LocalMatrix = wheelMatrix.Value * Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
+            }
+        }
+
+        private float? _steerLock;
+
+        private void SteerSteeringWheel(float offset) {
+            if (_currentLodObject.OriginalMatrices == null) {
+                _currentLodObject.OriginalMatrices = new Dictionary<string, Matrix>(3);
+                UpdateModelMatrixInverted();
+            }
+
+            foreach (var node in new[] { "HR", "LR" }.Select(x => GetDummyByName($@"STEER_{x}")).NonNull()) {
+                var name = node.Name ?? "";
+
+                Matrix original;
+                if (!_currentLodObject.OriginalMatrices.TryGetValue(name, out original)) {
+                    original = _currentLodObject.OriginalMatrices[name] = node.LocalMatrix;
+                }
+
+                if (!_steerLock.HasValue) {
+                    _steerLock = _carData.GetSteerLock();
+                }
+
+                node.LocalMatrix = Matrix.RotationZ(_steerLock.Value * offset * MathF.PI / 180f) * original;
+            }
+        }
+
+        private void ReloadSteeringWheelLock() {
+            _steerLock = null;
+            SteerSteeringWheel((SteerDeg / 50f).Clamp(-1f, 1f));
         }
 
         private void ReupdatePreudoSteer() {
@@ -956,6 +1025,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             SteerWheel(true, pack, front.Left, angle);
             SteerWheel(false, pack, front.Right, angle);
+            SteerSteeringWheel((angle / 50f).Clamp(-1f, 1f));
 
             UpdateFrontWheelsShadowsRotation();
             _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1029,6 +1099,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             holder.DeviceContext.OutputMerger.DepthStencilState = holder.States.DisabledDepthState;
             _debugNode.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+
+        public void SetDebugMode(bool enabled) {
+            _currentLodObject.DebugMode = enabled;
         }
         #endregion
 

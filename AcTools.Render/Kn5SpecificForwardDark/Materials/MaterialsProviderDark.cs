@@ -7,7 +7,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         public IRenderableMaterial CreateMaterial(object key) {
             var kn5 = key as Kn5MaterialDescription;
             if (kn5 != null) {
-                return CreateMaterial(kn5);
+                switch (kn5.SpecialKey as string) {
+                    case BasicMaterials.DebugKey:
+                        return new DebugMaterial(kn5);
+                    case null:
+                        return CreateMaterial(kn5);
+                    default:
+                        throw new NotSupportedException($@"Key not supported: {kn5.SpecialKey}");
+                }
             }
 
             var shadow = key as Kn5AmbientShadowMaterialDescription;
@@ -22,8 +29,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                     return new FlatMirrorMaterialSimple(false);
                 case BasicMaterials.FlatGroundKey:
                     return new FlatMirrorMaterialSimple(true);
-                case BasicMaterials.DebugKey:
-                    return new DebugMaterial();
                 case BasicMaterials.DebugLinesKey:
                     return new DebugLinesMaterial();
             }

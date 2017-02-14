@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
@@ -445,15 +446,15 @@ namespace AcTools.Render.DeferredShading {
 
         public bool KeepFxaaWhileShooting;
         
-        public override Image Shot(int multipler) {
-            if (KeepFxaaWhileShooting) {
-                return base.Shot(multipler);
+        public override void Shot(double multipler, double downsample, Stream outputStream) {
+            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downsample, 1d)) {
+                base.Shot(multipler, downsample, outputStream);
             } else {
                 var useFxaa = UseFxaa;
                 UseFxaa = false;
 
                 try {
-                    return base.Shot(multipler);
+                    base.Shot(multipler, downsample, outputStream);
                 } finally {
                     UseFxaa = useFxaa;
                 }

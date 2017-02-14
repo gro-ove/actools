@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -149,52 +150,79 @@ namespace AcTools.Render.Kn5Specific.Textures {
             ".xcf"
         };
 
+        private bool TryGetTexture(string name, out IRenderableTexture result) {
+            foreach (var texture in Textures.Values) {
+                if (String.Equals(texture.Name, name, StringComparison.OrdinalIgnoreCase)) {
+                    result = texture;
+                    return true;
+                }
+            }
+
+            result = null;
+            return false;
+        }
+
+        private readonly List<string> _updateInProcess = new List<string>(10);
+
         private async void UpdateOverrideLater([NotNull] string filename) {
             if (_directory == null) return;
 
             var local = FileUtils.TryToGetRelativePath(filename, _directory)?.ToLowerInvariant();
             if (string.IsNullOrEmpty(local)) return;
 
-            IRenderableTexture texture;
-            Textures.TryGetValue(local, out texture);
+            if (_updateInProcess.Contains(local)) return;
+            _updateInProcess.Add(local);
 
-            var i = 5;
-            byte[] bytes = null;
-            var magickMode = texture == null;
-            if (MagickOverride && magickMode) {
-                if (!ImageUtils.IsMagickSupported) return;
+            try {
+                IRenderableTexture texture;
+                TryGetTexture(local, out texture);
 
-                var ext = MagickExtensions.FirstOrDefault(x => local.EndsWith(x, StringComparison.Ordinal));
-                if (ext != null) {
-                    local = local.ApartFromLast(ext);
+                var i = 5;
+                byte[] bytes = null;
+                var magickMode = texture == null;
+                if (MagickOverride && magickMode) {
+                    if (!ImageUtils.IsMagickSupported) return;
 
-                    if (!Textures.TryGetValue(local, out texture)) {
-                        Textures.TryGetValue(local + @".dds", out texture);
+                    var ext = MagickExtensions.FirstOrDefault(x => local.EndsWith(x, StringComparison.Ordinal));
+                    if (ext != null) {
+                        var candidate = local.ApartFromLast(ext);
+                        if (!TryGetTexture(candidate, out texture)) {
+                            TryGetTexture(candidate + @".dds", out texture);
+                        }
                     }
                 }
-            }
+                
+                if (texture == null) return;
 
-            if (texture == null) return;
+                while (i-- > 0) {
+                    try {
+                        await Task.Delay(200);
+                        bytes = await FileUtils.ReadAllBytesAsync(filename);
 
-            while (i-- > 0) {
-                try {
-                    await Task.Delay(200);
-                    bytes = await FileUtils.ReadAllBytesAsync(filename);
+                        if (magickMode) {
+                            var b = bytes;
+                            // bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
+                            bytes = ImageUtils.LoadAsConventionalBuffer(b);
+                        }
 
-                    if (magickMode) {
-                        var b = bytes;
-                        bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
+                        break;
+                    } catch (Exception e) {
+                        AcToolsLogging.Write(e);
+                        Logging.Warning("UpdateOverrideLater(): " + e);
                     }
-
-                    break;
-                } catch (Exception e) {
-                    Logging.Warning("UpdateOverrideLater(): " + e);
                 }
-            }
 
-            // TODO
-            await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
-            _holder.RaiseUpdateRequired();
+                _updateInProcess.Remove(local);
+
+                // TODO
+                // await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
+                ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
+                _holder.RaiseUpdateRequired();
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+            } finally {
+                _updateInProcess.Remove(local);
+            }
         }
 
         private bool _updating;

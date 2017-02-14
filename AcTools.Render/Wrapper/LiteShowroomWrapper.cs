@@ -127,14 +127,14 @@ namespace AcTools.Render.Wrapper {
 
                 case Keys.F8:
                     {
-                        int multipler;
+                        double multipler;
                         bool downscale;
 
                         {
                             // hold shift to disable downsampling
                             // hold ctrl to render scene in 8x resolution
                             // hold alt to render scene in 4x resolution
-                            // hold both for 16x (but any videocard most likely won’t be able to pull this off)
+                            // hold both for 1x only
 
                             var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
                             var altPressed = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
@@ -143,24 +143,29 @@ namespace AcTools.Render.Wrapper {
                             downscale = !shiftPressed;
 
                             if (ctrlPressed) {
-                                multipler = altPressed ? 16 : 8;
+                                multipler = altPressed ? 1d : 8d;
                             } else if (altPressed) {
-                                multipler = 4;
+                                multipler = 4d;
                             } else {
-                                multipler = 2;
+                                multipler = 2d;
                             }
                         }
 
                         _renderer.KeepFxaaWhileShooting = !downscale;
-                        var image = _renderer.Shot(multipler);
-                        var directory = FileUtils.GetDocumentsScreensDirectory();
-                        FileUtils.EnsureDirectoryExists(directory);
-                        var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
-                        if (downscale) {
-                            image = image.HighQualityResize(new Size(image.Width / 2, image.Height / 2));
+                        using (var image = _renderer.Shot(multipler, 1d)) {
+                            var directory = FileUtils.GetDocumentsScreensDirectory();
+                            FileUtils.EnsureDirectoryExists(directory);
+                            var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
+                            if (downscale) {
+                                using (var down = image.HighQualityResize(new Size(image.Width / 2, image.Height / 2))) {
+                                    down.Save(filename);
+                                }
+                            } else {
+                                using (var down = image.CopyImage()) {
+                                    down.Save(filename);
+                                }
+                            }
                         }
-
-                        image.Save(filename);
                     }
                     break;
 
@@ -175,6 +180,11 @@ namespace AcTools.Render.Wrapper {
                 case Keys.M:
                     if (args.Control && !args.Alt && !args.Shift) {
                         _renderer.UseSsaa = !_renderer.UseSsaa;
+                    } else if (!args.Control && args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.FlatMirror = !d.FlatMirror;
+                        }
                     } else {
                         _renderer.UseMsaa = !_renderer.UseMsaa;
                     }

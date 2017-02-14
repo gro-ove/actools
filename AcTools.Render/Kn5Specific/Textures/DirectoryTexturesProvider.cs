@@ -197,15 +197,15 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
             if (_directory == null) return null;
             var filename = Path.Combine(_directory, key);
-
-            if (!File.Exists(filename)) return null;
-
+            
             var result = new RenderableTexture { Resource = null };
 
-            if (_asyncLoading) {
-                result.LoadAsync(contextHolder.Device, filename).Forget();
-            } else {
-                result.Load(contextHolder.Device, filename);
+            if (File.Exists(filename)) {
+                if (_asyncLoading) {
+                    result.LoadAsync(contextHolder.Device, filename).Forget();
+                } else {
+                    result.Load(contextHolder.Device, filename);
+                }
             }
 
             return Textures[filename] = result;

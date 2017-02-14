@@ -101,7 +101,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (enabled == (_debugMaterial != null)) return;
 
             if (enabled) {
-                _debugMaterial = holder.GetMaterial(BasicMaterials.DebugKey) as ISkinnedMaterial;
+                _debugMaterial = holder.Get<SharedMaterials>().GetMaterial(new Tuple<object, uint>(BasicMaterials.DebugKey, OriginalNode.MaterialId)) as ISkinnedMaterial;
                 if (_debugMaterial == null) throw new Exception("ISkinnedMaterial required for Kn5SkinnedObject!");
 
                 if (IsInitialized) {

@@ -8,7 +8,7 @@ namespace AcTools.Render.Temporary {
             Logging.Initialize(filename, appendMode);
         }
     }
-
+    
     internal static class Logging {
         private static string _filename;
         private static int _entries;

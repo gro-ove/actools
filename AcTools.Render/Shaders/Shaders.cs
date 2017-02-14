@@ -574,6 +574,48 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
+	public class EffectPpDownsample : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT;
+        public InputLayout LayoutPT;
+
+		public EffectTechnique TechCopy, TechAverage, TechAnisotropic, TechBicubic;
+
+		public EffectResourceVariable FxInputMap;
+		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxMultipler { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDownsample");
+			E = new Effect(device, _b);
+
+			TechCopy = E.GetTechniqueByName("Copy");
+			TechAverage = E.GetTechniqueByName("Average");
+			TechAnisotropic = E.GetTechniqueByName("Anisotropic");
+			TechBicubic = E.GetTechniqueByName("Bicubic");
+
+			for (var i = 0; i < TechCopy.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechCopy.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (PpDownsample, PT, Copy) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
+			FxMultipler = E.GetVariableByName("gMultipler").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
 	public class EffectPpFxaa311 : IEffectWrapper, IEffectScreenSizeWrapper {
 		public const int FxaaPc = 1;
 		public const int FxaaHlsl5 = 1;
@@ -834,7 +876,6 @@ namespace AcTools.Render.Shaders {
         }
 
 		public const uint HasNormalMap = 1;
-		public const uint UseDiffuseAlphaAsMap = 2;
 		public const uint UseNormalAlphaAsAlpha = 64;
 		public const uint AlphaTest = 128;
 		public const uint IsAdditive = 16;
@@ -850,7 +891,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatGround;
+		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechDebug, TechSkinnedDebug, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatGround;
 
 		public EffectMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectMatrixVariable FxWorld { get; private set; }
@@ -882,6 +923,8 @@ namespace AcTools.Render.Shaders {
 			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
 			TechGl = E.GetTechniqueByName("Gl");
 			TechSkinnedGl = E.GetTechniqueByName("SkinnedGl");
+			TechDebug = E.GetTechniqueByName("Debug");
+			TechSkinnedDebug = E.GetTechniqueByName("SkinnedDebug");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechMirror = E.GetTechniqueByName("Mirror");
 			TechFlatMirror = E.GetTechniqueByName("FlatMirror");
@@ -1240,6 +1283,41 @@ namespace AcTools.Render.Shaders {
 			if (E == null) return;
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
+	public class EffectSpriteShader : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignatureSpriteSpecific;
+        public InputLayout LayoutSpriteSpecific;
+
+		public EffectTechnique TechRender;
+
+		public EffectResourceVariable FxTex;
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpriteShader");
+			E = new Effect(device, _b);
+
+			TechRender = E.GetTechniqueByName("Render");
+
+			for (var i = 0; i < TechRender.Description.PassCount && InputSignatureSpriteSpecific == null; i++) {
+				InputSignatureSpriteSpecific = TechRender.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignatureSpriteSpecific == null) throw new System.Exception("input signature (SpriteShader, SpriteSpecific, Render) == null");
+			LayoutSpriteSpecific = new InputLayout(device, InputSignatureSpriteSpecific, Base.Sprites.VerticeSpriteSpecific.InputElementsValue);
+
+			FxTex = E.GetVariableByName("Tex").AsResource();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignatureSpriteSpecific.Dispose();
+            LayoutSpriteSpecific.Dispose();
             E.Dispose();
             _b.Dispose();
         }

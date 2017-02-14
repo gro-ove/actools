@@ -38,8 +38,8 @@ namespace AcTools.Render.Base.Objects {
                 _localMatrix = value;
                 OnMatrixChanged();
 
-                foreach (var clone in _clones) {
-                    clone.LocalMatrix = value;
+                foreach (var clone in _clones.NonNull()) {
+                    clone.LocalMatrix = value;;
                 }
             }
         }

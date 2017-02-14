@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Windows.Forms;
 using CommandLine;
 using CommandLine.Text;
 
@@ -19,6 +22,9 @@ namespace CustomShowroom {
         [Option('a', "ssaa", DefaultValue = false, HelpText = "Use SSAA (only for Lite/Dark Showroom modes).")]
         public bool UseSsaa { get; set; }
 
+        [Option('g', "magick", DefaultValue = false, HelpText = "Load textures from PSD files if exist.")]
+        public bool MagickOverride { get; set; }
+
         [Option('x', "fxaa", DefaultValue = true, HelpText = "Use FXAA.")]
         public bool UseFxaa { get; set; }
 
@@ -31,15 +37,28 @@ namespace CustomShowroom {
         [Option('v', "verbose", DefaultValue = false, HelpText = "Write some stuff to Log.txt near to exe-file.")]
         public bool Verbose { get; set; }
 
+        [Option('h', "help", DefaultValue = false, HelpText = "Show help message.")]
+        public bool Help { get; set; }
+
         [ValueList(typeof(List<string>), MaximumElements = 2)]
         public IList<string> Items { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }
 
-        [HelpOption]
         public string GetUsage() {
-            return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
+            var help = new HelpText {
+                Heading = new HeadingInfo("Custom Showroom", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Copyright = new CopyrightInfo("AcClub", 2017),
+                AdditionalNewLineAfterOption = false,
+                AddDashesToOption = true
+            };
+            help.AddPreOptionsLine("\r\nThis is free software. You may redistribute copies of it under the terms of");
+            help.AddPreOptionsLine("the MS-PL License <https://opensource.org/licenses/MS-PL>.");
+            help.AddPreOptionsLine("");
+            help.AddPreOptionsLine("Usage: CustomShowroom <model.kn5>");
+            help.AddOptions(this);
+            return help;
         }
     }
 }

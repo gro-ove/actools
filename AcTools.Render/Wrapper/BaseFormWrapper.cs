@@ -25,6 +25,10 @@ namespace AcTools.Render.Wrapper {
 
             return b;
         }
+
+        public static Image CopyImage(this Image img) {
+            return new Bitmap(img);
+        }
     }
 
     public class BaseFormWrapper {

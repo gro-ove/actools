@@ -10,7 +10,7 @@ using Viewport = SlimDX.Direct3D11.Viewport;
 
 namespace AcTools.Render.Base.Shadows {
     public class ShadowsDirectional : IDisposable {
-        public const float ClipDistance = 50f;
+        public float ClipDistance { get; } 
 
         public sealed class CameraOrthoShadow : CameraOrtho {
             private readonly CameraOrtho _innerCamera;
@@ -49,6 +49,7 @@ namespace AcTools.Render.Base.Shadows {
 
         public class Split : IDisposable {
             internal readonly float Size;
+            internal readonly float ClipDistance;
             internal readonly TargetResourceDepthTexture Buffer;
             internal readonly CameraOrthoShadow Camera;
 
@@ -57,11 +58,12 @@ namespace AcTools.Render.Base.Shadows {
                 return m.Z / m.W;
             }
 
-            public Split(float size) {
+            public Split(float size, float clipDistance) {
                 Size = size;
+                ClipDistance = clipDistance;
                 Buffer = TargetResourceDepthTexture.Create();
                 Camera = new CameraOrthoShadow {
-                    NearZ = 0.1f,
+                    NearZ = 1f,
                     FarZ = ClipDistance * 2f,
                     Width = size,
                     Height = size
@@ -99,10 +101,11 @@ namespace AcTools.Render.Base.Shadows {
         private RasterizerState _rasterizerState;
         private DepthStencilState _depthStencilState;
 
-        public ShadowsDirectional(int mapSize, IEnumerable<float> splits) {
+        public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 50f) {
             _mapSize = mapSize;
+            ClipDistance = clipDistance;
 
-            Splits = splits.Select(x => new Split(x)).ToArray();
+            Splits = splits.Select(x => new Split(x, clipDistance)).ToArray();
 
             for (var i = 1; i < Splits.Length; i++) {
                 Splits[i].Camera.SmallerCamera = Splits[i - 1].Camera;
@@ -111,7 +114,7 @@ namespace AcTools.Render.Base.Shadows {
             _viewport = new Viewport(0, 0, _mapSize, _mapSize, 0, 1.0f);
         }
 
-        public ShadowsDirectional(int mapSize) : this(mapSize, new []{ 15f, 50f, 200f }) {}
+        public ShadowsDirectional(int mapSize, float clipDistance = 50f) : this(mapSize, new []{ 15f, 50f, 200f }, clipDistance) {}
 
         public void Initialize(DeviceContextHolder holder) {
             foreach (var split in Splits) {
@@ -123,9 +126,9 @@ namespace AcTools.Render.Base.Shadows {
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
-                DepthBias = 2,
+                DepthBias = 100,
                 DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = 0.2f
+                SlopeScaledDepthBias = 1f
             });
 
             _depthStencilState = DepthStencilState.FromDescription(holder.Device, new DepthStencilStateDescription {

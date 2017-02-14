@@ -10,7 +10,7 @@ using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
 
 namespace AcTools.Render.Base.Objects {
-    public class LinesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
+    public class LinesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.IPositionLayout {
         protected bool IsEmpty { get; private set; }
 
         public T[] Vertices { get; private set; }

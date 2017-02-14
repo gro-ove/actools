@@ -214,6 +214,7 @@ namespace <#= resultNamespace #> {
 		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique(?:1[01])?\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
 		var tls = ts_tmp.Where(x => x.Groups[2].Success).Select(x => new { 
 			Type = x.Groups[2].Value, 
+			Custom = (string)null, 
 			TechName = x.Groups[1].Value 
 		})
 			.Where(x => false) // disabling comment support
@@ -231,16 +232,28 @@ namespace <#= resultNamespace #> {
 					ts_tmp.Where(y => y.Groups[3].Value.Contains(x)).Select(y => y.Groups[1].Value)
 				).FirstOrDefault();
 			if (techName == null) continue;
+
+			var customName = Regex.Match(match.Value, @"\{\s*//\s*layout:\s*([\w.]+)");
+			if (customName.Success){
+				tls.Add(new {
+					Type = customName.Groups[1].Value.Split('.').Last().Replace("Vertice", ""),
+					Custom = customName.Groups[1].Value,
+					TechName = techName
+				});
+				continue;
+			}
 			
-			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT|BLENDWEIGHTS?|BLENDINDICES)\b").Cast<Match>().Select(x => x.Value);
+			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT|BLENDWEIGHTS?|BLENDINDICES|[A-Z]{3,})\b").Cast<Match>().Select(x => x.Value);
 			var result = string.Join("", types.Select(x => 
 					x == "TANGENT" ? "G" : 
+					x == "TEXCOORDSIZE" ? "X" : 
 					x == "BLENDWEIGHT" ? "W2" : 
 					x == "BLENDWEIGHTS" ? "W4" : 
 					"" + x[0])).Trim();
 			if (result.Length == 0) continue;
 			tls.Add(new {
 				Type = result,
+				Custom = (string)null,
 				TechName = techName
 			});
 			// data = includes[match.Groups[1].Value] + "\n\n" + data;
@@ -345,12 +358,12 @@ namespace <#= resultNamespace #> {
 			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
 <# } #>
 
-<# foreach (var x in tls.Distinct()){ var a = x.Type; var b = x.TechName; #>
+<# foreach (var x in tls.Distinct()){ var a = x.Type; var b = x.TechName; var p = x.Custom != null ? x.Custom : "InputLayouts.Vertice" + a; #>
 			for (var i = 0; i < Tech<#= b #>.Description.PassCount && InputSignature<#= a #> == null; i++) {
 				InputSignature<#= a #> = Tech<#= b #>.GetPassByIndex(i).Description.Signature;
 			}
 			if (InputSignature<#= a #> == null) throw new System.Exception("input signature (<#= name #>, <#= a #>, <#= b #>) == null");
-			Layout<#= a #> = new InputLayout(device, InputSignature<#= a #>, InputLayouts.Vertice<#= a #>.InputElementsValue);
+			Layout<#= a #> = new InputLayout(device, InputSignature<#= a #>, <#= p #>.InputElementsValue);
 <# } #>
 
 <# foreach (var x in vms.Distinct()){ #>

@@ -34,7 +34,7 @@ namespace AcTools.Render.Tests {
             using (var updater = new DarkPreviewsUpdater(path)) {
                 foreach (var car in cars) {
                     foreach (var skin in car.SkinsIds) {
-                        await updater.Shot(car.CarId, skin);
+                        await updater.ShotAsync(car.CarId, skin);
                         i++;
                     }
                 }
@@ -93,7 +93,7 @@ namespace AcTools.Render.Tests {
                         foreach (var skinDirectory in Directory.GetDirectories(Path.Combine(first.CarDirectory, "skins"))) {
                             // Console.WriteLine(skinDirectory);
 
-                            renderer.Shot(4)
+                            renderer.Shot(4d, 1d)
                                     .HighQualityResize(new Size(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
                                     .Save(Path.Combine(skinDirectory, "preview_new.jpg"));
                             renderer.SelectNextSkin();

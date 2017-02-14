@@ -1,6 +1,5 @@
 // structs
 static const dword HAS_NORMAL_MAP = 1;
-static const dword USE_DIFFUSE_ALPHA_AS_MAP = 2;
 static const dword USE_NORMAL_ALPHA_AS_ALPHA = 64;
 static const dword ALPHA_TEST = 128;
 
@@ -203,9 +202,9 @@ PS_IN vs_skinned(skinned_VS_IN vin) {
 	PS_IN vout;
 
 	vout.PosW = mul(p, gWorld).xyz;
-	vout.NormalW = mul(n, (float3x3)gWorldInvTranspose);
-	vout.TangentW = mul(t, (float3x3)gWorldInvTranspose);
-	vout.BitangentW = mul(cross(n, t), (float3x3)gWorldInvTranspose);
+	vout.NormalW = mul(n.xyz, (float3x3)gWorldInvTranspose);
+	vout.TangentW = mul(t.xyz, (float3x3)gWorldInvTranspose);
+	vout.BitangentW = mul(cross(n.xyz, t.xyz), (float3x3)gWorldInvTranspose);
 
 	vout.PosH = mul(p, gWorldViewProj);
 	vout.Tex = vin.Tex;
@@ -408,7 +407,11 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
 	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
 
-	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val;
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1 - val;
+	}
+
+	return lighted + refl * val;
 }
 
 float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, float specularExpMultipler, 
@@ -583,6 +586,66 @@ technique10 SkinnedGl {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
+	}
+}
+
+//// Debug
+
+float4 ps_Debug(PS_IN pin) : SV_Target {
+	float3 position = pin.PosW;
+
+	float3 normal;
+	float alpha;
+	if (HAS_FLAG(HAS_NORMAL_MAP)) {
+		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
+		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+	} else {
+		normal = normalize(pin.NormalW);
+		alpha = gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
+	}
+
+	float3 ambient;
+#if ENABLE_SHADOWS == true
+	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
+#else
+	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+#endif
+
+	float nDotH = GetNDotH(normal, position);
+	float specular = CalculateSpecularLight(nDotH, 50, 0.5);
+
+	float distance = length(gEyePosW - position);
+
+	//
+	float3 toEyeW = normalize(gEyePosW - position);
+	float3 reflected = reflect(-toEyeW, normal);
+	float3 refl = GetReflection(reflected, 2);
+
+	float rid = 1 - saturate(dot(toEyeW, normal) - 0.016);
+	float rim = pow(rid, 4.0);
+	float val = min(rim, 0.05);
+	//
+
+	float3 light = 0.4 * ambient + (0.5 + specular) * gLightColor * diffuseMultipler + refl * val + gMaterial.Emissive;
+	AlphaTest(alpha);
+
+	return float4(light, alpha);
+}
+
+technique10 Debug {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
+	}
+}
+
+technique10 SkinnedDebug {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
 	}
 }
 

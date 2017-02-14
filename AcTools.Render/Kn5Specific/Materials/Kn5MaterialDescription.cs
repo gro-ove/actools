@@ -17,14 +17,26 @@ namespace AcTools.Render.Kn5Specific.Materials {
                 var id = (uint)key;
                 return base.CreateMaterial(new Kn5MaterialDescription(_kn5.GetMaterial(id)));
             }
-            //throw new Exception("Here: " + key);
+
+            var special = key as Tuple<object, uint>;
+            if (special != null) {
+                return base.CreateMaterial(new Kn5MaterialDescription(special.Item1, _kn5.GetMaterial(special.Item2)));
+            }
+
             return base.CreateMaterial(key);
         }
     }
 
     public sealed class Kn5MaterialDescription {
+        public object SpecialKey { get; }
+
         [CanBeNull]
         public Kn5Material Material { get; }
+
+        public Kn5MaterialDescription(object specialKey, [CanBeNull] Kn5Material material) {
+            SpecialKey = specialKey;
+            Material = material;
+        }
 
         public Kn5MaterialDescription([CanBeNull] Kn5Material material) {
             Material = material;

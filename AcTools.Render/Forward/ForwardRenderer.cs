@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.IO;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -12,7 +13,18 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Forward {
     public abstract class ForwardRenderer : SceneRenderer {
-        public Color BackgroundColor { get; set; } = Color.Gray;
+        private Color _backgroundColor = Color.Gray;
+
+        public Color BackgroundColor {
+            get { return _backgroundColor; }
+            set {
+                if (Equals(value, _backgroundColor)) return;
+                _backgroundColor = value;
+                OnBackgroundColorChanged();
+            }
+        }
+
+        protected virtual void OnBackgroundColorChanged() {}
 
         private bool _useInterpolationCamera;
 
@@ -190,6 +202,8 @@ namespace AcTools.Render.Forward {
         private BlurHelper _blur;
         private EffectPpLensFlares _lensFlares;
 
+        public float BloomRadiusMultipler = 1f;
+
         protected override void DrawInner() {
             DrawPrepare();
 
@@ -264,7 +278,7 @@ namespace AcTools.Render.Forward {
                 _hdr.TechBloomHighThreshold.DrawAllPasses(DeviceContext, 6);
 
                 // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one
-                _blur.Blur(DeviceContextHolder, _buffer1, _buffer3, 0.5f, 2);
+                _blur.Blur(DeviceContextHolder, _buffer1, _buffer3, 0.5f * BloomRadiusMultipler, 2);
 
                 // combine original buffer and buffer #1 with blurred bright areas to buffer #2
                 DeviceContext.Rasterizer.SetViewports(_buffer2.Viewport);
@@ -300,16 +314,18 @@ namespace AcTools.Render.Forward {
 
         public bool KeepFxaaWhileShooting;
 
-        public override Image Shot(int multipler) {
-            if (KeepFxaaWhileShooting) return base.Shot(multipler);
+        public override void Shot(double multipler, double downsample, Stream outputStream) {
+            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downsample, 1d)) {
+                base.Shot(multipler, downsample, outputStream);
+            } else {
+                var useFxaa = UseFxaa;
+                UseFxaa = false;
 
-            var useFxaa = UseFxaa;
-            UseFxaa = false;
-
-            try {
-                return base.Shot(multipler);
-            } finally {
-                UseFxaa = useFxaa;
+                try {
+                    base.Shot(multipler, downsample, outputStream);
+                } finally {
+                    UseFxaa = useFxaa;
+                }
             }
         }
 

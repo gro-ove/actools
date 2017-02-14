@@ -2,19 +2,21 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Runtime.CompilerServices;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
-using SpriteTextRenderer.SlimDX;
+using Debug = System.Diagnostics.Debug;
 using Device = SlimDX.Direct3D11.Device;
 using Resource = SlimDX.Direct3D11.Resource;
-using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base {
     public abstract class BaseRenderer : IDisposable, INotifyPropertyChanged {
@@ -46,7 +48,7 @@ namespace AcTools.Render.Base {
 
         [CanBeNull]
         protected SpriteRenderer Sprite => !UseSprite || _sprite != null || FeatureLevel < FeatureLevel.Level_10_0 ? _sprite :
-                (_sprite = new SpriteRenderer(Device));
+                (_sprite = new SpriteRenderer(DeviceContextHolder));
 
         public bool SpriteInitialized => _sprite != null;
 
@@ -289,7 +291,7 @@ namespace AcTools.Render.Base {
                 Usage = Usage.RenderTargetOutput
             };
 
-            _swapChain.Dispose();
+            _swapChain?.Dispose();
             _swapChain = new SwapChain(Device.Factory, Device, _swapChainDescription);
 
             _resized = true;
@@ -351,8 +353,10 @@ namespace AcTools.Render.Base {
             });
 
             _depthView = new DepthStencilView(Device, _depthBuffer);
-            DeviceContext.Rasterizer.SetViewports(Viewport);
+            DeviceContext.Rasterizer.SetViewports(OutputViewport);
             Sprite?.RefreshViewport();
+
+            DeviceContext.Rasterizer.SetViewports(Viewport);
 
             ResetTargets();
             DeviceContext.OutputMerger.DepthStencilState = null;
@@ -462,6 +466,10 @@ namespace AcTools.Render.Base {
         }
 
         public virtual void Dispose() {
+            DisposeHelper.Dispose(ref _previousMsaaShotTarget);
+            DisposeHelper.Dispose(ref _previousMsaaTemporaryTexture);
+            DisposeHelper.Dispose(ref _shotDownsampleTexture);
+
             DisposeHelper.Dispose(ref _sprite);
             DisposeHelper.Dispose(ref _renderBuffer);
             DisposeHelper.Dispose(ref _renderView);
@@ -475,15 +483,67 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _swapChain);
         }
 
-        public virtual Image Shot(int multipler) {
+        private TargetResourceTexture _previousMsaaShotTarget, _previousMsaaTemporaryTexture, _shotDownsampleTexture;
+
+        public virtual void Shot(double multipler, double downsample, Stream outputStream) {
             var width = ActualWidth;
             var height = ActualHeight;
 
-            Width = width * multipler;
-            Height = height * multipler;
+            Width = (width * multipler).RoundToInt();
+            Height = (height * multipler).RoundToInt();
 
-            using (var stream = new System.IO.MemoryStream()) {
-                if (UseMsaa) {
+            if (!Equals(downsample, 1d)) {
+                _shotDownsampleTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            }
+
+            if (UseMsaa) {
+                if (multipler == 1) {
+                    if (_previousMsaaShotTarget == null) {
+                        _previousMsaaShotTarget = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        _previousMsaaTemporaryTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                    }
+
+                    var outputWidth = (Width * downsample).RoundToInt();
+                    var outputHeight = (Height * downsample).RoundToInt();
+
+                    _previousMsaaShotTarget.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+                    _previousMsaaTemporaryTexture.Resize(DeviceContextHolder, Width, Height, null);
+
+                    if (!Equals(downsample, 1d)) {
+                        _shotDownsampleTexture.Resize(DeviceContextHolder, outputWidth, outputHeight, null);
+                    }
+
+                    var swapChainMode = _swapChain != null;
+                    if (swapChainMode) {
+                        DisposeHelper.Dispose(ref _swapChain);
+                    }
+
+                    if (_resized) {
+                        Resize();
+                        _resized = false;
+                    }
+
+                    var renderView = _renderView;
+                    _renderView = _previousMsaaShotTarget.TargetView;
+
+                    Draw();
+                    DeviceContextHolder.GetHelper<CopyHelper>()
+                                       .Draw(DeviceContextHolder, _previousMsaaShotTarget.View, _previousMsaaTemporaryTexture.TargetView);
+
+                    if (Equals(downsample, 1d)) {
+                        Texture2D.ToStream(DeviceContext, _previousMsaaTemporaryTexture.Texture, ImageFileFormat.Jpg, outputStream);
+                    } else {
+                        DeviceContextHolder.GetHelper<DownsampleHelper>()
+                                           .Draw(DeviceContextHolder, _previousMsaaTemporaryTexture, _shotDownsampleTexture);
+                        Texture2D.ToStream(DeviceContext, _shotDownsampleTexture.Texture, ImageFileFormat.Bmp, outputStream);
+                    }
+
+                    _renderView = renderView;
+
+                    if (swapChainMode) {
+                        RecreateSwapChain();
+                    }
+                } else {
                     var sampleDescription = SampleDescription;
                     SampleDescription = new SampleDescription(1, 0);
 
@@ -491,26 +551,23 @@ namespace AcTools.Render.Base {
                         RecreateSwapChain();
                     }
 
-                    /*var target = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-                    target.Resize(DeviceContextHolder, width, height, null);
-
-                    var renderView = _renderView;
-                    _renderView = target.TargetView;*/
-
                     Draw();
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, outputStream);
 
-                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
-
-                    // _renderView = renderView;
                     SampleDescription = sampleDescription;
-                } else {
-                    Draw();
-                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
                 }
+            } else {
+                Draw();
+                Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, outputStream);
+            }
 
-                Width = width;
-                Height = height;
+            Width = width;
+            Height = height;
+        }
 
+        public Image Shot(double multipler, double downsample) {
+            using (var stream = new MemoryStream()) {
+                Shot(multipler, downsample, stream);
                 stream.Position = 0;
                 return Image.FromStream(stream);
             }

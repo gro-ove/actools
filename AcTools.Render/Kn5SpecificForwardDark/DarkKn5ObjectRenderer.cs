@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             get { return base.ShowWireframe; }
             set {
                 base.ShowWireframe = value;
-                (_carWrapper.ElementAtOrDefault(0) as FlatMirror)?.SetInvertedRasterizerState(
+                (_carWrapper?.ElementAtOrDefault(0) as FlatMirror)?.SetInvertedRasterizerState(
                         value ? DeviceContextHolder.States.WireframeInvertedState : null);
             }
         }
@@ -87,6 +87,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             BackgroundColor = Color.FromArgb(220, 220, 220);
             EnableShadows = EffectDarkMaterial.EnableShadows;
+        }
+
+        protected override void OnBackgroundColorChanged() {
+            base.OnBackgroundColorChanged();
+            UiColor = BackgroundColor.GetBrightness() > 0.5 ? Color.Black : Color.White;
         }
 
         private static float[] GetSplits(int number) {
@@ -205,11 +210,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private void UpdateMeshDebug([CanBeNull] RenderableList carNode) {
-            if (carNode == null) return;
-            foreach (var node in carNode.GetAllChildren().OfType<IKn5RenderableObject>()) {
-                node.SetDebugMode(DeviceContextHolder, _meshDebug);
-            }
+        private void UpdateMeshDebug([CanBeNull] Kn5RenderableCar carNode) {
+            carNode?.SetDebugMode(_meshDebug);
         }
 
         protected override void DrawScene() {

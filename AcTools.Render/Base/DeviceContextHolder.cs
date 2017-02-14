@@ -17,7 +17,11 @@ namespace AcTools.Render.Base {
         [NotNull]
         DeviceContext DeviceContext { get; }
 
+        [NotNull]
         T Get<T>() where T : class;
+
+        [CanBeNull]
+        T TryToGet<T>() where T : class;
 
         T GetEffect<T>() where T : IEffectWrapper, new();
 
@@ -103,6 +107,13 @@ namespace AcTools.Render.Base {
         }
 
         public T Get<T>() where T : class {
+            var result = TryToGet<T>();
+            if (result == null) throw new Exception($"Entry with type {typeof(T)} not found");
+
+            return result;
+        }
+
+        public T TryToGet<T>() where T : class {
             var key = typeof(T);
             object result;
 
@@ -127,7 +138,7 @@ namespace AcTools.Render.Base {
                 return child;
             }
 
-            throw new Exception($"Entry with type {key} not found");
+            return null;
         }
 
         private SharedMaterials _sharedMaterials;

@@ -44,6 +44,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public DeviceContext DeviceContext => _mainHolder.DeviceContext;
 
         public T Get<T>() where T : class {
+            var result = TryToGet<T>();
+            if (result == null) throw new Exception($"Entry with type {typeof(T)} not found");
+
+            return result;
+        }
+
+        public T TryToGet<T>() where T : class {
             if (typeof(T) == typeof(ITexturesProvider)) {
                 return _texturesProvider as T;
             }
@@ -56,7 +63,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 return _model as T;
             }
 
-            return _mainHolder.Get<T>();
+            return _mainHolder.TryToGet<T>();
         }
 
         public T GetEffect<T>() where T : IEffectWrapper, new() {

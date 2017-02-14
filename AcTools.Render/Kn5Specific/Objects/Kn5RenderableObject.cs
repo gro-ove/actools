@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -104,7 +105,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (enabled == (_debugMaterial != null)) return;
 
             if (enabled) {
-                _debugMaterial = holder.GetMaterial(BasicMaterials.DebugKey);
+                _debugMaterial = holder.Get<SharedMaterials>().GetMaterial(new Tuple<object, uint>(BasicMaterials.DebugKey, OriginalNode.MaterialId));
+                if (_debugMaterial == null) return;
+
                 if (IsInitialized) {
                     _debugMaterial.Initialize(holder);
                     _debugMaterialInitialized = true;

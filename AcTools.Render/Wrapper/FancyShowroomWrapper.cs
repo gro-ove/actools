@@ -76,7 +76,7 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.F8:
-                    int multipler;
+                    double multipler;
                     bool downscale; 
                     
                     {
@@ -92,16 +92,16 @@ namespace AcTools.Render.Wrapper {
                         downscale = !shiftPressed;
 
                         if (ctrlPressed) {
-                            multipler = altPressed ? 16 : 8;
+                            multipler = altPressed ? 1d : 8d;
                         } else if (altPressed) {
-                            multipler = 4;
+                            multipler = 4d;
                         } else {
-                            multipler = 2;
+                            multipler = 2d;
                         }
                     }
 
                     _renderer.KeepFxaaWhileShooting = !downscale;
-                    var image = _renderer.Shot(multipler);
+                    var image = _renderer.Shot(multipler, 1d);
                     var directory = FileUtils.GetDocumentsScreensDirectory();
                     FileUtils.EnsureDirectoryExists(directory);
                     var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");

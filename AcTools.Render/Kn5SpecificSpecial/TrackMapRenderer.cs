@@ -10,6 +10,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific;
@@ -24,11 +25,9 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DirectWrite;
 using SlimDX.DXGI;
-using SpriteTextRenderer;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
 using Matrix = SlimDX.Matrix;
-using TextAlignment = SpriteTextRenderer.TextAlignment;
-using TextBlockRenderer = SpriteTextRenderer.SlimDX.TextBlockRenderer;
+using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class TrackMapPreparationRenderer : TrackMapRenderer, IKn5ObjectRenderer {

@@ -142,6 +142,12 @@ namespace AcTools.Render.Data {
         }
         #endregion
 
+        #region Steer lock
+        public float GetSteerLock() {
+            return _data.GetIniFile("car.ini")["CONTROLS"].GetFloat("STEER_LOCK", 180f);
+        }
+        #endregion
+
         #region Suspension
         public SuspensionsPack GetSuspensionsPack() {
             return SuspensionsPack.Create(_data);

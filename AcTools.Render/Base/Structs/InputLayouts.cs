@@ -17,13 +17,15 @@ namespace AcTools.Render.Base.Structs {
         public interface ILayout {
             int Stride { get; }
 
-            Vector3 Position { get; }
-
             InputElement[] InputElements { get; }
         }
 
+        public interface IPositionLayout : ILayout {
+            Vector3 Position { get; }
+        }
+
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticeP : ILayout {
+        public struct VerticeP : IPositionLayout {
             public readonly Vector3 Position;
 
             public VerticeP(Vector3 p) {
@@ -40,11 +42,11 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
+            Vector3 IPositionLayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticePT : ILayout {
+        public struct VerticePT : IPositionLayout {
             public readonly Vector3 Position;
             public readonly Vector2 Tex;
 
@@ -64,11 +66,11 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
+            Vector3 IPositionLayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticePC : ILayout {
+        public struct VerticePC : IPositionLayout {
             public Vector3 Position;
             public Vector4 Color;
 
@@ -88,11 +90,11 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
+            Vector3 IPositionLayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticePNT : ILayout {
+        public struct VerticePNT : IPositionLayout {
             public Vector3 Position;
             public Vector3 Normal;
             public Vector2 Tex;
@@ -115,11 +117,11 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
+            Vector3 IPositionLayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticePNTG : ILayout {
+        public struct VerticePNTG : IPositionLayout {
             public Vector3 Position;
             public Vector3 Normal;
             public Vector2 Tex;
@@ -145,15 +147,11 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
-        }
-
-        public struct BonePalette {
-            public byte B0, B1, B2, B3;
+            Vector3 IPositionLayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct VerticePNTGW4B : ILayout {
+        public struct VerticePNTGW4B : IPositionLayout {
             public Vector3 Position;
             public Vector3 Normal;
             public Vector2 Tex;
@@ -185,7 +183,7 @@ namespace AcTools.Render.Base.Structs {
 
             public InputElement[] InputElements => InputElementsValue;
 
-            Vector3 ILayout.Position => Position;
+            Vector3 IPositionLayout.Position => Position;
         }
     }
 }

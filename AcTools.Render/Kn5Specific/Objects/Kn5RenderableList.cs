@@ -31,8 +31,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (_dirNode != null && !_dirTargetSet) {
                 _dirTargetSet = true;
-                _dirTarget = contextHolder.Get<IKn5Model>().GetDummyByName(_dirNode);
-                _dirTarget?.LookAt(this);
+
+                var model = contextHolder.TryToGet<IKn5Model>();
+                if (model != null) {
+                    _dirTarget = model.GetDummyByName(_dirNode);
+                    _dirTarget?.LookAt(this);
+                }
             }
 
             base.Draw(contextHolder, camera, mode, filter);

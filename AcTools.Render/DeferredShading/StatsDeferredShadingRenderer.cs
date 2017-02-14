@@ -1,11 +1,11 @@
 ﻿using System.Drawing;
+using System.IO;
+using AcTools.Render.Base.Sprites;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.DirectWrite;
-using SpriteTextRenderer;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
-using TextBlockRenderer = SpriteTextRenderer.SlimDX.TextBlockRenderer;
 
 namespace AcTools.Render.DeferredShading {
     public abstract class StatsDeferredShadingRenderer : DeferredShadingRenderer {
@@ -38,12 +38,12 @@ Lights: {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
             Kn5MaterialDeferred.Drawed = 0;
         }
 
-        public override Image Shot(int multipler) {
+        public override void Shot(double multipler, double downsample, Stream outputStream) {
             var visibleUi = VisibleUi;
             VisibleUi = false;
 
             try {
-                return base.Shot(multipler);
+                base.Shot(multipler, downsample, outputStream);
             } finally {
                 VisibleUi = visibleUi;
             }

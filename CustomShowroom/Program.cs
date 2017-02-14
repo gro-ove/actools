@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -42,8 +43,8 @@ namespace CustomShowroom {
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
-            
-            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_CustomShowroom", "CustomShowroom.References", false).Handler;
+
+            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_CustomShowroom", "References", null).Handler;
             return MainInner(a);
         }
 
@@ -62,7 +63,44 @@ namespace CustomShowroom {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
             var options = new Options();
-            if (!Parser.Default.ParseArguments(args, options)) return 1;
+            if (!Parser.Default.ParseArguments(args, options) || options.Help) {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                
+                var form = new Form {
+                    Width = 640,
+                    Height = 480,
+                    FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                    StartPosition = FormStartPosition.CenterScreen
+                };
+
+                var message = new TextBox {
+                    Multiline = true,
+                    ReadOnly = true,
+                    BackColor = Control.DefaultBackColor,
+                    BorderStyle = BorderStyle.None,
+                    Text = options.GetUsage(),
+                    Location = new Point(20, 8),
+                    Size = new Size(form.ClientSize.Width - 40, form.ClientSize.Height - 16),
+                    Padding = new Padding(20),
+                    Font = new Font("Consolas", 9f),
+                    TabStop = false
+                };
+
+                var button = new Button {
+                    Text = "OK",
+                    Location = new Point(form.ClientSize.Width / 2 - 80, form.ClientSize.Height - 40),
+                    Size = new Size(160, 32)
+                };
+
+                button.Click += (sender, eventArgs) => form.Close();
+
+                form.Controls.Add(button);
+                form.Controls.Add(message);
+                form.ShowDialog();
+
+                return 1;
+            }
 
             var filename = Assembly.GetEntryAssembly().Location;
             if (options.Verbose || filename?.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
@@ -126,10 +164,11 @@ namespace CustomShowroom {
             }
             
             if (options.Mode == Mode.Lite) {
-                using (var renderer = new ForwardKn5ObjectRenderer(new CarDescription(kn5File))) {
+                using (var renderer = new ToolsKn5ObjectRenderer(new CarDescription(kn5File))) {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
+                    renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomWrapper(renderer).Run();
                 }
             } else if (options.Mode == Mode.Dark) {
@@ -139,6 +178,7 @@ namespace CustomShowroom {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
+                    renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomWrapper(renderer).Run();
                 }
             } else if (options.Mode == Mode.TrackMap) {

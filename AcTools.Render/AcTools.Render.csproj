@@ -66,13 +66,9 @@
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SpriteTextRenderer, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\SpriteTextRenderer\SpriteTextRenderer.dll</HintPath>
-    </Reference>
-    <Reference Include="SpriteTextRenderer.SlimDX, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\SpriteTextRenderer\SpriteTextRenderer.SlimDX.dll</HintPath>
+    <Reference Include="NBidi, Culture=neutral">
+      <HintPath>..\Libraries\NBidi\NBidi.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -100,6 +96,7 @@
     <Compile Include="Base\Objects\SpecialRenderMode.cs" />
     <Compile Include="Base\PostEffects\BlurHelper.cs" />
     <Compile Include="Base\PostEffects\CopyHelper.cs" />
+    <Compile Include="Base\PostEffects\DownsampleHelper.cs" />
     <Compile Include="Base\PostEffects\Fxaa311Helper.cs" />
     <Compile Include="Base\PostEffects\FxaaHelper.cs" />
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
@@ -119,6 +116,13 @@
     <Compile Include="Base\Shaders\IEffectScreenSizeWrapper.cs" />
     <Compile Include="Base\Shaders\IEffectWrapper.cs" />
     <Compile Include="Base\Shaders\IFxMatrixVariable.cs" />
+    <Compile Include="Base\Sprites\CharRenderCall.cs" />
+    <Compile Include="Base\Sprites\Helpers.cs" />
+    <Compile Include="Base\Sprites\VerticeSpriteSpecific.cs" />
+    <Compile Include="Base\Sprites\SpriteRenderer.cs" />
+    <Compile Include="Base\Sprites\StringMetrics.cs" />
+    <Compile Include="Base\Sprites\Structs.cs" />
+    <Compile Include="Base\Sprites\TextBlockRenderer.cs" />
     <Compile Include="Data\CarData.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Paintshop.cs" />
@@ -258,6 +262,7 @@
     <Content Include="Shaders\Includes\FXAA.fx" />
     <Content Include="Shaders\Includes\Shadows.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
+    <Content Include="Shaders\Pp\PpDownsample.fx" />
     <Content Include="Shaders\Pp\PpLensFlares.fx" />
     <Content Include="Shaders\Pp\PpOutline.fx" />
     <Content Include="Shaders\Pp\PpSmaa.fx" />
@@ -272,6 +277,7 @@
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />
+    <Content Include="Shaders\Sprites\SpriteShader.fx" />
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
     <Content Include="Shaders\Special\SpecialUv.fx" />

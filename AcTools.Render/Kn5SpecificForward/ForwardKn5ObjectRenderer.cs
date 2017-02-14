@@ -13,6 +13,7 @@ using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Reflections;
 using AcTools.Render.Base.Shadows;
+using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific;
@@ -24,10 +25,8 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.DirectWrite;
-using SpriteTextRenderer;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
-using TextAlignment = SpriteTextRenderer.TextAlignment;
-using TextBlockRenderer = SpriteTextRenderer.SlimDX.TextBlockRenderer;
+using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public class ForwardKn5ObjectRenderer : ForwardRenderer, IKn5ObjectRenderer {
@@ -40,6 +39,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         public bool AutoAdjustTarget { get; set; } = true;
 
         public bool VisibleUi { get; set; } = true;
+
+        public Color UiColor { get; set; } = Color.White;
 
         private bool _useFpsCamera;
 
@@ -179,9 +180,9 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected virtual void ClearBeforeChangingCar() { }
 
-        private static void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
-            newCar.LightsEnabled = oldCar?.LightsEnabled == true;
-            newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled == true;
+        private void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
+            newCar.LightsEnabled = oldCar?.LightsEnabled ?? CarLightsEnabled;
+            newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled ?? CarBrakeLightsEnabled;
             newCar.SteerDeg = oldCar?.SteerDeg ?? 0f;
         }
 
@@ -368,6 +369,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (_car != null) {
                 CarNode = new Kn5RenderableCar(_car, Matrix.Identity, _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
                         asyncTexturesLoading: AsyncTexturesLoading, allowSkinnedObjects: AllowSkinnedObjects);
+                CopyValues(CarNode, null);
+
                 _selectSkinLater = false;
                 _carWrapper.Add(CarNode);
 
@@ -507,10 +510,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             _textBlock.DrawString($@"
 FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
-FXAA: {(UseFxaa ? "Yes" : "No")}
+FXAA: {(UseFxaa && (!UseMsaa || UseSsaa) ? "Yes" : "No")}
+MSAA: {(UseMsaa && !UseSsaa ? "Yes" : "No")}
+SSAA: {(UseSsaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
-                    new Vector2(Width - 300, 20), 16f, new Color4(1.0f, 1.0f, 1.0f),
+                    new Vector2(ActualWidth - 300, 20), 16f, UiColor,
                     CoordinateType.Absolute);
 
             if (CarNode == null) return;
@@ -519,8 +524,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             if (CarNode.LodsCount > 0) {
                 var information = CarNode.CurrentLodInformation;
                 _textBlock.DrawString($"LOD #{CarNode.CurrentLod + 1} ({CarNode.LodsCount} in total; shown from {information.In} to {information.Out})",
-                        new RectangleF(0f, 0f, Width, Height - offset),
-                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
+                        new RectangleF(0f, 0f, ActualWidth, ActualHeight - offset),
+                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, UiColor,
                         CoordinateType.Absolute);
                 offset += 20;
             }
@@ -543,16 +548,16 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
 
             if (flags.Count > 0) {
                 _textBlock.DrawString(flags.JoinToString(),
-                        new RectangleF(0f, 0f, Width, Height - offset),
-                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
+                        new RectangleF(0f, 0f, ActualWidth, ActualHeight - offset),
+                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, UiColor,
                         CoordinateType.Absolute);
                 offset += 20;
             }
 
             if (CarNode.Skins != null && CarNode.CurrentSkin != null) {
                 _textBlock.DrawString($"{CarNode.CurrentSkin} ({CarNode.Skins.IndexOf(CarNode.CurrentSkin) + 1}/{CarNode.Skins.Count})",
-                        new RectangleF(0f, 0f, Width, Height - offset),
-                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, new Color4(1.0f, 1.0f, 1.0f),
+                        new RectangleF(0f, 0f, ActualWidth, ActualHeight - offset),
+                        TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, UiColor,
                         CoordinateType.Absolute);
             }
         }
