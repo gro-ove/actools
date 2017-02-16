@@ -103,8 +103,7 @@
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_PackData}" Command="{Binding PackDataCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}"
-                        Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
                         Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />

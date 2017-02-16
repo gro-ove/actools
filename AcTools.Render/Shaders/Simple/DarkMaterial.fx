@@ -80,6 +80,21 @@ cbuffer cbPerFrame {
 	float3 gBackgroundColor;
 }
 
+// z-buffer tricks if needed
+#define FixPosH(x) (x)
+
+#define farplane 500
+#define Fcoef (2.0 / log2(farplane + 1.0))
+
+float4 FixPosH_(float4 posH) {
+	posH.z = log2(max(1e-6, 1.0 + posH.w)) * Fcoef - 1.0;
+	return posH;
+}
+
+float4 CalculatePosH(float3 posL) {
+	return FixPosH(mul(float4(posL, 1.0f), gWorldViewProj));
+}
+
 // real reflection (not used by default)
 TextureCube gReflectionCubemap;
 
@@ -116,7 +131,7 @@ pt_PS_IN vs_pt_main(pt_VS_IN vin) {
 	pt_PS_IN vout;
 
 	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.PosH = CalculatePosH(vin.PosL);
 	vout.Tex = vin.Tex;
 
 	return vout;
@@ -155,7 +170,7 @@ PS_IN vs_main(VS_IN vin) {
 	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldInvTranspose);
 	vout.BitangentW = mul(cross(vin.NormalL, vin.TangentL), (float3x3)gWorldInvTranspose);
 
-	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.PosH = CalculatePosH(vin.PosL);
 	vout.Tex = vin.Tex;
 
 	return vout;
@@ -206,7 +221,7 @@ PS_IN vs_skinned(skinned_VS_IN vin) {
 	vout.TangentW = mul(t.xyz, (float3x3)gWorldInvTranspose);
 	vout.BitangentW = mul(cross(n.xyz, t.xyz), (float3x3)gWorldInvTranspose);
 
-	vout.PosH = mul(p, gWorldViewProj);
+	vout.PosH = FixPosH(mul(p, gWorldViewProj));
 	vout.Tex = vin.Tex;
 
 	return vout;
@@ -589,6 +604,23 @@ technique10 SkinnedGl {
 	}
 }
 
+//// Collider
+
+float4 ps_Collider(PS_IN pin) : SV_Target {
+	float3 toEyeW = normalize(gEyePosW - pin.PosW);
+	float3 normal = normalize(pin.NormalW);
+	float opacify = pow(1.0 - dot(normal, toEyeW), 5.0);
+	return float4((float3)1.0 - normal, opacify);
+}
+
+technique10 Collider {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Collider()));
+	}
+}
+
 //// Debug
 
 float4 ps_Debug(PS_IN pin) : SV_Target {
@@ -651,13 +683,23 @@ technique10 SkinnedDebug {
 
 //////////////// Misc stuff
 
+pt_PS_IN vs_AmbientShadow(pt_VS_IN vin) {
+	pt_PS_IN vout;
+
+	vout.PosH = CalculatePosH(vin.PosL);
+	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
+	vout.Tex = vin.Tex;
+
+	return vout;
+}
+
 float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
 	return float4(0.0, 0.0, 0.0, gDiffuseMap.Sample(samAnisotropic, pin.Tex).r);
 }
 
 technique10 AmbientShadow {
 	pass P0 {
-		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetVertexShader(CompileShader(vs_4_0, vs_AmbientShadow()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_AmbientShadow()));
 	}
@@ -679,7 +721,8 @@ technique10 Mirror {
 }
 
 float GetShadowSafe(float3 posW) {
-	return dot(posW, posW) > 1000 ? 1 : GetShadow(posW);
+	return GetShadow(posW);
+	// return dot(posW, posW) > 1000 ? 1 : GetShadow(posW);
 }
 
 float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
@@ -690,7 +733,8 @@ float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
 	float distance = length(eyeW);
 
 	float3 light = saturate(dot(normal, gLightDir)) * GetShadowSafe(pin.PosW) * gLightColor;
-	return float4(light, fresnel * saturate(1 - distance / 60));
+	float opacity = fresnel * saturate(1 - distance / 60);
+	return float4(light, opacity);
 }
 
 technique10 FlatMirror {
@@ -701,6 +745,26 @@ technique10 FlatMirror {
 	}
 }
 
+float4 ps_FlatBackgroundGround(pt_PS_IN pin) : SV_Target {
+	float3 eyeW = gEyePosW - pin.PosW;
+	float3 toEyeW = normalize(eyeW);
+	float3 normal = float3(0, 1, 0);
+	float fresnel = 0.11 + 0.52 * pow(dot(toEyeW, normal), 4);
+	float distance = length(eyeW);
+
+	float3 light = saturate(dot(normal, gLightDir)) * GetShadowSafe(pin.PosW) * gLightColor;
+	float opacity = fresnel * saturate(1 - distance / 60);
+	return float4(light * opacity + gBackgroundColor * (1.0 - opacity), 1.0);
+}
+
+technique10 FlatBackgroundGround {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatBackgroundGround()));
+	}
+}
+
 float GetDiffuseMultipler_ConsiderShadows_Safe(float3 normal, float3 position, out float3 ambient) {
 	float up = saturate(normal.y * 0.5 + 0.5);
 	ambient = gAmbientDown + up * gAmbientRange;
@@ -708,7 +772,7 @@ float GetDiffuseMultipler_ConsiderShadows_Safe(float3 normal, float3 position, o
 	return saturate(dot(normal, gLightDir)) * GetShadowSafe(position);
 }
 
-float4 ps_FlatGround(pt_PS_IN pin) : SV_Target {
+float4 ps_FlatAmbientGround(pt_PS_IN pin) : SV_Target {
 	float3 normal = float3(0, 1, 0);
 	float3 position = pin.PosW;
 
@@ -728,10 +792,10 @@ float4 ps_FlatGround(pt_PS_IN pin) : SV_Target {
 	return float4(light, saturate(1.5 - distance / 60));
 }
 
-technique10 FlatGround {
+technique10 FlatAmbientGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatGround()));
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatAmbientGround()));
 	}
 }

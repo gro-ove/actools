@@ -27,8 +27,8 @@ namespace AcTools.Render.Base.Shadows {
 
                 if (!Equals(_innerCamera.FarZ, FarZ)) {
                     _innerCamera.Aspect = Aspect;
-                    _innerCamera.FarZ = FarZ;
                     _innerCamera.NearZ = NearZ;
+                    _innerCamera.FarZ = FarZ;
                     _innerCamera.Width = Width * 0.95f;
                     _innerCamera.Height = Height * 0.95f;
                     _innerCamera.SetLens(1f);

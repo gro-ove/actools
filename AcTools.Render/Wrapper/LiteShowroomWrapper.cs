@@ -152,7 +152,7 @@ namespace AcTools.Render.Wrapper {
                         }
 
                         _renderer.KeepFxaaWhileShooting = !downscale;
-                        using (var image = _renderer.Shot(multipler, 1d)) {
+                        using (var image = _renderer.Shot(multipler, 1d, true)) {
                             var directory = FileUtils.GetDocumentsScreensDirectory();
                             FileUtils.EnsureDirectoryExists(directory);
                             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
@@ -185,6 +185,8 @@ namespace AcTools.Render.Wrapper {
                         if (d != null) {
                             d.FlatMirror = !d.FlatMirror;
                         }
+                    } else if (!args.Control && !args.Alt && args.Shift) {
+                        _renderer.TemporaryFlag = !_renderer.TemporaryFlag;
                     } else {
                         _renderer.UseMsaa = !_renderer.UseMsaa;
                     }
@@ -204,10 +206,27 @@ namespace AcTools.Render.Wrapper {
                     }
                     break;
 
+                case Keys.D:
+                    if (!args.Shift && _renderer.CarNode != null) {
+                        if (!args.Control) {
+                            _renderer.CarNode.RightDoorOpen = !_renderer.CarNode.RightDoorOpen;
+                            if (!args.Alt) {
+                                _renderer.CarNode.LeftDoorOpen = !_renderer.CarNode.LeftDoorOpen;
+                            }
+                        } else if (!args.Alt) {
+                            _renderer.CarNode.LeftDoorOpen = !_renderer.CarNode.LeftDoorOpen;
+                        }
+                    }
+                    break;
+
                 case Keys.C:
                     if (!args.Control && args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.CockpitLrActive = !_renderer.CarNode.CockpitLrActive;
+                        }
+                    } else {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.IsColliderVisible = !_renderer.CarNode.IsColliderVisible;
                         }
                     }
                     break;

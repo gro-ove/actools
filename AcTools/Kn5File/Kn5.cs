@@ -9,7 +9,7 @@ namespace AcTools.Kn5File {
 
         private Kn5() {
             OriginalFilename = string.Empty;
-            Header = new Kn5Header { Version = 5 };
+            Header = new Kn5Header { Version = CommonAcConsts.Kn5ActualVersion };
             Textures = new Dictionary<string, Kn5Texture>();
             TexturesData = new Dictionary<string, byte[]>();
             Materials = new Dictionary<string, Kn5Material>();
@@ -33,6 +33,8 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5Node RootNode;
+
+        [CanBeNull]
         public byte[] NodesBytes;
 
         public IEnumerable<Kn5Node> Nodes {

@@ -290,12 +290,14 @@
                             <!--car block-->
                             <mui:Cell ClipToBounds="True" Background="#111111">
                                 <!--preview-->
-                                <mui:BetterImage DataContext="{Binding SelectedCarEntry}" Stretch="UniformToFill" Filename="{Binding PreviewImage}"
-                                        c:ImageViewerService.Image="{Binding PreviewImage}" HorizontalAlignment="Center">
+                                <mui:BetterImage Stretch="UniformToFill" Filename="{Binding SelectedCarEntry.PreviewImage}"
+                                        c:ImageViewerService.Image="{Binding SelectedCarEntry.PreviewImage}" HorizontalAlignment="Center">
                                     <mui:BetterImage.ToolTip>
                                         <StackPanel Margin="4 8">
-                                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
-                                            <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedCarEntry.CarObject.DisplayName}"
+                                                    Margin="0 0 0 4" />
+                                            <c:CarBlock Car="{Binding SelectedCarEntry.CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
+                                                    MaxHeight="320" />
                                         </StackPanel>
                                     </mui:BetterImage.ToolTip>
                                 </mui:BetterImage>
@@ -442,7 +444,8 @@
                                                     </ItemsControl.ItemsPanel>
                                                 </ItemsControl>
 
-                                                <mui:BbCodeBlock x:Name="DriverName" BbCode="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                                <mui:BbCodeBlock x:Name="DriverName" BbCode="{Binding Name}" TextWrapping="NoWrap"
+                                                        TextTrimming="CharacterEllipsis" />
                                             </DockPanel>
 
                                             <DataTemplate.Triggers>

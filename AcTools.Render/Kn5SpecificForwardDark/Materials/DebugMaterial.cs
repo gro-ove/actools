@@ -35,15 +35,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
 
             uint flags = 0;
-            
+
             if (Kn5Material.AlphaTested) {
                 flags |= EffectDarkMaterial.AlphaTest;
             }
-            
+
             if (_txNormal != null) {
                 flags |= EffectDarkMaterial.HasNormalMap;
             }
-            
+
             if (Kn5Material.ShaderName.Contains("_AT")) {
                 flags |= EffectDarkMaterial.UseNormalAlphaAsAlpha;
             }

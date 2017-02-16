@@ -140,7 +140,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                     bytes = await FileUtils.ReadAllBytesAsync(filename);
                     break;
                 } catch (Exception e) {
-                    Logging.Warning("UpdateOverrideLater(): " + e);
+                    Logging.Warning("UpdateOverrideLater(): " + e.Message);
                 }
             }
 
@@ -185,7 +185,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         texture.Resource = null;
                     }
                 } catch (Exception e) {
-                    Logging.Warning("Can’t load override texture: " + e);
+                    Logging.Warning("Can’t load override texture: " + e.Message);
                     texture.Override = null;
                 }
             }

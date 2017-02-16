@@ -32,12 +32,21 @@
             <!--lite specific-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_LiteHeader}" />
 
+            <CheckBox IsChecked="{Binding Holder.UseOldLiteShowroom}">
+                <CheckBox.ToolTip>It’s rendering is way less accurate and it doesn’t support skinned meshes, but if your PC is really not that powerful…</CheckBox.ToolTip>
+                <Label Content="Use the old version" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.LiteUseSsaa}" ToolTip="You can toggle it any time by pressing Ctrl+M">
+                <Label Content="Use SSAA" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa_Tooltip}">

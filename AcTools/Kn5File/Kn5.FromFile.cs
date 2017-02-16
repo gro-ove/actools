@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcTools.DataFile;
-using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Kn5File {
     public partial class Kn5 {
-        public static Kn5 FromFile(string filename, bool skipTextures = false) {
+        public static Kn5 FromFile(string filename, bool skipTextures = false, bool readNodesAsBytes = true) {
             if (!File.Exists(filename)) {
                 throw new FileNotFoundException(filename);
             }
@@ -25,7 +24,7 @@ namespace AcTools.Kn5File {
                 }
 
                 kn5.FromFile_Materials(reader);
-                kn5.FromFile_Nodes(reader);
+                kn5.FromFile_Nodes(reader, readNodesAsBytes);
             }
 
             return kn5;
@@ -67,7 +66,7 @@ namespace AcTools.Kn5File {
             return result;
         }
 
-        public static Kn5 FromStream(Stream entry, bool skipTextures = false) {
+        public static Kn5 FromStream(Stream entry, bool skipTextures = false, bool readNodesAsBytes = true) {
             var kn5 = new Kn5(string.Empty);
 
             using (var reader = new Kn5Reader(entry)) {
@@ -80,7 +79,7 @@ namespace AcTools.Kn5File {
                 }
 
                 kn5.FromFile_Materials(reader);
-                kn5.FromFile_Nodes(reader);
+                kn5.FromFile_Nodes(reader, readNodesAsBytes);
             }
 
             return kn5;
@@ -99,11 +98,9 @@ namespace AcTools.Kn5File {
 
                 for (var i = 0; i < count; i++) {
                     var texture = reader.ReadTexture();
-                    if (!Textures.ContainsKey(texture.Name)) {
+                    if (texture.Length > 0) {
                         Textures[texture.Name] = texture;
                         TexturesData[texture.Name] = reader.ReadBytes(texture.Length);
-                    } else {
-                        reader.BaseStream.Seek(texture.Length, SeekOrigin.Current);
                     }
                 }
             } catch (NotImplementedException) {
@@ -124,7 +121,7 @@ namespace AcTools.Kn5File {
 
                     Textures[texture.Name] = texture;
                     TexturesData[texture.Name] = new byte[]{};
-                    reader.BaseStream.Seek(texture.Length, SeekOrigin.Current);
+                    reader.Skip(texture.Length);
                 }
             } catch (NotImplementedException) {
                 Textures = null;
@@ -147,11 +144,13 @@ namespace AcTools.Kn5File {
             }
         }
 
-        private void FromFile_Nodes(Kn5Reader reader) {
-            var nodesStart = reader.BaseStream.Position;
-            var nodesLength = reader.BaseStream.Length - nodesStart;
-            NodesBytes = reader.ReadBytes((int)nodesLength);
-            reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
+        private void FromFile_Nodes(Kn5Reader reader, bool readAsBytes) {
+            if (readAsBytes) {
+                var nodesStart = reader.BaseStream.Position;
+                var nodesLength = reader.BaseStream.Length - nodesStart;
+                NodesBytes = reader.ReadBytes((int)nodesLength);
+                reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
+            }
 
             try {
                 RootNode = FromFile_Node(reader);

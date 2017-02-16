@@ -8,7 +8,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="PluginItemTemplate" DataType="t:PluginEntry">
-        <StackPanel Margin="0 0 20 20" IsEnabled="{Binding IsAvailable}">
+        <StackPanel Margin="0 0 20 20" IsEnabled="{Binding CanWork}">
             <DockPanel>
                 <!--enabling checkbox-->
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding IsEnabled}" Margin="0 0 4 0"
@@ -31,12 +31,20 @@
             <!--description-->
             <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 4 0 8" TextWrapping="Wrap" />
 
-            <!--description-->
+            <!--not available message-->
             <DockPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                         DockPanel.Dock="Left" />
                 <TextBlock Text="{Binding AppVersion, StringFormat={x:Static c:ControlsStrings.Plugins_NotAvailable}}" Style="{StaticResource Small}"
-                        FontWeight="Bold" Margin="0 4 0 8" />
+                        FontWeight="Bold" Margin="4 4 0 8" VerticalAlignment="Center" />
+            </DockPanel>
+
+            <!--obsolete message-->
+            <DockPanel Visibility="{Binding IsObsolete, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" />
+                <TextBlock Style="{StaticResource Small}" VerticalAlignment="Center" FontWeight="Bold" Margin="4 4 0 8">
+                    <TextBlock.Text>Plugin is obsolete and won’t work with this version of CM.</TextBlock.Text>
+                </TextBlock>
             </DockPanel>
 
             <StackPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">

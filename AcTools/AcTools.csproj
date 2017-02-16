@@ -66,8 +66,8 @@
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Magick.NET-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\Magick.NET-6.8-$(ActualPlatform)\Magick.NET-$(ActualPlatform).dll</HintPath>
+    <Reference Include="Magick.NET-Q8-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\Magick.NET-7.0.4-$(ActualPlatform)\Magick.NET-Q8-$(ActualPlatform).dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
@@ -107,12 +107,18 @@
     <Compile Include="DataFile\DataWrapper.cs" />
     <Compile Include="DataFile\AbstractDataFile.cs" />
     <Compile Include="DataFile\IniFile.cs" />
-    <Compile Include="Kn5File\Kn5_CreateEmpty.cs" />
-    <Compile Include="Kn5File\Kn5_ExportTextures.cs" />
-    <Compile Include="Kn5File\Kn5_Stats.cs" />
-    <Compile Include="Kn5File\Kn5_ExportFbxIni.cs" />
-    <Compile Include="Kn5File\Kn5_ExportFbx.cs" />
-    <Compile Include="Kn5File\Kn5_FromJson.cs" />
+    <Compile Include="Kn5File\Kn5.CreateEmpty.cs" />
+    <Compile Include="Kn5File\Kn5.ExportTextures.cs" />
+    <Compile Include="Kn5File\Kn5.Stats.cs" />
+    <Compile Include="Kn5File\Kn5.ExportFbxIni.cs" />
+    <Compile Include="Kn5File\Kn5.ExportFbx.cs" />
+    <Compile Include="Kn5File\Kn5.FromJson.cs" />
+    <Compile Include="KsAnimFile\KsAnimEntry.cs" />
+    <Compile Include="KsAnimFile\KsAnim.FromFile.cs" />
+    <Compile Include="KsAnimFile\KsAnimHeader.cs" />
+    <Compile Include="KsAnimFile\KsAnimReader.cs" />
+    <Compile Include="KsAnimFile\KsAnim.cs" />
+    <Compile Include="ReadAheadBinaryReader.cs" />
     <Compile Include="Processes\AcMousePretender.cs" />
     <Compile Include="Processes\AssistState.cs" />
     <Compile Include="Processes\Game.cs" />
@@ -134,7 +140,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utils\AcFixer.cs" />
+    <Compile Include="Utils\AcRootFinder.cs" />
     <Compile Include="Utils\ExifWorks.cs" />
     <Compile Include="Utils\FileUtils_Async.cs" />
     <Compile Include="Utils\FileUtils_Paths.cs" />
@@ -163,10 +169,10 @@
     <Compile Include="Utils\ImageUtils_Livery.cs" />
     <Compile Include="Kn5File\Kn5Header.cs" />
     <Compile Include="Kn5File\Kn5.cs" />
-    <Compile Include="Kn5File\Kn5_ExportCollada.cs" />
-    <Compile Include="Kn5File\Kn5_FromDirectory.cs" />
-    <Compile Include="Kn5File\Kn5_Save.cs" />
-    <Compile Include="Kn5File\Kn5_FromFile.cs" />
+    <Compile Include="Kn5File\Kn5.ExportCollada.cs" />
+    <Compile Include="Kn5File\Kn5.FromDirectory.cs" />
+    <Compile Include="Kn5File\Kn5.Save.cs" />
+    <Compile Include="Kn5File\Kn5.FromFile.cs" />
     <Compile Include="Kn5File\Kn5Reader.cs" />
     <Compile Include="Kn5File\Kn5Writer.cs" />
     <Compile Include="Kn5File\Kn5Material.cs" />

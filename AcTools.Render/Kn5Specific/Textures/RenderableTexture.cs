@@ -50,6 +50,26 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
+        [CanBeNull]
+        private static ShaderResourceView LoadSafe(Device device, byte[] bytes) {
+            try {
+                return ShaderResourceView.FromMemory(device, bytes);
+            } catch (Exception) {
+                AcToolsLogging.Write("Texture damaged");
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        private static ShaderResourceView LoadSafe(Device device, string filename) {
+            try {
+                return ShaderResourceView.FromFile(device, filename);
+            } catch (Exception) {
+                AcToolsLogging.Write("Texture damaged");
+                return null;
+            }
+        }
+
         public void SetProceduralOverride(Device device, byte[] textureBytes) {
             if (textureBytes == null) {
                 ProceduralOverride = null;
@@ -57,7 +77,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             try {
-                ProceduralOverride = ShaderResourceView.FromMemory(device, textureBytes);
+                ProceduralOverride = LoadSafe(device, textureBytes);
             } catch (Exception) {
                 ProceduralOverride = null;
             }
@@ -67,28 +87,28 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         public void Load(Device device, string filename) {
             var id = ++_resourceId;
-            var resource = ShaderResourceView.FromFile(device, filename);
+            var resource = LoadSafe(device, filename);
             if (id != _resourceId) return;
             Resource = resource;
         }
 
         public void Load(Device device, byte[] data) {
             var id = ++_resourceId;
-            var resource = ShaderResourceView.FromMemory(device, data);
+            var resource = LoadSafe(device, data);
             if (id != _resourceId) return;
             Resource = resource;
         }
 
         public async Task LoadAsync(Device device, string filename) {
             var id = ++_resourceId;
-            var resource = await Task.Run(() => ShaderResourceView.FromFile(device, filename));
+            var resource = await Task.Run(() => LoadSafe(device, filename));
             if (id != _resourceId) return;
             Resource = resource;
         }
 
         public async Task LoadAsync(Device device, byte[] data) {
             var id = ++_resourceId;
-            var resource = await Task.Run(() => ShaderResourceView.FromMemory(device, data));
+            var resource = await Task.Run(() => LoadSafe(device, data));
             if (id != _resourceId) return;
             Resource = resource;
         }
@@ -102,7 +122,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             try {
-                var resource = await Task.Run(() => ShaderResourceView.FromFile(device, filename));
+                var resource = await Task.Run(() => LoadSafe(device, filename));
                 if (id != _overrideId) return;
                 Override = resource;
             } catch (Exception) {
@@ -120,7 +140,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             try {
-                var resource = ShaderResourceView.FromMemory(device, data);
+                var resource = LoadSafe(device, data);
                 if (id != _overrideId) return;
                 Override = resource;
             } catch (Exception) {
@@ -138,7 +158,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             try {
-                var resource = await Task.Run(() => ShaderResourceView.FromMemory(device, data));
+                var resource = await Task.Run(() => LoadSafe(device, data));
                 if (id != _overrideId) return;
                 Override = resource;
             } catch (Exception) {

@@ -10,7 +10,10 @@ namespace AcTools.Utils {
     public static class DataFixer {
         public static async void TestData(string carDir, double weight, Action<string> error, Action callback) {
             var list = await TestData(carDir, weight);
-            foreach (var e in list) error(e);
+            foreach (var e in list) {
+                error(e);
+            }
+
             callback();
         }
 

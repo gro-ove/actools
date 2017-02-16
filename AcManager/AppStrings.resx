@@ -644,10 +644,10 @@ Author: [b]{3}[/b]</value>
     <value>Use left mouse button for panning and right for rotating a model instead</value>
   </data>
   <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
-    <value>Disable if you need maximum performance</value>
+    <value>Disable if you need maximum performance; you can toggle it any time by pressing B</value>
   </data>
   <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
-    <value>Makes picture even worse if you asked me</value>
+    <value>You can toggle it any time by pressing M</value>
   </data>
   <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
     <value>You can toggle it any time by pressing F</value>

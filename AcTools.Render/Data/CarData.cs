@@ -69,6 +69,33 @@ namespace AcTools.Render.Data {
             }
         }
 
+        public class LightAnimation {
+            public string KsAnimName { get; }
+
+            public float Duration { get; }
+
+            public LightAnimation(string ksAnimName, float duration) {
+                KsAnimName = ksAnimName;
+                Duration = duration;
+            }
+
+            private sealed class KsAnimNameEqualityComparer : IEqualityComparer<LightAnimation> {
+                public bool Equals(LightAnimation x, LightAnimation y) {
+                    if (ReferenceEquals(x, y)) return true;
+                    if (ReferenceEquals(x, null)) return false;
+                    if (ReferenceEquals(y, null)) return false;
+                    if (x.GetType() != y.GetType()) return false;
+                    return string.Equals(x.KsAnimName, y.KsAnimName);
+                }
+
+                public int GetHashCode(LightAnimation obj) {
+                    return obj.KsAnimName?.GetHashCode() ?? 0;
+                }
+            }
+
+            public static IEqualityComparer<LightAnimation> KsAnimNameComparer { get; } = new KsAnimNameEqualityComparer();
+        }
+
         public IEnumerable<LightObject> GetLights() {
             if (IsEmpty) yield break;
 
@@ -92,6 +119,14 @@ namespace AcTools.Render.Data {
                         default(Vector3));
                 }
             }
+        }
+
+        public IEnumerable<LightAnimation> GetLightsAnimations() {
+            return IsEmpty ? new LightAnimation[0] :
+                    _data.GetIniFile("lights.ini")
+                         .GetSections("LIGHT_ANIMATION")
+                         .Select(x => new LightAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
+                         .Where(x => x.KsAnimName != null);
         }
         #endregion
 

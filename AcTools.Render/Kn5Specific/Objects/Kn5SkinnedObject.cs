@@ -101,8 +101,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (enabled == (_debugMaterial != null)) return;
 
             if (enabled) {
-                _debugMaterial = holder.Get<SharedMaterials>().GetMaterial(new Tuple<object, uint>(BasicMaterials.DebugKey, OriginalNode.MaterialId)) as ISkinnedMaterial;
-                if (_debugMaterial == null) throw new Exception("ISkinnedMaterial required for Kn5SkinnedObject!");
+                var material = holder.Get<SharedMaterials>().GetMaterial(new Tuple<object, uint>(BasicMaterials.DebugKey, OriginalNode.MaterialId));
+
+                _debugMaterial = material as ISkinnedMaterial;
+                if (_debugMaterial == null) {
+                    AcToolsLogging.Write("Error: ISkinnedMaterial required for Kn5SkinnedObject!");
+                    material.Dispose();
+                    return;
+                }
 
                 if (IsInitialized) {
                     _debugMaterial.Initialize(holder);
@@ -126,16 +132,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId) as ISkinnedMaterial;
-            if (_material == null) throw new Exception("ISkinnedMaterial required for Kn5SkinnedObject!");
+            var material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
+            _material = material as ISkinnedMaterial;
+            if (_material == null) {
+                AcToolsLogging.Write("Error: ISkinnedMaterial required for Kn5SkinnedObject!");
+                material.Dispose();
+                _material = new InvisibleMaterial();
+            }
 
             _material.Initialize(contextHolder);
             _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
 
             var model = contextHolder.Get<IKn5Model>();
-            if (model != null) {
-                _bonesNodes = OriginalNode.Bones.Select(x => model.GetDummyByName(x.Name)).ToArray();
-            }
+            _bonesNodes = OriginalNode.Bones.Select(x => model.GetDummyByName(x.Name)).ToArray();
 
             if (_debugMaterial != null && !_debugMaterialInitialized) {
                 _debugMaterialInitialized = true;

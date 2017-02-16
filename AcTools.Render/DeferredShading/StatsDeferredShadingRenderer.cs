@@ -38,12 +38,12 @@ Lights: {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
             Kn5MaterialDeferred.Drawed = 0;
         }
 
-        public override void Shot(double multipler, double downsample, Stream outputStream) {
+        public override void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
             var visibleUi = VisibleUi;
             VisibleUi = false;
 
             try {
-                base.Shot(multipler, downsample, outputStream);
+                base.Shot(multipler, downscale, outputStream, lossless);
             } finally {
                 VisibleUi = visibleUi;
             }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -15,11 +16,11 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
-        public Color LightColor { get; set; } = Color.FromArgb(200, 180, 180);
+        public Color LightColor { get; set; } = Color.FromArgb(201, 201, 167);
 
-        public Color AmbientDown { get; set; } = Color.FromArgb(150, 180, 180);
+        public Color AmbientDown { get; set; } = Color.FromArgb(82, 136, 191);
 
-        public Color AmbientUp { get; set; } = Color.FromArgb(180, 180, 150);
+        public Color AmbientUp { get; set; } = Color.FromArgb(191, 191, 159);
 
         private bool _flatMirror = false;
 
@@ -33,7 +34,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private bool _opaqueGround;
+        private bool _opaqueGround = true;
 
         public bool OpaqueGround {
             get { return _opaqueGround; }
@@ -94,10 +95,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             UiColor = BackgroundColor.GetBrightness() > 0.5 ? Color.Black : Color.White;
         }
 
-        private static float[] GetSplits(int number) {
+        private static float[] GetSplits(int number, float carSize) {
             switch (number) {
                 case 1:
-                    return new[] { 5f };
+                    return new[] { Math.Max(5f, carSize) };
                 case 2:
                     return new[] { 5f, 20f };
                 case 3:
@@ -109,6 +110,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
+        private Kn5RenderableCar _car;
         private RenderableList _carWrapper;
 
         private void RecreateFlatMirror() {
@@ -119,7 +121,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _carWrapper.RemoveAt(0);
             }
 
-            var mirror = new FlatMirror(FlatMirror ? CarNode : null, new Plane(Vector3.Zero, Vector3.UnitY), OpaqueGround);
+            var mirrorPlane = new Plane(Vector3.Zero, Vector3.UnitY);
+            var mirror = FlatMirror && CarNode != null ? new FlatMirror(CarNode, mirrorPlane) :
+                    new FlatMirror(mirrorPlane, OpaqueGround);
             if (FlatMirror && ShowWireframe) {
                 mirror.SetInvertedRasterizerState(DeviceContextHolder.States.WireframeInvertedState);
             }
@@ -132,7 +136,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void ExtendCar(Kn5RenderableCar car, RenderableList carWrapper) {
+            if (_car != null) {
+                _car.ObjectsChanged -= OnCarObjectsChanged;
+            }
+
             base.ExtendCar(car, carWrapper);
+
+            _car = car;
+            if (_car != null) {
+                _car.ObjectsChanged += OnCarObjectsChanged;
+            }
 
             _carWrapper = carWrapper;
             RecreateFlatMirror();
@@ -140,6 +153,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (_meshDebug) {
                 UpdateMeshDebug(car);
             }
+        }
+
+        private void OnCarObjectsChanged(object sender, EventArgs e) {
+            RecreateFlatMirror();
         }
 
         protected override void PrepareCamera(BaseCamera camera) {
@@ -159,7 +176,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override ShadowsDirectional CreateShadows() {
-            return new ShadowsDirectional(EffectDarkMaterial.ShadowMapSize, GetSplits(EffectDarkMaterial.NumSplits));
+            return new ShadowsDirectional(EffectDarkMaterial.ShadowMapSize,
+                    GetSplits(EffectDarkMaterial.NumSplits, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
         }
 
         protected override ReflectionCubemap CreateReflectionCubemap() {
@@ -233,7 +251,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        protected override Vector3 AutoAdjustedTarget => 
-            new Vector3(-0.2f * CameraOrbit?.Position.X ?? 0f, (SetCameraHigher ? 0f : 0.2f) - (0.1f * CameraOrbit?.Position.Y ?? 0f), 0f);
+        protected override Vector3 AutoAdjustedTarget => base.AutoAdjustedTarget + Vector3.UnitY * (SetCameraHigher ? 0f : 0.2f);
     }
 }

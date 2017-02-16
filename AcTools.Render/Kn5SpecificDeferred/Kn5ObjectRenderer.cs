@@ -113,8 +113,8 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                 if (node == null) return null;
 
                 var vertices = node.Vertices.Select(x => new {
-                    Position = Vector3.Transform(x.Position, Node.ParentMatrix).GetXyz(),
-                    Normal = Vector3.Transform(x.Normal, inv).GetXyz()
+                    Position = Vector3.TransformCoordinate(x.Position, Node.ParentMatrix),
+                    Normal = Vector3.TransformCoordinate(x.Normal, inv)
                 }).ToArray();
                 var list = new List<InnerPair>();
 
@@ -247,8 +247,6 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             Camera = new CameraOrbit(32) {
                 Alpha = 0.9f,
                 Beta = 0.1f,
-                NearZ = 0.2f,
-                FarZ = 500f,
                 Radius = _car?.BoundingBox?.GetSize().Length() * 1.2f ?? 4.8f,
                 Target = (_car?.BoundingBox?.GetCenter() ?? Vector3.Zero) - new Vector3(0f, 0.05f, 0f)
             };
@@ -269,6 +267,16 @@ namespace AcTools.Render.Kn5SpecificDeferred {
         public void ResetCamera() {
             AutoRotate = true;
             _resetState = 1f;
+        }
+
+        public void ChangeCameraFov(float newFovY) {
+            var c = CameraOrbit;
+            if (c == null) return;
+
+            var delta = newFovY - c.FovY;
+            c.FovY = MathF.Clamp(newFovY, MathF.PI * 0.01f, MathF.PI * 0.8f);
+            c.SetLens(c.Aspect);
+            c.Zoom(-delta * 4f);
         }
 
         private class PointLightDesc {

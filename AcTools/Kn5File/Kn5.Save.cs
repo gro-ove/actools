@@ -1,4 +1,6 @@
-﻿namespace AcTools.Kn5File {
+﻿using System;
+
+namespace AcTools.Kn5File {
     public partial class Kn5 {
         public void SaveAll(string filename) {
             Save(filename, true);
@@ -24,6 +26,10 @@
                 if (saveNodes) {
                     Save_Node(writer, RootNode);
                 } else {
+                    if (NodesBytes == null) {
+                        throw new Exception("NodesBytes = null");
+                    }
+
                     writer.Write(NodesBytes);
                 }
             }

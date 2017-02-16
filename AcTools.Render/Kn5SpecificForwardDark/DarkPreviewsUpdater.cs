@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
+using ThreadPool = AcTools.Render.Base.Utils.ThreadPool;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public class DarkPreviewsOptions {
@@ -33,6 +34,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool HeadlightsEnabled = false;
         public bool BrakeLightsEnabled = false;
         public double SteerAngle = 0d;
+        public bool LeftDoorOpen = false;
+        public bool RightDoorOpen = false;
 
         public double[] CameraPosition = { 3.194, 0.342, 13.049 };
         public double[] CameraLookAt = { 2.945, 0.384, 12.082 };
@@ -46,6 +49,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public double AmbientBrightness = 2d;
         public double LightBrightness = 1.5;
+        public double[] LightDirection = { 0.2, 1.0, 0.8 };
+
+        public bool DelayedConvertation = true;
+        public bool AlignCar = true;
     }
 
     public class DarkPreviewsUpdater : IDisposable {
@@ -54,6 +61,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private DarkKn5ObjectRenderer _renderer;
         private string _carId;
+
+        private ThreadPool _convertationThreadPool;
 
         public DarkPreviewsUpdater(string acRoot, DarkPreviewsOptions options = null) {
             _acRoot = acRoot;
@@ -70,10 +79,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return new Vector3((float)v[0], (float)v[1], (float)v[2]);
         }
 
+        private void UpdateCamera() {
+            _renderer.SetCamera(
+                    ToVector3(_options.CameraPosition), ToVector3(_options.CameraLookAt),
+                    (float)(MathF.PI / 180f * _options.CameraFov), _options.AlignCar);
+        }
+
         private static DarkKn5ObjectRenderer CreateRenderer(DarkPreviewsOptions options, CarDescription initialCar) {
             var renderer = new DarkKn5ObjectRenderer(initialCar) {
                 // Obvious fixed settings
                 AutoRotate = false,
+                AutoAdjustTarget = false,
                 AsyncTexturesLoading = false,
 
                 // Size-related options
@@ -100,9 +116,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 // Brightnesses
                 AmbientBrightness = (float)options.AmbientBrightness,
                 LightBrightness = (float)options.LightBrightness,
+                Light = ToVector3(options.LightDirection),
             };
 
-            renderer.SetCamera(ToVector3(options.CameraPosition), ToVector3(options.CameraLookAt), (float)(MathF.PI / 180f * options.CameraFov));
             renderer.Initialize();
 
             var car = renderer.CarNode;
@@ -110,10 +126,44 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 car.LightsEnabled = options.HeadlightsEnabled;
                 car.BrakeLightsEnabled = options.BrakeLightsEnabled;
                 car.SteerDeg = (float)options.SteerAngle;
+                car.LeftDoorOpen = options.LeftDoorOpen;
+                car.RightDoorOpen = options.RightDoorOpen;
+                car.OnTick(float.MaxValue);
             }
 
             return renderer;
         }
+
+        private long _processingNow;
+
+        private void ProcessConvertation(Action action, Action disposal) {
+            if (!_options.DelayedConvertation) {
+                try {
+                    action.Invoke();
+                } finally {
+                    disposal.Invoke();
+                }
+                return;
+            }
+            
+            if (_convertationThreadPool == null) {
+                _convertationThreadPool = new ThreadPool("Previews Convertation Thread", 4, ThreadPriority.BelowNormal);
+            }
+
+            Interlocked.Increment(ref _processingNow);
+            _convertationThreadPool.QueueTask(() => {
+                try {
+                    action.Invoke();
+                } catch(Exception e) {
+                    Logging.Error("Convertation error: " + e);
+                } finally {
+                    disposal.Invoke();
+                    Interlocked.Decrement(ref _processingNow);
+                }
+            });
+        }
+
+        private int? _approximateSize;
 
         private void ShotInner(string carId, string skinId, string destination) {
             if (destination == null) {
@@ -121,24 +171,32 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             if (_options.HardwareDownscale) {
-                /*using (var stream = File.Open(destination, FileMode.Create, FileAccess.Write)) {
-                    _renderer.Shot(1d, 1d / _options.SsaaMultipler, stream);
-                }*/
-                using (var shot = new MemoryStream()){
-                    _renderer.Shot(1d, 1d / _options.SsaaMultipler, shot);
-                    shot.Position = 0;
+                var shotStream = new MemoryStream(_approximateSize ?? 100000);
+                _renderer.Shot(1d, 1d / _options.SsaaMultipler, shotStream, true);
 
-                    using (var image = Image.FromStream(shot)) {
-                        var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
-                        var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, 1000L) } };
-                        image.Save(destination, encoder, parameters);
+                if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
+                    _approximateSize = (int)(shotStream.Position * 1.2);
+                }
+
+                shotStream.Position = 0;
+                
+                ProcessConvertation(() => {
+                    using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
+                        ImageUtils.Convert(shotStream, stream);
                     }
-                }
+                }, () => {
+                    shotStream.Dispose();
+                });
             } else {
-                using (var shot = _renderer.Shot(1d, 1d))
-                using (var resized = shot.HighQualityResize(new Size(_options.PreviewWidth, _options.PreviewHeight))) {
-                    resized.Save(destination);
-                }
+                var shotImage = _renderer.Shot(1d, 1d, true);
+
+                ProcessConvertation(() => {
+                    using (var resized = shotImage.HighQualityResize(new Size(_options.PreviewWidth, _options.PreviewHeight))) {
+                        resized.Save(destination);
+                    }
+                }, () => {
+                    shotImage.Dispose();
+                });
             }
         }
 
@@ -152,8 +210,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     _renderer = CreateRenderer(_options, GetCarDescription(carId, carData));
                 } else {
                     _renderer.SetCar(GetCarDescription(carId, carData), skinId);
+                    _renderer.CarNode?.OnTick(float.MaxValue);
                 }
                 _carId = carId;
+                UpdateCamera();
             } else {
                 _renderer.SelectSkin(skinId);
             }
@@ -176,8 +236,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             await ShotInnerAsync(carId, skinId, destination).ConfigureAwait(false);
         }
 
+        public async Task WaitForProcessing() {
+            while (Interlocked.Read(ref _processingNow) > 0) {
+                await Task.Delay(100);
+            }
+        }
+
         public void Dispose() {
+            while (Interlocked.Read(ref _processingNow) > 0) {
+                Thread.Sleep(100);
+            }
+            
             DisposeHelper.Dispose(ref _renderer);
+            DisposeHelper.Dispose(ref _convertationThreadPool);
         }
     }
 }

@@ -9,17 +9,32 @@ namespace AcTools.Render.Base.Cameras {
         public Vector3 Right;
         public Vector3 Up;
         public Vector3 Look;
-        public float NearZ;
-        public float FarZ;
+        public float? NearZ;
+        public float? FarZ;
         public float Aspect;
         public float FovY;
 
-        public float FovX => 2.0f * MathF.Atan(0.5f * NearWindowWidth / NearZ);
+        private float _nearZFovY, _nearZCached;
 
-        public float NearWindowWidth;
-        public float NearWindowHeight;
-        public float FarWindowWidth;
-        public float FarWindowHeight;
+        public float NearZValue {
+            get {
+                if (NearZ.HasValue) return NearZ.Value;
+                if (Equals(_nearZFovY, FovY)) return _nearZCached;
+                _nearZFovY = FovY;
+                return _nearZCached = 0.04f / MathF.Pow(_nearZFovY, 2f);
+            }
+        }
+
+        private float _farZFovY, _farZCached;
+
+        public float FarZValue {
+            get {
+                if (FarZ.HasValue) return FarZ.Value;
+                if (Equals(_farZFovY, FovY)) return _farZCached;
+                _farZFovY = FovY;
+                return _farZCached = 1e3f / MathF.Pow(_farZFovY, 0.5f);
+            }
+        }
 
         public Matrix View { get; private set; }
 
@@ -56,8 +71,8 @@ namespace AcTools.Render.Base.Cameras {
             Look = new Vector3(0, 0, 1);
             FovY = fov;
 
-            NearZ = 0.01f;
-            FarZ = 500.0f;
+            // NearZ = 0.01f;
+            //FarZ = 500.0f;
 
             SetView(Matrix.Identity);
             SetProj(Matrix.Identity);
@@ -83,13 +98,13 @@ namespace AcTools.Render.Base.Cameras {
 
         public abstract BaseCamera Clone();
 
+        private void UpdateNearZ() {
+            
+        }
+
         public virtual void SetLens(float aspect) {
             Aspect = aspect;
-
-            NearWindowHeight = 2.0f * NearZ * MathF.Tan(0.5f * FovY);
-            FarWindowHeight = 2.0f * FarZ * MathF.Tan(0.5f * FovY);
-
-            SetProj(Matrix.PerspectiveFovLH(FovY, Aspect, NearZ, FarZ));
+            SetProj(Matrix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue));
         }
         
         public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {
@@ -115,36 +130,6 @@ namespace AcTools.Render.Base.Cameras {
 
         public FrustrumIntersectionType Intersect(BoundingBox box) {
             return Frustum.Intersect(box);
-        }
-
-        public Vector3[] GetFrustumCorners() {
-            var hNear = 2 * MathF.Tan(FovY / 2) * NearZ;
-            var wNear = hNear * Aspect;
-
-            var hFar = 2 * MathF.Tan(FovY / 2) * FarZ;
-            var wFar = hFar * Aspect;
-
-            var cNear = Position + Look * NearZ;
-            var cFar = Position + Look * FarZ;
-
-            return new[] {
-                //ntl
-                cNear + Up * hNear / 2 - Right * wNear / 2,
-                //ntr
-                cNear + Up * hNear / 2 + Right * wNear / 2,
-                //nbl
-                cNear - Up * hNear / 2 - Right * wNear / 2,
-                //nbr
-                cNear - Up * hNear / 2 + Right * wNear / 2,
-                //ftl
-                cFar + Up * hFar / 2 - Right * wFar / 2,
-                //ftr
-                cFar + Up * hFar / 2 + Right * wFar / 2,
-                //fbl
-                cFar - Up * hFar / 2 - Right * wFar / 2,
-                //fbr
-                cFar - Up * hFar / 2 + Right * wFar / 2,
-            };
         }
     }
 }

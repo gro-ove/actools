@@ -17,7 +17,8 @@ namespace AcManager.Pages.Selected {
             SelectedAcObject = model.SelectedAcObject;
             InputBindings.Clear();
             InputBindings.AddRange(new[] {
-                new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control)),
+                new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control)), // TODO: why doesn’t work after quick switching?
+                new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt)),
                 new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control | ModifierKeys.Shift)) { CommandParameter = @"name" },
                 new InputBinding(SelectedAcObject.CopyIdCommand, new KeyGesture(Key.C, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"path" },
                 new InputBinding(SelectedAcObject.ViewInExplorerCommand, new KeyGesture(Key.F, ModifierKeys.Control)),

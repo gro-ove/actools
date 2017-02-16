@@ -294,6 +294,7 @@
     <Compile Include="IJsonSerializable.cs" />
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
+    <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />

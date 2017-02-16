@@ -6,6 +6,7 @@ namespace AcTools.Render.Base.Materials {
         public const string MirrorKey = "BasicMaterial.Mirror";
         public const string SkyKey = "BasicMaterial.Sky";
         public const string DebugKey = "Debug.Base";
+        public const string DebugColliderKey = "Debug.Collider";
         public const string DebugLinesKey = "Debug.Lines";
     }
 }

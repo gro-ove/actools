@@ -31,5 +31,7 @@ namespace AcTools.Render.Kn5Specific {
         void SelectSkin([CanBeNull] string skinId);
 
         void ResetCamera();
+
+        void ChangeCameraFov(float newFovY);
     }
 }

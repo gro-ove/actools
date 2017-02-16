@@ -8,6 +8,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
@@ -300,9 +301,10 @@ namespace AcTools.Render.Forward {
                 if (UseFxaa) {
                     DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
                 } else {
-                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView, true);
+                    DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, result, new Vector2(Width, Height),
+                            RenderTargetView, new Vector2(ActualWidth, ActualHeight), TemporaryFlag);
                 }
-            } else if (UseFxaa && !UseMsaa) {
+            } else if (UseFxaa) {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             } else if (IsSmaaAvailable && UseSmaa) {
                 var temporary = result == _buffer.View ? _buffer2 : _buffer;
@@ -312,17 +314,19 @@ namespace AcTools.Render.Forward {
             }
         }
 
+        public bool TemporaryFlag { get; set; }
+
         public bool KeepFxaaWhileShooting;
 
-        public override void Shot(double multipler, double downsample, Stream outputStream) {
-            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downsample, 1d)) {
-                base.Shot(multipler, downsample, outputStream);
+        public override void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
+            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downscale, 1d)) {
+                base.Shot(multipler, downscale, outputStream, lossless);
             } else {
                 var useFxaa = UseFxaa;
                 UseFxaa = false;
 
                 try {
-                    base.Shot(multipler, downsample, outputStream);
+                    base.Shot(multipler, downscale, outputStream, lossless);
                 } finally {
                     UseFxaa = useFxaa;
                 }

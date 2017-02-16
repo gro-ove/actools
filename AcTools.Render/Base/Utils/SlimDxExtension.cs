@@ -92,6 +92,10 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
+        public static Quaternion ToQuaternion(this float[] quaternion4) {
+            return new Quaternion(quaternion4[0], quaternion4[1], quaternion4[2], quaternion4[3]);
+        }
+
         public static Vector2 ToVector2(this float[] vec2) {
             return new Vector2(vec2[0], vec2[1]);
         }

@@ -225,7 +225,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                     PrepareOutlineBuffer();
 
                     SelectedName = _selectedObject.OriginalNode.Name;
-                    SelectedMaterial = Kn5.GetMaterial(_selectedObject.OriginalNode.MaterialId);
+                    SelectedMaterial = Kn5?.GetMaterial(_selectedObject.OriginalNode.MaterialId);
                     SelectedTextures = SelectedMaterial?.TextureMappings.Select(x => new TextureInformation {
                         SlotName = x.Name,
                         TextureName = x.Texture
@@ -334,13 +334,13 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool OverrideTexture(string textureName, Color color, double alpha) {
-            using (var image = new MagickImage(new MagickColor(color) { A = (ushort)(ushort.MaxValue * alpha) }, 4, 4)) {
+            using (var image = new MagickImage(new MagickColor(color) { A = (byte)(255 * alpha) }, 4, 4)) {
                 return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
             }
         }
 
         public Task SaveTexture(string filename, Color color, double alpha) {
-            return SaveAndDispose(filename, new MagickImage(new MagickColor(color) { A = (ushort)(ushort.MaxValue * alpha) }, 16, 16));
+            return SaveAndDispose(filename, new MagickImage(new MagickColor(color) { A = (byte)(255 * alpha) }, 16, 16));
         }
 
         public virtual bool OverrideTextureFlakes(string textureName, Color color) {
@@ -348,14 +348,15 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular) {
+            if (Kn5 == null) return false;
             using (var image = new MagickImage(Kn5.TexturesData[textureName])) {
                 if (image.Width > 512 || image.Height > 512) {
                     image.Resize(512, 512);
                 }
 
-                image.BrightnessContrast(reflection, 1d, Channels.Red);
-                image.BrightnessContrast(blur, 1d, Channels.Green);
-                image.BrightnessContrast(specular, 1d, Channels.Blue);
+                image.BrightnessContrast(new Percentage(reflection * 100d), new Percentage(100d), Channels.Red);
+                image.BrightnessContrast(new Percentage(blur * 100d), new Percentage(100d), Channels.Green);
+                image.BrightnessContrast(new Percentage(specular * 100d), new Percentage(100d), Channels.Blue);
 
                 return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
             }
@@ -373,8 +374,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     FileUtils.Recycle(filename);
                 }
 
-                image.SetDefine(MagickFormat.Dds, "compression", "none");
                 image.Quality = 100;
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", "none");
                 var bytes = image.ToByteArray(MagickFormat.Dds);
                 return FileUtils.WriteAllBytesAsync(filename, bytes);
             } finally {

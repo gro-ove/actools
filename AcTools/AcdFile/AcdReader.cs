@@ -4,7 +4,7 @@ using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.AcdFile {
-    internal sealed class AcdReader : BinaryReader {
+    internal sealed class AcdReader : ReadAheadBinaryReader {
         [NotNull]
         private readonly AcdEncryption _enc;
 
@@ -20,21 +20,13 @@ namespace AcTools.AcdFile {
             }
         }
 
-        public override string ReadString() {
-            var length = ReadInt32();
-            if (length < 0) {
-                throw new Exception("Damaged file");
-            }
-
-            return Encoding.ASCII.GetString(ReadBytes(length));
-        }
-
         private byte[] ReadData() {
             var length = ReadInt32();
+
             var result = new byte[length];
             for (var i = 0; i < length; i++) {
                 result[i] = ReadByte();
-                BaseStream.Seek(3, SeekOrigin.Current);
+                Skip(3);
             }
             
             _enc.Decrypt(result);
@@ -42,8 +34,7 @@ namespace AcTools.AcdFile {
         }
 
         private void SkipData() {
-            var length = ReadInt32();
-            BaseStream.Seek(length * 4, SeekOrigin.Current);
+            Skip(ReadInt32() * 4);
         }
 
         public AcdEntry ReadEntry() {

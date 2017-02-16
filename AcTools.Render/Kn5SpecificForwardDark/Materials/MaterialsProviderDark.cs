@@ -31,6 +31,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                     return new FlatMirrorMaterialSimple(true);
                 case BasicMaterials.DebugLinesKey:
                     return new DebugLinesMaterial();
+                case BasicMaterials.DebugColliderKey:
+                    return new DebugColliderMaterial();
             }
 
             throw new NotSupportedException($@"Key not supported: {key}");

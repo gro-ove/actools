@@ -101,7 +101,7 @@ namespace AcTools.Render.Wrapper {
                     }
 
                     _renderer.KeepFxaaWhileShooting = !downscale;
-                    var image = _renderer.Shot(multipler, 1d);
+                    var image = _renderer.Shot(multipler, 1d, true);
                     var directory = FileUtils.GetDocumentsScreensDirectory();
                     FileUtils.EnsureDirectoryExists(directory);
                     var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");

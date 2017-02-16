@@ -72,22 +72,33 @@ namespace AcManager.Controls.CustomShowroom {
 
                     var description = new CarDescription(kn5, carDirectory, carObject?.AcdData);
                     if (toolboxMode) {
-                        renderer = await Task.Run(() => new DarkKn5ObjectRenderer(description) {
-                            UseMsaa = false,
-                            UseSsaa = false,
-                            FlatMirror = true,
-                            VisibleUi = false,
-                            UseSprite = false,
-                            /*BackgroundColor = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
-                            AmbientDown = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
-                            AmbientUp = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),*/
-                        });
-                        wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
+                        var toolsRenderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
+                                new ToolsKn5ObjectRenderer(description) {
+                                    VisibleUi = false,
+                                    UseSprite = false
+                                } :
+                                new DarkKn5ObjectRenderer(description) {
+                                    FlatMirror = true,
+                                    VisibleUi = false,
+                                    UseSprite = false,
+                                    /*BackgroundColor = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
+                                    AmbientDown = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
+                                    AmbientUp = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),*/
+                                });
+                        wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId);
+                        renderer = toolsRenderer;
                     } else {
                         Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
                         Logging.Warning($"Found location: “{carObject?.Location ?? @"NULL"}”");
 
-                        renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(description));
+                        renderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
+                                new ForwardKn5ObjectRenderer(description) :
+                                new DarkKn5ObjectRenderer(description) {
+                                    FlatMirror = true,
+                                    VisibleUi = true,
+                                    UseSprite = true
+                                });
+
                         wrapper = new LiteShowroomWrapper(renderer);
 
                         if (skinId != null) {
@@ -96,6 +107,7 @@ namespace AcManager.Controls.CustomShowroom {
                     }
 
                     renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
+                    renderer.UseSsaa = SettingsHolder.CustomShowroom.LiteUseSsaa;
                     renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
                     renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
 

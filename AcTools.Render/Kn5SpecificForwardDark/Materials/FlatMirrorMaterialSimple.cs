@@ -8,11 +8,11 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class FlatMirrorMaterialSimple : IRenderableMaterial {
-        private readonly bool _groundMode;
+        private readonly bool _opaqueMode;
         private EffectDarkMaterial _effect;
 
-        internal FlatMirrorMaterialSimple(bool groundMode) {
-            _groundMode = groundMode;
+        internal FlatMirrorMaterialSimple(bool opaqueMode) {
+            _opaqueMode = opaqueMode;
         }
 
         public void Initialize(IDeviceContextHolder contextHolder) {
@@ -23,8 +23,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (mode != SpecialRenderMode.Simple) return false;
             
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
-            contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
-            contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+
+            if (!_opaqueMode) {
+                contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+            } else {
+                contextHolder.DeviceContext.OutputMerger.BlendState = null;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            }
+
             return true;
         }
 
@@ -34,12 +41,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (_groundMode ? _effect.TechFlatGround : _effect.TechFlatMirror).DrawAllPasses(contextHolder.DeviceContext, indices);
-            contextHolder.DeviceContext.OutputMerger.BlendState = null;
-            contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            (_opaqueMode ? _effect.TechFlatBackgroundGround : _effect.TechFlatMirror).DrawAllPasses(contextHolder.DeviceContext, indices);
+
+            if (!_opaqueMode) {
+                contextHolder.DeviceContext.OutputMerger.BlendState = null;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            }
         }
 
-        public bool IsBlending => true;
+        public bool IsBlending => !_opaqueMode;
 
         public void Dispose() {}
     }

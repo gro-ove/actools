@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
-    internal sealed class Kn5Reader : BinaryReader {
-        public Kn5Reader(string filename)
-            : this(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        }
-
-        public Kn5Reader(Stream input, bool withoutHeader = false)
-            : base(input) {
+    internal sealed class Kn5Reader : ReadAheadBinaryReader {
+        public Kn5Reader(string filename, bool withoutHeader = false)
+            : base(filename) {
             if (!withoutHeader && new string(ReadChars(6)) != "sc6969") {
                 throw new Exception("Not a valid KN5 file.");
             }
         }
 
-        public override string ReadString() {
-            var length = ReadInt32();
-            return Encoding.ASCII.GetString(ReadBytes(length));
+        public Kn5Reader(Stream filename, bool withoutHeader = false)
+            : base(filename) {
+            if (!withoutHeader && new string(ReadChars(6)) != "sc6969") {
+                throw new Exception("Not a valid KN5 file.");
+            }
         }
 
         public Kn5MaterialBlendMode ReadBlendMode() {
@@ -27,25 +25,6 @@ namespace AcTools.Kn5File {
 
         public Kn5MaterialDepthMode ReadDepthMode() {
             return (Kn5MaterialDepthMode)ReadInt32();
-        }
-
-        public float[] ReadSingle2D() {
-            return new[] {
-                ReadSingle(), ReadSingle()
-            };
-        }
-
-        public float[] ReadSingle3D() {
-            return new[] {
-                ReadSingle(), ReadSingle(), ReadSingle()
-            };
-        }
-
-        public float[] ReadSingle4D() {
-            return new[] {
-                ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle()
-            };
         }
 
         public Kn5NodeClass ReadNodeClass() {
@@ -61,7 +40,7 @@ namespace AcTools.Kn5File {
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle()
             };
         }
 
@@ -75,10 +54,13 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5Texture ReadTexture() {
+            var activeFlag = ReadInt32();
+            var name = ReadString();
+            var length = ReadUInt32();
             return new Kn5Texture {
-                Active = ReadInt32() == 1,
-                Name = ReadString(),
-                Length = (int)ReadUInt32()
+                Active = activeFlag == 1,
+                Name = name,
+                Length = (int)length
             };
         }
 
@@ -110,7 +92,7 @@ namespace AcTools.Kn5File {
                     Texture = ReadString()
                 };
             }
-
+            
             return material;
         }
 
@@ -136,7 +118,7 @@ namespace AcTools.Kn5File {
                     node.CastShadows = ReadBoolean();
                     node.IsVisible = ReadBoolean();
                     node.IsTransparent = ReadBoolean();
-            
+
                     node.Vertices = new Kn5Node.Vertice[ReadUInt32()];
                     for (var i = 0; i < node.Vertices.Length; i++) {
                         // 44 bytes per vertice
@@ -147,8 +129,9 @@ namespace AcTools.Kn5File {
                             Tangent = ReadSingle3D()
                         };
                     }
-            
-                    node.Indices = new ushort[ReadUInt32()];
+
+                    var indicesCount = ReadUInt32();
+                    node.Indices = new ushort[indicesCount];
                     for (var i = 0; i < node.Indices.Length; i++) {
                         node.Indices[i] = ReadUInt16();
                     }
@@ -204,21 +187,13 @@ namespace AcTools.Kn5File {
 
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
-                    
-                    ReadBytes(8); // the only mistery left?
+
+                    Skip(8); // the only mistery left?
                     node.IsRenderable = true;
                     break;
             }
 
             return node;
-        }
-
-        public void Extract(int length, string filename) {
-            var bytes = ReadBytes(length);
-            if (filename == null) return;
-            using (var output = File.Create(filename)) {
-                output.Write(bytes, 0, length);
-            }
         }
     }
 }

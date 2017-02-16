@@ -19,27 +19,70 @@ namespace CustomPreviewUpdater {
     class Program {
         private static PackedHelper _helper;
 
+#if PLATFORM_X86
+        private static readonly string Platform = "x86";
+#else
+        private static readonly string Platform = "x64";
+#endif
+
         [STAThread]
         private static int Main(string[] a) {
             _helper = new PackedHelper("AcTools_PreviewUpdater", "References", null);
+            _helper.PrepareUnmanaged($"Magick.NET-Q8-{Platform}.Native");
             AppDomain.CurrentDomain.AssemblyResolve += _helper.Handler;
-            return MainInner(a);
+
+            try {
+                return MainInner(a);
+            } catch (Exception e) {
+                Console.Error.WriteLine("Fatal error: " + e.Message + ".");
+                Console.ReadLine();
+                return 10;
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
-            var options = new Options();
-            if (!Parser.Default.ParseArguments(args, options) || options.Ids.Count == 0) return 1;
+            var presets = args.Where(x => x.EndsWith(".pu-preset")).ToList();
+            var actualList = new List<string>();
 
-            var acRoot = Path.GetFullPath(options.AcRoot);
+            foreach (var preset in presets) {
+                try {
+                    actualList.AddRange(
+                            File.ReadAllLines(preset)
+                                .Select(x => x.Split(new[] { " #" }, StringSplitOptions.None)[0].Trim())
+                                .Where(x => x.Length > 0));
+                } catch (Exception e) {
+                    Console.Error.WriteLine($"Can't load preset {preset}: {e.Message}.");
+                }
+            }
+
+            actualList.AddRange(args.ApartFrom(presets));
+
+            var options = new Options();
+            if (!Parser.Default.ParseArguments(actualList.ToArray(), options)) return 1;
+
+            var acRoot = options.AcRoot == null ? AcRootFinder.TryToFind() : Path.GetFullPath(options.AcRoot);
+            if (acRoot == null) {
+                Console.Error.WriteLine("Can't find AC root directory, you need to specify it manually.");
+                Console.ReadLine();
+                return 1;
+            }
+
+            var ids = options.Ids.ApartFrom(presets).ToList();
+            if (ids.Count == 0) {
+                Console.Error.WriteLine("You forgot to specify what cars to update: either list their IDs or filters.");
+                Console.Error.WriteLine("To process all cars, use filter \"*\".");
+                Console.ReadLine();
+                return 1;
+            }
 
             IFilter<string> filter;
 
             try {
-                filter = Filter.Create(new CarTester(acRoot), options.Ids.Select(x =>
+                filter = Filter.Create(new CarTester(acRoot), ids.Select(x =>
                         "(" + (x.EndsWith("/") ? x.Substring(0, x.Length - 1) : x) + ")").JoinToString("|"), true);
                 if (options.FilterTest) {
-                    Console.WriteLine(Directory.GetDirectories(FileUtils.GetCarsDirectory(options.AcRoot))
+                    Console.WriteLine(Directory.GetDirectories(FileUtils.GetCarsDirectory(acRoot))
                                                .Select(Path.GetFileName).Where(x => filter.Test(x)).JoinToString(", "));
                     return 0;
                 }
@@ -48,15 +91,14 @@ namespace CustomPreviewUpdater {
                     Console.WriteLine("Filter: " + filter);
                 }
             } catch (Exception e) {
-                Console.Error.WriteLine("Can’t parse filter: " + e);
+                Console.Error.WriteLine("Can't parse filter: " + e.Message + ".");
+                Console.ReadLine();
                 return 2;
             }
 
             if (options.Verbose) {
-                Console.WriteLine("AC root: " + options.AcRoot);
-                Console.WriteLine("Camera position: " + options.CameraPosition);
-                Console.WriteLine("Look at: " + options.LookAt);
-                Console.WriteLine("FOV: " + options.Fov);
+                Console.WriteLine("AC root: " + acRoot);
+                Console.WriteLine("ImageMagick: " + ImageUtils.IsMagickSupported);
                 Console.WriteLine("Starting shoting...");
             }
 
@@ -65,9 +107,11 @@ namespace CustomPreviewUpdater {
 
             using (var thing = new DarkPreviewsUpdater(acRoot, new DarkPreviewsOptions {
                 PreviewName = options.FileName,
+                AlignCar = options.AlignCar,
                 SsaaMultipler = options.SsaaMultipler,
                 UseFxaa = options.UseFxaa,
                 UseMsaa = options.UseMsaa,
+                HardwareDownscale = !options.SoftwareDownscale,
                 MsaaSampleCount = options.MsaaSampleCount,
                 PreviewWidth = options.PreviewWidth,
                 PreviewHeight = options.PreviewHeight,
@@ -78,6 +122,8 @@ namespace CustomPreviewUpdater {
                 SuspensionDebugMode = options.SuspensionDebugMode,
                 HeadlightsEnabled = options.HeadlightsEnabled,
                 BrakeLightsEnabled = options.BrakeLightsEnabled,
+                LeftDoorOpen = options.LeftDoorOpen,
+                RightDoorOpen = options.RightDoorOpen,
                 SteerAngle = options.SteerAngle,
                 CameraPosition = options.CameraPosition.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
                 CameraLookAt = options.LookAt.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
@@ -88,10 +134,11 @@ namespace CustomPreviewUpdater {
                 AmbientDown = ParseColor(options.AmbientDown),
                 AmbientBrightness = options.AmbientBrightness,
                 LightBrightness = options.LightBrightness,
+                DelayedConvertation = !options.SingleThread,
             })) {
-                foreach (var carId in Directory.GetDirectories(FileUtils.GetCarsDirectory(options.AcRoot))
+                foreach (var carId in Directory.GetDirectories(FileUtils.GetCarsDirectory(acRoot))
                                             .Select(Path.GetFileName).Where(x => filter.Test(x))) {
-                    if (options.Verbose) Console.WriteLine($"  {carId}...");
+                    Console.WriteLine($"  {carId}...");
                     j++;
 
                     foreach (var skinId in Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(acRoot, carId))
@@ -106,6 +153,10 @@ namespace CustomPreviewUpdater {
                                 break;
                             } catch (Exception e) {
                                 Console.Error.WriteLine(e.Message);
+
+                                if (options.Verbose) {
+                                    Console.Error.WriteLine(e.StackTrace);
+                                }
                             }
                         }
 
@@ -115,13 +166,17 @@ namespace CustomPreviewUpdater {
                         }
                     }
 
-                    if (j % 10 == 0) {
-                        Console.WriteLine($"At this moment done: {i} skins ({sw.Elapsed.TotalMilliseconds / j:F1} ms per car; {sw.Elapsed.TotalMilliseconds / i:F1} ms per skin)");
+                    if (options.Verbose && j % 10 == 0) {
+                        Console.WriteLine(
+                                $"At this moment done: {i} skins ({sw.Elapsed.TotalMilliseconds / j:F1} ms per car; {sw.Elapsed.TotalMilliseconds / i:F1} ms per skin)");
                         Console.WriteLine($"Time taken: {ToMillisecondsString(sw.Elapsed)}");
                     }
                 }
+
+                Console.Write("Finishing convertation... ");
             }
 
+            Console.WriteLine("OK");
             Console.WriteLine($"Done: {i} skins ({sw.Elapsed.TotalMilliseconds / j:F1} ms per car; {sw.Elapsed.TotalMilliseconds / i:F1} ms per skin)");
             Console.WriteLine($"Time taken: {ToMillisecondsString(sw.Elapsed)}");
 
@@ -134,8 +189,8 @@ namespace CustomPreviewUpdater {
 
         private static string ToMillisecondsString(TimeSpan span) {
             return span.TotalHours > 1d
-                    ? $@"{(int)span.TotalHours:D2}:{span.Minutes:D2}:{span.Seconds:D2}"
-                    : $@"{span.Minutes:D2}:{span.Seconds:D2}";
+                    ? $@"{(int)span.TotalHours:D2}:{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}"
+                    : $@"{span.Minutes:D2}:{span.Seconds:D2}.{span.Milliseconds:D3}";
         }
     }
 }

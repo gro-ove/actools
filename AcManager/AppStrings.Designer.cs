@@ -6282,7 +6282,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable if you need maximum performance.
+        ///   Looks up a localized string similar to Disable if you need maximum performance; you can toggle it any time by pressing B.
         /// </summary>
         public static string Settings_CustomShowroom_Bloom_Tooltip {
             get {
@@ -6372,7 +6372,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Makes picture even worse if you asked me.
+        ///   Looks up a localized string similar to You can toggle it any time by pressing M.
         /// </summary>
         public static string Settings_CustomShowroom_Msaa_Tooltip {
             get {

@@ -232,19 +232,25 @@ namespace AcManager.Tools.AcManagersNew {
             var start = Stopwatch.StartNew();
 
             LoadingReset = false;
-            await WrappersList.Select(async x => {
-                try {
-                    if (x.IsLoaded) return;
 
-                    var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
-                    if (x.IsLoaded) return;
+            bool anyLoaded;
+            do {
+                anyLoaded = false;
+                await WrappersList.ToList().Select(async x => {
+                    try {
+                        if (x.IsLoaded) return;
+                        anyLoaded = true;
 
-                    x.Value = loaded;
-                    loaded.PastLoad();
-                } finally {
-                    LoadedCount++;
-                }
-            }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
+                        var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
+                        if (x.IsLoaded) return;
+
+                        x.Value = loaded;
+                        loaded.PastLoad();
+                    } finally {
+                        LoadedCount++;
+                    }
+                }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
+            } while (anyLoaded); 
 
             IsLoaded = true;
             ListReady();

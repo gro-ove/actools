@@ -129,6 +129,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             ResetCamera();
         }
 
+        public void ChangeCameraFov(float newFovY) {}
+
         protected sealed override void DrawSprites() {
             if (Sprite == null || ShotMode) return;
             DrawSpritesInner();

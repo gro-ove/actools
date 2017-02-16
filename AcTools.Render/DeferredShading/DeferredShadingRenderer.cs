@@ -446,15 +446,15 @@ namespace AcTools.Render.DeferredShading {
 
         public bool KeepFxaaWhileShooting;
         
-        public override void Shot(double multipler, double downsample, Stream outputStream) {
-            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downsample, 1d)) {
-                base.Shot(multipler, downsample, outputStream);
+        public override void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
+            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downscale, 1d)) {
+                base.Shot(multipler, downscale, outputStream, lossless);
             } else {
                 var useFxaa = UseFxaa;
                 UseFxaa = false;
 
                 try {
-                    base.Shot(multipler, downsample, outputStream);
+                    base.Shot(multipler, downscale, outputStream, lossless);
                 } finally {
                     UseFxaa = useFxaa;
                 }

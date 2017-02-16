@@ -343,7 +343,7 @@ namespace AcManager {
             if (id.StartsWith("PresentationFramework") || id.EndsWith(".resources")) return null;
 #endif
 
-            if (id == "Magick.NET-x86") return null;
+            if (id.Contains("Magick.NET")) return null;
 
             if (_logFilename != null) {
                 Log("Resolve: " + args.Name + " as " + id);

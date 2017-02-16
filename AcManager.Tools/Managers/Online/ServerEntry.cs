@@ -460,8 +460,12 @@ namespace AcManager.Tools.Managers.Online {
             if (value == null) value = Cars?.FirstOrDefault(x => x.IsAvailable) ?? Cars?.FirstOrDefault();
             if (Equals(value, _selectedCarEntry)) return false;
             _selectedCarEntry = value;
-            OnPropertyChanged(nameof(SelectedCarEntry));
+            RaiseSelectedCarChanged();
             return true;
+        }
+
+        public void RaiseSelectedCarChanged() {
+            OnPropertyChanged(nameof(SelectedCarEntry));
         }
 
         /*private void SelectedCarChanged(object sender, EventArgs e) {

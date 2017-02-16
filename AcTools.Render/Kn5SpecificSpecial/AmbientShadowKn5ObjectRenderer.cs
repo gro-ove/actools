@@ -129,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.ClearDepthStencilView(_shadowBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             DeviceContext.OutputMerger.SetTargets(_shadowBuffer.DepthView);
 
-            _shadowCamera.LookAt(Vector3.Normalize(from) * _shadowCamera.FarZ * 0.8f, Vector3.Zero, up ?? Vector3.UnitY);
+            _shadowCamera.LookAt(Vector3.Normalize(from) * _shadowCamera.FarZValue * 0.8f, Vector3.Zero, up ?? Vector3.UnitY);
             _shadowCamera.UpdateViewMatrix();
 
             if (HideWheels && !_wheelMode) {

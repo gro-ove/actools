@@ -10,6 +10,8 @@ namespace AcTools.Render.Base.Cameras {
             Target = new Vector3();
             Up = new Vector3(0, 1, 0);
             Look = new Vector3(0, -1, 0);
+            NearZ = 0.1f;
+            FarZ = 500f;
         }
 
         public override void UpdateViewMatrix() {
@@ -37,7 +39,7 @@ namespace AcTools.Render.Base.Cameras {
 
         // ReSharper disable once OptionalParameterHierarchyMismatch
         public override void SetLens(float aspect = 0f) {
-            SetProj(Matrix.OrthoLH(Width, Height, NearZ, FarZ));
+            SetProj(Matrix.OrthoLH(Width, Height, NearZValue, FarZValue));
             UpdateViewMatrix();
         }
 

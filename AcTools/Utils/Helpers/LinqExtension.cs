@@ -463,8 +463,8 @@ namespace AcTools.Utils.Helpers {
             return result;
         }
 
-        [Pure]
-        public static IEnumerable<T> NonNull<T>([NotNull] this IEnumerable<T> source) where T : class {
+        [ItemNotNull, Pure]
+        public static IEnumerable<T> NonNull<T>([ItemCanBeNull, NotNull] this IEnumerable<T> source) where T : class {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Where(i => i != null);
         }

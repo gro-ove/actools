@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Kn5File;
@@ -135,7 +136,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled("Magick");
+            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId);
 
             public CarObject Car { get; }
 
@@ -739,7 +740,7 @@ namespace AcManager.Controls.CustomShowroom {
             private CommandBase _viewTextureCommand;
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
-                if (Renderer == null) return;
+                if (Renderer?.Kn5 == null) return;
                 new CarTextureDialog(Renderer, Skin, Renderer.Kn5, o.TextureName).ShowDialog();
             }, o => o != null));
             #endregion

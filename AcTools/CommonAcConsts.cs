@@ -3,6 +3,8 @@
         public static readonly string AppId = "244210";
 
         public static readonly int Kn5ActualVersion = 5;
+        public static readonly int KsAnimActualVersion = 2;
+
         public static readonly int DriverWeight = 75;
 
         public static readonly int PreviewWidth = 1022;

@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public bool IsInverted { get; set; }
 
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
 
         protected override void OnAttached() {
             base.OnAttached();

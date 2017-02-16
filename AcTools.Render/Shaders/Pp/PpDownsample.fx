@@ -43,11 +43,75 @@ float4 ps_Copy(PS_IN pin) : SV_Target{
 	return gInputMap.Sample(samPoint, pin.Tex);
 }
 
-	technique10 Copy {
+technique10 Copy {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_Copy()));
+	}
+}
+
+// another thing I found
+struct found_PS_IN {
+	float4 PosH    : SV_POSITION;
+	float2 Tex[5]  : TEXCOORD;
+};
+
+// one vertex shader for everything
+found_PS_IN vs_Found(VS_IN vin) {
+	found_PS_IN vout;
+	vout.PosH = float4(vin.PosL, 1.0);
+
+	float2 uv = vin.Tex;
+	float w = 1.75;
+
+	float2 up = float2(0.0, gScreenSize.z) * w;
+	float2 right = float2(gScreenSize.w, 0.0) * w;
+
+	vout.Tex[0].xy = uv - up;
+	vout.Tex[1].xy = uv - right;
+	vout.Tex[2].xy = uv + right;
+	vout.Tex[3].xy = uv + up;
+	vout.Tex[4].xy = uv;
+
+	return vout;
+}
+
+float Luminance(float3 color){
+	return dot(color, float3(0.299f, 0.587f, 0.114f));
+}
+
+float4 ps_Found(found_PS_IN pin) : SV_Target{
+	float t = Luminance(gInputMap.Sample(samPoint, pin.Tex[0]).xyz);
+	float l = Luminance(gInputMap.Sample(samPoint, pin.Tex[1]).xyz);
+	float r = Luminance(gInputMap.Sample(samPoint, pin.Tex[2]).xyz);
+	float b = Luminance(gInputMap.Sample(samPoint, pin.Tex[3]).xyz);
+
+	float2 n = float2(-(t - b), r - l);
+	float nl = length(n);
+
+	if (nl < (1.0 / 16.0)) {
+		return gInputMap.Sample(samPoint, pin.Tex[4]);
+	} else {
+		n *= gScreenSize.zw / nl;
+
+		float4 o = gInputMap.Sample(samPoint, pin.Tex[4]);
+		float4 t0 = gInputMap.Sample(samPoint, pin.Tex[4] + n * 0.5) * 0.9;
+		float4 t1 = gInputMap.Sample(samPoint, pin.Tex[4] - n * 0.5) * 0.9;
+		float4 t2 = gInputMap.Sample(samPoint, pin.Tex[4] + n) * 0.75;
+		float4 t3 = gInputMap.Sample(samPoint, pin.Tex[4] - n) * 0.75;
+
+		return (o + t0 + t1 + t2 + t3) / 4.3;
+	}
+
+	// return gInputMap.Sample(samPoint, pin.Tex);
+}
+
+technique10 Found {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_Found()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Found()));
 	}
 }
 
@@ -59,8 +123,8 @@ float4 ps_Average(PS_IN pin) : SV_Target {
 	float x, y;
 	for (x = -1; x <= 1; x += 0.25) {
 		for (y = -1; y <= 1; y += 0.25) {
-			float2 uv = pin.Tex + float2(x, y) * gScreenSize.zw * gMultipler * 1.2;
-			float w = sqrt((1.1 - abs(x)) * 2 + (1.1 - abs(y)) * 2);
+			float2 uv = pin.Tex + float2(x, y) * gScreenSize.zw * 0.5;
+			float w = sqrt(pow(1.5 - abs(x), 2) + pow(1.5 - abs(y), 2));
 			result += gInputMap.Sample(samPoint, uv) * w;
 			v += w;
 		}

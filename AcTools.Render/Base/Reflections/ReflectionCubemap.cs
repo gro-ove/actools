@@ -106,7 +106,6 @@ namespace AcTools.Render.Base.Reflections {
 
             for (var i = 0; i < 6; i++) {
                 _cameras[i] = new FpsCamera(MathF.PI / 2) {
-                    NearZ = 0.1f,
                     FarZ = 500.0f
                 };
                 _cameras[i].LookAt(center, targets[i], ups[i]);

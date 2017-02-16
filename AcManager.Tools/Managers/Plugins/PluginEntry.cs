@@ -51,6 +51,8 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
+        public bool IsObsolete => Id == "Magick";
+
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
 
         public string KeyEnabled => $"_appAddon__{Id}__enabled";
@@ -60,7 +62,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
-            get { return ValuesStorage.GetBool(KeyEnabled, true); }
+            get { return ValuesStorage.GetBool(KeyEnabled, true) && !IsObsolete; }
             set {
                 if (value == IsEnabled) return;
                 if (value) {
@@ -74,6 +76,8 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public bool IsAvailable => !BuildInformation.AppVersion.IsVersionOlderThan(AppVersion);
+
+        public bool CanWork => IsAvailable && !IsObsolete;
 
         /// <summary>
         /// Addon is installed and enabled.

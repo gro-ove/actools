@@ -26,4 +26,34 @@ namespace AcTools.Render.Base.Objects {
 
         IRenderableObject Clone();
     }
+
+    public class InvisibleObject : IRenderableObject {
+        public void Dispose() {}
+
+        public string Name => null;
+
+        public Matrix ParentMatrix { get; set; }
+
+        public bool IsEnabled { get; set; }
+
+        public bool IsReflectable { get; set; }
+
+        public int GetTrianglesCount() {
+            return 0;
+        }
+
+        public int GetObjectsCount() {
+            return 0;
+        }
+
+        public BoundingBox? BoundingBox => null;
+
+        public void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {}
+
+        public void UpdateBoundingBox() {}
+
+        public IRenderableObject Clone() {
+            return new InvisibleObject();
+        }
+    }
 }

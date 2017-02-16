@@ -144,6 +144,7 @@ namespace AcManager.Pages.Drive {
             UpdateBindings();
             UpdateCheckedMenuItems();
             Model.Entry.PropertyChanged += OnEntryPropertyChanged;
+            Model.Entry.RaiseSelectedCarChanged();
             return true;
         }
 

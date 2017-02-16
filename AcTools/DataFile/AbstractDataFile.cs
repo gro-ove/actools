@@ -26,8 +26,11 @@ namespace AcTools.DataFile {
 
         public readonly StorageMode Mode;
 
+        private string _acdFilename;
+
         protected AbstractDataFile(string carDir, string name, Acd acd) {
             Name = name;
+            _acdFilename = Path.Combine(carDir, "data.acd");
 
             if (acd != null) {
                 _acd = acd;
@@ -40,10 +43,9 @@ namespace AcTools.DataFile {
                     Filename = acd.GetFilename(Name);
                 }
             } else {
-                var acdFile = Path.Combine(carDir, "data.acd");
-                if (File.Exists(acdFile)) {
+                if (File.Exists(_acdFilename)) {
                     Mode = StorageMode.AcdFile;
-                    Filename = acdFile;
+                    Filename = _acdFilename;
                 } else {
                     Mode = StorageMode.UnpackedFile;
                     Filename = Path.Combine(carDir, "data", name);
@@ -119,12 +121,8 @@ namespace AcTools.DataFile {
         private void UpdateAcd(bool backup) {
             if (_acd != null) {
                 if (_acd.IsPacked) {
-                    if (Filename == null) {
-                        throw new Exception("File wasn’t loaded to be saved like this");
-                    }
-
                     _acd.SetEntry(Name, Stringify());
-                    _acd.Save(Filename);
+                    _acd.Save(_acdFilename);
                 } else {
                     SaveTo(_acd.GetFilename(Name), backup);
                 }

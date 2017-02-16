@@ -38,8 +38,9 @@ namespace AcTools.Render.Base.Objects {
                 _localMatrix = value;
                 OnMatrixChanged();
 
-                foreach (var clone in _clones.NonNull()) {
-                    clone.LocalMatrix = value;;
+                foreach (var clone in _clones) {
+                    if (clone == null) continue;
+                    clone.LocalMatrix = value;
                 }
             }
         }
@@ -73,6 +74,7 @@ namespace AcTools.Render.Base.Objects {
         }
 
         private Vector3? _originalLocalPos;
+        private Matrix _originalMatrix;
         private RenderableList _lookAt;
 
         private static Matrix RotateToFace(Vector3 o, Vector3 p, Vector3 u) {
@@ -80,19 +82,21 @@ namespace AcTools.Render.Base.Objects {
             var right = -Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
             var up = -Vector3.Cross(d, right);
             return SlimDxExtension.ToMatrix(
-                d.X, d.Y, d.Z, 0,
-                up.X, up.Y, up.Z, 0,
-                right.X, right.Y, right.Z, 0,
-                o.X, o.Y, o.Z, 1);
+                    d.X, d.Y, d.Z, 0,
+                    up.X, up.Y, up.Z, 0,
+                    right.X, right.Y, right.Z, 0,
+                    o.X, o.Y, o.Z, 1);
         }
 
         public void LookAt(Vector3 globalPoint) {
             if (!_originalLocalPos.HasValue) {
                 _originalLocalPos = LocalMatrix.GetTranslationVector();
+                _originalMatrix = LocalMatrix;
             }
 
-            var globalPos = Vector3.Transform(_originalLocalPos.Value, ParentMatrix).GetXyz();
-            LocalMatrix = RotateToFace(globalPos, globalPoint, Vector3.Transform(Vector3.UnitY, ParentMatrix).GetXyz()) * Matrix.Invert(ParentMatrix);
+            var globalPos = Vector3.TransformCoordinate(_originalLocalPos.Value, ParentMatrix);
+            var yAxis = Vector3.TransformNormal(Vector3.UnitY, _originalMatrix * ParentMatrix);
+            LocalMatrix = RotateToFace(globalPos, globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
         }
 
         private Matrix _prevThisMatrix, _prevLookAtMatrix;

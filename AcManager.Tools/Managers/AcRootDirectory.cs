@@ -203,41 +203,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public static string TryToFind() {
-            Logging.Write("Trying to find AC dir from Steam…");
-            try {
-                var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
-                if (regKey == null) return null;
-
-                var searchCandidates = new List<string>();
-
-                var installPath = Path.GetDirectoryName(regKey.GetValue("SourceModInstallPath").ToString());
-                searchCandidates.Add(installPath);
-                Logging.Write($"- Search candidate: {installPath}");
-
-                var steamPath = regKey.GetValue("SteamPath").ToString();
-                var config = File.ReadAllText(Path.Combine(steamPath, @"config", @"config.vdf"));
-
-                var match = Regex.Match(config, "\"BaseInstallFolder_\\d\"\\s+\"(.+?)\"");
-                while (match.Success) {
-                    if (match.Groups.Count > 1) {
-                        var candidate = Path.Combine(match.Groups[1].Value.Replace(@"\\", @"\"), "SteamApps");
-                        searchCandidates.Add(candidate);
-                        Logging.Write($"- Search candidate: {candidate}");
-                    }
-                    match = match.NextMatch();
-                }
-
-                var result = (
-                    from searchCandidate in searchCandidates
-                    where searchCandidate != null && Directory.Exists(searchCandidate)
-                    select Path.Combine(searchCandidate, @"common", @"assettocorsa")
-                ).FirstOrDefault(Directory.Exists);
-                Logging.Write($"- Result: {result}");
-                return result;
-            } catch (Exception e) {
-                Logging.Write($"- Error: {e}");
-                return null;
-            }
+            return AcRootFinder.TryToFind();
         }
     }
 }

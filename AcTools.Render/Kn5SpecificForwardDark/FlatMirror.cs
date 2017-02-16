@@ -59,7 +59,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private readonly FlatMirrorObject _object;
 
-        public FlatMirror([CanBeNull] IRenderableObject mirroredObject, Plane plane, bool opaqueMode) {
+        private FlatMirror([CanBeNull] IRenderableObject mirroredObject, Plane plane, bool opaqueMode) {
             LocalMatrix = Matrix.Reflection(plane);
 
             var point = plane.Normal * plane.D;
@@ -72,6 +72,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _object = new FlatMirrorObject(matrix, opaqueMode) { ParentMatrix = Matrix };
             }
         }
+
+        public FlatMirror([NotNull] IRenderableObject mirroredObject, Plane plane) : this(mirroredObject, plane, false) {}
+
+        public FlatMirror(Plane plane, bool opaqueMode) : this(null, plane, opaqueMode) {}
 
         private RasterizerState _rasterizerState;
 

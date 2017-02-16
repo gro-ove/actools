@@ -45,7 +45,7 @@
                                 <ContentControl Content="{TemplateBinding BackgroundContent}" />
 
                                 <!-- title bar -->
-                                <DockPanel VerticalAlignment="Top" Panel.ZIndex="10">
+                                <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar">
                                     <!-- window system buttons-->
                                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top"
                                             WindowChrome.IsHitTestVisibleInChrome="True">
@@ -148,9 +148,8 @@
                                     </ItemsControl>
 
                                     <!-- title -->
-                                    <TextBlock Text="{TemplateBinding Title}" Margin="8,0" VerticalAlignment="Center" Style="{StaticResource ModernWindowTitle}"
-                                            DataContext="{TemplateBinding IsTitleVisible}"
-                                            Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <TextBlock x:Name="PART_TitleTextBlock" Text="{TemplateBinding Title}" Margin="8,0" VerticalAlignment="Center"
+                                            Style="{StaticResource ModernWindowTitle}" DataContext="{TemplateBinding IsTitleVisible}" />
                                 </DockPanel>
 
                                 <!-- resize grip -->
@@ -214,6 +213,11 @@
                             <Setter TargetName="Maximize" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="Restore" Property="Visibility" Value="Visible" />
                             <Setter TargetName="LayoutRoot" Property="Margin" Value="7" />
+                            <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_TitleBar" Property="Margin" Value="0 7 7 0" />
+                        </Trigger>
+                        <Trigger Property="IsTitleVisible" Value="False">
+                            <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="WindowState" Value="Normal">
                             <Setter TargetName="Maximize" Property="Visibility" Value="Visible" />

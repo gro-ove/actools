@@ -17,7 +17,7 @@ namespace AcTools.DataFile {
 
     public class DataDirectoryWrapper : IDataWrapper {
         private readonly string _directory;
-
+        
         public DataDirectoryWrapper(string directory) {
             if (!Directory.Exists(directory)) {
                 throw new DirectoryNotFoundException(directory);

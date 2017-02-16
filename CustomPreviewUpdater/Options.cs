@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using AcTools;
+using System.Diagnostics;
+using System.Reflection;
 using CommandLine;
 using CommandLine.Text;
 
@@ -20,7 +20,7 @@ namespace CustomPreviewUpdater {
         [ValueList(typeof(List<string>), MaximumElements = -1)]
         public IList<string> Ids { get; set; }
 
-        [Option('r', "root", Required = true, HelpText = "AC root folder.")]
+        [Option('r', "root", HelpText = "AC root folder.")]
         public string AcRoot { get; set; }
 
         //[Option('s', "showroom", DefaultValue = "previews", HelpText = "Showroom to shot previews at.")]
@@ -36,10 +36,20 @@ namespace CustomPreviewUpdater {
         [Option('v', "fov", DefaultValue = 30.0, HelpText = "Field of view.")]
         public double Fov { get; set; }
 
-        [Option("attempts", DefaultValue = 3, HelpText = "Number of attempts if there are any problems.")]
-        public int AttemptsCount { get; set; }
+        [Option('a', "align", HelpText = "Align car to the center horizontally and then offset using look-at value.")]
+        public bool AlignCar { get; set; }
         
         /* OPTIONS */
+        [Option("bloom", DefaultValue = 1d, HelpText = "Bloom radius multipler.")]
+        public double BloomRadiusMultipler { get; set; }
+
+        [Option("width", DefaultValue = 1022, HelpText = "Previews width.")]
+        public int PreviewWidth { get; set; }
+
+        [Option("height", DefaultValue = 575, HelpText = "Previews height.")]
+        public int PreviewHeight { get; set; }
+
+        /* AA-RELATED */
         [Option("ssaa", DefaultValue = 4d, HelpText = "SSAA multipler.")]
         public double SsaaMultipler { get; set; }
 
@@ -52,17 +62,18 @@ namespace CustomPreviewUpdater {
         [Option("msaa-count", DefaultValue = 4, HelpText = "Samples count for MSAA.")]
         public int MsaaSampleCount { get; set; }
 
-        [Option("bloom", DefaultValue = 1d, HelpText = "Bloom radius multipler.")]
-        public double BloomRadiusMultipler { get; set; }
+        [Option("software-downscale", HelpText = "Use software downscale, notably slower.")]
+        public bool SoftwareDownscale { get; set; }
 
-        [Option("width", DefaultValue = 1022, HelpText = "Previews width.")]
-        public int PreviewWidth { get; set; }
-
-        [Option("height", DefaultValue = 575, HelpText = "Previews height.")]
-        public int PreviewHeight { get; set; }
-
+        /* MISC PARAMS */
         [Option("name", DefaultValue = "preview.jpg", HelpText = "Names of preview files.")]
         public string FileName { get; set; }
+
+        [Option("attempts", DefaultValue = 3, HelpText = "Number of attempts if there are any problems.")]
+        public int AttemptsCount { get; set; }
+
+        [Option("single-thread", HelpText = "Do not use separate threads to encode image.")]
+        public bool SingleThread { get; set; }
 
         /* MODES */
         [Option("wireframe", HelpText = "Wireframe mode.")]
@@ -80,6 +91,12 @@ namespace CustomPreviewUpdater {
 
         [Option("brakelights", HelpText = "Enable brake lights.")]
         public bool BrakeLightsEnabled { get; set; } = false;
+
+        [Option("left-door-open", HelpText = "Open left door.")]
+        public bool LeftDoorOpen { get; set; } = false;
+
+        [Option("right-door-open", HelpText = "Open right door.")]
+        public bool RightDoorOpen { get; set; } = false;
 
         [Option("steer", HelpText = "Steer front wheels at specified angle.")]
         public double SteerAngle { get; set; } = 0d;
@@ -120,7 +137,18 @@ namespace CustomPreviewUpdater {
 
         [HelpOption]
         public string GetUsage() {
-            return HelpText.AutoBuild(this, current => HelpText.DefaultParsingErrorsHandler(this, current));
+            var help = new HelpText {
+                Heading = new HeadingInfo("CustomPreviewUpdater", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Copyright = new CopyrightInfo("AcClub", 2017),
+                AdditionalNewLineAfterOption = false,
+                AddDashesToOption = true
+            };
+            help.AddPreOptionsLine("\r\nThis is free software. You may redistribute copies of it under the terms of");
+            help.AddPreOptionsLine("the MS-PL License <https://opensource.org/licenses/MS-PL>.");
+            help.AddPreOptionsLine("");
+            help.AddPreOptionsLine("Usage: CustomPreviewUpdater -r <AC root> [options...] <car IDs or filters...>");
+            help.AddOptions(this);
+            return help;
         }
     }
 }

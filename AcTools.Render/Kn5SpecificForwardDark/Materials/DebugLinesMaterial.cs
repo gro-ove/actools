@@ -35,6 +35,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            contextHolder.DeviceContext.Rasterizer.State = null;
         }
 
         public bool IsBlending => true;

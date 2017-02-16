@@ -14,9 +14,11 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
+using AcTools.Render.Kn5Specific.Animations;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -40,7 +42,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         internal Kn5 Kn5Loaded { get; private set; }
 
         [NotNull]
-        public Kn5 Kn5LoadedRequire => Kn5Loaded ?? (Kn5Loaded = Kn5.FromFile(MainKn5File));
+        public Kn5 Kn5LoadedRequire => Kn5Loaded ?? (Kn5Loaded = Kn5.FromFile(MainKn5File, readNodesAsBytes: false));
 
         public Task LoadAsync() {
             return Task.Run(() => {
@@ -105,7 +107,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 ReloadSkins(null, selectSkin);
             }
 
-            var mainKn5 = _carData.GetMainKn5(_rootDirectory);
+            var mainKn5 = _carData.IsEmpty ? car.MainKn5File : _carData.GetMainKn5(_rootDirectory);
             _lodA = FileUtils.ArePathsEqual(car.MainKn5File, mainKn5) ? car.Kn5LoadedRequire : Kn5.FromFile(mainKn5);
             
             _lods = _carData.GetLods().ToList();
@@ -146,6 +148,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             DrawInitialize(contextHolder);
 
+            /* shadows */
+            if (_ambientShadowsTextures == null) {
+                InitializeAmbientShadows(contextHolder);
+            }
+
+            _ambientShadows.Draw(_ambientShadowsHolder, camera, mode, filter);
+
+            /* car */
             _currentLodObject.EnsurePrepared(LocalHolder, contextHolder, SharedMaterials, TexturesProvider, this);
             RootObject.Draw(_currentLodObject.Holder, camera, mode, filter);
 
@@ -157,11 +167,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 SelectSkin(contextHolder, CurrentSkin);
             }
 
-            if (_ambientShadowsTextures == null) {
-                InitializeAmbientShadows(contextHolder);
+            /* collider */
+            if (IsColliderVisible) {
+                _collider?.Draw(contextHolder, camera, mode, filter);
             }
-            
-            _ambientShadows.Draw(_ambientShadowsHolder, camera, mode, filter);
         }
 
         private int? _trianglesCount;
@@ -177,6 +186,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             OnPropertyChanged(nameof(TrianglesCount));
             OnPropertyChanged(nameof(ObjectsCount));
         }
+
+        public event EventHandler ObjectsChanged; 
 
         #region LODs
         private readonly IReadOnlyList<CarData.LodDescription> _lods;
@@ -226,6 +237,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CurrentLodInformation));
+                ObjectsChanged?.Invoke(this, EventArgs.Empty);
 
                 InvalidateCount();
             }
@@ -346,6 +358,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        [CanBeNull]
         private IDeviceContextHolder _skinsWatcherHolder;
         private bool _actuallyLoaded, _skinsWatcherSet;
         private FileSystemWatcher _skinsWatcher;
@@ -673,9 +686,84 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
         #endregion
 
-        #region  Lights
+        #region Visible collider
+        private IRenderableObject _collider;
+
+        private bool _isColliderVisible;
+
+        public bool IsColliderVisible {
+            get { return _isColliderVisible; }
+            set {
+                if (Equals(value, _isColliderVisible)) return;
+                _isColliderVisible = value;
+                OnPropertyChanged();
+
+                if (_collider == null) {
+                    try {
+                        _collider = new Kn5RenderableCollider(Kn5.FromFile(Path.Combine(_rootDirectory, "collider.kn5")), Matrix.Identity);
+                    } catch (Exception e) {
+                        AcToolsLogging.Write(e);
+                        _collider = new InvisibleObject();
+                    }
+                }
+
+                _skinsWatcherHolder?.RaiseUpdateRequired();
+
+                if (value) {
+                    Add(_collider);
+                } else {
+                    Remove(_collider);
+                }
+
+                ObjectsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        #endregion
+
+        #region Doors
+        private Lazy<KsAnimAnimator> _doorLeftAnimator;
+        private Lazy<KsAnimAnimator> _doorRightAnimator;
+
+        private void InitializeDoors() {
+            if (_doorLeftAnimator != null) return;
+
+            _doorLeftAnimator = new Lazy<KsAnimAnimator>(() => CreateAnimator("car_door_L.ksanim", 1f));
+            _doorRightAnimator = new Lazy<KsAnimAnimator>(() => CreateAnimator("car_door_R.ksanim", 1f));
+        }
+
+        private bool _leftDoorOpen;
+
+        public bool LeftDoorOpen {
+            get { return _leftDoorOpen; }
+            set {
+                if (Equals(value, _leftDoorOpen)) return;
+                _leftDoorOpen = value;
+                OnPropertyChanged();
+
+                InitializeDoors();
+                _doorLeftAnimator.Value?.Update(RootObject, value ? 1f : 0f);
+            }
+        }
+
+        private bool _rightDoorOpen;
+
+        public bool RightDoorOpen {
+            get { return _rightDoorOpen; }
+            set {
+                if (Equals(value, _rightDoorOpen)) return;
+                _rightDoorOpen = value;
+                OnPropertyChanged();
+
+                InitializeDoors();
+                _doorRightAnimator.Value?.Update(RootObject, value ? 1f : 0f);
+            }
+        }
+        #endregion
+
+        #region Lights
         [CanBeNull]
-        private IReadOnlyList<CarLight> _carLights;
+        private CarLight[] _carLights;
+        private KsAnimAnimator[] _carLightsAnimators;
 
         protected IEnumerable<T> LoadLights<T>() where T : CarLight, new() {
             return _carData.GetLights().Select(x => {
@@ -687,6 +775,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected virtual IEnumerable<CarLight> LoadLights() {
             return LoadLights<CarLight>();
+        }
+
+        [CanBeNull]
+        private KsAnimAnimator CreateAnimator([NotNull] string animName, float duration) {
+            var filename = Path.Combine(_rootDirectory, "animations", animName);
+            if (!File.Exists(filename)) return null;
+
+            try {
+                return new KsAnimAnimator(filename, duration);
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+                return null;
+            }
+        }
+
+        [ItemNotNull]
+        private IEnumerable<KsAnimAnimator> LoadLightsAnimators() {
+            return _carData.GetLightsAnimations()
+                           .Append(new CarData.LightAnimation("lights.ksanim", 1f))
+                           .Distinct(CarData.LightAnimation.KsAnimNameComparer)
+                           .Select(x => CreateAnimator(x.KsAnimName, x.Duration))
+                           .NonNull();
         }
 
         private void ResetLights() {
@@ -711,20 +821,45 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public void OnTick(float dt) {
+            var dirty = false;
+
+            if (_carLightsAnimators != null) {
+                for (var i = 0; i < _carLightsAnimators.Length; i++) {
+                    dirty |= _carLightsAnimators[i].OnTick(dt);
+                }
+            }
+
+            if (_doorLeftAnimator != null) {
+                dirty |= _doorLeftAnimator.Value?.OnTick(dt) ?? false;
+                dirty |= _doorRightAnimator.Value?.OnTick(dt) ?? false;
+            }
+
+            if (dirty) {
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+            }
+        }
+
         private bool _lightsEnabled;
 
         public bool LightsEnabled {
             get { return _lightsEnabled; }
             set {
+                if (Equals(value, _lightsEnabled)) return;
+
                 if (_carLights == null) {
-                    _carLights = LoadLights().ToIReadOnlyListIfItIsNot();
+                    _carLights = LoadLights().ToArray();
+                    _carLightsAnimators = LoadLightsAnimators().ToArray();
                 }
 
-                if (Equals(value, _lightsEnabled)) return;
                 _lightsEnabled = value;
 
-                foreach (var light in _carLights) {
-                    light.IsHeadlightEnabled = value;
+                for (var i = 0; i < _carLights.Length; i++) {
+                    _carLights[i].IsHeadlightEnabled = value;
+                }
+
+                for (var i = 0; i < _carLightsAnimators.Length; i++) {
+                    _carLightsAnimators[i].Update(RootObject, value ? 1f : 0f);
                 }
 
                 OnPropertyChanged();
@@ -736,15 +871,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public bool BrakeLightsEnabled {
             get { return _brakeLightsEnabled; }
             set {
+                if (Equals(value, _brakeLightsEnabled)) return;
+
                 if (_carLights == null) {
-                    _carLights = LoadLights().ToIReadOnlyListIfItIsNot();
+                    _carLights = LoadLights().ToArray();
                 }
 
-                if (Equals(value, _brakeLightsEnabled)) return;
                 _brakeLightsEnabled = value;
 
-                foreach (var light in _carLights) {
-                    light.IsBrakeEnabled = value;
+                for (var i = 0; i < _carLights.Length; i++) {
+                    _carLights[i].IsBrakeEnabled = value;
                 }
 
                 OnPropertyChanged();
@@ -916,24 +1052,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Vector3 _wheelLfCon;
         private float _steerDegPrevious;
 
-        private Matrix? GetSteerWheelMatrix(string name, [NotNull] CarData.SuspensionsPack pack, [CanBeNull] CarData.SuspensionBase suspension, float angle) {
-            var axis = suspension?.WheelSteerAxis;
-            if (axis == null) return null;
-
+        private Matrix? GetSteerWheelMatrix(Kn5RenderableList node, Tuple<Vector3, Vector3> axis, float angle) {
             if (_currentLodObject.OriginalMatrices == null) {
                 _currentLodObject.OriginalMatrices = new Dictionary<string, Matrix>(3);
                 UpdateModelMatrixInverted();
             }
 
-            axis = Tuple.Create(
-                    pack.TranslateRelativeToCarModel(suspension, axis.Item1),
-                    pack.TranslateRelativeToCarModel(suspension, axis.Item2));
             var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
 
-            var node = GetDummyByName(name);
-            if (node == null) return null;
-
             Matrix original;
+            var name = node.Name ?? "-";
             if (!_currentLodObject.OriginalMatrices.TryGetValue(name, out original)) {
                 original = _currentLodObject.OriginalMatrices[name] = node.RelativeToModel;
             }
@@ -949,7 +1077,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 return null;
             }
 
+#if DEBUG
             _wheelLfCon = con;
+#endif
+
             var delta = con - position;
 
             var transform = Matrix.Translation(-delta) * Matrix.RotationAxis(rotationAxis, angle * MathF.PI / 180f) * Matrix.Translation(delta);
@@ -958,7 +1089,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             // node.LocalMatrix = transform * Matrix.Translation(Vector3.Transform(suspension.RefPoint, pack.GraphicOffset).GetXyz());
             // node.LocalMatrix = transform * Matrix.Translation(position);
 
-            return Matrix.RotationQuaternion(rotation) * transform * Matrix.Translation(position);
+            return Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * transform * Matrix.Translation(position);
         }
 
         private void SteerWheel(bool left, [NotNull] CarData.SuspensionsPack pack, [CanBeNull] CarData.SuspensionBase suspension, float angle) {
@@ -967,16 +1098,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var range = (angle.Abs() / 30f).Saturate();
             angle += (left ? -1.5f : 1.5f) * MathF.Pow(range, 2f);
 
-            var wheelMatrix = GetSteerWheelMatrix($@"WHEEL_{namePostfix}", pack, suspension, angle);
+            var axis = suspension?.WheelSteerAxis;
+            if (axis == null) return;
+
+            axis = Tuple.Create(
+                    pack.TranslateRelativeToCarModel(suspension, axis.Item1),
+                    pack.TranslateRelativeToCarModel(suspension, axis.Item2));
+
+            var wheelMatrix = GetSteerWheelMatrix(GetDummyByName($@"WHEEL_{namePostfix}"), axis, angle);
             if (!wheelMatrix.HasValue) return;
 
-            foreach (var node in new[] { "HUB" }.Select(x => GetDummyByName($@"{x}_{namePostfix}")).NonNull()) {
-                node.LocalMatrix = (GetSteerWheelMatrix(node.Name, pack, suspension, angle) ?? wheelMatrix.Value) *
+            var names = new[] { $@"WHEEL_{namePostfix}", $@"SUSP_{namePostfix}", $@"HUB_{namePostfix}", $@"DISC_{namePostfix}" };
+            foreach (var node in Dummies.Where(x => names.Contains(x.Name))) {
+                node.LocalMatrix = (GetSteerWheelMatrix(node, axis, angle) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
-            }
-
-            foreach (var node in new[] { "WHEEL", "SUSP", "DISC" }.Select(x => GetDummyByName($@"{x}_{namePostfix}")).NonNull()) {
-                node.LocalMatrix = wheelMatrix.Value * Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
             }
         }
 
@@ -1000,7 +1135,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _steerLock = _carData.GetSteerLock();
                 }
 
-                node.LocalMatrix = Matrix.RotationZ(_steerLock.Value * offset * MathF.PI / 180f) * original;
+                node.LocalMatrix = Matrix.RotationZ(-_steerLock.Value * offset * MathF.PI / 180f) * original;
             }
         }
 
@@ -1090,15 +1225,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _suspensionLines.ParentMatrix = RootObject.Matrix;
             _suspensionLines.Draw(holder, camera, SpecialRenderMode.Simple);
 
-            if (_debugNode == null) {
-                _debugNode = new DebugObject(Matrix.Translation(_wheelLfCon), GeometryGenerator.CreateSphere(0.02f, 6, 6));
+            if (_wheelLfCon != default(Vector3)) {
+                if (_debugNode == null) {
+                    _debugNode = new DebugObject(Matrix.Translation(_wheelLfCon), GeometryGenerator.CreateSphere(0.02f, 6, 6));
+                }
+
+                _debugNode.Transform = Matrix.Translation(_wheelLfCon);
+                _debugNode.ParentMatrix = RootObject.Matrix;
+
+                holder.DeviceContext.OutputMerger.DepthStencilState = holder.States.DisabledDepthState;
+                _debugNode.Draw(holder, camera, SpecialRenderMode.Simple);
             }
-
-            _debugNode.Transform = Matrix.Translation(_wheelLfCon);
-            _debugNode.ParentMatrix = RootObject.Matrix;
-
-            holder.DeviceContext.OutputMerger.DepthStencilState = holder.States.DisabledDepthState;
-            _debugNode.Draw(holder, camera, SpecialRenderMode.Simple);
         }
 
         public void SetDebugMode(bool enabled) {
@@ -1130,6 +1267,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             DisposeHelper.Dispose(ref _suspensionLines);
+            DisposeHelper.Dispose(ref _collider);
             DisposeHelper.Dispose(ref _debugNode);
         }
 

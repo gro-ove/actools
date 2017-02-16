@@ -184,9 +184,7 @@ namespace AcTools.Render.Wrapper {
             } else {
                 var c = Kn5ObjectRenderer.CameraOrbit;
                 if (c == null) return;
-                c.FovY = MathF.Clamp(c.FovY - value * 0.1f, MathF.PI * 0.05f, MathF.PI * 0.8f);
-                c.SetLens(c.Aspect);
-                c.Zoom(value * 0.4f);
+                Kn5ObjectRenderer.ChangeCameraFov(c.FovY - value * 0.05f);
             }
 
             Renderer.IsDirty = true;

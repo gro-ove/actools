@@ -208,7 +208,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         break;
                     } catch (Exception e) {
                         AcToolsLogging.Write(e);
-                        Logging.Warning("UpdateOverrideLater(): " + e);
+                        Logging.Warning("UpdateOverrideLater(): " + e.Message);
                     }
                 }
 
@@ -249,11 +249,14 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 }
             }
 
-            if (AsyncLoading) {
-                LoadOverrideAsync(contextHolder, result, key).Forget();
-            } else {
-                LoadOverride(contextHolder, result, key);
+            if (_directory != null) {
+                if (AsyncLoading) {
+                    LoadOverrideAsync(contextHolder, result, key).Forget();
+                } else {
+                    LoadOverride(contextHolder, result, key);
+                }
             }
+
             return result;
         }
 
@@ -359,7 +362,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         texture.Override = null;
                     }
                 } catch (Exception e) {
-                    Logging.Warning("Can’t load override texture: " + e);
+                    Logging.Warning("Can’t load override texture: " + e.Message);
                     texture.Override = null;
                 }
             }

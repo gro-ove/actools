@@ -37,7 +37,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             if (mode != SpecialRenderMode.Outline) {
                 contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
-                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.LessEqualReadOnlyDepthState;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.DisabledDepthState;
             }
 
             return true;

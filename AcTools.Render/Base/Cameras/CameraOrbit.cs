@@ -70,7 +70,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Zoom(float dr) {
-            Radius = MathF.Clamp(Radius + dr, 1.2f, FarZ * 1.5f);
+            Radius = MathF.Clamp(Radius + dr, 1.2f, 1000f);
         }
 
         public override void UpdateViewMatrix() {

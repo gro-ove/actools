@@ -1364,6 +1364,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _useOldLiteShowroom;
+
+            public bool UseOldLiteShowroom {
+                get { return _useOldLiteShowroom ?? (_useOldLiteShowroom = ValuesStorage.GetBool("Settings.CustomShowroomSettings.UseOldLiteShowroom", false)).Value; }
+                set {
+                    if (Equals(value, _useOldLiteShowroom)) return;
+                    _useOldLiteShowroom = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.UseOldLiteShowroom", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _liteUseFxaa;
 
             public bool LiteUseFxaa {
@@ -1384,6 +1396,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _liteUseMsaa)) return;
                     _liteUseMsaa = value;
                     ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseMsaa", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _liteUseSsaa;
+
+            public bool LiteUseSsaa {
+                get { return _liteUseSsaa ?? (_liteUseSsaa = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseSsaa", false)).Value; }
+                set {
+                    if (Equals(value, _liteUseSsaa)) return;
+                    _liteUseSsaa = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseSsaa", value);
                     OnPropertyChanged();
                 }
             }

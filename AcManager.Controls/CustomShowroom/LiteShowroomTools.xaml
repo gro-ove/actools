@@ -53,7 +53,7 @@
                         <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                     </DockPanel>
 
-                    <DockPanel IsEnabled="{Binding Renderer.SuperResolutionMode, Converter={StaticResource InvertBooleanConverter}}">
+                    <DockPanel>
                         <Label Content="MSAA:" />
                         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.MsaaModes}"
                                 DisplayMemberPath="DisplayName" />
@@ -63,7 +63,7 @@
                         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.SsaaModes}"
                                 DisplayMemberPath="DisplayName" />
                     </DockPanel>
-                    <CheckBox IsChecked="{Binding Renderer.UseFxaa}" IsEnabled="{Binding Renderer.IsFxaaAvailable}">
+                    <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
                         <Label Content="FXAA" />
                     </CheckBox>
                     <!--<CheckBox IsChecked="{Binding Renderer.UseSmaa}" IsEnabled="{Binding Renderer.IsSmaaAvailable}">
@@ -102,7 +102,8 @@
                     <DockPanel>
                         <mui:ModernButton Margin="4 0 0 -20" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
                                 IconHeight="10" IconData="{StaticResource GearIconData}" Command="{Binding SelectModeCommand}"
-                                CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" DockPanel.Dock="Right" />
+                                CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" DockPanel.Dock="Right"
+                                Visibility="{Binding DarkRenderer, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
                         <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                     </DockPanel>

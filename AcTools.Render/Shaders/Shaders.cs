@@ -581,7 +581,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechCopy, TechAverage, TechAnisotropic, TechBicubic;
+		public EffectTechnique TechCopy, TechFound, TechAverage, TechAnisotropic, TechBicubic;
 
 		public EffectResourceVariable FxInputMap;
 		public EffectVectorVariable FxScreenSize { get; private set; }
@@ -592,6 +592,7 @@ namespace AcTools.Render.Shaders {
 			E = new Effect(device, _b);
 
 			TechCopy = E.GetTechniqueByName("Copy");
+			TechFound = E.GetTechniqueByName("Found");
 			TechAverage = E.GetTechniqueByName("Average");
 			TechAnisotropic = E.GetTechniqueByName("Anisotropic");
 			TechBicubic = E.GetTechniqueByName("Bicubic");
@@ -891,7 +892,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechDebug, TechSkinnedDebug, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatGround;
+		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechCollider, TechDebug, TechSkinnedDebug, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
 
 		public EffectMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectMatrixVariable FxWorld { get; private set; }
@@ -923,17 +924,19 @@ namespace AcTools.Render.Shaders {
 			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
 			TechGl = E.GetTechniqueByName("Gl");
 			TechSkinnedGl = E.GetTechniqueByName("SkinnedGl");
+			TechCollider = E.GetTechniqueByName("Collider");
 			TechDebug = E.GetTechniqueByName("Debug");
 			TechSkinnedDebug = E.GetTechniqueByName("SkinnedDebug");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechMirror = E.GetTechniqueByName("Mirror");
 			TechFlatMirror = E.GetTechniqueByName("FlatMirror");
-			TechFlatGround = E.GetTechniqueByName("FlatGround");
+			TechFlatBackgroundGround = E.GetTechniqueByName("FlatBackgroundGround");
+			TechFlatAmbientGround = E.GetTechniqueByName("FlatAmbientGround");
 
-			for (var i = 0; i < TechAmbientShadow.Description.PassCount && InputSignaturePT == null; i++) {
-				InputSignaturePT = TechAmbientShadow.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechFlatMirror.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechFlatMirror.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePT == null) throw new System.Exception("input signature (DarkMaterial, PT, AmbientShadow) == null");
+			if (InputSignaturePT == null) throw new System.Exception("input signature (DarkMaterial, PT, FlatMirror) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 			for (var i = 0; i < TechStandard.Description.PassCount && InputSignaturePNTG == null; i++) {
 				InputSignaturePNTG = TechStandard.GetPassByIndex(i).Description.Signature;

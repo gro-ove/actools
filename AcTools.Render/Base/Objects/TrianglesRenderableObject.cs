@@ -37,21 +37,43 @@ namespace AcTools.Render.Base.Objects {
             set { base.IsEnabled = value; }
         }
 
-        public IEnumerable<Tuple<Vector3, Vector3, Vector3>> GetTrianglesInWorldSpace() {
-            for (var i = 0; i < Indices.Length / 3; i++) {
-                var v0 = Vector3.TransformCoordinate(Vertices[Indices[i * 3]].Position, ParentMatrix);
-                var v1 = Vector3.TransformCoordinate(Vertices[Indices[i * 3 + 1]].Position, ParentMatrix);
-                var v2 = Vector3.TransformCoordinate(Vertices[Indices[i * 3 + 2]].Position, ParentMatrix);
-                yield return new Tuple<Vector3, Vector3, Vector3>(v0, v1, v2);
-            }
-        }
-
         public override int GetTrianglesCount() {
             return IndicesCount / 3;
         }
 
+        private Matrix? _parentMatrix;
+
         public override void UpdateBoundingBox() {
-            BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, ParentMatrix)).ToBoundingBox();
+            // No, we can’t just “cache BB in default state and then transform min/max values”! No!
+            // When rotated, some absolutely different vertices might become min/max!
+
+            if (IsEmpty) {
+                BoundingBox = null;
+            }
+
+            var parentMatrix = ParentMatrix;
+            if (parentMatrix == _parentMatrix) return;
+            _parentMatrix = parentMatrix;
+
+            var v = Vector3.TransformCoordinate(Vertices[0].Position, parentMatrix);
+            var minX = v.X;
+            var minY = v.Y;
+            var minZ = v.Z;
+            var maxX = v.X;
+            var maxY = v.Y;
+            var maxZ = v.Z;
+
+            for (var i = 1; i < Vertices.Length; i++) {
+                var n = Vector3.TransformCoordinate(Vertices[i].Position, parentMatrix);
+                if (minX > n.X) minX = n.X;
+                if (minY > n.Y) minY = n.Y;
+                if (minZ > n.Z) minZ = n.Z;
+                if (maxX < n.X) maxX = n.X;
+                if (maxY < n.Y) maxY = n.Y;
+                if (maxZ < n.Z) maxZ = n.Z;
+            }
+
+            BoundingBox = new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
         }
 
         public override BaseRenderableObject Clone() {

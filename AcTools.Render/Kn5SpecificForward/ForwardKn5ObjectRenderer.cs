@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -69,7 +67,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public void SetCamera(Vector3 from, Vector3 to, float fovY) {
+        public void SetCamera(Vector3 from, Vector3 to, float fovY, bool alignCurrentCar) {
             var orbit = CameraOrbit ?? CreateCamera(Scene);
 
             Camera = new FpsCamera(fovY) {
@@ -79,6 +77,16 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             Camera.LookAt(from, to, Vector3.UnitY);
             PrepareCamera(Camera);
+
+            if (alignCurrentCar) {
+                Camera.SetLens(AspectRatio);
+                Camera.UpdateViewMatrix();
+
+                var offset = GetCameraOffsetForCenterAlignment(Camera, false) + to;
+                offset.Y = 0f;
+
+                Camera.LookAt(from + offset, to + offset, Vector3.UnitY);
+            }
         }
 
         protected virtual void PrepareCamera(BaseCamera camera) { }
@@ -87,14 +95,15 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool AllowSkinnedObjects { get; set; } = false;
 
-        public Kn5 Kn5 { get; private set; }
+        [CanBeNull]
+        public Kn5 Kn5 => CarNode?.OriginalFile;
+
         private CarDescription _car;
         private readonly string _showroomKn5Filename;
 
         public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
             _car = car;
             _showroomKn5Filename = showroomKn5Filename;
-            Kn5 = Kn5.FromFile(_car.MainKn5File);
         }
 
         public int CacheSize { get; } = 0;
@@ -183,6 +192,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         private void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
             newCar.LightsEnabled = oldCar?.LightsEnabled ?? CarLightsEnabled;
             newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled ?? CarBrakeLightsEnabled;
+            newCar.LeftDoorOpen = oldCar?.LeftDoorOpen ?? false;
+            newCar.RightDoorOpen = oldCar?.RightDoorOpen ?? false;
             newCar.SteerDeg = oldCar?.SteerDeg ?? 0f;
         }
 
@@ -414,8 +425,6 @@ namespace AcTools.Render.Kn5SpecificForward {
             return new CameraOrbit(MathF.ToRadians(32f)) {
                 Alpha = 0.9f,
                 Beta = 0.1f,
-                NearZ = 0.1f,
-                FarZ = 300f,
                 Radius = node?.BoundingBox?.GetSize().Length() ?? 4.8f,
                 Target = (node?.BoundingBox?.GetCenter() ?? Vector3.Zero) - new Vector3(0f, 0.05f, 0f)
             };
@@ -454,7 +463,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private Vector3 _light = Vector3.Normalize(new Vector3(0.2f, 1.0f, 0.8f));
 
-        private Vector3 Light {
+        public Vector3 Light {
             get { return _light; }
             set {
                 value = Vector3.Normalize(value);
@@ -465,7 +474,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private bool _shadowsDirty, _reflectionCubemapDirty;
+        private bool _shadowsDirty, _reflectionCubemapDirty, _sameShadows;
 
         private void OnSceneUpdated(object sender, EventArgs e) {
             _shadowsDirty = true;
@@ -478,6 +487,13 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _shadows.Update(-Light, center);
                 _shadows.DrawScene(DeviceContextHolder, this);
                 _shadowsDirty = false;
+                _sameShadows = false;
+            } else {
+                if (!_sameShadows) {
+                    Scene.UpdateBoundingBox();
+                }
+
+                _sameShadows = true;
             }
 
             if (_reflectionCubemap != null && (_reflectionCubemap.Update(center) || _reflectionCubemapDirty)) {
@@ -510,10 +526,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             _textBlock.DrawString($@"
 FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
-FXAA: {(UseFxaa && (!UseMsaa || UseSsaa) ? "Yes" : "No")}
-MSAA: {(UseMsaa && !UseSsaa ? "Yes" : "No")}
-SSAA: {(UseSsaa ? "Yes" : "No")}
+FXAA: {(UseFxaa ? "Yes" : "No")}
+MSAA: {(UseMsaa ? "Yes" : "No")}
+SSAA: {(TemporaryFlag ? "Yes, Exp." : UseSsaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
+Reused shadows: {(_sameShadows ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
                     new Vector2(ActualWidth - 300, 20), 16f, UiColor,
                     CoordinateType.Absolute);
@@ -562,13 +579,93 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             }
         }
 
-        protected virtual Vector3 AutoAdjustedTarget =>
-                new Vector3(-0.2f * (CameraOrbit?.Position.X ?? 0f), -0.1f * (CameraOrbit?.Position.Y ?? 0f), 0f);
+        private Vector3 GetCameraOffsetForCenterAlignment(ICamera camera, bool limited) {
+            var carNode = CarNode;
+            if (carNode?.BoundingBox == null) return Vector3.Zero;
+
+            var box = carNode.BoundingBox.Value;
+            var corners = box.GetCorners();
+
+            if (camera.Position.X >= box.Minimum.X &&
+                    camera.Position.Y >= box.Minimum.X &&
+                    camera.Position.Z >= box.Minimum.X &&
+                    box.Maximum.X >= camera.Position.X &&
+                    box.Maximum.Y >= camera.Position.X &&
+                    box.Maximum.Z >= camera.Position.X) {
+                return Vector3.Zero;
+            }
+
+            return GetCameraOffsetForCenterAlignment(corners, camera, limited);
+        }
+
+        private static Vector3 GetCameraOffsetForCenterAlignment(Vector3[] corners, ICamera camera, bool limited) {
+            var center = Vector3.Zero;
+            for (var i = 0; i < corners.Length; i++) {
+                var vec = Vector3.TransformCoordinate(corners[i], camera.ViewProj);
+                if (vec.Z < 0.01f) continue;
+                if (limited && new Vector2(vec.X, vec.Y).Length() > 15f) return Vector3.Zero;
+                center += vec / corners.Length;
+            }
+
+            var offsetScreen = center;
+            return Vector3.TransformCoordinate(offsetScreen, camera.ViewProjInvert) -
+                    Vector3.TransformCoordinate(new Vector3(0f, 0f, offsetScreen.Z), camera.ViewProjInvert);
+        }
+
+        private static float GetMaxCornerOffset(CameraOrbit camera) {
+            camera.UpdateViewMatrix();
+
+            var test = camera.Target + camera.Right * camera.Radius * 0.01f;
+            return Vector3.TransformCoordinate(test, camera.ViewProj).X.Abs();
+        }
+
+        private static float GetMaxCornerOffset(Vector3[] corners, CameraOrbit camera) {
+            camera.UpdateViewMatrix();
+
+            var maxOffset = 0f;
+            for (var i = 0; i < corners.Length; i++) {
+                var vec = Vector3.TransformCoordinate(corners[i], camera.ViewProj);
+                var offset = new Vector2(vec.X, vec.Y).Length();
+                maxOffset += offset;
+            }
+
+            return maxOffset / corners.Length;
+        }
+
+        public void ChangeCameraFov(float newFovY) {
+            var c = CameraOrbit;
+            if (c == null) return;
+
+            var offset = GetMaxCornerOffset(c);
+            
+            c.FovY = MathF.Clamp(newFovY, MathF.PI * 0.01f, MathF.PI * 0.8f);
+            c.SetLens(c.Aspect);
+
+            var newOffset = GetMaxCornerOffset(c);
+
+            c.Radius *= newOffset / offset;
+
+            if (AutoAdjustTarget) {
+                c.Target = AutoAdjustedTarget;
+            }
+        }
+
+        protected virtual Vector3 AutoAdjustedTarget {
+            get {
+                var camera = CameraOrbit;
+                if (camera == null) return Vector3.Zero;
+
+                camera.UpdateViewMatrix();
+                return camera.Target + GetCameraOffsetForCenterAlignment(camera, true);
+            }
+        }
 
         private float _elapsedCamera;
 
         protected override void OnTick(float dt) {
             base.OnTick(dt);
+
+            CarNode?.OnTick(dt);
 
             const float threshold = 0.001f;
             if (_resetState > threshold) {
@@ -588,6 +685,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
                     cam.Beta += (_resetCamera.Beta - cam.Beta) / 10f;
                     cam.Radius += (_resetCamera.Radius - cam.Radius) / 10f;
                     cam.FovY += (_resetCamera.FovY - cam.FovY) / 10f;
+                    cam.SetLens(cam.Aspect);
                 }
 
                 _elapsedCamera = 0f;
@@ -602,8 +700,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             }
 
             if (AutoAdjustTarget && CameraOrbit != null) {
-                var t = _resetCamera.Target + AutoAdjustedTarget;
-                CameraOrbit.Target += (t - CameraOrbit.Target) / 2f;
+                var t = AutoAdjustedTarget;
+                CameraOrbit.Target += (t - CameraOrbit.Target) / 3f;
             }
         }
 
