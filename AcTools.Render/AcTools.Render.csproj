@@ -97,7 +97,6 @@
     <Compile Include="Base\PostEffects\BlurHelper.cs" />
     <Compile Include="Base\PostEffects\CopyHelper.cs" />
     <Compile Include="Base\PostEffects\DownsampleHelper.cs" />
-    <Compile Include="Base\PostEffects\Fxaa311Helper.cs" />
     <Compile Include="Base\PostEffects\FxaaHelper.cs" />
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
@@ -172,14 +171,6 @@
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
     <Compile Include="Base\Utils\TextureReader.cs" />
-    <Compile Include="DeferredShading\DeferredShadingRenderer.cs" />
-    <Compile Include="DeferredShading\Lights\BaseLight.cs" />
-    <Compile Include="DeferredShading\Lights\DirectionalLight.cs" />
-    <Compile Include="DeferredShading\Lights\PointLight.cs" />
-    <Compile Include="DeferredShading\Lights\ILight.cs" />
-    <Compile Include="DeferredShading\Lights\SpecialLightMode.cs" />
-    <Compile Include="DeferredShading\PostEffects\SslrHelper.cs" />
-    <Compile Include="DeferredShading\StatsDeferredShadingRenderer.cs" />
     <Compile Include="Forward\ForwardRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
@@ -200,24 +191,17 @@
     <Compile Include="Kn5Specific\Textures\IOverridedTextureProvider.cs" />
     <Compile Include="Base\Utils\TaskExtension.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificDeferred\Kn5ObjectRenderer.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\AmbientShadowMaterialDeferred.cs" />
     <Compile Include="Kn5SpecificForward\Materials\AmbientShadowMaterialSimple.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMirror.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimple.cs" />
     <Compile Include="Kn5SpecificForward\Materials\MaterialsProviderSimple.cs" />
     <Compile Include="Kn5Specific\Materials\IObjectMaterialDeferred.cs" />
     <Compile Include="Base\Materials\InvisibleMaterial.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialGlDeferred.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialDeferred.cs" />
     <Compile Include="Base\Materials\IRenderableMaterial.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\MaterialsProviderDeferred.cs" />
     <Compile Include="Base\Materials\SharedMaterials.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\MirrorMaterialDeferred.cs" />
     <Compile Include="Kn5Specific\Objects\AmbientShadow.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableList.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableObject.cs" />
-    <Compile Include="Kn5SpecificDeferred\Materials\SkyMaterialDeferred.cs" />
     <Compile Include="Kn5Specific\Objects\SkyObject.cs" />
     <Compile Include="Kn5Specific\Textures\RenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\IRenderableTexture.cs" />
@@ -240,7 +224,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
     <Compile Include="Wrapper\BaseFormWrapper.cs" />
-    <Compile Include="Wrapper\FancyShowroomWrapper.cs" />
     <Compile Include="Wrapper\LiteShowroomWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -255,12 +238,6 @@
     <None Include="packages.config" />
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
-    <Content Include="Shaders\Deferred\DeferredGSky.fx" />
-    <Content Include="Shaders\Deferred\DeferredGObjectSpecial.fx" />
-    <Content Include="Shaders\Deferred\DeferredLight.fx" />
-    <Content Include="Shaders\Deferred\DeferredPpSslr.fx" />
-    <Content Include="Shaders\Deferred\DeferredTransparent.fx" />
-    <Content Include="Shaders\Deferred\DeferredResult.fx" />
     <Content Include="Shaders\Includes\Deferred.fx" />
     <Content Include="Shaders\Includes\FXAA_311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
@@ -269,13 +246,11 @@
     <Content Include="Shaders\Pp\PpDownsample.fx" />
     <Content Include="Shaders\Pp\PpLensFlares.fx" />
     <Content Include="Shaders\Pp\PpOutline.fx" />
-    <Content Include="Shaders\Pp\PpSmaa.fx" />
-    <Content Include="Shaders\Pp\PpFxaa311.fx" />
+    <None Include="Shaders\Pp\PpSmaa.fx.off" />
     <Content Include="Shaders\Pp\PpBlur.fx" />
     <Content Include="Shaders\Pp\PpHdr.fx" />
     <Content Include="Shaders\Pp\PpSsao.fx" />
     <Content Include="Shaders\Forward\KunosShader.fx" />
-    <Content Include="Shaders\Deferred\DeferredGObject.fx" />
     <Content Include="Shaders\Pp\PpBasic.fx" />
     <Content Include="Shaders\Simple\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />

@@ -37,15 +37,8 @@
                             </CompositeCollection>
                         </MenuItem.ItemsSource>
                     </MenuItem>
-                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_CustomShowroom}">
-                        <MenuItem x:Name="LiteCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite}"
-                                ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
-                                CommandParameter="{x:Static c:CustomShowroomMode.Lite}" />
-                        <MenuItem x:Name="FancyCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy}"
-                                ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
-                                CommandParameter="{x:Static c:CustomShowroomMode.Fancy}" />
-                    </MenuItem>
                 </mui:ButtonWithComboBox>
+                <Button Content="CM Showroom" ToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}" />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
                         Command="{Binding DriveCommand}" PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown"
                         Style="{StaticResource Go.ToolBarButtonWithComboBox}">

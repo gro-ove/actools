@@ -10,23 +10,25 @@ namespace AcTools.Render.Base.PostEffects {
     public class SmaaHelper : IRenderHelper {
         public static bool IsSupported { get; internal set; }
 
-        private EffectPpSmaa _effect;
+        //private EffectPpSmaa _effect;
 
         private ShaderResourceView _areasTexMap, _searchTexMap;
 
         public void OnInitialize(DeviceContextHolder holder) {
-            _effect = holder.GetEffect<EffectPpSmaa>();
-            
             throw new NotImplementedException();
-            //_areasTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.AreaTexDX10);
-            //_searchTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.SearchTex);
+            /*_effect = holder.GetEffect<EffectPpSmaa>();
+
+            _areasTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.AreaTexDX10);
+            _searchTexMap = ShaderResourceView.FromMemory(holder.Device, SmaaResources.SearchTex);*/
         }
 
         public void OnResize(DeviceContextHolder holder) {}
 
         public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, 
                 TargetResourceTexture temporaryEdges, TargetResourceTexture temporaryBlending) {
-            holder.PrepareQuad(_effect.LayoutPT);
+            throw new NotImplementedException();
+
+            /*holder.PrepareQuad(_effect.LayoutPT);
             holder.DeviceContext.OutputMerger.BlendState = null;
 
             // edges
@@ -51,7 +53,7 @@ namespace AcTools.Render.Base.PostEffects {
             // final part
             holder.DeviceContext.OutputMerger.SetTargets(target);
             _effect.FxBlendMap.SetResource(temporaryBlending.View);
-            _effect.TechSmaaN.DrawAllPasses(holder.DeviceContext, 6);
+            _effect.TechSmaaN.DrawAllPasses(holder.DeviceContext, 6);*/
         }
 
         public void Dispose() {

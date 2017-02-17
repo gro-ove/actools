@@ -362,7 +362,7 @@ namespace AcTools.Render.Base.Sprites {
         /// <param name="color">The color in which to draw the text</param>
         /// <param name="coordinateType">The chosen coordinate system</param>
         /// <returns>The StringMetrics for the rendered text</returns>
-        protected internal StringMetrics DrawString(string text, Vector2 position, float realFontSize, Color4 color, CoordinateType coordinateType) {
+        public StringMetrics DrawString(string text, Vector2 position, float realFontSize, Color4 color, CoordinateType coordinateType) {
             StringMetrics sm;
             IterateStringEm(text, position, true, realFontSize, color, coordinateType, out sm);
             return sm;
@@ -375,7 +375,7 @@ namespace AcTools.Render.Base.Sprites {
         /// <param name="position">A position in absolute coordinates where the top left corner of the first character will be</param>
         /// <param name="color">The color in which to draw the text</param>
         /// <returns>The StringMetrics for the rendered text</returns>
-        protected internal StringMetrics DrawString(string text, Vector2 position, Color4 color) {
+        public StringMetrics DrawString(string text, Vector2 position, Color4 color) {
             return DrawString(text, position, FontSize, color, CoordinateType.Absolute);
         }
 
@@ -413,7 +413,7 @@ namespace AcTools.Render.Base.Sprites {
         /// <param name="color">The color in which to draw the text</param>
         /// <param name="coordinateType">The chosen coordinate system</param>
         /// <returns>The StringMetrics for the rendered text</returns>
-        protected internal StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, float realFontSize, Color4 color,
+        public StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, float realFontSize, Color4 color,
                 CoordinateType coordinateType) {
             // If text is aligned top and left, no adjustment has to be made
             if (align.HasFlag(TextAlignment.Top) && align.HasFlag(TextAlignment.Left)) {
@@ -472,7 +472,7 @@ namespace AcTools.Render.Base.Sprites {
         /// <param name="align">Alignment in rectangle</param>
         /// <param name="color">Color in which to draw the text</param>
         /// <returns>The StringMetrics for the rendered text</returns>
-        protected internal StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, Color4 color) {
+        public StringMetrics DrawString(string text, RectangleF rect, TextAlignment align, Color4 color) {
             return DrawString(text, rect, align, FontSize, color, CoordinateType.Absolute);
         }
 

@@ -50,8 +50,8 @@ namespace AcTools.Render.Base.Shadows {
         public class Split : IDisposable {
             internal readonly float Size;
             internal readonly float ClipDistance;
-            internal readonly TargetResourceDepthTexture Buffer;
             internal readonly CameraOrthoShadow Camera;
+            public readonly TargetResourceDepthTexture Buffer;
 
             public float GetShadowDepth(BaseCamera camera) {
                 var m = Vector3.Transform(new Vector3(0, 0, Size / 2), camera.Proj);

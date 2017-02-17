@@ -1,10 +1,11 @@
 ﻿using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 using SlimDX.Direct3D11;
 
-namespace AcTools.Render.DeferredShading.PostEffects {
+namespace AcTools.Render.Deferred.PostEffects {
     public class SslrHelper : IRenderHelper {
         public EffectDeferredPpSslr Effect;
 

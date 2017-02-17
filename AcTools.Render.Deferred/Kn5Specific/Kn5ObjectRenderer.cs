@@ -8,18 +8,18 @@ using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.DeferredShading;
-using AcTools.Render.DeferredShading.Lights;
+using AcTools.Render.Deferred.Kn5Specific.Materials;
+using AcTools.Render.Deferred.Lights;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Utils;
-using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 
-namespace AcTools.Render.Kn5SpecificDeferred {
+namespace AcTools.Render.Deferred.Kn5Specific {
     public class Kn5ObjectRenderer : StatsDeferredShadingRenderer, IKn5ObjectRenderer {
         private readonly Kn5[] _kn5;
 

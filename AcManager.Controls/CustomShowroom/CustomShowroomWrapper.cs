@@ -9,7 +9,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Temporary;
@@ -19,10 +18,6 @@ using FirstFloor.ModernUI.Helpers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
-    public enum CustomShowroomMode {
-        Lite, Fancy
-    }
-
     public static class CustomShowroomWrapper {
         private static bool IsSameDirectories(string a, string b) {
             try {
@@ -128,71 +123,12 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        public static async Task StartFancyAsync(string kn5, string skinId = null, string showroomKn5 = null) {
-            if (_starting) return;
-            _starting = true;
-
-            _last?.Stop();
-            _last = null;
-
-            Kn5ObjectRenderer renderer = null;
-
-            try {
-                FancyShowroomWrapper wrapper;
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report(ControlsStrings.CustomShowroom_Loading);
-
-                    renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5));
-                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-
-                    wrapper = new FancyShowroomWrapper(renderer);
-                    if (skinId != null) {
-                        renderer.SelectSkin(skinId);
-                    }
-
-                    _last = wrapper;
-                    SetProperties(wrapper, renderer);
-
-                    wrapper.Form.Icon = AppIconService.GetAppIcon();
-                }
-
-                wrapper.Run(() => _starting = false);
-            } catch (Exception e) {
-                NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);
-            } finally {
-                renderer?.Dispose();
-                _last = null;
-            }
-        } 
-
-        public static Task StartAsync(CustomShowroomMode mode, string kn5, string skinId = null) {
-            switch (mode) {
-                case CustomShowroomMode.Lite:
-                    return StartLiteAsync(kn5, skinId);
-
-                case CustomShowroomMode.Fancy:
-                    var showroomId = SettingsHolder.CustomShowroom.ShowroomId;
-                    return StartFancyAsync(kn5, skinId, showroomId == null ? null : ShowroomsManager.Instance.GetById(showroomId)?.Kn5Filename);
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-            }
-        }
-
         public static Task StartAsync(string kn5, string skinId = null) {
-            var key = SettingsHolder.CustomShowroom.LiteByDefault;
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
-                key = !key;
-            }
-            return StartAsync(key ? CustomShowroomMode.Lite : CustomShowroomMode.Fancy, kn5, skinId);
+            return StartLiteAsync(kn5, skinId);
         }
 
         public static Task StartAsync(CarObject car, CarSkinObject skin = null) {
-            return StartAsync(FileUtils.GetMainCarFilename(car.Location), skin?.Id);
-        }
-
-        public static Task StartAsync(CustomShowroomMode mode, CarObject car, CarSkinObject skin = null) {
-            return StartAsync(mode, FileUtils.GetMainCarFilename(car.Location), skin?.Id);
+            return StartAsync(FileUtils.GetMainCarFilename(car.Location, car.AcdData), skin?.Id);
         }
     }
 }

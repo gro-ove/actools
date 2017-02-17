@@ -1,13 +1,12 @@
-﻿using System.Drawing;
-using System.IO;
+﻿using System.IO;
 using AcTools.Render.Base.Sprites;
-using AcTools.Render.Kn5SpecificDeferred.Materials;
+using AcTools.Render.Deferred.Kn5Specific.Materials;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.DirectWrite;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
 
-namespace AcTools.Render.DeferredShading {
+namespace AcTools.Render.Deferred {
     public abstract class StatsDeferredShadingRenderer : DeferredShadingRenderer {
         private TextBlockRenderer _textBlock;
 

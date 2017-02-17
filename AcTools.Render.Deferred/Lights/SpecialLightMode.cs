@@ -1,4 +1,4 @@
-﻿namespace AcTools.Render.DeferredShading.Lights {
+﻿namespace AcTools.Render.Deferred.Lights {
     public enum SpecialLightMode {
         Default, Shadows, ShadowsWithoutFilter, Debug
     }

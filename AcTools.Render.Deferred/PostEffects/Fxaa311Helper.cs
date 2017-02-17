@@ -1,10 +1,12 @@
+using AcTools.Render.Base;
+using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Shaders;
+using AcTools.Render.Deferred.Shaders;
 using SlimDX;
 using SlimDX.Direct3D11;
 
-namespace AcTools.Render.Base.PostEffects {
+namespace AcTools.Render.Deferred.PostEffects {
     public class Fxaa311Helper : IRenderHelper {
         private EffectPpFxaa311 _effect;
 

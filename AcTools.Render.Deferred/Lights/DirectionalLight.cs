@@ -1,10 +1,11 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 using SlimDX;
 
-namespace AcTools.Render.DeferredShading.Lights {
+namespace AcTools.Render.Deferred.Lights {
     public class DirectionalLight : BaseLight {
         private Vector3 _direction;
 

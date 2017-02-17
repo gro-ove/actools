@@ -112,9 +112,7 @@ namespace AcManager.Pages.ContentTools {
             private CommandBase _openInCustomShowroomCommand;
 
             public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
-                    (_openInCustomShowroomCommand = new AsyncCommand<CustomShowroomMode?>(type => type.HasValue
-                            ? CustomShowroomWrapper.StartAsync(type.Value, Car, Car.SelectedSkin)
-                            : CustomShowroomWrapper.StartAsync(Car, Car.SelectedSkin)));
+                    (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(Car, Car.SelectedSkin)));
 
             private CommandBase _driveCommand;
 

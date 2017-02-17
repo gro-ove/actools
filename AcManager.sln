@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.ContentRepair", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPreviewUpdater", "CustomPreviewUpdater\CustomPreviewUpdater.csproj", "{4725CDA8-4C1F-43DB-888E-5DB6493483ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.Render.Deferred", "AcTools.Render.Deferred\AcTools.Render.Deferred.csproj", "{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -244,6 +246,16 @@ Global
 		{4725CDA8-4C1F-43DB-888E-5DB6493483ED}.Release|x64.Build.0 = Release|x64
 		{4725CDA8-4C1F-43DB-888E-5DB6493483ED}.Release|x86.ActiveCfg = Release|x86
 		{4725CDA8-4C1F-43DB-888E-5DB6493483ED}.Release|x86.Build.0 = Release|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Debug|x64.ActiveCfg = Debug|x64
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Debug|x64.Build.0 = Debug|x64
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Debug|x86.ActiveCfg = Debug|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Debug|x86.Build.0 = Debug|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|Any CPU.ActiveCfg = Release|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x64.ActiveCfg = Release|x64
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x64.Build.0 = Release|x64
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x86.ActiveCfg = Release|x86
+		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

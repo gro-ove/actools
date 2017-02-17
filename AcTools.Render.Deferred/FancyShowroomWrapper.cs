@@ -4,14 +4,14 @@ using System.IO;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Base.PostEffects;
-using AcTools.Render.DeferredShading;
-using AcTools.Render.Kn5SpecificDeferred;
+using AcTools.Render.Deferred.Kn5Specific;
+using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using SlimDX;
 
-namespace AcTools.Render.Wrapper {
+namespace AcTools.Render.Deferred {
     public class FancyShowroomWrapper : BaseKn5FormWrapper {
         private readonly Kn5ObjectRenderer _renderer;
 

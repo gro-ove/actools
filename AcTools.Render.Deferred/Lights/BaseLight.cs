@@ -1,7 +1,7 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 
-namespace AcTools.Render.DeferredShading.Lights {
+namespace AcTools.Render.Deferred.Lights {
     public abstract class BaseLight : ILight {
         private bool _initialized;
 

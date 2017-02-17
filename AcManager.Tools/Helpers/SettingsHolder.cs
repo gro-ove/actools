@@ -1345,25 +1345,6 @@ namespace AcManager.Tools.Helpers {
         public class CustomShowroomSettings : NotifyPropertyChanged {
             internal CustomShowroomSettings() { }
 
-            public string[] ShowroomTypes { get; } = { ToolsStrings.CustomShowroom_Fancy, ToolsStrings.CustomShowroom_Lite };
-
-            public string ShowroomType {
-                get { return LiteByDefault ? ShowroomTypes[1] : ShowroomTypes[0]; }
-                set { LiteByDefault = value == ShowroomTypes[1]; }
-            }
-
-            private bool? _liteByDefault;
-
-            public bool LiteByDefault {
-                get { return _liteByDefault ?? (_liteByDefault = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteByDefault", true)).Value; }
-                set {
-                    if (Equals(value, _liteByDefault)) return;
-                    _liteByDefault = value;
-                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteByDefault", value);
-                    OnPropertyChanged();
-                }
-            }
-
             private bool? _useOldLiteShowroom;
 
             public bool UseOldLiteShowroom {

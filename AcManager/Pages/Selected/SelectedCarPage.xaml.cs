@@ -130,9 +130,7 @@ namespace AcManager.Pages.Selected {
             private CommandBase _openInCustomShowroomCommand;
 
             public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
-                    (_openInCustomShowroomCommand = new AsyncCommand<CustomShowroomMode?>(type => type.HasValue
-                            ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
-                            : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
+                    (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
 
             private CommandBase _driveCommand;
 
@@ -345,14 +343,6 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
-
-            if (SettingsHolder.CustomShowroom.LiteByDefault) {
-                LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
-            } else {
-                LiteCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = @"Alt+H";
-            }
         }
 
         private void SetModel() {

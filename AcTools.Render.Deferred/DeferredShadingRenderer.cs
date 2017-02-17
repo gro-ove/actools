@@ -10,8 +10,9 @@ using AcTools.Render.Base.Reflections;
 using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.DeferredShading.Lights;
-using AcTools.Render.DeferredShading.PostEffects;
+using AcTools.Render.Deferred.Lights;
+using AcTools.Render.Deferred.PostEffects;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -19,7 +20,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
-namespace AcTools.Render.DeferredShading {
+namespace AcTools.Render.Deferred {
     public abstract class DeferredShadingRenderer : SceneRenderer {
         private EffectDeferredLight _deferredLighting;
         private EffectDeferredResult _deferredResult;

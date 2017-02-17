@@ -4,12 +4,13 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 
-namespace AcTools.Render.DeferredShading.Lights {
+namespace AcTools.Render.Deferred.Lights {
     public class PointLight : BaseLight {
         public Vector3 Position;
         public Vector3 Color;

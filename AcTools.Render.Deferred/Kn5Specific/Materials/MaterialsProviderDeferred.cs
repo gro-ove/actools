@@ -2,7 +2,7 @@ using System;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Kn5Specific.Materials;
 
-namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+namespace AcTools.Render.Deferred.Kn5Specific.Materials {
     public class MaterialsProviderDeferred : IMaterialsFactory {
         public IRenderableMaterial CreateMaterial(object key) {
             var kn5 = key as Kn5MaterialDescription;

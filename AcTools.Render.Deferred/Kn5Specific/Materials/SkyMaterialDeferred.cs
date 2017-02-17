@@ -3,12 +3,13 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 
-namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+namespace AcTools.Render.Deferred.Kn5Specific.Materials {
     public class SkyMaterialDeferred : IRenderableMaterial {
         private EffectDeferredGSky _effect;
 

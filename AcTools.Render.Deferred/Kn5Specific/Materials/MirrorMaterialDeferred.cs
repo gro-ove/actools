@@ -1,6 +1,7 @@
+using AcTools.Render.Deferred.Shaders;
 using AcTools.Render.Shaders;
 
-namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+namespace AcTools.Render.Deferred.Kn5Specific.Materials {
     public class MirrorMaterialDeferred : Kn5MaterialDeferred {
         private static readonly EffectDeferredGObject.Material Material = new EffectDeferredGObject.Material {
             Diffuse = 0,
