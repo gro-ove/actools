@@ -29,6 +29,14 @@ namespace AcManager.Tools.Managers {
             return base.GetById(id.Contains('/') ? id.Split('/')[0] : id);
         }
 
+        protected override bool Filter(string id, string filename) {
+            if (id.StartsWith(@"ks_") && !FileUtils.GetFilesRecursive(Path.Combine(filename, @"ui"), @"ui_track.json").Any()) {
+                return false;
+            }
+
+            return base.Filter(id, filename);
+        }
+
         /// <summary>
         /// If ID is a Layout ID, main object will be returned!
         /// </summary>

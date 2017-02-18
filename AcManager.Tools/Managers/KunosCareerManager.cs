@@ -219,10 +219,8 @@ namespace AcManager.Tools.Managers {
             return false;
         }
 
-        protected override bool Filter(string filename) {
-            var name = Path.GetFileName(filename);
-            if (name == null) return false;
-            return name != @"series0" && name.StartsWith(@"series");
+        protected override bool Filter(string id, string filename) {
+            return id != @"series0" && id.StartsWith(@"series");
         }
 
         public override void ActualScan() {
@@ -232,7 +230,10 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            return Directories.GetSubDirectories(@"series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+            return Directories.GetSubDirectories(@"series*").Select(dir => {
+                var id = LocationToId(dir);
+                return Filter(id, dir) ? CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)) : null;
+            }).NonNull();
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;

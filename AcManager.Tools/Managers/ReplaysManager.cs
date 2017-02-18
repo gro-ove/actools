@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers {
             ".wps", ".wsf", ".xcodeproj", ".xhtml", ".xlr", ".xls", ".xlsx", ".xml", ".yuv", ".zip", ".zipx"
         };
 
-        protected override bool Filter(string filename) => !Ignored.Any(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
+        protected override bool Filter(string id, string filename) => !Ignored.Any(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
 
         private void Drive_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.DriveSettings.TryToLoadReplays)) return;

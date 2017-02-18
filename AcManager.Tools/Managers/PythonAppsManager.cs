@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
@@ -11,8 +10,8 @@ namespace AcManager.Tools.Managers {
 
         public static PythonAppsManager Instance => _instance ?? (_instance = new PythonAppsManager());
 
-        protected override bool Filter(string filename) {
-            return !string.Equals(Path.GetFileName(filename), @"system", StringComparison.OrdinalIgnoreCase);
+        protected override bool Filter(string id, string filename) {
+            return !string.Equals(id, @"system", StringComparison.OrdinalIgnoreCase);
         }
 
         public override PythonAppObject GetDefault() {

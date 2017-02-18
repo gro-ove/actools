@@ -157,7 +157,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        protected virtual bool Filter(string filename) {
+        protected virtual bool Filter([NotNull] string id, [NotNull] string filename) {
             return true;
         }
 

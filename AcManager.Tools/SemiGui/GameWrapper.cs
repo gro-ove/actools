@@ -197,7 +197,7 @@ namespace AcManager.Tools.SemiGui {
                             properties.SetKeyboardListener = true;
                         }
 
-                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new GameWrapper.ProgressHandler(ui), cancellationToken);
+                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), cancellationToken);
                     }
 
                     Logging.Write($"Result: {result?.GetDescription() ?? @"<NULL>"}");

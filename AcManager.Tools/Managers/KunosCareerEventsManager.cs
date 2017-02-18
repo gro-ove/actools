@@ -63,8 +63,8 @@ namespace AcManager.Tools.Managers {
 
         private static readonly Regex FilterRegex = new Regex(@"^event[1-9]\d*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        protected override bool Filter(string filename) {
-            return FilterRegex.IsMatch(Path.GetFileName(filename) ?? "");
+        protected override bool Filter(string id, string filename) {
+            return FilterRegex.IsMatch(id);
         }
 
         public override IAcDirectories Directories { get; }

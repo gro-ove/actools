@@ -39,13 +39,15 @@ namespace AcManager.Tools.Managers {
 
         private Regex _regex;
 
-        protected override bool Filter(string filename) => SearchPattern == @"*" || (_regex ?? (_regex = new Regex(
+        protected override bool Filter(string id, string filename) => SearchPattern == @"*" || (_regex ?? (_regex = new Regex(
                 SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
-                .IsMatch(Path.GetFileName(filename) ?? "");
+                .IsMatch(id);
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            return Directories.GetSubFiles(SearchPattern).Where(Filter).Select(dir =>
-                    CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+            return Directories.GetSubFiles(SearchPattern).Select(dir => {
+                var id = LocationToId(dir);
+                return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
+            }).NonNull();
         }
 
         protected override CarSetupObject CreateAcObject(string id, bool enabled) {

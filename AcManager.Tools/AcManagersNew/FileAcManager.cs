@@ -8,6 +8,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -53,9 +54,15 @@ namespace AcManager.Tools.AcManagersNew {
 
         public abstract IAcDirectories Directories { get; }
 
+        protected bool Filter(string filename) {
+            return Filter(LocationToId(filename), filename);
+        }
+
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            return Directories.GetSubDirectories().Where(Filter).Select(dir =>
-                    CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+            return Directories.GetSubDirectories().Select(dir => {
+                var id = LocationToId(dir);
+                return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
+            }).NonNull();
         }
 
         protected virtual void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {

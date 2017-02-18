@@ -137,7 +137,7 @@ namespace AcManager.Tools.AcManagersNew {
                         if (!isFreshlyLoaded) {
                             obj.Reload();
                         }
-                    } else if (FileUtils.Exists(dir)) {
+                    } else if (FileUtils.Exists(dir) && Filter(dir)) {
                         id = LocationToId(FileUtils.GetOriginalFilename(dir));
                         obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
@@ -147,7 +147,7 @@ namespace AcManager.Tools.AcManagersNew {
 
                 case WatcherChangeTypes.Deleted:
                     if (obj != null) {
-                        if (FileUtils.Exists(dir)) {
+                        if (FileUtils.Exists(dir) && Filter(dir)) {
                             if (!isFreshlyLoaded) {
                                 obj.Reload();
                             }
@@ -200,7 +200,17 @@ namespace AcManager.Tools.AcManagersNew {
 
             bool inner;
             var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            if (objectLocation == null) return;
+
+            var objectId = LocationToId(objectLocation);
+            if (!Filter(objectId, objectLocation)) {
+                if (GetWrapperById(objectId) != null) {
+                    GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
+                }
+                return;
+            }
+
+            if (inner && ShouldSkipFile(objectLocation, fullPath)) return;
             GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Changed, null, fullPath);
         }
 
@@ -212,7 +222,23 @@ namespace AcManager.Tools.AcManagersNew {
         private void OnCreated(string fullPath) {
             bool inner;
             var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            if (objectLocation == null) return;
+
+            var objectId = LocationToId(objectLocation);
+            if (!Filter(objectId, objectLocation)) {
+                if (GetWrapperById(objectId) != null) {
+                    GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
+                }
+                return;
+            }
+
+            // some very special case for Kunos DLC content
+            if (objectId.StartsWith("ks_") && GetWrapperById(objectId) == null) {
+                GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Created, null, fullPath);
+                return;
+            }
+
+            if (inner && ShouldSkipFile(objectLocation, fullPath)) return;
             GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : WatcherChangeTypes.Created, null, fullPath);
         }
 
@@ -235,7 +261,17 @@ namespace AcManager.Tools.AcManagersNew {
         private void OnDeleted(string fullPath) {
             bool inner;
             var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            if (objectLocation == null) return;
+
+            var objectId = LocationToId(objectLocation);
+            if (!Filter(objectId, objectLocation)) {
+                if (GetWrapperById(objectId) != null) {
+                    GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
+                }
+                return;
+            }
+
+            if (inner && ShouldSkipFile(objectLocation, fullPath)) return;
             GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : WatcherChangeTypes.Deleted, null, fullPath);
         }
 

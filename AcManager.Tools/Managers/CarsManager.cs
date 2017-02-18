@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -25,6 +27,15 @@ namespace AcManager.Tools.Managers {
             SuggestionLists.RebuildCarBrandsList();
             SuggestionLists.RebuildCarClassesList();
             SuggestionLists.RebuildCarTagsList();
+        }
+
+        protected override bool Filter(string id, string filename) {
+            if (id.StartsWith(@"ks_")) {
+                var uiCarJson = Path.Combine(filename, @"ui", @"ui_car.json");
+                if (!File.Exists(uiCarJson)) return false;
+            }
+
+            return base.Filter(id, filename);
         }
 
         private static readonly string[] WatchedFiles = {
