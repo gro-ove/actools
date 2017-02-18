@@ -683,7 +683,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         public void EnsureResolutionIsCorrect() {
-            Reload();
+            try {
+                if (Ini == null || IsReloading) {
+                    Reload();
+                }
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t ensure used resolution is valid", e);
+            }
         }
 
         [NotNull]
@@ -707,9 +713,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     Resolutions.FirstOrDefault(x => x.Same(CustomResolution)) ?? CustomResolution;
             if (Fullscreen && ReferenceEquals(resolution, CustomResolution) && SettingsHolder.Common.FixResolutionAutomatically) {
                 Resolution = GetClosestToCustom();
-                ForceSave();
                 if (!ReferenceEquals(CustomResolution, Resolution)) {
-                    Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
+                    ForceSave();
+                    Logging.Debug($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
                 }
             } else {
                 Resolution = resolution;

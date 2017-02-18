@@ -30,7 +30,10 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription("Shared_RaceGridPreset")]
         RaceGridPreset,
 
-        [LocalizedDescription("Shared_VideoSettingsPreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_AudioSettingsPreset))]
+        AudioSettingsPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_VideoSettingsPreset))]
         VideoSettingsPreset,
 
         [LocalizedDescription("Shared_AssistsSetupPreset")]
@@ -124,6 +127,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return @".ini";
 
                 case SharedEntryType.QuickDrivePreset:
+                case SharedEntryType.AudioSettingsPreset:
                 case SharedEntryType.VideoSettingsPreset:
                 case SharedEntryType.AssistsSetupPreset:
                 case SharedEntryType.RaceGridPreset:

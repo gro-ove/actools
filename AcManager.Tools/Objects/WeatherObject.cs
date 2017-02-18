@@ -465,7 +465,7 @@ namespace AcManager.Tools.Objects {
             var fog = ini["FOG"];
             fog.Set("COLOR", new [] {
                 FogColor.R, FogColor.G, FogColor.B
-            }.Select(x => (x * FogColorMultipler / 255d).Round(0.1)));
+            }.Select(x => (x * FogColorMultipler / 255d).Round(0.001)));
             fog.Set("BLEND", FogBlend);
             fog.Set("DISTANCE", FogDistance);
 

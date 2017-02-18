@@ -257,6 +257,9 @@
     <Compile Include="Pages\AcSettings\AcSettingsGeneral.xaml.cs">
       <DependentUpon>AcSettingsGeneral.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\PresetsPerMode.xaml.cs">
+      <DependentUpon>PresetsPerMode.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ContentTools\BatchPreviewsUpdater.xaml.cs">
       <DependentUpon>BatchPreviewsUpdater.xaml</DependentUpon>
     </Compile>
@@ -720,6 +723,10 @@
     <Page Include="Pages\AcSettings\AcSettingsGeneral.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\PresetsPerMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ContentTools\BatchPreviewsUpdater.xaml">
       <SubType>Designer</SubType>

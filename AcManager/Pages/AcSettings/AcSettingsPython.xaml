@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:o="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsPython+ViewModel}" Unloaded="OnUnloaded">
+        xmlns:o="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance acset:AcSettingsPython+ViewModel}" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,80 +19,88 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-        <ListBox Grid.Column="0" Grid.Row="1" Margin="0 12 0 0" x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Enabled}" Value="False">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="o:PythonAppObject">
-                    <StackPanel IsEnabled="{Binding Enabled}">
-                        <TextBlock Text="{Binding DisplayName}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <StackPanel Grid.Column="0" Grid.Row="0">
+            <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}">
+                <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
+            </CheckBox>
 
-        <Label Grid.Column="1" Grid.Row="0" Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" />
-        <DataGrid Grid.Column="1" Grid.Row="1" x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
-                Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                IsReadOnly="False" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="3*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
+            <Label Margin="0 20 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
+            <ListBox Margin="0 12 0 0" x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                    SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="o:PythonAppObject">
+                        <StackPanel IsEnabled="{Binding Enabled}">
                             <TextBlock Text="{Binding DisplayName}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Visible}" SortMemberPath="IsVisible">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Locked}" SortMemberPath="IsBlocked">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <DockPanel Grid.Column="1" Grid.Row="0">
+            <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" DockPanel.Dock="Top" />
+            <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
+                    Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                    IsReadOnly="False" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="3*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Visible}" SortMemberPath="IsVisible">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Locked}" SortMemberPath="IsBlocked">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
             <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />

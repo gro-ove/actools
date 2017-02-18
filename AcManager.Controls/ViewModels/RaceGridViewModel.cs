@@ -1177,11 +1177,13 @@ namespace AcManager.Controls.ViewModels {
                     var skinDriverNames = skin?.DriverName?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
                     if (skinDriverNames?.Count > 0) {
                         name = GoodShuffle.Get(skinDriverNames).Take(skinDriverNames.Count).FirstOrDefault(x => !takenNames.Contains(x)) ?? name;
+                        takenNames.Add(name);
                     }
                 }
 
                 if (string.IsNullOrWhiteSpace(name)) {
                     name = nameNationalities?[i].Name ?? @"AI #" + i;
+                    takenNames.Add(name);
                 }
 
                 var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";

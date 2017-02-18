@@ -1,23 +1,18 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.Managers;
+using AcManager.Tools.Helpers.PresetsPerMode;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
-using AcTools.DataFile;
 using AcTools.Processes;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
@@ -142,6 +137,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
+            properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
 
             if (raceMode) {

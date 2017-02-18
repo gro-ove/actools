@@ -24,7 +24,7 @@ namespace AcManager.Tools.Objects {
 
             if (actualData.Exists && (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime)) {
                 Directory.CreateDirectory(serverData.DirectoryName ?? "");
-                FileUtils.Hardlink(actualData.FullName, serverData.FullName, true);
+                FileUtils.HardlinkOrCopy(actualData.FullName, serverData.FullName, true);
             }
         }
 
@@ -40,7 +40,7 @@ namespace AcManager.Tools.Objects {
 
                 if (actualData.Exists && (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime)) {
                     Directory.CreateDirectory(serverData.DirectoryName ?? "");
-                    FileUtils.Hardlink(actualData.FullName, serverData.FullName, true);
+                    FileUtils.HardlinkOrCopy(actualData.FullName, serverData.FullName, true);
                 }
             }
         }

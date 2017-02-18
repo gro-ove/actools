@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Drive;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
@@ -45,7 +46,10 @@ namespace AcManager.Tools {
                     return ProcessSharedForceFeedbackPreset(shared, data);
 
                 case SharedEntryType.VideoSettingsPreset:
-                    return ProcessSharedVideoSettingsPreset(shared, data);
+                    return ProcessSharedSettingsPreset(AcSettingsHolder.VideoPresets, shared, data);
+
+                case SharedEntryType.AudioSettingsPreset:
+                    return ProcessSharedSettingsPreset(AcSettingsHolder.AudioPresets, shared, data);
 
                 case SharedEntryType.AssistsSetupPreset:
                     return ProcessSharedAssistsSetupPreset(shared, data);
@@ -174,21 +178,21 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedVideoSettingsPreset(SharedEntry shared, byte[] data) {
+        private ArgumentHandleResult ProcessSharedSettingsPreset(IUserPresetable presetable, SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
-                            PresetsManager.Instance.GetDirectory(AcSettingsHolder.VideoPresets.PresetableKey), @"Loaded", shared.GetFileName()));
+                            PresetsManager.Instance.GetDirectory(presetable.PresetableKey), @"Loaded", shared.GetFileName()));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     if (result == Choise.ApplyAndSave) {
-                        UserPresetsControl.LoadPreset(AcSettingsHolder.VideoPresets.PresetableKey, filename);
+                        UserPresetsControl.LoadPreset(presetable.PresetableKey, filename);
                     }
                     return ArgumentHandleResult.SuccessfulShow;
                 case Choise.Apply:
-                    AcSettingsHolder.VideoPresets.ImportFromPresetData(data.ToUtf8String());
+                    presetable.ImportFromPresetData(data.ToUtf8String());
                     return ArgumentHandleResult.SuccessfulShow;
                 default:
                     return ArgumentHandleResult.Failed;

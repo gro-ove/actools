@@ -139,13 +139,16 @@ namespace AcManager.Tools.SharedMemory {
 
         private Process _gameProcess;
 
+        [CanBeNull]
+        public Process GameProcess => _gameProcess;
+
         private static bool IsGameProcess(Process process) {
             var filename = process.GetFilenameSafe();
             return filename == null || AcRootDirectory.CheckDirectory(Path.GetDirectoryName(filename));
         }
 
         [CanBeNull]
-        private Process TryToFindGameProcess() {
+        public static Process TryToFindGameProcess() {
             var processes = Process.GetProcesses();
             return processes.FirstOrDefault(x => (x.ProcessName == "acs" || x.ProcessName == "acs_x86") && IsGameProcess(x)) ??
                     processes.FirstOrDefault(x => x.ProcessName.IndexOf(@"acs", StringComparison.OrdinalIgnoreCase) != -1 && IsGameProcess(x));

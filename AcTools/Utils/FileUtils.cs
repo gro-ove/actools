@@ -346,7 +346,7 @@ namespace AcTools.Utils {
             return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;
         }
 
-        public static void Hardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+        private static bool TryToHardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (destination == null) throw new ArgumentNullException(nameof(destination));
 
@@ -354,7 +354,20 @@ namespace AcTools.Utils {
                 File.Delete(destination);
             }
 
-            Kernel32.CreateHardLink(destination, source, IntPtr.Zero);
+            return Kernel32.CreateHardLink(destination, source, IntPtr.Zero);
+        }
+
+        [Obsolete]
+        public static void Hardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+            if (!TryToHardlink(source, destination, overwrite)) {
+                throw new Exception("Can’t make a hardlink");
+            }
+        }
+
+        public static void HardlinkOrCopy([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
+            if (!TryToHardlink(source, destination, overwrite)) {
+                File.Copy(source, destination, overwrite);
+            }
         }
 
         /// <summary>
@@ -413,7 +426,8 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void CopyRecursiveHardlink(string source, string destination) {
+        [Obsolete]
+        public static void HardlinkRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
                 
@@ -426,6 +440,22 @@ namespace AcTools.Utils {
                 }
             } else {
                 Hardlink(source, destination, true);
+            }
+        }
+
+        public static void HardlinkOrCopyRecursive(string source, string destination) {
+            if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
+                Directory.CreateDirectory(destination);
+                
+                foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
+                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                }
+                
+                foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
+                    HardlinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
+                }
+            } else {
+                HardlinkOrCopy(source, destination, true);
             }
         }
     }

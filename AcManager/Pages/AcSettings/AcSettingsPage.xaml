@@ -13,7 +13,8 @@
                 <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Audio}" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Controls}" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" IsNew="True" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
+                <mui:Link DisplayName="Presets Per Mode" Source="/Pages/AcSettings/PresetsPerMode.xaml" IsNew="True" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

@@ -14,6 +14,10 @@ namespace FirstFloor.ModernUI.Localizable {
             return v == 1 ? s : PluralizingDictionary.Es(s);
         }
 
+        private static string Pt(int v, string s) {
+            return v == 1 ? s : PluralizingDictionary.Pt(s);
+        }
+
         private static string Ru(int v, string s) {
             if (s == string.Empty) return string.Empty;
 
@@ -37,6 +41,8 @@ namespace FirstFloor.ModernUI.Localizable {
                     return En(v, s);
                 case "es":
                     return Es(v, s);
+                case "pt":
+                    return Pt(v, s);
                 case "ru":
                     return Ru(v, s);
                 default:

@@ -572,6 +572,21 @@ namespace AcManager.Tools.Helpers {
                 NaiveStarterType
             });
 
+            private bool? _presetsPerModeAutoUpdate;
+
+            public bool PresetsPerModeAutoUpdate {
+                get {
+                    return _presetsPerModeAutoUpdate ??
+                            (_presetsPerModeAutoUpdate = ValuesStorage.GetBool("Settings.DriveSettings.PresetsPerModeAutoUpdate", true)).Value;
+                }
+                set {
+                    if (Equals(value, _presetsPerModeAutoUpdate)) return;
+                    _presetsPerModeAutoUpdate = value;
+                    ValuesStorage.Set("Settings.DriveSettings.PresetsPerModeAutoUpdate", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _watchForSharedMemory;
 
             public bool WatchForSharedMemory {

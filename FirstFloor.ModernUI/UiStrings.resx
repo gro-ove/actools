@@ -654,4 +654,8 @@
   <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
     <value>Remove server from hidden servers list</value>
   </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+    <comment>Don’t forget about space at the end! If needed, of course.</comment>
+  </data>
 </root>

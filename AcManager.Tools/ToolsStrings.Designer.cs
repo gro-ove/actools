@@ -3990,6 +3990,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio settings preset.
+        /// </summary>
+        public static string Shared_AudioSettingsPreset {
+            get {
+                return ResourceManager.GetString("Shared_AudioSettingsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car setup.
         /// </summary>
         public static string Shared_CarSetup {

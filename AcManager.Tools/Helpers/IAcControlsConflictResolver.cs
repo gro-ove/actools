@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AcManager.Tools.Helpers {
     public interface IAcControlsConflictResolver {
-        AcControlsConflictSolution Resolve(string inputDisplayName, IEnumerable<string> existingAssignments);
+        Task<AcControlsConflictSolution> Resolve(string inputDisplayName, IEnumerable<string> existingAssignments);
     }
 }

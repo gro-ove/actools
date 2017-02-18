@@ -69,7 +69,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected void Replace(IniFile ini, bool backup = false) {
-            _saving = false;
+            IsSaving = false;
             IgnoreChangesForAWhile();
             ini.Save(Filename, backup);
             Ini = ini;
@@ -79,27 +79,32 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected void Reload() {
-            _saving = false;
+            IsReloading = false;
+            IsSaving = false;
             Ini = new IniFile(Filename);
             IsLoading = true;
             LoadFromIni();
             IsLoading = false;
         }
 
-        private bool _reloading;
         private DateTime _lastSaved;
 
         protected bool IsLoading { get; private set; }
+
+        protected bool IsReloading { get; private set; }
+
+        protected bool IsSaving { get; set; }
 
         private void IgnoreChangesForAWhile() {
             _lastSaved = DateTime.Now;
         }
 
         private async void ReloadLater() {
-            if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(3)) return;
+            if (IsReloading || IsSaving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(3)) return;
 
-            _reloading = true;
+            IsReloading = true;
             await Task.Delay(200);
+            if (!IsReloading) return;
 
             try {
                 int i;
@@ -121,28 +126,27 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 ActionExtension.InvokeInMainThread(LoadFromIni);
                 IsLoading = false;
             } finally {
-                _reloading = false;
+                IsReloading = false;
             }
         }
 
-        private bool _saving;
-
         protected virtual async void Save() {
-            if (_saving || IsLoading || Ini == null) return;
+            if (IsSaving || IsLoading || Ini == null) return;
 
-            _saving = true;
+            IsSaving = true;
             await Task.Delay(500);
-
-            if (!_saving) return;
+            if (!IsSaving) return;
 
             try {
                 SetToIni();
                 IgnoreChangesForAWhile();
+                IsReloading = false;
+
                 await Ini.SaveAsync(Filename);
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {
-                _saving = false;
+                IsSaving = false;
             }
         }
 
@@ -154,10 +158,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {
-                _saving = false;
+                IsSaving = false;
             }
 
-            _saving = false;
+            IsSaving = false;
         }
 
         protected void ForceSave() {

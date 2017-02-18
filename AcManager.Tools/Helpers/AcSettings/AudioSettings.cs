@@ -1,8 +1,9 @@
 using System.Linq;
+using AcTools.DataFile;
 using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers.AcSettings {
-    public class AudioSettings : IniSettings {
+    public class AudioSettings : IniPresetableSettings {
         /*public SettingEntry[] Latencies { get; } = {
             new SettingEntry(0, ToolsStrings.AcSettings_Quality_Normal),
             new SettingEntry(1, ToolsStrings.AcSettings_Quality_Low),
@@ -159,20 +160,24 @@ namespace AcManager.Tools.Helpers.AcSettings {
             // Latency = Ini["SETTINGS"].GetEntry("LATENCY", Latencies, 1);
             SkidsEntryPoint = Ini["SKIDS"].GetInt("ENTRY_POINT", 100);
         }
-
-        protected override void SetToIni() {
-            Ini["LEVELS"].Set("MASTER", LevelMaster / 100d);
-            Ini["LEVELS"].Set("TYRES", LevelTyres / 100d);
-            Ini["LEVELS"].Set("BRAKES", LevelBrakes / 100d);
-            Ini["LEVELS"].Set("ENGINE", LevelEngine / 100d);
-            Ini["LEVELS"].Set("SURFACES", LevelSurfaces / 100d);
-            Ini["LEVELS"].Set("WIND", LevelWind / 100d);
-            Ini["LEVELS"].Set("OPPONENTS", LevelOpponents / 100d);
-            Ini["LEVELS"].Set("DIRT_BOTTOM", LevelDirtBottom / 100d);
-            Ini["LEVELS"].Set("UISOUNDS", LevelUi / 100d);
+        
+        protected override void SetToIni(IniFile ini) {
+            ini["LEVELS"].Set("MASTER", LevelMaster / 100d);
+            ini["LEVELS"].Set("TYRES", LevelTyres / 100d);
+            ini["LEVELS"].Set("BRAKES", LevelBrakes / 100d);
+            ini["LEVELS"].Set("ENGINE", LevelEngine / 100d);
+            ini["LEVELS"].Set("SURFACES", LevelSurfaces / 100d);
+            ini["LEVELS"].Set("WIND", LevelWind / 100d);
+            ini["LEVELS"].Set("OPPONENTS", LevelOpponents / 100d);
+            ini["LEVELS"].Set("DIRT_BOTTOM", LevelDirtBottom / 100d);
+            ini["LEVELS"].Set("UISOUNDS", LevelUi / 100d);
 
             // Ini["SETTINGS"].Set("LATENCY", Latency);
-            Ini["SKIDS"].Set("ENTRY_POINT", SkidsEntryPoint);
+            ini["SKIDS"].Set("ENTRY_POINT", SkidsEntryPoint);
+        }
+
+        protected override void InvokeChanged() {
+            AcSettingsHolder.AudioPresetChanged();
         }
     }
 }

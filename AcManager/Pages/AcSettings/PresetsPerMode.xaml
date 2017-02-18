@@ -1,0 +1,164 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.PresetsPerMode" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:g="clr-namespace:AcManager"
+        xmlns:as="clr-namespace:AcManager.Pages.AcSettings" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance as:PresetsPerMode+ViewModel}" x:Name="This">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="CheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}">
+                <Setter Property="Margin" Value="0 0 16 0" />
+                <Setter Property="Width" Value="80" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+            </Style>
+
+            <DataTemplate x:Key="SelectedDataTemplate">
+                <TextBlock x:Name="TextBlock" TextTrimming="CharacterEllipsis"
+                        Text="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" />
+                <DataTemplate.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                    </Trigger>
+                    <DataTrigger Binding="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" Value="{x:Null}">
+                        <Setter TargetName="TextBlock" Property="Text" Value="Default" />
+                        <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type as:PresetsPerMode+PresetPerModeUi}">
+                <StackPanel Style="{StaticResource SettingsCompactPanel}" Width="220" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
+                    <DockPanel>
+                        <Label Content="Condition:" Width="80" />
+                        <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.Modes, ElementName=This}" SelectedItem="{Binding Mode}" FixedMode="False">
+                            <mui:HierarchicalComboBox.SelectedContent>
+                                <DataTemplate>
+                                    <TextBlock x:Name="TextBlock" TextTrimming="CharacterEllipsis"
+                                            Text="{Binding DataContext.Mode.DisplayName, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" />
+                                    <DataTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding DataContext.Mode, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}"
+                                                Value="{x:Null}">
+                                            <Setter TargetName="TextBlock" Property="Text" Value="{x:Static t:ToolsStrings.Common_None}" />
+                                            <Setter TargetName="TextBlock" Property="Opacity" Value="0.5" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </mui:HierarchicalComboBox.SelectedContent>
+                        </mui:HierarchicalComboBox>
+                    </DockPanel>
+
+                    <DockPanel DataContext="{Binding Apps}" Margin="0 20 0 8">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
+                            <Label Content="Apps:" />
+                        </CheckBox>
+                        <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.AppPresets, ElementName=This}" SelectedItem="{Binding Value}"
+                                FixedMode="False" SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
+                    </DockPanel>
+
+                    <DockPanel DataContext="{Binding Audio}">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
+                            <Label Content="Audio:" />
+                        </CheckBox>
+                        <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.AudioPresets, ElementName=This}" SelectedItem="{Binding Value}"
+                                FixedMode="False" SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
+                    </DockPanel>
+
+                    <DockPanel DataContext="{Binding Video}">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
+                            <Label Content="Video:" />
+                        </CheckBox>
+                        <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.VideoPresets, ElementName=This}" SelectedItem="{Binding Value}"
+                                FixedMode="False" SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
+                    </DockPanel>
+
+                    <DockPanel DataContext="{Binding Controls}">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
+                            <Label Content="Controls:" />
+                        </CheckBox>
+                        <Border IsEnabled="{Binding IsEnabled}">
+                            <mui:HierarchicalComboBox ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
+                                    SelectedItem="{Binding Value}" IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}"
+                                    FixedMode="False" PreviewProvider="{Binding Source={x:Static c:ControlsPresets.Instance}}"
+                                    SelectedContent="{StaticResource SelectedDataTemplate}" />
+                        </Border>
+                    </DockPanel>
+
+                    <TextBlock Text="{Binding ConditionId, StringFormat='ID: {0}'}" Style="{StaticResource Small}" Margin="0 20 0 0"
+                            TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding ConditionFn, StringFormat='Func.: {0}'}" Style="{StaticResource Small}" Margin="0 0 0 8"
+                            TextTrimming="CharacterEllipsis" />
+
+                    <Button Margin="0 20 0 0" Command="{Binding DeleteCommand}" Content="Remove" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel Style="{StaticResource ContentRootWithPadding}">
+        <c:MessageBlock Margin="0 0 0 20" DockPanel.Dock="Top">
+            <mui:BbCodeBlock>
+                <mui:BbCodeBlock.BbCode>You want CM to select specific video/controls/apps presets depending on which mode do you use? This is the place! All changes will be reverted automatically on the end of the race.[br][br]If you want, you can specify your own mode with Lua by modifying some Data files.</mui:BbCodeBlock.BbCode>
+            </mui:BbCodeBlock>
+        </c:MessageBlock>
+
+        <CheckBox IsChecked="{Binding PresetsPerModeAutoUpdate, Source={x:Static t:SettingsHolder.Drive}}" Margin="0 0 0 20" DockPanel.Dock="Top">
+            <CheckBox.ToolTip>If custom preset (such as Apps preset) is applied, but during the race, settings were changed, update it.</CheckBox.ToolTip>
+            <Label Content="Update presets if some settings changed during the race" />
+        </CheckBox>
+
+        <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:PresetPerMode.DraggableFormat}" ScrollViewer.CanContentScroll="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="320" VerticalAlignment="Top"
+                mui:FancyScrollHelper.Outsize="True">
+            <ListBox.ItemTemplateSelector>
+                <c:FlexibleDataTemplateSelector DataTemplate="{StaticResource EntryDataTemplate}" />
+            </ListBox.ItemTemplateSelector>
+            <i:Interaction.Behaviors>
+                <mui:HorizontalScrollBehavior />
+            </i:Interaction.Behaviors>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel ScrollUnit="Pixel" IsVirtualizing="True" VirtualizationMode="Recycling" Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Resources>
+                <CollectionViewSource x:Key="Entries" Source="{Binding Entries}" />
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsSource>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource Entries}}" />
+                    <Border Height="120">
+                        <Border.Resources>
+                            <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+                        </Border.Resources>
+                        <Button BorderThickness="0" Click="OnAddNewRoundButtonClick">
+                            <mui:SpacingStackPanel Spacing="8">
+                                <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" HorizontalAlignment="Center"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
+                                <TextBlock Text="Create New" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                            </mui:SpacingStackPanel>
+                        </Button>
+                    </Border>
+                </CompositeCollection>
+            </ItemsControl.ItemsSource>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Top}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Controls, FallbackValue={x:Null}}" Value="{x:Null}">
+                            <Setter Property="Background" Value="Transparent" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </DockPanel>
+</UserControl>

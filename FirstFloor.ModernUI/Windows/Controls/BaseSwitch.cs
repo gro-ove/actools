@@ -35,9 +35,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             AddVisualChild(_child);
 
             if (ResetElementNameBindings) {
-                var w = Stopwatch.StartNew();
                 child.ResetElementNameBindings();
-                Logging.Debug($"{w.Elapsed.TotalMilliseconds:F2} ms");
             }
         }
 

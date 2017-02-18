@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -30,7 +29,7 @@ namespace FirstFloor.ModernUI.Localizable {
         private static readonly Regex FrWordsRegex = new Regex(@"[a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly string[] FrLowercaseOnly = new[] {
+        private static readonly string[] FrLowercaseOnly = {
             "le", "la", "les",
             // indefinite articles
             "un", "une", "des",
@@ -58,11 +57,11 @@ namespace FirstFloor.ModernUI.Localizable {
             "ne"
         };
 
-        private static readonly string[] FrCapitalizeAfterQuoteAnd = new[] {
+        private static readonly string[] FrCapitalizeAfterQuoteAnd = {
             "l", "d"
         };
 
-        private static readonly string[] FrLowerCaseAfterQuoteAnd = new[] {
+        private static readonly string[] FrLowerCaseAfterQuoteAnd = {
             "c", "j", "m", "n", "s", "t"
         };
 
@@ -125,6 +124,12 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
+        #region Polish
+        private static string Pl(string s, CultureInfo culture) {
+            return CapitalizeFirst(s, culture);
+        }
+        #endregion
+
         #region Russian
         private static string Ru(string s, CultureInfo culture) {
             return CapitalizeFirst(s, culture);
@@ -137,6 +142,16 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
+        #region Portuguese
+        private static readonly Regex PtTitleCaseRegex =
+                new Regex(@"^[a-z]|\b(?!(?:da|de|do|das|des|dos)\b)[a-z]\w+|\b[a-z]\w*$",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static string Pt(string s, CultureInfo culture) {
+            return PtTitleCaseRegex.Replace(s, m => CapitalizeFirst(m.Value, culture));
+        }
+        #endregion
+
         public static string Convert(string s, CultureInfo culture) {
             if (culture.Name.Length < 2) return En(s, culture);
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
@@ -146,6 +161,10 @@ namespace FirstFloor.ModernUI.Localizable {
                     return Es(s, culture);
                 case "fr":
                     return Fr(s, culture);
+                case "pl":
+                    return Pl(s, culture);
+                case "pt":
+                    return Pt(s, culture);
                 case "ru":
                     return Ru(s, culture);
                 default:

@@ -183,8 +183,10 @@
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
+    <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
+    <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
     <Compile Include="GameProperties\TemporaryFileReplacement.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
@@ -269,6 +271,7 @@
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
     <Compile Include="Helpers\MainExecutingFile.cs" />
+    <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />

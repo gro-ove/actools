@@ -154,6 +154,68 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
+        #region Portuguese
+        private enum PtGenger {
+            Default, Feminine, Masculine
+        }
+
+        private static PtGenger PtGetGenger(string s) {
+#if DEBUG
+            Logging.Debug("gender: " + s);
+#endif
+            if (string.IsNullOrEmpty(s)) return PtGenger.Default;
+
+            var lower = s.ToLower(CultureInfo.CurrentUICulture);
+            switch (lower) {
+                case "coche":
+                    return PtGenger.Masculine;
+                case "cor":
+                    return PtGenger.Feminine;
+            }
+
+            if (lower.EndsWith("ema")) {
+                return PtGenger.Masculine;
+            }
+
+            if (lower.EndsWith("ação") || lower.EndsWith("dade") || lower.EndsWith("agem")) {
+                return PtGenger.Feminine;
+            }
+
+            switch (lower[lower.Length - 1]) {
+                case 'a':
+                case 'ã':
+                    return PtGenger.Feminine;
+                case 'o':
+                case 'i':
+                case 'u':
+                case 'l':
+                case 'r':
+                case 's':
+                    return PtGenger.Masculine;
+            }
+
+            return PtGenger.Default;
+        }
+
+        private static string PtPostfix(int v, string s) {
+            var g = PtGetGenger(s);
+
+            switch (g) {
+                case PtGenger.Default:
+                case PtGenger.Masculine:
+                    return ".º";
+                case PtGenger.Feminine:
+                    return ".ª";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string PtLong(int v, string s) {
+            return BaseLong(v);
+        }
+        #endregion
+
         #region Chinese (Simplified)
         private static string ZhCnPostfix(int v, string s) {
             switch (s) {
@@ -184,6 +246,8 @@ namespace FirstFloor.ModernUI.Localizable {
                     return $"{v}{EnPostfix(Math.Abs(v), s)}";
                 case "es":
                     return $"{v}{EsPostfix(Math.Abs(v), s)}";
+                case "pt":
+                    return $"{v}{PtPostfix(Math.Abs(v), s)}";
                 case "ru":
                     return $"{v}{RuPostfix(Math.Abs(v), s)}";
                 case "zh":
@@ -291,6 +355,9 @@ namespace FirstFloor.ModernUI.Localizable {
                     break;
                 case "es":
                     result = EsLong(v, s);
+                    break;
+                case "pt":
+                    result = PtLong(v, s);
                     break;
                 case "ru":
                     result = RuLong(v, s);

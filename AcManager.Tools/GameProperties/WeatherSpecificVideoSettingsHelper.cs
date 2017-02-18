@@ -70,7 +70,7 @@ namespace AcManager.Tools.GameProperties {
                         File.Delete(_destination);
                     }
 
-                    FileUtils.Hardlink(replacement, _destination);
+                    FileUtils.HardlinkOrCopy(replacement, _destination);
                 }
             }
 

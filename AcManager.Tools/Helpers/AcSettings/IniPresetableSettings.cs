@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             return ini.Stringify();
         }
 
-        protected override void SetToIni() {
+        protected sealed override void SetToIni() {
             SetToIni(Ini);
         }
 

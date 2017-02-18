@@ -67,6 +67,52 @@ namespace FirstFloor.ModernUI.Localizable {
             return s + "es";
         }
 
+        public static string Pt(string s) {
+            if (s.Length == 0) return string.Empty;
+
+            /* http://www.easyportuguese.com/portuguese-lessons/plural/ */
+
+            // Words ending in “ão”: there are 3 alternatives (depeding on the word)
+            if (s.EndsWith("ão")) {
+                switch (s) {
+                    case "avião":
+                    case "questão":
+                        return s.Substring(0, s.Length - 2) + "ões";
+                    case "pão":
+                    case "alemão":
+                        return s.Substring(0, s.Length - 2) + "ães";
+                    case "irmão":
+                    case "mão":
+                        return s.Substring(0, s.Length - 2) + "ãos";
+                }
+            }
+
+            // Words ending in “L”: ending in  al, el, ol or ul – change the “l” for “is”
+            var lastLetter = s[s.Length - 1];
+            if (lastLetter == 'l') {
+                return s.Substring(0, s.Length - 1) + "is";
+            }
+
+            // Words ending in “m”: change “m” for “ns” 
+            if (lastLetter == 'm') {
+                return s.Substring(0, s.Length - 1) + "ns";
+            }
+
+            // Words ending in “r”, “s” or “z”: add – “es” 
+            if (lastLetter == 'r' || lastLetter == 's' || lastLetter == 'z') {
+                return s + "es";
+            }
+
+            // Words ending in vowels – add “s”
+            if (lastLetter == 'a' || lastLetter == 'e' || lastLetter == 'é' ||
+                    lastLetter == 'i' || lastLetter == 'o' || lastLetter == 'u') {
+                return s + "s";
+            }
+
+            // What to do, what to do?
+            return s + "s";
+        }
+
         public static string Ru(string s, bool two) {
             switch (s) {
                 case "доступное решение":

@@ -1183,6 +1183,9 @@
   <data name="Shared_VideoSettingsPreset" xml:space="preserve">
     <value>Video settings preset</value>
   </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Audio settings preset</value>
+  </data>
   <data name="Common_Width" xml:space="preserve">
     <value>Width</value>
   </data>

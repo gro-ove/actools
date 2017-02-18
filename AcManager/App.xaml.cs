@@ -28,6 +28,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.PresetsPerMode;
 using AcManager.Tools.Profile;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
@@ -351,6 +352,7 @@ namespace AcManager {
                 }
 
                 await Task.Delay(1500);
+                PresetsPerModeBackup.Revert();
                 WeatherSpecificCloudsHelper.Revert();
                 WeatherSpecificTyreSmokeHelper.Revert();
                 WeatherSpecificVideoSettingsHelper.Revert();

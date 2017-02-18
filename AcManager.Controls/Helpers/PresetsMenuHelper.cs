@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.Helpers {
     public class PresetsMenuHelper : IDisposable {
@@ -15,10 +16,10 @@ namespace AcManager.Controls.Helpers {
             public EventHandler Handler;
         }
 
-        public static IEnumerable<object> GroupPresets(string presetsKey, Action<ISavedPresetEntry> action) {
+        public static IEnumerable<object> GroupPresets(string presetsKey, [CanBeNull] Action<ISavedPresetEntry> action) {
             var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
             var result = new HierarchicalItemsView(o => {
-                action((ISavedPresetEntry)o);
+                action?.Invoke((ISavedPresetEntry)o);
             }, group, false);
             return result;
         }

@@ -35,7 +35,7 @@ namespace AcManager.Tools.GameProperties {
 
             try {
                 Logging.Debug($"{source} → {destination}");
-                FileUtils.CopyRecursiveHardlink(source, destination);
+                FileUtils.HardlinkOrCopyRecursive(source, destination);
             } catch (Exception e) {
                 // this exception should be catched here so original clouds folder still
                 // will be restored even when copying a new one has been failed
@@ -93,7 +93,7 @@ namespace AcManager.Tools.GameProperties {
 
             try {
                 Logging.Debug($"{source} → {destination}");
-                FileUtils.Hardlink(source, destination);
+                FileUtils.HardlinkOrCopy(source, destination);
             } catch (Exception e) {
                 // this exception should be catched here so original clouds folder still
                 // will be restored even when copying a new one has been failed

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -20,10 +22,13 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
 using StringBasedFilter;
+using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
+        public static TimeSpan OptionUpdatePeriod = TimeSpan.FromMilliseconds(16.67);
+        public static TimeSpan OptionRescanPeriod = TimeSpan.FromSeconds(1d);
         public static IFilter<string> OptionIgnoreControlsFilter;
 
         public const string SubBuiltInPresets = "presets";
@@ -47,10 +52,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
                 }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
-                _directInput = new SlimDX.DirectInput.DirectInput();
                 _keyboardInput = new Dictionary<int, KeyboardInputButton>();
-
-                _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16.67) };
+                _timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher) {
+                    Interval = OptionUpdatePeriod
+                };
             } catch (Exception e) {
                 Logging.Warning("ControlsSettings exception: " + e);
             }
@@ -66,11 +71,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             UpdateWheelHShifterDevice();
 
-            _timer.IsEnabled = true;
             _timer.Tick += OnTick;
+            _timer.IsEnabled = true;
         }
 
         #region Devices
+        [CanBeNull]
         private SlimDX.DirectInput.DirectInput _directInput;
         private readonly Dictionary<int, KeyboardInputButton> _keyboardInput;
         private readonly DispatcherTimer _timer;
@@ -82,6 +88,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set {
                 if (Equals(_used, value)) return;
 
+                Logging.Debug(_used);
                 if (_used == 0) {
                     RescanDevices();
                 }
@@ -104,7 +111,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 _rescanStopwatch = Stopwatch.StartNew();
             }
 
-            if (_rescanStopwatch.ElapsedMilliseconds > 1000 || Devices.Any(x => x.Unplugged)) {
+            if (_rescanStopwatch.Elapsed > OptionRescanPeriod || Devices.Any(x => x.Unplugged)) {
                 RescanDevices();
                 _rescanStopwatch.Restart();
             }
@@ -166,7 +173,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         private void RescanDevices() {
-            var devices = _directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+            IList<DeviceInstance> devices;
+
+            try {
+                if (_directInput == null) {
+                    _directInput = new SlimDX.DirectInput.DirectInput();
+                }
+
+                devices = _directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+            } catch (Exception e) {
+                Logging.Error(e);
+                devices = new List<DeviceInstance>();
+                DisposeHelper.Dispose(ref _directInput);
+            }
 
             if (OptionIgnoreControlsFilter != null) {
                 devices = devices.Where(x => OptionIgnoreControlsFilter.Test(x.ProductName)).ToList();
@@ -207,12 +226,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
 
                 foreach (var device in Devices.ApartFrom(newDevices)) {
-                    foreach (var button in device.Buttons) {
-                        button.PropertyChanged -= DeviceButtonEventHandler;
+                    for (var i = 0; i < device.Buttons.Length; i++) {
+                        device.Buttons[i].PropertyChanged -= DeviceButtonEventHandler;
                     }
 
-                    foreach (var axle in device.Axles) {
-                        axle.PropertyChanged -= DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Axles.Length; i++) {
+                        device.Axles[i].PropertyChanged -= DeviceAxleEventHandler;
                     }
 
                     device.Dispose();
@@ -224,12 +243,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 foreach (var device in newDevices) {
                     ProductGuids[device.DisplayName] = device.Id;
 
-                    foreach (var button in device.Buttons) {
-                        button.PropertyChanged += DeviceButtonEventHandler;
+                    for (var i = 0; i < device.Buttons.Length; i++) {
+                        device.Buttons[i].PropertyChanged += DeviceButtonEventHandler;
                     }
 
-                    foreach (var axle in device.Axles) {
-                        axle.PropertyChanged += DeviceAxleEventHandler;
+                    for (var i = 0; i < device.Axles.Length; i++) {
+                        device.Axles[i].PropertyChanged += DeviceAxleEventHandler;
                     }
                 }
             } finally {
@@ -237,45 +256,48 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 UpdateWheelHShifterDevice();
             }
         }
+        
+        private static bool _busy;
 
-        private DateTime _lastAssignment;
+        private async Task AssignInput<T>(T provider) where T : class, IInputProvider {
+            if (_busy) return;
+            _busy = true;
 
-        private void AssignInput<T>(T provider) where T : class, IInputProvider {
-            if (DateTime.Now - _lastAssignment < TimeSpan.FromSeconds(2)) return;
+            try {
+                var waiting = GetWaiting() as BaseEntry<T>;
+                if (waiting == null) return;
 
-            var waiting = GetWaiting() as BaseEntry<T>;
-            if (waiting == null) return;
-
-            if (waiting.Input == provider) {
-                waiting.Waiting = false;
-                return;
-            }
-
-            var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider).ToList();
-            if (existing.Any()) {
-                var solution = ConflictResolver?.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName))
-                        ?? AcControlsConflictSolution.ClearPrevious;
-                _lastAssignment = DateTime.Now;
-
-                switch (solution) {
-                    case AcControlsConflictSolution.Cancel:
-                        return;
-
-                    case AcControlsConflictSolution.Flip:
-                        foreach (var entry in existing) {
-                            entry.Input = waiting.Input;
-                        }
-                        break;
-
-                    case AcControlsConflictSolution.ClearPrevious:
-                        foreach (var entry in existing) {
-                            entry.Clear();
-                        }
-                        break;
+                if (waiting.Input == provider) {
+                    waiting.Waiting = false;
+                    return;
                 }
-            }
 
-            waiting.Input = provider;
+                var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider).ToList();
+                if (existing.Any()) {
+                    var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
+                            await ConflictResolver.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
+                    switch (solution) {
+                        case AcControlsConflictSolution.Cancel:
+                            return;
+
+                        case AcControlsConflictSolution.Flip:
+                            foreach (var entry in existing) {
+                                entry.Input = waiting.Input;
+                            }
+                            break;
+
+                        case AcControlsConflictSolution.ClearPrevious:
+                            foreach (var entry in existing) {
+                                entry.Clear();
+                            }
+                            break;
+                    }
+                }
+
+                waiting.Input = provider;
+            } finally {
+                _busy = false;
+            }
         }
 
         private void DeviceAxleEventHandler(object sender, PropertyChangedEventArgs e) {
@@ -285,17 +307,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
             if (axle == null) return;
             AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
 
-            AssignInput(axle);
+            AssignInput(axle).Forget();
         }
 
         private void DeviceButtonEventHandler(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(DirectInputButton.Value)) return;
 
             var button = sender as DirectInputButton;
-            if (button == null) return;
+            if (button == null || !button.Value) return;
             ButtonEventHandler?.Invoke(this, new DirectInputButtonEventArgs(button));
 
-            AssignInput(button);
+            AssignInput(button).Forget();
         }
 
         public BetterObservableCollection<DirectInputDevice> Devices { get; } = new BetterObservableCollection<DirectInputDevice>();
@@ -671,6 +693,18 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        private int _wheelFfbSkipSteps;
+
+        public int WheelFfbSkipSteps {
+            get { return _wheelFfbSkipSteps; }
+            set {
+                value = value.Clamp(0, 1000);
+                if (Equals(value, _wheelFfbSkipSteps)) return;
+                _wheelFfbSkipSteps = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Keyboard
@@ -831,7 +865,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             var waiting = GetWaiting() as KeyboardButtonEntry;
             if (waiting == null) return false;
 
-            AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key)));
+            AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key))).Forget();
             return true;
         }
         #endregion
@@ -854,6 +888,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             section = ini["FF_ENHANCEMENT_2"];
             WheelFfbEnhancedUndersteer = section.GetBool("UNDERSTEER", false);
+
+            section = ini["FF_SKIP_STEPS"];
+            WheelFfbSkipSteps = section.GetInt("VALUE", 0);
         }
 
         public void SaveFfbToIni(IniFile ini) {
@@ -871,6 +908,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             section = ini["FF_ENHANCEMENT_2"];
             section.Set("UNDERSTEER", WheelFfbEnhancedUndersteer);
+
+            section = ini["FF_SKIP_STEPS"];
+            section.Set("VALUE", WheelFfbSkipSteps);
         }
 
         private static readonly Dictionary<string, string> ProductGuids = new Dictionary<string, string>();

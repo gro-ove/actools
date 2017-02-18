@@ -14,13 +14,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers {
-    public class ContentCategory {
-        public const string Miscellaneous = "Miscellaneous";
-        public const string BrandBadges = "Brand Badges";
-        public const string CarCategories = "Car Categories";
-        public const string TrackCategories = "Track Categories";
-        public const string UpgradeIcons = "Upgrade Icons";
-        public const string GridTypes = "Grid Types";
+    public static class ContentCategory {
+        public static readonly string Miscellaneous = "Miscellaneous";
+        public static readonly string BrandBadges = "Brand Badges";
+        public static readonly string CarCategories = "Car Categories";
+        public static readonly string TrackCategories = "Track Categories";
+        public static readonly string PresetsPerModeConditions = "Presets Per Mode Conditions";
+        public static readonly string UpgradeIcons = "Upgrade Icons";
+        public static readonly string GridTypes = "Grid Types";
     }
 
     public class FilesStorage : AbstractFilesStorage {

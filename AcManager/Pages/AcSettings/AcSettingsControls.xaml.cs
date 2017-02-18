@@ -38,6 +38,11 @@ namespace AcManager.Pages.AcSettings {
             InitializeComponent();
 
             ResizingStuff();
+            
+            AcSettingsHolder.Controls.Used++;
+            this.OnActualUnload(() => {
+                AcSettingsHolder.Controls.Used--;
+            });
         }
 
         private void ResizingStuff() {
@@ -150,21 +155,9 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private bool _loaded;
+        private void OnLoaded(object sender, RoutedEventArgs e) {}
 
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
-            _loaded = true;
-
-            AcSettingsHolder.Controls.Used++;
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (!_loaded) return;
-            _loaded = false;
-
-            AcSettingsHolder.Controls.Used--;
-        }
+        private void OnUnloaded(object sender, RoutedEventArgs e) {}
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
@@ -190,7 +183,7 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        public AcControlsConflictSolution Resolve(string inputDisplayName, IEnumerable<string> existingAssignments) {
+        public async Task<AcControlsConflictSolution> Resolve(string inputDisplayName, IEnumerable<string> existingAssignments) {
             var list = existingAssignments.Select(x => $"“{x}”").ToList();
             var message = list.Count > 1
                     ? string.Format(AppStrings.Controls_AlreadyUsed_MultipleMessage, inputDisplayName,
@@ -216,8 +209,8 @@ namespace AcManager.Pages.AcSettings {
                 dlg.CreateCloseDialogButton(AppStrings.Controls_SwapUsings, false, false, MessageBoxResult.OK),
                 dlg.CreateCloseDialogButton(UiStrings.Cancel, false, true, MessageBoxResult.Cancel),
             };
-            dlg.ShowDialog();
 
+            await dlg.ShowDialogAsync();
             switch (dlg.MessageBoxResult) {
                 case MessageBoxResult.Yes:
                     return AcControlsConflictSolution.ClearPrevious;

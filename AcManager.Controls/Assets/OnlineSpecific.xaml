@@ -85,15 +85,15 @@
 
     <!--car & track previews-->
     <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
-        <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4" TextBlock.Foreground="{DynamicResource WindowText}">
+        <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
             <mui:BooleanSwitch.True>
-                <StackPanel>
+                <StackPanel TextBlock.Foreground="{DynamicResource WindowText}">
                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
                     <u:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                 </StackPanel>
             </mui:BooleanSwitch.True>
             <mui:BooleanSwitch.False>
-                <DockPanel>
+                <DockPanel TextBlock.Foreground="{DynamicResource WindowText}">
                     <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                             DockPanel.Dock="Left" Margin="0 0 4 0" />
                     <TextBlock>
@@ -108,13 +108,13 @@
     <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}">
         <mui:ReferenceSwitch Value="{Binding Track}" Margin="4">
             <mui:ReferenceSwitch.NonNull>
-                <StackPanel>
+                <StackPanel TextBlock.Foreground="{DynamicResource WindowText}">
                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.Name}" Margin="0 0 0 4" />
                     <u:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
                 </StackPanel>
             </mui:ReferenceSwitch.NonNull>
             <mui:ReferenceSwitch.Null>
-                <DockPanel>
+                <DockPanel TextBlock.Foreground="{DynamicResource WindowText}">
                     <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
                             Margin="0 0 4 0" />
                     <TextBlock>

@@ -1519,6 +1519,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}: .
+        /// </summary>
+        public static string ValueLabel_Format {
+            get {
+                return ResourceManager.GetString("ValueLabel_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         public static string Yes {

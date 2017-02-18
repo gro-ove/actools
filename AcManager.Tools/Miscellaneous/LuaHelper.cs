@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Helpers;
+using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -25,6 +28,10 @@ namespace AcManager.Tools.Miscellaneous {
 
         private static bool _registered;
 
+        public static object ToMoonSharp<T>() where T : struct {
+            return Enum.GetValues(typeof(T)).OfType<T>().ToDictionary(x => x.ToString(), x => (int)(object)x);
+        }
+
         [CanBeNull]
         public static Script GetExtended() {
             try {
@@ -33,22 +40,29 @@ namespace AcManager.Tools.Miscellaneous {
                     _registered = true;
                 }
 
-                var script = new Script();
+                var state = new Script();
 
-                script.Globals["log"] = (Action<object[]>)Log;
-                script.Globals["numutils"] = new Table(script) {
+                state.Globals["log"] = (Action<object[]>)Log;
+                state.Globals["numutils"] = new Table(state) {
                     ["numvalue"] = (Func<string, double>)GetNumberValue
                 };
-                script.Globals["strutils"] = new Table(script) {
+
+                state.Globals["strutils"] = new Table(state) {
                     ["equals"] = (Func<string, string, bool>)CompareStrings,
                     ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase
                 };
+                
+                state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType>();
 
-                return script;
+                return state;
             } catch (Exception e) {
                 Logging.Warning("Can’t initialize: " + e);
                 return null;
             }
+        }
+
+        public static bool AsBool(this DynValue value) {
+            return (value.Type != DataType.String || value.String != @"0") && value.CastToBool();
         }
     }
 }

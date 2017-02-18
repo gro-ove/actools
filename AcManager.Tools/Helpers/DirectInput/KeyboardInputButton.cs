@@ -8,7 +8,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
             if (key >= Key.A && key <= Key.Z ||
                     key >= Key.D0 && key <= Key.D9 ||
                     key >= Key.NumPad0 && key <= Key.NumPad9 ||
-                    key >= Key.Left && key <= Key.Down) {
+                    key >= Key.Left && key <= Key.Down ||
+                    key == Key.Home || key == Key.Insert || key == Key.Delete || key == Key.Back ||
+                    key == Key.LeftCtrl || key == Key.LeftAlt || key == Key.LeftShift || key == Key.LWin ||
+                    key == Key.RightCtrl || key == Key.RightAlt || key == Key.RightShift || key == Key.RWin) {
                 return true;
             }
 

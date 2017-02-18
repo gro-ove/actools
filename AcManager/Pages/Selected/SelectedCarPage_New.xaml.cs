@@ -14,7 +14,6 @@ using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
-using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
@@ -25,10 +24,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
-using AcManager.Tools.SharedMemory;
 using AcTools;
 using AcTools.AcdFile;
-using AcTools.LapTimes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
@@ -39,7 +36,6 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
 using MenuItem = System.Windows.Controls.MenuItem;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage_New : ILoadableContent, IParametrizedUriContent, IImmediateContent {

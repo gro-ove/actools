@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private int _ffbSkipSteps;
+        /*private int _ffbSkipSteps;
 
         public int FfbSkipSteps {
             get { return _ffbSkipSteps; }
@@ -33,7 +33,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 _ffbSkipSteps = value;
                 OnPropertyChanged();
             }
-        }
+        }*/
         #endregion
 
         #region Experimental FFB
@@ -173,7 +173,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void LoadFfbFromIni(IniFile ini) {
             SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
-            FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
+            //FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
 
             var section = ini["FF_EXPERIMENTAL"];
             FfbGyro = section.GetBool("ENABLE_GYRO", false);
@@ -183,7 +183,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void SaveFfbToIni(IniFile ini) {
             ini["SOFT_LOCK"].Set("ENABLED", SoftLock);
-            ini["FORCE_FEEDBACK"].Set("FF_SKIP_STEPS", FfbSkipSteps);
+            //ini["FORCE_FEEDBACK"].Set("FF_SKIP_STEPS", FfbSkipSteps);
 
             var section = ini["FF_EXPERIMENTAL"];
             section.Set("ENABLE_GYRO", FfbGyro);

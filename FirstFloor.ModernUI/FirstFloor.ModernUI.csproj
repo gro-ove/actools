@@ -334,6 +334,7 @@
     <Compile Include="Windows\Navigation\NavigationFailedEventArgs.cs" />
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
+    <Compile Include="Windows\Stored.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
     <Compile Include="WrappedCollection.cs" />
   </ItemGroup>

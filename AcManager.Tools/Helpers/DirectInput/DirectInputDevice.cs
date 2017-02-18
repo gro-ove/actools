@@ -7,6 +7,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using SlimDX;
 using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
@@ -116,6 +117,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return guid.ToString().ToUpperInvariant();
         }
 
+        private static bool Acquire(Device newdevice) {
+            var result = newdevice.Acquire();
+            if (result.IsSuccess) {
+                newdevice.Poll();
+                return true;
+            }
+
+            Logging.Debug($"Can’t acquire {newdevice.Information.ProductName}: {result.Description}");
+            return false;
+        }
+
         private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int index) {
             Device = device;
             DisplayName = device.InstanceName;
@@ -129,8 +141,13 @@ namespace AcManager.Tools.Helpers.DirectInput {
             var window = Application.Current?.MainWindow;
             if (window != null) {
                 try {
-                    _joystick.SetCooperativeLevel(new WindowInteropHelper(window).Handle,
-                            CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+                    _joystick.SetCooperativeLevel(new WindowInteropHelper(window).Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+                    _joystick.Properties.AxisMode = DeviceAxisMode.Absolute;
+
+                    if (!Acquire(_joystick)) {
+                        _joystick.SetCooperativeLevel(new WindowInteropHelper(window).Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+                        Acquire(_joystick);
+                    }
                 } catch (Exception e) {
                     Logging.Warning("Can’t set cooperative level: " + e);
                 }
@@ -147,7 +164,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public static DirectInputDevice Create(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
             try {
                 return new DirectInputDevice(directInput, device, iniId);
-            } catch (DirectInputException) {
+            } catch (DirectInputNotFoundException e) {
+                Logging.Warning(e);
+                return null;
+            } catch (DirectInputException e) {
+                Logging.Error(e);
                 return null;
             }
         }
@@ -158,26 +179,27 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public void OnTick() {
             try {
-                if (_joystick.Acquire().IsFailure || _joystick.Poll().IsFailure || SlimDX.Result.Last.IsFailure) {
+                if (_joystick.Acquire().IsFailure || _joystick.Poll().IsFailure || Result.Last.IsFailure) {
                     return;
                 }
 
                 var state = _joystick.GetCurrentState();
 
-                var i = 0;
-                foreach (var source in state.GetButtons().Take(_buttonsCount)) {
-                    Buttons[i++].Value = source;
+                var buttons = state.GetButtons();
+                for (var i = 0; i < _buttonsCount; i++) {
+                    Buttons[i].Value = i < buttons.Length && buttons[i];
                 }
 
-                i = 0;
+                Axles[0].Value = state.X / 65535d;
+                Axles[1].Value = state.Y / 65535d;
+                Axles[2].Value = state.Z / 65535d;
+                Axles[3].Value = state.RotationX / 65535d;
+                Axles[4].Value = state.RotationY / 65535d;
+                Axles[5].Value = state.RotationZ / 65535d;
+
                 var sliders = state.GetSliders();
-                foreach (var source in new [] {
-                    state.X, state.Y, state.Z,
-                    state.RotationX, state.RotationY, state.RotationZ,
-                    sliders[0], sliders[1]
-                }) {
-                    Axles[i++].Value = source / 65535d;
-                }
+                Axles[6].Value = sliders.Length > 0 ? sliders[0] / 65535d : 0d;
+                Axles[7].Value = sliders.Length > 1 ? sliders[1] / 65535d : 0d;
             } catch (DirectInputException e) when(e.Message.Contains(@"DIERR_UNPLUGGED")) {
                 Unplugged = true;
             } catch (DirectInputException e) {

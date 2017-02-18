@@ -72,7 +72,7 @@ namespace AcManager.Pages.SelectionLists {
             _loaded = true;
 
             base.OnLoaded(sender, e);
-            FilesStorage.Instance.Watcher(GetCategory()).Update += SelectTrackDialog_CategoriesViewModel_LibraryUpdate;
+            FilesStorage.Instance.Watcher(GetCategory()).Update += OnCategoriesUpdate;
         }
 
         protected override void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -80,10 +80,10 @@ namespace AcManager.Pages.SelectionLists {
             _loaded = false;
 
             base.OnUnloaded(sender, e);
-            FilesStorage.Instance.Watcher(GetCategory()).Update -= SelectTrackDialog_CategoriesViewModel_LibraryUpdate;
+            FilesStorage.Instance.Watcher(GetCategory()).Update -= OnCategoriesUpdate;
         }
 
-        private void SelectTrackDialog_CategoriesViewModel_LibraryUpdate(object sender, EventArgs e) {
+        private void OnCategoriesUpdate(object sender, EventArgs e) {
             _categories = null;
             UpdateIfNeeded();
         }

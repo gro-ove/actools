@@ -6,14 +6,17 @@ using Newtonsoft.Json;
 namespace AcManager.Tools.Helpers.AcSettings {
     public static class AcSettingsHolder {
         #region Apps with presets
+        public static readonly string AppsPresetsKey = @"In-Game Apps";
+
         private class AppsPresetsInner : IUserPresetable {
             private class Saveable {
                 public string PythonData, FormsData;
+                public bool? DevApps;
             }
 
             public bool CanBeSaved => true;
 
-            public string PresetableKey => @"In-Game Apps";
+            public string PresetableKey => AppsPresetsKey;
 
             string IUserPresetable.PresetableCategory => PresetableKey;
 
@@ -22,7 +25,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
                     PythonData = Python.Export(),
-                    FormsData = Forms.Export()
+                    FormsData = Forms.Export(),
+                    DevApps = System.DeveloperApps
                 });
             }
 
@@ -37,6 +41,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 var entry = JsonConvert.DeserializeObject<Saveable>(data);
                 Python.Import(entry.PythonData);
                 Forms.Import(entry.FormsData);
+                if (entry.DevApps.HasValue) {
+                    System.DeveloperApps = entry.DevApps.Value;
+                }
             }
         }
 
@@ -115,11 +122,53 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static VideoSettings Video => _video ?? (_video = new VideoSettings());
         #endregion
 
-        #region Miscellaneous
+        #region Audio with presets
+        public static readonly string AudioPresetsKey = @"Audio Settings";
+
+        private class AudioPresetsInner : IUserPresetable {
+            private class Saveable {
+                public string AudioData;
+            }
+
+            public bool CanBeSaved => true;
+
+            public string PresetableKey => AudioPresetsKey;
+
+            string IUserPresetable.PresetableCategory => AudioPresetsKey;
+
+            string IUserPresetable.DefaultPreset => null;
+
+            public string ExportToPresetData() {
+                return JsonConvert.SerializeObject(new Saveable {
+                    AudioData = Audio.Export()
+                });
+            }
+
+            public event EventHandler Changed;
+
+            public void InvokeChanged() {
+                if (_audio == null) return;
+                Changed?.Invoke(this, EventArgs.Empty);
+            }
+
+            public void ImportFromPresetData(string data) {
+                var entry = JsonConvert.DeserializeObject<Saveable>(data);
+                Audio.Import(entry.AudioData);
+            }
+        }
+
+        internal static void AudioPresetChanged() {
+            _audioPresets?.InvokeChanged();
+        }
+
+        private static AudioPresetsInner _audioPresets;
+        public static IUserPresetable AudioPresets => _audioPresets ?? (_audioPresets = new AudioPresetsInner());
+
         private static AudioSettings _audio;
         public static AudioSettings Audio => _audio ?? (_audio = new AudioSettings());
+        #endregion
 
-
+        #region Miscellaneous
         private static CameraOnboardSettings _cameraOnboard;
         public static CameraOnboardSettings CameraOnboard => _cameraOnboard ?? (_cameraOnboard = new CameraOnboardSettings());
 
