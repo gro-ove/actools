@@ -343,8 +343,8 @@
     <value>Seta Direita</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Teclado Numérico</value>
-  </data>
+    <value>Teclado Numérico {0}</value>
+  <alternative>Teclado Numérico</alternative></data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Seta Esquerda</value>
   </data>

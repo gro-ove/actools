@@ -663,4 +663,41 @@ Autore: [b]{3}[/b]</value>
   <data name="App_AppUpdated_Details" xml:space="preserve">
     <value>Fai click per visualizzare i cambiamenti recenti</value>
   </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>Ricorda passwords</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>Condivisione</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>Aspetto</value>
+  </data>
+  <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
+    <value>Salvataggio automatico replay</value>
+  </data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Qualità:</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+    <value>Dimensioni massime</value>
+  </data>
+  <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
+    <value>
+Dimensioni massime (raccomandate): {0} MB</value>
+  </data>
+  <data name="Settings_Sharing_Anonymously" xml:space="preserve">
+    <value>Condivisione anonima</value>
+  </data>
+  <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
+    <value>Speciale:</value>
+  </data>
+  <data name="Common_SignOut" xml:space="preserve">
+    <value>Esci</value>
+  </data>
+  <data name="Common_SignIn" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+    <value>Cartella:</value>
+  </data>
 </root>

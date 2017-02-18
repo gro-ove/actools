@@ -126,4 +126,190 @@
   <data name="Common_Cancelled" xml:space="preserve">
     <value>Annulé</value>
   </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Dimensions ([Largeur]×[Hauteur]) :</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>Erreur lors de l'export de texture</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Chargement du modèle...</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Outils</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Selectectionné</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Nom :</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>Textures :</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Triangles :</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS :</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Objets :</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Itérations</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Ajuster</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Sauver</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Taille</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Mise à jour des ombres...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Rechargement les textures...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>Les données sont cryptées</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>Outils de développement</value>
+  </data>
+  <data name="Common_Unpack" xml:space="preserve">
+    <value>Désarchiver {0}</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Version :</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL :</value>
+  </data>
+  <data name="Common_FolderExists" xml:space="preserve">
+    <value>Le dossier "{0}" existe, écraser le contenu ?</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Changer</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>Générique</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Pneus :</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value> psi</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Fuel :</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Fuel</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>Transfert...</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>Compression...</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Mode hors-ligne</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value> sec</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value> tour</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value> minute</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Téléchargement...</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Installation...</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Sauver &amp; fermer</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>Sauver comme année</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>Sauver comme pays</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>Sauver comme description</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Ne peut mettre à jour la prévisualisation</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> point</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Année de départ de la production</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Force minimum</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Gain</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Effets :</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Effet des vibreurs</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Effet de la surface</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Divers :</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Expérimental :</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Exposition :</value>
+  </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value> FPS</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Télécharger et installer ({0})</value>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>Non disponible, la version requise est {0}.</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Mettre à jour (nouvelle version : {0})</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Non sauvegardé</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Noir</value>
+  </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Ne pas afficher le pilote</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Ne pas afficher le pilote virtuel</value>
+  </data>
 </root>

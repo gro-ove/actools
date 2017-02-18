@@ -118,87 +118,85 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>En arriere</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Fermer</value>
-  </data>
-  <data name="FiltersLinkAll" xml:space="preserve">
-    <value>Tout</value>
-    <comment>Titre de l'onglet par défaut (montre tout, à l'extreme gauche) dans la partie content</comment>
+    <value>Powrót</value>
   </data>
   <data name="Forward" xml:space="preserve">
-    <value>En avant</value>
+    <value>Do przodu</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zamknij</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Lancer</value>
-  </data>
-  <data name="HidePassword" xml:space="preserve">
-    <value>Masquer le mot de passe</value>
-    <comment>Pour la fenêtre mot de passe</comment>
+    <value>Jedź</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maksymalizuj</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimalizuj</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Odnośnik</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>Błędny odnośnik</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>Nie można przejść do {0}, nie można znależć celu ModernFrame '{1}'</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>Nie można przejść do {0}, brak określonego źródła</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Przywróć</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>Operacja wymaga wątku UI</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Nieoczekiwany znak</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>Nieznany system operacyjny</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>Nieznany typ tokenu</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Nowsza wersja {0} jest gotowa do zainstalowania</value>
+  </data>
   <data name="ImagesFilter" xml:space="preserve">
-    <value>Fichiers images|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="KeyAltLeft" xml:space="preserve">
-    <value>Alt (Gauche)</value>
-  </data>
-  <data name="KeyAltRight" xml:space="preserve">
-    <value>Alt (Droite)</value>
+    <value>Pliki obrazu|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Wszystkie pliki (*.*)|*.*</value>
   </data>
   <data name="KeyBackspace" xml:space="preserve">
     <value>Backspace</value>
-  </data>
-  <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Navigateur Retour</value>
-  </data>
-  <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Navigateur Favories</value>
-  </data>
-  <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Navigateur Arriere</value>
-  </data>
-  <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Navigateur Home</value>
-  </data>
-  <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Navigateur Rafraichir</value>
-  </data>
-  <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Navigateur Recherche</value>
-  </data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Navigateur Stop</value>
-  </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
-  <data name="KeyContextMenu" xml:space="preserve">
-    <value>Menu contextuel</value>
   </data>
   <data name="KeyControl" xml:space="preserve">
     <value>Control</value>
   </data>
   <data name="KeyControlLeft" xml:space="preserve">
-    <value>Controle (Gauche)</value>
+    <value>Control (Lewy)</value>
   </data>
   <data name="KeyControlRight" xml:space="preserve">
-    <value>Controle (Droite)</value>
+    <value>Control (Prawy)</value>
   </data>
-  <data name="KeyDelete" xml:space="preserve">
-    <value>Suppr.</value>
-  <alternative>Delete</alternative></data>
   <data name="KeyDownArrow" xml:space="preserve">
-    <value>Fleche Bas</value>
+    <value>Strzałka w dół</value>
   </data>
   <data name="KeyEnd" xml:space="preserve">
     <value>End</value>
@@ -209,45 +207,14 @@
   <data name="KeyEscape" xml:space="preserve">
     <value>Escape</value>
   </data>
-  <data name="KeyHelp" xml:space="preserve">
-    <value>Help</value>
-  </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
   </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
-  </data>
-  <data name="KeyLaunchApplication1" xml:space="preserve">
-    <value>Lancer l'Application Favorite 1</value>
-  <alternative>Lancer l'Application Favorie 1</alternative></data>
-  <data name="KeyLaunchApplication2" xml:space="preserve">
-    <value>Lancer l'Application Favorite 2</value>
-  <alternative>Lancer l'Application Favorie 2</alternative></data>
-  <data name="KeyLaunchMail" xml:space="preserve">
-    <value>Lancer Mail</value>
-  </data>
   <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Fleche Gauche</value>
-  </data>
-  <data name="KeyMediaNextTrack" xml:space="preserve">
-    <value>Piste suivante</value>
-  </data>
-  <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Ecouter
-</value>
-  <alternative>Play</alternative></data>
-  <data name="KeyMediaPreviousTrack" xml:space="preserve">
-    <value>Piste précédente</value>
-  </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
+    <value>Strzałka w lewo</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Pavé numérique {0}</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
+    <value>Number Pad {0}</value>
   </data>
   <data name="KeyPageDown" xml:space="preserve">
     <value>Page Down</value>
@@ -255,29 +222,17 @@
   <data name="KeyPageUp" xml:space="preserve">
     <value>Page Up</value>
   </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Fleche Droite</value>
-  </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
-  <data name="KeySelectMedia" xml:space="preserve">
-    <value>Selectionner Media</value>
+    <value>Srzałka w prawo</value>
   </data>
   <data name="KeyShift" xml:space="preserve">
     <value>Shift</value>
   </data>
   <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Shift (Gauche)</value>
+    <value>Shift (Lewy)</value>
   </data>
   <data name="KeyShiftRight" xml:space="preserve">
-    <value>Shift (Droite)</value>
+    <value>Shift (Prawy)</value>
   </data>
   <data name="KeySpace" xml:space="preserve">
     <value>Space</value>
@@ -286,279 +241,327 @@
     <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
-    <value>Fleche Haut</value>
+    <value>Strzałka w górę</value>
   </data>
-  <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Descendre le Volume</value>
+  <data name="PickColorFromScreen" xml:space="preserve">
+    <value>Wybierz dowolny kolor z ekranu</value>
   </data>
-  <data name="KeyVolumeMute" xml:space="preserve">
-    <value>Couper le Volume</value>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Wybierz kolor</value>
   </data>
-  <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Monter le Volume</value>
+  <data name="Source" xml:space="preserve">
+    <value>Źródło</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Stack Trace</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Propozycje</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Skopiuj[/url] szczegóły błędu do schowka. Spróbuj [url=cmd://refresh]odświerzyć[/url] stronę lub idź z [url=cmd://browseback]powrotem[/url].</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Skopiuj[/url] szczegóły błedu do schowka. Spróbuj [url=cmd://restart]zrestartować[/url] tą plikacje lub ją [url=cmd://exit]zamknij[/url].</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>Pliki DDS &amp; TIFF|*.dds;*.tif;*.tiff|Pkiki obrazu|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Wszystkie pliki (*.*)|*.*</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Lewy)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Prawy)</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>Caps Lock</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Help</value>
   </data>
   <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Gauche)</value>
+    <value>Windows (Left)</value>
   </data>
   <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Droite)</value>
+    <value>Windows (Right)</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Context Menu</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Browser Back</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Browser Favorites</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Browser Forward</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Browser Home</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Browser Refresh</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Browser Search</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Browser Stop</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Zmniejsz głośność</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Wycisz</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Zwiększ głośność</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Następny tor</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Poprzedni tor</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Wybierz media</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Uruchom pocztę</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Uruchom ulubioną aplikację 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Uruchom ulubioną aplikację 2</value>
   </data>
   <data name="KeyZoom" xml:space="preserve">
     <value>Zoom</value>
   </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>O
-</value>
-    <comment>Byte</comment>
-  <alternative>B</alternative></data>
   <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>Eo</value>
-    <comment>Exabyte</comment>
-  <alternative>EB</alternative></data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>Go</value>
-    <comment>Gygabyte</comment>
-  <alternative>GB</alternative></data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>Ko</value>
-    <comment>Kilobyte</comment>
-  <alternative>KB</alternative></data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>Mo</value>
-    <comment>Megabyte</comment>
-  <alternative>MB</alternative></data>
+    <value>EB</value>
+  </data>
   <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>Po</value>
-    <comment>Petabyte</comment>
-  <alternative>PB</alternative></data>
+    <value>PB</value>
+  </data>
   <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>To</value>
-    <comment>Terabyte</comment>
-  <alternative>TB</alternative></data>
+    <value>TB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Wszystko</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Ukryj Hasło</value>
+  </data>
   <data name="MarkLimited" xml:space="preserve">
-    <value>LIMITE</value>
-  <alternative>LIMITED</alternative></data>
+    <value>OGRANICZONY</value>
+  </data>
   <data name="MarkNew" xml:space="preserve">
-    <value>NOUVEAU</value>
-  <alternative>NEW</alternative></data>
-  <data name="Maximize" xml:space="preserve">
-    <value>Agrandir</value>
-  </data>
-  <data name="Minimize" xml:space="preserve">
-    <value>Réduire</value>
-  </data>
-  <data name="NavigateLink" xml:space="preserve">
-    <value>Navigate link</value>
-  </data>
-  <data name="NavigationFailed" xml:space="preserve">
-    <value>Navigation failed</value>
-  </data>
-  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
-  </data>
-  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
-    <value>Impossible d'atteindre {0}, aucune source définie</value>
-  <alternative>Unable to navigate to {0}, no source specified</alternative></data>
-  <data name="No" xml:space="preserve">
-    <value>Non</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
+    <value>NOWY</value>
   </data>
   <data name="PickColor" xml:space="preserve">
-    <value>Choisir une couleur</value>
-  <alternative>Prendre une couleur</alternative></data>
-  <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Prendre une couleur de l'écran</value>
-  </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Rétablir</value>
-  <alternative>Restorer</alternative></data>
-  <data name="SelectColor" xml:space="preserve">
-    <value>Selectionner une couleur</value>
+    <value>Wybierz kolor</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
-    <value>Afficher le mot de passe</value>
-    <comment>Pour la fenêtre mot de passe</comment>
-  <alternative>Montrer le mot de passe</alternative></data>
-  <data name="Source" xml:space="preserve">
-    <value>Source</value>
+    <value>Pokaż hasło</value>
   </data>
-  <data name="StackTrace" xml:space="preserve">
-    <value>Pile d'erreur</value>
-  <alternative>Stack Trace</alternative></data>
-  <data name="Suggestions" xml:space="preserve">
-    <value>Suggestions</value>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Mniej {0}</value>
   </data>
-  <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
-  </data>
-  <data name="TexturesFilter" xml:space="preserve">
-    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
-  </data>
-  <data name="UIThreadRequired" xml:space="preserve">
-    <value>L'Operation requiere le Thread UI</value>
-  </data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Token inattendu</value>
-  <alternative>Unexpected token</alternative></data>
-  <data name="UnknownOS" xml:space="preserve">
-    <value>Système d'exploitation inconnu</value>
-  <alternative>Unknown operating system</alternative></data>
-  <data name="UnknownTokenType" xml:space="preserve">
-    <value>Type de token inconnu</value>
-  <alternative>Unknown token type</alternative></data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Une nouvelle version {0} est prête à être installée</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Oui</value>
-  </data>
-  <data name="Progress_Downloading" xml:space="preserve">
-    <value>{0} chargé</value>
-  </data>
-  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} chargé</value>
-  </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>{0} uploadé</value>
-  </data>
-  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} uploadé</value>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Zerowy</value>
   </data>
   <data name="Ordinalizing_First" xml:space="preserve">
-    <value>Premier</value>
+    <value>Pierwszy</value>
   </data>
   <data name="Ordinalizing_Second" xml:space="preserve">
-    <value>Second</value>
+    <value>Drugi</value>
   </data>
   <data name="Ordinalizing_Third" xml:space="preserve">
-    <value>Troisième</value>
+    <value>Trzeci</value>
   </data>
   <data name="Ordinalizing_Fourth" xml:space="preserve">
-    <value>Quatrième</value>
+    <value>Czwarty</value>
   </data>
   <data name="Ordinalizing_Fifth" xml:space="preserve">
-    <value>Cinquième</value>
+    <value>Piąty</value>
   </data>
   <data name="Ordinalizing_Sixth" xml:space="preserve">
-    <value>Sixième</value>
+    <value>Szósty</value>
   </data>
   <data name="Ordinalizing_Seventh" xml:space="preserve">
-    <value>Septième</value>
+    <value>Siódmy</value>
   </data>
   <data name="Ordinalizing_Eighth" xml:space="preserve">
-    <value>Huitième</value>
+    <value>Ósmy</value>
   </data>
   <data name="Ordinalizing_Ninth" xml:space="preserve">
-    <value>Neuvième</value>
+    <value>Dziewiąty</value>
   </data>
   <data name="Ordinalizing_Tenth" xml:space="preserve">
-    <value>Dixième</value>
+    <value>Dziesiąty</value>
   </data>
   <data name="Ordinalizing_Eleventh" xml:space="preserve">
-    <value>Onzième</value>
+    <value>Jedenasty</value>
   </data>
   <data name="Ordinalizing_Twelfth" xml:space="preserve">
-    <value>Douzième</value>
+    <value>Dwunasty</value>
   </data>
   <data name="Ordinalizing_Thirteenth" xml:space="preserve">
-    <value>Treisième</value>
+    <value>Trzynasty</value>
   </data>
   <data name="Ordinalizing_Fourteenth" xml:space="preserve">
-    <value>Quatorzième</value>
+    <value>Czternasty</value>
   </data>
   <data name="Ordinalizing_Fifteenth" xml:space="preserve">
-    <value>Quinzième</value>
+    <value>Piętnasty</value>
   </data>
   <data name="Ordinalizing_Sixteenth" xml:space="preserve">
-    <value>Seizième</value>
+    <value>Szesnasty</value>
   </data>
   <data name="Ordinalizing_Seventeenth" xml:space="preserve">
-    <value>Dix-septième</value>
+    <value>Siedemnasty</value>
   </data>
   <data name="Ordinalizing_Eighteenth" xml:space="preserve">
-    <value>Dix-huitième</value>
+    <value>Osiemnasty</value>
   </data>
   <data name="Ordinalizing_Nineteenth" xml:space="preserve">
-    <value>Dix-neuvième</value>
+    <value>Dziewiętnasty</value>
   </data>
   <data name="Ordinalizing_Twentieth" xml:space="preserve">
-    <value>Vingtième</value>
+    <value>Dwudziesty</value>
   </data>
   <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
-    <value>Vingt-et-unième</value>
+    <value>Dwudziesty pierwszy</value>
   </data>
   <data name="Ordinalizing_TwentySecond" xml:space="preserve">
-    <value>Vingt-deuxième</value>
+    <value>Dwudziesty drugi</value>
   </data>
   <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>Vingt-troisième</value>
+    <value>Dwudziesty trzeci</value>
   </data>
   <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>Vingt-quattrième</value>
+    <value>Dwudziesty czwarty</value>
   </data>
   <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
-    <value>Vingt-cinquième</value>
+    <value>Dwudziesty piąty</value>
   </data>
   <data name="Ordinalizing_TwentySixth" xml:space="preserve">
-    <value>Vingt-sixième</value>
+    <value>Dwudziesty szósty</value>
   </data>
   <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
-    <value>Vingt-septième</value>
+    <value>Dwudziesty siódmy</value>
   </data>
   <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
-    <value>Vingt-huitième</value>
+    <value>Dwudziesty siódmy</value>
   </data>
   <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
-    <value>Vingt-neuvième</value>
+    <value>Dwudziesty dziewiąty</value>
   </data>
   <data name="Ordinalizing_Thirtieth" xml:space="preserve">
-    <value>Trentième</value>
+    <value>Trzydziesty</value>
   </data>
   <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>Trent-et-unième</value>
+    <value>Trzydziesty pierwszy</value>
   </data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}e</value>
+    <value>{0}th</value>
   </data>
   <data name="Time_Month" xml:space="preserve">
-    <value>{0} mois</value>
+    <value>{0} miesiąc</value>
   </data>
   <data name="Time_Week" xml:space="preserve">
-    <value>{0} semaine</value>
+    <value>{0} tydzień</value>
   </data>
   <data name="Time_Day" xml:space="preserve">
-    <value>{0} jour</value>
+    <value>{0} dzień</value>
   </data>
   <data name="Time_Hour" xml:space="preserve">
-    <value>{0} heure</value>
+    <value>{0} godzina</value>
   </data>
   <data name="Time_Minute" xml:space="preserve">
-    <value>{0} minute</value>
+    <value>{0} minuta</value>
   </data>
   <data name="Time_Second" xml:space="preserve">
-    <value>{0} seconde</value>
+    <value>{0} sekunda</value>
   </data>
   <data name="Common_Oops" xml:space="preserve">
-    <value>Oups !</value>
+    <value>Oops!</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>Aplikacja napotkała problem i musi zostać ponownie uruchomiona. Proszę kliknąć przycisk "Zgłoś problem", jeżeli chcesz wysłać raport o błędzie.</value>
   </data>
   <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Patientez...</value>
+    <value>Proszę czekać…</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>Załadowano {0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Załadowano {0} z {1}</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>Wysłano {0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Wysłano {0} z {1}</value>
   </data>
   <data name="Common_Add" xml:space="preserve">
-    <value>Ajouter</value>
+    <value>Dodaj</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Nie znaleziono pasujących pretendentów</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Zapisz grid wyścigu jako preset</value>
   </data>
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Partager la grille de course</value>
+    <value>Udostępnij grid wyścigu</value>
   </data>
   <data name="Common_Ascending" xml:space="preserve">
-    <value>Ascendant</value>
+    <value>Rosnąco</value>
   </data>
   <data name="Common_Descending" xml:space="preserve">
-    <value>Descendant</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0} : </value>
+    <value>Malejąco</value>
   </data>
 </root>

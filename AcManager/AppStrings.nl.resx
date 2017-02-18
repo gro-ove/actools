@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Main_UnhandledException" xml:space="preserve">
+    <value>Onbehandelde uitzondering:
+
+{0}</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager is Bijgewerkt</value>
+  </data>
+  <data name="App_DataUpdated" xml:space="preserve">
+    <value>Data Bijgewerkt</value>
+  </data>
+  <data name="App_LocaleUpdated" xml:space="preserve">
+    <value>Locale Bijgewerkt</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Nieuwe Versie</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Klik om recente veranderingen te zien</value>
+  </data>
+  <data name="App_DataUpdated_Details" xml:space="preserve">
+    <value>Huidige versie: {0}</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>Herstart app om veranderingen te zien</value>
+  </data>
+  <data name="App_NewVersion_Details" xml:space="preserve">
+    <value>Bijgewerkt: {0}</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>Kan additionele inhoud niet installeren</value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>Kan race niet starten</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>Zorg ervoor dat de benodigde auto &amp; baan geïnstalleerd zijn</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>Kan aanvraag niet ontleden</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest" xml:space="preserve">
+    <value>Kan aanvraag niet processen</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>Zorg ervoor dat alle data geldig is.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
+    <value>RSR is veranderd.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>RSR heeft bestand in ongesteunde formaat terug gebracht.</value>
+  </data>
+  <data name="Arguments_SaveAsGeneric" xml:space="preserve">
+    <value>Sla op als algmeen</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Naam: [b]{0}[/b] {1}: [b]{2}[/b] Auteur: [b]{3}[/b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Voor</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>Zou je deze preset willen toepassen of voor later bewaren?</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
+    <value>Zou je deze preset willen toepassen?</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Toepassen &amp; Opslaan</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Opslaan &amp; Toepassen</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Alleen toepassen</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Toepassen</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Alleen opslaan</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>Kan auto's opstelling niet installeren</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Metadata ontbreekt.</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Alleen FFB toepassen</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Ga gewoon</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>Nog niet ondersteunde type: "{0}"</value>
+  </data>
+  <data name="RsrStarter_GettingInformation" xml:space="preserve">
+    <value>Informatie over event aan het verkrijgen</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>Probeer JSON bestand te herstellen</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>App zal bekende eigenschappen proberen te lezen van beschadigde JSON bestand (pas op, gegevens kunnen verloren gaan)</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Kan beschadigde JSON niet herstellen</value>
+  </data>
+  <data name="Solution_SetName" xml:space="preserve">
+    <value>Naam zetten</value>
+  </data>
+  <data name="Solution_SetName_Details" xml:space="preserve">
+    <value>Zet gewoon een nieuwe naam</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Vul een nieuwe naam in:</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Nieuwe naam</value>
+  </data>
+  <data name="Solution_SetNameFromId" xml:space="preserve">
+    <value>Zet naam op ID gebaseerd</value>
+  </data>
+  <data name="Solution_SetNameFromId_Details" xml:space="preserve">
+    <value>Nieuwe naam zal "{0}" zijn.</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>Zet merknaam</value>
+  </data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+    <value>Zet gewoon een nieuwe merknaam</value>
+  </data>
+  <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
+    <value>Vul een nieuwe merknaam in:</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>Nieuwe merknaam</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>Zet merknaam gebaseerd op de naam van de auto</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>Nieuwe merknaam zal "{0}" zijn</value>
+  </data>
+  <data name="Solution_RemoveObject" xml:space="preserve">
+    <value>Verwijder object</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>Object zal naar de prullenbak worden verplaatst</value>
+  </data>
+  <data name="Solution_GenerateNew" xml:space="preserve">
+    <value>Nieuw bestand genereren</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>Nieuw lege bestand zal worden gecreerd; vergeet niet correcte waarden te zetten en het op te slaan</value>
+  </data>
+  <data name="Solution_MakeIndependent" xml:space="preserve">
+    <value>Maak onafhankelijk</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>Verwijder id van ontbrekende parent van ui_car.json</value>
+  </data>
+  <data name="Solution_ChangeParent" xml:space="preserve">
+    <value>Verander parent</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>Selecteer nieuw parent van autolijst</value>
+  </data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+    <value>Zet {0} insigne</value>
+  </data>
+  <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
+    <value>Zet merkinsigne van inhoud opslag</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge" xml:space="preserve">
+    <value>Verander merkinsigne</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>Selecteer nieuwe merkinsigne van de lijst</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon" xml:space="preserve">
+    <value>Zet "{0}" icoon</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
+    <value>Verander upgrade icoon</value>
+  </data>
+  <data name="Solution_MakeEmptyModel" xml:space="preserve">
+    <value>Maak een lege model</value>
+  </data>
+  <data name="Solution_CreateEmptySkin" xml:space="preserve">
+    <value>Creër lege skin</value>
+  </data>
+  <data name="Solution_Enable" xml:space="preserve">
+    <value>Inschakelen</value>
+  </data>
+  <data name="Solution_FindTrack" xml:space="preserve">
+    <value>Vind baan</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Maak algemeen</value>
+  </data>
+  <data name="Solution_GeneratePreview" xml:space="preserve">
+    <value>Genereer nieuwe preview</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>Instellen en nieuw preview genereren.</value>
+  </data>
+  <data name="Solution_GenerateLivery" xml:space="preserve">
+    <value>Nieuwe livrei genereren</value>
+  </data>
+  <data name="Solution_RandomLivery" xml:space="preserve">
+    <value>Willekeurig livrei genereren</value>
+  </data>
+  <data name="Solution_SetupLivery" xml:space="preserve">
+    <value>Nieuwe livrei instellen</value>
+  </data>
+  <data name="Solution_RemoveReplay" xml:space="preserve">
+    <value>Herhaling verwijderen</value>
+  </data>
+  <data name="Solution_FixName" xml:space="preserve">
+    <value>Naam vaststellen</value>
+  </data>
+  <data name="Solution_FixName_Details" xml:space="preserve">
+    <value>Verwijder ongeldige symbolen</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>Herhaling zal verplaatst worden naar prullenbak</value>
+  </data>
+  <data name="Solution_SetupLivery_Details" xml:space="preserve">
+    <value>Selecteer nieuwe livrei met behulp van de Livrei Editor</value>
+  </data>
+  <data name="Solution_RandomLivery_Details" xml:space="preserve">
+    <value>Genereer nieuwe livrei met willekeurige instellingen</value>
+  </data>
+  <data name="Solution_GenerateLivery_Details" xml:space="preserve">
+    <value>Genereer nieuwe livrei met laatste instelling van Livrei Editor</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>Selecter nieuwe preview met settings</value>
+  </data>
+  <data name="Solution_GeneratePreview_Details" xml:space="preserve">
+    <value>Genereer een nieuwe preview met de laatst gebruikte preset</value>
+  </data>
+  <data name="Solution_MakeGeneric_Details" xml:space="preserve">
+    <value>Verplaats naar algemene map</value>
+  </data>
+  <data name="Solution_FindTrack_Details" xml:space="preserve">
+    <value>Probeer baan online te vinden</value>
+  </data>
+  <data name="Solution_Enable_Details" xml:space="preserve">
+    <value>Verplaats lettertype van "fonts-off" naar "fonts"</value>
+  </data>
+  <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
+    <value>Creër een lege skin "default"</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Zet {0} aan</value>
+  </data>
+  <data name="Solution_EnableSkin_Details" xml:space="preserve">
+    <value>Zet geen skin aan</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>Met niets alleen leegte</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
+    <value>Selecteer of creër een nieuwe upgrade icoon met de editor</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon_Details" xml:space="preserve">
+    <value>Zet de upgrade icoon van Content opslag</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (Lite-modus)</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Nu met officiële ondersteuning!</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>Nieuw starter is klaar, nu zonder te patchen</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
+    <value>Sinds 1.7 heeft Kunos een officiële ondersteuning toegevoegd voor custom launchers. Het werkt net zoals Starter+, maar nu hoeft CM AssettoCorsa.exe niet te vervangen, en het is geweldig! Wil je naar een nieuwe Official Starter overschakelen?</value>
+  </data>
+  <data name="Main_CannotProcessArgument" xml:space="preserve">
+    <value>Kan argument niet verwerken</value>
+  </data>
+  <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
+    <value>Zorg ervoor dat het in een geldig formaat is.</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>Rijden</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Main_Content" xml:space="preserve">
+    <value>Inhoud</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value>Over</value>
+  </data>
+  <data name="Main_ReleaseNotes" xml:space="preserve">
+    <value>Release Notes</value>
+  </data>
+  <data name="Main_ImportantTips" xml:space="preserve">
+    <value>Belangrijke tips</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_Fonts" xml:space="preserve">
+    <value>Lettertype</value>
+  </data>
+  <data name="Main_PpFilters" xml:space="preserve">
+    <value>PP Filters</value>
+  </data>
+  <data name="Main_Weather" xml:space="preserve">
+    <value>Weer</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Snel</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Carrière</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>Uitdagingen</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>Single</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Screenshots</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Replays</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Auto's</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>Banen</value>
+  </data>
+  <data name="Main_Showrooms" xml:space="preserve">
+    <value>Toonzalen</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>Diversen</value>
+  </data>
+  <data name="Main_ServerPresets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Lopend</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>Kleur:</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Thema:</value>
+  </data>
+  <data name="Settings_Appearance_SmallFont" xml:space="preserve">
+    <value>Kleine lettertype</value>
+  </data>
+  <data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
+    <value>Tekst weergave:</value>
+  </data>
+  <data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
+    <value>Afbeelding schaal kwaliteit:</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
+    <value>Popup toolbars</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes" xml:space="preserve">
+    <value>Grote zoekvakken</value>
+  </data>
+  <data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
+    <value>Dynamische achtergrond</value>
+  </data>
+  <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
+    <value>Animatie transitie:</value>
+  </data>
+  <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
+    <value>Trouwens, probeer shortcuts zoals F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</value>
+  </data>
+  <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
+    <value>Vergeet niet, er is een keyboard shortcut voor elke knop</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Herstart</value>
+  </data>
+  <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
+    <value>Herstart app om veranderingen toe te passen</value>
+  </data>
+  <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
+    <value>Markeer als nieuw:</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
+    <value>Laden samenloop :</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically" xml:space="preserve">
+    <value>Scroll automatisch naar de geselecteerde item</value>
+  </data>
+  <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
+    <value>Zoek Informatie:</value>
+  </data>
+  <data name="Settings_Content_SearchEngine" xml:space="preserve">
+    <value>Zoekmachine:</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
+    <value>Kijk standaard op Wikipedia</value>
+  </data>
+  <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
+    <value>Automatisch de merkicoon veranderen</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Auto's:</value>
+  </data>
+  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
+    <value>Toonzalen:</value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
+    <value>Download previews van voorkomenden toonzalen</value>
+  </data>
+  <data name="Settings_Content_FontsHeader" xml:space="preserve">
+    <value>Lettertype:</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>Lettertype icoon:</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
+    <value>Kleine waarden kunnen gebruikersomgeving responsiviteit verhogen, maar laadtijden verminderen.</value>
+  </data>
+  <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
+    <value>Bijvoorbeeld, uitschakelen</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
+    <value>Voeg "site:wikipedia.org" standaard toe </value>
+  </data>
+  <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
+    <value>Ik twijfel dat je tijd hebt om ze allemaal bij te werken</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
+    <value>Een symbool dat zal worden gebruikt voor een icoon</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
+    <value>Gebruik de standaard:</value>
+  </data>
+  <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
+    <value>Lite Showroom is compatibel met DirectX 10, veel simpler en gemallelijker voor je grafische kaart. Perfect voor het teken van skins.</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
+    <value>Automatisch aanpassen van camera</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons" xml:space="preserve">
+    <value>Mouse knoppen omkeren</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>Lite Toonzaal:</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>Mooie Toonzaal:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
+    <value>Gebruik bloei</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>Gebruik MSAA</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>Gebruik FXAA</value>
+  </data>
+  <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
+    <value>Standaard toonzaal:</value>
+  </data>
+  <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
+    <value>Houd Ctrl ingedrukt wanneer je de ander selecteert</value>
+  </data>
+  <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
+    <value>Probeert de auto zo veel mogelijk bij het centrum te houden (maar zonder zware berekeningen)</value>
+  </data>
+  <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
+    <value>Gebruik linkermuisknop om model te pannen, en rechtermuisknop om het te draaien </value>
+  </data>
+  <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
+    <value>Zet uit als je maximale prestatie wilt</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>Maakt de plaatje nog erger, als je mij vraagt</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>Je kunt het op elk moment schakelen door op F te drukken</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>Game starter</value>
+  </data>
+  <data name="Settings_Drive_32bit" xml:space="preserve">
+    <value>Gebruik 32-bit versie</value>
+  </data>
+  <data name="Settings_Drive_StartImmediately" xml:space="preserve">
+    <value>Begin race onmiddellijk</value>
+  </data>
+  <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
+    <value>Laat resultaat niet zien van een trainingssessie</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>Naam van de speler:</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>Naam:</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>Nationaliteit:</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>Online naam:</value>
+  </data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+    <value>Korte rit:</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
+    <value>Grenzen uitbreiden</value>
+  </data>
+  <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
+    <value>Kunos carrière:</value>
+  </data>
+  <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
+    <value>Sta AI niveaus veranderen toe </value>
+  </data>
+  <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
+    <value>Sta autoskins veranderen toe  </value>
+  </data>
+  <data name="Settings_Drive_EventsHeader" xml:space="preserve">
+    <value>AC-gerelateerde evenementen:</value>
+  </data>
+  <data name="Settings_Drive_CustomClouds" xml:space="preserve">
+    <value>Vervang wolken door wolken van het weer als die bestaan</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Ga!</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Verzoek "{0}" niet ondersteund</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
+    <value>Locale updaten voor het opstarten</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
+    <value>Zal langer dan 50 0ms duren</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>Hoe moet je vertalen</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Aangepaste vertalingen</value>
+  </data>
+  <data name="Settings_Locale_ResxMode" xml:space="preserve">
+    <value>Resx bestanden vertalen</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>Klaarmaken</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>Uitgepakte </value>
+  </data>
+  <data name="Settings_Locale_VersionLabel" xml:space="preserve">
+    <value>Locale versie:</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Taal:</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>Locale ID</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Herstarten</value>
+  </data>
+  <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
+    <value>Houd Ctrl vast wanneer je CM sluit om het sneller te laten herstarten</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>Officieel ondersteund</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>Geïnstalleerd</value>
+  </data>
+  <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
+    <value>Locale op basis van ID zetten</value>
+  </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>Kan changelog niet laden</value>
+  </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>Recente veranderingen</value>
+  </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>Onopgeslagen veranderingen</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>Veranderingen veranderen voor de volgende items?</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>AI volgorde</value>
+  </data>
+  <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
+    <value>Zet op oplopend als je de slimste bot laatst wilt hebben.</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profiel</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>Statestieken</value>
+  </data>
+  <data name="Main_RecentLapTimes" xml:space="preserve">
+    <value>Recente rondetijden</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>Rondetijden raster</value>
+  </data>
+</root>

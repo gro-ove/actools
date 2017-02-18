@@ -117,406 +117,316 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="StackTrace" xml:space="preserve">
-    <value>Stack Trace</value>
-  </data>
   <data name="Back" xml:space="preserve">
-    <value>Zurück</value>
+    <value>Achteruit</value>
   </data>
   <data name="Forward" xml:space="preserve">
-    <value>Vorwärts</value>
+    <value>Vooruit</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Abbrechen</value>
+    <value>Annuleer</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Schließen</value>
+    <value>Sluit</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Los</value>
+    <value>Ga</value>
   </data>
-  <data name="Maximize" xml:space="preserve">
-    <value>Maximieren</value>
-  </data>
-  <data name="Minimize" xml:space="preserve">
-    <value>Minimieren</value>
+  <data name="Home" xml:space="preserve">
+    <value>Thuis</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>Nein</value>
+    <value>Nee</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Wiederherstellen</value>
-  </data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Unerwartetes Zeichen</value>
-  </data>
-  <data name="UnknownOS" xml:space="preserve">
-    <value>Unbekanntes Betriebssystem</value>
-  </data>
-  <data name="UnknownTokenType" xml:space="preserve">
-    <value>Unbekannter Zeichentyp</value>
-  </data>
   <data name="Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Neue Version {0} ist bereit für Installation</value>
-  </data>
-  <data name="KeyBackspace" xml:space="preserve">
-    <value>Rücktaste</value>
-  </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Strg</value>
-  </data>
-  <data name="KeyControlLeft" xml:space="preserve">
-    <value>Strg (Links)</value>
-  </data>
-  <data name="KeyControlRight" xml:space="preserve">
-    <value>Strg (Rechts)</value>
-  </data>
-  <data name="KeyDownArrow" xml:space="preserve">
-    <value>Pfeil Runter</value>
-  </data>
   <data name="KeyEnd" xml:space="preserve">
-    <value>Ende</value>
+    <value>End</value>
   </data>
   <data name="KeyEnter" xml:space="preserve">
-    <value>Eingabe</value>
+    <value>Enter</value>
   </data>
   <data name="KeyEscape" xml:space="preserve">
-    <value>Esc</value>
+    <value>Escape</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
-    <value>Pos1</value>
+    <value>Thuis Knop</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Pfeil Links</value>
+    <value>Linker Pijl</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Nummernblock {0}</value>
+    <value>Numpad {0}</value>
   </data>
   <data name="KeyPageDown" xml:space="preserve">
-    <value>Bild runter</value>
+    <value>Pagina Omlaag</value>
   </data>
   <data name="KeyPageUp" xml:space="preserve">
-    <value>Bild hoch</value>
+    <value>Pagina Omhoog</value>
   </data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Pfeil Rechts</value>
+    <value>Rechter Pijl</value>
   </data>
   <data name="KeyShift" xml:space="preserve">
-    <value>Umschalttaste</value>
+    <value>Shift</value>
   </data>
   <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Umschalttaste (Links)</value>
+    <value>Shift (Links)</value>
   </data>
   <data name="KeyShiftRight" xml:space="preserve">
-    <value>Umschalttaste (Rechts)</value>
+    <value>Shift (Rechts)</value>
   </data>
   <data name="KeySpace" xml:space="preserve">
-    <value>Leertaste</value>
+    <value>Spatiebalk</value>
   </data>
   <data name="KeyTab" xml:space="preserve">
     <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
-    <value>Pfeil Hoch</value>
+    <value>Pijltje Omhoog</value>
   </data>
   <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Wähle eine Farbe vom Bildschirm</value>
+    <value>Kies een kleur van het scherm</value>
   </data>
   <data name="SelectColor" xml:space="preserve">
-    <value>Farbe auswählen</value>
+    <value>Selecteer een kleur</value>
   </data>
   <data name="Source" xml:space="preserve">
-    <value>Quelle</value>
+    <value>Bron</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Stack Trace</value>
   </data>
   <data name="Suggestions" xml:space="preserve">
-    <value>Vorschläge</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="KeyAltLeft" xml:space="preserve">
-    <value>Alt (Links)</value>
-  </data>
-  <data name="KeyAltRight" xml:space="preserve">
-    <value>Alt (Rechts)</value>
-  </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Feststelltaste</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Nummern-Taste</value>
-  </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Rollen sperren</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Bildschirmfoto</value>
-  </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Einfügen</value>
+    <value>Suggesties</value>
   </data>
   <data name="KeyDelete" xml:space="preserve">
-    <value>Löschen</value>
+    <value>Delete</value>
   </data>
   <data name="KeyHelp" xml:space="preserve">
-    <value>Hilfe</value>
+    <value>Hulp</value>
   </data>
   <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Links)</value>
+    <value>Windows knop (Links)</value>
   </data>
   <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Rechts)</value>
+    <value>Windows knop (Rechts)</value>
   </data>
   <data name="KeyContextMenu" xml:space="preserve">
-    <value>Kontextmenü</value>
-  </data>
-  <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser zurück</value>
-  </data>
-  <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Favoriten</value>
-  </data>
-  <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser vor</value>
-  </data>
-  <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Startseite</value>
-  </data>
-  <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser aktualisieren</value>
-  </data>
-  <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser-Suche</value>
-  </data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser abbrechen</value>
-  </data>
-  <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Lauter</value>
-  </data>
-  <data name="KeyVolumeMute" xml:space="preserve">
-    <value>Stumm</value>
-  </data>
-  <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Leiser</value>
+    <value>Context Menu</value>
   </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Wiedergabe</value>
+    <value>Speel af</value>
   </data>
   <data name="KeyMediaStop" xml:space="preserve">
     <value>Stop</value>
   </data>
   <data name="KeySelectMedia" xml:space="preserve">
-    <value>Medien wählen</value>
+    <value>Selecteer media</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Mail opstarten</value>
   </data>
   <data name="KeyZoom" xml:space="preserve">
-    <value>Vergrößerung</value>
-  </data>
-  <data name="HidePassword" xml:space="preserve">
-    <value>Passwort verstecken</value>
-  </data>
-  <data name="MarkLimited" xml:space="preserve">
-    <value>EINGESCHRÄNKT</value>
-  </data>
-  <data name="MarkNew" xml:space="preserve">
-    <value>NEU</value>
-  </data>
-  <data name="PickColor" xml:space="preserve">
-    <value>Farbe wählen</value>
-  </data>
-  <data name="ShowPassword" xml:space="preserve">
-    <value>Passwort anzeigen</value>
-  </data>
-  <data name="Ordinalizing_Minus" xml:space="preserve">
-    <value>Minus {0}</value>
-  </data>
-  <data name="Ordinalizing_Zeroth" xml:space="preserve">
-    <value>Nullter</value>
-  </data>
-  <data name="Ordinalizing_First" xml:space="preserve">
-    <value>Erster</value>
-  </data>
-  <data name="Ordinalizing_Second" xml:space="preserve">
-    <value>Zweiter</value>
-  </data>
-  <data name="Ordinalizing_Third" xml:space="preserve">
-    <value>Dritter</value>
-  </data>
-  <data name="Ordinalizing_Fourth" xml:space="preserve">
-    <value>Vierter</value>
-  </data>
-  <data name="Ordinalizing_Fifth" xml:space="preserve">
-    <value>Fünfter</value>
-  </data>
-  <data name="Ordinalizing_Sixth" xml:space="preserve">
-    <value>Sechster</value>
-  </data>
-  <data name="Ordinalizing_Seventh" xml:space="preserve">
-    <value>Siebter</value>
-  </data>
-  <data name="Ordinalizing_Eighth" xml:space="preserve">
-    <value>Achter</value>
-  </data>
-  <data name="Ordinalizing_Ninth" xml:space="preserve">
-    <value>Neunter</value>
-  </data>
-  <data name="Ordinalizing_Tenth" xml:space="preserve">
-    <value>Zehnter</value>
-  </data>
-  <data name="Ordinalizing_Eleventh" xml:space="preserve">
-    <value>Elfter</value>
-  </data>
-  <data name="Ordinalizing_Twelfth" xml:space="preserve">
-    <value>Zwölfter</value>
-  </data>
-  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
-    <value>Dreizehnter</value>
-  </data>
-  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
-    <value>Vierzehnter</value>
-  </data>
-  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
-    <value>Fünfzehnter</value>
-  </data>
-  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
-    <value>Sechszehnter</value>
-  </data>
-  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
-    <value>Siebter</value>
-  </data>
-  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
-    <value>Achter</value>
-  </data>
-  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
-    <value>Neunter</value>
-  </data>
-  <data name="Ordinalizing_Twentieth" xml:space="preserve">
-    <value>Zwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
-    <value>Einundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
-    <value>Zweiundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>Dreiundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>Vierundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
-    <value>Fünfundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
-    <value>Sechsundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
-    <value>Siebenundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
-    <value>Achtundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
-    <value>Neunundzwanzigster</value>
-  </data>
-  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
-    <value>Dreißigster</value>
-  </data>
-  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>Einunddreißigster</value>
-  </data>
-  <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}.</value>
-  </data>
-  <data name="Time_Month" xml:space="preserve">
-    <value>{0} Monat</value>
-  </data>
-  <data name="Time_Week" xml:space="preserve">
-    <value>{0} Woche</value>
-  </data>
-  <data name="Time_Day" xml:space="preserve">
-    <value>{0} Tag</value>
-  </data>
-  <data name="Time_Hour" xml:space="preserve">
-    <value>{0} Stunde</value>
-  </data>
-  <data name="Time_Minute" xml:space="preserve">
-    <value>{0} Minute</value>
-  </data>
-  <data name="Time_Second" xml:space="preserve">
-    <value>{0} Sekunde</value>
-  </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Ups!</value>
-  </data>
-  <data name="FatalError_Message" xml:space="preserve">
-    <value>App erlitt ein Problem und benötigt einen Neustart. Bitte klicke auf "Problem melden" wenn eine Meldung gesendet werden soll.</value>
-  </data>
-  <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Bitte warten...</value>
-  </data>
-  <data name="Progress_Downloading" xml:space="preserve">
-    <value>Geladen {0}</value>
-  </data>
-  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>Geladen {0} von {1}</value>
-  </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>Hochgeladen {0}</value>
-  </data>
-  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Hochgeladen {0} von {1}</value>
-  </data>
-  <data name="Common_Add" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
-  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
-    <value>Passende Kandidaten nicht gefunden</value>
-  </data>
-  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
-    <value>Startaufstellung als Voreinstellung speichern</value>
-  </data>
-  <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Startaufstellung teilen</value>
-  </data>
-  <data name="Common_Ascending" xml:space="preserve">
-    <value>Aufsteigend</value>
-  </data>
-  <data name="Common_Descending" xml:space="preserve">
-    <value>Absteigend</value>
-  </data>
-  <data name="FiltersLinkAll" xml:space="preserve">
-    <value>Alle</value>
-  </data>
-  <data name="ImagesFilter" xml:space="preserve">
-    <value>Bild Dateien|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
+    <value>Zoemen</value>
   </data>
   <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
     <value>EB</value>
   </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>PB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+  </data>
   <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
     <value>GB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
   </data>
   <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
     <value>KB</value>
   </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
   </data>
-  <data name="TexturesFilter" xml:space="preserve">
-    <value>DDS &amp; TIFF Dateien|*.dds;*.tif;*.tiff|Bild Dateien|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Alle Dateien(*.*)|*.*</value>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Wachtwoord verbergen</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>BEPERKT</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>NIEUW</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Kies een kleur</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Wachtwoord laten zien</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Min {0}</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Nulde</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Eerste</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Tweede</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Derde</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Vierde</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Vijfde</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Zesde</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Zevende</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Achtste</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Negende</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Tiende</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Elfste</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Twaalfde</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Dertiende</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Viertiende</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Vijftiende</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Zestiende</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Zeventiende</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Achtiende</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Negentiende</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Twintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Eenentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Tweeëntwintigste </value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Drieëntwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Vierentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Vijfentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Zesentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Zevenentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Achtentwintigste</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Negenentwintigste</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Dertigste</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Eenendertigste</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} maand</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} week</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} dag</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} uur</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minuut</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} seconde</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oeps!</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>App is zojuist een probleem tegengekomen en moet herstarten. Gebruik alstublieft de "Foutmelden" knop na het herstarten als je een foutmelding wilt versturen.</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Even geduld aub</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>{0} geladen</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>{0} van de {1} geladen</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>{0} geüpload</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>{0} van de {1} geüpload</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Toevoegen</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Gezochte kandidaten niet gevonden</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Race raster als preset opslaan</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Race raster delen</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Oplopend</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Aflopend</value>
   </data>
 </root>
