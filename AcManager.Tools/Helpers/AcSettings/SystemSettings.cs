@@ -217,4 +217,29 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["MIRRORS"].Set("FAR_PLANE", MirrorsFarPlane);
         }
     }
+
+    public class SystemOptionsSettings : IniSettings {
+        internal SystemOptionsSettings() : base("options", systemConfig: true) { }
+
+        private bool _ignoreResultTeleport;
+
+        public bool IgnoreResultTeleport {
+            get { return _ignoreResultTeleport; }
+            set {
+                if (Equals(value, _ignoreResultTeleport)) return;
+                _ignoreResultTeleport = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected override void LoadFromIni() {
+            var section = Ini["OPTIONS"];
+            IgnoreResultTeleport = section.GetBool("IGNORE_RESULT_TELEPORT", false);
+        }
+
+        protected override void SetToIni() {
+            var section = Ini["OPTIONS"];
+            section.Set("IGNORE_RESULT_TELEPORT", IgnoreResultTeleport);
+        }
+    }
 }

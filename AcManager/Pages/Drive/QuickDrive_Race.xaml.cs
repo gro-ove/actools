@@ -120,7 +120,7 @@ namespace AcManager.Pages.Drive {
                     _lapsNumber = value.Clamp(1, LapsNumberMaximum);
                     OnPropertyChanged();
                     SaveLater();
-                    UpdateTrackFits();
+                    CheckIfTrackFits(RaceGridViewModel.PlayerTrack);
                 }
             }
             #endregion
@@ -329,14 +329,14 @@ namespace AcManager.Pages.Drive {
                 };
             }
 
-            protected virtual void UpdateTrackFits() {
-                TrackFits = LapsNumber == 1 || RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            public override void CheckIfTrackFits(TrackObjectBase track) {
+                TrackDoesNotFit = LapsNumber == 1 ? null : TagRequired("circuit", track);
             }
 
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
+                base.OnSelectedUpdated(selectedCar, selectedTrack);
                 RaceGridViewModel.PlayerCar = selectedCar;
                 RaceGridViewModel.PlayerTrack = selectedTrack;
-                UpdateTrackFits();
             }
 
             public object GetPreview(object item) {
@@ -384,6 +384,6 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static IMultiValueConverter StartingPositionConverter = new InnerStartingPositionConverter();
+        public static readonly IMultiValueConverter StartingPositionConverter = new InnerStartingPositionConverter();
     }
 }

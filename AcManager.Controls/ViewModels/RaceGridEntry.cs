@@ -134,12 +134,21 @@ namespace AcManager.Controls.ViewModels {
             _aiLevel = null;
         }
 
-        public event EventHandler Deleted;
+        private bool _isDeleted;
+
+        public bool IsDeleted {
+            get { return _isDeleted; }
+            set {
+                if (Equals(value, _isDeleted)) return;
+                _isDeleted = value;
+                OnPropertyChanged();
+            }
+        }
 
         private ICommand _deleteCommand;
 
         public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            Deleted?.Invoke(this, EventArgs.Empty);
+            IsDeleted = true;
         }));
 
         public override string ToString() {

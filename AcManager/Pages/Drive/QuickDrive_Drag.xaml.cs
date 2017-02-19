@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -76,8 +78,8 @@ namespace AcManager.Pages.Drive {
                 RaceGridViewModel.AiLevelFixed = true;
             }
 
-            protected override void UpdateTrackFits() {
-                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("drag") != false;
+            public override void CheckIfTrackFits(TrackObjectBase track) {
+                TrackDoesNotFit = TagRequired("drag", track);
             }
 
             protected override void InitializeSaveable() {

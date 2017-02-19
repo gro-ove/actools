@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
@@ -44,8 +45,8 @@ namespace AcManager.Pages.Drive {
                 Saveable.RegisterUpgrade<OldSaveableData>(OldSaveableData.Test, Load);
             }
 
-            protected override void UpdateTrackFits() {
-                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            public override void CheckIfTrackFits(TrackObjectBase track) {
+                TrackDoesNotFit = TagRequired("circuit", track);
             }
 
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {

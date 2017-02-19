@@ -218,6 +218,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static SystemSettings _system;
         public static SystemSettings System => _system ?? (_system = new SystemSettings());
+
+
+        private static SystemOptionsSettings _systemOptions;
+        public static SystemOptionsSettings SystemOptions => _systemOptions ?? (_systemOptions = new SystemOptionsSettings());
         #endregion
 
         #region Specific converters

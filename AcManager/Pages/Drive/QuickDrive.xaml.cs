@@ -452,14 +452,63 @@ namespace AcManager.Pages.Drive {
             public ICommand GoCommand => _goCommand ?? (_goCommand =
                     new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
+            private enum TrackDoesNotFitRespond {
+                Cancel, Go, FixAndGo
+            }
+
+            private static TrackDoesNotFitRespond ShowTrackDoesNotFitMessage(string message) {
+                var dlg = new ModernDialog {
+                    Title = ToolsStrings.Common_Warning,
+                    Content = new ScrollViewer {
+                        Content = new SelectableBbCodeBlock {
+                            BbCode = $"Most likely, track won’t work with selected mode: {message.ToSentense()}. Are you sure you want to continue?",
+                            Margin = new Thickness(0, 0, 0, 8)
+                        },
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                    },
+                    MinHeight = 0,
+                    MinWidth = 0,
+                    MaxHeight = 480,
+                    MaxWidth = 640
+                };
+
+                dlg.Buttons = new[] {
+                    dlg.YesButton,
+                    dlg.CreateCloseDialogButton("Yes, And Fix It", false, false, MessageBoxResult.OK),
+                    dlg.NoButton
+                };
+
+                dlg.ShowDialog();
+
+                switch (dlg.MessageBoxResult) {
+                    case MessageBoxResult.Yes:
+                        return TrackDoesNotFitRespond.Go;
+                    case MessageBoxResult.OK:
+                        return TrackDoesNotFitRespond.FixAndGo;
+                    case MessageBoxResult.None:
+                    case MessageBoxResult.Cancel:
+                    case MessageBoxResult.No:
+                        return TrackDoesNotFitRespond.Cancel;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
             internal async Task Go() {
                 var selectedMode = SelectedModeViewModel;
                 if (selectedMode == null) return;
 
-                if (!selectedMode.TrackFits &&
-                        ModernDialog.ShowMessage("Most likely, track won’t work with selected mode. Are you sure you want to continue?", ToolsStrings.Common_Warning,
-                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                    return;
+                if (SettingsHolder.Drive.QuickDriveCheckTrack) {
+                    var doesNotFit = selectedMode.TrackDoesNotFit;
+                    if (doesNotFit != null) {
+                        var respond = ShowTrackDoesNotFitMessage(doesNotFit.Item1);
+                        if (respond == TrackDoesNotFitRespond.Cancel) return;
+
+                        if (respond == TrackDoesNotFitRespond.FixAndGo) {
+                            doesNotFit.Item2(SelectedTrack);
+                        }
+                    }
                 }
 
                 try {

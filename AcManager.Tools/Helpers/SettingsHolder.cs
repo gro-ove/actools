@@ -953,6 +953,20 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveCheckTrack;
+
+            public bool QuickDriveCheckTrack {
+                get {
+                    return _quickDriveCheckTrack ?? (_quickDriveCheckTrack = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveCheckTrack", true)).Value;
+                }
+                set {
+                    if (Equals(value, _quickDriveCheckTrack)) return;
+                    _quickDriveCheckTrack = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveCheckTrack", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _alwaysRecordGhost;
 
             public bool AlwaysRecordGhost {

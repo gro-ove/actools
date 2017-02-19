@@ -19,6 +19,8 @@ namespace AcManager.Pages.AcSettings {
 
             public SystemSettings System => AcSettingsHolder.System;
 
+            public SystemOptionsSettings SystemOptions => AcSettingsHolder.SystemOptions;
+
             public GhostSettings Ghost => AcSettingsHolder.Ghost;
 
             private string _ghostDisplayColor;

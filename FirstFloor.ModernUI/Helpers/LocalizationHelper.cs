@@ -127,6 +127,14 @@ namespace FirstFloor.ModernUI.Helpers {
             return Titling.Convert(s);
         }
 
+        public static string ToSentense(this string s) {
+            if (s.Length == 0) return string.Empty;
+
+            s = s.Length < 2 || char.IsLower(s[0]) || char.IsUpper(s[1]) ? s :
+                    char.ToLower(s[0], CultureInfo.CurrentUICulture) + s.Substring(1);
+            return s[s.Length - 1] == '.' ? s.Substring(0, s.Length - 1) : s;
+        }
+
         public static string ToTitle(this string s, CultureInfo culture) {
             return Titling.Convert(s, culture);
         }

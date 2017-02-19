@@ -4233,6 +4233,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tag “{0}” is missing.
+        /// </summary>
+        public static string TagIsMissing_Format {
+            get {
+                return ResourceManager.GetString("TagIsMissing_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} pit.
         /// </summary>
         public static string TrackBaseObject_Specs_PitsNumber {

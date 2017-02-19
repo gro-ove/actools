@@ -27,9 +27,12 @@
                 <Label Content="{x:Static AcManager:AppStrings.AcSettings_System_Logging}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}"
-                    mui:NewMarkService.New="True">
+            <CheckBox IsChecked="{Binding System.HideDriver}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideDriver_Tooltip}">
                 <Label Content="{x:Static c:ControlsStrings.QuickSwitches_HideDriver}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding SystemOptions.IgnoreResultTeleport}" mui:NewMarkService.New="True">
+                <Label Content="Disable teleporting at the end of race" />
             </CheckBox>
 
             <DockPanel>
@@ -53,7 +56,8 @@
             </CheckBox>
 
             <!--session information-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:AppStrings.AcSettings_SessionInformation}" mui:NewMarkService.New="True" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:AppStrings.AcSettings_SessionInformation}"
+                    mui:NewMarkService.New="True" />
 
             <mui:SpacingUniformGrid Columns="3" Rows="1" HorizontalSpacing="8">
                 <CheckBox IsChecked="{Binding SessionInfo.Practice}">

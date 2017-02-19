@@ -1,5 +1,9 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows;
+using AcManager.Controls.ViewModels;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -19,24 +23,28 @@ namespace AcManager.Pages.Drive {
             Changed?.Invoke(this, new EventArgs());
         }
 
-        private bool _trackFits = true;
+        private Tuple<string, Action<TrackObjectBase>> _trackDoesNotFit;
 
-        public bool TrackFits {
-            get { return _trackFits; }
+        /// <summary>
+        /// If not null, this Tuple should contain a description why track does not fit and a solution.
+        /// </summary>
+        [CanBeNull]
+        public Tuple<string, Action<TrackObjectBase>> TrackDoesNotFit {
+            get { return _trackDoesNotFit; }
             set {
-                if (Equals(value, _trackFits)) return;
-                _trackFits = value;
+                if (Equals(value, _trackDoesNotFit)) return;
+                _trackDoesNotFit = value;
                 OnPropertyChanged();
             }
         }
 
-        /*// <summary>
-        /// Get an additional tab for track’s selection window.
-        /// </summary>
-        /// <returns>Tab’s name and URI.</returns>
-        public virtual Tuple<string, Uri> GetSpecificTrackSelectionPage() {
-            return null;
-        }*/
+        [CanBeNull]
+        protected Tuple<string, Action<TrackObjectBase>> TagRequired([Localizable(false),NotNull] string tag, [CanBeNull] TrackObjectBase track) {
+            return track?.Tags.ContainsIgnoringCase(tag) != false ? null :
+                        new Tuple<string, Action<TrackObjectBase>>(
+                                string.Format(ToolsStrings.TagIsMissing_Format, tag),
+                                t => t.Tags.Add(tag));
+        }
 
         public abstract Task Drive(Game.BasicProperties basicProperties,
                 Game.AssistsProperties assistsProperties,
@@ -46,7 +54,29 @@ namespace AcManager.Pages.Drive {
             return GameWrapper.StartAsync(properties);
         }
 
+        private TrackObjectBase _track;
+
+        public virtual void CheckIfTrackFits([CanBeNull] TrackObjectBase track) {
+            TrackDoesNotFit = null;
+        }
+
         public virtual void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
+            if (_track != null) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(_track, nameof(INotifyPropertyChanged.PropertyChanged),
+                        OnTrackPropertyChanged);
+            }
+
+            CheckIfTrackFits(selectedTrack);
+            _track = selectedTrack;
+
+            if (_track != null) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(_track, nameof(INotifyPropertyChanged.PropertyChanged),
+                        OnTrackPropertyChanged);
+            }
+        }
+
+        private void OnTrackPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            CheckIfTrackFits(_track);
         }
 
         public string ToSerializedString() {

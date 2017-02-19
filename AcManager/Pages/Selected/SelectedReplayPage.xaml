@@ -1,15 +1,12 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedReplayPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:he="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
+        xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
-        <ac:AcObjectBase.ToolBars>
+    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+        <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_ReplayTooltip}"
                         Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -27,7 +24,7 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_ReplayTooltip}" />
             </ToolBar>
-        </ac:AcObjectBase.ToolBars>
+        </c:AcObjectBase.ToolBars>
 
         <StackPanel>
             <Grid Margin="20 0 20 20" HorizontalAlignment="Left">
@@ -96,32 +93,32 @@
                 <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverNameLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource Label.Padding}" />
                 <TextBlock Text="{x:Static g:AppStrings.AcObject_WeatherLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource Label.Padding}" />
 
-                <TextBlock Text="{Binding SelectedObject.DriverName}" Grid.Column="3" Grid.Row="0" attached:WatermarkService.Watermark="?">
+                <mui:PlaceholderTextBlock Text="{Binding SelectedObject.DriverName}" Grid.Column="3" Grid.Row="0" Placeholder="?">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
-                </TextBlock>
-                <TextBlock Text="{Binding Weather.DisplayName}" Grid.Column="3" Grid.Row="1" attached:WatermarkService.Watermark="?">
+                </mui:PlaceholderTextBlock>
+                <mui:PlaceholderTextBlock Text="{Binding Weather.DisplayName}" Grid.Column="3" Grid.Row="1" Placeholder="?">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeather}" Command="{Binding FilterCommand}" CommandParameter="weather" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
-                </TextBlock>
+                </mui:PlaceholderTextBlock>
             </Grid>
 
             <Grid Margin="0 20 0 8"
-                    Visibility="{Binding SelectedObject.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:ReplayObject.PreviousReplayName}}">
+                    Visibility="{Binding SelectedObject.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:ReplayObject.PreviousReplayName}}">
                 <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">
                     <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
-                    <TextBlock TextWrapping="Wrap" Text="{x:Static ac:ControlsStrings.Replay_CrMessage}" />
-                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static ac:ControlsStrings.Replay_CrMessage_Commentary}"
-                            Visibility="{Binding AutoSaveReplays, Source={x:Static he:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBlock TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage}" />
+                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage_Commentary}"
+                            Visibility="{Binding AutoSaveReplays, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 </StackPanel>
             </Grid>
         </StackPanel>
-    </ac:AcObjectBase>
+    </c:AcObjectBase>
 </selected:SelectedAcObjectPage>

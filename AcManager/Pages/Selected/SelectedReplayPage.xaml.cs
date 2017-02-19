@@ -26,7 +26,7 @@ using StringBasedFilter;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
-    public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {
+    public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {
         /// <summary>
         /// Gets description for ReadMe.txt inside shared archive.
         /// </summary>
@@ -188,6 +188,42 @@ namespace AcManager.Pages.Selected {
             }
         }
 
+        public bool ImmediateChange(Uri uri) {
+            var id = uri.GetQueryParam("Id");
+            if (id == null) {
+                return false;
+            }
+
+            var obj = ReplaysManager.Instance.GetById(id);
+            if (obj == null) {
+                return false;
+            }
+
+            _object = obj;
+
+            if (obj.TrackId != null) {
+                var trackObject = TracksManager.Instance.GetById(obj.TrackId);
+                if (obj.TrackConfiguration != null) {
+                    _trackObject = trackObject?.GetLayoutByLayoutId(obj.TrackConfiguration) ?? trackObject;
+                } else {
+                    _trackObject = trackObject;
+                }
+            }
+
+            if (obj.CarId != null) {
+                _carObject = CarsManager.Instance.GetById(obj.CarId);
+                _carSkinObject = _carObject == null ? null :
+                        (obj.CarSkinId != null ? _carObject.SkinsManager.GetById(obj.CarSkinId) : null) ?? _carObject.SelectedSkin;
+            }
+
+            if (obj.WeatherId != null) {
+                _weather = WeatherManager.Instance.GetById(obj.WeatherId);
+            }
+
+            SetModel();
+            return true;
+        }
+
         private ReplayObject _object;
         private TrackObjectBase _trackObject;
         private CarObject _carObject;
@@ -245,19 +281,25 @@ namespace AcManager.Pages.Selected {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
+            SetModel();
+            InitializeComponent();
+
+            FancyBackgroundManager.Instance.ChangeBackground(_trackObject?.PreviewImage);
+        }
+
+        private void SetModel() {
+            _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object) {
                 Track = _trackObject,
                 Car = _carObject,
                 CarSkin = _carSkinObject,
                 Weather = _weather
             });
+
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.PlayCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
             });
-            InitializeComponent();
-
-            FancyBackgroundManager.Instance.ChangeBackground(_trackObject?.PreviewImage);
         }
     }
 }

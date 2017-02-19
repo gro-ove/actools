@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -102,8 +104,8 @@ namespace AcManager.Pages.Drive {
                 QualificationDuration = 30;
             }
 
-            protected override void UpdateTrackFits() {
-                TrackFits = RaceGridViewModel.PlayerTrack?.Tags.ContainsIgnoringCase("circuit") != false;
+            public override void CheckIfTrackFits(TrackObjectBase track) {
+                TrackDoesNotFit = TagRequired("circuit", track);
             }
 
             protected override void InitializeSaveable() {

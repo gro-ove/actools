@@ -95,6 +95,11 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Drive.QuickDriveCheckTrack}">
+                <CheckBox.ToolTip>I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do.</CheckBox.ToolTip>
+                <Label Content="Check if track fits selected mode" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost}" />
             </CheckBox>

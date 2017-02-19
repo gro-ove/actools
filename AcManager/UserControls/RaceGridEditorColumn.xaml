@@ -110,14 +110,6 @@
                 <DataTemplate.Resources>
                     <CollectionViewSource x:Key="SkinsList" Source="{Binding Car.SkinsEnabledWrappersList}" />
                 </DataTemplate.Resources>
-                <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
-                        <!--<Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />-->
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                        <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
-                    </DataTrigger>
-                </DataTemplate.Triggers>
                 <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
                     <DockPanel.InputBindings>
                         <MouseBinding Command="{Binding RandomSkinCommand}" Gesture="MiddleClick" />
@@ -144,13 +136,14 @@
                         </ComboBox.ItemTemplate>
                     </mui:BetterComboBox>-->
 
-                    <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="True"
+                    <mui:BetterComboBox x:Name="ComboBox" IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="True"
                             Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" ItemsSource="{Binding Car.SkinsActualList}"
                             IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel Height="18">
-                                    <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                    <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18"
+                                            Height="18" />
                                     <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />
                                 </DockPanel>
                                 <DataTemplate.Triggers>
@@ -185,6 +178,17 @@
                     <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}"
                             Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" />-->
                 </DockPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
+                        <!--<Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
+                        <!--<Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />-->
+                        <Setter TargetName="ComboBox" Property="Nullable" Value="False" />
+                        <Setter TargetName="ComboBox" Property="SelectedItem"
+                                Value="{Binding Car.SelectedSkin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">

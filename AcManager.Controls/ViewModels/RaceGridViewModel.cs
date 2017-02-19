@@ -258,6 +258,7 @@ namespace AcManager.Controls.ViewModels {
             };
 
             NonfilteredList.CollectionChanged += OnCollectionChanged;
+            NonfilteredList.ItemPropertyChanged += OnItemPropertyChanged;
             FilteredView = new BetterListCollectionView(NonfilteredList) { CustomSort = this };
 
             // _saveable.Initialize();
@@ -337,41 +338,17 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Non-filtered list
-        public BetterObservableCollection<RaceGridEntry> NonfilteredList { get; } = new BetterObservableCollection<RaceGridEntry>();
+        public ChangeableObservableCollection<RaceGridEntry> NonfilteredList { get; } = new ChangeableObservableCollection<RaceGridEntry>();
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Reset:
-                    foreach (var item in NonfilteredList) {
-                        item.PropertyChanged += Entry_PropertyChanged;
-                        item.Deleted += Entry_Deleted;
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Add:
-                case NotifyCollectionChangedAction.Remove:
-                case NotifyCollectionChangedAction.Replace:
-                    if (e.OldItems != null) {
-                        foreach (RaceGridEntry item in e.OldItems) {
-                            item.PropertyChanged -= Entry_PropertyChanged;
-                            item.Deleted -= Entry_Deleted;
-                        }
-                    }
-                    if (e.NewItems != null) {
-                        foreach (RaceGridEntry item in e.NewItems) {
-                            item.PropertyChanged += Entry_PropertyChanged;
-                            item.Deleted += Entry_Deleted;
-                        }
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Move:
-                    break;
-            }
+            SaveLater();
         }
 
-        private void Entry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
+                case nameof(RaceGridEntry.IsDeleted):
+                    DeleteEntry((RaceGridEntry)sender);
+                    return;
                 case nameof(RaceGridEntry.CandidatePriority):
                     if (Mode.CandidatesMode) {
                         Mode = BuiltInGridMode.CandidatesManual;
@@ -380,10 +357,6 @@ namespace AcManager.Controls.ViewModels {
             }
 
             SaveLater();
-        }
-
-        private void Entry_Deleted(object sender, EventArgs e) {
-            DeleteEntry((RaceGridEntry)sender);
         }
         #endregion
 
@@ -825,6 +798,7 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _shuffleCandidates)) return;
                 _shuffleCandidates = value;
                 OnPropertyChanged();
+                SaveLater();
             }
         }
 

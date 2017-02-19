@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using AcManager.Controls.ViewModels;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
@@ -35,6 +37,10 @@ namespace AcManager.Pages.Drive {
                 } else {
                     Saveable.Reset();
                 }
+            }
+
+            public override void CheckIfTrackFits(TrackObjectBase track) {
+                TrackDoesNotFit = TagRequired("circuit", track);
             }
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
