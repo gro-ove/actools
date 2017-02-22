@@ -30,7 +30,7 @@ namespace AcManager.Pages.ContentTools {
             await CarsManager.Instance.EnsureLoadedAsync();
 
             Entries = new ChangeableObservableCollection<CarObjectEntry>(
-                    CarsManager.Instance.EnabledOnly.OrderBy(x => x.DisplayName).Where(x => x.Id.StartsWith("a")).Select(x => new CarObjectEntry(x)));
+                    CarsManager.Instance.EnabledOnly.OrderBy(x => x.DisplayName).Select(x => new CarObjectEntry(x)));
 
             for (var i = 0; i < Entries.Count; i++) {
                 var entry = Entries[i];

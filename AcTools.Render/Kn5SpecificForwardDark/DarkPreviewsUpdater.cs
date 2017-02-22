@@ -170,34 +170,22 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 destination = Path.Combine(FileUtils.GetCarSkinDirectory(_acRoot, carId, skinId), _options.PreviewName);
             }
 
-            if (_options.HardwareDownscale) {
-                var shotStream = new MemoryStream(_approximateSize ?? 100000);
-                _renderer.Shot(1d, 1d / _options.SsaaMultipler, shotStream, true);
+            var shotStream = new MemoryStream(_approximateSize ?? 100000);
 
-                if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
-                    _approximateSize = (int)(shotStream.Position * 1.2);
-                }
-
-                shotStream.Position = 0;
-                
-                ProcessConvertation(() => {
-                    using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
-                        ImageUtils.Convert(shotStream, stream);
-                    }
-                }, () => {
-                    shotStream.Dispose();
-                });
-            } else {
-                var shotImage = _renderer.Shot(1d, 1d, true);
-
-                ProcessConvertation(() => {
-                    using (var resized = shotImage.HighQualityResize(new Size(_options.PreviewWidth, _options.PreviewHeight))) {
-                        resized.Save(destination);
-                    }
-                }, () => {
-                    shotImage.Dispose();
-                });
+            _renderer.Shot(1d, _options.HardwareDownscale ? 1d / _options.SsaaMultipler : 1d, shotStream, true);
+            if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
+                _approximateSize = (int)(shotStream.Position * 1.2);
             }
+
+            shotStream.Position = 0;
+            ProcessConvertation(() => {
+                using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
+                    ImageUtils.Convert(shotStream, stream,
+                            _options.HardwareDownscale ? (Size?)null : new Size(_options.PreviewWidth, _options.PreviewHeight));
+                }
+            }, () => {
+                shotStream.Dispose();
+            });
         }
 
         private Task ShotInnerAsync(string carId, string skinId, string destination) {

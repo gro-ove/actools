@@ -458,23 +458,12 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\BinaryResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BinaryResources.resx</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="Properties\BinaryResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ControlsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ControlsStrings.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="Assets\Data\Flags.zip" />
     <None Include="packages.config" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>

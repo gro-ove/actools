@@ -79,6 +79,11 @@ namespace AcTools.Render.Base.Structs {
                 Color = c;
             }
 
+            public VerticePC(Vector3 p, Color4 c) {
+                Position = p;
+                Color = (Vector4)c;
+            }
+
             public static readonly int StrideValue = Marshal.SizeOf(typeof(VerticePC));
 
             public static readonly InputElement[] InputElementsValue = {

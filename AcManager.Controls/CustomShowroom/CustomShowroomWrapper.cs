@@ -73,7 +73,7 @@ namespace AcManager.Controls.CustomShowroom {
                                     UseSprite = false
                                 } :
                                 new DarkKn5ObjectRenderer(description) {
-                                    FlatMirror = true,
+                                    // FlatMirror = true,
                                     VisibleUi = false,
                                     UseSprite = false,
                                     /*BackgroundColor = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),

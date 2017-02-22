@@ -59,7 +59,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechMaps.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechMaps).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }
 
@@ -72,11 +72,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechSkinnedMaps.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? Effect.TechSkinnedDepthOnly : Effect.TechSkinnedMaps).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
-        public void SetBones(Matrix[] bones) {
-            Effect.FxBoneTransforms.SetMatrixArray(bones);
+        void ISkinnedMaterial.SetBones(Matrix[] bones) {
+            SetBones(bones);
         }
     }
 }

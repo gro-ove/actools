@@ -16,11 +16,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             for (var i = 0; i < BaseVertices.Length; i++) {
                 BaseVertices[i] = new InputLayouts.VerticePT(
                     new Vector3(i < 2 ? 1 : -1, 0, i % 2 == 0 ? -1 : 1),
-                    new Vector2(i < 2 ? 1 : 0, i % 2)
+                    new Vector2(i < 2 ? 0 : 1, i % 2)
                 );
             }
 
-            BaseIndices = new ushort[] { 0, 2, 1, 3, 1, 2 };
+            BaseIndices = new ushort[] { 0, 1, 2, 3, 2, 1 };
         }
 
         public Matrix Transform;

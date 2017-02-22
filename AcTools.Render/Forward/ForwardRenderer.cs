@@ -209,8 +209,13 @@ namespace AcTools.Render.Forward {
             DrawPrepare();
 
             DeviceContext.ClearRenderTargetView(_buffer.TargetView, BackgroundColor);
-            DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _buffer.TargetView);
+
+            if (DepthStencilView != null) {
+                DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                DeviceContext.OutputMerger.SetTargets(DepthStencilView, _buffer.TargetView);
+            } else {
+                DeviceContext.OutputMerger.SetTargets(_buffer.TargetView);
+            }
 
             DrawScene();
             DrawAfter();

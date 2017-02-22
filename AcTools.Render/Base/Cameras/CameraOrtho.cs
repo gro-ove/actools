@@ -15,7 +15,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
-            SetView(Matrix.LookAtLH(Position, Target, Up));
+            SetView(Matrix.LookAtRH(Position, Target, Up));
             Frustum = Frustum.FromViewProj(ViewProj);
         }
 
@@ -38,8 +38,8 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         // ReSharper disable once OptionalParameterHierarchyMismatch
-        public override void SetLens(float aspect = 0f) {
-            SetProj(Matrix.OrthoLH(Width, Height, NearZValue, FarZValue));
+        public sealed override void SetLens(float aspect = 0f) {
+            SetProj(Matrix.OrthoRH(Width, Height, NearZValue, FarZValue));
             UpdateViewMatrix();
         }
 

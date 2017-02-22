@@ -11,6 +11,7 @@ using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -90,9 +91,18 @@ namespace AcManager.Tools.Objects {
 
         private readonly Action _disposalAction;
 
-        public PythonAppConfigs(string location, Action disposalAction) : base(Directory.GetFiles(location, "*.ini", SearchOption.AllDirectories)
-                                                                                        .Select(file => PythonAppConfig.Create(file, location, false))
-                                                                                        .Where(cfg => cfg != null)) {
+        private static IEnumerable<string> GetSubConfigFiles(string directory) {
+            var inis = Directory.GetFiles(directory, "*.ini");
+            return inis.Length > 10 ? new string[0] : inis;
+        }
+
+        private static IEnumerable<string> GetConfigFiles(string directory) {
+            var inis = Directory.GetFiles(directory, "*.ini");
+            return (inis.Length > 10 ? new string[0] : inis).Concat(Directory.GetDirectories(directory).SelectMany(GetSubConfigFiles));
+        }
+
+        public PythonAppConfigs(string location, Action disposalAction) : base(GetConfigFiles(location)
+                .Select(file => PythonAppConfig.Create(file, location, false)).Where(cfg => cfg != null)) {
             _disposalAction = disposalAction;
             UpdateEnabled();
 
@@ -225,7 +235,10 @@ namespace AcManager.Tools.Objects {
 
         public event EventHandler ValueChanged;
 
+        public bool IsResettable { get; }
+
         private PythonAppConfig(string filename, IniFile ini, string name, IniFile values = null) {
+            IsResettable = values != null;
             _valuesIniFile = values ?? ini;
 
             Filename = filename;
@@ -241,6 +254,16 @@ namespace AcManager.Tools.Objects {
                 value.PropertyChanged += OnValuePropertyChanged;
             }
         }
+
+        private DelegateCommand _resetCommand;
+
+        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
+            foreach (var section in Sections) {
+                foreach (var value in section) {
+                    value.Reset();
+                }
+            }
+        }, () => IsResettable));
 
         private bool _changed;
 
@@ -315,9 +338,8 @@ namespace AcManager.Tools.Objects {
         public string DisplayName { get; }
 
         public PythonAppConfigSection(KeyValuePair<string, IniFileSection> pair, [CanBeNull] IniFileSection values)
-                : base(
-                        pair.Value.Select(
-                                x => PythonAppConfigValue.Create(x, pair.Value.Commentaries?.GetValueOrDefault(x.Key), values?.GetValueOrDefault(x.Key)))) {
+                : base(pair.Value.Select(x => PythonAppConfigValue.Create(x,
+                        pair.Value.Commentaries?.GetValueOrDefault(x.Key), values?.GetValueOrDefault(x.Key), values != null))) {
             Key = pair.Key;
 
             var commentary = pair.Value.Commentary;
@@ -420,15 +442,42 @@ namespace AcManager.Tools.Objects {
 
         protected PythonAppConfigValue() { }
 
-        private void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip, Func<IPythonAppConfigValueProvider, bool> isEnabledTest) {
+        private string _originalValue;
+
+        private void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip, Func<IPythonAppConfigValueProvider, bool> isEnabledTest,
+                string originalValue) {
             OriginalKey = key;
             DisplayName = name;
             ToolTip = toolTip ?? key;
             Value = value;
             IsEnabledTest = isEnabledTest;
+            _originalValue = originalValue;
+            _resetCommand?.RaiseCanExecuteChanged();
+            IsResettable = _originalValue != null;
         }
 
-        public static PythonAppConfigValue Create(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] string actualValue) {
+        public void Reset() {
+            if (_originalValue == null) return;
+            Value = _originalValue;
+        }
+
+        private bool _isResettable;
+
+        public bool IsResettable {
+            get { return _isResettable; }
+            set {
+                if (value == _isResettable) return;
+                _isResettable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DelegateCommand _resetCommand;
+
+        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(Reset, () => _originalValue != null));
+
+        public static PythonAppConfigValue Create(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] string actualValue,
+                bool isResetable) {
             string name = null, toolTip = null;
             Func<IPythonAppConfigValueProvider, bool> isEnabledTest = null;
             var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest);
@@ -437,7 +486,7 @@ namespace AcManager.Tools.Objects {
                 name = PythonAppConfig.ConvertKeyToName(pair.Key);
             }
 
-            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest);
+            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest, isResetable ? pair.Value : null);
             return result;
         }
 

@@ -1844,7 +1844,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsaved.
+        ///   Looks up a localized string similar to Unsaved Preset.
         /// </summary>
         public static string Presets_Unsaved {
             get {

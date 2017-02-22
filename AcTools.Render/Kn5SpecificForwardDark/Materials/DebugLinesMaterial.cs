@@ -22,7 +22,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPC;
             contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.DisabledDepthState;
-            contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.DoubleSidedState;
+            contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.DoubleSidedSmoothLinesState;
             return true;
         }
 

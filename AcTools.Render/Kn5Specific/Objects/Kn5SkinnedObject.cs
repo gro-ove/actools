@@ -14,8 +14,6 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public sealed class Kn5SkinnedObject : TrianglesRenderableObject<InputLayouts.VerticePNTGW4B>, IKn5RenderableObject {
-        public static bool FlipByX = true;
-
         public readonly bool IsCastingShadows;
 
         public Kn5Node OriginalNode { get; }
@@ -23,38 +21,24 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private static InputLayouts.VerticePNTGW4B[] Convert(Kn5Node.Vertice[] vertices, Kn5Node.VerticeWeight[] weights) {
             var size = vertices.Length;
             var result = new InputLayouts.VerticePNTGW4B[size];
-
-            if (Kn5RenderableObject.FlipByX) {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    var w = weights[i];
-                    result[i] = new InputLayouts.VerticePNTGW4B(
-                            x.Co.ToVector3FixX(),
-                            x.Normal.ToVector3FixX(),
-                            x.Uv.ToVector2(),
-                            x.Tangent.ToVector3Tangent(),
-                            w.Weights.ToVector3(),
-                            w.Indices.Select(y => y < 0 ? 0 : y).ToArray().ToVector4());
-                }
-            } else {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    var w = weights[i];
-                    result[i] = new InputLayouts.VerticePNTGW4B(
-                            x.Co.ToVector3(),
-                            x.Normal.ToVector3(),
-                            x.Uv.ToVector2(),
-                            x.Tangent.ToVector3(),
-                            w.Weights.ToVector3(),
-                            w.Indices.Select(y => y < 0 ? 0 : y).ToArray().ToVector4());
-                }
+            
+            for (var i = 0; i < size; i++) {
+                var x = vertices[i];
+                var w = weights[i];
+                result[i] = new InputLayouts.VerticePNTGW4B(
+                        x.Co.ToVector3(),
+                        x.Normal.ToVector3(),
+                        x.Uv.ToVector2(),
+                        x.Tangent.ToVector3(),
+                        w.Weights.ToVector3(),
+                        w.Indices.Select(y => y < 0 ? 0 : y).ToArray().ToVector4());
             }
 
             return result;
         }
 
         private static ushort[] Convert(ushort[] indices) {
-            return FlipByX ? indices.ToIndicesFixX() : indices;
+            return indices.ToIndicesFixX();
         }
 
         public Kn5SkinnedObject(Kn5Node node) : base(node.Name, Convert(node.Vertices, node.VerticeWeights), Convert(node.Indices)) {
@@ -69,7 +53,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 IsReflectable = false;
             }
             
-            _bonesTransform = node.Bones.Select(x => x.Transform.ToMatrixFixX()).ToArray();
+            _bonesTransform = node.Bones.Select(x => x.Transform.ToMatrix()).ToArray();
             _bones = _bonesTransform.ToArray();
         }
 

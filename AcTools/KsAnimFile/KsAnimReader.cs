@@ -17,8 +17,23 @@ namespace AcTools.KsAnimFile {
             return header;
         }
 
-        public KsAnimEntry ReadEntry() {
-            var entry = new KsAnimEntry {
+        public KsAnimEntryV1 ReadEntryV1() {
+            var entry = new KsAnimEntryV1 {
+                NodeName = ReadString()
+            };
+
+            var keyFramesCount = ReadInt32();
+            var matrices = new float[keyFramesCount][];
+            for (var i = 0; i < keyFramesCount; i++) {
+                matrices[i] = ReadMatrix();
+            }
+
+            entry.Matrices = matrices;
+            return entry;
+        }
+
+        public KsAnimEntryV2 ReadEntryV2() {
+            var entry = new KsAnimEntryV2 {
                 NodeName = ReadString()
             };
 

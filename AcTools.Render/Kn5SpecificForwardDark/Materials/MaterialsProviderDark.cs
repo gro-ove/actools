@@ -25,10 +25,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             switch (key as string) {
                 case BasicMaterials.MirrorKey:
                     return new Kn5MaterialSimpleMirror();
-                case BasicMaterials.FlatMirrorKey:
-                    return new FlatMirrorMaterialSimple(false);
-                case BasicMaterials.FlatGroundKey:
-                    return new FlatMirrorMaterialSimple(true);
                 case BasicMaterials.DebugLinesKey:
                     return new DebugLinesMaterial();
                 case BasicMaterials.DebugColliderKey:

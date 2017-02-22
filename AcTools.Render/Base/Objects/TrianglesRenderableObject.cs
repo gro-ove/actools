@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -42,6 +45,53 @@ namespace AcTools.Render.Base.Objects {
         }
 
         private Matrix? _parentMatrix;
+        private Vector3[] _positions;
+
+        private void Prepare() {
+            var positions = new Vector3[Vertices.Length];
+            for (var i = 0; i < positions.Length; i++) {
+                positions[i] = Vertices[i].Position;
+            }
+            _positions = positions;
+        }
+
+        private void PrepareSmart() {
+            var positions = new bool[Vertices.Length];
+
+            var filtered = new List<Vector3>(Vertices.Length);
+            for (var i = 0; i < Vertices.Length; i++) {
+                var p = Vertices[i].Position;
+                if (positions[i]) continue;
+
+                for (int j = i + 1, l = Math.Min(Vertices.Length, i + 10); j < l; j++) {
+                    var n = Vertices[j].Position;
+                    if (!positions[j] && Vector3.Dot(p, n) > 0.95) {
+                        if (p.LengthSquared() > n.LengthSquared()) {
+                            positions[j] = true;
+                        } else {
+                            goto Next;
+                        }
+                    }
+                }
+
+                filtered.Add(p);
+
+                Next:
+                continue;
+            }
+
+            // MessageBox.Show($"{Name}: {100d * filtered.Count / positions.Length:F1}% ({Vertices.Length})");
+            _positions = filtered.ToArray();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector3 TransformCoordinate(Vector3 c, Matrix m) {
+            var x = m.M11 * c.X + m.M21 * c.Y + m.M31 * c.Z + m.M41;
+            var y = m.M12 * c.X + m.M22 * c.Y + m.M32 * c.Z + m.M42;
+            var z = m.M13 * c.X + m.M23 * c.Y + m.M33 * c.Z + m.M43;
+            var n = 1f / (m.M14 * c.X + m.M24 * c.Y + m.M34 * c.Z + m.M44);
+            return new Vector3(x * n, y * n, z * n);
+        }
 
         public override void UpdateBoundingBox() {
             // No, we can’t just “cache BB in default state and then transform min/max values”! No!
@@ -55,7 +105,12 @@ namespace AcTools.Render.Base.Objects {
             if (parentMatrix == _parentMatrix) return;
             _parentMatrix = parentMatrix;
 
-            var v = Vector3.TransformCoordinate(Vertices[0].Position, parentMatrix);
+            if (_positions == null) {
+                PrepareSmart();
+                if (_positions == null) return;
+            }
+
+            var v = TransformCoordinate(_positions[0], parentMatrix);
             var minX = v.X;
             var minY = v.Y;
             var minZ = v.Z;
@@ -63,8 +118,8 @@ namespace AcTools.Render.Base.Objects {
             var maxY = v.Y;
             var maxZ = v.Z;
 
-            for (var i = 1; i < Vertices.Length; i++) {
-                var n = Vector3.TransformCoordinate(Vertices[i].Position, parentMatrix);
+            for (var i = 1; i < _positions.Length; i++) {
+                var n = TransformCoordinate(_positions[i], parentMatrix);
                 if (minX > n.X) minX = n.X;
                 if (minY > n.Y) minY = n.Y;
                 if (minZ > n.Z) minZ = n.Z;

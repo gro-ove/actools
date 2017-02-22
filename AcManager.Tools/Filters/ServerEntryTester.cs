@@ -146,6 +146,20 @@ namespace AcManager.Tools.Filters {
                 case "capacity":
                     return value.Test(obj.Capacity);
 
+                case "laps":
+                    return value.Test(obj.RaceMode == RaceMode.Laps
+                            ? (int)(obj.Sessions?.FirstOrDefault(x => x.Type == Game.SessionType.Race)?.Duration ?? 0) : 0);
+
+                case "timed":
+                    return value.Test(obj.RaceMode != RaceMode.Laps);
+
+                case "racetime":
+                    return value.Test(obj.RaceMode == RaceMode.Timed
+                            ? (int)(obj.Sessions?.FirstOrDefault(x => x.Type == Game.SessionType.Race)?.Duration ?? 0) : 0);
+
+                case "extra":
+                    return value.Test(obj.RaceMode == RaceMode.TimedExtra);
+
                 case "d":
                 case "drivers":
                 case "players":

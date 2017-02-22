@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using AcTools.KsAnimFile;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
@@ -16,29 +12,17 @@ namespace AcTools.Render.Kn5Specific.Animations {
             private readonly RenderableList _object;
             private readonly Matrix[] _frames;
 
-            public Wrapper(RenderableList parent, KsAnimEntry entry) {
+            public Wrapper(RenderableList parent, KsAnimEntryBase entry) {
                 _object = parent.GetDummyByName(entry.NodeName);
-                _frames = ConvertFrames(entry.KeyFrames);
+
+                var v2 = entry as KsAnimEntryV2;
+                _frames = v2 != null ? ConvertFrames(v2.KeyFrames) : ConvertFrames(((KsAnimEntryV1)entry).Matrices);
             }
 
             private static Matrix ConvertFrame(KsAnimKeyframe ks) {
                 var rotation = ks.Rotation.ToQuaternion();
-                var translation = ks.Transformation.ToVector3();
+                var translation = ks.Transition.ToVector3();
                 var scale = ks.Scale.ToVector3();
-
-                translation.X *= -1;
-
-                var axis = rotation.Axis;
-                var angle = rotation.Angle;
-
-                if (angle.Abs() < 0.0001f) {
-                    return Matrix.Scaling(scale) * Matrix.Translation(translation);
-                }
-
-                axis.Y *= -1;
-                axis.Z *= -1;
-                rotation = Quaternion.RotationAxis(axis, angle);
-
                 return Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
             }
 
@@ -47,6 +31,16 @@ namespace AcTools.Render.Kn5Specific.Animations {
 
                 for (var i = 0; i < result.Length; i++) {
                     result[i] = ConvertFrame(ksAnimKeyframes[i]);
+                }
+
+                return result;
+            }
+
+            private static Matrix[] ConvertFrames(float[][] matrices) {
+                var result = new Matrix[matrices.Length];
+
+                for (var i = 0; i < result.Length; i++) {
+                    result[i] = matrices[i].ToMatrix();
                 }
 
                 return result;
@@ -76,6 +70,10 @@ namespace AcTools.Render.Kn5Specific.Animations {
         private float _targetPosition;
         private readonly float _duration;
 
+        public float Position => _currentPosition;
+
+        public bool ClampPosition { get; set; } = true;
+
         public KsAnimAnimator(string filename, float duration) {
             _duration = duration;
             _original = KsAnim.FromFile(filename);
@@ -85,11 +83,18 @@ namespace AcTools.Render.Kn5Specific.Animations {
             _wrappers = _original.Entries.Values.Select(x => new Wrapper(parent, x)).ToArray();
         }
 
-        public void Update(RenderableList parent, float position) {
+        public void SetTarget(RenderableList parent, float position) {
             if (_parent != parent) {
                 _parent = parent;
                 Initialize(parent);
+
+                if (Equals(position, _currentPosition)) {
+                    Set(position);
+                    return;
+                }
             }
+
+            _loopsRemain = 0;
 
             if (_duration <= 0f) {
                 Set(position);
@@ -98,14 +103,81 @@ namespace AcTools.Render.Kn5Specific.Animations {
             }
         }
 
+        public void SetImmediate(RenderableList parent, float position) {
+            if (_parent != parent) {
+                _parent = parent;
+                Initialize(parent);
+
+                if (Equals(position, _currentPosition)) {
+                    Set(position);
+                    return;
+                }
+            }
+
+            if (!Equals(position, _currentPosition)) {
+                Set(position);
+                _currentPosition = position;
+            }
+        }
+
+        private int _loopsRemain;
+
+        public void Loop(RenderableList parent, int limit = -1) {
+            if (_parent != parent) {
+                _parent = parent;
+                Initialize(parent);
+
+                if (_loopsRemain != 0) {
+                    Set(_currentPosition);
+                    return;
+                }
+            }
+            
+            _loopsRemain = limit;
+        }
+
         private void Set(float position) {
+            if (!ClampPosition) {
+                if (position > 1f) {
+                    position = position % 1f;
+                } else if (position < 0f) {
+                    position = (position % 1f + 1f) % 1f;
+                }
+            }
+
             for (var i = 0; i < _wrappers.Length; i++) {
                 _wrappers[i].Set(position);
             }
         }
 
         public bool OnTick(float dt) {
+            if (_loopsRemain != 0) {
+                if (float.IsPositiveInfinity(dt) || Equals(dt, float.MaxValue)) {
+                    _currentPosition = 0f;
+                } else {
+                    var delta = dt / _duration;
+                    _currentPosition += delta;
+                }
+
+                if (_currentPosition > 1f) {
+                    _currentPosition = 0f;
+                    if (_loopsRemain > 0) {
+                        _loopsRemain--;
+                    }
+                }
+
+                _targetPosition = _currentPosition;
+                Set(_currentPosition);
+                return true;
+            }
+
             if (_duration > 0 && _targetPosition != _currentPosition) {
+                if (float.IsPositiveInfinity(dt) || Equals(dt, float.MaxValue)) {
+                    _currentPosition = _targetPosition;
+                    Set(_currentPosition);
+                    return true;
+                }
+
                 var delta = dt / _duration;
                 var left = (_targetPosition - _currentPosition).Abs();
                 if (left < delta) {

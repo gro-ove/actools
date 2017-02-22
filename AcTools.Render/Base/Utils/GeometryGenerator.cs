@@ -21,7 +21,7 @@ namespace AcTools.Render.Base.Utils {
             new Vector3(-0.850651f, -0.525731f, 0)
         };
 
-        private static readonly List<int> IcosahedronIndices = new List<int> {
+        private static readonly List<ushort> IcosahedronIndices = new List<ushort> {
             1,
             4,
             0,
@@ -107,7 +107,11 @@ namespace AcTools.Render.Base.Utils {
 
         public class MeshData {
             public List<Vertex> Vertices = new List<Vertex>();
-            public List<int> Indices = new List<int>();
+            public List<ushort> Indices = new List<ushort>();
+        }
+
+        public static MeshData CreateBox(Vector3 size) {
+            return CreateBox(size.X, size.Y, size.Z);
         }
 
         public static MeshData CreateBox(float width, float height, float depth) {
@@ -153,13 +157,72 @@ namespace AcTools.Render.Base.Utils {
             ret.Vertices.Add(new Vertex(+w2, +h2, +d2, 1, 0, 0, 0, 0, 1, 1, 0));
             ret.Vertices.Add(new Vertex(+w2, -h2, +d2, 1, 0, 0, 0, 0, 1, 1, 1));
 
-            ret.Indices.AddRange(new[] {
+            ret.Indices.AddRange(new ushort[] {
                 0, 1, 2, 0, 2, 3,
                 4, 5, 6, 4, 6, 7,
                 8, 9, 10, 8, 10, 11,
                 12, 13, 14, 12, 14, 15,
                 16, 17, 18, 16, 18, 19,
                 20, 21, 22, 20, 22, 23
+            });
+
+            return ret;
+        }
+
+        public static MeshData CreateLinesBox(Vector3 size) {
+            return CreateLinesBox(size.X, size.Y, size.Z);
+        }
+
+        public static MeshData CreateLinesBox(float width, float height, float depth) {
+            var ret = new MeshData();
+
+            var w2 = 0.5f * width;
+            var h2 = 0.5f * height;
+            var d2 = 0.5f * depth;
+
+            // front
+            ret.Vertices.Add(new Vertex(-w2, -h2, -d2, 0, 0, -1, 1, 0, 0, 0, 1));
+            ret.Vertices.Add(new Vertex(-w2, +h2, -d2, 0, 0, -1, 1, 0, 0, 0, 0));
+            ret.Vertices.Add(new Vertex(+w2, +h2, -d2, 0, 0, -1, 1, 0, 0, 1, 0));
+            ret.Vertices.Add(new Vertex(+w2, -h2, -d2, 0, 0, -1, 1, 0, 0, 1, 1));
+
+            // back
+            ret.Vertices.Add(new Vertex(-w2, -h2, +d2, 0, 0, 1, -1, 0, 0, 1, 1));
+            ret.Vertices.Add(new Vertex(+w2, -h2, +d2, 0, 0, 1, -1, 0, 0, 0, 1));
+            ret.Vertices.Add(new Vertex(+w2, +h2, +d2, 0, 0, 1, -1, 0, 0, 0, 0));
+            ret.Vertices.Add(new Vertex(-w2, +h2, +d2, 0, 0, 1, -1, 0, 0, 1, 0));
+
+            // top
+            ret.Vertices.Add(new Vertex(-w2, +h2, -d2, 0, 1, 0, 1, 0, 0, 0, 1));
+            ret.Vertices.Add(new Vertex(-w2, +h2, +d2, 0, 1, 0, 1, 0, 0, 0, 0));
+            ret.Vertices.Add(new Vertex(+w2, +h2, +d2, 0, 1, 0, 1, 0, 0, 1, 0));
+            ret.Vertices.Add(new Vertex(+w2, +h2, -d2, 0, 1, 0, 1, 0, 0, 1, 1));
+
+            // bottom
+            ret.Vertices.Add(new Vertex(-w2, -h2, -d2, 0, -1, 0, -1, 0, 0, 1, 1));
+            ret.Vertices.Add(new Vertex(+w2, -h2, -d2, 0, -1, 0, -1, 0, 0, 0, 1));
+            ret.Vertices.Add(new Vertex(+w2, -h2, +d2, 0, -1, 0, -1, 0, 0, 0, 0));
+            ret.Vertices.Add(new Vertex(-w2, -h2, +d2, 0, -1, 0, -1, 0, 0, 1, 0));
+
+            // left
+            ret.Vertices.Add(new Vertex(-w2, -h2, +d2, -1, 0, 0, 0, 0, -1, 0, 1));
+            ret.Vertices.Add(new Vertex(-w2, +h2, +d2, -1, 0, 0, 0, 0, -1, 0, 0));
+            ret.Vertices.Add(new Vertex(-w2, +h2, -d2, -1, 0, 0, 0, 0, -1, 1, 0));
+            ret.Vertices.Add(new Vertex(-w2, -h2, -d2, -1, 0, 0, 0, 0, -1, 1, 1));
+
+            // right
+            ret.Vertices.Add(new Vertex(+w2, -h2, -d2, 1, 0, 0, 0, 0, 1, 0, 1));
+            ret.Vertices.Add(new Vertex(+w2, +h2, -d2, 1, 0, 0, 0, 0, 1, 0, 0));
+            ret.Vertices.Add(new Vertex(+w2, +h2, +d2, 1, 0, 0, 0, 0, 1, 1, 0));
+            ret.Vertices.Add(new Vertex(+w2, -h2, +d2, 1, 0, 0, 0, 0, 1, 1, 1));
+
+            ret.Indices.AddRange(new ushort[] {
+                0, 1, 1, 2, 2, 3, 3, 0,
+                4, 5, 5, 6, 6, 7, 7, 4,
+                8, 9, 9, 10, 10, 11, 11, 8,
+                12, 13, 13, 14, 14, 15, 15, 12,
+                16, 17, 17, 18, 18, 19, 19, 16,
+                20, 21, 21, 22, 22, 23, 23, 20
             });
 
             return ret;
@@ -194,28 +257,28 @@ namespace AcTools.Render.Base.Utils {
 
             for (var i = 1; i <= sliceCount; i++) {
                 ret.Indices.Add(0);
-                ret.Indices.Add(i + 1);
-                ret.Indices.Add(i);
+                ret.Indices.Add((ushort)(i + 1));
+                ret.Indices.Add((ushort)i);
             }
             var baseIndex = 1;
             var ringVertexCount = sliceCount + 1;
             for (var i = 0; i < stackCount - 2; i++) {
                 for (var j = 0; j < sliceCount; j++) {
-                    ret.Indices.Add(baseIndex + i * ringVertexCount + j);
-                    ret.Indices.Add(baseIndex + i * ringVertexCount + j + 1);
-                    ret.Indices.Add(baseIndex + (i + 1) * ringVertexCount + j);
+                    ret.Indices.Add((ushort)(baseIndex + i * ringVertexCount + j));
+                    ret.Indices.Add((ushort)(baseIndex + i * ringVertexCount + j + 1));
+                    ret.Indices.Add((ushort)(baseIndex + (i + 1) * ringVertexCount + j));
 
-                    ret.Indices.Add(baseIndex + (i + 1) * ringVertexCount + j);
-                    ret.Indices.Add(baseIndex + i * ringVertexCount + j + 1);
-                    ret.Indices.Add(baseIndex + (i + 1) * ringVertexCount + j + 1);
+                    ret.Indices.Add((ushort)(baseIndex + (i + 1) * ringVertexCount + j));
+                    ret.Indices.Add((ushort)(baseIndex + i * ringVertexCount + j + 1));
+                    ret.Indices.Add((ushort)(baseIndex + (i + 1) * ringVertexCount + j + 1));
                 }
             }
             var southPoleIndex = ret.Vertices.Count - 1;
             baseIndex = southPoleIndex - ringVertexCount;
             for (var i = 0; i < sliceCount; i++) {
-                ret.Indices.Add(southPoleIndex);
-                ret.Indices.Add(baseIndex + i);
-                ret.Indices.Add(baseIndex + i + 1);
+                ret.Indices.Add((ushort)southPoleIndex);
+                ret.Indices.Add((ushort)(baseIndex + i));
+                ret.Indices.Add((ushort)(baseIndex + i + 1));
             }
             return ret;
         }
@@ -271,13 +334,13 @@ namespace AcTools.Render.Base.Utils {
 
         private class Subdivider {
             private List<Vertex> _vertices;
-            private List<int> _indices;
-            private Dictionary<Tuple<int, int>, int> _newVertices;
+            private List<ushort> _indices;
+            private Dictionary<Tuple<int, int>, ushort> _newVertices;
 
             public void Subdivide4(MeshData mesh) {
-                _newVertices = new Dictionary<Tuple<int, int>, int>();
+                _newVertices = new Dictionary<Tuple<int, int>, ushort>();
                 _vertices = mesh.Vertices;
-                _indices = new List<int>();
+                _indices = new List<ushort>();
                 var numTris = mesh.Indices.Count / 3;
 
                 for (var i = 0; i < numTris; i++) {
@@ -295,11 +358,11 @@ namespace AcTools.Render.Base.Utils {
                     var i2 = mesh.Indices[i * 3 + 1];
                     var i3 = mesh.Indices[i * 3 + 2];
 
-                    var a = GetNewVertex(i1, i2);
-                    var b = GetNewVertex(i2, i3);
-                    var c = GetNewVertex(i3, i1);
+                    ushort a = GetNewVertex(i1, i2);
+                    ushort b = GetNewVertex(i2, i3);
+                    ushort c = GetNewVertex(i3, i1);
 
-                    _indices.AddRange(new[] {
+                    _indices.AddRange(new ushort[] {
                         i1, a, c,
                         i2, b, a,
                         i3, c, b,
@@ -310,7 +373,7 @@ namespace AcTools.Render.Base.Utils {
                 mesh.Indices = _indices;
             }
 
-            private int GetNewVertex(int i1, int i2) {
+            private ushort GetNewVertex(int i1, int i2) {
                 var t1 = new Tuple<int, int>(i1, i2);
                 var t2 = new Tuple<int, int>(i2, i1);
 
@@ -320,10 +383,10 @@ namespace AcTools.Render.Base.Utils {
                 if (_newVertices.ContainsKey(t1)) {
                     return _newVertices[t1];
                 }
-                var newIndex = _vertices.Count;
+                var newIndex = (ushort)_vertices.Count;
                 _newVertices.Add(t1, newIndex);
 
-                _vertices.Add(new Vertex() { Position = (_vertices[i1].Position + _vertices[i2].Position) * 0.5f });
+                _vertices.Add(new Vertex { Position = (_vertices[i1].Position + _vertices[i2].Position) * 0.5f });
 
                 return newIndex;
             }
@@ -363,13 +426,13 @@ namespace AcTools.Render.Base.Utils {
             var ringVertexCount = sliceCount + 1;
             for (var i = 0; i < stackCount; i++) {
                 for (var j = 0; j < sliceCount; j++) {
-                    ret.Indices.Add(i * ringVertexCount + j);
-                    ret.Indices.Add((i + 1) * ringVertexCount + j);
-                    ret.Indices.Add((i + 1) * ringVertexCount + j + 1);
+                    ret.Indices.Add((ushort)(i * ringVertexCount + j));
+                    ret.Indices.Add((ushort)((i + 1) * ringVertexCount + j));
+                    ret.Indices.Add((ushort)((i + 1) * ringVertexCount + j + 1));
 
-                    ret.Indices.Add(i * ringVertexCount + j);
-                    ret.Indices.Add((i + 1) * ringVertexCount + j + 1);
-                    ret.Indices.Add(i * ringVertexCount + j + 1);
+                    ret.Indices.Add((ushort)(i * ringVertexCount + j));
+                    ret.Indices.Add((ushort)((i + 1) * ringVertexCount + j + 1));
+                    ret.Indices.Add((ushort)(i * ringVertexCount + j + 1));
                 }
             }
             BuildCylinderTopCap(topRadius, height, sliceCount, ref ret);
@@ -394,9 +457,9 @@ namespace AcTools.Render.Base.Utils {
             ret.Vertices.Add(new Vertex(0, y, 0, 0, 1, 0, 1, 0, 0, 0.5f, 0.5f));
             var centerIndex = ret.Vertices.Count - 1;
             for (var i = 0; i < sliceCount; i++) {
-                ret.Indices.Add(centerIndex);
-                ret.Indices.Add(baseIndex + i + 1);
-                ret.Indices.Add(baseIndex + i);
+                ret.Indices.Add((ushort)centerIndex);
+                ret.Indices.Add((ushort)(baseIndex + i + 1));
+                ret.Indices.Add((ushort)(baseIndex + i));
             }
         }
 
@@ -417,9 +480,9 @@ namespace AcTools.Render.Base.Utils {
             ret.Vertices.Add(new Vertex(0, y, 0, 0, -1, 0, 1, 0, 0, 0.5f, 0.5f));
             var centerIndex = ret.Vertices.Count - 1;
             for (var i = 0; i < sliceCount; i++) {
-                ret.Indices.Add(centerIndex);
-                ret.Indices.Add(baseIndex + i);
-                ret.Indices.Add(baseIndex + i + 1);
+                ret.Indices.Add((ushort)centerIndex);
+                ret.Indices.Add((ushort)(baseIndex + i));
+                ret.Indices.Add((ushort)(baseIndex + i + 1));
             }
         }
 
@@ -445,13 +508,13 @@ namespace AcTools.Render.Base.Utils {
 
             for (var i = 0; i < m - 1; i++) {
                 for (var j = 0; j < n - 1; j++) {
-                    ret.Indices.Add(i * n + j);
-                    ret.Indices.Add(i * n + j + 1);
-                    ret.Indices.Add((i + 1) * n + j);
+                    ret.Indices.Add((ushort)(i * n + j));
+                    ret.Indices.Add((ushort)(i * n + j + 1));
+                    ret.Indices.Add((ushort)((i + 1) * n + j));
 
-                    ret.Indices.Add((i + 1) * n + j);
-                    ret.Indices.Add(i * n + j + 1);
-                    ret.Indices.Add((i + 1) * n + j + 1);
+                    ret.Indices.Add((ushort)((i + 1) * n + j));
+                    ret.Indices.Add((ushort)(i * n + j + 1));
+                    ret.Indices.Add((ushort)((i + 1) * n + j + 1));
                 }
             }
 
@@ -466,7 +529,7 @@ namespace AcTools.Render.Base.Utils {
             ret.Vertices.Add(new Vertex(1, 1, 0, 0, 0, -1, 1, 0, 0, 1, 0));
             ret.Vertices.Add(new Vertex(1, -1, 0, 0, 0, -1, 1, 0, 0, 1, 1));
 
-            ret.Indices.AddRange(new[] { 0, 1, 2, 0, 2, 3 });
+            ret.Indices.AddRange(new ushort[] { 0, 1, 2, 0, 2, 3 });
 
             return ret;
         }

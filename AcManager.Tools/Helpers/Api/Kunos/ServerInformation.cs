@@ -119,6 +119,12 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         [JsonProperty(PropertyName = "pass")]
         public bool Password { get; set; }
 
+        [JsonProperty(PropertyName = "timed")]
+        public bool Timed { get; set; }
+
+        [JsonProperty(PropertyName = "extra")]
+        public bool Extra { get; set; }
+
         [JsonProperty(PropertyName = "pickup")]
         public bool PickUp { get; set; }
 
@@ -240,6 +246,12 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
                             return true;
                         case "pickup":
                             entry.PickUp = bool.Parse(reader.Value.ToString());
+                            return true;
+                        case "timed":
+                            entry.Timed = bool.Parse(reader.Value.ToString());
+                            return true;
+                        case "extra":
+                            entry.Extra = bool.Parse(reader.Value.ToString());
                             return true;
                         case "l":
 #pragma warning disable 612

@@ -10,8 +10,6 @@ using Viewport = SlimDX.Direct3D11.Viewport;
 
 namespace AcTools.Render.Base.Shadows {
     public class ShadowsDirectional : IDisposable {
-        public float ClipDistance { get; } 
-
         public sealed class CameraOrthoShadow : CameraOrtho {
             private readonly CameraOrtho _innerCamera;
 
@@ -48,26 +46,32 @@ namespace AcTools.Render.Base.Shadows {
         }
 
         public class Split : IDisposable {
-            internal readonly float Size;
-            internal readonly float ClipDistance;
-            internal readonly CameraOrthoShadow Camera;
+            internal float Size { get; private set; }
+
+            internal float ClipDistance { get; private set; }
+
+            internal CameraOrthoShadow Camera { get; private set; }
+
             public readonly TargetResourceDepthTexture Buffer;
 
-            public float GetShadowDepth(BaseCamera camera) {
-                var m = Vector3.Transform(new Vector3(0, 0, Size / 2), camera.Proj);
-                return m.Z / m.W;
+            public Split(float size, float clipDistance) {
+                Buffer = TargetResourceDepthTexture.Create();
+                Update(size, clipDistance);
             }
 
-            public Split(float size, float clipDistance) {
+            public void Update(float size, float clipDistance) {
+                if (Camera != null && Equals(size, Size) && Equals(ClipDistance, clipDistance)) return;
+
                 Size = size;
                 ClipDistance = clipDistance;
-                Buffer = TargetResourceDepthTexture.Create();
+
                 Camera = new CameraOrthoShadow {
                     NearZ = 1f,
                     FarZ = ClipDistance * 2f,
                     Width = size,
                     Height = size
                 };
+
                 Camera.SetLens(1f);
             }
 
@@ -93,7 +97,7 @@ namespace AcTools.Render.Base.Shadows {
             }
         }
 
-        public readonly Split[] Splits;
+        public Split[] Splits { get; private set; }
 
         private readonly int _mapSize;
         private readonly Viewport _viewport;
@@ -103,15 +107,31 @@ namespace AcTools.Render.Base.Shadows {
 
         public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 50f) {
             _mapSize = mapSize;
-            ClipDistance = clipDistance;
-
-            Splits = splits.Select(x => new Split(x, clipDistance)).ToArray();
-
-            for (var i = 1; i < Splits.Length; i++) {
-                Splits[i].Camera.SmallerCamera = Splits[i - 1].Camera;
-            }
-
             _viewport = new Viewport(0, 0, _mapSize, _mapSize, 0, 1.0f);
+
+            SetSplits(splits, clipDistance);
+        }
+
+        private void SetSplits(IEnumerable<float> splits, float clipDistance = 50f) {
+            var splitsValues = splits.ToArrayIfItIsNot();
+            if (Splits != null && splitsValues.Length == Splits.Length) {
+                for (var i = 0; i < Splits.Length; i++) {
+                    Splits[i].Update(splitsValues[i], clipDistance);
+                }
+            } else {
+                Splits?.DisposeEverything();
+                Splits = splitsValues.Select(x => new Split(x, clipDistance)).ToArray();
+                for (var i = 1; i < Splits.Length; i++) {
+                    Splits[i].Camera.SmallerCamera = Splits[i - 1].Camera;
+                }
+            }
+        }
+
+        public void SetSplits(DeviceContextHolder holder, IEnumerable<float> splits, float clipDistance = 50f) {
+            SetSplits(splits, clipDistance);
+            foreach (var split in Splits) {
+                split.Buffer.Resize(holder, _mapSize, _mapSize, null);
+            }
         }
 
         public ShadowsDirectional(int mapSize, float clipDistance = 50f) : this(mapSize, new []{ 15f, 50f, 200f }, clipDistance) {}
@@ -172,10 +192,7 @@ namespace AcTools.Render.Base.Shadows {
         }
 
         public void Dispose() {
-            for (var i = 0; i < Splits.Length; i++) {
-                DisposeHelper.Dispose(ref Splits[i]);
-            }
-
+            Splits.DisposeEverything();
             DisposeHelper.Dispose(ref _rasterizerState);
             DisposeHelper.Dispose(ref _depthStencilState);
         }

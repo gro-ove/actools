@@ -34,7 +34,7 @@ namespace AcTools.Render.Base.PostEffects {
         }
 
         private static float ComputeGaussian(float n, float theta) {
-            return MathF.Exp(-n * n / (2.0f * theta * theta)) / MathF.Sqrt(2.0f * MathF.PI * theta);
+            return (-n * n / (2.0f * theta * theta)).Exp() / (2.0f * MathF.PI * theta).Sqrt();
         }
 
         private static void CalculateGaussian(float dx, float dy, float force, out float[] weightsParameter, out Vector4[] offsetsParameter) {
@@ -132,6 +132,57 @@ namespace AcTools.Render.Base.PostEffects {
                 BlurVertically(holder, temporary.View, power);
             }
         }
+
+        #region Flat mirror
+        private void BlurFlatMirrorHorizontally(DeviceContextHolder holder, ShaderResourceView view, float power) {
+            holder.DeviceContext.OutputMerger.BlendState = null;
+            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
+
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxSampleOffsets.Set(_hoso);
+            _effect.FxSampleWeights.Set(_hosw);
+            _effect.FxPower.Set(power);
+            _effect.TechFlatMirrorBlur.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        private void BlurFlatMirrorVertically(DeviceContextHolder holder, ShaderResourceView view, float power) {
+            holder.DeviceContext.OutputMerger.BlendState = null;
+            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
+
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxSampleOffsets.Set(_voso);
+            _effect.FxSampleWeights.Set(_vosw);
+            _effect.FxPower.Set(power);
+            _effect.TechFlatMirrorBlur.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        /// <summary>
+        /// Width and height will be set accordingly to source and temporary params.
+        /// </summary>
+        public void BlurFlatMirror(DeviceContextHolder holder, TargetResourceTexture source, TargetResourceTexture temporary, Matrix viewProjInv,
+                ShaderResourceView depth, float power = 1f, int iterations = 1, TargetResourceTexture target = null) {
+            _effect.FxFlatMirrorDepthMap.SetResource(depth);
+            _effect.FxWorldViewProjInv.SetMatrix(viewProjInv);
+
+            var actualTarget = target ?? source;
+            _effect.FxScreenSize.Set(new Vector4(actualTarget.Width, actualTarget.Height, 1f / actualTarget.Width, 1f / actualTarget.Height));
+
+            for (var i = 0; i < iterations; i++) {
+                Resize(actualTarget.Width, actualTarget.Height);
+                holder.DeviceContext.Rasterizer.SetViewports(temporary.Viewport);
+                holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
+                BlurFlatMirrorHorizontally(holder, (i == 0 ? null : target?.View) ?? source.View, power);
+
+                if (target != null) {
+                    Resize(target.Width, target.Height);
+                }
+
+                holder.DeviceContext.Rasterizer.SetViewports(actualTarget.Viewport);
+                holder.DeviceContext.OutputMerger.SetTargets(actualTarget.TargetView);
+                BlurFlatMirrorVertically(holder, temporary.View, power);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Width and height will be taken from DeviceContextHolder.

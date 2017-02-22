@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
@@ -10,7 +9,6 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -20,6 +18,8 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
         public class Session {
+            internal Session() { }
+
             public bool IsActive { get; set; }
 
             /// <summary>
@@ -29,15 +29,28 @@ namespace AcManager.Tools.Managers.Online {
 
             public Game.SessionType Type { get; set; }
 
+            public RaceMode RaceMode { get; set; }
+
             public string DisplayType => Type.GetDescription() ?? Type.ToString();
 
             private string _displayTypeShort;
 
             public string DisplayTypeShort => _displayTypeShort ?? (_displayTypeShort = DisplayType.Substring(0, 1));
 
-            public string DisplayDuration => Type == Game.SessionType.Race ?
-                    PluralizingConverter.PluralizeExt((int)Duration, ToolsStrings.Online_Session_LapsDuration) :
-                    Duration.ToReadableTime();
+            public string DisplayDuration {
+                get {
+                    switch (Type == Game.SessionType.Race ? RaceMode : RaceMode.Timed) {
+                        case RaceMode.Laps:
+                            return PluralizingConverter.PluralizeExt((int)Duration, ToolsStrings.Online_Session_LapsDuration);
+                        case RaceMode.Timed:
+                            return Duration.ToReadableTime();
+                        case RaceMode.TimedExtra:
+                            return $"{Duration.ToReadableTime()} (plus lap)";
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
 
             protected bool Equals(Session other) {
                 return IsActive == other.IsActive && Duration == other.Duration && Type == other.Type;

@@ -15,21 +15,28 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.Row="0">
+        <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0" Grid.ColumnSpan="2">
+            <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}">
+                <Label Content="Keep developer apps flag with apps presets" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}">
                 <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
             </CheckBox>
+        </StackPanel>
 
-            <Label Margin="0 20 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-            <ListBox Margin="0 12 0 0" x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
+            <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                     SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
                 <ListBox.ItemsPanel>
@@ -56,7 +63,7 @@
             </ListBox>
         </StackPanel>
 
-        <DockPanel Grid.Column="1" Grid.Row="0">
+        <DockPanel Grid.Column="1" Grid.Row="1">
             <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" DockPanel.Dock="Top" />
             <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
                     Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
@@ -100,7 +107,6 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
             <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />

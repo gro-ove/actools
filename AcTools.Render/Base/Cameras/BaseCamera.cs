@@ -21,7 +21,7 @@ namespace AcTools.Render.Base.Cameras {
                 if (NearZ.HasValue) return NearZ.Value;
                 if (Equals(_nearZFovY, FovY)) return _nearZCached;
                 _nearZFovY = FovY;
-                return _nearZCached = 0.04f / MathF.Pow(_nearZFovY, 2f);
+                return _nearZCached = 0.04f / _nearZFovY.Pow(2f);
             }
         }
 
@@ -32,7 +32,7 @@ namespace AcTools.Render.Base.Cameras {
                 if (FarZ.HasValue) return FarZ.Value;
                 if (Equals(_farZFovY, FovY)) return _farZCached;
                 _farZFovY = FovY;
-                return _farZCached = 1e3f / MathF.Pow(_farZFovY, 0.5f);
+                return _farZCached = 1e3f / _farZFovY.Pow(0.5f);
             }
         }
 
@@ -54,7 +54,7 @@ namespace AcTools.Render.Base.Cameras {
             _viewProj = null;
             _viewProjInvert = null;
         }
-        
+
         public Matrix ViewProj => _viewProj ?? (_viewProj = View * Proj).Value;
         private Matrix? _viewProj;
 
@@ -98,24 +98,15 @@ namespace AcTools.Render.Base.Cameras {
 
         public abstract BaseCamera Clone();
 
-        private void UpdateNearZ() {
-            
-        }
-
         public virtual void SetLens(float aspect) {
             Aspect = aspect;
-            SetProj(Matrix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue));
+            SetProj(Matrix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue));
         }
-        
-        public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {
-            // convert screen pixel to view space
-            var vx = (2.0f * sp.X / screenDims.X - 1.0f) / Proj.M11;
-            var vy = (-2.0f * sp.Y / screenDims.Y + 1.0f) / Proj.M22;
 
-            var ray = new Ray(new Vector3(), new Vector3(vx, vy, 1.0f));
-            ray = new Ray(Vector3.TransformCoordinate(ray.Position, ViewInvert), Vector3.TransformNormal(ray.Direction, ViewInvert));
-            ray.Direction.Normalize();
-            return ray;
+        public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {
+            var screen = new Vector3(2.0f * sp.X / screenDims.X - 1.0f, 1.0f - 2.0f * sp.Y / screenDims.Y, 0.5f);
+            var world = Vector3.TransformCoordinate(screen, ViewProjInvert);
+            return new Ray(Position, Vector3.Normalize(world - Position));
         }
 
         protected Frustum Frustum;

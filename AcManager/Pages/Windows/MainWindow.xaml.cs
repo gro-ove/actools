@@ -184,7 +184,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateServerTab() {
-            ServerGroup.IsShown = SettingsHolder.Common.MsMode && SettingsHolder.Online.ServerPresetsManaging;
+            ServerGroup.IsShown = SettingsHolder.Online.ServerPresetsManaging;
         }
 
         private void UpdateMinoratingLink() {
@@ -355,25 +355,31 @@ namespace AcManager.Pages.Windows {
         private DynamicBackground _dynamicBackground;
 
         private void ApplyDynamicBackground([CanBeNull] string filename, double opacity = 0.5) {
-            if (filename == null) {
-                DisposeHelper.Dispose(ref _dynamicBackground);
-                if (FancyBackgroundManager.Instance.Enabled) {
-                    FancyBackgroundManager.Instance.Recreate(this);
-                } else {
-                    ClearValue(BackgroundContentProperty);
-                }
-            } else {
-                var animatedBackground = Regex.IsMatch(filename, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
-                        filename : null;
-                var staticBackground = animatedBackground == null ? filename : Regex.Replace(filename, @"\.\w+$", @".jpg");
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                try {
+                    if (filename == null) {
+                        DisposeHelper.Dispose(ref _dynamicBackground);
+                        if (FancyBackgroundManager.Instance.Enabled) {
+                            FancyBackgroundManager.Instance.Recreate(this);
+                        } else {
+                            ClearValue(BackgroundContentProperty);
+                        }
+                    } else {
+                        var animatedBackground = Regex.IsMatch(filename, @"\.(?:avi|flv|gif|m(?:4[pv]|kv|ov|p[4g])|og[vg]|qt|webm|wmv)$", RegexOptions.IgnoreCase) ?
+                                filename : null;
+                        var staticBackground = animatedBackground == null ? filename : Regex.Replace(filename, @"\.\w+$", @".jpg");
 
-                _dynamicBackground?.Dispose();
-                BackgroundContent = _dynamicBackground = new DynamicBackground {
-                    Animated = animatedBackground,
-                    Static = staticBackground,
-                    Opacity = opacity
-                };
-            }
+                        _dynamicBackground?.Dispose();
+                        BackgroundContent = _dynamicBackground = new DynamicBackground {
+                            Animated = animatedBackground,
+                            Static = staticBackground,
+                            Opacity = opacity
+                        };
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            });
         }
 
         private void UpdateThemeDynamicBackground() {

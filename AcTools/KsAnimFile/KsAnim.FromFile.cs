@@ -24,12 +24,19 @@ namespace AcTools.KsAnimFile {
 
         private void FromFile_Nodes(KsAnimReader reader) {
             var count = reader.ReadInt32();
-            Entries = new Dictionary<string, KsAnimEntry>(count);
+            Entries = new Dictionary<string, KsAnimEntryBase>(count);
 
             for (var i = 0; i < count; i++) {
-                var entry = reader.ReadEntry();
-                if (entry.KeyFrames.Length > 0) {
-                    Entries[entry.NodeName] = entry;
+                if (Header.Version == 2) {
+                    var entry = reader.ReadEntryV2();
+                    if (entry.KeyFrames.Length > 0) {
+                        Entries[entry.NodeName] = entry;
+                    }
+                } else {
+                    var entry = reader.ReadEntryV1();
+                    if (entry.Matrices.Length > 0) {
+                        Entries[entry.NodeName] = entry;
+                    }
                 }
             }
         }

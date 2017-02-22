@@ -217,7 +217,7 @@
     <value>Save current settings as preset (Ctrl+S)</value>
   </data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Unsaved</value>
+    <value>Unsaved Preset</value>
   </data>
   <data name="QuickSwitches_Header" xml:space="preserve">
     <value>Quick Switches</value>

@@ -343,6 +343,16 @@ namespace AcManager {
             if (id.StartsWith("PresentationFramework") || id.EndsWith(".resources")) return null;
 #endif
 
+            if (id == "System" || id == "System.Core") {
+                result = Assembly.Load(args.Name);
+
+                if (OptionCache) {
+                    _cached[id] = result;
+                }
+
+                return result;
+            }
+
             if (id.Contains("Magick.NET")) return null;
 
             if (_logFilename != null) {

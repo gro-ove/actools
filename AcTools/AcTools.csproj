@@ -113,6 +113,10 @@
     <Compile Include="Kn5File\Kn5.ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbx.cs" />
     <Compile Include="Kn5File\Kn5.FromJson.cs" />
+    <Compile Include="KnhFile\Knh.cs" />
+    <Compile Include="KnhFile\Knh.FromFile.cs" />
+    <Compile Include="KnhFile\KnhEntry.cs" />
+    <Compile Include="KnhFile\KnhReader.cs" />
     <Compile Include="KsAnimFile\KsAnimEntry.cs" />
     <Compile Include="KsAnimFile\KsAnim.FromFile.cs" />
     <Compile Include="KsAnimFile\KsAnimHeader.cs" />
@@ -149,6 +153,7 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\Helpers\AlphanumComparatorFast.cs" />
     <Compile Include="Utils\Helpers\DateTimeExtension.cs" />
+    <Compile Include="Utils\Helpers\EnumExtension.cs" />
     <Compile Include="Utils\Helpers\FlexibleParser.cs" />
     <Compile Include="Utils\Helpers\GeoTagsEntry.cs" />
     <Compile Include="Utils\Helpers\GoodShuffle.cs" />
@@ -183,6 +188,7 @@
     <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\DataFixer.cs" />
     <Compile Include="Utils\Kn5Fixer.cs" />
+    <Compile Include="Utils\Lazier.cs" />
     <Compile Include="Utils\LogWatcher.cs" />
     <Compile Include="Utils\MathException.cs" />
     <Compile Include="Utils\MathUtils.cs" />

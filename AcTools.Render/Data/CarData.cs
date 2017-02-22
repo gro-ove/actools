@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using AcTools.DataFile;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -54,6 +56,35 @@ namespace AcTools.Render.Data {
         }
         #endregion
 
+        #region Animation base
+        public class AnimationBase {
+            public string KsAnimName { get; }
+
+            public float Duration { get; }
+
+            public AnimationBase(string ksAnimName, float duration) {
+                KsAnimName = ksAnimName;
+                Duration = duration;
+            }
+
+            private sealed class KsAnimNameEqualityComparer : IEqualityComparer<AnimationBase> {
+                public bool Equals(AnimationBase x, AnimationBase y) {
+                    if (ReferenceEquals(x, y)) return true;
+                    if (ReferenceEquals(x, null)) return false;
+                    if (ReferenceEquals(y, null)) return false;
+                    if (x.GetType() != y.GetType()) return false;
+                    return string.Equals(x.KsAnimName, y.KsAnimName);
+                }
+
+                public int GetHashCode(AnimationBase obj) {
+                    return obj.KsAnimName?.GetHashCode() ?? 0;
+                }
+            }
+
+            public static IEqualityComparer<AnimationBase> KsAnimNameComparer { get; } = new KsAnimNameEqualityComparer();
+        }
+        #endregion
+
         #region Lights
         public class LightObject {
             public string Name { get; }
@@ -69,31 +100,8 @@ namespace AcTools.Render.Data {
             }
         }
 
-        public class LightAnimation {
-            public string KsAnimName { get; }
-
-            public float Duration { get; }
-
-            public LightAnimation(string ksAnimName, float duration) {
-                KsAnimName = ksAnimName;
-                Duration = duration;
-            }
-
-            private sealed class KsAnimNameEqualityComparer : IEqualityComparer<LightAnimation> {
-                public bool Equals(LightAnimation x, LightAnimation y) {
-                    if (ReferenceEquals(x, y)) return true;
-                    if (ReferenceEquals(x, null)) return false;
-                    if (ReferenceEquals(y, null)) return false;
-                    if (x.GetType() != y.GetType()) return false;
-                    return string.Equals(x.KsAnimName, y.KsAnimName);
-                }
-
-                public int GetHashCode(LightAnimation obj) {
-                    return obj.KsAnimName?.GetHashCode() ?? 0;
-                }
-            }
-
-            public static IEqualityComparer<LightAnimation> KsAnimNameComparer { get; } = new KsAnimNameEqualityComparer();
+        public class LightAnimation : AnimationBase {
+            public LightAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) {}
         }
 
         public IEnumerable<LightObject> GetLights() {
@@ -126,7 +134,9 @@ namespace AcTools.Render.Data {
                     _data.GetIniFile("lights.ini")
                          .GetSections("LIGHT_ANIMATION")
                          .Select(x => new LightAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
-                         .Where(x => x.KsAnimName != null);
+                         .Where(x => x.KsAnimName != null)
+                         .Append(new LightAnimation("lights.ksanim", 1f))
+                         .Distinct<LightAnimation>(AnimationBase.KsAnimNameComparer);
         }
         #endregion
 
@@ -166,8 +176,8 @@ namespace AcTools.Render.Data {
 
             internal LodDescription(IniFileSection fileSection) {
                 FileName = fileSection.GetNonEmpty("FILE");
-                In = (float)fileSection.GetDouble("IN", 0d);
-                Out = (float)fileSection.GetDouble("OUT", 0d);
+                In = fileSection.GetFloat("IN", 0f);
+                Out = fileSection.GetFloat("OUT", 0f);
             }
         }
 
@@ -177,13 +187,48 @@ namespace AcTools.Render.Data {
         }
         #endregion
 
-        #region Steer lock
+        #region Colliders
+        public class ColliderDescription {
+            public Vector3 Center { get; }
+
+            public Vector3 Size { get; }
+
+            public bool GroundEnable { get; }
+
+            internal ColliderDescription(IniFileSection fileSection, Vector3 offset) {
+                Center = fileSection.GetSlimVector3("CENTRE") + offset;
+                Size = fileSection.GetSlimVector3("SIZE");
+                GroundEnable = fileSection.GetBool("GROUND_ENABLE", true);
+            }
+        }
+
+        public IEnumerable<ColliderDescription> GetColliders() {
+            var carOffset = Vector3.Zero;
+            return IsEmpty ? new ColliderDescription[0] :
+                    _data.GetIniFile("colliders.ini").GetSections("COLLIDER").Select(x => new ColliderDescription(x, carOffset));
+        }
+        #endregion
+
+        #region From car.ini: graphic offset, steer lock
+        public Vector3 GetGraphicOffset() {
+            return _data.GetIniFile("car.ini")["BASIC"].GetSlimVector3("GRAPHICS_OFFSET");
+        }
+
         public float GetSteerLock() {
             return _data.GetIniFile("car.ini")["CONTROLS"].GetFloat("STEER_LOCK", 180f);
         }
         #endregion
 
         #region Suspension
+        public Vector3 GetCgOffset() {
+            var suspensions = _data.GetIniFile("suspensions.ini");
+            var basic = suspensions["BASIC"];
+            var wheelbase = basic.GetFloat("WHEELBASE", 2f);
+            var cgLocation = basic.GetFloat("CG_LOCATION", 0.5f);
+
+            return GetGraphicOffset() + Vector3.UnitZ * (cgLocation - 0.5f) * wheelbase;
+        }
+
         public SuspensionsPack GetSuspensionsPack() {
             return SuspensionsPack.Create(_data);
         }
@@ -241,13 +286,13 @@ namespace AcTools.Render.Data {
                 switch (type) {
                     case "DWB":
                         return new IndependentSuspensionsGroup(
-                                new DwbSuspension(basic, section, front, -1f, wheelRadius),
-                                new DwbSuspension(basic, section, front, 1f, wheelRadius));
+                                new DwbSuspension(basic, section, front, 1f, wheelRadius),
+                                new DwbSuspension(basic, section, front, -1f, wheelRadius));
 
                     case "STRUT":
                         return new IndependentSuspensionsGroup(
-                                new StrutSuspension(basic, section, front, -1f, wheelRadius),
-                                new StrutSuspension(basic, section, front, 1f, wheelRadius));
+                                new StrutSuspension(basic, section, front, 1f, wheelRadius),
+                                new StrutSuspension(basic, section, front, -1f, wheelRadius));
 
                     case "AXLE":
                         return new DependentSuspensionGroup(
@@ -418,7 +463,7 @@ namespace AcTools.Render.Data {
 
             public override string DisplayType => "DWB";
 
-            protected override float CasterOverride => MathF.Atan((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)) * 57.2957795f;
+            protected override float CasterOverride => ((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
 
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[5], Points[4]);
 
@@ -456,7 +501,7 @@ namespace AcTools.Render.Data {
 
             public override string DisplayType => "Strut";
 
-            protected override float CasterOverride => MathF.Atan((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)) * 57.2957795f;
+            protected override float CasterOverride => ((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)).Atan() * 57.2957795f;
 
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[1], Points[0]);
 
@@ -467,6 +512,177 @@ namespace AcTools.Render.Data {
                 new DebugLine(Color.Cyan, Points[6], Points[7]),
                 new DebugLine(Color.Gray, Points[5], Points[4]),
             };
+        }
+        #endregion
+
+        #region Cameras
+        public class CameraDescription {
+            public CameraDescription(float fov, Vector3 position, float pitchAngle) {
+                Fov = fov;
+                Position = position;
+                Look = Vector3.TransformNormal(Vector3.UnitZ, Matrix.RotationX(pitchAngle.ToRadians()));
+                Up = Vector3.UnitY;
+            }
+
+            public CameraDescription(float fov, Vector3 position, Vector3 look, Vector3 up) {
+                Fov = fov;
+                Position = position;
+                Look = look;
+                Up = up;
+            }
+
+            public CameraDescription(float fov, Vector3 position, Vector3 look) : this(fov, position, look, Vector3.UnitY) { }
+
+            public Vector3 Position { get; }
+
+            public Vector3 Look { get; }
+
+            public Vector3 Up { get; }
+
+            public float Fov { get; }
+
+            public FpsCamera ToCamera() {
+                var camera = new FpsCamera(Fov.ToRadians()) { Position = Position };
+                camera.LookAt(Position, Position + Look, Up);
+                return camera;
+            }
+        }
+
+        [CanBeNull]
+        public CameraDescription GetDriverCamera() {
+            if (_data.IsEmpty) return null;
+
+            var section = _data.GetIniFile("car.ini")["GRAPHICS"];
+            return new CameraDescription(56f,
+                    section.GetSlimVector3("DRIVEREYES"),
+                    section.GetFloat("ON_BOARD_PITCH_ANGLE", 0f));
+        }
+
+        [CanBeNull]
+        public CameraDescription GetDashboardCamera() {
+            if (_data.IsEmpty) return null;
+
+            var section = _data.GetIniFile("dash_cam.ini")["DASH_CAM"];
+            return new CameraDescription(56f,
+                    section.GetSlimVector3("POS"),
+                    section.GetFloat("PITCH_ANGLE", 0f));
+        }
+
+        [CanBeNull]
+        public CameraDescription GetBonnetCamera() {
+            if (_data.IsEmpty) return null;
+
+            var section = _data.GetIniFile("car.ini")["GRAPHICS"];
+            return new CameraDescription(56f,
+                    section.GetSlimVector3("BONNET_CAMERA_POS") - GetGraphicOffset(),
+                    section.GetFloat("BONNET_CAMERA_PITCH", 0f));
+        }
+
+        [CanBeNull]
+        public CameraDescription GetBumperCamera() {
+            if (_data.IsEmpty) return null;
+
+            var section = _data.GetIniFile("car.ini")["GRAPHICS"];
+            return new CameraDescription(56f,
+                    section.GetSlimVector3("BUMPER_CAMERA_POS") - GetGraphicOffset(),
+                    section.GetFloat("BUMPER_CAMERA_PITCH", 0f));
+        }
+
+        public IEnumerable<CameraDescription> GetExtraCameras() {
+            return IsEmpty ? new CameraDescription[0] :
+                    _data.GetIniFile("cameras.ini")
+                         .GetSections("CAMERA")
+                         .Select(x => new CameraDescription(x.GetFloat("FOV", 56f), x.GetSlimVector3("POSITION"), x.GetSlimVector3("FORWARD"), x.GetSlimVector3("UP")));
+        }
+        #endregion
+
+        #region Wings animations
+        public class WingAnimation : AnimationBase {
+            public int? Next { get; }
+
+            public WingAnimation(string ksAnimName, float duration, int? next) : base(ksAnimName, duration) {
+                Next = next;
+            }
+        }
+
+        public IEnumerable<WingAnimation> GetWingsAnimations() {
+            return IsEmpty ? new WingAnimation[0] :
+                    _data.GetIniFile("wing_animations.ini")
+                         .GetSections("ANIMATION")
+                         .Select(x => new WingAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f), x.GetIntNullable("NEXT")))
+                         .Where(x => x.KsAnimName != null)
+                         .Distinct<WingAnimation>(AnimationBase.KsAnimNameComparer);
+        }
+        #endregion
+
+        #region Extra animations
+        public class ExtraAnimation : AnimationBase {
+            public ExtraAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) {}
+        }
+
+        public IEnumerable<ExtraAnimation> GetExtraAnimations() {
+            return IsEmpty ? new ExtraAnimation[0] :
+                    _data.GetIniFile("extra_animations.ini")
+                         .GetSections("ANIMATION")
+                         .Select(x => new ExtraAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
+                         .Where(x => x.KsAnimName != null)
+                         .Distinct<ExtraAnimation>(AnimationBase.KsAnimNameComparer);
+        }
+
+        public class RotatingObject {
+            public RotatingObject(string nodeName, float rpm, Vector3 axis) {
+                NodeName = nodeName;
+                Rpm = rpm;
+                Axis = axis;
+            }
+
+            public string NodeName { get; }
+
+            public float Rpm { get; }
+
+            public Vector3 Axis { get; }
+        }
+
+        public IEnumerable<RotatingObject> GetRotatingObjects() {
+            return IsEmpty ? new RotatingObject[0] :
+                    _data.GetIniFile("extra_animations.ini")
+                         .GetSections("ROTATING_OBJECT")
+                         .Select(x => new RotatingObject(x.GetNonEmpty("NAME"), x.GetFloat("RPM", 100f), x.GetSlimVector3("AXIS", Vector3.UnitY)))
+                         .Where(x => x.NodeName != null);
+        }
+        #endregion
+
+        #region Driver
+        public class DriverDescription {
+            public DriverDescription(string name, Vector3 offset, string steerAnimation, float steerAnimationLock) {
+                Name = name;
+                Offset = offset;
+                SteerAnimation = steerAnimation;
+                SteerAnimationLock = steerAnimationLock;
+            }
+
+            public string Name { get; }
+
+            public Vector3 Offset { get; }
+
+            public string SteerAnimation { get; }
+
+            public float SteerAnimationLock { get; }
+        }
+
+        [CanBeNull]
+        public DriverDescription GetDriverDescription() {
+            if (IsEmpty) return null;
+
+            var driver = _data.GetIniFile("driver3d.ini");
+
+            var model = driver["MODEL"];
+            var modelName = model.GetNonEmpty("NAME");
+            if (modelName == null) return null;
+
+            var steer = driver["STEER_ANIMATION"];
+            return new DriverDescription(modelName, model.GetSlimVector3("POSITION"),
+                    steer.GetNonEmpty("NAME", "steer.ksanim"), steer.GetFloat("LOCK", 360f));
         }
         #endregion
     }

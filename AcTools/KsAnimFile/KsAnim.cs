@@ -7,7 +7,7 @@ namespace AcTools.KsAnimFile {
         private KsAnim() {
             OriginalFilename = string.Empty;
             Header = new KsAnimHeader { Version = CommonAcConsts.KsAnimActualVersion };
-            Entries = new Dictionary<string, KsAnimEntry>();
+            Entries = new Dictionary<string, KsAnimEntryBase>();
         }
 
         private KsAnim(string filename) {
@@ -15,6 +15,6 @@ namespace AcTools.KsAnimFile {
         }
 
         public KsAnimHeader Header;
-        public Dictionary<string, KsAnimEntry> Entries;
+        public Dictionary<string, KsAnimEntryBase> Entries;
     }
 }

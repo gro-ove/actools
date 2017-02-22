@@ -203,6 +203,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return this.GetByName(name);
         }
 
+        [CanBeNull]
         public virtual Kn5RenderableList GetDummyByName(string name) {
             var dummies = Dummies;
             for (var i = 0; i < dummies.Count; i++) {

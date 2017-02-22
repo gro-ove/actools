@@ -10,6 +10,10 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
+    public enum RaceMode {
+        Laps, Timed, TimedExtra
+    }
+
     public partial class ServerEntry {
         /// <summary>
         /// Combined from IP and HTTP port.
@@ -197,6 +201,17 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private RaceMode _raceMode;
+
+        public RaceMode RaceMode {
+            get { return _raceMode; }
+            set {
+                if (Equals(value, _raceMode)) return;
+                _raceMode = value;
+                OnPropertyChanged();
+            }
+        }
+
         private DateTime _sessionEnd;
 
         public DateTime SessionEnd {
@@ -223,7 +238,7 @@ namespace AcManager.Tools.Managers.Online {
         public string DisplayTimeLeft {
             get {
                 var now = DateTime.Now;
-                return CurrentSessionType == Game.SessionType.Race ? ToolsStrings.Online_Server_SessionInProcess
+                return RaceMode != RaceMode.Timed && CurrentSessionType == Game.SessionType.Race ? ToolsStrings.Online_Server_SessionInProcess
                         : SessionEnd <= now ? ToolsStrings.Online_Server_SessionEnded : (SessionEnd - now).ToProperString();
             }
         }

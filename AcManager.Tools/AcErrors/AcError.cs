@@ -6,6 +6,7 @@ using System.Windows.Input;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;

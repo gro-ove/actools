@@ -17,6 +17,7 @@ namespace AcManager.Tools.Helpers {
     public static class ContentCategory {
         public static readonly string Miscellaneous = "Miscellaneous";
         public static readonly string BrandBadges = "Brand Badges";
+        public static readonly string CountryFlags = "Country Flags";
         public static readonly string CarCategories = "Car Categories";
         public static readonly string TrackCategories = "Track Categories";
         public static readonly string PresetsPerModeConditions = "Presets Per Mode Conditions";
@@ -25,7 +26,7 @@ namespace AcManager.Tools.Helpers {
     }
 
     public class FilesStorage : AbstractFilesStorage {
-        public const string DataDirName = "Data", DataUserDirName = "Data (User)";
+        public static readonly string DataDirName = "Data", DataUserDirName = "Data (User)";
 
         private static FilesStorage _instance;
 

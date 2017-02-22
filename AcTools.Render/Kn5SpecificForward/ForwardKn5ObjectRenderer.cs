@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -195,6 +196,14 @@ namespace AcTools.Render.Kn5SpecificForward {
             newCar.LeftDoorOpen = oldCar?.LeftDoorOpen ?? false;
             newCar.RightDoorOpen = oldCar?.RightDoorOpen ?? false;
             newCar.SteerDeg = oldCar?.SteerDeg ?? 0f;
+
+            if (oldCar != null) {
+                oldCar.CamerasChanged -= OnCamerasChanged;
+                oldCar.ExtraCamerasChanged -= OnExtraCamerasChanged;
+            }
+
+            newCar.CamerasChanged += OnCamerasChanged;
+            newCar.ExtraCamerasChanged += OnExtraCamerasChanged;
         }
 
         public void SetCar(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin) {
@@ -211,6 +220,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (car == null) {
                     ClearExisting();
                     CarNode = null;
+                    _carBoundingBox = null;
                     _car = null;
                     Scene.UpdateBoundingBox();
                     return;
@@ -228,6 +238,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     loaded = previous.Objects.OfType<Kn5RenderableCar>().First();
                     CopyValues(loaded, CarNode);
                     CarNode = loaded;
+                    _carBoundingBox = null;
+
                     if (_selectSkinLater) {
                         CarNode.SelectSkin(DeviceContextHolder, _selectSkin);
                         _selectSkinLater = false;
@@ -251,6 +263,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _car = car;
                 _selectSkin = null;
                 CarNode = loaded;
+                _carBoundingBox = null;
+
                 Scene.UpdateBoundingBox();
             } catch (Exception e) {
                 MessageBox.Show(e.ToString());
@@ -277,6 +291,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (car == null) {
                     ClearExisting();
                     CarNode = null;
+                    _carBoundingBox = null;
                     _car = null;
                     Scene.UpdateBoundingBox();
                     return;
@@ -294,6 +309,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     loaded = previous.Objects.OfType<Kn5RenderableCar>().First();
                     CopyValues(loaded, CarNode);
                     CarNode = loaded;
+                    _carBoundingBox = null;
+
                     if (_selectSkinLater) {
                         CarNode.SelectSkin(DeviceContextHolder, _selectSkin);
                         _selectSkinLater = false;
@@ -332,6 +349,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _car = car;
                 _selectSkin = null;
                 CarNode = loaded;
+                _carBoundingBox = null;
+
                 Scene.UpdateBoundingBox();
             } catch (Exception e) {
                 MessageBox.Show(e.ToString());
@@ -345,8 +364,6 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public Kn5RenderableCar CarNode { get; private set; }
-
-        public bool PauseRotation { get; set; } = false;
 
         public bool CubemapReflection { get; set; } = false;
 
@@ -384,6 +401,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 _selectSkinLater = false;
                 _carWrapper.Add(CarNode);
+                _carBoundingBox = null;
 
                 ExtendCar(CarNode, _carWrapper);
             }
@@ -461,7 +479,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private Vector3? _previousShadowsTarget;
 
-        private Vector3 _light = Vector3.Normalize(new Vector3(0.2f, 1.0f, 0.8f));
+        private Vector3 _light = Vector3.Normalize(new Vector3(-0.2f, 1.0f, 0.8f));
 
         public Vector3 Light {
             get { return _light; }
@@ -480,16 +498,26 @@ namespace AcTools.Render.Kn5SpecificForward {
             _shadowsDirty = true;
         }
 
+        protected virtual void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
+            _previousShadowsTarget = center;
+            shadows.Update(-Light, center);
+            shadows.DrawScene(DeviceContextHolder, this);
+            _shadowsDirty = false;
+            _sameShadows = false;
+        }
+
+        public bool DelayedBoundingBoxUpdate { get; set; }
+
         protected virtual void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
             var center = ReflectionCubemapPosition;
             if (_shadows != null && (_previousShadowsTarget != center || _shadowsDirty)) {
-                _previousShadowsTarget = center;
-                _shadows.Update(-Light, center);
-                _shadows.DrawScene(DeviceContextHolder, this);
-                _shadowsDirty = false;
-                _sameShadows = false;
+                if (!DelayedBoundingBoxUpdate) {
+                    Scene.UpdateBoundingBox();
+                }
+
+                UpdateShadows(_shadows, center);
             } else {
-                if (!_sameShadows) {
+                if (!_sameShadows && DelayedBoundingBoxUpdate) {
                     Scene.UpdateBoundingBox();
                 }
 
@@ -516,14 +544,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private TextBlockRenderer _textBlock;
 
-        protected override void DrawSpritesInner() {
-            if (!VisibleUi) return;
-
-            if (_textBlock == null) {
-                _textBlock = new TextBlockRenderer(Sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
-            }
-
-            _textBlock.DrawString($@"
+        protected virtual string GetInformationString() {
+            return $@"
 FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
 FXAA: {(UseFxaa ? "Yes" : "No")}
@@ -531,7 +553,17 @@ MSAA: {(UseMsaa ? "Yes" : "No")}
 SSAA: {(TemporaryFlag ? "Yes, Exp." : UseSsaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
 Reused shadows: {(_sameShadows ? "Yes" : "No")}
-Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
+Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
+        }
+
+        protected override void DrawSpritesInner() {
+            if (!VisibleUi) return;
+
+            if (_textBlock == null) {
+                _textBlock = new TextBlockRenderer(Sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
+            }
+
+            _textBlock.DrawString(GetInformationString(),
                     new Vector2(ActualWidth - 300, 20), 16f, UiColor,
                     CoordinateType.Absolute);
 
@@ -578,12 +610,16 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
                         CoordinateType.Absolute);
             }
         }
+        
+        private BoundingBox? _carBoundingBox;
 
         private Vector3 GetCameraOffsetForCenterAlignment(ICamera camera, bool limited) {
-            var carNode = CarNode;
-            if (carNode?.BoundingBox == null) return Vector3.Zero;
+            if (_carBoundingBox == null) {
+                _carBoundingBox = CarNode?.BoundingBox;
+                if (_carBoundingBox == null) return Vector3.Zero;
+            }
 
-            var box = carNode.BoundingBox.Value;
+            var box = _carBoundingBox.Value;
             var corners = box.GetCorners();
 
             if (camera.Position.X >= box.Minimum.X &&
@@ -602,7 +638,6 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             var center = Vector3.Zero;
             for (var i = 0; i < corners.Length; i++) {
                 var vec = Vector3.TransformCoordinate(corners[i], camera.ViewProj);
-                if (vec.Z < 0.01f) continue;
                 if (limited && new Vector2(vec.X, vec.Y).Length() > 15f) return Vector3.Zero;
                 center += vec / corners.Length;
             }
@@ -638,7 +673,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
 
             var offset = GetMaxCornerOffset(c);
             
-            c.FovY = MathF.Clamp(newFovY, MathF.PI * 0.01f, MathF.PI * 0.8f);
+            c.FovY = newFovY.Clamp(MathF.PI * 0.01f, MathF.PI * 0.8f);
             c.SetLens(c.Aspect);
 
             var newOffset = GetMaxCornerOffset(c);
@@ -660,12 +695,23 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             }
         }
 
+        private float _animationsMultipler = 1f;
+
+        public float AnimationsMultipler {
+            get { return _animationsMultipler; }
+            set {
+                if (Equals(value, _animationsMultipler)) return;
+                _animationsMultipler = value;
+                OnPropertyChanged();
+            }
+        }
+
         private float _elapsedCamera;
 
         protected override void OnTick(float dt) {
             base.OnTick(dt);
 
-            CarNode?.OnTick(dt);
+            CarNode?.OnTick(dt * AnimationsMultipler);
 
             const float threshold = 0.001f;
             if (_resetState > threshold) {
@@ -692,7 +738,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
 
                 IsDirty = true;
             } else if (AutoRotate && CameraOrbit != null) {
-                CameraOrbit.Alpha += dt * 0.29f;
+                CameraOrbit.Alpha -= dt * 0.29f;
                 CameraOrbit.Beta += (MathF.Sin(_elapsedCamera * 0.39f) * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
                 _elapsedCamera += dt;
 
@@ -712,6 +758,107 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
             _previousCars.SelectMany(x => x.Objects).DisposeEverything();
             _previousCars.Clear();
             base.Dispose();
+        }
+
+        public enum CarCameraMode {
+            None, FirstPerson, Dashboard, Bonnet, Bumper
+        }
+
+        [CanBeNull]
+        private BaseCamera GetCamera(CarCameraMode mode) {
+            switch (mode) {
+                case CarCameraMode.None:
+                    return null;
+                case CarCameraMode.FirstPerson:
+                    return CarNode?.GetDriverCamera();
+                case CarCameraMode.Dashboard:
+                    return CarNode?.GetDashboardCamera();
+                case CarCameraMode.Bonnet:
+                    return CarNode?.GetBonnetCamera();
+                case CarCameraMode.Bumper:
+                    return CarNode?.GetBumperCamera();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+        }
+
+        private void SwitchCamera(CarCameraMode mode) {
+            var camera = GetCamera(mode);
+            if (camera == null) {
+                UseFpsCamera = false;
+                return;
+            }
+
+            UseFpsCamera = true;
+            Camera = camera;
+            Camera.SetLens(AspectRatio);
+            PrepareCamera(Camera);
+        }
+
+        private void OnCamerasChanged(object sender, EventArgs e) {
+            if (CurrentMode != CarCameraMode.None) {
+                SwitchCamera(CurrentMode);
+            }
+        }
+
+        private void OnExtraCamerasChanged(object sender, EventArgs e) {
+            if (CurrentExtraCamera.HasValue) {
+                SwitchCamera(CurrentExtraCamera);
+            }
+        }
+
+        private CarCameraMode _currentMode;
+
+        public CarCameraMode CurrentMode {
+            get { return _currentMode; }
+            set {
+                if (Equals(value, _currentMode)) return;
+                _currentMode = value;
+                _currentExtraCamera = null;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentExtraCamera));
+                SwitchCamera(value);
+            }
+        }
+
+        public void NextCamera() {
+            CurrentMode = CurrentMode.NextValue();
+        }
+
+        private void SwitchCamera(int? cameraId) {
+            var camera = cameraId == null ? null : CarNode?.GetCamera(cameraId.Value);
+            if (camera == null) {
+                UseFpsCamera = false;
+                return;
+            }
+
+            UseFpsCamera = true;
+            Camera = camera;
+            Camera.SetLens(AspectRatio);
+            PrepareCamera(Camera);
+        }
+
+        private int? _currentExtraCamera;
+
+        public int? CurrentExtraCamera {
+            get { return _currentExtraCamera; }
+            set {
+                if (value == _currentExtraCamera) return;
+                _currentExtraCamera = value;
+                _currentMode = CarCameraMode.None;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentMode));
+                SwitchCamera(value);
+            }
+        }
+
+        public void NextExtraCamera() {
+            var cameras = CarNode?.GetCamerasCount();
+            if (!cameras.HasValue || cameras == 0) {
+                CurrentExtraCamera = null;
+            } else {
+                CurrentExtraCamera = CurrentExtraCamera.HasValue ? (CurrentExtraCamera.Value + 1) % cameras : 0;
+            }
         }
     }
 }

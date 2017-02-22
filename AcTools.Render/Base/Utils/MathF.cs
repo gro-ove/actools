@@ -11,32 +11,20 @@ namespace AcTools.Render.Base.Utils {
         // ReSharper disable once InconsistentNaming
         public const float PI = (float)Math.PI;
 
-        public static float Abs(float a) {
-            return a < 0.0f ? -a : a;
-        }
-
-        public static float Sin(float rad) {
+        public static float Sin(this float rad) {
             return (float)Math.Sin(rad);
         }
 
-        public static float Cos(float rad) {
+        public static float Cos(this float rad) {
             return (float)Math.Cos(rad);
         }
 
-        public static float ToRadians(float degrees) {
+        public static float ToRadians(this float degrees) {
             return PI * degrees / 180.0f;
         }
 
-        public static float ToDegrees(float radians) {
+        public static float ToDegrees(this float radians) {
             return radians * (180.0f / PI);
-        }
-
-        public static float Clamp(float value, float min, float max) {
-            return Math.Max(min, Math.Min(value, max));
-        }
-
-        public static int Clamp(int value, int min, int max) {
-            return Math.Max(min, Math.Min(value, max));
         }
 
         public static float Random() {
@@ -47,7 +35,7 @@ namespace AcTools.Render.Base.Utils {
             return min + (float)RandomObject.NextDouble() * (max - min);
         }
 
-        public static Matrix InverseTranspose(Matrix m) {
+        public static Matrix InverseTranspose(this Matrix m) {
             var a = m;
             a.M41 = a.M42 = a.M43 = 0;
             a.M44 = 1;
@@ -55,11 +43,11 @@ namespace AcTools.Render.Base.Utils {
             return Matrix.Transpose(Matrix.Invert(a));
         }
 
-        public static float Tan(float a) {
+        public static float Tan(this float a) {
             return (float)Math.Tan(a);
         }
 
-        public static float Atan(float f) {
+        public static float Atan(this float f) {
             return (float)Math.Atan(f);
         }
 
@@ -96,16 +84,16 @@ namespace AcTools.Render.Base.Utils {
             return f;
         }
 
-        public static float Sqrt(float f) {
+        public static float Sqrt(this float f) {
             return (float)Math.Sqrt(f);
         }
 
-        public static float Exp(float f) {
+        public static float Exp(this float f) {
             return (float)Math.Exp(f);
         }
 
-        public static float Pow(float x, float y) {
-            return (float) Math.Pow(x, y);
+        public static float Pow(this float x, float y) {
+            return (float)Math.Pow(x, y);
         }
 
         public static Vector3 RandVector(Vector3 min, Vector3 max) {
@@ -127,8 +115,8 @@ namespace AcTools.Render.Base.Utils {
             return theta;
         }
 
-        public static float Acos(float f) {
-            return (float) Math.Acos(f);
+        public static float Acos(this float f) {
+            return (float)Math.Acos(f);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers {
+namespace AcTools.Utils.Helpers {
     public static class EnumExtension {
         public static string GetDescription([NotNull] this Enum value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -20,6 +20,22 @@ namespace AcManager.Tools.Helpers {
 
         public static T[] GetValues<T>() where T : struct {
             return Enum.GetValues(typeof(T)).OfType<T>().ToArray();
+        }
+
+        public static T NextValue<T>(this T value) where T : struct {
+            return Enum.GetValues(typeof(T)).OfType<T>().SkipWhile(x => !Equals(x, value)).Skip(1).FirstOrDefault();
+        }
+
+        public static T PreviousValue<T>(this T value) where T : struct {
+            T? previous = null;
+            foreach (var val in Enum.GetValues(typeof(T)).OfType<T>()) {
+                if (Equals(val, value)) {
+                    return previous ?? Enum.GetValues(typeof(T)).OfType<T>().Last();
+                }
+
+                previous = val;
+            }
+            return default(T);
         }
     }
 }

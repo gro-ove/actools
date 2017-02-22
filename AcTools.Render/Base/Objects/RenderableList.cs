@@ -78,13 +78,13 @@ namespace AcTools.Render.Base.Objects {
         private RenderableList _lookAt;
 
         private static Matrix RotateToFace(Vector3 o, Vector3 p, Vector3 u) {
-            var d = Vector3.Normalize(o - p);
-            var right = -Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
-            var up = -Vector3.Cross(d, right);
+            var d = Vector3.Normalize(p - o);
+            var s = Vector3.Normalize(Vector3.Cross(d, Vector3.Normalize(u)));
+            var v = Vector3.Cross(s, d);
             return SlimDxExtension.ToMatrix(
                     d.X, d.Y, d.Z, 0,
-                    up.X, up.Y, up.Z, 0,
-                    right.X, right.Y, right.Z, 0,
+                    v.X, v.Y, v.Z, 0,
+                    s.X, s.Y, s.Z, 0,
                     o.X, o.Y, o.Z, 1);
         }
 

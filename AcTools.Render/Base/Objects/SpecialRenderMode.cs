@@ -15,7 +15,7 @@ namespace AcTools.Render.Base.Objects {
         DeferredTransparentDepth,   // ?
         DeferredTransparentForw,    // for transparent surfaces behind something transparent
         DeferredTransparentDef,     // for most top transparent surfaces, maximum of niceness
-
+        
         Reflection,
         Shadow
     }

@@ -226,7 +226,7 @@ namespace AcManager.Controls {
 
         private void UpdateCountryFlag(ServerEntry n) {
             if (HideSourceIcon != LanOnlineSource.Key) {
-                _countryFlagImage.Source = CountryIdToImageConverter.Instance.Convert(n.CountryId);
+                _countryFlagImage.Source = CountryIdToImageConverter.Convert(n.CountryId);
             } else if (_countryFlagImage.Visibility != Visibility.Hidden) {
                 _countryFlagImage.Visibility = Visibility.Collapsed;
 

@@ -14,7 +14,7 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
         private BlendState _transparentBlendState, _addBlendState;
-        private RasterizerState _doubleSidedState, _invertedState, _wireframeState, _wireframeInvertedState;
+        private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -88,6 +88,15 @@ namespace AcTools.Render.Base {
                     RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 }));
 
+        public RasterizerState DoubleSidedSmoothLinesState => _doubleSidedSmoothLinesState ?? (_doubleSidedSmoothLinesState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    IsAntialiasedLineEnabled = true,
+                    FillMode = FillMode.Solid,
+                    CullMode = CullMode.None,
+                    IsFrontCounterclockwise = true,
+                    IsDepthClipEnabled = false
+                }));
+
         public RasterizerState DoubleSidedState => _doubleSidedState ?? (_doubleSidedState =
                 RasterizerState.FromDescription(_device, new RasterizerStateDescription {
                     FillMode = FillMode.Solid,
@@ -131,6 +140,7 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _transparentBlendState);
             DisposeHelper.Dispose(ref _addBlendState);
             DisposeHelper.Dispose(ref _doubleSidedState);
+            DisposeHelper.Dispose(ref _doubleSidedSmoothLinesState);
             DisposeHelper.Dispose(ref _invertedState);
             DisposeHelper.Dispose(ref _wireframeState);
             DisposeHelper.Dispose(ref _wireframeInvertedState);

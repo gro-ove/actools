@@ -23,15 +23,18 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\mtx_103c\mtx_103c.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_gta\alfaromeo_gta.kn5";
-            kn5file = @"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5";
 
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_mercedes_c9\mercedes_c9.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_nissan_gtr\nissan_gtr.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\mercedes_sls\mercedes_sls.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_mclaren_p1\mclaren_p1.kn5";
-            kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_countach\lamborghini_countach.kn5";
-            kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_miura_sv\lamborghini_miura_sv.kn5";
-            kn5file = @"C:\Users\Main\Desktop\peugeot_504.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_917_30\porsche_917_30.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_nissan_r33_drift\acc_nissan_r33_drift.kn5";
+            kn5file = @"D:\Games\Assetto Corsa\content\cars\ktm_xbow_r\ktm_xbow_r.kn5";
+            kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ks_porsche_911_gt1\porsche_911_gt1.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_countach\lamborghini_countach.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_miura_sv\lamborghini_miura_sv.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lotus_25\lotus_25.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lotus_72d\lotus_72d.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\lotus_49\lotus_49.kn5";

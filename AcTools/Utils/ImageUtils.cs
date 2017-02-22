@@ -6,10 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ImageMagick;
 using JetBrains.Annotations;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -74,29 +72,7 @@ namespace AcTools.Utils {
         // Temporary solution?
         public static Func<Func<object>, object> SafeMagickWrapper { get; set; }
 
-        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
-        public static Image LoadFromFileAsImage(string filename, bool wrapping = true) {
-            if (wrapping && SafeMagickWrapper != null) {
-                return SafeMagickWrapper(() => LoadFromFileAsImage(filename, false)) as Image;
-            }
-            
-            using (var image = new MagickImage(filename)) {
-                return image.ToBitmap();
-            }
-        }
-
         private const MagickFormat CommonFormat = MagickFormat.Bmp;
-
-        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadFromFileAsConventionalBuffer(string filename, bool wrapping = true) {
-            if (wrapping && SafeMagickWrapper != null) {
-                return SafeMagickWrapper(() => LoadFromFileAsConventionalBuffer(filename, false)) as byte[];
-            }
-            
-            using (var image = new MagickImage(filename)) {
-                return image.ToByteArray(CommonFormat);
-            }
-        }
 
         [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
         public static byte[] LoadAsConventionalBuffer(byte[] data, bool wrapping = true) {
@@ -263,46 +239,85 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ResizeFile(string source, string destination, int width, int height) {
-            using (var bitmap = new Bitmap(width, height))
-            using (var graphics = Graphics.FromImage(bitmap)) {
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var image = Image.FromFile(source)) {
-                    var k = Math.Min((double)image.Width / width, (double)image.Height / height);
-                    var nw = (float)(image.Width / k);
-                    var nh = (float)(image.Height / k);
-                    graphics.DrawImage(image, (nw - width) / 2f, (nh - height) / 2f, nw, nh);
-                }
-
-                bitmap.Save(destination, ImageFormat.Png);
-            }
-        }
+        public static bool OptionConvertCombined = true;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ConvertImageMagick(Stream source, Stream destination, int quality) {
+        private static void ConvertImageMagick(Stream source, Stream destination, Size? resize, int quality) {
             using (var image = new MagickImage(source)) {
+                if (resize.HasValue) {
+                    var k = Math.Max((double)resize.Value.Height / image.Height, (double)resize.Value.Width / image.Width);
+                    image.Interpolate = PixelInterpolateMethod.Catrom;
+                    image.FilterType = FilterType.Lanczos;
+                    image.Sharpen();
+                    image.Resize((int)(k * image.Width), (int)(k * image.Height));
+                    image.Crop(resize.Value.Width, resize.Value.Height, Gravity.Center);
+                }
+
                 image.Quality = quality;
                 image.Density = new Density(96, 96);
                 image.Write(destination, MagickFormat.Jpeg);
             }
         }
 
-        public static void Convert(Stream source, Stream destination, int quality = 95) {
-            if (IsMagickSupported) {
-                ConvertImageMagick(source, destination, quality);
-            } else {
-                var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
-                var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, quality > 85 ? 100L : quality) } };
-                using (var image = Image.FromStream(source)) {
-                    image.Save(destination, encoder, parameters);
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ConvertCombined(Stream source, Stream destination, Size? resize, int quality) {
+            if (resize == null) {
+                ConvertImageMagick(source, destination, null, quality);
+                return;
+            }
+
+            // Because Magick.NET is terribly slow at resizing big images…
+            using (var memory = new MemoryStream()) {
+                using (var image = Image.FromStream(source))
+                using (var resized = image.HighQualityResize(resize.Value)) {
+                    resized.Save(memory, ImageFormat.Bmp);
+                }
+                
+                using (var image = new MagickImage(memory)) {
+                    image.Quality = quality;
+                    image.Density = new Density(96, 96);
+                    image.Write(destination, MagickFormat.Jpeg);
                 }
             }
         }
 
-        public static void Convert(string source, string destination, int quality = 95) {
+        public static Image HighQualityResize(this Image img, Size size) {
+            var percent = Math.Min(size.Width / (float)img.Width, size.Height / (float)img.Height);
+            var width = (int)(img.Width * percent);
+            var height = (int)(img.Height * percent);
+
+            var b = new Bitmap(width, height);
+            using (var g = Graphics.FromImage(b)) {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, width, height);
+            }
+
+            return b;
+        }
+
+        public static void Convert(Stream source, Stream destination, Size? resize, int quality = 95) {
+            if (IsMagickSupported) {
+                if (OptionConvertCombined) {
+                    ConvertCombined(source, destination, resize, quality);
+                } else {
+                    ConvertImageMagick(source, destination, resize, quality);
+                }
+            } else {
+                var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
+                var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, quality > 85 ? 100L : quality) } };
+                using (var image = Image.FromStream(source)) {
+                    if (resize.HasValue) {
+                        using (var resized = image.HighQualityResize(resize.Value)) {
+                            resized.Save(destination, encoder, parameters);
+                        }
+                    } else {
+                        image.Save(destination, encoder, parameters);
+                    }
+                }
+            }
+        }
+
+        public static void Convert(string source, string destination, Size? resize, int quality = 95) {
             if (File.Exists(destination)) {
                 try {
                     File.Delete(destination);
@@ -314,8 +329,16 @@ namespace AcTools.Utils {
 
             using (var sourceStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var destinationStream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
-                Convert(sourceStream, destinationStream, quality);
+                Convert(sourceStream, destinationStream, resize, quality);
             }
+        }
+
+        public static void Convert(Stream source, Stream destination, int quality = 95) {
+            Convert(source, destination, null, quality);
+        }
+
+        public static void Convert(string source, string destination, int quality = 95) {
+            Convert(source, destination, null, quality);
         }
     }
 }

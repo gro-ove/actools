@@ -174,7 +174,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     DrawShadow(Vector3.UnitY, Vector3.UnitZ);
                 } else {
                     var x = MathF.Random(-1f, 1f);
-                    var y = MathF.Random(0.1f, 1f) / MathF.Clamp(DiffusionLevel, 0.001f, 1.0f);
+                    var y = MathF.Random(0.1f, 1f) / DiffusionLevel.Clamp(0.001f, 1.0f);
                     var z = MathF.Random(-1f, 1f);
 
                     DrawShadow(new Vector3(x, y, z));
@@ -390,24 +390,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private static InputLayouts.VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
             var size = vertices.Length;
             var result = new InputLayouts.VerticeP[size];
-
-            if (Kn5RenderableObject.FlipByX) {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    result[i] = new InputLayouts.VerticeP(x.Co.ToVector3FixX());
-                }
-            } else {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    result[i] = new InputLayouts.VerticeP(x.Co.ToVector3());
-                }
+            
+            for (var i = 0; i < size; i++) {
+                var x = vertices[i];
+                result[i] = new InputLayouts.VerticeP(x.Co.ToVector3());
             }
 
             return result;
         }
 
         private static ushort[] Convert(ushort[] indices) {
-            return Kn5RenderableObject.FlipByX ? indices.ToIndicesFixX() : indices;
+            return indices.ToIndicesFixX();
         }
 
         public Kn5RenderableDepthOnlyObject(Kn5Node node, bool forceVisible = false) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {

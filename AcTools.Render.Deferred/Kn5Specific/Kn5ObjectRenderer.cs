@@ -15,6 +15,7 @@ using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -274,7 +275,7 @@ namespace AcTools.Render.Deferred.Kn5Specific {
             if (c == null) return;
 
             var delta = newFovY - c.FovY;
-            c.FovY = MathF.Clamp(newFovY, MathF.PI * 0.01f, MathF.PI * 0.8f);
+            c.FovY = newFovY.Clamp(MathF.PI * 0.01f, MathF.PI * 0.8f);
             c.SetLens(c.Aspect);
             c.Zoom(-delta * 4f);
         }

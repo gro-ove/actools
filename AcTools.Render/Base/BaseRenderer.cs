@@ -308,6 +308,23 @@ namespace AcTools.Render.Base {
 
         public Texture2D DepthBuffer => _depthBuffer;
 
+        [CanBeNull]
+        protected virtual Tuple<Texture2D, DepthStencilView> CreateDepthBuffer(int width, int height) {
+            var tex = new Texture2D(Device, new Texture2DDescription {
+                Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
+                ArraySize = 1,
+                MipLevels = 1,
+                Width = width,
+                Height = height,
+                SampleDescription = SampleDescription,
+                Usage = ResourceUsage.Default,
+                BindFlags = BindFlags.DepthStencil,
+                CpuAccessFlags = CpuAccessFlags.None,
+                OptionFlags = ResourceOptionFlags.None
+            });
+            return Tuple.Create(tex, new DepthStencilView(Device, tex));
+        }
+
         protected virtual void Resize() {
             var width = Width;
             var height = Height;
@@ -339,20 +356,11 @@ namespace AcTools.Render.Base {
             }
 
             _renderView = new RenderTargetView(Device, _renderBuffer);
-            _depthBuffer = new Texture2D(Device, new Texture2DDescription {
-                Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
-                ArraySize = 1,
-                MipLevels = 1,
-                Width = width,
-                Height = height,
-                SampleDescription = SampleDescription,
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            });
 
-            _depthView = new DepthStencilView(Device, _depthBuffer);
+            var depth = CreateDepthBuffer(width, height);
+            _depthBuffer = depth?.Item1;
+            _depthView = depth?.Item2;
+            
             DeviceContext.Rasterizer.SetViewports(OutputViewport);
             Sprite?.RefreshViewport();
 

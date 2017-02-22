@@ -77,18 +77,59 @@ namespace AcTools.Render.Wrapper {
             Renderer.Height = Form.ClientSize.Height;
         }
 
+        private static readonly Vector2[] Directions = {
+            new Vector2(-0.7071f, -0.7071f),
+            new Vector2(0, -1f),
+            new Vector2(0.7071f, -0.7071f),
+            new Vector2(-1f, 0),
+            new Vector2(0, 0),
+            new Vector2(1f, 0),
+            new Vector2(-0.7071f, 0.7071f),
+            new Vector2(0, 1f),
+            new Vector2(0.7071f, 0.7071f),
+        };
+
         protected override void OnTick(object sender, TickEventArgs args) {
             base.OnTick(sender, args);
-            
-            if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) {
-                if (_renderer.CarNode == null) return;
 
-                if (User32.IsKeyPressed(Keys.Left)) {
-                    _renderer.CarNode.SteerDeg += (30f - _renderer.CarNode.SteerDeg) / 20f;
+            if (Form.Focused && (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu))) {
+                if (_renderer.CarNode != null) {
+                    var steeringSpeed = 30f * args.DeltaTime;
+
+                    if (User32.IsKeyPressed(Keys.Left)) {
+                        _renderer.CarNode.SteerDeg = (_renderer.CarNode.SteerDeg - steeringSpeed).Clamp(-30f, 30f);
+                    }
+
+                    if (User32.IsKeyPressed(Keys.Right)) {
+                        _renderer.CarNode.SteerDeg = (_renderer.CarNode.SteerDeg + steeringSpeed).Clamp(-30f, 30f);
+                    }
                 }
 
-                if (User32.IsKeyPressed(Keys.Right)) {
-                    _renderer.CarNode.SteerDeg += (-30f - _renderer.CarNode.SteerDeg) / 20f;
+                var renderer = _renderer as DarkKn5ObjectRenderer;
+                if (renderer != null) {
+                    if (User32.IsKeyPressed(Keys.Up)) {
+                        renderer.ReflectionPower += (1f - renderer.ReflectionPower) / 12f;
+                    }
+
+                    if (User32.IsKeyPressed(Keys.Down)) {
+                        renderer.ReflectionPower += (0f - renderer.ReflectionPower) / 12f;
+                    }
+
+                    var offset = Vector2.Zero;
+                    var offsetCount = 0;
+
+                    for (var i = Keys.NumPad1; i <= Keys.NumPad9; i++) {
+                        if (User32.IsKeyPressed(i)) {
+                            offset += (Directions[i - Keys.NumPad1] + offset * offsetCount) / ++offsetCount;
+                        }
+                    }
+
+                    if (offsetCount > 0) {
+                        var right = Vector3.Cross(renderer.Light, Vector3.UnitY);
+                        var up = Vector3.Cross(renderer.Light, right);
+                        var upd = renderer.Light + (up * offset.Y + right * offset.X) * args.DeltaTime;
+                        renderer.Light = upd;
+                    }
                 }
             }
         }
@@ -114,7 +155,19 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.End:
-                    _renderer.AutoAdjustTarget = true;
+                    _renderer.AutoAdjustTarget = !_renderer.AutoAdjustTarget;
+                    break;
+
+                case Keys.F1:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        _renderer.NextCamera();
+                    }
+                    break;
+
+                case Keys.F6:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        _renderer.NextExtraCamera();
+                    }
                     break;
 
                 case Keys.F7:
@@ -152,18 +205,19 @@ namespace AcTools.Render.Wrapper {
                         }
 
                         _renderer.KeepFxaaWhileShooting = !downscale;
-                        using (var image = _renderer.Shot(multipler, 1d, true)) {
-                            var directory = FileUtils.GetDocumentsScreensDirectory();
-                            FileUtils.EnsureDirectoryExists(directory);
-                            var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
-                            if (downscale) {
-                                using (var down = image.HighQualityResize(new Size(image.Width / 2, image.Height / 2))) {
-                                    down.Save(filename);
-                                }
-                            } else {
-                                using (var down = image.CopyImage()) {
-                                    down.Save(filename);
-                                }
+
+                        var directory = FileUtils.GetDocumentsScreensDirectory();
+                        FileUtils.EnsureDirectoryExists(directory);
+                        var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
+
+                        using (var stream = new MemoryStream()) {
+                            _renderer.Shot(multipler, 1d, stream, true);
+                            stream.Position = 0;
+
+                            using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
+                                ImageUtils.Convert(stream, destination, downscale
+                                        ? new Size((int)(_renderer.ActualWidth * multipler / 2), (int)(_renderer.ActualHeight * multipler / 2))
+                                        : (Size?)null);
                             }
                         }
                     }
@@ -172,6 +226,10 @@ namespace AcTools.Render.Wrapper {
                 case Keys.F:
                     if (args.Control && !args.Alt && !args.Shift) {
                         _renderer.UseSmaa = !_renderer.UseSmaa;
+                    } else if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.FansEnabled = !_renderer.CarNode.FansEnabled;
+                        }
                     } else {
                         _renderer.UseFxaa = !_renderer.UseFxaa;
                     }
@@ -180,10 +238,14 @@ namespace AcTools.Render.Wrapper {
                 case Keys.M:
                     if (args.Control && !args.Alt && !args.Shift) {
                         _renderer.UseSsaa = !_renderer.UseSsaa;
-                    } else if (!args.Control && args.Alt && !args.Shift) {
+                    } else if (args.Alt && !args.Shift) {
                         var d = _renderer as DarkKn5ObjectRenderer;
                         if (d != null) {
-                            d.FlatMirror = !d.FlatMirror;
+                            if (args.Control) {
+                                d.FlatMirrorBlurred = !d.FlatMirrorBlurred;
+                            } else {
+                                d.FlatMirror = !d.FlatMirror;
+                            }
                         }
                     } else if (!args.Control && !args.Alt && args.Shift) {
                         _renderer.TemporaryFlag = !_renderer.TemporaryFlag;
@@ -193,7 +255,13 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.W:
-                    _renderer.ShowWireframe = !_renderer.ShowWireframe;
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.WipersEnabled = !_renderer.CarNode.WipersEnabled;
+                        }
+                    } else {
+                        _renderer.ShowWireframe = !_renderer.ShowWireframe;
+                    }
                     break;
 
                 case Keys.B:
@@ -207,14 +275,19 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.D:
-                    if (!args.Shift && _renderer.CarNode != null) {
-                        if (!args.Control) {
-                            _renderer.CarNode.RightDoorOpen = !_renderer.CarNode.RightDoorOpen;
-                            if (!args.Alt) {
+                    if (_renderer.CarNode != null) {
+                        if (!args.Shift) {
+                            if (!args.Control && !args.Alt) {
+                                var all = _renderer.CarNode.RightDoorOpen && _renderer.CarNode.LeftDoorOpen;
+                                _renderer.CarNode.RightDoorOpen = !all;
+                                _renderer.CarNode.LeftDoorOpen = !all;
+                            } else if (!args.Control) {
+                                _renderer.CarNode.RightDoorOpen = !_renderer.CarNode.RightDoorOpen;
+                            } else {
                                 _renderer.CarNode.LeftDoorOpen = !_renderer.CarNode.LeftDoorOpen;
                             }
-                        } else if (!args.Alt) {
-                            _renderer.CarNode.LeftDoorOpen = !_renderer.CarNode.LeftDoorOpen;
+                        } else if (args.Control && !args.Alt) {
+                            _renderer.CarNode.IsDriverVisible = !_renderer.CarNode.IsDriverVisible;
                         }
                     }
                     break;
@@ -231,7 +304,72 @@ namespace AcTools.Render.Wrapper {
                     }
                     break;
 
+                case Keys.NumPad7:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleExtra(0);
+                    }
+                    break;
+
+                case Keys.NumPad8:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleExtra(1);
+                    }
+                    break;
+
+                case Keys.NumPad9:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleExtra(2);
+                    }
+                    break;
+
+                case Keys.NumPad4:
+                    if (!args.Alt) {
+                        _renderer.AnimationsMultipler = 0.2f;
+                    }
+                    break;
+
+                case Keys.NumPad5:
+                    if (!args.Alt) {
+                        _renderer.AnimationsMultipler = 1f;
+                    }
+                    break;
+
+                case Keys.NumPad6:
+                    if (!args.Alt) {
+                        _renderer.AnimationsMultipler = 2.5f;
+                    }
+                    break;
+
+                case Keys.NumPad0:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleWing(0);
+                    }
+                    break;
+
+                case Keys.NumPad1:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleWing(1);
+                    }
+                    break;
+
+                case Keys.NumPad2:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleWing(2);
+                    }
+                    break;
+
+                case Keys.NumPad3:
+                    if (!args.Alt) {
+                        _renderer.CarNode?.ToggleWing(3);
+                    }
+                    break;
+
                 case Keys.S:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            //_renderer.CarNode.WingsTest = !_renderer.CarNode.WingsTest;
+                        }
+                    }
                     if (!args.Control && args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.SeatbeltOnActive = !_renderer.CarNode.SeatbeltOnActive;

@@ -9,10 +9,10 @@ namespace AcTools.Render.Kn5Specific.Utils {
         [CanBeNull]
         public CarData.LightObject Description { get; set; }
 
-        private bool _isEnabled;
+        private bool? _isEnabled;
 
         public bool IsHeadlightEnabled {
-            get { return _isEnabled; }
+            get { return _isEnabled ?? false; }
             set {
                 if (Equals(_isEnabled, value)) return;
                 _isEnabled = value;
@@ -20,10 +20,10 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
         }
 
-        private bool _isBrakeEnabled;
+        private bool? _isBrakeEnabled;
 
         public bool IsBrakeEnabled {
-            get { return _isBrakeEnabled; }
+            get { return _isBrakeEnabled ?? false; }
             set {
                 if (Equals(value, _isBrakeEnabled)) return;
                 _isBrakeEnabled = value;

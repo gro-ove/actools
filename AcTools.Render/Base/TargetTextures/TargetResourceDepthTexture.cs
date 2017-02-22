@@ -13,17 +13,47 @@ namespace AcTools.Render.Base.TargetTextures {
 
             DepthView = new DepthStencilView(holder.Device, Texture, new DepthStencilViewDescription {
                 Flags = DepthStencilViewFlags.None,
-                Format = Format.D24_UNorm_S8_UInt,
+                Format = GetDepthStencilViewFormat(Description.Format),
                 Dimension = DepthStencilViewDimension.Texture2D,
                 MipSlice = 0
             });
 
             View = new ShaderResourceView(holder.Device, Texture, new ShaderResourceViewDescription {
-                Format = Format.R24_UNorm_X8_Typeless,
+                Format = GetShaderResourceViewFormat(Description.Format),
                 Dimension = ShaderResourceViewDimension.Texture2D,
                 MipLevels = 1,
                 MostDetailedMip = 0
             });
+        }
+
+        private static Format GetDepthStencilViewFormat(Format texture) {
+            switch (texture) {
+                case Format.R16_Typeless:
+                    return Format.R16_Float;
+                case Format.R32_Typeless:
+                    return Format.R32_Float;
+                case Format.R24G8_Typeless:
+                    return Format.D24_UNorm_S8_UInt;
+                case Format.R32G8X24_Typeless:
+                    return Format.R32_Float_X8X24_Typeless;
+                default:
+                    return texture;
+            }
+        }
+
+        private static Format GetShaderResourceViewFormat(Format texture) {
+            switch (texture) {
+                case Format.R16_Typeless:
+                    return Format.R16_Typeless;
+                case Format.R32_Typeless:
+                    return Format.R16_Typeless;
+                case Format.R24G8_Typeless:
+                    return Format.R24_UNorm_X8_Typeless;
+                case Format.R32G8X24_Typeless:
+                    return Format.R32_Float_X8X24_Typeless;
+                default:
+                    return texture;
+            }
         }
 
         public override void Dispose() {
@@ -35,16 +65,20 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
-        public static TargetResourceDepthTexture Create() {
+        public static TargetResourceDepthTexture Create(Format format) {
             return new TargetResourceDepthTexture(new Texture2DDescription {
                 ArraySize = 1,
                 MipLevels = 1,
-                Format = Format.R24G8_Typeless,
+                Format = format,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil | BindFlags.ShaderResource,
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None
             });
+        }
+
+        public static TargetResourceDepthTexture Create() {
+            return Create(Format.R24G8_Typeless);
 
             /*
                 ArraySize = 1,

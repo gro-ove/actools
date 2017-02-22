@@ -623,6 +623,21 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _saveDevAppsInAppsPresets;
+
+            public bool SaveDevAppsInAppsPresets {
+                get {
+                    return _saveDevAppsInAppsPresets ??
+                            (_saveDevAppsInAppsPresets = ValuesStorage.GetBool("Settings.DriveSettings.SaveDevAppsInAppsPresets", false)).Value;
+                }
+                set {
+                    if (Equals(value, _saveDevAppsInAppsPresets)) return;
+                    _saveDevAppsInAppsPresets = value;
+                    ValuesStorage.Set("Settings.DriveSettings.SaveDevAppsInAppsPresets", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _copyFilterToSystemForOculus;
 
             public bool CopyFilterToSystemForOculus {

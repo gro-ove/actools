@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

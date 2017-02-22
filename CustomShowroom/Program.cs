@@ -40,7 +40,7 @@ namespace CustomShowroom {
         }
 
         [STAThread]
-        private static int Main(string[] a) {
+        private static int Main(string[] a){
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
@@ -176,6 +176,7 @@ namespace CustomShowroom {
                 using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File))) {
                     renderer.UseSprite = true;
                     renderer.VisibleUi = true;
+                    // renderer.FlatMirror = true;
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;

@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AcManager.ContentRepair;
 using AcManager.Controls;
+using AcManager.Controls.Converters;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -134,6 +135,12 @@ namespace AcManager {
             LimitedStorage.Initialize();
 
             DataProvider.Initialize();
+            CountryIdToImageConverter.Initialize(
+                FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.CountryFlags),
+                FilesStorage.Instance.GetDirectory(FilesStorage.DataUserDirName, ContentCategory.CountryFlags));
+            FilesStorage.Instance.Watcher(ContentCategory.CountryFlags).Update += (sender, args) => {
+                CountryIdToImageConverter.ResetCache();
+            };
 
             TestKey();
 

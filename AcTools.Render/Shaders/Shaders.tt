@@ -291,6 +291,12 @@ namespace <#= resultNamespace #> {
 				v.Contains("true") || v.Contains("false") ? "bool" :
 				v.Contains(".") ? "float" : "int";
 			var isConst = !typeName.StartsWith("Vector");
+
+			if (Regex.IsMatch(constName, @"^(?:Enable|Disable)[A-Z]|Flag$") && (constValue == "0" || constValue == "1")){
+				typeName = "bool";
+				constValue = constValue == "1" ? "true" : "false";
+			}
+
 			consts.Add("public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		");
 		}
 

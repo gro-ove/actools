@@ -11,26 +11,6 @@ using SlimDX.Windows;
 using Timer = System.Windows.Forms.Timer;
 
 namespace AcTools.Render.Wrapper {
-    public static class ImageExtension {
-        public static Image HighQualityResize(this Image img, Size size) {
-            var percent = Math.Min(size.Width / (float)img.Width, size.Height / (float)img.Height);
-            var width = (int)(img.Width * percent);
-            var height = (int)(img.Height * percent);
-
-            var b = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(b)) {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(img, 0, 0, width, height);
-            }
-
-            return b;
-        }
-
-        public static Image CopyImage(this Image img) {
-            return new Bitmap(img);
-        }
-    }
-
     public class BaseFormWrapper {
         private readonly string _title;
 

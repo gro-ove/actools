@@ -63,7 +63,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechStandard).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }
 }

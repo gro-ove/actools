@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -82,9 +83,32 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public virtual void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechStandard).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
         public void Dispose() {}
+
+        #region Bones
+        /// <summary>
+        /// Call only if material implements ISkinnedMaterial! It would require a different input format.
+        /// </summary>
+        /// <param name="bones"></param>
+        protected void SetBones(Matrix[] bones) {
+            if (bones.Length > EffectDarkMaterial.MaxBones) {
+                WarnAboutBones(bones.Length);
+                Effect.FxBoneTransforms.SetMatrixArray(bones, 0, EffectDarkMaterial.MaxBones);
+            } else {
+                Effect.FxBoneTransforms.SetMatrixArray(bones);
+            }
+        }
+
+        private static bool _warnedAboutBones;
+
+        protected static void WarnAboutBones(int count) {
+            if (_warnedAboutBones) return;
+            _warnedAboutBones = true;
+            MessageBox.Show($"Too much bones: {count} (shader limitation: {EffectDarkMaterial.MaxBones})");
+        }
+        #endregion
     }
 }

@@ -86,6 +86,7 @@ namespace AcTools.Render.Base {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [NotNull]
         public T GetEffect<T>() where T : IEffectWrapper, new() {
             IEffectWrapper result;
             var type = typeof(T);

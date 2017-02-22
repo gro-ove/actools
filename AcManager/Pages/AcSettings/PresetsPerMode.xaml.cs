@@ -161,7 +161,8 @@ namespace AcManager.Pages.AcSettings {
                                                             Logging.Warning($"Cannot load file {x.Name}: {e}");
                                                             return new Mode[0];
                                                         }
-                                                    }));
+                                                    })
+                                                    .OrderBy(x => x.DisplayName));
                 foreach (var entry in Entries.OfType<PresetPerModeUi>()) {
                     entry.OnConditionChanged();
                 }

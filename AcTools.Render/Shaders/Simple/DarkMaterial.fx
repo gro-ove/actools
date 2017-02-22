@@ -80,6 +80,12 @@ cbuffer cbPerFrame {
 	float3 gBackgroundColor;
 }
 
+cbuffer cbTextureFlatMirror {
+	// matrix gWorldViewProjInv;
+	float4 gScreenSize;
+	float gFlatMirrorPower;
+};
+
 // z-buffer tricks if needed
 #define FixPosH(x) (x)
 
@@ -99,7 +105,7 @@ float4 CalculatePosH(float3 posL) {
 TextureCube gReflectionCubemap;
 
 // shadows
-#define ENABLE_SHADOWS true
+#define ENABLE_SHADOWS 1
 #define NUM_SPLITS 1
 #define SHADOW_MAP_SIZE 2048
 #include "Shadows.fx"
@@ -112,8 +118,17 @@ SamplerState samAnisotropic {
 	AddressV = WRAP;
 };
 
-float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 N, float3 T, float3 B) {
-	return mul(2.0 * normalMapSample - 1.0, float3x3(T, B, N));
+float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW){
+	float3 normalT = float3(
+		2.0 * normalMapSample.x - 1.0,
+		1.0 - 2.0 * normalMapSample.y,
+		2.0 * normalMapSample.z - 1.0);
+
+	float3 N = unitNormalW;
+	float3 T = normalize(tangentW - dot(tangentW, N)*N);
+	float3 B = normalize(cross(N, T));
+
+	return mul(normalT, float3x3(T, B, N));
 }
 
 struct pt_VS_IN {
@@ -159,7 +174,6 @@ struct PS_IN {
 	float3 NormalW    : NORMAL;
 	float2 Tex        : TEXCOORD;
 	float3 TangentW   : TANGENT;
-	float3 BitangentW : BITANGENT;
 };
 
 PS_IN vs_main(VS_IN vin) {
@@ -168,7 +182,6 @@ PS_IN vs_main(VS_IN vin) {
 	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
 	vout.NormalW = mul(vin.NormalL, (float3x3)gWorldInvTranspose);
 	vout.TangentW = mul(vin.TangentL, (float3x3)gWorldInvTranspose);
-	vout.BitangentW = mul(cross(vin.NormalL, vin.TangentL), (float3x3)gWorldInvTranspose);
 
 	vout.PosH = CalculatePosH(vin.PosL);
 	vout.Tex = vin.Tex;
@@ -176,7 +189,17 @@ PS_IN vs_main(VS_IN vin) {
 	return vout;
 }
 
-#define MAX_BONES 32
+struct depthOnly_PS_IN {
+	float4 PosH       : SV_POSITION;
+};
+
+depthOnly_PS_IN vs_depthOnly(VS_IN vin) {
+	depthOnly_PS_IN vout;
+	vout.PosH = CalculatePosH(vin.PosL);
+	return vout;
+}
+
+#define MAX_BONES 64
 
 cbuffer cbSkinned {
 	float4x4 gBoneTransforms[MAX_BONES];
@@ -219,10 +242,33 @@ PS_IN vs_skinned(skinned_VS_IN vin) {
 	vout.PosW = mul(p, gWorld).xyz;
 	vout.NormalW = mul(n.xyz, (float3x3)gWorldInvTranspose);
 	vout.TangentW = mul(t.xyz, (float3x3)gWorldInvTranspose);
-	vout.BitangentW = mul(cross(n.xyz, t.xyz), (float3x3)gWorldInvTranspose);
 
 	vout.PosH = FixPosH(mul(p, gWorldViewProj));
 	vout.Tex = vin.Tex;
+
+	return vout;
+}
+
+depthOnly_PS_IN vs_depthOnly_skinned(skinned_VS_IN vin) {
+	depthOnly_PS_IN vout;
+
+	float weight0 = vin.BoneWeights.x;
+	float weight1 = vin.BoneWeights.y;
+	float weight2 = vin.BoneWeights.z;
+	float weight3 = 1.0f - (weight0 + weight1 + weight2);
+
+	float4x4 bone0 = gBoneTransforms[(int)vin.BoneIndices.x];
+	float4x4 bone1 = gBoneTransforms[(int)vin.BoneIndices.y];
+	float4x4 bone2 = gBoneTransforms[(int)vin.BoneIndices.z];
+	float4x4 bone3 = gBoneTransforms[(int)vin.BoneIndices.w];
+
+	float4 p = weight0 * mul(float4(vin.PosL, 1.0f), bone0);
+	p += weight1 * mul(float4(vin.PosL, 1.0f), bone1);
+	p += weight2 * mul(float4(vin.PosL, 1.0f), bone2);
+	p += weight3 * mul(float4(vin.PosL, 1.0f), bone3);
+	p.w = 1.0f;
+
+	vout.PosH = FixPosH(mul(p, gWorldViewProj));
 
 	return vout;
 }
@@ -255,6 +301,10 @@ void AlphaTest(float alpha) {
 	if (HAS_FLAG(ALPHA_TEST)) clip(alpha - 0.5);
 }
 
+float Luminance(float3 color) {
+	return dot(color, float3(0.299f, 0.587f, 0.114f));
+}
+
 //////////////// Simple lighting
 
 float GetNDotH(float3 normal, float3 position) {
@@ -278,35 +328,28 @@ float CalculateSpecularLight_Maps(float3 normal, float3 position, float specular
 		CalculateSpecularLight(nDotH, gMapsMaterial.SunSpecularExp * specularExpMultipler, gMapsMaterial.SunSpecular);
 }
 
-float GetDiffuseMultipler(float3 normal, out float3 ambient) {
-	if (gFlatMirrored) {
-		normal.y = -normal.y;
-	}
-
+float3 GetAmbient(float3 normal) {
 	float up = saturate(normal.y * 0.5 + 0.5);
-	ambient = gAmbientDown + up * gAmbientRange;
+	return gAmbientDown + up * gAmbientRange;
+}
 
+float GetDiffuseMultipler(float3 normal) {
 	return saturate(dot(normal, gLightDir));
 }
 
-float GetDiffuseMultipler_ConsiderShadows(float3 normal, float3 position, out float3 ambient) {
+float GetShadow_ConsiderMirror(float3 position) {
 	if (gFlatMirrored) {
-		normal.y = -normal.y;
 		position.y = -position.y;
 	}
-
-	float up = saturate(normal.y * 0.5 + 0.5);
-	ambient = gAmbientDown + up * gAmbientRange;
-
-	return saturate(dot(normal, gLightDir)) * GetShadow(position);
+	return GetShadow(position);
 }
 
 float3 CalculateLight(float3 normal, float3 position) {
-	float3 ambient;
-#if ENABLE_SHADOWS == true
-	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
-#else
-	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+	float3 ambient = GetAmbient(normal);
+	float diffuseMultipler = GetDiffuseMultipler(normal);
+
+#if ENABLE_SHADOWS == 1
+	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
 	float3 specular = CalculateSpecularLight(normal, position);
@@ -314,11 +357,11 @@ float3 CalculateLight(float3 normal, float3 position) {
 }
 
 float3 CalculateLight_Maps(float3 normal, float3 position, float specularMultipler, float specularExpMultipler) {
-	float3 ambient;
-#if ENABLE_SHADOWS == true
-	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
-#else
-	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+	float3 ambient = GetAmbient(normal);
+	float diffuseMultipler = GetDiffuseMultipler(normal);
+
+#if ENABLE_SHADOWS == 1
+	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
 	float3 specular = CalculateSpecularLight_Maps(normal, position, specularExpMultipler) * specularMultipler;
@@ -342,7 +385,7 @@ void CalculateLighted_Nm(PS_IN pin, out float3 lighted, out float alpha, out flo
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 
 	alpha = diffuseValue.a * normalValue.a;
-	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	lighted = CalculateLight(normal, pin.PosW) * diffuseValue.rgb;
 
 	AlphaTest(alpha);
@@ -353,7 +396,7 @@ void CalculateLighted_NmUvMult(PS_IN pin, out float3 lighted, out float alpha, o
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 
 	alpha = diffuseValue.a;
-	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	lighted = CalculateLight(normal, pin.PosW) * diffuseValue.rgb;
 
 	AlphaTest(alpha);
@@ -364,7 +407,7 @@ void CalculateLighted_AtNm(PS_IN pin, out float3 lighted, out float alpha, out f
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 
 	alpha = diffuseValue.a;
-	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	lighted = CalculateLight(normal, pin.PosW) * diffuseValue.rgb;
 
 	AlphaTest(alpha);
@@ -375,7 +418,7 @@ void CalculateLighted_DiffMaps(PS_IN pin, out float3 lighted, out float alpha, o
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 
 	alpha = diffuseValue.a;
-	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	lighted = CalculateLight_Maps(normal, pin.PosW, alpha, alpha) * diffuseValue.rgb;
 
 	AlphaTest(alpha);
@@ -402,7 +445,7 @@ void CalculateLighted_Maps(PS_IN pin, float txMapsSpecularMultipler, float txMap
 			normalValue += (detailsNormalValue - 0.5) * blend * (1.0 - mask);
 		}
 
-		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	} else {
 		normal = normalize(pin.NormalW);
 		alpha = 1.0;
@@ -610,7 +653,7 @@ float4 ps_Collider(PS_IN pin) : SV_Target {
 	float3 toEyeW = normalize(gEyePosW - pin.PosW);
 	float3 normal = normalize(pin.NormalW);
 	float opacify = pow(1.0 - dot(normal, toEyeW), 5.0);
-	return float4((float3)1.0 - normal, opacify);
+	return float4((float3)1.0 - abs(normal), opacify);
 }
 
 technique10 Collider {
@@ -625,23 +668,24 @@ technique10 Collider {
 
 float4 ps_Debug(PS_IN pin) : SV_Target {
 	float3 position = pin.PosW;
+	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
 	float3 normal;
 	float alpha;
 	if (HAS_FLAG(HAS_NORMAL_MAP)) {
 		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
-		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
+		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	} else {
 		normal = normalize(pin.NormalW);
-		alpha = gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
+		alpha = diffuseMapValue.a;
 	}
 
-	float3 ambient;
-#if ENABLE_SHADOWS == true
-	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows(normal, position, ambient);
-#else
-	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+	float3 ambient = GetAmbient(normal);
+	float diffuseMultipler = GetDiffuseMultipler(normal);
+
+#if ENABLE_SHADOWS == 1
+	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
 	float nDotH = GetNDotH(normal, position);
@@ -659,7 +703,7 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 	float val = min(rim, 0.05);
 	//
 
-	float3 light = 0.4 * ambient + (0.5 + specular) * gLightColor * diffuseMultipler + refl * val + gMaterial.Emissive;
+	float3 light = 0.4 * ambient + (0.5 + specular) * gLightColor * diffuseMultipler + refl * val + gMaterial.Emissive * diffuseMapValue.rgb;
 	AlphaTest(alpha);
 
 	return float4(light, alpha);
@@ -683,18 +727,50 @@ technique10 SkinnedDebug {
 
 //////////////// Misc stuff
 
+technique10 DepthOnly {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_depthOnly()));
+		SetGeometryShader(NULL);
+		SetPixelShader(NULL);
+	}
+}
+
+technique10 SkinnedDepthOnly {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_depthOnly_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(NULL);
+	}
+}
+
 pt_PS_IN vs_AmbientShadow(pt_VS_IN vin) {
 	pt_PS_IN vout;
 
-	vout.PosH = CalculatePosH(vin.PosL);
-	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
+	float3 posW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
+	float3 eyeL = mul(float4(gEyePosW, 1.0f), transpose(gWorld)).xyz;
+	float3 toEyeL = normalize(eyeL - vin.PosL);
+
+	float4 p = CalculatePosH(vin.PosL);
+	float4 r = CalculatePosH(vin.PosL + toEyeL * 0.02);
+	p.z = r.z;
+
+	vout.PosH = p;
+	vout.PosW = posW;
 	vout.Tex = vin.Tex;
 
 	return vout;
 }
 
 float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
-	return float4(0.0, 0.0, 0.0, gDiffuseMap.Sample(samAnisotropic, pin.Tex).r);
+	float value = gDiffuseMap.Sample(samAnisotropic, pin.Tex).r;
+	float lightBrightness = saturate(Luminance(gLightColor) * 1.5);
+
+#if ENABLE_SHADOWS == 1
+	float shadow = GetShadow(pin.PosW);
+	return float4(0.0, 0.0, 0.0, value * (1.0 - shadow * lightBrightness * 0.95));
+#else
+	return float4(0.0, 0.0, 0.0, value);
+#endif
 }
 
 technique10 AmbientShadow {
@@ -720,21 +796,17 @@ technique10 Mirror {
 	}
 }
 
-float GetShadowSafe(float3 posW) {
-	return GetShadow(posW);
-	// return dot(posW, posW) > 1000 ? 1 : GetShadow(posW);
-}
-
-float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
+float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target{
 	float3 eyeW = gEyePosW - pin.PosW;
 	float3 toEyeW = normalize(eyeW);
 	float3 normal = float3(0, 1, 0);
-	float fresnel = 0.11 + 0.52 * pow(dot(toEyeW, normal), 4);
+	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
 	float distance = length(eyeW);
 
-	float3 light = saturate(dot(normal, gLightDir)) * GetShadowSafe(pin.PosW) * gLightColor;
-	float opacity = fresnel * saturate(1 - distance / 60);
-	return float4(light, opacity);
+	float shadow = GetShadow(pin.PosW);
+	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
+	float opacity = fresnel * saturate(1.2 - distance / 60);
+	return float4(light * opacity * gBackgroundColor, opacity);
 }
 
 technique10 FlatMirror {
@@ -745,16 +817,103 @@ technique10 FlatMirror {
 	}
 }
 
-float4 ps_FlatBackgroundGround(pt_PS_IN pin) : SV_Target {
+float4 ps_FlatTextureMirror(pt_PS_IN pin) : SV_Target{
+	float2 tex = pin.PosH.xy / gScreenSize.xy;
+	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
+
+	// value = float4(value.rgb * gFlatMirrorPower + gBackgroundColor * (1.0 - gFlatMirrorPower), value.a);
+
+	float3 eyeW = gEyePosW - pin.PosW;
+	float3 toEyeW = normalize(eyeW);
+	float3 normal = float3(0, 1, 0);
+	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
+	float distance = length(eyeW);
+
+	float shadow = GetShadow(pin.PosW);
+	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
+	float opacity = fresnel * saturate(1.2 - distance / 60);
+	return float4(value * (1 - opacity) + light * opacity * gBackgroundColor, 1.0);
+}
+
+technique10 FlatTextureMirror {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirror()));
+	}
+}
+
+/*float3 GetReflPosition(float2 uv) {
+	float4 position = mul(float4(uv.x * 2 - 1, -(uv.y * 2 - 1), gMapsMap.Sample(samAnisotropic, uv).x, 1), gWorldViewProjInv);
+	return position.xyz / position.w;
+}
+
+float4 ps_FlatTextureMirrorDark(pt_PS_IN pin) : SV_Target{
+	float2 tex = pin.PosH.xy / gScreenSize.xy;
+	float3 position = GetReflPosition(tex);
+
+	float3 reflDelta = gEyePosW - position;
+	float reflDistance = (abs(position.y) / abs(reflDelta.y)) * length(reflDelta);
+
+	// return reflDistance;
+
+	float3 normals = (gNormalMap.Sample(samAnisotropic, pin.Tex * 1000) - 0.5) * 2;
+	tex.x += normals.x * reflDistance / 100.0;
+
+	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
+
+	value = float4(value.rgb * 0.999 + gBackgroundColor * 0.0, value.a);
+
 	float3 eyeW = gEyePosW - pin.PosW;
 	float3 toEyeW = normalize(eyeW);
 	float3 normal = float3(0, 1, 0);
 	float fresnel = 0.11 + 0.52 * pow(dot(toEyeW, normal), 4);
 	float distance = length(eyeW);
 
-	float3 light = saturate(dot(normal, gLightDir)) * GetShadowSafe(pin.PosW) * gLightColor;
+	float3 light = saturate(dot(normal, gLightDir)) * GetShadow(pin.PosW) * gLightColor;
 	float opacity = fresnel * saturate(1 - distance / 60);
-	return float4(light * opacity + gBackgroundColor * (1.0 - opacity), 1.0);
+	return float4(value * (1 - opacity) + light * opacity, 1.0);
+}
+
+technique10 FlatTextureMirrorDark {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirrorDark()));
+	}
+}*/
+
+float4 ps_FlatBackgroundGround(pt_PS_IN pin) : SV_Target {
+	// distance to viewer
+	float3 eyeW = gEyePosW - pin.PosW;
+	float distance = length(eyeW);
+
+	// if viewing angle is small, “fresnel” is smaller → result is more backgroundy
+	float fresnel = 0.21 + 0.12 * pow(normalize(eyeW).y, 4);
+
+	// summary opacity (aka non-backgroundy) is combined from viewing angle and distance
+	// for smooth transition
+	float opacity = fresnel * saturate(1.2 - distance / 40);
+
+	// how much surface is lighed according to light direction
+	float3 light = gLightDir.y * gLightColor;
+
+	// shadow at the point
+	float shadow = GetShadow(pin.PosW);
+	
+	// ambient color
+	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
+
+	// bright light source means more backgroundy surface
+	float lightBrightness = Luminance(gLightColor);
+
+	// separately color in lighted and shadowed areas
+	// 100%-target is to match those colors if there is no light (aka no shadow)
+	float3 lightPart = gBackgroundColor * (1 - opacity * lightBrightness) + light * opacity;
+	float3 shadowPart = (1 - lightBrightness) * lightPart + lightBrightness * (ambient * Luminance(gBackgroundColor) * 0.32 + gBackgroundColor * 0.22);
+
+	// combining
+	return float4(lightPart * shadow + shadowPart * (1 - shadow), 1.0);
 }
 
 technique10 FlatBackgroundGround {
@@ -765,22 +924,15 @@ technique10 FlatBackgroundGround {
 	}
 }
 
-float GetDiffuseMultipler_ConsiderShadows_Safe(float3 normal, float3 position, out float3 ambient) {
-	float up = saturate(normal.y * 0.5 + 0.5);
-	ambient = gAmbientDown + up * gAmbientRange;
-
-	return saturate(dot(normal, gLightDir)) * GetShadowSafe(position);
-}
-
 float4 ps_FlatAmbientGround(pt_PS_IN pin) : SV_Target {
 	float3 normal = float3(0, 1, 0);
 	float3 position = pin.PosW;
 
-	float3 ambient;
-#if ENABLE_SHADOWS == true
-	float diffuseMultipler = GetDiffuseMultipler_ConsiderShadows_Safe(normal, position, ambient);
-#else
-	float diffuseMultipler = GetDiffuseMultipler(normal, ambient);
+	float3 ambient = GetAmbient(normal);
+	float diffuseMultipler = GetDiffuseMultipler(normal);
+
+#if ENABLE_SHADOWS == 1
+	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
 	float nDotH = GetNDotH(normal, position);

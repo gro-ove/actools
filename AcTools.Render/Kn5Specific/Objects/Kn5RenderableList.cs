@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -16,8 +17,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private RenderableList _dirTarget;
 
         public Kn5RenderableList(Kn5Node node, Func<Kn5Node, IRenderableObject> convert)
-                : base(node.Name, Kn5RenderableObject.FlipByX ? node.Transform.ToMatrixFixX() : node.Transform.ToMatrix(),
-                        node.Children.Select(convert)) {
+                : base(node.Name, node.Transform.ToMatrix(), node.Children.Select(convert)) {
             OriginalNode = node;
             if (IsEnabled && (!OriginalNode.Active || OriginalNode.Name == "CINTURE_ON" || OriginalNode.Name.StartsWith("DAMAGE_GLASS"))) {
                 IsEnabled = false;

@@ -133,7 +133,6 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\DebugColliderMaterial.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\DebugLinesMaterial.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\DebugMaterial.cs" />
-    <Compile Include="Kn5SpecificForwardDark\Materials\FlatMirrorMaterialSimple.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimple.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAtNm.cs" />
@@ -150,6 +149,7 @@
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCollider.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableDriver.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5SkinnedObject.cs" />
     <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />

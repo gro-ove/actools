@@ -1,16 +1,16 @@
 ﻿/* If assembly has SmartThreadPool in references, you can use it instead of 
  * primitive custom thread pool. Might be more reliable, although I’m not
  * sure */
-// #define SMART_POOL
+#define SMART_POOL
 
 /* Include primitive custom thread pool from SO as well. I highly recommend
  * to use at either smart pool or custom, default C# one simply doesn’t work
  * in these conditions properly. */
-#define CUSTOM_POOL
+// #define CUSTOM_POOL
 
 using System;
+#if CUSTOM_POOL
 using FirstFloor.ModernUI.Helpers;
-#if SMART_POOL || CUSTOM_POOL
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows;

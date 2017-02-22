@@ -31,7 +31,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         // FOR GOD’S SAKE KUNOS!
         private static bool CheckValue(int value) {
             try {
-                return Convert.ToChar(MapVirtualKey((uint)value, 2U)) != 0;
+                // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+                Convert.ToChar(MapVirtualKey((uint)value, 2U));
+                return true;
             } catch (Exception) {
                 return false;
             }

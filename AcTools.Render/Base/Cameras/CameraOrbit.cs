@@ -1,4 +1,5 @@
 ﻿using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
@@ -62,7 +63,7 @@ namespace AcTools.Render.Base.Cameras {
 
         public override void Pitch(float angle) {
             Beta += angle;
-            Beta = MathF.Clamp(Beta, -0.508f, MathF.PI / 2.0f - 0.01f);
+            Beta = Beta.Clamp(-0.508f, MathF.PI / 2.0f - 0.01f);
         }
 
         public override void Yaw(float angle) {
@@ -70,7 +71,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Zoom(float dr) {
-            Radius = MathF.Clamp(Radius + dr, 1.2f, 1000f);
+            Radius = (Radius + dr).Clamp(1.2f, 1000f);
         }
 
         public override void UpdateViewMatrix() {
@@ -90,7 +91,7 @@ namespace AcTools.Render.Base.Cameras {
                     Target.Y + height,
                     Target.Z + sideRadius * MathF.Sin(Alpha));
 
-            SetView(Matrix.LookAtLH(Position, Target, Vector3.UnitY));
+            SetView(Matrix.LookAtRH(Position, Target, Vector3.UnitY));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

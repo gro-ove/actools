@@ -26,8 +26,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
     }
 
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
-        public static bool FlipByX = true;
-
         public readonly bool IsCastingShadows;
         
         public Kn5Node OriginalNode { get; }
@@ -35,32 +33,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private static InputLayouts.VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
             var size = vertices.Length;
             var result = new InputLayouts.VerticePNTG[size];
-
-            if (FlipByX) {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    result[i] = new InputLayouts.VerticePNTG(
-                            x.Co.ToVector3FixX(),
-                            x.Normal.ToVector3FixX(),
-                            x.Uv.ToVector2(),
-                            x.Tangent.ToVector3Tangent());
-                }
-            } else {
-                for (var i = 0; i < size; i++) {
-                    var x = vertices[i];
-                    result[i] = new InputLayouts.VerticePNTG(
-                            x.Co.ToVector3(),
-                            x.Normal.ToVector3(),
-                            x.Uv.ToVector2(),
-                            x.Tangent.ToVector3());
-                }
+            
+            for (var i = 0; i < size; i++) {
+                var x = vertices[i];
+                result[i] = new InputLayouts.VerticePNTG(
+                        x.Co.ToVector3(),
+                        x.Normal.ToVector3(),
+                        x.Uv.ToVector2(),
+                        x.Tangent.ToVector3());
             }
 
             return result;
         }
 
         private static ushort[] Convert(ushort[] indices) {
-            return FlipByX ? indices.ToIndicesFixX() : indices;
+            return indices.ToIndicesFixX();
         }
 
         public Kn5RenderableObject(Kn5Node node) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {

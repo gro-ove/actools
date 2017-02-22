@@ -137,12 +137,14 @@ namespace AcManager.Tools.Managers.Online {
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
             Time = $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
             SessionEnd = DateTime.Now + TimeSpan.FromSeconds(information.TimeLeft - Math.Round(information.Timestamp / 1000d));
+            RaceMode = information.Timed ? information.Extra ? RaceMode.TimedExtra : RaceMode.Timed : RaceMode.Laps;
 
             if (information.SessionTypes != null) {
                 var sessions = information.SessionTypes.Select((x, i) => new Session {
                     IsActive = x == information.Session,
                     Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
-                    Type = (Game.SessionType)x
+                    Type = (Game.SessionType)x,
+                    RaceMode = RaceMode
                 }).ToList();
 
                 if (Sessions == null || !Sessions.SequenceEqual(sessions)) {

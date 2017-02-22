@@ -5,6 +5,7 @@ using AcManager.Tools.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -48,10 +49,10 @@ namespace AcManager.Controls.CustomShowroom {
                 var size = ValuesStorage.GetPoint(KeyNormalSize, new Point(1600, 900));
                 var pos = ValuesStorage.GetPoint(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
 
-                Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
-                Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
-                Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
-                Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
+                Form.Width = ((int)size.X).Clamp(320, area.Width);
+                Form.Height = ((int)size.Y).Clamp(200, area.Height);
+                Form.Top = ((int)pos.Y).Clamp(0, area.Height - Form.Height);
+                Form.Left = ((int)pos.X).Clamp(0, area.Width - Form.Width);
 
                 Form.WindowState = ValuesStorage.GetBool(KeyNormalMaximized) ? FormWindowState.Maximized : FormWindowState.Normal;
                 Form.FormBorderStyle = FormBorderStyle.Sizable;
@@ -79,10 +80,10 @@ namespace AcManager.Controls.CustomShowroom {
 
                 FullscreenEnabled = false;
                 Form.WindowState = FormWindowState.Normal;
-                Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
-                Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
-                Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
-                Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
+                Form.Width = ((int)size.X).Clamp(320, area.Width);
+                Form.Height = ((int)size.Y).Clamp(200, area.Height);
+                Form.Top = ((int)pos.Y).Clamp(0, area.Height - Form.Height);
+                Form.Left = ((int)pos.X).Clamp(0, area.Width - Form.Width);
 
                 Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Form.TopMost = true;

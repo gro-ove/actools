@@ -7,6 +7,10 @@ using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
     public class DebugLinesObject : LinesRenderableObject<InputLayouts.VerticePC> {
+        public DebugLinesObject(Matrix transform, InputLayouts.VerticePC[] vertices, ushort[] indices) : base(null, vertices, indices) {
+            Transform = transform;
+        }
+
         public DebugLinesObject(Matrix transform, InputLayouts.VerticePC[] vertices) : base(null, vertices) {
             Transform = transform;
         }

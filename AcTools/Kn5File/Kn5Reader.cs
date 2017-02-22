@@ -30,19 +30,6 @@ namespace AcTools.Kn5File {
         public Kn5NodeClass ReadNodeClass() {
             return (Kn5NodeClass)ReadInt32();
         }
-        
-        /// <summary>
-        /// Read 64 bytes as 16 floats.
-        /// </summary>
-        /// <returns></returns>
-        public float[] ReadMatrix() {
-            return new[] {
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
-                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle()
-            };
-        }
 
         public Kn5Header ReadHeader() {
             var header = new Kn5Header {

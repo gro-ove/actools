@@ -210,6 +210,19 @@ namespace AcTools {
                 ToSingle(_buffer, pos + 12)
             };
         }
+
+        /// <summary>
+        /// Read 64 bytes as 16 floats.
+        /// </summary>
+        /// <returns></returns>
+        public float[] ReadMatrix() {
+            return new[] {
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle()
+            };
+        }
         #endregion
     }
 

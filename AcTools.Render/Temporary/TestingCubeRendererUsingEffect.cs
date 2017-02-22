@@ -2,6 +2,7 @@
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
 
@@ -43,9 +44,9 @@ namespace AcTools.Render.Temporary {
 
         protected override void OnTick(float dt) {
             CameraOrbit.Alpha += dt * 0.09f;
-            CameraOrbit.Beta = MathF.Sin(Elapsed * 0.05f) * 0.7f;
+            CameraOrbit.Beta = MathF.Sin((Elapsed * 0.05f)) * 0.7f;
 
-            _box1.LocalMatrix = Matrix.Scaling(new Vector3(0.8f - 0.7f * MathF.Abs(MathF.Sin(Elapsed * 5.0f)))) * Matrix.Translation(3.2f, 0.0f, 0.0f);
+            _box1.LocalMatrix = Matrix.Scaling(new Vector3(0.8f - 0.7f * MathF.Sin(Elapsed * 5.0f).Abs())) * Matrix.Translation(3.2f, 0.0f, 0.0f);
             _box2.LocalMatrix = Matrix.Scaling(new Vector3(0.5f + 0.3f * MathF.Sin(Elapsed))) * Matrix.Translation(-3.2f, 0f, 0f) *  Matrix.RotationY(Elapsed);
             _box3.LocalMatrix = Matrix.Scaling(0.3f, 0.3f, 1.8f)  *
                 Matrix.LookAtRH(new Vector3(0f, 2f, 0f), _box2s.Matrix.GetTranslationVector(), Vector3.UnitY);

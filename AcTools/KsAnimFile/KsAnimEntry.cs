@@ -1,6 +1,13 @@
 ﻿namespace AcTools.KsAnimFile {
-    public class KsAnimEntry {
+    public abstract class KsAnimEntryBase {
         public string NodeName;
+    }
+
+    public class KsAnimEntryV1 : KsAnimEntryBase {
+        public float[][] Matrices;
+    }
+
+    public class KsAnimEntryV2 : KsAnimEntryBase {
         public KsAnimKeyframe[] KeyFrames;
     }
 
@@ -9,14 +16,14 @@
         public float[] Rotation;
 
         // 3D-vector
-        public float[] Transformation;
+        public float[] Transition;
 
         // 3D-vector
         public float[] Scale;
 
-        public KsAnimKeyframe(float[] rotation, float[] transformation, float[] scale) {
+        public KsAnimKeyframe(float[] rotation, float[] transition, float[] scale) {
             Rotation = rotation;
-            Transformation = transformation;
+            Transition = transition;
             Scale = scale;
         }
     }

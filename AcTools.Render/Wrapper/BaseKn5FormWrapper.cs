@@ -30,12 +30,12 @@ namespace AcTools.Render.Wrapper {
         }
 
         public virtual void CameraMouseRotate(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
-            var size = 180.0 / Math.Min(height, width);
+            var size = (renderer.UseFpsCamera ? 140d : 180d) / Math.Min(height, width);
             dx *= size;
             dy *= size;
 
-            renderer.Camera.Pitch(MathF.ToRadians((float)dy));
-            renderer.Camera.Yaw(MathF.ToRadians((float)(renderer.UseFpsCamera ? dx : -dx)));
+            renderer.Camera.Pitch(((float)(renderer.UseFpsCamera ? -dy : dy)).ToRadians());
+            renderer.Camera.Yaw(((float)(renderer.UseFpsCamera ? -dx : dx)).ToRadians());
             renderer.AutoRotate = false;
             ((BaseRenderer)renderer).IsDirty = true;
         }

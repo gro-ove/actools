@@ -1,4 +1,5 @@
 ﻿using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
@@ -46,18 +47,15 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Zoom(float dr) {
-            FovY = MathF.Clamp(FovY + dr, MathF.PI * 0.05f, MathF.PI * 0.8f);
+            FovY = (FovY + dr).Clamp(MathF.PI * 0.05f, MathF.PI * 0.8f);
             SetLens(Aspect);
         }
 
         public override void UpdateViewMatrix() {
-            SetView(Matrix.LookAtLH(Position, Position + Look, Vector3.UnitY));
+            SetView(Matrix.LookAtRH(Position, Position + Look, Vector3.UnitY));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();
-
-            Look = new Vector3(View.M13, View.M23, View.M33);
-            Look.Normalize();
 
             Frustum = Frustum.FromViewProj(ViewProj);
         }

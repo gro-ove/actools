@@ -353,7 +353,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
                 }
-            }, () => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
+            }, () => Directory.Exists(DataDirectory)));
 
             private CommandBase _replaceSoundCommand;
 

@@ -12,7 +12,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         public Kn5MaterialSimpleDiffMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechDiffMaps.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechDiffMaps).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
         public override void Initialize(IDeviceContextHolder contextHolder) {

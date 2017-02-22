@@ -41,7 +41,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 var entry = JsonConvert.DeserializeObject<Saveable>(data);
                 Python.Import(entry.PythonData);
                 Forms.Import(entry.FormsData);
-                if (entry.DevApps.HasValue) {
+                if (SettingsHolder.Drive.SaveDevAppsInAppsPresets && entry.DevApps.HasValue) {
                     System.DeveloperApps = entry.DevApps.Value;
                 }
             }

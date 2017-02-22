@@ -36,7 +36,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-             _effect.TechMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+            (mode == SpecialRenderMode.Shadow ? _effect.TechDepthOnly : _effect.TechMirror).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
         public void Dispose() {}
