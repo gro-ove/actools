@@ -85,6 +85,12 @@ namespace AcTools.Kn5File {
             return kn5;
         }
 
+        public static Kn5 FromBytes(byte[] data, bool skipTextures = false, bool readNodesAsBytes = true) {
+            using (var memory = new MemoryStream(data)) {
+                return FromStream(memory, skipTextures, readNodesAsBytes);
+            }
+        }
+
         private void FromFile_Header(Kn5Reader reader) {
             Header = reader.ReadHeader();
         }

@@ -11,6 +11,9 @@ namespace AcTools.Render.Base.Utils {
         // ReSharper disable once InconsistentNaming
         public const float PI = (float)Math.PI;
 
+        public const float ToRad = (float)Math.PI/180f;
+        public const float ToDeg = 180f/(float)Math.PI;
+
         public static float Sin(this float rad) {
             return (float)Math.Sin(rad);
         }
@@ -20,11 +23,11 @@ namespace AcTools.Render.Base.Utils {
         }
 
         public static float ToRadians(this float degrees) {
-            return PI * degrees / 180.0f;
+            return ToRad * degrees;
         }
 
         public static float ToDegrees(this float radians) {
-            return radians * (180.0f / PI);
+            return ToDeg * radians;
         }
 
         public static float Random() {

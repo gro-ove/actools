@@ -381,6 +381,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticeP>, IKn5RenderableObject {
         public Kn5Node OriginalNode { get; }
 
+        public Matrix ModelMatrixInverted { get; set; }
+
         public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {}
 
         public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {}

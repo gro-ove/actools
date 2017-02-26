@@ -32,7 +32,7 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_917_30\porsche_917_30.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_nissan_r33_drift\acc_nissan_r33_drift.kn5";
             kn5file = @"D:\Games\Assetto Corsa\content\cars\ktm_xbow_r\ktm_xbow_r.kn5";
-            kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ks_porsche_911_gt1\porsche_911_gt1.kn5";
+            //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ks_porsche_911_gt1\porsche_911_gt1.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_countach\lamborghini_countach.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lamborghini_miura_sv\lamborghini_miura_sv.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_lotus_25\lotus_25.kn5";
@@ -49,6 +49,7 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_ford_escort_mk1\ford_escort_mk1.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_ford_mustang_2015\ford_mustang_2015.kn5";
             //kn5file = @"D:\Development\GitHub\actools\AcManager\Assets\Data\ShowroomPreviewSphere\sphere.kn5";
+            //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\jaguar_etype\jaguar_etype.kn5";
 
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_155_v6\Alfa_Romeo_155_V6_LOD_B.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\bmw_m3_e30_dtm\bmw_m3_e30_grC.kn5";

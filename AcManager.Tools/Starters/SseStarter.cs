@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.DataFile;
@@ -27,24 +28,51 @@ namespace AcManager.Tools.Starters {
             _filename = addon.GetFilename(ConfigName);
 
             Logging.Debug(AcsName);
-            new IniFile {
-                ["Launcher"] = {
-                    ["Target"] = Path.Combine(acRoot, AcsName),
-                    ["StartIn"] = acRoot,
-                    ["SteamClientPath"] = addon.GetFilename("sse86.dll"),
-                    ["SteamClientPath64"] = addon.GetFilename("sse64.dll")
-                },
-                ["Achievements"] = {
-                    ["UnlockAll"] = true
-                },
-                ["SSEOverlay"] = {
-                    ["DisableOverlay"] = true
-                },
-                ["SmartSteamEmu"] = {
-                    ["AppId"] = AcSteamId,
-                    ["Offline"] = true,
-                }
-            }.Save(_filename);
+
+            var defaultConfig = addon.GetFilename("config.ini");
+            if (File.Exists(defaultConfig)) {
+                new IniFile(defaultConfig) {
+                    ["Launcher"] = {
+                        ["Target"] = Path.Combine(acRoot, AcsName),
+                        ["StartIn"] = acRoot,
+                        ["SteamClientPath"] = addon.GetFilename("sse86.dll"),
+                        ["SteamClientPath64"] = addon.GetFilename("sse64.dll")
+                    },
+                }.Save(_filename);
+            } else {
+                new IniFile {
+                    ["Launcher"] = {
+                        ["Target"] = Path.Combine(acRoot, AcsName),
+                        ["StartIn"] = acRoot,
+                        ["InjectDll"] = false,
+                        ["SteamClientPath"] = addon.GetFilename("sse86.dll"),
+                        ["SteamClientPath64"] = addon.GetFilename("sse64.dll")
+                    },
+                    ["Achievements"] = {
+                        ["UnlockAll"] = true
+                    },
+                    ["Debug"] = {
+                        ["EnableLog"] = true,
+                        ["Minidump"] = true,
+                    },
+                    ["SSEOverlay"] = {
+                        ["DisableOverlay"] = true,
+                        ["OnlineMode"] = false,
+                    },
+                    ["SmartSteamEmu"] = {
+                        ["AppId"] = AcSteamId,
+                        ["SteamIdGeneration"] = "Manual",
+                        ["ManualSteamId"] = SteamIdHelper.Instance.Value,
+                        ["Offline"] = true,
+                        ["EnableOverlay"] = false,
+                        ["EnableHTTP"] = false,
+                        ["DisableGC"] = true,
+                        ["DisableLeaderboard"] = true,
+                        ["DisableFriendList"] = true,
+                        ["VR"] = true,
+                    }
+                }.Save(_filename);
+            }
 
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = addon.GetFilename("sse.exe"),

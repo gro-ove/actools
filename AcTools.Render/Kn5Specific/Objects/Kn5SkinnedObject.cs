@@ -18,6 +18,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Kn5Node OriginalNode { get; }
 
+        public Matrix ModelMatrixInverted { get; set; }
+
         private static InputLayouts.VerticePNTGW4B[] Convert(Kn5Node.Vertice[] vertices, Kn5Node.VerticeWeight[] weights) {
             var size = vertices.Length;
             var result = new InputLayouts.VerticePNTGW4B[size];
@@ -64,11 +66,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void UpdateNodes() {
             if (_bonesNodes == null) return;
 
+            var fix = Matrix.Invert(ParentMatrix * ModelMatrixInverted);
             var bones = OriginalNode.Bones;
             for (var i = 0; i < bones.Length; i++) {
                 var node = _bonesNodes[i];
                 if (node != null) {
-                    _bones[i] = _bonesTransform[i] * node.RelativeToModel;
+                    _bones[i] = _bonesTransform[i] * node.RelativeToModel * fix;
                 }
             }
         }
@@ -161,21 +164,67 @@ namespace AcTools.Render.Kn5Specific.Objects {
             material.Draw(contextHolder, Indices.Length, mode);
         }
 
+        private Vector3 GetPosition(InputLayouts.VerticePNTGW4B vin) {
+            var weight0 = vin.BonesWeights.X;
+            var weight1 = vin.BonesWeights.Y;
+            var weight2 = vin.BonesWeights.Z;
+            var weight3 = 1.0f - (weight0 + weight1 + weight2);
+
+            var bone0 = _bones[(int)vin.BonesIndices.X];
+            var bone1 = _bones[(int)vin.BonesIndices.Y];
+            var bone2 = _bones[(int)vin.BonesIndices.Z];
+            var bone3 = _bones[(int)vin.BonesIndices.W];
+            
+            var s = vin.Position;
+            var p = weight0 * Vector3.TransformCoordinate(s, bone0);
+            p += weight1 * Vector3.TransformCoordinate(s, bone1);
+            p += weight2 * Vector3.TransformCoordinate(s, bone2);
+            p += weight3 * Vector3.TransformCoordinate(s, bone3);
+
+            return p;
+        }
+
+        public override float? CheckIntersection(Ray ray) {
+            try {
+                var min = float.MaxValue;
+                var found = false;
+
+                var indices = Indices;
+                var vertices = Vertices;
+                var matrix = ParentMatrix;
+                for (int i = 0, n = indices.Length / 3; i < n; i++) {
+                    var v0 = Vector3.TransformCoordinate(GetPosition(vertices[indices[i * 3]]), matrix);
+                    var v1 = Vector3.TransformCoordinate(GetPosition(vertices[indices[i * 3 + 1]]), matrix);
+                    var v2 = Vector3.TransformCoordinate(GetPosition(vertices[indices[i * 3 + 2]]), matrix);
+
+                    float distance;
+                    if (!Ray.Intersects(ray, v0, v1, v2, out distance)) continue;
+                    if (distance >= min) continue;
+                    min = distance;
+                    found = true;
+                }
+
+                return found ? min : (float?)null;
+            } catch (Exception) {
+                // mostly for rare, but possible out-of-bounds exception
+                return null;
+            }
+        }
+
         public override void Dispose() {
             DisposeHelper.Dispose(ref _material);
             DisposeHelper.Dispose(ref _debugMaterial);
             base.Dispose();
         }
-
-        /*
+        
         public override BaseRenderableObject Clone() {
             return new ClonedKn5RenderableObject(this);
         }
         
-        internal class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
-            private readonly Kn5RenderableObject _original;
+        internal class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTGW4B> {
+            private readonly Kn5SkinnedObject _original;
 
-            internal ClonedKn5RenderableObject(Kn5RenderableObject original) : base(original.Name + "_copy", original.Vertices, original.Indices) {
+            internal ClonedKn5RenderableObject(Kn5SkinnedObject original) : base(original.Name + "_copy", original.Vertices, original.Indices) {
                 _original = original;
             }
 
@@ -202,6 +251,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     (material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
                 }
 
+                material.SetBones(_original._bones);
                 material.SetMatrices(ParentMatrix, camera);
                 material.Draw(contextHolder, Indices.Length, mode);
             }
@@ -209,6 +259,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public override BaseRenderableObject Clone() {
                 return new ClonedKn5RenderableObject(_original);
             }
-        }*/
+        }
     }
 }

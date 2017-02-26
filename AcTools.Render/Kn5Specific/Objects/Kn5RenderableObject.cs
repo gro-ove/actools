@@ -18,6 +18,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         [NotNull]
         Kn5Node OriginalNode { get; }
 
+        Matrix ModelMatrixInverted { set; }
+
+        bool IsInitialized { get; }
+
         void SetMirrorMode(IDeviceContextHolder holder, bool enabled);
 
         void SetDebugMode(IDeviceContextHolder holder, bool enabled);
@@ -29,6 +33,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public readonly bool IsCastingShadows;
         
         public Kn5Node OriginalNode { get; }
+
+        public Matrix ModelMatrixInverted { get; set; }
 
         private static InputLayouts.VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
             var size = vertices.Length;
@@ -116,7 +122,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
-
+            
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
             _material.Initialize(contextHolder);
             _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;

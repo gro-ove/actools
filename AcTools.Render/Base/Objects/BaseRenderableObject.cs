@@ -11,7 +11,7 @@ namespace AcTools.Render.Base.Objects {
             Name = name;
         }
 
-        protected bool IsInitialized { get; private set; }
+        public bool IsInitialized { get; private set; }
 
         public virtual Matrix ParentMatrix { get; set; }
 
@@ -48,6 +48,8 @@ namespace AcTools.Render.Base.Objects {
         protected abstract void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
 
         public abstract BaseRenderableObject Clone();
+
+        public abstract float? CheckIntersection(Ray ray);
 
         IRenderableObject IRenderableObject.Clone() {
             return Clone();

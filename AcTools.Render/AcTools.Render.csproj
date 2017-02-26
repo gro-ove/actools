@@ -151,6 +151,7 @@
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCollider.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableDriver.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5SkinnedObject.cs" />
+    <Compile Include="Kn5Specific\Objects\Up.cs" />
     <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\Kn5TexturesProvider.cs" />
@@ -239,9 +240,10 @@
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
     <Content Include="Shaders\Includes\Deferred.fx" />
-    <Content Include="Shaders\Includes\FXAA_311.fx" />
+    <Content Include="Shaders\Includes\FXAA.311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
     <Content Include="Shaders\Includes\Shadows.fx" />
+    <Content Include="Shaders\Includes\Shadows.PCSS.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
     <Content Include="Shaders\Pp\PpDownsample.fx" />
     <Content Include="Shaders\Pp\PpLensFlares.fx" />

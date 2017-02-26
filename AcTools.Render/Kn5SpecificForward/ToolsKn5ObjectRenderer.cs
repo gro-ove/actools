@@ -211,10 +211,19 @@ namespace AcTools.Render.Kn5SpecificForward {
             _outlineDepthBuffer.Resize(DeviceContextHolder, Width, Height, null);
         }
 
-        private Kn5RenderableObject _selectedObject;
+        private Kn5Material GetMaterial(IKn5RenderableObject obj) {
+            var carNode = CarNode;
+            if (carNode != null) {
+                return carNode.GetMaterial(obj);
+            }
+
+            return null;
+        }
+
+        private IKn5RenderableObject _selectedObject;
 
         [CanBeNull]
-        public Kn5RenderableObject SelectedObject {
+        public IKn5RenderableObject SelectedObject {
             get { return _selectedObject; }
             set {
                 if (Equals(value, _selectedObject)) return;
@@ -225,7 +234,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                     PrepareOutlineBuffer();
 
                     SelectedName = _selectedObject.OriginalNode.Name;
-                    SelectedMaterial = Kn5?.GetMaterial(_selectedObject.OriginalNode.MaterialId);
+                    SelectedMaterial = GetMaterial(value);
                     SelectedTextures = SelectedMaterial?.TextureMappings.Select(x => new TextureInformation {
                         SlotName = x.Name,
                         TextureName = x.Texture
@@ -249,39 +258,20 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private Kn5RenderableObject _previousSelectedFirstObject;
-        private readonly List<Kn5RenderableObject> _previousSelectedObjects = new List<Kn5RenderableObject>();
+        private IKn5RenderableObject _previousSelectedFirstObject;
+        private readonly List<IKn5RenderableObject> _previousSelectedObjects = new List<IKn5RenderableObject>();
 
         public void OnClick(Vector2 mousePosition) {
             var ray = Camera.GetPickingRay(mousePosition, new Vector2(ActualWidth, ActualHeight));
 
             var nodes = Scene.SelectManyRecursive(x => x as RenderableList)
-                             .OfType<Kn5RenderableObject>()
-                             .Where(node => {
-                                 float d;
-                                 return node.BoundingBox.HasValue && Ray.Intersects(ray, node.BoundingBox.Value, out d);
-                             })
+                             .OfType<IKn5RenderableObject>()
+                             .Where(x => x.IsInitialized)
                              .Select(node => {
-                                 var min = float.MaxValue;
-                                 var found = false;
-
-                                 var indices = node.Indices;
-                                 var vertices = node.Vertices;
-                                 var matrix = node.ParentMatrix;
-                                 for (int i = 0, n = indices.Length / 3; i < n; i++) {
-                                     var v0 = Vector3.TransformCoordinate(vertices[indices[i * 3]].Position, matrix);
-                                     var v1 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 1]].Position, matrix);
-                                     var v2 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 2]].Position, matrix);
-
-                                     float distance;
-                                     if (!Ray.Intersects(ray, v0, v1, v2, out distance) || distance >= min) continue;
-                                     min = distance;
-                                     found = true;
-                                 }
-
-                                 return found ? new {
+                                 var f = node.CheckIntersection(ray);
+                                 return f.HasValue ? new {
                                      Node = node,
-                                     Distance = min
+                                     Distance = f.Value
                                  } : null;
                              })
                              .Where(x => x != null)

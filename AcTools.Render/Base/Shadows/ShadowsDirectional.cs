@@ -191,6 +191,24 @@ namespace AcTools.Render.Base.Shadows {
             holder.RestoreRenderTargetAndViewport();
         }
 
+        public void Clear(DeviceContextHolder holder) {
+            holder.SaveRenderTargetAndViewport();
+
+            holder.DeviceContext.Rasterizer.SetViewports(_viewport);
+            holder.DeviceContext.OutputMerger.DepthStencilState = null;
+            holder.DeviceContext.OutputMerger.BlendState = null;
+            holder.DeviceContext.Rasterizer.State = _rasterizerState;
+
+            foreach (var split in Splits) {
+                holder.DeviceContext.OutputMerger.SetTargets(split.Buffer.DepthView);
+                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+            }
+
+            holder.DeviceContext.Rasterizer.State = null;
+            holder.DeviceContext.OutputMerger.DepthStencilState = null;
+            holder.RestoreRenderTargetAndViewport();
+        }
+
         public void Dispose() {
             Splits.DisposeEverything();
             DisposeHelper.Dispose(ref _rasterizerState);

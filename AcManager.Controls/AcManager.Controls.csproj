@@ -149,6 +149,7 @@
     <Compile Include="Converters\TimeSpanConverters.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
+    <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\PaintShop.cs" />
     <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
       <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>

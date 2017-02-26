@@ -94,7 +94,7 @@ namespace AcTools.Render.Wrapper {
 
             if (Form.Focused && (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu))) {
                 if (_renderer.CarNode != null) {
-                    var steeringSpeed = 30f * args.DeltaTime;
+                    var steeringSpeed = (User32.IsKeyPressed(Keys.LShiftKey) ? 3f : 30f) * args.DeltaTime;
 
                     if (User32.IsKeyPressed(Keys.Left)) {
                         _renderer.CarNode.SteerDeg = (_renderer.CarNode.SteerDeg - steeringSpeed).Clamp(-30f, 30f);
@@ -293,12 +293,12 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.C:
-                    if (!args.Control && args.Alt && !args.Shift) {
-                        if (_renderer.CarNode != null) {
+                    if (_renderer.CarNode != null) {
+                        if (!args.Control && args.Alt && !args.Shift) {
                             _renderer.CarNode.CockpitLrActive = !_renderer.CarNode.CockpitLrActive;
-                        }
-                    } else {
-                        if (_renderer.CarNode != null) {
+                        } else if (args.Control && !args.Alt && args.Shift) {
+                            _renderer.CarNode.IsCrewVisible = !_renderer.CarNode.IsCrewVisible;
+                        } else {
                             _renderer.CarNode.IsColliderVisible = !_renderer.CarNode.IsColliderVisible;
                         }
                     }
@@ -365,6 +365,12 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.S:
+                    if (args.Control && !args.Alt && !args.Shift) {
+                        _renderer.EnableShadows = !_renderer.EnableShadows;
+                    }
+                    if (args.Control && !args.Alt && args.Shift) {
+                        _renderer.EnablePcssShadows = !_renderer.EnablePcssShadows;
+                    }
                     if (!args.Control && !args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {
                             //_renderer.CarNode.WingsTest = !_renderer.CarNode.WingsTest;
@@ -399,6 +405,10 @@ namespace AcTools.Render.Wrapper {
                         var d = _renderer as DarkKn5ObjectRenderer;
                         if (d != null) {
                             d.SuspensionDebug = !d.SuspensionDebug;
+                        }
+                    } else if (args.Shift && args.Control && !args.Alt) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.UseUp = !_renderer.CarNode.UseUp;
                         }
                     }
                     break;

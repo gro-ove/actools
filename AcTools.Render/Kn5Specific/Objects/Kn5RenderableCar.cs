@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -64,6 +64,31 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return new CarDescription(kn5.OriginalFilename) {
                 Kn5Loaded = kn5
             };
+        }
+    }
+
+    public interface IExtraModelProvider {
+        [ItemCanBeNull]
+        Task<byte[]> GetModel([CanBeNull] string key);
+    }
+
+    public static class ExtraModels {
+        public static readonly string KeyCrewExtra = "Crew.Extra";
+
+        private static readonly List<IExtraModelProvider> Providers = new List<IExtraModelProvider>(1);
+
+        public static void Register(IExtraModelProvider provider) {
+            Providers.Add(provider);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<byte[]> GetAsync(string key) {
+            foreach (var provider in Providers) {
+                var data = await provider.GetModel(key).ConfigureAwait(false);
+                if (data != null) return data;
+            }
+
+            return null;
         }
     }
 
@@ -160,21 +185,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _ambientShadows.Draw(_ambientShadowsHolder, camera, SpecialRenderMode.Simple);
         }
 
-#if DEBUG
-        private bool _isDriverVisible = true;
-#else
-        private bool _isDriverVisible;
-#endif
-
-        public bool IsDriverVisible {
-            get { return _isDriverVisible; }
-            set {
-                if (Equals(value, _isDriverVisible)) return;
-                _isDriverVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             DrawInitialize(contextHolder);
 
@@ -191,9 +201,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             /* driver */
-            if (IsDriverVisible) {
-                DrawDriver(contextHolder, camera, mode);
-            }
+            DrawDriver(contextHolder, camera, mode);
+
+            /* crew */
+            DrawCrew(contextHolder, camera, mode);
 
             /* collider */
             if (IsColliderVisible) {
@@ -308,7 +319,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var driversDirectory = Path.Combine(contentDirectory, "driver");
             var filename = Path.Combine(driversDirectory, driver.Name + ".kn5");
             if (!File.Exists(filename)) return;
-
+            
             _driver = new Kn5RenderableDriver(Kn5.FromFile(filename), Matrix.Translation(driver.Offset),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
                     AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
@@ -320,10 +331,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (File.Exists(knh)) {
                 _driver.AlignNodes(Knh.FromFile(knh));
             }
-
-            _driver.ParentMatrix = RootObject.Matrix;
+            
             _driverSteerAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, driver.SteerAnimation, clampEnabled: false));
             _driverSteerLock = driver.SteerAnimationLock;
+
+            _driver.LocalMatrix = RootObject.LocalMatrix;
+            Add(_driver);
+            ObjectsChanged?.Invoke(this, EventArgs.Empty);
 
             if (_steerDeg != 0 || OptionFixKnh) {
                 UpdateDriverSteerAnimation(GetSteerOffset());
@@ -334,18 +348,210 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+#if DEBUG
+        private bool _useUp = false;
+#else
+        private bool _useUp;
+#endif
+
+        public bool UseUp {
+            get { return _useUp; }
+            set {
+                if (value == _useUp) return;
+                _useUp = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Up _up;
+
         private void UpdateDriverSteerAnimation(float offset) {
             if (_driver == null) return;
 
-            // one animation is 720�
-            var steerLock = _steerLock ?? 360;
-            var steer = offset * steerLock / _driverSteerLock;
-            _driverSteerAnimator.Value?.SetImmediate(_driver, 0.5f - steer / 2f);
+            if (UseUp) {
+                if (_up == null) {
+                    _up = new Up(_driver, GetDummyByName("STEER_HR"));
+                }
+
+                _up.Update(offset, GetSteeringWheelParams(offset));
+            } else {
+                // one animation is 720°
+                var steerLock = _steerLock ?? 360;
+                var steer = offset * steerLock / _driverSteerLock;
+                _driverSteerAnimator.Value?.SetImmediate(_driver.RootObject, 0.5f - steer / 2f);
+            }
         }
 
         private void DrawDriver(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            if (!_isDriverVisible) return;
             InitializeDriver();
             _driver?.Draw(contextHolder, camera, mode);
+
+            _up?.Draw(contextHolder, camera, mode);
+        }
+
+        internal string DebugString => _up?.DebugString;
+
+#if DEBUG
+        private bool _isDriverVisible = true;
+#else
+        private bool _isDriverVisible;
+#endif
+
+        public bool IsDriverVisible {
+            get { return _isDriverVisible; }
+            set {
+                if (Equals(value, _isDriverVisible)) return;
+                _isDriverVisible = value;
+                OnPropertyChanged();
+
+                if (_driver == null) return;
+                if (!value) {
+                    Remove(_driver);
+                } else {
+                    Add(_driver);
+                }
+
+                ObjectsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        #endregion
+
+        #region Crew
+        private bool _crewSet;
+
+        [CanBeNull]
+        private Kn5RenderableDriver _crewMain, _crewTyres, _crewStuff;
+        private Lazier<KsAnimAnimator> _crewAnimator;
+
+        private void InitializeCrewMain() {
+            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(_rootDirectory));
+            if (contentDirectory == null) return;
+
+            var driversDirectory = Path.Combine(contentDirectory, "objects3D");
+            var filename = Path.Combine(driversDirectory, "pitcrew.kn5");
+            if (!File.Exists(filename)) return;
+
+            _crewMain = new Kn5RenderableDriver(Kn5.FromFile(filename), Matrix.RotationY(MathF.PI) * Matrix.Translation(-1.6f, 0f, 2f),
+                    _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                LiveReload = LiveReload,
+                MagickOverride = MagickOverride
+            };
+
+            _crewAnimator = Lazier.Create(() => CreateAnimator(Path.Combine(driversDirectory, "pitcrew_idle_dw.ksanim"), 10f));
+            _crewAnimator.Value?.Loop(_crewMain.RootObject);
+
+            Add(_crewMain);
+        }
+
+        private void InitializeCrewTyres() {
+            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(_rootDirectory));
+            if (contentDirectory == null) return;
+
+            var driversDirectory = Path.Combine(contentDirectory, "objects3D");
+            var filename = Path.Combine(driversDirectory, "pitcrewtyre.kn5");
+            if (!File.Exists(filename)) return;
+
+            _crewTyres = new Kn5RenderableDriver(Kn5.FromFile(filename), Matrix.RotationY(-MathF.PI * 0.6f) * Matrix.Translation(1.9f, 0f, 0.8f),
+                    _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                LiveReload = LiveReload,
+                MagickOverride = MagickOverride
+            };
+
+            Add(_crewTyres);
+        }
+
+        private async Task InitializeCrewStuff() {
+            var data = await ExtraModels.GetAsync(ExtraModels.KeyCrewExtra);
+            if (data == null) return;
+            
+            _crewStuff = new Kn5RenderableDriver(Kn5.FromBytes(data), Matrix.RotationY(-MathF.PI * 0.5f) * Matrix.Translation(0.09f, 0f, 0.08f),
+                    _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                LiveReload = LiveReload,
+                MagickOverride = MagickOverride
+            };
+
+            if (!_isCrewVisible) return;
+            Add(_crewStuff);
+            ObjectsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void InitializeCrew() {
+            if (_crewSet) return;
+            _crewSet = true;
+
+            InitializeCrewMain();
+            InitializeCrewTyres();
+            InitializeCrewStuff().Forget();
+
+            ObjectsChanged?.Invoke(this, EventArgs.Empty);
+            UpdateCrewDebugMode();
+        }
+
+        private void UpdateCrewDebugMode() {
+            if (_crewMain != null) {
+                _crewMain.DebugMode = DebugMode;
+            }
+
+            if (_crewTyres != null) {
+                _crewTyres.DebugMode = DebugMode;
+            }
+
+            if (_crewStuff != null) {
+                _crewStuff.DebugMode = DebugMode;
+            }
+        }
+
+        private void UpdateCrewParams() {
+            if (_crewMain != null) {
+                _crewMain.LiveReload = LiveReload;
+                _crewMain.MagickOverride = MagickOverride;
+            }
+
+            if (_crewTyres != null) {
+                _crewTyres.LiveReload = LiveReload;
+                _crewTyres.MagickOverride = MagickOverride;
+            }
+
+            if (_crewStuff != null) {
+                _crewStuff.LiveReload = LiveReload;
+                _crewStuff.MagickOverride = MagickOverride;
+            }
+        }
+
+        private void DrawCrew(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            if (!_isCrewVisible) return;
+            InitializeCrew();
+            _crewMain?.Draw(contextHolder, camera, mode);
+            _crewTyres?.Draw(contextHolder, camera, mode);
+            _crewStuff?.Draw(contextHolder, camera, mode);
+        }
+
+        private bool _isCrewVisible;
+
+        public bool IsCrewVisible {
+            get { return _isCrewVisible; }
+            set {
+                if (Equals(value, _isCrewVisible)) return;
+                _isCrewVisible = value;
+                OnPropertyChanged();
+
+                if (_crewMain == null) return;
+                if (!value) {
+                    Remove(_crewMain);
+                    Remove(_crewTyres);
+                    Remove(_crewStuff);
+                } else {
+                    if (_crewMain != null) Add(_crewMain);
+                    if (_crewTyres != null) Add(_crewTyres);
+                    if (_crewStuff != null) Add(_crewStuff);
+                }
+
+                ObjectsChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
         #endregion
 
@@ -405,16 +611,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public Kn5SharedMaterials Materials;
             internal IDeviceContextHolder Holder;
             internal Dictionary<string, Matrix> OriginalMatrices;
-            private readonly Kn5 _nonDefaultKn5;
+            internal readonly Kn5 NonDefaultKn5;
             private bool _prepared;
 
             public LodObject(Kn5RenderableList rootObject) {
-                _nonDefaultKn5 = null;
+                NonDefaultKn5 = null;
                 Renderable = rootObject;
             }
 
             public LodObject(Kn5 kn5, bool allowSkinnedObjects) {
-                _nonDefaultKn5 = kn5;
+                NonDefaultKn5 = kn5;
                 Renderable = (Kn5RenderableList)Convert(kn5.RootNode, allowSkinnedObjects);
             }
 
@@ -429,11 +635,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _prepared = true;
 
                 if (Materials == null) {
-                    if (_nonDefaultKn5 == null) {
+                    if (NonDefaultKn5 == null) {
                         Materials = materials;
                         Holder = localHolder;
                     } else {
-                        Materials = new Kn5SharedMaterials(globalHolder, _nonDefaultKn5);
+                        Materials = new Kn5SharedMaterials(globalHolder, NonDefaultKn5);
                         Holder = new Kn5LocalDeviceContextHolder(globalHolder, Materials, texturesProvider, model);
                     }
 
@@ -489,6 +695,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (_driver != null) {
                     _driver.LiveReload = LiveReload;
                 }
+
+                UpdateCrewParams();
             }
         }
 
@@ -507,6 +715,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (_driver != null) {
                     _driver.MagickOverride = MagickOverride;
                 }
+
+                UpdateCrewParams();
             }
         }
 
@@ -607,10 +817,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (skinId == null) {
                     _texturesProvider.ClearOverridesDirectory();
                     _driver?.ClearOverridesDirectory();
+                    _crewMain?.ClearOverridesDirectory();
+                    _crewTyres?.ClearOverridesDirectory();
+                    _crewStuff?.ClearOverridesDirectory();
                 } else {
                     var skinDirectory = Path.Combine(_skinsDirectory, skinId);
                     _texturesProvider.SetOverridesDirectory(contextHolder, skinDirectory);
                     _driver?.SetOverridesDirectory(contextHolder, skinDirectory);
+                    _crewMain?.SetOverridesDirectory(contextHolder, skinDirectory);
+                    _crewTyres?.SetOverridesDirectory(contextHolder, skinDirectory);
+                    _crewStuff?.SetOverridesDirectory(contextHolder, skinDirectory);
                 }
                 contextHolder.RaiseUpdateRequired();
                 _actuallyLoaded = true;
@@ -919,6 +1135,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             dirty |= _wipersAnimator?.IsSet == true && (_wipersAnimator.Value?.OnTick(dt) ?? false);
             dirty |= _doorLeftAnimator?.IsSet == true && (_doorLeftAnimator.Value?.OnTick(dt) ?? false);
             dirty |= _doorRightAnimator?.IsSet == true && (_doorRightAnimator.Value?.OnTick(dt) ?? false);
+            dirty |= _crewAnimator?.IsSet == true && (_crewAnimator.Value?.OnTick(dt) ?? false);
 
             if (dirty) {
                 _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1123,7 +1340,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(rootDirectory, ksAnimName, duration));
             }
 
-            internal void Update(RenderableList parent, float value) {
+            internal void Update(Kn5RenderableList parent, float value) {
                 _animator.Value?.SetTarget(parent, value);
                 Value = value;
                 OnPropertyChanged(nameof(Value));
@@ -1217,7 +1434,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         [CanBeNull]
         private static KsAnimAnimator CreateAnimator([NotNull] string rootDirectory, [NotNull] string animName, float duration = 1f,
                 bool clampEnabled = true) {
-            var filename = Path.Combine(rootDirectory, "animations", animName);
+            return CreateAnimator(Path.Combine(rootDirectory, "animations", animName), duration, clampEnabled);
+        }
+
+        [CanBeNull]
+        private static KsAnimAnimator CreateAnimator([NotNull] string filename, float duration = 1f, bool clampEnabled = true) {
             if (!File.Exists(filename)) return null;
 
             try {
@@ -1519,6 +1740,31 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public class SteeringWheelParams {
+            public Matrix ParentMatrix;
+            public Matrix OriginalLocalMatrix;
+            public float RotationDegress;
+        }
+
+        [CanBeNull]
+        private float GetSteeringWheelRotationDegress(float offset) {
+            if (!_steerLock.HasValue) {
+                _steerLock = _carData.GetSteerLock();
+            }
+
+            return _steerLock.Value * offset;
+        }
+
+        [CanBeNull]
+        private SteeringWheelParams GetSteeringWheelParams(float offset) {
+            var node = GetDummyByName("STEER_HR");
+            return node == null ? null : new SteeringWheelParams {
+                OriginalLocalMatrix = node.OriginalNode.Transform.ToMatrix(),
+                ParentMatrix = node.ParentMatrix,
+                RotationDegress = GetSteeringWheelRotationDegress(offset)
+            };
+        }
+        
         private float? _steerLock;
 
         private void SteerSteeringWheel(float offset) {
@@ -1527,6 +1773,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 UpdateModelMatrixInverted();
             }
 
+            var degress = GetSteeringWheelRotationDegress(offset);
             foreach (var node in new[] { "HR", "LR" }.Select(x => GetDummyByName($@"STEER_{x}")).NonNull()) {
                 var name = node.Name ?? "";
 
@@ -1535,11 +1782,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     original = _currentLodObject.OriginalMatrices[name] = node.LocalMatrix;
                 }
 
-                if (!_steerLock.HasValue) {
-                    _steerLock = _carData.GetSteerLock();
-                }
-
-                node.LocalMatrix = Matrix.RotationZ(_steerLock.Value * offset * MathF.PI / 180f) * original;
+                node.LocalMatrix = Matrix.RotationZ(degress.ToRadians()) * original;
             }
         }
 
@@ -1660,6 +1903,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (_driver != null) {
                     _driver.DebugMode = value;
                 }
+
+                UpdateCrewDebugMode();
             }
         }
         #endregion
@@ -1753,6 +1998,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             DisposeHelper.Dispose(ref _suspensionLines);
             DisposeHelper.Dispose(ref _driver);
+            DisposeHelper.Dispose(ref _crewMain);
+            DisposeHelper.Dispose(ref _crewTyres);
             DisposeHelper.Dispose(ref _collidersLines);
             DisposeHelper.Dispose(ref _collider);
             DisposeHelper.Dispose(ref _debugNode);
@@ -1771,5 +2018,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return RootObject.GetByName(name);
         }
         #endregion
+
+        public Kn5Material GetMaterial(IKn5RenderableObject obj) {
+            if (_driver != null && _driver.GetAllChildren().Contains(obj)) {
+                return _driver.OriginalFile.GetMaterial(obj.OriginalNode.MaterialId);
+            }
+
+            return (_currentLodObject.NonDefaultKn5 ?? OriginalFile).GetMaterial(obj.OriginalNode.MaterialId);
+        }
     }
 }

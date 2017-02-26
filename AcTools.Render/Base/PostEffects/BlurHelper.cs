@@ -39,7 +39,7 @@ namespace AcTools.Render.Base.PostEffects {
 
         private static void CalculateGaussian(float dx, float dy, float force, out float[] weightsParameter, out Vector4[] offsetsParameter) {
             // Look up how many samples our gaussian blur effect supports.
-            const int sampleCount = EffectPpBlur.SampleCount;
+            var sampleCount = EffectPpBlur.SampleCount;
 
             // Create temporary arrays for computing our filter settings.
             var sampleWeights = new float[sampleCount];

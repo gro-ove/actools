@@ -369,6 +369,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool EnableShadows { get; set; } = false;
 
+        public bool EnablePcssShadows { get; set; } = false;
+
         [CanBeNull]
         private ReflectionCubemap _reflectionCubemap;
 
@@ -488,40 +490,52 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (Equals(_light, value)) return;
 
                 _light = value;
-                _shadowsDirty = true;
+                _sceneDirty = true;
             }
         }
 
-        private bool _shadowsDirty, _reflectionCubemapDirty, _sameShadows;
+        private bool _sceneDirty, _sceneWasDirty, _reflectionCubemapDirty, _shadowsEnabled;
 
         private void OnSceneUpdated(object sender, EventArgs e) {
-            _shadowsDirty = true;
+            _sceneDirty = true;
         }
 
         protected virtual void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
             _previousShadowsTarget = center;
-            shadows.Update(-Light, center);
-            shadows.DrawScene(DeviceContextHolder, this);
-            _shadowsDirty = false;
-            _sameShadows = false;
+
+            if (!EnableShadows) {
+                shadows.Clear(DeviceContextHolder);
+            } else {
+                shadows.Update(-Light, center);
+                shadows.DrawScene(DeviceContextHolder, this);
+            }
         }
 
         public bool DelayedBoundingBoxUpdate { get; set; }
 
         protected virtual void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
             var center = ReflectionCubemapPosition;
-            if (_shadows != null && (_previousShadowsTarget != center || _shadowsDirty)) {
+
+            var sceneDirty = _sceneDirty;
+            _sceneDirty = false;
+
+            if (sceneDirty) {
                 if (!DelayedBoundingBoxUpdate) {
                     Scene.UpdateBoundingBox();
                 }
+                _sceneWasDirty = true;
 
-                UpdateShadows(_shadows, center);
             } else {
-                if (!_sameShadows && DelayedBoundingBoxUpdate) {
+                if (_sceneWasDirty && DelayedBoundingBoxUpdate) {
                     Scene.UpdateBoundingBox();
                 }
 
-                _sameShadows = true;
+                _sceneWasDirty = false;
+            }
+
+            if (_shadows != null && (_previousShadowsTarget != center || sceneDirty || _shadowsEnabled != EnableShadows)) {
+                UpdateShadows(_shadows, center);
+                _shadowsEnabled = EnableShadows;
             }
 
             if (_reflectionCubemap != null && (_reflectionCubemap.Update(center) || _reflectionCubemapDirty)) {
@@ -552,7 +566,6 @@ FXAA: {(UseFxaa ? "Yes" : "No")}
 MSAA: {(UseMsaa ? "Yes" : "No")}
 SSAA: {(TemporaryFlag ? "Yes, Exp." : UseSsaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
-Reused shadows: {(_sameShadows ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 

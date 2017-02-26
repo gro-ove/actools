@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
-using AcTools.Render.Base.Utils;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -158,6 +154,37 @@ namespace AcTools.Render.Base.Objects {
             assembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             assembler.SetVertexBuffers(0, _verticesBufferBinding);
             assembler.SetIndexBuffer(_indicesBuffer, Format.R16_UInt, 0);
+        }
+
+        /// <summary>
+        /// Returns distance.
+        /// </summary>
+        public override float? CheckIntersection(Ray ray) {
+            UpdateBoundingBox();
+
+            float d;
+            if (!BoundingBox.HasValue || !Ray.Intersects(ray, BoundingBox.Value, out d)) {
+                return null;
+            }
+            
+            var min = float.MaxValue;
+            var found = false;
+
+            var indices = Indices;
+            var vertices = Vertices;
+            var matrix = ParentMatrix;
+            for (int i = 0, n = indices.Length / 3; i < n; i++) {
+                var v0 = Vector3.TransformCoordinate(vertices[indices[i * 3]].Position, matrix);
+                var v1 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 1]].Position, matrix);
+                var v2 = Vector3.TransformCoordinate(vertices[indices[i * 3 + 2]].Position, matrix);
+
+                float distance;
+                if (!Ray.Intersects(ray, v0, v1, v2, out distance) || distance >= min) continue;
+                min = distance;
+                found = true;
+            }
+
+            return found ? min : (float?)null;
         }
 
         public override void Dispose() {

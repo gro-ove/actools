@@ -25,6 +25,8 @@ namespace AcTools.Render.Base.Objects {
         void UpdateBoundingBox();
 
         IRenderableObject Clone();
+
+        float? CheckIntersection(Ray ray);
     }
 
     public class InvisibleObject : IRenderableObject {
@@ -54,6 +56,10 @@ namespace AcTools.Render.Base.Objects {
 
         public IRenderableObject Clone() {
             return new InvisibleObject();
+        }
+
+        public float? CheckIntersection(Ray ray) {
+            return null;
         }
     }
 }

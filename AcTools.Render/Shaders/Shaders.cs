@@ -75,7 +75,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpBasic : IEffectWrapper, IEffectScreenSizeWrapper {
-		public const int FxaaPreset = 5;
+		public static readonly int FxaaPreset = 5;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -123,7 +123,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpBlur : IEffectWrapper, IEffectScreenSizeWrapper {
-		public const int SampleCount = 15;
+		public static readonly int SampleCount = 15;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -299,7 +299,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectPpOutline : IEffectWrapper, IEffectScreenSizeWrapper {
-		public const float Threshold = 0.99999f;
+		public static readonly float Threshold = 0.99999f;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -385,16 +385,17 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(NmUvMultMaterial));
         }
 
-		public const uint HasNormalMap = 1;
-		public const uint UseNormalAlphaAsAlpha = 64;
-		public const uint AlphaTest = 128;
-		public const uint IsAdditive = 16;
-		public const uint HasDetailsMap = 4;
-		public const uint IsCarpaint = 32;
-		public const bool EnableShadows = true;
-		public const int NumSplits = 1;
-		public const int ShadowMapSize = 2048;
-		public const int MaxBones = 64;
+		public static readonly uint HasNormalMap = 1;
+		public static readonly uint UseNormalAlphaAsAlpha = 64;
+		public static readonly uint AlphaTest = 128;
+		public static readonly uint IsAdditive = 16;
+		public static readonly uint HasDetailsMap = 4;
+		public static readonly uint IsCarpaint = 32;
+		public static readonly bool EnableShadows = true;
+		public static readonly bool EnablePcss = true;
+		public static readonly int NumSplits = 1;
+		public static readonly int ShadowMapSize = 2048;
+		public static readonly int MaxBones = 64;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -409,7 +410,7 @@ namespace AcTools.Render.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectMatrixVariable FxBoneTransforms { get; private set; }
 		public EffectResourceVariable FxShadowMaps, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxReflectionCubemap;
-		public EffectScalarVariable FxFlatMirrored, FxFlatMirrorPower;
+		public EffectScalarVariable FxFlatMirrored, FxReflectionPower, FxShadowsEnabled, FxPcssEnabled, FxFlatMirrorPower;
 		public EffectVectorVariable FxEyePosW { get; private set; }
 		public EffectVectorVariable FxLightDir { get; private set; }
 		public EffectVectorVariable FxLightColor { get; private set; }
@@ -476,6 +477,9 @@ namespace AcTools.Render.Shaders {
 			FxDetailsNormalMap = E.GetVariableByName("gDetailsNormalMap").AsResource();
 			FxReflectionCubemap = E.GetVariableByName("gReflectionCubemap").AsResource();
 			FxFlatMirrored = E.GetVariableByName("gFlatMirrored").AsScalar();
+			FxReflectionPower = E.GetVariableByName("gReflectionPower").AsScalar();
+			FxShadowsEnabled = E.GetVariableByName("gShadowsEnabled").AsScalar();
+			FxPcssEnabled = E.GetVariableByName("gPcssEnabled").AsScalar();
 			FxFlatMirrorPower = E.GetVariableByName("gFlatMirrorPower").AsScalar();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
 			FxLightDir = E.GetVariableByName("gLightDir").AsVector();
@@ -550,13 +554,13 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(NmUvMultMaterial));
         }
 
-		public const uint HasNormalMap = 1;
-		public const uint UseDiffuseAlphaAsMap = 2;
-		public const uint UseNormalAlphaAsAlpha = 64;
-		public const uint AlphaTest = 128;
-		public const uint IsAdditive = 16;
-		public const uint HasDetailsMap = 4;
-		public const uint IsCarpaint = 32;
+		public static readonly uint HasNormalMap = 1;
+		public static readonly uint UseDiffuseAlphaAsMap = 2;
+		public static readonly uint UseNormalAlphaAsAlpha = 64;
+		public static readonly uint AlphaTest = 128;
+		public static readonly uint IsAdditive = 16;
+		public static readonly uint HasDetailsMap = 4;
+		public static readonly uint IsCarpaint = 32;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -721,7 +725,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectSpecialTrackMap : IEffectWrapper, IEffectScreenSizeWrapper {
-		public const int Gblurradius = 3;
+		public static readonly int Gblurradius = 3;
 		private ShaderBytecode _b;
 		public Effect E;
 

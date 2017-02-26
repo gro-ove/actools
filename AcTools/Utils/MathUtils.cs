@@ -36,6 +36,10 @@ namespace AcTools.Utils {
         public static float Saturate(this float value) => value < 0f ? 0f : value > 1f ? 1f : value;
         public static double Saturate(this double value) => value < 0d ? 0d : value > 1d ? 1d : value;
 
+        public static int Sign(this int value) => value < 0 ? -1 : value > 0 ? 1 : 0;
+        public static int Sign(this float value) => value < 0f ? -1 : value > 0f ? 1 : 0;
+        public static int Sign(this double value) => value < 0d ? -1 : value > 0d ? 1 : 0;
+
         // [Obsolete] TODO
         public static int ToIntPercentage(this double value) => (100 * value).RoundToInt();
 

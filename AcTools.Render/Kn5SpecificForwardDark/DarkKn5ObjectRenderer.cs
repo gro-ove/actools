@@ -41,7 +41,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (value == _flatMirror) return;
                 _flatMirror = value;
                 OnPropertyChanged();
-                RecreateFlatMirror();
+                _mirrorDirty = true;
                 UpdateBlurredFlatMirror();
                 IsDirty = true;
             }
@@ -103,7 +103,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (Equals(value, _opaqueGround)) return;
                 _opaqueGround = value;
                 OnPropertyChanged();
-                RecreateFlatMirror();
+                _mirrorDirty = true;
             }
         }
 
@@ -211,15 +211,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             _carWrapper = carWrapper;
-            RecreateFlatMirror();
+            _mirrorDirty = true;
 
             if (_meshDebug) {
                 UpdateMeshDebug(car);
             }
         }
 
+        private bool _mirrorDirty;
+
         private void OnCarObjectsChanged(object sender, EventArgs e) {
-            RecreateFlatMirror();
+            _mirrorDirty = true;
         }
 
         protected override void PrepareCamera(BaseCamera camera) {
@@ -278,6 +280,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     shadows.Splits.Take(EffectDarkMaterial.NumSplits).Select(x => x.ShadowTransform).ToArray());
         }
 
+        protected override void DrawPrepare() {
+            if (_mirrorDirty) {
+                _mirrorDirty = false;
+                RecreateFlatMirror();
+            }
+
+            base.DrawPrepare();
+        }
+
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection) {
             if (_effect == null) {
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
@@ -289,6 +300,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _effect.FxLightDir.Set(light);
 
             _effect.FxLightColor.Set(LightColor.ToVector3() * LightBrightness);
+            _effect.FxReflectionPower.Set(1f);
+            _effect.FxShadowsEnabled.Set(EnableShadows);
+            _effect.FxPcssEnabled.Set(EnableShadows && EnablePcssShadows);
             _effect.FxAmbientDown.Set(AmbientDown.ToVector3() * AmbientBrightness);
             _effect.FxAmbientRange.Set((AmbientUp.ToVector3() - AmbientDown.ToVector3()) * AmbientBrightness);
             _effect.FxBackgroundColor.Set(BackgroundColor.ToVector3());
@@ -337,6 +351,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+        }
+
+        protected override string GetInformationString() {
+            return CarNode?.DebugString ?? base.GetInformationString();
         }
 
         protected override void DrawScene() {

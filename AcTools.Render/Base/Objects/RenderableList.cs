@@ -77,7 +77,7 @@ namespace AcTools.Render.Base.Objects {
         private Matrix _originalMatrix;
         private RenderableList _lookAt;
 
-        private static Matrix RotateToFace(Vector3 o, Vector3 p, Vector3 u) {
+        private static Matrix RotateToFaceDirSpecial(Vector3 o, Vector3 p, Vector3 u) {
             var d = Vector3.Normalize(p - o);
             var s = Vector3.Normalize(Vector3.Cross(d, Vector3.Normalize(u)));
             var v = Vector3.Cross(s, d);
@@ -88,14 +88,31 @@ namespace AcTools.Render.Base.Objects {
                     o.X, o.Y, o.Z, 1);
         }
 
-        public void LookAt(Vector3 globalPoint) {
+        private static Matrix RotateToFace(Vector3 o, Vector3 p, Vector3 u) {
+            var d = Vector3.Normalize(o - p);
+            var s = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
+            var v = Vector3.Normalize(Vector3.Cross(d, s));
+            return SlimDxExtension.ToMatrix(
+                    v.X, v.Y, v.Z, 0,
+                    d.X, d.Y, d.Z, 0,
+                    s.X, s.Y, s.Z, 0,
+                    o.X, o.Y, o.Z, 1);
+        }
+
+        public void LookAtDirMode(Vector3 globalPoint, Vector3 up) {
             if (!_originalLocalPos.HasValue) {
                 _originalLocalPos = LocalMatrix.GetTranslationVector();
                 _originalMatrix = LocalMatrix;
             }
 
             var globalPos = Vector3.TransformCoordinate(_originalLocalPos.Value, ParentMatrix);
-            var yAxis = Vector3.TransformNormal(Vector3.UnitY, _originalMatrix * ParentMatrix);
+            var yAxis = Vector3.TransformNormal(up, _originalMatrix * ParentMatrix);
+            LocalMatrix = RotateToFaceDirSpecial(globalPos, globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
+        }
+
+        public void LookAt(Vector3 globalPoint, Vector3 up) {
+            var globalPos = Vector3.TransformCoordinate(LocalMatrix.GetTranslationVector(), ParentMatrix);
+            var yAxis = up;
             LocalMatrix = RotateToFace(globalPos, globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
         }
 
@@ -105,7 +122,7 @@ namespace AcTools.Render.Base.Objects {
             if (_lookAt == null || Equals(Matrix, _prevThisMatrix) && Equals(_prevLookAtMatrix, _lookAt.Matrix)) return;
             _prevThisMatrix = Matrix;
             _prevLookAtMatrix = _lookAt.Matrix;
-            LookAt(_prevLookAtMatrix.GetTranslationVector());
+            LookAtDirMode(_prevLookAtMatrix.GetTranslationVector(), Vector3.UnitY);
         }
 
         public void LookAt(Kn5RenderableList target) {
@@ -140,24 +157,24 @@ namespace AcTools.Render.Base.Objects {
             BoundingBox = bb;
         }
 
-        public new void Add(IRenderableObject obj) {
+        public new void Add([NotNull] IRenderableObject obj) {
             base.Add(obj);
             obj.ParentMatrix = Matrix;
         }
 
-        public new void AddRange(IEnumerable<IRenderableObject> objs) {
+        public new void AddRange([NotNull, ItemNotNull] IEnumerable<IRenderableObject> objs) {
             foreach (var o in objs) {
                 base.Add(o);
                 o.ParentMatrix = Matrix;
             }
         }
 
-        public new void Insert(int index, IRenderableObject obj) {
+        public new void Insert(int index, [NotNull] IRenderableObject obj) {
             base.Insert(index, obj);
             obj.ParentMatrix = Matrix;
         }
 
-        public new void InsertRange(int index, IEnumerable<IRenderableObject> objs) {
+        public new void InsertRange(int index, [NotNull, ItemNotNull] IEnumerable<IRenderableObject> objs) {
             foreach (var o in objs) {
                 base.Insert(index++, o);
                 o.ParentMatrix = Matrix;
@@ -191,6 +208,10 @@ namespace AcTools.Render.Base.Objects {
             };
             _clones.Add(result);
             return result;
+        }
+
+        public float? CheckIntersection(Ray ray) {
+            return null;
         }
 
         IRenderableObject IRenderableObject.Clone() {

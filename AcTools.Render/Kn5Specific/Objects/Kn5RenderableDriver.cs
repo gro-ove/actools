@@ -68,6 +68,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            if (!IsEnabled) return;
+
+            if (LocalHolder == null) {
+                DrawInitialize(contextHolder);
+            }
+
             if (_debugModeLater.HasValue) {
                 _debugModeLater = null;
 
@@ -114,16 +120,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        private void AlignNodes(KnhEntry entry, Matrix matrix) {
+        private void AlignNodes(KnhEntry entry, Matrix matrix, int c = 0) {
+            ++c;
+
             var dummy = GetDummyByName(entry.Name);
             if (dummy != null) {
                 dummy.LocalMatrix = entry.Transformation.ToMatrix();
+                /*if (c > 4) {
+                    return;
+                }*/
             } else {
                 matrix = entry.Transformation.ToMatrix() * matrix;
             }
 
             foreach (var child in entry.Children) {
-                AlignNodes(child, matrix);
+                AlignNodes(child, matrix, c);
             }
         }
 

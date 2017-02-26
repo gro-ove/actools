@@ -19,7 +19,10 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
+using AcManager.Tools.Managers;
+using AcTools.Utils;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 
 namespace AcManager {
     [Localizable(false)]
@@ -205,6 +208,10 @@ namespace AcManager {
                 try {
                     result = Assembly.LoadFrom(filename);
                     break;
+                } catch (Exception) when (id == "SlimDX") {
+                    var newFilename = SlimDxMissing(filename);
+                    result = Assembly.LoadFrom(newFilename);
+                    break;
                 } catch (FileLoadException) {
                     Log("FileLoadException! Next attempt in 500 ms");
                     Thread.Sleep(500);
@@ -217,6 +224,86 @@ namespace AcManager {
             }
 
             return result;
+        }
+
+        private string SlimDxMissing(string filename) {
+            Log("SlimDX missing!");
+
+            var fixedFilename = Path.Combine(Path.GetDirectoryName(filename) ?? "", "SlimDX.dll");
+            if (File.Exists(fixedFilename)) {
+                return fixedFilename;
+            }
+
+            string acRoot = null;
+            try {
+                acRoot = PitySolution();
+            } catch (Exception) {
+                // ignored
+            }
+
+            Log("AC: " + acRoot);
+
+            string slimDx = null;
+            if (acRoot != null) {
+                slimDx = Path.Combine(acRoot, "launcher", "support");
+
+                // What the hell am I doing? It won’t work!
+                var acSlimDx = Path.Combine(slimDx, "SlimDX.dll");
+                if (File.Exists(acSlimDx)) {
+                    return acSlimDx;
+                }
+            }
+
+            var msg = MessageBox.Show(
+                    "Can’t load SlimDX library. Please, make sure you have Visual C++ Redistributable 2015 (x86) installed. Would you like to download it?\n\nPress “No” to use SlimDX from AC instead (now, this option should fixed).",
+                    "Error", MessageBoxButton.YesNoCancel, MessageBoxImage.Asterisk);
+            
+            switch (msg) {
+                case MessageBoxResult.Yes:
+                    Log("User chose to download VS C++ 2015 x86");
+                    Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=48145");
+                    break;
+
+                case MessageBoxResult.No:
+                    Log("User chose to use DLL from AC");
+                    
+                    var dialog = new OpenFileDialog {
+                        Title = "Please, find some SlimDX.dll file",
+                        CheckFileExists = true,
+                        Filter = "SlimDX.dll|SlimDX.dll|All Files (*.*)|*",
+                        InitialDirectory = slimDx,
+                        Multiselect = false,
+                        RestoreDirectory = false,
+                        FileName = "SlimDX.dll",
+                        DefaultExt = ".dll",
+                        CustomPlaces = new List<FileDialogCustomPlace>(new[] {
+                            new FileDialogCustomPlace(slimDx)
+                        }.Where(x => x != null))
+                    };
+
+                    if (dialog.ShowDialog() == true) {
+                        Log("Selected file: " + dialog.FileName);
+                        try {
+                            File.Copy(dialog.FileName, fixedFilename, true);
+                            Log("Copied to: " + fixedFilename);
+                            return fixedFilename;
+                        } catch (Exception e) {
+                            Log(e.ToString());
+                            MessageBox.Show("Can’t use AC library: " + e.Message);
+                            Environment.Exit(1);
+                        }
+                    }
+                    
+                    break;
+            }
+
+            Environment.Exit(0);
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static string PitySolution() {
+            return AcRootFinder.TryToFind();
         }
 
         private string ExtractUnmanaged(string id) {
@@ -311,9 +398,9 @@ namespace AcManager {
             if (_cached.TryGetValue(id, out result)) return result;
             
             if (string.Equals(id, "System.Web", StringComparison.OrdinalIgnoreCase)) {
-                if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to install it?", "Error",
+                if (MessageBox.Show("Looks like you don’t have .NET 4.5.2 installed. Would you like to download it?", "Error",
                         MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {
-                    Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=42642");
+                    Process.Start("https://www.microsoft.com/en-us/download/details.aspx?id=42642");
                 }
 
                 Environment.Exit(10);

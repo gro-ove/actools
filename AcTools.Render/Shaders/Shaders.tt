@@ -2,6 +2,7 @@
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="System.Windows.Forms" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.IO" #>
@@ -11,6 +12,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Windows.Forms" #>
 <#@ output extension=".cs" #>
 <#= string.Join("\n", Encoding.UTF8.GetString(Convert.FromBase64String("R0VORVJBVEVEIEFVVE9NQVRJQ0FMTFkKRE9O4oCZVCBNT0RJRlk="))
 		.Split('\n').Select(x => $"/* {x} */")) #>
@@ -94,13 +96,54 @@ namespace <#= resultNamespace #> {
 
 	var resxLocation = Path.Combine(projectRoot, resxName);
 
+	var warned = false;
+	Action<string> Warn = msg => {
+		if (warned) return;
+		warned = true;
+		MessageBox.Show(msg, "Shaders Compilation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+	};
+	
+	Func<string, List<string>, DateTime> LastIncludeWriteTime_Inner = null;
+	LastIncludeWriteTime_Inner = (filename, previous) => {
+		var data = File.ReadAllText(filename);
+		previous.Add(filename);
+
+		var lastWrite = default(DateTime);
+		foreach (var match in Regex.Matches(data, @"#include ""([^""]+)""").Cast<Match>()){
+			var included = Path.Combine(dataFolder, "Includes", match.Groups[1].Value);
+			if (previous.Contains(included)) continue;
+
+			var iInfo = new FileInfo(included);
+			if (!iInfo.Exists) {
+				Warn($"Included file “{Path.GetFileName(included)}” not found (from “{Path.GetFileName(filename)}”).");
+				return DateTime.Now;
+			} else {
+				if (iInfo.LastWriteTime > lastWrite) {
+					lastWrite = iInfo.LastWriteTime;
+				}
+
+				var inner = LastIncludeWriteTime_Inner(included, previous);				
+				if (inner > lastWrite) {
+					lastWrite = inner;
+				}
+			}
+		}
+
+		return lastWrite;
+	};
+
+	Func<string, DateTime> LastIncludeWriteTime = filename => {
+		return LastIncludeWriteTime_Inner(filename, new List<string>());
+	};
+
 	Func<string, byte[]> CompileShader = f => {
 		var n = Path.GetFileName(f);
 		var c = f + ".o";
 		var h = Path.Combine(tempFolder, n + ".o");
 		var v = Path.Combine(tempFolder, n + ".warn");
 
-		if (File.Exists(h) && new FileInfo(f).LastWriteTime < new FileInfo(h).LastWriteTime){
+		var hInfo = new FileInfo(h);
+		if (hInfo.Exists && (new FileInfo(f).LastWriteTime < hInfo.LastWriteTime && LastIncludeWriteTime(f) < hInfo.LastWriteTime)){
 			if (File.Exists(v)) Debug.WriteLine(File.ReadAllText(v));
 			return File.ReadAllBytes(h);
 		}
@@ -136,6 +179,7 @@ namespace <#= resultNamespace #> {
 		File.Delete(c);
 
 		if (w.Length > 0){
+			Warn($"While compiling “{Path.GetFileName(f)}”:\n{w}");
 			File.WriteAllText(v, w);
 		} else {
 			File.Delete(v);
@@ -272,9 +316,10 @@ namespace <#= resultNamespace #> {
 		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>();
 		
 	/* CONSTS */
+		var justReadonly = true;
 		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
 			var typeName = MapShaderType(x.Groups[1].Value);
-			var isConst = !typeName.StartsWith("Vector");
+			var isConst = !justReadonly && !typeName.StartsWith("Vector");
 			var constName = ConvertConstName(x.Groups[2].Value);
 			var constValue = ConvertConstValue(x.Groups[3].Value);
 			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		";
@@ -290,7 +335,7 @@ namespace <#= resultNamespace #> {
 				v.Contains("float2") ? "Vector2" :
 				v.Contains("true") || v.Contains("false") ? "bool" :
 				v.Contains(".") ? "float" : "int";
-			var isConst = !typeName.StartsWith("Vector");
+			var isConst = !justReadonly && !typeName.StartsWith("Vector");
 
 			if (Regex.IsMatch(constName, @"^(?:Enable|Disable)[A-Z]|Flag$") && (constValue == "0" || constValue == "1")){
 				typeName = "bool";

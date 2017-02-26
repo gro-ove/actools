@@ -60,6 +60,10 @@ namespace AcTools.Render.Base.Objects {
             };
         }
 
+        public override float? CheckIntersection(Ray ray) {
+            return null;
+        }
+
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             if (IsEmpty) return;
 

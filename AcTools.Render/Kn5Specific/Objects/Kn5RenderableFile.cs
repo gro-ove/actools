@@ -93,10 +93,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private Kn5RenderableList _rootObject;
         private List<Kn5RenderableList> _dummies;
+        private List<IKn5RenderableObject> _meshes;
 
-        protected Kn5RenderableList RootObject {
+        public Kn5RenderableList RootObject {
             get { return _rootObject; }
-            set {
+            protected set {
                 if (_rootObject != null) {
                     _rootObject.MatrixChanged -= OnRootObjectMatrixChanged;
                 }
@@ -112,6 +113,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public List<Kn5RenderableList> Dummies => _dummies ?? (_dummies = RootObject.GetAllChildren().OfType<Kn5RenderableList>().ToList());
+
+        public List<IKn5RenderableObject> Meshes => _meshes ?? (_meshes = RootObject.GetAllChildren().OfType<IKn5RenderableObject>().ToList());
 
         public Kn5RenderableFile(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, bool allowSkinnedObjects = false) : base(kn5.OriginalFilename, matrix) {
             AllowSkinnedObjects = allowSkinnedObjects;
@@ -137,6 +140,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var inverted = Matrix.Invert(RootObject.Matrix);
             foreach (var dummy in Dummies) {
+                dummy.ModelMatrixInverted = inverted;
+            }
+            foreach (var dummy in Meshes) {
                 dummy.ModelMatrixInverted = inverted;
             }
         }
