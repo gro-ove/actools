@@ -205,8 +205,8 @@
     <value>Contenu</value>
   </data>
   <data name="Main_About" xml:space="preserve">
-    <value> À Propos</value>
-  </data>
+    <value>À Propos</value>
+  <alternative> À Propos</alternative></data>
   <data name="Main_ContentManager" xml:space="preserve">
     <value>Content Manager</value>
   </data>
@@ -595,8 +595,8 @@
     <value>Une mise à jour est prête : {0}</value>
   </data>
   <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
-    <value>Imposible d'installer du conenu supplémentaire</value>
-  </data>
+    <value>Imposible d'installer du contenu supplémentaire</value>
+  <alternative>Imposible d'installer du conenu supplémentaire</alternative></data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
     <value>Assurez-vous que la voiture et le circuit nécessaires soient installés et disponibles.</value>
   </data>
@@ -745,8 +745,8 @@
     <value>Astuces importantes</value>
   </data>
   <data name="Main_Live" xml:space="preserve">
-    <value>en ligne</value>
-  </data>
+    <value>En direct</value>
+  <alternative>en ligne</alternative></data>
   <data name="Main_Online" xml:space="preserve">
     <value>En ligne</value>
   </data>
@@ -883,8 +883,8 @@
     <value>Version des données :</value>
   </data>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
-    <value>Néttoyage</value>
-  </data>
+    <value>Nettoyage</value>
+  <alternative>Néttoyage</alternative></data>
   <data name="Common_MillisecondsFormat" xml:space="preserve">
     <value>{0:F2} ms</value>
   </data>
@@ -1566,5 +1566,8 @@
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Grille des temps par tour</value>
+  </data>
+  <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
+    <value>Changer les icônes des marques automatiquement</value>
   </data>
 </root>

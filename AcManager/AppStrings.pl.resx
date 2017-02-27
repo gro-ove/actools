@@ -156,11 +156,11 @@
     <value>Upewnij się, że wymagane samochód i tor są zainstalowane i dostępne.</value>
   </data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
-    <value>Nie można zastosować</value>
-  </data>
+    <value>Nie można przeanalizować żądania</value>
+  <alternative>Nie można zastosować</alternative></data>
   <data name="Arguments_CannotProcessRequest" xml:space="preserve">
-    <value>Nie można zastosować</value>
-  </data>
+    <value>Nie można przetworzyć żądania</value>
+  <alternative>Nie można zastosować</alternative></data>
   <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
     <value>Upewnij się, że dane są poprawne.</value>
   </data>
@@ -290,11 +290,11 @@
     <value>Usuń id brakującego źródła z ui_car.json</value>
   </data>
   <data name="Solution_ChangeParent" xml:space="preserve">
-    <value>Zmień źródlo</value>
-  </data>
+    <value>Zmień źródło</value>
+  <alternative>Zmień źródlo</alternative></data>
   <data name="Solution_ChangeParent_Details" xml:space="preserve">
-    <value>Wybierz nowe źródlo z listy samochodów</value>
-  </data>
+    <value>Wybierz nowe źródło z listy samochodów</value>
+  <alternative>Wybierz nowe źródlo z listy samochodów</alternative></data>
   <data name="Solution_SetBrandBadge" xml:space="preserve">
     <value>Ustaw {0} logo</value>
   </data>
@@ -389,8 +389,8 @@
     <value>Zezwól zablokować malowania</value>
   </data>
   <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
-    <value>Z niczym, tylko pustka</value>
-  </data>
+    <value>Z niczego, tylko pustka</value>
+  <alternative>Z niczym, tylko pustka</alternative></data>
   <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
     <value>Wybierz lub utwórz nową aktualizację ikony w edytorze</value>
   </data>
@@ -539,8 +539,8 @@
     <value>Animacja przejścia:</value>
   </data>
   <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
-    <value>Nawiasem mówiąc, wypróbuj skróty F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</value>
-  </data>
+    <value>Przy okazji, wypróbuj skróty F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</value>
+  <alternative>Nawiasem mówiąc, wypróbuj skróty F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</alternative></data>
   <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
     <value>Nie zapominaj, że istnieje skrót klawiaturowy do każdego przycisku</value>
   </data>
@@ -726,8 +726,8 @@
  Katalog roboczy zostanie ustawiony w folderze Assetto Corsa w dokumentach.</value>
   </data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
-    <value>Replace clouds by weather’s clouds if exist</value>
-  </data>
+    <value>Wymień podstawowe chmury na chmury pogodowe, jeżeli istnieją</value>
+  <alternative>Replace clouds by weather’s clouds if exist</alternative></data>
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
     <value>Automatycznie konwertuj zdjęcia z BMP do JPEG przy wyjściu</value>
   </data>
@@ -750,8 +750,8 @@
     <value>Tryb dewelopera</value>
   </data>
   <data name="Settings_General_AppHeader" xml:space="preserve">
-    <value>App:</value>
-  </data>
+    <value>Aplikacja:</value>
+  <alternative>App:</alternative></data>
   <data name="Settings_General_AppKeyLabel" xml:space="preserve">
     <value>Klucz aplikacji:</value>
   </data>
@@ -765,14 +765,14 @@
     <value>Automatyczne aktualizacje:</value>
   </data>
   <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
-    <value>Sprawdź aktualizacje:</value>
-  </data>
+    <value>Sprawdź aktualizację:</value>
+  <alternative>Sprawdź aktualizacje:</alternative></data>
   <data name="Settings_General_AppVersionLabel" xml:space="preserve">
     <value>Wersja aplikacji:</value>
   </data>
   <data name="Settings_General_CheckForUpdates" xml:space="preserve">
-    <value>Sprawdź aktualizacje</value>
-  </data>
+    <value>Sprawdź aktualizację</value>
+  <alternative>Sprawdź aktualizacje</alternative></data>
   <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
     <value>Wersja danych:</value>
   </data>
@@ -792,11 +792,11 @@
     <value>{0:F2} ms</value>
   </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
-    <value>Testowanie dostępu:</value>
-  </data>
+    <value>Dostęp do testów:</value>
+  <alternative>Testowanie dostępu:</alternative></data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
-    <value>Aktualizacja do wersji nie-testowanych</value>
-  </data>
+    <value>Aktualizuj do wersji nie testowanych</value>
+  <alternative>Aktualizacja do wersji nie-testowanych</alternative></data>
   <data name="Settings_General_ValuesNumber" xml:space="preserve">
     <value>{0} zapis</value>
   </data>
@@ -867,20 +867,20 @@
     <value>Pingowanie:</value>
   </data>
   <data name="Settings_Online_PingWithThreads" xml:space="preserve">
-    <value>Użyj wątku zamiast asynchronicznego API</value>
-  </data>
+    <value>Użyj rozgałęzien zamiast asynchronicznego API</value>
+  <alternative>Użyj wątku zamiast asynchronicznego API</alternative></data>
   <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
     <value>Najbardziej poprawne pingowanie, ale najwolniejsze</value>
   </data>
   <data name="Settings_Online_PingConcurrency" xml:space="preserve">
-    <value>Ping konkurencji</value>
-  </data>
+    <value>Częstotliwość pinga</value>
+  <alternative>Ping konkurencji</alternative></data>
   <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
     <value>Zwiększ wartość, aby pingowanie całej listy było szybsze, ale mniej dokładne</value>
   </data>
   <data name="Settings_Online_PingTimeout" xml:space="preserve">
-    <value>Ping timeout</value>
-  </data>
+    <value>Czas pinga</value>
+  <alternative>Ping timeout</alternative></data>
   <data name="Settings_Online_AddingByIpHeader" xml:space="preserve">
     <value>Dodanie przez IP:</value>
   </data>
@@ -888,20 +888,20 @@
     <value>Skanowanie portów:</value>
   </data>
   <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
-    <value>Niektóre wyliczenia jak “9000-10000”</value>
-  </data>
+    <value>Niektóre połączenia jak “9000-10000”</value>
+  <alternative>Niektóre wyliczenia jak “9000-10000”</alternative></data>
   <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
-    <value>Niektóre wyliczenia jak “9600,9602,9700-9750”</value>
-  </data>
+    <value>Niektóre połączenia jak “9600,9602,9700-9750”</value>
+  <alternative>Niektóre wyliczenia jak “9600,9602,9700-9750”</alternative></data>
   <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
-    <value>Scan timeout</value>
-  </data>
+    <value>Czas skanowania</value>
+  <alternative>Scan timeout</alternative></data>
   <data name="Settings_Online_LanHeader" xml:space="preserve">
     <value>LAN:</value>
   </data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
-    <value>Skanowanie przy użyciu połączeń:</value>
-  </data>
+    <value>Skanuj używając połączeń:</value>
+  <alternative>Skanowanie przy użyciu połączeń:</alternative></data>
   <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
     <value>Menadżer ustawień serwera:</value>
   </data>
@@ -1025,8 +1025,8 @@
     <value>Zablokuj udostępnianie nietypowych nazw</value>
   </data>
   <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
-    <value>Sprawdzić parametry przed udostępnieniem</value>
-  </data>
+    <value>Sprawdź parametry przed udostępnieniem</value>
+  <alternative>Sprawdzić parametry przed udostępnieniem</alternative></data>
   <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
     <value>Specjalny:</value>
   </data>
@@ -1037,8 +1037,8 @@
     <value>Duże pliki:</value>
   </data>
   <data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
-    <value>Przeznaczenie:</value>
-  </data>
+    <value>Lokalizacja plików:</value>
+  <alternative>Przeznaczenie:</alternative></data>
   <data name="Common_SignOut" xml:space="preserve">
     <value>Wyloguj się</value>
   </data>
@@ -1070,8 +1070,8 @@
     <value>Nazwa</value>
   </data>
   <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
-    <value>Cel</value>
-  </data>
+    <value>Docelowo</value>
+  <alternative>Cel</alternative></data>
   <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
     <value>URL</value>
   </data>
@@ -1163,8 +1163,8 @@
     <value>Filtr wg autora</value>
   </data>
   <data name="Filter_ByTag" xml:space="preserve">
-    <value>Filtr wg Tagu</value>
-  </data>
+    <value>Filtr wg tagu</value>
+  <alternative>Filtr wg Tagu</alternative></data>
   <data name="Filter_ByBrand" xml:space="preserve">
     <value>Filtr wg marki</value>
   </data>
@@ -1253,8 +1253,8 @@
     <value>Wymień dźwięk</value>
   </data>
   <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
-    <value>For a decent online (Ctrl+J)</value>
-  </data>
+    <value>Dla lepszego online (Ctrl+J)</value>
+  <alternative>For a decent online (Ctrl+J)</alternative></data>
   <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
     <value>Tylko dla celów rozwojowych (Alt+J)</value>
   </data>
@@ -1472,11 +1472,11 @@
     <value>Upewnij się, że plik nie jest używany.</value>
   </data>
   <data name="Toolbar_RescanUsings" xml:space="preserve">
-    <value>Pzesk.ponow. używając</value>
-  </data>
+    <value>Pzeskanuj ponownie</value>
+  <alternative>Pzesk.ponow. używając</alternative></data>
   <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
-    <value>Collect list of cars per font (Ctrl+U)</value>
-  </data>
+    <value>Zbieranie listy aut i używanych czcionek (Ctrl+U)</value>
+  <alternative>Collect list of cars per font (Ctrl+U)</alternative></data>
   <data name="Toolbar_CreateNewFont" xml:space="preserve">
     <value>Utwórz nową czcionkę</value>
   </data>
@@ -1484,8 +1484,8 @@
     <value>Utwórz nową czcionkę za pomocą narzędzia Kunos (Ctrl+N)</value>
   </data>
   <data name="Toolbar_DisableUnused" xml:space="preserve">
-    <value>Wyłączyć nieużywane</value>
-  </data>
+    <value>Wyłącz nieużywane</value>
+  <alternative>Wyłączyć nieużywane</alternative></data>
   <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
     <value>Przeskanuj ponownie używane i wyłączyć wszystkie nieużywane czcionki (Ctrl+Shift+D)</value>
   </data>
@@ -1493,8 +1493,8 @@
     <value>Test:</value>
   </data>
   <data name="AcObject_FontUsedInLabel" xml:space="preserve">
-    <value>Użyj w:</value>
-  </data>
+    <value>Używana w:</value>
+  <alternative>Użyj w:</alternative></data>
   <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
     <value>Ostatnio skanowany: {0}</value>
   </data>
@@ -1520,8 +1520,8 @@
     <value>Data:</value>
   </data>
   <data name="AcObject_SizeLabel" xml:space="preserve">
-    <value>Wielkość:</value>
-  </data>
+    <value>Rozmiar:</value>
+  <alternative>Wielkość:</alternative></data>
   <data name="AcObject_DriverNameLabel" xml:space="preserve">
     <value>Nazwa kierowcy:</value>
   </data>
@@ -1559,8 +1559,8 @@
     <value>Aktywuj dźwięk (Ctrl+I)</value>
   </data>
   <data name="Common_ShootingCancelled" xml:space="preserve">
-    <value>Shooting cancelled</value>
-  </data>
+    <value>Zrzut ekranu anulowany</value>
+  <alternative>Shooting cancelled</alternative></data>
   <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
     <value>Nie można zaktualizować podglądu salonu</value>
   </data>
@@ -1580,8 +1580,8 @@
     <value>Aktualizuj podgląd torów (Ctrl+P)</value>
   </data>
   <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
-    <value>Without Shooting</value>
-  </data>
+    <value>Bez zrzutu ekranu</value>
+  <alternative>Without Shooting</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Wystarczy wybrać istniejący obraz</value>
   </data>
@@ -1655,11 +1655,11 @@
     <value>Chmury:</value>
   </data>
   <data name="WeatherEdit_Cover" xml:space="preserve">
-    <value>Cover</value>
-  </data>
+    <value>Pokrywa</value>
+  <alternative>Cover</alternative></data>
   <data name="WeatherEdit_CutOff" xml:space="preserve">
-    <value>Cięcia wył.</value>
-  </data>
+    <value>Odcięcia</value>
+  <alternative>Cięcia wył.</alternative></data>
   <data name="WeatherEdit_Color" xml:space="preserve">
     <value>Kolor</value>
   </data>
@@ -1670,8 +1670,8 @@
     <value>Jasność</value>
   </data>
   <data name="WeatherEdit_Blend" xml:space="preserve">
-    <value>Zmieszać</value>
-  </data>
+    <value>Wymieszanie</value>
+  <alternative>Zmieszać</alternative></data>
   <data name="WeatherEdit_Distance" xml:space="preserve">
     <value>Dystans</value>
   </data>
@@ -1682,8 +1682,8 @@
     <value>HDR-off mult.</value>
   </data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
-    <value>Multiplier</value>
-  </data>
+    <value>Mnożnik</value>
+  <alternative>Multiplier</alternative></data>
   <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
     <value>Przełącz do trybu edycji (Ctrl+E)</value>
   </data>
@@ -1712,20 +1712,20 @@
     <value>Kolor bazowy; promienie słoneczne, światło i kolor otoczenia zostaną dodane do tego</value>
   </data>
   <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
-    <value>Width of the quad</value>
-  </data>
+    <value>Szerokość quad</value>
+  <alternative>Width of the quad</alternative></data>
   <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
-    <value>Height of the quad</value>
-  </data>
+    <value>Wysokość quad</value>
+  <alternative>Height of the quad</alternative></data>
   <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
-    <value>Distance from the center of the skybox to the quad</value>
-  </data>
+    <value>Odległość ze środka nieba do quad</value>
+  <alternative>Distance from the center of the skybox to the quad</alternative></data>
   <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
     <value>Ilość chmur</value>
   </data>
   <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
-    <value>Base speed multiplier</value>
-  </data>
+    <value>Podstawa szybkości mnożnika</value>
+  <alternative>Base speed multiplier</alternative></data>
   <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
     <value>Używany gdy HDR jest wyłączony</value>
   </data>
@@ -1801,8 +1801,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Samochód</value>
   </data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
-    <value>Czas:</value>
-  </data>
+    <value>Godzina:</value>
+  <alternative>Czas:</alternative></data>
   <data name="KunosCareer_WeatherLabel" xml:space="preserve">
     <value>Pogoda:</value>
   </data>
@@ -1882,8 +1882,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Brak treści</value>
   </data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
-    <value>Nic nie wyświetlono</value>
-  </data>
+    <value>Nic nie znaleziono</value>
+  <alternative>Nic nie wyświetlono</alternative></data>
   <data name="Online_AddNewServer" xml:space="preserve">
     <value>Dodaj nowy serwer</value>
   </data>
@@ -1900,8 +1900,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Klientów:</value>
   </data>
   <data name="Online_TimeLabel" xml:space="preserve">
-    <value>Czas:</value>
-  </data>
+    <value>Godzina:</value>
+  <alternative>Czas:</alternative></data>
   <data name="Online_LeftLabel" xml:space="preserve">
     <value>Pozostało:</value>
   </data>
@@ -1939,8 +1939,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Pingu</value>
   </data>
   <data name="Online_AddServer" xml:space="preserve">
-    <value>Adres serwera (IP &amp; HTTP lub port TCP):</value>
-  </data>
+    <value>Adres serwera (IP lub HTTP i port TCP):</value>
+  <alternative>Adres serwera (IP &amp; HTTP lub port TCP):</alternative></data>
   <data name="Online_AddServer_Title" xml:space="preserve">
     <value>Dodaj nowy serwer</value>
   </data>
@@ -1954,11 +1954,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nie można dodać serwer</value>
   </data>
   <data name="Online_ServerWithIdIsMissing" xml:space="preserve">
-    <value>Server z przewidzianym ID “{0}” nie znaleziono</value>
-  </data>
+    <value>Serwera z przewidzianym ID “{0}” nie znaleziono</value>
+  <alternative>Server z przewidzianym ID “{0}” nie znaleziono</alternative></data>
   <data name="Drive_Time" xml:space="preserve">
-    <value>Czas</value>
-  </data>
+    <value>Godzina</value>
+  <alternative>Czas</alternative></data>
   <data name="Drive_Time_Warning" xml:space="preserve">
     <value>Rzeczywisty czas jest poza zakresem, najbliższa wartość będzie użyta</value>
   </data>
@@ -2164,8 +2164,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
  [i] Proszę, nie dzielić się kluczem, w przeciwnym razie może zostać zablokowany.[/i]</value>
   </data>
   <data name="AppKey_PreRestart_Title" xml:space="preserve">
-    <value>Dziękuje!</value>
-  </data>
+    <value>Dziękuję!</value>
+  <alternative>Dziękuje!</alternative></data>
   <data name="AppKey_CannotCheck" xml:space="preserve">
     <value>Nie można sprawdzić klucza</value>
   </data>
@@ -2305,17 +2305,17 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Musisz pierwsze podać wartości mocy i momentu obrotowego</value>
   </data>
   <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
-    <value>Dostosuj krzywą do wartości mocy/moment obr.</value>
-  </data>
+    <value>Skaluj krzywą do wartości mocy/moment obr.</value>
+  <alternative>Dostosuj krzywą do wartości mocy/moment obr.</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
     <value>Przelicz krzywą używając wartości danych i mocy/mom. obr.</value>
   </data>
   <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
-    <value>Przelicz krzywą używając tylko wartości danych</value>
-  </data>
+    <value>Przelicz krzywą korzystając tylko z danych</value>
+  <alternative>Przelicz krzywą używając tylko wartości danych</alternative></data>
   <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
-    <value>Krzywe zostaną dostosowane, aby dopasować wartość mocy i momentu obrotowego z ui_car.json (zobacz wyżej)</value>
-  </data>
+    <value>Krzywe zostaną wyskalowane, aby dopasować wartość mocy i momentu obrotowego z ui_car.json (zobacz wyżej)</value>
+  <alternative>Krzywe zostaną dostosowane, aby dopasować wartość mocy i momentu obrotowego z ui_car.json (zobacz wyżej)</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
     <value>Krzywe zostaną przeliczone w oparciu o engine.ini, power.lut i wartości mocy i momentu obrotowego z ui_car.json</value>
   </data>
@@ -2389,8 +2389,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nie można zapisać podglądów</value>
   </data>
   <data name="CarPreviews_Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
+    <value>Ręcznie</value>
+  <alternative>Manual</alternative></data>
   <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
     <value>Ustaw kamerę ręcznie, a następnie naciśnij klawisz F8, aby rozpocząć fotografowanie</value>
   </data>
@@ -2413,8 +2413,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Teraz aktualizuje: {0} ({1}/{2})</value>
   </data>
   <data name="CarParent_Title" xml:space="preserve">
-    <value>Wybierz źródło</value>
-  </data>
+    <value>Wybierz bazę</value>
+  <alternative>Wybierz źródło</alternative></data>
   <data name="Common_HowTo_Title" xml:space="preserve">
     <value>Jak to zrobić</value>
   </data>
@@ -2604,11 +2604,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Okrąg</value>
   </data>
   <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
-    <value>Diagonal with Circle</value>
-  </data>
+    <value>Okrąg z przekątną</value>
+  <alternative>Diagonal with Circle</alternative></data>
   <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
-    <value>Diagonal line with Circle</value>
-  </data>
+    <value>Okrąg z linią przekątną</value>
+  <alternative>Diagonal line with Circle</alternative></data>
   <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
     <value>Carbon</value>
   </data>
@@ -2882,8 +2882,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Hamulec silnikowy:</value>
   </data>
   <data name="Controls_MguK" xml:space="preserve">
-    <value>MGU-K Motor Menerator Unit-Kinetic:</value>
-  </data>
+    <value>MGU-K Motor Generator Unit-Kinetic:</value>
+  <alternative>MGU-K Motor Menerator Unit-Kinetic:</alternative></data>
   <data name="Controls_Miscellaneous" xml:space="preserve">
     <value>Różne:</value>
   </data>
@@ -2939,17 +2939,17 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Y</value>
   </data>
   <data name="TableHeader_Visible" xml:space="preserve">
-    <value>Widoczność</value>
-  </data>
+    <value>Pokaż</value>
+  <alternative>Widoczność</alternative></data>
   <data name="TableHeader_Locked" xml:space="preserve">
-    <value>Zablokowany</value>
-  </data>
+    <value>Blokuj</value>
+  <alternative>Zablokowany</alternative></data>
   <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
     <value>Wartość symulacji</value>
   </data>
   <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
-    <value>Apki developera</value>
-  </data>
+    <value>Aplikacje developera</value>
+  <alternative>Apki developera</alternative></data>
   <data name="AcSettings_System_FreeCamera" xml:space="preserve">
     <value>Zezwól na swobodną kamerę</value>
   </data>
@@ -2996,11 +2996,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Duch samochodu</value>
   </data>
   <data name="AcSettings_GhostCar_StartShowingAt" xml:space="preserve">
-    <value>Zacznij od pokazania</value>
-  </data>
+    <value>Zacznij pokazywać od</value>
+  <alternative>Zacznij od pokazania</alternative></data>
   <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
-    <value>Maks. przezroczystość</value>
-  </data>
+    <value>Maks. przezroczysty od</value>
+  <alternative>Maks. przezroczystość</alternative></data>
   <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
     <value>Nieprzezroczystość</value>
   </data>
@@ -3113,8 +3113,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Oculus:</value>
   </data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
-    <value>Pikseli na wyświetlaczu:</value>
-  </data>
+    <value>Pikseli na wyświetlacz</value>
+  <alternative>Pikseli na wyświetlaczu:</alternative></data>
   <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
     <value>System:</value>
   </data>
@@ -3137,8 +3137,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Ustaw wartość ujemną (np -1), aby wyostrzyć obraz</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
-    <value>Odbicie nieba zysk</value>
-  </data>
+    <value>Zysk odbicia nieba</value>
+  <alternative>Odbicie nieba zysk</alternative></data>
   <data name="Common_Manage" xml:space="preserve">
     <value>Zarządzanie</value>
   </data>
@@ -3237,14 +3237,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Ostatnia</value>
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
-    <value>Zastąp ciąg z rozpakowanej lokalizacji jeśli istnieje</value>
-  </data>
+    <value>Nadpisz nie zaaplikowany język, jeśli istnieje</value>
+  <alternative>Zastąp ciąg z rozpakowanej lokalizacji jeśli istnieje</alternative></data>
   <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
     <value>Zawartość języka zostanie załadowana z “AppData\Local\AcTools Content Manager\Locales\(ID)”, gdzie ID jest Twoim wybranym językiem</value>
   </data>
   <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
-    <value>Oznacz “--force-locale” jest ustawiony!</value>
-  </data>
+    <value>Oznacz “--force-locale” jest aktywny!</value>
+  <alternative>Oznacz “--force-locale” jest ustawiony!</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
     <value>Nie zapomnij zrestartować aplikacji po każdej zmianie</value>
   </data>
@@ -3255,11 +3255,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Cały postęp mistrzostw zostanie utracony. Jesteś pewny?</value>
   </data>
   <data name="AcSettings_Video_Benchmark" xml:space="preserve">
-    <value>Benchmark</value>
-  </data>
+    <value>Test wydajności</value>
+  <alternative>Benchmark</alternative></data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
-    <value>Uruchom Benchmark (Ctrl+G)</value>
-  </data>
+    <value>Uruchom test wydajności (Ctrl+G)</value>
+  <alternative>Uruchom Benchmark (Ctrl+G)</alternative></data>
   <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
     <value>Twój Steam ID dla online:</value>
   </data>
@@ -3285,11 +3285,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Zawsze nagrywaj ducha w trybie hot lap</value>
   </data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
-    <value>Użyj nietypowych cząstek pogody</value>
-  </data>
+    <value>Zastosuj niestandardowe cząstki pogody</value>
+  <alternative>Użyj nietypowych cząstek pogody</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
-    <value>Użyj niestandardowy filtr PP pogody</value>
-  </data>
+    <value>Zastosuj niestandardowe filtry PP pogody</value>
+  <alternative>Użyj niestandardowy filtr PP pogody</alternative></data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
     <value>Rozszerzona pogoda:</value>
   </data>
@@ -3348,8 +3348,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Nie ma pit stopu dla tego samochodu</value>
   </data>
   <data name="RaceGrid_Candidates" xml:space="preserve">
-    <value>Pretendenci:</value>
-  </data>
+    <value>Kandydaci:</value>
+  <alternative>Pretendenci:</alternative></data>
   <data name="RaceGrid_Opponents" xml:space="preserve">
     <value>Przeciwnicy:</value>
   </data>
@@ -3357,8 +3357,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Pogoda lokalna</value>
   </data>
   <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
-    <value>Ustaw czas ręcznie</value>
-  </data>
+    <value>Ustaw godzinę ręcznie</value>
+  <alternative>Ustaw czas ręcznie</alternative></data>
   <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
     <value>Użyj "lokalnej pogody" zamiast "pogody" na torze</value>
   </data>
@@ -3372,14 +3372,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Zaktualizuj tłumaczenie przed uruchomieniem</value>
   </data>
   <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
-    <value>Nie będzie próbować dłużej niż 500 ms</value>
-  </data>
+    <value>Nie potrwa dłużej niż 500 ms</value>
+  <alternative>Nie będzie próbować dłużej niż 500 ms</alternative></data>
   <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
     <value>Jak przetłumaczyć</value>
   </data>
   <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
-    <value>Nietypowe tłumaczenia</value>
-  </data>
+    <value>Własne tłumaczenie</value>
+  <alternative>Nietypowe tłumaczenia</alternative></data>
   <data name="Settings_Locale_ResxMode" xml:space="preserve">
     <value>Przetłumacz pliki Resx</value>
   </data>
@@ -3408,8 +3408,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Wystarczy przytrzymać klawisz Ctrl, gdy klikniesz przycisk Zamknij, aby ponownie uruchomić CM szybciej</value>
   </data>
   <data name="Settings_Locale_Custom" xml:space="preserve">
-    <value>Nietypowy</value>
-  </data>
+    <value>Nieoficjalny</value>
+  <alternative>Nietypowy</alternative></data>
   <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
     <value>Oficjalnie obsługiwany</value>
   </data>
@@ -3454,5 +3454,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Czasy okrążeń gridu</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Informacje o sesji</value>
+  </data>
+  <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
+    <value>Dodaj rok w nazwach samochodów</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Potwierdź przed usunięciem</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>Pamiętaj, że całą usuniętą zawartość zawsze można przywrócić z kosza</value>
   </data>
 </root>

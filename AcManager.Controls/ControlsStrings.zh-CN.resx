@@ -930,4 +930,7 @@
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>隐藏车手模型</value>
   </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> 圈</value>
+  </data>
 </root>

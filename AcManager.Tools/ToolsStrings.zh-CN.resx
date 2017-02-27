@@ -1596,4 +1596,96 @@
   <data name="RaceGrid_You" xml:space="preserve">
     <value>你</value>
   </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>自定义锦标赛</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>音频设置预设</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>简单</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>中等</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>困难</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>神级</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>在 {1} 驾驶 {0}</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>解锁成就需要的得分</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>解锁成就需要的排名</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>解锁成就需要的圈速</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>解锁成就需要的胜场数</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>无法启动真实头部运动插件</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>{0}的数据文件没有打包,因此玩家可以在加入游戏之前修改数据而从中获利.
+
+你是否想要在启动服务器之前进行数据打包?如果这么做,请不要忘记向玩家分享打包之后的版本</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>数据未加密</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>请选择服务器支持的车辆</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>密码不正确</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>报名已结束</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>你在这个服务器的黑名单上</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>服务器已满</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>来自服务器的消息:"{0}"</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>所选车辆没有正确的音效</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>请选择另一辆车</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>无法替换车辆音效</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>请确定磁盘空间足够,并且有权限移除原有的文件</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>你已在此服务器上完成比赛报名</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>你已在此服务器上</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0}(你自己)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>管理员密码:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>显示管理员密码输入</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>如果你关闭此设定,可以在多人联机设置中重新打开</value>
+  </data>
 </root>

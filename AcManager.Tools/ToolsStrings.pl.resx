@@ -211,8 +211,8 @@
     <value>Poprzednia sesja</value>
   </data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
-    <value>Auto zablokowane</value>
-  </data>
+    <value>Brak</value>
+  <alternative>Auto zablokowane</alternative></data>
   <data name="JumpStart_DriveThrough" xml:space="preserve">
     <value>Przejazd przez pit lane</value>
   </data>
@@ -415,8 +415,8 @@
     <value>Błąd wewnętrzny: {0}.</value>
   </data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
-    <value>No se puede instalar plugin</value>
-  </data>
+    <value>Nie można zainstalować wtyczki</value>
+  <alternative>No se puede instalar plugin</alternative></data>
   <data name="Presets_FileFilter" xml:space="preserve">
     <value>Presety (*{0})|*{0}</value>
   </data>
@@ -430,8 +430,8 @@
     <value>AcRootDirectory jest wymagany</value>
   </data>
   <data name="AcRootDirectory_NotDefined" xml:space="preserve">
-    <value>Directorio no definido</value>
-  </data>
+    <value>Katalog nie jest zdefiniowany</value>
+  <alternative>Directorio no definido</alternative></data>
   <data name="AcRootDirectory_Missing" xml:space="preserve">
     <value>Brakuje katalogu</value>
   </data>
@@ -448,17 +448,17 @@
     <value>Obiektu nie można przenieść</value>
   </data>
   <data name="AcObject_PlaceIsTaken" xml:space="preserve">
-    <value>Lugar ocupado</value>
-  </data>
+    <value>Zajęte miejsce</value>
+  <alternative>Lugar ocupado</alternative></data>
   <data name="Fonts_RescanUsings" xml:space="preserve">
-    <value>No se pueden reescanear los coches</value>
-  </data>
+    <value>Nie można przeskanować samochodów</value>
+  <alternative>No se pueden reescanear los coches</alternative></data>
   <data name="Replay_CannotRenameReplays" xml:space="preserve">
-    <value>No se puede renombrar las repeticiones</value>
-  </data>
+    <value>Nie można zmienić nazwy powtórki</value>
+  <alternative>No se puede renombrar las repeticiones</alternative></data>
   <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
-    <value>Asegúrate de que ninguno de esos archivos están ocupados en este momento.</value>
-  </data>
+    <value>Upewnij się, że żadne z tych plików nie są zajęte w tej chwili.</value>
+  <alternative>Asegúrate de que ninguno de esos archivos están ocupados en este momento.</alternative></data>
   <data name="AdditionalContent_Car" xml:space="preserve">
     <value>samochód</value>
   </data>
@@ -487,8 +487,8 @@
     <value>Hasło jest niewłaściwe</value>
   </data>
   <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
-    <value>Extractor nie został zainicjowany</value>
-  </data>
+    <value>Dekompresor nie został zainicjowany</value>
+  <alternative>Extractor nie został zainicjowany</alternative></data>
   <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
     <value>Przepraszamy, ale szyfrowanie {0} nie jest obsługiwane</value>
   </data>
@@ -964,14 +964,14 @@
     <value>Nie można zmienić ID: {0}</value>
   </data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
-    <value>Odśwież plik?</value>
-  </data>
+    <value>Przeładować plik?</value>
+  <alternative>Odśwież plik?</alternative></data>
   <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
-    <value>INI plik został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</value>
-  </data>
+    <value>Plik INI został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</value>
+  <alternative>INI plik został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</alternative></data>
   <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
-    <value>JSON plik został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</value>
-  </data>
+    <value>Plik JSON został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</value>
+  <alternative>JSON plik został zmieniony. Przeładować? Wszystkie lokalne zmiany zostaną utracone.</alternative></data>
   <data name="Common_CannotDo" xml:space="preserve">
     <value>Nie mogę tego zrobić</value>
   </data>
@@ -1303,11 +1303,11 @@
     <value>Kąt obrotu</value>
   </data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
-    <value>Wstrząsy przy dużej predkości</value>
-  </data>
+    <value>Wstrząsy przy prędkości</value>
+  <alternative>Wstrząsy przy dużej predkości</alternative></data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
-    <value>Sily przeciążeń:</value>
-  </data>
+    <value>Siły przeciążeń:</value>
+  <alternative>Sily przeciążeń:</alternative></data>
   <data name="AcSettings_View_Locked" xml:space="preserve">
     <value>Zablokowane</value>
   </data>
@@ -1393,8 +1393,8 @@
     <value>Automatyczna zmiana biegów</value>
   </data>
   <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
-    <value>Nie należy mylić go z automatyczną skrzynią biegów</value>
-  </data>
+    <value>Nie należy mylić z automatyczną skrzynią biegów</value>
+  <alternative>Nie należy mylić go z automatyczną skrzynią biegów</alternative></data>
   <data name="Assists_FuelConsumption" xml:space="preserve">
     <value>Zużycie paliwa</value>
   </data>
@@ -1588,12 +1588,104 @@
     <value>Sposób rozmieszczania pretendentów</value>
   </data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Użyj nazw malowań, jeśli dostępne</value>
-  </data>
+    <value>Użyj nazw malowań, jeśli są dostępne</value>
+  <alternative>Użyj nazw malowań, jeśli dostępne</alternative></data>
   <data name="Common_GlobalHeader" xml:space="preserve">
     <value>Ogólny:</value>
   </data>
   <data name="RaceGrid_You" xml:space="preserve">
     <value>Ty</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Mistrzostwa</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Preset ustawień audio</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Łatwy</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Średni</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Trudny</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alien</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} na {1}.</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Punkty</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Pozycja</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Czas</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Wygrane</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Nie można uruchomić RHM</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Dane {0} nie są spakowane, więc użytkownicy mogą zmienić je przed przystąpieniem i uzyska nieuczciwą przewagę.
+
+Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij udostępnić spakowanej wersji klientom.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Dane nie są szyfrowane</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Proszę, wybierz samochód obsługiwany przez serwer</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Niepoprawne hasło</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Rezerwacja jest zamknięta</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Jesteś na czarnej liście tego serwera</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Serwer jest pełny</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Serwer mówi: “{0}”</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Wybrany samochód nie posiada poprawnego dźwięku</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Wybierz inny samochód.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Nie można zamienić dźwięku samochodów</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Upewnij się, że jest wystarczająco dużo miejsca, oryginalne pliki mogą zostać usunięte.</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Jesteś zapisany na tym serwerze</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Jesteś na tym serwerze</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Ty)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Hasło administratora:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Pokaż dla wpisania hasła jako admin</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Jeśli to wyłączysz, zawsze można włączyć w ustawieniach online</value>
   </data>
 </root>

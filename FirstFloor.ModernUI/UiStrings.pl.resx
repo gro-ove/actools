@@ -130,11 +130,11 @@
     <value>Zamknij</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Jedź</value>
-  </data>
+    <value>Przejdź</value>
+  <alternative>Jedź</alternative></data>
   <data name="Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
+    <value>Główna</value>
+  <alternative>Home</alternative></data>
   <data name="Maximize" xml:space="preserve">
     <value>Maksymalizuj</value>
   </data>
@@ -214,8 +214,8 @@
     <value>Strzałka w lewo</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Number Pad {0}</value>
-  </data>
+    <value>Numer Pada {0}</value>
+  <alternative>Number Pad {0}</alternative></data>
   <data name="KeyPageDown" xml:space="preserve">
     <value>Page Down</value>
   </data>
@@ -301,14 +301,14 @@
     <value>Help</value>
   </data>
   <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Left)</value>
-  </data>
+    <value>Windows (Lewy)</value>
+  <alternative>Windows (Left)</alternative></data>
   <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Right)</value>
-  </data>
+    <value>Windows (Prawy)</value>
+  <alternative>Windows (Right)</alternative></data>
   <data name="KeyContextMenu" xml:space="preserve">
-    <value>Context Menu</value>
-  </data>
+    <value>Menu kontekstowe</value>
+  <alternative>Context Menu</alternative></data>
   <data name="KeyBrowserBack" xml:space="preserve">
     <value>Browser Back</value>
   </data>
@@ -505,8 +505,8 @@
     <value>Trzydziesty pierwszy</value>
   </data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}th</value>
-  </data>
+    <value>{0}.</value>
+  <alternative>{0}th</alternative></data>
   <data name="Time_Month" xml:space="preserve">
     <value>{0} miesiąc</value>
   </data>
@@ -550,8 +550,8 @@
     <value>Dodaj</value>
   </data>
   <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
-    <value>Nie znaleziono pasujących pretendentów</value>
-  </data>
+    <value>Nie znaleziono pasujących kandydatów</value>
+  <alternative>Nie znaleziono pasujących pretendentów</alternative></data>
   <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
     <value>Zapisz grid wyścigu jako preset</value>
   </data>
@@ -563,5 +563,50 @@
   </data>
   <data name="Common_Descending" xml:space="preserve">
     <value>Malejąco</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>i</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Nieulubione</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Ukryj</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Odkryj</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Zarządzanie listami...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Zaproś</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Anuluj Rezerwację</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Udostępnij link do serwera swoim znajomym, aby mogli szybko dołączyć do ciebie (Ctrl + Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Włącznie z hasłem</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Dodaj serwer do ulubionych (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Usuń serwer z ulubionych (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Dodaj serwer do listy serwerów ukrytych (by wyszukać wpisz "@hidden")</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Usuń serwer z listy ukrytych</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
   </data>
 </root>

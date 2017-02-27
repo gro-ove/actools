@@ -157,8 +157,8 @@
     <value>Rok:</value>
   </data>
   <data name="AcObject_CarParentLabel" xml:space="preserve">
-    <value>Źródło</value>
-  </data>
+    <value>Na bazie:</value>
+  <alternative>Źródło</alternative></data>
   <data name="AcObject_SpecsLabel" xml:space="preserve">
     <value>Dane:</value>
   </data>
@@ -411,8 +411,8 @@
     <value>Zablokuj SweetFX</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>Wydaje się, że SweetFx nie mają wpływu na wynik, lecz może zmniejszyć czas ładowania</value>
-  </data>
+    <value>Wydaje się, że SweetFx nie ma wpływu na wynik, ale może zmniejszyć czas ładowania</value>
+  <alternative>Wydaje się, że SweetFx nie mają wpływu na wynik, lecz może zmniejszyć czas ładowania</alternative></data>
   <data name="Showroom_FovLabel" xml:space="preserve">
     <value>FOV:</value>
   </data>
@@ -736,8 +736,8 @@
     <value>Zmiana</value>
   </data>
   <data name="Common_Generic" xml:space="preserve">
-    <value>Rodzaj</value>
-  </data>
+    <value>Ogólny</value>
+  <alternative>Rodzaj</alternative></data>
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Opony:</value>
   </data>
@@ -820,8 +820,8 @@
     <value>Instalowanie...</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Bądź niezależny</value>
-  </data>
+    <value>Uczyń go niezależnym</value>
+  <alternative>Bądź niezależny</alternative></data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
     <value>Folder zostanie przeniesiony do katalogu nadrzędnego!</value>
   </data>
@@ -880,8 +880,8 @@
     <value>Blokada obrotu</value>
   </data>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
-    <value>Skip FFB steps</value>
-  </data>
+    <value>Częstotliwość FFB</value>
+  <alternative>Skip FFB steps</alternative></data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
     <value>Eksperymentalne:</value>
   </data>
@@ -895,14 +895,14 @@
     <value>Zysk tłumienia</value>
   </data>
   <data name="Controls_MinumumDamperLevel" xml:space="preserve">
-    <value>Minimalny poziom tłumienia</value>
-  </data>
+    <value>Min. poziom tłumienia</value>
+  <alternative>Minimalny poziom tłumienia</alternative></data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
     <value>Ustaw na 0 dla Logitech G920, dla pozostałych ustaw 1</value>
   </data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
-  </data>
+    <value>Silnik fizyki pomija obliczenia w celu dostosowania kierownicy z niższym FFB z bufora wejściowego; jeśli występują problemy z procesorem, zwiększ wartość do 2-4, może to pomóc.</value>
+  <alternative>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</alternative></data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Ekspozycja:</value>
   </data>
@@ -929,5 +929,8 @@
   </data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>Ukryj model kierowcy</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> okrążenie</value>
   </data>
 </root>

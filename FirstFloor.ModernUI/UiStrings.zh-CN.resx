@@ -564,4 +564,49 @@
   <data name="Common_Descending" xml:space="preserve">
     <value>降序</value>
   </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>和</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>收藏夹</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>移出收藏夹</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>隐藏</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>取消隐藏</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>管理列表...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>邀请</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>取消报名</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>分享这个服务器的链接让你的朋友可以快速加入游戏(Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>包括密码</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>将服务器加入到收藏夹中(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>从服务器从收藏夹中移除(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>隐藏服务器(搜索"@hidden"可以看到被隐藏的服务器列表)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>将服务器从隐藏列表中移除</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
 </root>

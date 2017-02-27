@@ -3460,4 +3460,16 @@
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>圈速一览</value>
   </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>赛程信息</value>
+  </data>
+  <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
+    <value>在车辆名称前添加年份信息</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>删除前需要确认</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>请记住所有删除的内容总是可以在回收站里找到进行恢复</value>
+  </data>
 </root>
