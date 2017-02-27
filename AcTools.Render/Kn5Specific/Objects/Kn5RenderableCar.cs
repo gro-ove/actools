@@ -421,7 +421,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _crewSet;
 
         [CanBeNull]
-        private Kn5RenderableDriver _crewMain, _crewTyres, _crewStuff;
+        private Kn5RenderableSkinnable _crewMain, _crewTyres, _crewStuff;
         private Lazier<KsAnimAnimator> _crewAnimator;
 
         private void InitializeCrewMain() {
@@ -432,7 +432,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var filename = Path.Combine(driversDirectory, "pitcrew.kn5");
             if (!File.Exists(filename)) return;
 
-            _crewMain = new Kn5RenderableDriver(Kn5.FromFile(filename), Matrix.RotationY(MathF.PI) * Matrix.Translation(-1.6f, 0f, 2f),
+            _crewMain = new Kn5RenderableSkinnable(Kn5.FromFile(filename), Matrix.RotationY(MathF.PI) * Matrix.Translation(-1.6f, 0f, 2f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
                     AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
                 LiveReload = LiveReload,
@@ -453,7 +453,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var filename = Path.Combine(driversDirectory, "pitcrewtyre.kn5");
             if (!File.Exists(filename)) return;
 
-            _crewTyres = new Kn5RenderableDriver(Kn5.FromFile(filename), Matrix.RotationY(-MathF.PI * 0.6f) * Matrix.Translation(1.9f, 0f, 0.8f),
+            _crewTyres = new Kn5RenderableSkinnable(Kn5.FromFile(filename), Matrix.RotationY(-MathF.PI * 0.6f) * Matrix.Translation(1.9f, 0f, 0.8f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
                     AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
                 LiveReload = LiveReload,
@@ -467,7 +467,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var data = await ExtraModels.GetAsync(ExtraModels.KeyCrewExtra);
             if (data == null) return;
             
-            _crewStuff = new Kn5RenderableDriver(Kn5.FromBytes(data), Matrix.RotationY(-MathF.PI * 0.5f) * Matrix.Translation(0.09f, 0f, 0.08f),
+            _crewStuff = new Kn5RenderableSkinnable(Kn5.FromBytes(data), Matrix.RotationY(-MathF.PI * 0.5f) * Matrix.Translation(0.09f, 0f, 0.08f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
                     AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
                 LiveReload = LiveReload,

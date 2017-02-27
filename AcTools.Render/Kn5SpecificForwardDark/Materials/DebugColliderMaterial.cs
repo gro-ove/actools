@@ -3,6 +3,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DebugColliderMaterial : Kn5MaterialSimpleBase {
@@ -18,8 +19,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
+        protected override EffectTechnique GetTechnique() {
+            return Effect.TechCollider;
+        }
+
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            Effect.TechCollider.DrawAllPasses(contextHolder.DeviceContext, indices);
+            base.Draw(contextHolder, indices, mode);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }

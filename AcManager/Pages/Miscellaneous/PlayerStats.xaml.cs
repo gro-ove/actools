@@ -5,6 +5,7 @@ using System.Windows;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Profile;
+using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;

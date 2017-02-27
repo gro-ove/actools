@@ -277,7 +277,6 @@
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
-    <Compile Include="Holder.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
     <Compile Include="Managers\Online\OnlineManager.Pinging.cs" />

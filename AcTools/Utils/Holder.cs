@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools {
+namespace AcTools.Utils {
     public static class Holder {
         public static Holder<T> CreateNonHolding<T>(T value) {
             return new Holder<T>(value, v => { });
@@ -67,7 +67,7 @@ namespace AcManager.Tools {
 
         public event EventHandler<ReleasedEventArgs<T>> Released; 
 
-        private void Release(T obj) {
+        protected virtual void Release(T obj) {
             for (var i = 0; i < _holded.Count; i++) {
                 if (ReferenceEquals(obj, _holded[i])) {
                     _holded.RemoveAt(i);

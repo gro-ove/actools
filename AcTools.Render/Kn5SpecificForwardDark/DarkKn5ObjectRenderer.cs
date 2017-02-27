@@ -93,6 +93,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         protected override void ResizeInner() {
             base.ResizeInner();
             ResizeMirrorBuffers();
+            ResizeSslrBuffers();
         }
 
         private bool _opaqueGround = true;
@@ -136,6 +137,46 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _ambientBrightness = value;
                 OnPropertyChanged();
             }
+        }
+
+        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection, _sslrBufferNormals;
+        private TargetResourceDepthTexture _sslrDepthBuffer;
+
+        private bool _useSslr;
+
+        public bool UseSslr {
+            get { return _useSslr; }
+            set {
+                if (Equals(value, _useSslr)) return;
+                _useSslr = value;
+                OnPropertyChanged();
+
+                if (value) {
+                    _sslrBufferScene = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    _sslrBufferResult = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    _sslrBufferBaseReflection = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    _sslrBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    _sslrDepthBuffer = TargetResourceDepthTexture.Create();
+                } else {
+                    DisposeHelper.Dispose(ref _sslrBufferScene);
+                    DisposeHelper.Dispose(ref _sslrBufferResult);
+                    DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
+                    DisposeHelper.Dispose(ref _sslrBufferNormals);
+                    DisposeHelper.Dispose(ref _sslrDepthBuffer);
+                }
+
+                if (InitiallyResized) {
+                    ResizeSslrBuffers();
+                }
+            }
+        }
+
+        private void ResizeSslrBuffers() {
+            _sslrBufferScene?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _sslrBufferResult?.Resize(DeviceContextHolder, Width, Height, null);
+            _sslrBufferBaseReflection?.Resize(DeviceContextHolder, Width, Height, null);
+            _sslrBufferNormals?.Resize(DeviceContextHolder, Width, Height, null);
+            _sslrDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
         public DarkKn5ObjectRenderer(CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
@@ -232,7 +273,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 orbit.MinBeta = -0.1f;
                 orbit.MinY = 0.05f;
             }
-
+            
             camera.DisableFrustum = true;
         }
 
@@ -353,10 +394,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
         }
 
-        protected override string GetInformationString() {
-            return CarNode?.DebugString ?? base.GetInformationString();
-        }
-
         protected override void DrawScene() {
             // TODO: support more than one car?
 
@@ -454,6 +491,100 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
+        protected override string GetInformationString() {
+            if (SslrAdjustCurrentMode != SslrAdjustMode.None) {
+                return $@"Mode: {SslrAdjustCurrentMode}
+Start from: {_sslrStartFrom}
+Fix multipler: {_sslrFixMultipler}
+Offset: {_sslrOffset}
+Grow fix: {_sslrGrowFix}
+Distance threshold: {_sslrDistanceThreshold}";
+            }
+
+            return CarNode?.DebugString ?? base.GetInformationString();
+        }
+
+        public enum SslrAdjustMode {
+            None, StartFrom, FixMultipler, Offset, GrowFix, DistanceThreshold
+        }
+
+        public SslrAdjustMode SslrAdjustCurrentMode;
+        private float _sslrStartFrom = 0.02f;
+        private float _sslrFixMultipler = 0.7f;
+        private float _sslrOffset = 0.048f;
+        private float _sslrGrowFix = 0.15f;
+        private float _sslrDistanceThreshold = 0.092f;
+
+        public void SslrAdjust(float delta) {
+            switch (SslrAdjustCurrentMode) {
+                case SslrAdjustMode.None:
+                    break;
+                case SslrAdjustMode.StartFrom:
+                    _sslrStartFrom = (_sslrStartFrom + delta / 10f).Clamp(0.0001f, 0.1f);
+                    break;
+                case SslrAdjustMode.FixMultipler:
+                    _sslrFixMultipler += delta;
+                    break;
+                case SslrAdjustMode.Offset:
+                    _sslrOffset += delta;
+                    break;
+                case SslrAdjustMode.GrowFix:
+                    _sslrGrowFix += delta;
+                    break;
+                case SslrAdjustMode.DistanceThreshold:
+                    _sslrDistanceThreshold += delta;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected override void DrawSceneToBuffer() {
+            if (!UseSslr) {
+                base.DrawSceneToBuffer();
+                return;
+            }
+
+            SetInnerBuffer(_sslrBufferScene);
+            base.DrawSceneToBuffer();
+            SetInnerBuffer(null);
+
+            DeviceContext.Rasterizer.SetViewports(Viewport);
+            DeviceContext.OutputMerger.SetTargets(_sslrDepthBuffer.DepthView, _sslrBufferBaseReflection.TargetView, _sslrBufferNormals.TargetView);
+            DeviceContext.ClearDepthStencilView(_sslrDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+            DeviceContext.ClearRenderTargetView(_sslrBufferNormals.TargetView, (Color4)new Vector4(0.5f));
+            DeviceContext.ClearRenderTargetView(_sslrBufferBaseReflection.TargetView, (Color4)new Vector4(0));
+
+            DeviceContext.OutputMerger.DepthStencilState = null;
+
+            var carNode = CarNode;
+            if (carNode == null) return;
+
+            _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+
+            var effect = DeviceContextHolder.GetEffect<EffectPpDarkSslr>();
+            effect.FxStartFrom.Set(_sslrStartFrom);
+            effect.FxFixMultipler.Set(_sslrFixMultipler);
+            effect.FxOffset.Set(_sslrOffset);
+            effect.FxGlowFix.Set(_sslrGrowFix);
+            effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
+
+            DeviceContextHolder.GetHelper<DarkSslrHelper>().Draw(DeviceContextHolder,
+                    _sslrBufferScene.View,
+                    _sslrDepthBuffer.View,
+                    _sslrBufferBaseReflection.View,
+                    _sslrBufferNormals.View,
+                    ActualCamera, _sslrBufferResult.TargetView);
+            DeviceContextHolder.GetHelper<BlurHelper>().BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultipler));
+            DeviceContextHolder.GetHelper<DarkSslrHelper>().FinalStep(DeviceContextHolder,
+                    _sslrBufferScene.View,
+                    _sslrBufferResult.View,
+                    _sslrBufferBaseReflection.View,
+                    _sslrBufferNormals.View,
+                    ActualCamera, InnerBuffer.TargetView);
+        }
+
         private bool _setCameraHigher = true;
 
         public bool SetCameraHigher {
@@ -473,6 +604,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DisposeHelper.Dispose(ref _mirrorBlurBuffer);
             DisposeHelper.Dispose(ref _temporaryBuffer);
             DisposeHelper.Dispose(ref _mirrorDepthBuffer);
+            DisposeHelper.Dispose(ref _sslrBufferScene);
+            DisposeHelper.Dispose(ref _sslrBufferResult);
+            DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
+            DisposeHelper.Dispose(ref _sslrBufferNormals);
+            DisposeHelper.Dispose(ref _sslrDepthBuffer);
         }
     }
 }

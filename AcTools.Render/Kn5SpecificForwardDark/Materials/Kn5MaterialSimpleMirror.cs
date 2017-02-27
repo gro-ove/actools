@@ -1,44 +1,51 @@
-﻿using AcTools.Render.Base;
-using AcTools.Render.Base.Cameras;
-using AcTools.Render.Base.Materials;
+﻿using AcTools.Kn5File;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleMirror : IRenderableMaterial, IEmissiveMaterial {
-        public bool IsBlending => false;
-        
-        private EffectDarkMaterial _effect;
+    public class Kn5MaterialSimpleMirror : Kn5MaterialSimpleBase {
+        private EffectDarkMaterial.StandartMaterial _material;
+        private EffectDarkMaterial.ReflectiveMaterial _reflMaterial;
 
-        internal Kn5MaterialSimpleMirror() {}
+        internal Kn5MaterialSimpleMirror() : base(new Kn5MaterialDescription(new Kn5Material())) { }
 
-        public void Initialize(IDeviceContextHolder contextHolder) {
-            _effect = contextHolder.GetEffect<EffectDarkMaterial>();
+        public override void Initialize(IDeviceContextHolder contextHolder) {
+            _material = new EffectDarkMaterial.StandartMaterial {
+                Ambient = 0,
+                Diffuse = 0,
+                Specular = 1,
+                SpecularExp = 1000,
+                Emissive = Vector3.Zero,
+                Flags = 0
+            };
+
+            _reflMaterial = new EffectDarkMaterial.ReflectiveMaterial {
+                FresnelC = 1,
+                FresnelExp = 1,
+                FresnelMaxLevel = 1
+            };
+
+            base.Initialize(contextHolder);
         }
 
-        public void SetEmissive(Vector3 value) {}
+        public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (!base.Prepare(contextHolder, mode)) return false;
 
-        public void SetEmissiveNext(Vector3 value) {}
-
-        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (!mode.HasFlag(SpecialRenderMode.Simple)) return false;
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+            Effect.FxMaterial.Set(_material);
+            Effect.FxReflectiveMaterial.Set(_reflMaterial);
             return true;
         }
 
-        public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-            _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
-            _effect.FxWorld.SetMatrix(objectTransform);
+        protected override EffectTechnique GetTechnique() {
+            return Effect.TechReflective;
         }
 
-        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? _effect.TechDepthOnly : _effect.TechMirror).DrawAllPasses(contextHolder.DeviceContext, indices);
+        protected override EffectTechnique GetSslrTechnique() {
+            return Effect.TechGPass_Reflective;
         }
-
-        public void Dispose() {}
     }
 }

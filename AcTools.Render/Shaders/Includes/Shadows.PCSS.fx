@@ -1,7 +1,9 @@
-#define _BLOCKER_SEARCH_NUM_SAMPLES 81
-#define _PCF_NUM_SAMPLES 81
-#define _SCENE_SCALE 0.01
-#define _LIGHT_SIZE 0.4
+// Skip translation
+
+#define BLOCKER_SEARCH_NUM_SAMPLES 81
+#define PCF_NUM_SAMPLES 81
+#define SCENE_SCALE 0.01
+#define LIGHT_SIZE 0.4
 
 cbuffer POISSON_DISKS {
 	float2 poissonDisk[81] = {
@@ -89,7 +91,7 @@ cbuffer POISSON_DISKS {
 	};
 };
 
-#define MAX_LINEAR_DEPTH 1.e30f
+#define MAX_LINEAR_DEPTH 1e30f
 
 SamplerState PointSampler {
 	Filter = MIN_MAG_MIP_POINT;
@@ -107,17 +109,17 @@ SamplerComparisonState PCF_Sampler {
 };
 
 float PenumbraSize(float zReceiver, float zBlocker){
-	return (zReceiver - zBlocker) * _LIGHT_SIZE / zBlocker;
+	return (zReceiver - zBlocker) * LIGHT_SIZE / zBlocker;
 }
 
 void FindBlocker(Texture2D shadowMapTex, out float avgBlockerDepth, out float numBlockers, float2 uv, float zReceiver){
 	// This uses similar triangles to compute what
 	// area of the shadow map we should search
 
-	float searchWidth = _SCENE_SCALE * (zReceiver - 1.0f) / zReceiver;
+	float searchWidth = SCENE_SCALE * (zReceiver - 1.0f) / zReceiver;
 	float blockerSum = 0;
 	numBlockers = 0;
-	for (int i = 0; i < _BLOCKER_SEARCH_NUM_SAMPLES; ++i){
+	for (int i = 0; i < BLOCKER_SEARCH_NUM_SAMPLES; ++i){
 		float shadowMapDepth = shadowMapTex.SampleLevel(PointSampler, uv + poissonDisk[i] * searchWidth, 0).x;
 		[flatten]
 		if (shadowMapDepth < zReceiver) {
@@ -134,11 +136,11 @@ void FindBlocker(Texture2D shadowMapTex, out float avgBlockerDepth, out float nu
 
 float PCF_Filter(Texture2D shadowMapTex, float2 uv, float zReceiver, float filterRadiusUV){
 	float sum = 0.0f;
-	for (int i = 0; i < _PCF_NUM_SAMPLES; ++i){
+	for (int i = 0; i < PCF_NUM_SAMPLES; ++i){
 		float2 offset = poissonDisk[i] * filterRadiusUV;
 		sum += shadowMapTex.SampleCmpLevelZero(PCF_Sampler, uv + offset, zReceiver);
 	}
-	return sum / _PCF_NUM_SAMPLES;
+	return sum / PCF_NUM_SAMPLES;
 }
 
 float PCSS(Texture2D shadowMapTex, float3 coords){

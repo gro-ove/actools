@@ -12,6 +12,8 @@
 //
 // Please direct any bugs or questions to SDKFeedback@nvidia.com
 
+// Skip translation
+
 #define FXAA_HLSL_4 1
 
 

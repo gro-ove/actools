@@ -101,6 +101,7 @@
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
     <Compile Include="Base\PostEffects\SmaaHelper.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkSslrHelper.cs" />
     <Compile Include="Base\Reflections\IReflectionDraw.cs" />
     <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
     <Compile Include="Base\SceneRenderer.cs" />
@@ -150,9 +151,11 @@
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCollider.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableDriver.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableSkinnable.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5SkinnedObject.cs" />
     <Compile Include="Kn5Specific\Objects\Up.cs" />
     <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Textures\DirectoryWatcher.cs" />
     <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\Kn5TexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\TexturesProviderBase.cs" />
@@ -239,12 +242,14 @@
     <None Include="packages.config" />
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
-    <Content Include="Shaders\Includes\Deferred.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.GPass.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\FXAA.311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
     <Content Include="Shaders\Includes\Shadows.fx" />
     <Content Include="Shaders\Includes\Shadows.PCSS.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
+    <Content Include="Shaders\Pp\PpDarkSslr.fx" />
     <Content Include="Shaders\Pp\PpDownsample.fx" />
     <Content Include="Shaders\Pp\PpLensFlares.fx" />
     <Content Include="Shaders\Pp\PpOutline.fx" />
@@ -254,7 +259,7 @@
     <Content Include="Shaders\Pp\PpSsao.fx" />
     <Content Include="Shaders\Forward\KunosShader.fx" />
     <Content Include="Shaders\Pp\PpBasic.fx" />
-    <Content Include="Shaders\Simple\DarkMaterial.fx" />
+    <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />

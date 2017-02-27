@@ -35,7 +35,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected IRenderableTexture GetTexture(string mappingName, IDeviceContextHolder contextHolder) {
-            var mapping = Kn5Material.GetMappingByName(mappingName);
+            var mapping = mappingName == null ? null : Kn5Material.GetMappingByName(mappingName);
             return mapping == null ? null : contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, mapping.Texture);
         }
 
@@ -48,6 +48,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = InputLayout;
+
+            if (mode == SpecialRenderMode.GBuffer) return;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
@@ -71,7 +73,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow) return false;
+                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
             PrepareStates(contextHolder, mode);
             return true;
         }
@@ -82,8 +84,33 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             Effect.FxWorld.SetMatrix(objectTransform);
         }
 
+        protected virtual EffectTechnique GetTechnique() {
+            return Effect.TechStandard;
+        }
+
+        protected virtual EffectTechnique GetShadowTechnique() {
+            return Effect.TechDepthOnly;
+        }
+
+        protected virtual EffectTechnique GetSslrTechnique() {
+            return Effect.TechGPass_Standard;
+        }
+
+        private EffectTechnique GetTechnique(SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.Shadow) {
+                return GetShadowTechnique();
+            }
+
+            if (mode == SpecialRenderMode.GBuffer) {
+                Effect.FxGPassTransparent.Set(IsBlending);
+                return GetSslrTechnique();
+            }
+
+            return GetTechnique();
+        }
+
         public virtual void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechStandard).DrawAllPasses(contextHolder.DeviceContext, indices);
+            GetTechnique(mode).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
         public void Dispose() {}

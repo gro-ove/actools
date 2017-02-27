@@ -25,7 +25,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-                if (mode != SpecialRenderMode.Simple) return false;
+                if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.GBuffer) return false;
                 contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
                 return true;
             }
@@ -44,6 +44,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private class TransparentMirrorMaterial : FlatMirrorMaterialBase {
             public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
+                    return true;
+                }
+
                 if (mode != SpecialRenderMode.SimpleTransparent) return false;
                 contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
                 contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
@@ -52,6 +57,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
                 Effect.TechFlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
                 contextHolder.DeviceContext.OutputMerger.BlendState = null;
                 contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
@@ -69,6 +79,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
                 Effect.TechFlatBackgroundGround.DrawAllPasses(contextHolder.DeviceContext, indices);
             }
         }
@@ -82,6 +97,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
                 Effect.TechFlatAmbientGround.DrawAllPasses(contextHolder.DeviceContext, indices);
             }
         }
@@ -101,6 +121,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+                if (mode == SpecialRenderMode.GBuffer) {
+                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    return;
+                }
+
                 Effect.TechFlatTextureMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
             }
         }
@@ -204,7 +229,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private RasterizerState _rasterizerState;
 
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
-            if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.SimpleTransparent) return;
+            if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.GBuffer) return;
             _object.Draw(contextHolder, camera, mode, filter);
         }
 

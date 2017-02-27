@@ -43,7 +43,7 @@ SamplerState samPoint {
 };
 
 float GetDepth(float2 uv) {
-	return gFlatMirrorDepthMap.Sample(samPoint, uv).x;
+	return gFlatMirrorDepthMap.SampleLevel(samPoint, uv, 0).x;
 }
 
 float GetPosition(float2 uv) {
@@ -57,14 +57,11 @@ float4 ps_FlatMirrorBlur(PS_IN pin) : SV_Target {
 
 	float x, y;
 
-	[flatten]
 	for (x = -0.6; x < 0.61; x += 0.4) {
-		[flatten]
 		for (y = -0.6; y < 0.61; y += 0.4) {
 			float2 delta = float2(x, y) * gScreenSize.zw * gPower;
 			float mu = p;
 
-			[flatten]
 			for (int j = 0; j < 3; j++) {
 				float np = GetPosition(pin.Tex + delta * mu);
 				mu = min((np * 2 + mu) / 3, mu);
@@ -85,12 +82,33 @@ technique10 FlatMirrorBlur {
 	}
 }
 
+// special dark sslr mode
+float4 ps_DarkSslrBlur0(PS_IN pin) : SV_Target {
+	float4 r = tex(pin.Tex);
+
+	float c = 0;
+	for (int i = 0; i < SAMPLE_COUNT; i++) {
+		c += tex(pin.Tex + gSampleOffsets[i] * gPower).b * gSampleWeights[i];
+	}
+	r.b = c;
+
+	return r;
+}
+
+technique10 DarkSslrBlur0 {
+	pass P0 {
+		SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+		SetGeometryShader( NULL );
+		SetPixelShader( CompileShader( ps_4_0, ps_DarkSslrBlur0() ) );
+	}
+}
+
 // special reflection mode
 float4 ps_ReflectionGaussianBlur(PS_IN pin) : SV_Target {
 	float power = saturate(1 - tex(gMapsMap, pin.Tex).y * 15);
 
 	float4 c = 0;
-	for (int i = 0; i < SAMPLE_COUNT; i++){
+	for (int i = 0; i < SAMPLE_COUNT; i++) {
 		c += tex(pin.Tex + gSampleOffsets[i] * power) * gSampleWeights[i];
 	}
 

@@ -138,14 +138,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (_isTransparent &&
-                    mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.SimpleTransparent &&
-                    mode != SpecialRenderMode.DeferredTransparentForw &&
-                    mode != SpecialRenderMode.DeferredTransparentDef &&
-                    mode != SpecialRenderMode.DeferredTransparentMask) return;
+        private static readonly SpecialRenderMode TransparentModes = SpecialRenderMode.SimpleTransparent |
+                SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
+                SpecialRenderMode.DeferredTransparentForw | SpecialRenderMode.DeferredTransparentDef | SpecialRenderMode.DeferredTransparentMask;
 
+        private static readonly SpecialRenderMode OpaqueModes = SpecialRenderMode.Simple |
+                SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
+                SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
+
+
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            if (!(_isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
 
             var material = Material;

@@ -53,17 +53,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow) return false;
+                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
 
             Effect.FxMaterial.Set(_material);
             Effect.FxDiffuseMap.SetResource(_txDiffuse);
 
             PrepareStates(contextHolder, mode);
             return true;
-        }
-
-        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechStandard).DrawAllPasses(contextHolder.DeviceContext, indices);
         }
     }
 }

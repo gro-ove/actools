@@ -4,6 +4,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using JetBrains.Annotations;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleNm : Kn5MaterialSimpleReflective {
@@ -23,8 +24,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechNm).DrawAllPasses(contextHolder.DeviceContext, indices);
+        protected override EffectTechnique GetTechnique() {
+            return Effect.TechNm;
+        }
+
+        protected override EffectTechnique GetSslrTechnique() {
+            return Effect.TechGPass_Nm;
         }
     }
 }

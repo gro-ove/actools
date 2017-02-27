@@ -148,9 +148,13 @@ namespace AcTools.Render.Forward {
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        private TargetResourceTexture _buffer, _buffer1, _buffer2, _buffer3, _bufferSmaa;
+        private TargetResourceTexture _buffer, _buffer1, _buffer2, _buffer3, _bufferSmaa, _bufferOverride;
 
-        protected TargetResourceTexture InnerBuffer => _buffer;
+        protected TargetResourceTexture InnerBuffer => _bufferOverride ?? _buffer;
+
+        protected void SetInnerBuffer(TargetResourceTexture texture) {
+            _bufferOverride = texture;
+        }
 
         protected override void InitializeInner() {
             UseBloom = true;
@@ -205,16 +209,16 @@ namespace AcTools.Render.Forward {
 
         public float BloomRadiusMultipler = 1f;
 
-        protected override void DrawInner() {
+        protected virtual void DrawSceneToBuffer() {
             DrawPrepare();
 
-            DeviceContext.ClearRenderTargetView(_buffer.TargetView, BackgroundColor);
+            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, BackgroundColor);
 
             if (DepthStencilView != null) {
                 DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-                DeviceContext.OutputMerger.SetTargets(DepthStencilView, _buffer.TargetView);
+                DeviceContext.OutputMerger.SetTargets(DepthStencilView, InnerBuffer.TargetView);
             } else {
-                DeviceContext.OutputMerger.SetTargets(_buffer.TargetView);
+                DeviceContext.OutputMerger.SetTargets(InnerBuffer.TargetView);
             }
 
             DrawScene();
@@ -223,6 +227,10 @@ namespace AcTools.Render.Forward {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = null;
+        }
+
+        protected ShaderResourceView FirstPpPass() {
+            DrawSceneToBuffer();
 
             ShaderResourceView result;
             if (UseLensFlares) {
@@ -299,6 +307,12 @@ namespace AcTools.Render.Forward {
             } else {
                 result = _buffer.View;
             }
+
+            return result;
+        }
+
+        protected override void DrawInner() {
+            var result = FirstPpPass();
 
             PrepareForFinalPass();
             DeviceContext.ClearRenderTargetView(RenderTargetView, ColorTransparent);

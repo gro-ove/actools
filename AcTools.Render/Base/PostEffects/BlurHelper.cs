@@ -6,6 +6,7 @@ using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base.PostEffects {
+    // TODO: Move specific functions outside! Maybe even, use a different shader for them.
     public class BlurHelper : IRenderHelper {
         private EffectPpBlur _effect;
 
@@ -180,6 +181,53 @@ namespace AcTools.Render.Base.PostEffects {
                 holder.DeviceContext.Rasterizer.SetViewports(actualTarget.Viewport);
                 holder.DeviceContext.OutputMerger.SetTargets(actualTarget.TargetView);
                 BlurFlatMirrorVertically(holder, temporary.View, power);
+            }
+        }
+        #endregion
+
+        #region Dark SSLR-specific
+        private void BlurDarkSslrHorizontally(DeviceContextHolder holder, ShaderResourceView view, float power) {
+            holder.DeviceContext.OutputMerger.BlendState = null;
+            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
+
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxSampleOffsets.Set(_hoso);
+            _effect.FxSampleWeights.Set(_hosw);
+            _effect.FxPower.Set(power);
+            _effect.TechDarkSslrBlur0.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        private void BlurDarkSslrVertically(DeviceContextHolder holder, ShaderResourceView view, float power) {
+            holder.DeviceContext.OutputMerger.BlendState = null;
+            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
+
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxSampleOffsets.Set(_voso);
+            _effect.FxSampleWeights.Set(_vosw);
+            _effect.FxPower.Set(power);
+            _effect.TechDarkSslrBlur0.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        /// <summary>
+        /// Width and height will be set accordingly to source and temporary params.
+        /// </summary>
+        public void BlurDarkSslr(DeviceContextHolder holder, TargetResourceTexture source, TargetResourceTexture temporary, float power = 1f, int iterations = 1,
+                TargetResourceTexture target = null) {
+            for (var i = 0; i < iterations; i++) {
+                Resize(temporary.Width, temporary.Height);
+                holder.DeviceContext.Rasterizer.SetViewports(temporary.Viewport);
+                holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
+                BlurDarkSslrHorizontally(holder, (i == 0 ? null : target?.View) ?? source.View, power);
+
+                if (target != null) {
+                    Resize(target.Width, target.Height);
+                } else {
+                    Resize(source.Width, source.Height);
+                }
+
+                holder.DeviceContext.Rasterizer.SetViewports(target?.Viewport ?? source.Viewport);
+                holder.DeviceContext.OutputMerger.SetTargets(target?.TargetView ?? source.TargetView);
+                BlurDarkSslrVertically(holder, temporary.View, power);
             }
         }
         #endregion

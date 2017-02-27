@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
@@ -12,31 +13,167 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
+    public class Kn5SkinnableTexturesProvider : Kn5OverrideableTexturesProvider {
+        public Kn5SkinnableTexturesProvider([NotNull] Kn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading, asyncOverride) {}
+
+        private IniFile _skinIni;
+
+        public class AssetPath {
+            public readonly bool CrewSection;
+            public readonly string KeyName;
+            public readonly string Location;
+
+            public AssetPath(bool crewSection, string keyName, string location) {
+                Location = location;
+                CrewSection = crewSection;
+                KeyName = keyName;
+            }
+        }
+
+        private AssetPath GetAssetPath(string textureName) {
+            switch (textureName?.ToLowerInvariant()) {
+                case "2016_suit_diff.dds":
+                case "2016_suit_diff.jpg":
+                case "2016_suit_nm.dds":
+                    return new AssetPath(false, "SUIT", "driver_suit");
+                case "helmet_1969.dds":
+                case "helmet_1969.jpg":
+                case "helmet_1975.dds":
+                case "helmet_1975.jpg":
+                case "helmet_1985.dds":
+                case "helmet_1985.jpg":
+                case "helmet_2012.dds":
+                case "helmet_2012.jpg":
+                case "helmet_type1.jpg":
+                    return new AssetPath(false, "HELMET", "driver_helmet");
+                case "2016_gloves_diff.dds":
+                case "2016_gloves_diff.jpg":
+                case "2016_gloves_nm.dds":
+                case "detail_alpinestars_00.dds":
+                case "detail_alpinestars_00_nm.dds":
+                    return new AssetPath(false, "GLOVES", "driver_gloves");
+
+                case "driver_gloves.dds":
+                case "driver_gloves_nm.dds":
+                case "driver_suit_nm.dds":
+                case "driver_suit2.dds":
+                case "driver_suit2.jpg":
+                    return new AssetPath(true, "SUIT", "crew_suit");
+                case "crew_helmet_color.dds":
+                    return new AssetPath(true, "HELMET", "crew_helmet");
+                case "brands_crew.dds":
+                case "brands_crew.jpg":
+                case "brands_crew_nm.dds":
+                    return new AssetPath(true, "BRAND", "crew_brand");
+                default:
+                    return null;
+            }
+        }
+
+        public override void ClearOverridesDirectory() {
+            DisposeHelper.Dispose(ref _contentTexturesWatching);
+            _skinIni = null;
+            ContentTexturesDirectory = null;
+            base.ClearOverridesDirectory();
+        }
+
+        [CanBeNull]
+        protected string ContentTexturesDirectory { get; private set; }
+
+        private IDisposable _contentTexturesWatching;
+
+        private static string GetContentTexturesDirectory([NotNull] string skinDirectory) {
+            return Path.Combine(Path.GetDirectoryName( // content folder
+                    Path.GetDirectoryName( // cars folder
+                            Path.GetDirectoryName( // car folder
+                                    Path.GetDirectoryName(skinDirectory)))) ?? "", // skins folder
+                    "texture");
+        }
+
+        public override void SetOverridesDirectory(IDeviceContextHolder holder, string directory) {
+            ClearOverridesDirectory();
+
+            ContentTexturesDirectory = GetContentTexturesDirectory(directory);
+            _contentTexturesWatching = DirectoryWatcher.Watch(ContentTexturesDirectory, filename => {
+                if (CurrentDirectory != null) {
+                    UpdateOverrideLater(Path.Combine(CurrentDirectory, "skin.ini"));
+                }
+            });
+
+            SetOverridesDirectoryInner(holder, directory);
+        }
+
+        public override void Dispose() {
+            base.Dispose();
+            DisposeHelper.Dispose(ref _contentTexturesWatching);
+        }
+
+        protected override Task UpdateOverridesAsync(string textureName = null) {
+            if (textureName == null) {
+                _skinIni = null;
+            }
+
+            return base.UpdateOverridesAsync(textureName);
+        }
+
+        protected override async Task UpdateTexture(string localName) {
+            if (localName == "skin.ini") {
+                await Task.Delay(200);
+
+                _skinIni = null;
+                foreach (var texture in Textures.Values) {
+                    if (GetAssetPath(texture.Name) != null) {
+                        await UpdateTextureInner(texture.Name, false);
+                    }
+                }
+            } else {
+                await base.UpdateTexture(localName);
+            }
+        }
+
+        protected override string GetOverridedFilename(string name) {
+            var path = GetAssetPath(name);
+            if (path != null && CurrentDirectory != null && ContentTexturesDirectory != null) {
+                if (_skinIni == null) {
+                    _skinIni = new IniFile(Path.Combine(CurrentDirectory, "skin.ini"));
+                }
+
+                if (!_skinIni.IsEmptyOrDamaged()) {
+                    var local = _skinIni[path.CrewSection ? "CREW" : _skinIni.Keys.FirstOrDefault(x => x != "CREW") ?? "-"].GetNonEmpty(path.KeyName);
+                    if (local != null) {
+                        if (local.StartsWith("/") || local.StartsWith("\\")) {
+                            local = local.Substring(1);
+                        }
+
+                        var defaultTexture = Path.Combine(ContentTexturesDirectory, path.Location, local, name);
+                        if (File.Exists(defaultTexture)) {
+                            return defaultTexture;
+                        }
+                    }
+                }
+            }
+
+            return base.GetOverridedFilename(name);
+        }
+    }
+
     public class Kn5OverrideableTexturesProvider : Kn5TexturesProvider {
         private readonly bool _asyncOverride;
 
-        [CanBeNull]
-        private string _directory;
-
         private IDeviceContextHolder _holder;
-        private FileSystemWatcher _watcher;
+        private IDisposable _watching;
+
+        [CanBeNull]
+        protected string CurrentDirectory { get; private set; }
 
         public Kn5OverrideableTexturesProvider([NotNull] Kn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading) {
             _asyncOverride = asyncOverride;
         }
 
-        public void ClearOverridesDirectory() {
-            if (_watcher != null) {
-                _watcher.EnableRaisingEvents = false;
-                _watcher.Changed -= Watcher_Changed;
-                _watcher.Created -= Watcher_Created;
-                _watcher.Deleted -= Watcher_Deleted;
-                _watcher.Renamed -= Watcher_Renamed;
-                _watcher.Dispose();
-                _directory = null;
-                _watcher = null;
-                _holder = null;
-            }
+        public virtual void ClearOverridesDirectory() {
+            DisposeHelper.Dispose(ref _watching);
+            _holder = null;
+            CurrentDirectory = null;
 
             foreach (var texture in GetExistingTextures()) {
                 // TODO
@@ -44,71 +181,23 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
-        public void SetOverridesDirectory([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
-            ClearOverridesDirectory();
-
-            _directory = directory;
-            _watcher = new FileSystemWatcher(Path.GetDirectoryName(directory) ?? "") {
-                IncludeSubdirectories = true,
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
-            };
-            _watcher.Changed += Watcher_Changed;
-            _watcher.Created += Watcher_Created;
-            _watcher.Deleted += Watcher_Deleted;
-            _watcher.Renamed += Watcher_Renamed;
-            _watcher.EnableRaisingEvents = true;
+        protected void SetOverridesDirectoryInner([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
             _holder = holder;
+            CurrentDirectory = directory;
+            _watching = DirectoryWatcher.Watch(directory, filename => {
+                if (filename == null) {
+                    UpdateOverridesLater();
+                } else {
+                    UpdateOverrideLater(filename);
+                }
+            });
 
             UpdateOverridesAsync().Forget();
         }
 
-        private void Watcher_Changed(object sender, FileSystemEventArgs e) {
-            if (!LiveReload || _directory == null) return;
-
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
-            if (!string.IsNullOrEmpty(local)) {
-                UpdateOverrideLater(e.FullPath);
-            }
-        }
-
-        private void Watcher_Created(object sender, FileSystemEventArgs e) {
-            if (!LiveReload || _directory == null) return;
-
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
-            if (local == string.Empty) {
-                UpdateOverridesLater();
-            } else if (local != null) {
-                UpdateOverrideLater(e.FullPath);
-            }
-        }
-
-        private void Watcher_Deleted(object sender, FileSystemEventArgs e) {
-            if (!LiveReload || _directory == null) return;
-
-            var local = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
-            if (local == string.Empty) {
-                UpdateOverridesLater();
-            } else if (local != null) {
-                UpdateOverrideLater(e.FullPath);
-            }
-        }
-
-        private void Watcher_Renamed(object sender, RenamedEventArgs e) {
-            if (!LiveReload || _directory == null) return;
-
-            var localOld = FileUtils.TryToGetRelativePath(e.OldFullPath, _directory);
-            var localNew = FileUtils.TryToGetRelativePath(e.FullPath, _directory);
-
-            if (localOld == string.Empty || localNew == string.Empty) {
-                UpdateOverridesLater();
-            } else {
-                if (localNew != null) {
-                    UpdateOverrideLater(e.FullPath);
-                }
-                if (localOld != null) {
-                    UpdateOverrideLater(e.OldFullPath);
-                }
-            }
+        public virtual void SetOverridesDirectory([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
+            ClearOverridesDirectory();
+            SetOverridesDirectoryInner(holder, directory);
         }
 
         private bool _liveReload = true;
@@ -152,7 +241,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         private bool TryGetTexture(string name, out IRenderableTexture result) {
             foreach (var texture in Textures.Values) {
-                if (String.Equals(texture.Name, name, StringComparison.OrdinalIgnoreCase)) {
+                if (string.Equals(texture.Name, name, StringComparison.OrdinalIgnoreCase)) {
                     result = texture;
                     return true;
                 }
@@ -164,60 +253,82 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         private readonly List<string> _updateInProcess = new List<string>(10);
 
-        private async void UpdateOverrideLater([NotNull] string filename) {
-            if (_directory == null) return;
+        [ItemCanBeNull]
+        protected async Task<byte[]> TryLoadBytes(string filename, bool magickMode, int attempts, bool initialDelay) {
+            byte[] bytes = null;
+            var second = false;
+            while (attempts-- > 0) {
+                try {
+                    if (initialDelay || second) {
+                        await Task.Delay(200).ConfigureAwait(false);
+                    }
 
-            var local = FileUtils.TryToGetRelativePath(filename, _directory)?.ToLowerInvariant();
+                    second = true;
+                    bytes = await FileUtils.ReadAllBytesAsync(filename).ConfigureAwait(false);
+
+                    if (magickMode) {
+                        var b = bytes;
+                        // bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
+                        bytes = ImageUtils.LoadAsConventionalBuffer(b);
+                    }
+
+                    break;
+                } catch (FileNotFoundException) {
+                    return null;
+                }catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                    Logging.Warning("UpdateOverrideLater(): " + e.Message);
+                }
+            }
+
+            return bytes;
+        }
+
+        protected async Task UpdateTextureInner(string localName, bool initialDelay) {
+            IRenderableTexture texture;
+            TryGetTexture(localName, out texture);
+            
+            var magickMode = texture == null;
+            if (MagickOverride && magickMode) {
+                if (!ImageUtils.IsMagickSupported) return;
+
+                var ext = MagickExtensions.FirstOrDefault(x => localName.EndsWith(x, StringComparison.Ordinal));
+                if (ext != null) {
+                    var candidate = localName.ApartFromLast(ext);
+                    if (!TryGetTexture(candidate, out texture)) {
+                        TryGetTexture(candidate + @".dds", out texture);
+                    }
+                }
+            }
+
+            if (texture == null) return;
+
+            var filename = GetOverridedFilename(texture.Name);
+            var bytes = await TryLoadBytes(filename, magickMode, 5, initialDelay);
+
+            _updateInProcess.Remove(localName);
+
+            // TODO
+            // await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
+            ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
+            _holder.RaiseUpdateRequired();
+        }
+
+        protected virtual Task UpdateTexture(string localName) {
+            return UpdateTextureInner(localName, true);
+        }
+
+        protected async void UpdateOverrideLater([NotNull] string filename) {
+            if (CurrentDirectory == null) return;
+
+            var local = FileUtils.TryToGetRelativePath(filename, CurrentDirectory)?.ToLowerInvariant();
             if (string.IsNullOrEmpty(local)) return;
 
             if (_updateInProcess.Contains(local)) return;
             _updateInProcess.Add(local);
 
             try {
-                IRenderableTexture texture;
-                TryGetTexture(local, out texture);
-
-                var i = 5;
-                byte[] bytes = null;
-                var magickMode = texture == null;
-                if (MagickOverride && magickMode) {
-                    if (!ImageUtils.IsMagickSupported) return;
-
-                    var ext = MagickExtensions.FirstOrDefault(x => local.EndsWith(x, StringComparison.Ordinal));
-                    if (ext != null) {
-                        var candidate = local.ApartFromLast(ext);
-                        if (!TryGetTexture(candidate, out texture)) {
-                            TryGetTexture(candidate + @".dds", out texture);
-                        }
-                    }
-                }
-                
-                if (texture == null) return;
-
-                while (i-- > 0) {
-                    try {
-                        await Task.Delay(200);
-                        bytes = await FileUtils.ReadAllBytesAsync(filename);
-
-                        if (magickMode) {
-                            var b = bytes;
-                            // bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
-                            bytes = ImageUtils.LoadAsConventionalBuffer(b);
-                        }
-
-                        break;
-                    } catch (Exception e) {
-                        AcToolsLogging.Write(e);
-                        Logging.Warning("UpdateOverrideLater(): " + e.Message);
-                    }
-                }
-
-                _updateInProcess.Remove(local);
-
-                // TODO
-                // await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
-                ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
-                _holder.RaiseUpdateRequired();
+                await UpdateTexture(local).ConfigureAwait(false);
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
             } finally {
@@ -249,7 +360,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 }
             }
 
-            if (_directory != null) {
+            if (CurrentDirectory != null) {
                 if (AsyncLoading) {
                     LoadOverrideAsync(contextHolder, result, key).Forget();
                 } else {
@@ -275,15 +386,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         [CanBeNull]
-        private string GetOverridedFilename(string name) {
-            return _directory == null ? null : Path.Combine(_directory, name);
-        }
-
-        [CanBeNull]
-        private byte[] GetOverridedData(string name) {
-            var filename = GetOverridedFilename(name);
-            if (filename == null) return null;
-
+        protected byte[] LoadTexture([NotNull] string filename) {
             if (ImageUtils.IsMagickSupported && MagickOverride) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
@@ -307,33 +410,47 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         [ItemCanBeNull]
-        private async Task<byte[]> GetOverridedDataAsync(string name) {
-            var filename = GetOverridedFilename(name);
-            if (filename == null) return null;
-
+        protected async Task<byte[]> LoadTextureAsync([NotNull] string filename) {
             if (ImageUtils.IsMagickSupported && MagickOverride) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
                     byte[] bytes = null;
                     if (File.Exists(candidate)) {
-                        bytes = await FileUtils.ReadAllBytesAsync(candidate);
+                        bytes = await FileUtils.ReadAllBytesAsync(candidate).ConfigureAwait(false);
                     } else {
                         candidate = filename.ApartFromLast(Path.GetExtension(filename)) + ext;
                         if (File.Exists(candidate)) {
-                            bytes = await FileUtils.ReadAllBytesAsync(candidate);
+                            bytes = await FileUtils.ReadAllBytesAsync(candidate).ConfigureAwait(false);
                         }
                     }
 
                     if (bytes != null) {
-                        return await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(bytes));
+                        return await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(bytes)).ConfigureAwait(false);
                     }
                 }
             }
 
-            return File.Exists(filename) ? await FileUtils.ReadAllBytesAsync(filename) : null;
+            return File.Exists(filename) ? await FileUtils.ReadAllBytesAsync(filename).ConfigureAwait(false) : null;
         }
 
-        private Task UpdateOverridesAsync(string textureName = null) {
+        [CanBeNull]
+        protected virtual string GetOverridedFilename(string name) {
+            return CurrentDirectory == null ? null : Path.Combine(CurrentDirectory, name);
+        }
+
+        [CanBeNull]
+        protected virtual byte[] GetOverridedData(string name) {
+            var filename = GetOverridedFilename(name);
+            return filename == null ? null : LoadTexture(filename);
+        }
+
+        [ItemCanBeNull]
+        protected virtual async Task<byte[]> GetOverridedDataAsync(string name) {
+            var filename = GetOverridedFilename(name);
+            return filename == null ? null : await LoadTextureAsync(filename).ConfigureAwait(false);
+        }
+
+        protected virtual Task UpdateOverridesAsync(string textureName = null) {
             if (_holder == null) return Task.Delay(0);
 
             if (_asyncOverride) {

@@ -7,6 +7,7 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleMaps : Kn5MaterialSimpleReflective {
@@ -58,8 +59,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? Effect.TechDepthOnly : Effect.TechMaps).DrawAllPasses(contextHolder.DeviceContext, indices);
+        protected override EffectTechnique GetTechnique() {
+            return Effect.TechMaps;
+        }
+
+        protected override EffectTechnique GetSslrTechnique() {
+            return Effect.TechGPass_Maps;
         }
     }
 
@@ -71,8 +76,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             InputLayout = Effect.LayoutPNTGW4B;
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Shadow ? Effect.TechSkinnedDepthOnly : Effect.TechSkinnedMaps).DrawAllPasses(contextHolder.DeviceContext, indices);
+        protected override EffectTechnique GetShadowTechnique() {
+            return Effect.TechSkinnedDepthOnly;
+        }
+
+        protected override EffectTechnique GetSslrTechnique() {
+            return Effect.TechGPass_SkinnedMaps;
+        }
+
+        protected override EffectTechnique GetTechnique() {
+            return Effect.TechSkinnedMaps;
         }
 
         void ISkinnedMaterial.SetBones(Matrix[] bones) {

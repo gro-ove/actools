@@ -75,7 +75,7 @@ using SlimDX.Direct3D11;
 		} else {
 			resultNamespace = directoryName + "." + resultNamespace;
 		}
-
+		
 		projectRoot = Path.GetDirectoryName(projectRoot);
 		if (projectRoot == null) throw new Exception("Could not find project’s root directory");
 	}
@@ -237,6 +237,25 @@ namespace <#= resultNamespace #> {
 		var includeName = Path.GetFileName(file);
 		includes[includeName] = File.ReadAllText(file);
 	}
+	
+	Func<string, List<string>, string> PrependIncludes_Inner = null;
+	PrependIncludes_Inner = (data, added) => {
+		foreach (var x in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>().Select(x => x.Groups[1].Value)){
+			if (added.Contains(x)) continue;
+			added.Add(x);
+
+			var included = includes[x];
+			var skip = included.IndexOf("// Skip translation");
+			if (skip != -1) included = included.Substring(0, skip);
+
+			data = PrependIncludes_Inner(included, added) + "\n\n" + data;
+		}
+		return data;
+	};
+
+	Func<string, string> PrependIncludes = data => {
+		return PrependIncludes_Inner(data, new List<string>());
+	};
 
 	foreach (var file in Directory.GetFiles(dataFolder).Union(Directory.GetDirectories(dataFolder).SelectMany(Directory.GetFiles))){
 		if (!file.EndsWith(".fx") || Path.GetDirectoryName(file).EndsWith("\\Includes")){
@@ -250,9 +269,7 @@ namespace <#= resultNamespace #> {
 
 	/* ADD INCLUDED STUFF */
 		var baseData = data;
-		foreach (var match in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>()){
-				data = includes[match.Groups[1].Value] + "\n\n" + data;
-		}
+		data = PrependIncludes(data);
 
 	/* TECHNIQUES */
 		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique(?:1[01])?\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
@@ -326,7 +343,7 @@ namespace <#= resultNamespace #> {
 		}).ToList();
 		
 	/* CONSTS FROM DEFINES (ROOT FILE ONLY) */
-		foreach (var x in Regex.Matches(baseData, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
+		foreach (var x in Regex.Matches(data, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
 			var v = x.Groups[2].Value;
 			var constName = ConvertConstName(x.Groups[1].Value);
 			var constValue = ConvertConstValue(v).Trim();

@@ -171,6 +171,7 @@
     <Compile Include="Utils\Helpers\ZipFileExtension.cs" />
     <Compile Include="Utils\Helpers\Utf8Checker.cs" />
     <Compile Include="Utils\Helpers\DisposeHelper.cs" />
+    <Compile Include="Utils\Holder.cs" />
     <Compile Include="Utils\ImageUtils_Livery.cs" />
     <Compile Include="Kn5File\Kn5Header.cs" />
     <Compile Include="Kn5File\Kn5.cs" />

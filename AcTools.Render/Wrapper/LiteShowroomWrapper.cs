@@ -90,9 +90,14 @@ namespace AcTools.Render.Wrapper {
         };
 
         protected override void OnTick(object sender, TickEventArgs args) {
-            base.OnTick(sender, args);
+            if (!Form.Focused) return;
+            var sslrSetupMode = (_renderer as DarkKn5ObjectRenderer)?.SslrAdjustCurrentMode > DarkKn5ObjectRenderer.SslrAdjustMode.None;
 
-            if (Form.Focused && (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu))) {
+            if (!sslrSetupMode) {
+                base.OnTick(sender, args);
+            }
+
+            if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) {
                 if (_renderer.CarNode != null) {
                     var steeringSpeed = (User32.IsKeyPressed(Keys.LShiftKey) ? 3f : 30f) * args.DeltaTime;
 
@@ -131,7 +136,22 @@ namespace AcTools.Render.Wrapper {
                         renderer.Light = upd;
                     }
                 }
+            } else if (sslrSetupMode && (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey))) {
+                var renderer = _renderer as DarkKn5ObjectRenderer;
+                if (renderer != null) {
+                    var delta = (User32.IsKeyPressed(Keys.LShiftKey) ? 0.01f : 0.1f) * args.DeltaTime;
+
+                    if (User32.IsKeyPressed(Keys.Up)) {
+                        renderer.SslrAdjust(delta);
+                    }
+
+                    if (User32.IsKeyPressed(Keys.Down)) {
+                        renderer.SslrAdjust(-delta);
+                    }
+                }
             }
+
+
         }
 
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
@@ -148,6 +168,33 @@ namespace AcTools.Render.Wrapper {
             if (args.Handled) return;
 
             switch (args.KeyCode) {
+                case Keys.D1:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.SslrAdjustCurrentMode = d.SslrAdjustCurrentMode.PreviousValue();
+                        }
+                    }
+                    break;
+
+                case Keys.D2:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.SslrAdjustCurrentMode = d.SslrAdjustCurrentMode.NextValue();
+                        }
+                    }
+                    break;
+
+                case Keys.R:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.UseSslr = !d.UseSslr;
+                        }
+                    }
+                    break;
+
                 case Keys.Space:
                     if (!args.Control && args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;

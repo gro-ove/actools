@@ -80,7 +80,7 @@ namespace AcTools.DataFile {
         }
 
         [NotNull]
-        public IniFileSection this[[LocalizationRequired(false)] string key] {
+        public IniFileSection this[[NotNull, LocalizationRequired(false)] string key] {
             get {
                 IniFileSection result;
                 if (Content.TryGetValue(key, out result)) return result;
