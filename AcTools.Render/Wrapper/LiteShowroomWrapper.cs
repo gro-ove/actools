@@ -193,6 +193,12 @@ namespace AcTools.Render.Wrapper {
                             d.UseSslr = !d.UseSslr;
                         }
                     }
+                    if (!args.Control && !args.Alt && args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.SslrLinearFiltering = !d.SslrLinearFiltering;
+                        }
+                    }
                     break;
 
                 /*case Keys.T:

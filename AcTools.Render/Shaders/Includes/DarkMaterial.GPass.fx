@@ -5,6 +5,7 @@
 struct PS_OUT {
 	float4 BaseReflection : SV_Target0;
 	float4 Normal : SV_Target1;
+	float Depth : SV_Target2;
 };
 
 cbuffer cbGPass {
@@ -35,33 +36,38 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
 }
 
-PS_OUT GetResult(float3 posW, float3 normal, float alpha) {
-	AlphaTest(alpha);
-
+PS_OUT PackResult(float4 reflection, float3 normal, float depth, float specularExp) {
 	PS_OUT pout;
-	pout.BaseReflection = GetReflection(posW, normal, alpha);
-	pout.Normal = float4(normal, gMaterial.SpecularExp);
+	pout.BaseReflection = reflection;
+	pout.Normal = float4(normal.xyz, specularExp);
+	pout.Depth = depth;
 	return pout;
 }
 
-PS_OUT GetResult_Maps(float3 posW, float3 normal, float alpha, float txMapsSpecularMultipler, float txMapsSpecularExpMultipler,
+PS_OUT GetResult(float depth, float3 posW, float3 normal, float alpha) {
+	AlphaTest(alpha);
+	return PackResult(
+			GetReflection(posW, normal, alpha),
+			normal, depth, gMaterial.SpecularExp);
+}
+
+PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultipler, float txMapsSpecularExpMultipler,
 	float txMapsReflectionMultipler) {
 	AlphaTest(alpha);
+	return PackResult(
+			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultipler, txMapsReflectionMultipler),
+			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultipler);
+}
 
-	PS_OUT pout;
-	pout.BaseReflection = GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultipler, txMapsReflectionMultipler);
-	pout.Normal = float4(normal, gMaterial.SpecularExp * txMapsSpecularExpMultipler);
-	return pout;
+float GetDepth(float4 posH) {
+	return posH.z;
 }
 
 //// Standart
 
 PS_OUT ps_GPass_Standard(PS_IN pin) {
-	PS_OUT pout;
 	AlphaTest(gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
-	pout.BaseReflection = (float4)0.0;
-	pout.Normal = float4(normalize(pin.NormalW), 0);
-	return pout;
+	return PackResult((float4)0.0, normalize(pin.NormalW), GetDepth(pin.PosH), 0.0);
 }
 
 technique10 GPass_Standard {
@@ -85,7 +91,7 @@ technique10 GPass_Alpha {
 //// Reflective
 
 PS_OUT ps_GPass_Reflective(PS_IN pin) {
-	return GetResult(pin.PosW, normalize(pin.NormalW), gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
+	return GetResult(GetDepth(pin.PosH), pin.PosW, normalize(pin.NormalW), gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
 }
 
 technique10 GPass_Reflective {
@@ -103,7 +109,7 @@ PS_OUT ps_GPass_Nm(PS_IN pin) {
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 	float alpha = normalValue.a * diffuseMapValue.a;
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	return GetResult(pin.PosW, normal, alpha);
+	return GetResult(GetDepth(pin.PosH), pin.PosW, normal, alpha);
 }
 
 technique10 GPass_Nm {
@@ -120,7 +126,7 @@ PS_OUT ps_GPass_NmUvMult(PS_IN pin) {
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	return GetResult(pin.PosW, normal, diffuseMapValue.a);
+	return GetResult(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a);
 }
 
 technique10 GPass_NmUvMult {
@@ -168,7 +174,7 @@ PS_OUT ps_GPass_Maps(PS_IN pin) {
 		alpha = 1.0;
 	}
 
-	return GetResult_Maps(pin.PosW, normal, alpha, mapsValue.r, mapsValue.g, mapsValue.b);
+	return GetResult_Maps(GetDepth(pin.PosH), pin.PosW, normal, alpha, mapsValue.r, mapsValue.g, mapsValue.b);
 }
 
 technique10 GPass_Maps {
@@ -191,7 +197,7 @@ PS_OUT ps_GPass_DiffMaps(PS_IN pin) {
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	return GetResult_Maps(pin.PosW, normal, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a);
+	return GetResult_Maps(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a);
 }
 
 technique10 GPass_DiffMaps {
@@ -223,10 +229,7 @@ technique10 GPass_SkinnedGl {
 //// Ground
 
 PS_OUT ps_GPass_FlatMirror(pt_PS_IN pin){
-	PS_OUT pout;
-	pout.BaseReflection = (float4)0.0;
-	pout.Normal = float4(0, 1, 0, 0);
-	return pout;
+	return PackResult((float4)0.0, float3(0, 1, 0), GetDepth(pin.PosH), 0.0);
 }
 
 technique10 GPass_FlatMirror {

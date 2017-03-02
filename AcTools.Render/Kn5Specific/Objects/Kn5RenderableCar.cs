@@ -188,6 +188,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             DrawInitialize(contextHolder);
 
+            if (!_mirrorsInitialized) {
+                LoadMirrors(contextHolder);
+            }
+
             /* car */
             _currentLodObject.EnsurePrepared(LocalHolder, contextHolder, SharedMaterials, TexturesProvider, this);
             RootObject.Draw(_currentLodObject.Holder, camera, mode, filter);
@@ -1055,8 +1059,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         #region Mirrors
         private List<IKn5RenderableObject> _mirrors;
+        private bool _mirrorsInitialized;
 
         private void LoadMirrors(IDeviceContextHolder holder) {
+            _mirrorsInitialized = true;
+
             if (_mirrors != null) {
                 foreach (var obj in _mirrors) {
                     obj.SetMirrorMode(holder, false);

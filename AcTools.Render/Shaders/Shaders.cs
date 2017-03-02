@@ -365,7 +365,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechSslr, TechFinalStep;
+		public EffectTechnique TechSslr, TechSslr_LinearFiltering, TechFinalStep, TechFinalStep_LinearFiltering;
 
 		public EffectMatrixVariable FxCameraProjInv { get; private set; }
 		public EffectMatrixVariable FxCameraProj { get; private set; }
@@ -380,7 +380,9 @@ namespace AcTools.Render.Shaders {
 			E = new Effect(device, _b);
 
 			TechSslr = E.GetTechniqueByName("Sslr");
+			TechSslr_LinearFiltering = E.GetTechniqueByName("Sslr_LinearFiltering");
 			TechFinalStep = E.GetTechniqueByName("FinalStep");
+			TechFinalStep_LinearFiltering = E.GetTechniqueByName("FinalStep_LinearFiltering");
 
 			for (var i = 0; i < TechSslr.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechSslr.GetPassByIndex(i).Description.Signature;

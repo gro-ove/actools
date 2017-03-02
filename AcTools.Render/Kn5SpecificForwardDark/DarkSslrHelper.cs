@@ -9,6 +9,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
     public class DarkSslrHelper : IRenderHelper {
         private EffectPpDarkSslr _effect;
 
+        public bool LinearFiltering { get; set; }
+
         public void OnInitialize(DeviceContextHolder holder) {
             _effect = holder.GetEffect<EffectPpDarkSslr>();
         }
@@ -28,7 +30,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _effect.FxWorldViewProj.SetMatrix(camera.ViewProj);
             _effect.FxWorldViewProjInv.SetMatrix(camera.ViewProjInvert);
 
-            _effect.TechSslr.DrawAllPasses(holder.DeviceContext, 6);
+            (LinearFiltering ? _effect.TechSslr_LinearFiltering : _effect.TechSslr).DrawAllPasses(holder.DeviceContext, 6);
         }
 
         public void FinalStep(DeviceContextHolder holder, ShaderResourceView colorMap, ShaderResourceView firstStep, ShaderResourceView baseReflection, ShaderResourceView normals,
@@ -44,7 +46,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _effect.FxWorldViewProj.SetMatrix(camera.ViewProj);
             _effect.FxWorldViewProjInv.SetMatrix(camera.ViewProjInvert);
 
-            _effect.TechFinalStep.DrawAllPasses(holder.DeviceContext, 6);
+            (LinearFiltering ? _effect.TechFinalStep_LinearFiltering : _effect.TechFinalStep).DrawAllPasses(holder.DeviceContext, 6);
         }
 
         public void Dispose() {}

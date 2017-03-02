@@ -313,8 +313,45 @@ technique10 Mirror {
 	}
 }
 
+float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frenselOpacity) {
+	// distance to viewer
+	float3 eyeW = gEyePosW - posW;
+	float distance = length(eyeW);
+
+	// if viewing angle is small, “fresnel” is smaller → result is more backgroundy
+	float fresnel = baseOpacity + frenselOpacity * pow(normalize(eyeW).y, 4);
+
+	// summary opacity (aka non-backgroundy) is combined from viewing angle and distance
+	// for smooth transition
+	float opacity = fresnel * saturate(1.2 - distance / 40);
+
+	// how much surface is lighed according to light direction
+	float3 light = gLightDir.y * gLightColor;
+
+	// shadow at the point
+#if ENABLE_SHADOWS == 1
+	float shadow = GetShadow(posW);
+#else
+	float shadow = 0.0;
+#endif
+
+	// ambient color
+	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
+
+	// bright light source means more backgroundy surface
+	float lightBrightness = Luminance(gLightColor);
+
+	// separately color in lighted and shadowed areas
+	// 100%-target is to match those colors if there is no light (aka no shadow)
+	float3 lightPart = gBackgroundColor * (1 - opacity * lightBrightness) + light * opacity;
+	float3 shadowPart = (1 - lightBrightness) * lightPart + lightBrightness * (ambient * Luminance(gBackgroundColor) * 0.32 + gBackgroundColor * 0.22);
+
+	// combining
+	return float4(lightPart * shadow + shadowPart * (1 - shadow), opacity);
+}
+
 float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target{
-	float3 eyeW = gEyePosW - pin.PosW;
+	/*float3 eyeW = gEyePosW - pin.PosW;
 	float3 toEyeW = normalize(eyeW);
 	float3 normal = float3(0, 1, 0);
 	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
@@ -323,7 +360,11 @@ float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target{
 	float shadow = GetShadow(pin.PosW);
 	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
 	float opacity = fresnel * saturate(1.2 - distance / 60);
-	return float4(light * opacity * gBackgroundColor, opacity);
+	return float4(light * opacity * gBackgroundColor, opacity);*/
+
+	float4 ground = GetFlatBackgroundGroundColor(pin.PosW, 0.7, 0.3);
+	ground.a = saturate(1.5 * ground.a * (1.0 - gFlatMirrorPower));
+	return ground;
 }
 
 technique10 FlatMirror {
@@ -340,7 +381,7 @@ float4 ps_FlatTextureMirror(pt_PS_IN pin) : SV_Target{
 
 	// value = float4(value.rgb * gFlatMirrorPower + gBackgroundColor * (1.0 - gFlatMirrorPower), value.a);
 
-	float3 eyeW = gEyePosW - pin.PosW;
+	/*float3 eyeW = gEyePosW - pin.PosW;
 	float3 toEyeW = normalize(eyeW);
 	float3 normal = float3(0, 1, 0);
 	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
@@ -349,7 +390,11 @@ float4 ps_FlatTextureMirror(pt_PS_IN pin) : SV_Target{
 	float shadow = GetShadow(pin.PosW);
 	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
 	float opacity = fresnel * saturate(1.2 - distance / 60);
-	return float4(value.rgb * (1 - opacity) + light * opacity * gBackgroundColor, 1.0);
+	return float4(value.rgb * (1 - opacity) + light * opacity * gBackgroundColor, 1.0);*/
+
+	float4 ground = GetFlatBackgroundGroundColor(pin.PosW, 0.7, 0.3);
+	float alpha = saturate(1.5 * ground.a * (1 - gFlatMirrorPower));
+	return float4(value.rgb * (1 - alpha) + ground.rgb * alpha, 1.0);
 }
 
 technique10 FlatTextureMirror {
@@ -401,36 +446,7 @@ technique10 FlatTextureMirrorDark {
 }*/
 
 float4 ps_FlatBackgroundGround(pt_PS_IN pin) : SV_Target {
-	// distance to viewer
-	float3 eyeW = gEyePosW - pin.PosW;
-	float distance = length(eyeW);
-
-	// if viewing angle is small, “fresnel” is smaller → result is more backgroundy
-	float fresnel = 0.21 + 0.12 * pow(normalize(eyeW).y, 4);
-
-	// summary opacity (aka non-backgroundy) is combined from viewing angle and distance
-	// for smooth transition
-	float opacity = fresnel * saturate(1.2 - distance / 40);
-
-	// how much surface is lighed according to light direction
-	float3 light = gLightDir.y * gLightColor;
-
-	// shadow at the point
-	float shadow = GetShadow(pin.PosW);
-	
-	// ambient color
-	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
-
-	// bright light source means more backgroundy surface
-	float lightBrightness = Luminance(gLightColor);
-
-	// separately color in lighted and shadowed areas
-	// 100%-target is to match those colors if there is no light (aka no shadow)
-	float3 lightPart = gBackgroundColor * (1 - opacity * lightBrightness) + light * opacity;
-	float3 shadowPart = (1 - lightBrightness) * lightPart + lightBrightness * (ambient * Luminance(gBackgroundColor) * 0.32 + gBackgroundColor * 0.22);
-
-	// combining
-	return float4(lightPart * shadow + shadowPart * (1 - shadow), 1.0);
+	return float4(GetFlatBackgroundGroundColor(pin.PosW, 0.21, 0.12).rgb, 1.0);
 }
 
 technique10 FlatBackgroundGround {

@@ -72,7 +72,7 @@ namespace AcTools.Render.Base.Cameras {
             FovY = fov;
 
             // NearZ = 0.01f;
-            FarZ = 30.0f; // TODO
+            // FarZ = 30.0f; // TODO
 
             SetView(Matrix.Identity);
             SetProj(Matrix.Identity);

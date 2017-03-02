@@ -5,17 +5,17 @@
     Texture2D gNormalMap;
 	Texture2D gFirstStepMap;
 
-    SamplerState samInputImage {
-        Filter = MIN_MAG_LINEAR_MIP_POINT;
-        AddressU = CLAMP;
-        AddressV = CLAMP;
-    };
-
     SamplerState samPoint {
         Filter = MIN_MAG_MIP_POINT;
         AddressU = CLAMP;
         AddressV = CLAMP;
     };
+
+	SamplerState samLinear {
+		Filter = MIN_MAG_MIP_LINEAR;
+		AddressU = CLAMP;
+		AddressV = CLAMP;
+	};
     
 // input resources
     cbuffer cbPerFrame : register(b0) {
@@ -47,18 +47,13 @@
     };
 
 // functions
-    float3 GetColor(float2 uv){
-        return gDiffuseMap.SampleLevel(samInputImage, uv, 0).rgb;
-    }
-
     float3 GetPosition(float2 uv, float depth){
         float4 position = mul(float4(uv.x * 2 - 1, -(uv.y * 2 - 1), depth, 1), gWorldViewProjInv);
         return position.xyz / position.w;
     }
 
-    float GetDepth(float2 uv){
-        //return gDepthMap.Sample(samInputImage, uv).x;
-        return gDepthMap.SampleLevel(samPoint, uv, 0).x;
+    float GetDepth(float2 uv, SamplerState s){
+        return gDepthMap.SampleLevel(s, uv, 0).x;
     }
 
     float3 GetUv(float3 position){
@@ -75,14 +70,21 @@
         return vout;
     }
 
+	float3 GetNormal(float2 coords, SamplerState s) {
+		return gNormalMap.Sample(s, coords).xyz;
+	}
+
 // new
     #define ITERATIONS 30
 
-	float4 GetReflection(float2 coords, float3 normal) {
-		float depth = GetDepth(coords);
+	float4 GetReflection(float2 coords, float3 normal, SamplerState s) {
+		float depth = GetDepth(coords, s);
 		float3 position = GetPosition(coords, depth);
 		float3 viewDir = normalize(position - gEyePosW);
 		float3 reflectDir = normalize(reflect(viewDir, normal));
+
+		//depth = pow(depth, 20);
+		//return float4(depth, depth, depth, 1.0);
 
 		float3 newUv = 0;
 		float L = gStartFrom;
@@ -94,7 +96,7 @@
 			calculatedPosition = position + reflectDir * L;
 
 			newUv = GetUv(calculatedPosition);
-			newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy));
+			newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
 
 			float newL = length(position - newPosition);
 			newL = L + min(newL - L, gOffset + L * gGlowFix);
@@ -104,7 +106,7 @@
 
 		calculatedPosition = position + reflectDir * L;
 		newUv = GetUv(calculatedPosition);
-		newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy));
+		newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
 
 		float fresnel = saturate(3.2 * pow(1 + dot(viewDir, normal), 2));
 		float quality = 1 - saturate(abs(length(calculatedPosition - newPosition)) / gDistanceThreshold);
@@ -113,8 +115,12 @@
 		return float4(newUv.xy - coords, saturate(L / quality), alpha);
 	}
 
+	float4 SslrFn(float2 coords, SamplerState s) {
+		return GetReflection(coords, GetNormal(coords, s), s);
+	}
+
     float4 ps_Sslr(PS_IN pin) : SV_Target {
-		return GetReflection(pin.Tex, gNormalMap.Sample(samPoint, pin.Tex).xyz);
+		return SslrFn(pin.Tex, samPoint);
     }
 
     technique11 Sslr {
@@ -122,6 +128,18 @@
             SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
             SetGeometryShader( NULL );
             SetPixelShader( CompileShader( ps_5_0, ps_Sslr() ) );
+        }
+    }
+
+    float4 ps_Sslr_LinearFiltering(PS_IN pin) : SV_Target {
+		return SslrFn(pin.Tex, samLinear);
+    }
+
+    technique11 Sslr_LinearFiltering {
+        pass P0 {
+            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
+            SetGeometryShader( NULL );
+            SetPixelShader( CompileShader( ps_5_0, ps_Sslr_LinearFiltering() ) );
         }
     }
 	
@@ -151,31 +169,39 @@
 
 		for (float i = 0; i < 16; i++) {
 			float2 uvOffset = poissonDisk[i] * blur;
-			reflection += float4(gDiffuseMap.SampleLevel(samInputImage, uv + uvOffset, 0).rgb, gFirstStepMap.SampleLevel(samInputImage, baseUv + uvOffset, 0).a);
+			reflection += float4(gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb, gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a);
 		}
 
 		return reflection / 16;
 	}
 
-	float4 ps_FinalStep(PS_IN pin) : SV_Target{
-		float4 firstStep = gFirstStepMap.SampleLevel(samPoint, pin.Tex, 0);
-		float2 reflectedUv = pin.Tex + firstStep.xy;
+	float4 FinalStepFn(float2 coords, SamplerState s) {
+		float4 firstStep = gFirstStepMap.SampleLevel(s, coords, 0);
+		// return firstStep;
 
-		float3 diffuseColor = gDiffuseMap.SampleLevel(samPoint, pin.Tex, 0).rgb;
-		float4 normal = gNormalMap.Sample(samPoint, pin.Tex);
+		float2 reflectedUv = coords + firstStep.xy;
 
-		float4 baseReflection = gBaseReflectionMap.SampleLevel(samPoint, pin.Tex, 0);
-		float blur = saturate(firstStep.b / normal.a / 5.0 - 0.01);
-		
+		float3 diffuseColor = gDiffuseMap.SampleLevel(s, coords, 0).rgb;
+		float specularExp = gNormalMap.Sample(s, coords).a;
+
+		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
+		float blur = saturate(firstStep.b / specularExp / 5.0 - 0.01);
+
+		// return float4(diffuseColor - baseReflection.rgb * baseReflection.a, 1.0);
+
 		float4 reflection;
 		if (blur < 0.001) {
-			reflection = float4(gDiffuseMap.SampleLevel(samPoint, reflectedUv, 0).rgb, gFirstStepMap.SampleLevel(samPoint, pin.Tex, 0).a);
+			reflection = float4(gDiffuseMap.SampleLevel(s, reflectedUv, 0).rgb, gFirstStepMap.SampleLevel(s, coords, 0).a);
 		} else {
-			reflection = GetReflection(pin.Tex, reflectedUv, blur);
+			reflection = GetReflection(coords, reflectedUv, blur);
 		}
 
 		float a = reflection.a * baseReflection.a;
 		return float4(diffuseColor + (reflection.rgb - baseReflection.rgb) * a, 1.0);
+	}
+
+	float4 ps_FinalStep(PS_IN pin) : SV_Target {
+		return FinalStepFn(pin.Tex, samPoint);
 	}
 
     technique11 FinalStep {
@@ -183,5 +209,17 @@
             SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
             SetGeometryShader( NULL );
             SetPixelShader( CompileShader( ps_5_0, ps_FinalStep() ) );
+        }
+    }
+
+	float4 ps_FinalStep_LinearFiltering(PS_IN pin) : SV_Target {
+		return FinalStepFn(pin.Tex, samLinear);
+	}
+
+    technique11 FinalStep_LinearFiltering {
+        pass P0 {
+            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
+            SetGeometryShader( NULL );
+            SetPixelShader( CompileShader( ps_5_0, ps_FinalStep_LinearFiltering() ) );
         }
     }

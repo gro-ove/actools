@@ -282,6 +282,19 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 var watch = Stopwatch.StartNew();
                 var parsed = LoadListUsingRequest(@"http://www.minorating.com/MRServerLobbyAPI", OptionWebRequestTimeout, MinoratingServerInformation.Deserialize);
+
+                for (var i = 0; i < parsed.Length; i++) {
+                    var information = parsed[i];
+                    var track = information.TrackId;
+                    if (track != null) {
+                        var index = track.IndexOf('[');
+                        if (index != -1 && track[track.Length - 1] == ']') {
+                            information.TrackId = index < track.Length - 2
+                                    ? track.Substring(0, index) + track.Substring(index + 1, track.Length - index - 2) : track.Substring(0, index);
+                        }
+                    }
+                }
+
                 Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
                 return parsed;
             } catch (Exception e) {
