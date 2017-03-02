@@ -5,17 +5,6 @@ using CommandLine;
 using CommandLine.Text;
 
 namespace CustomPreviewUpdater {
-    internal enum PseudoBool {
-        True = 1,
-        On = 1,
-        Yes = 1,
-        Y = 1,
-        False = 0,
-        Off = 0,
-        No = 0,
-        N = 0
-    }
-
     internal class Options {
         [ValueList(typeof(List<string>), MaximumElements = -1)]
         public IList<string> Ids { get; set; }

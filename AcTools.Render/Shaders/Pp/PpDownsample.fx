@@ -82,24 +82,24 @@ float Luminance(float3 color){
 }
 
 float4 ps_Found(found_PS_IN pin) : SV_Target{
-	float t = Luminance(gInputMap.Sample(samPoint, pin.Tex[0]).xyz);
-	float l = Luminance(gInputMap.Sample(samPoint, pin.Tex[1]).xyz);
-	float r = Luminance(gInputMap.Sample(samPoint, pin.Tex[2]).xyz);
-	float b = Luminance(gInputMap.Sample(samPoint, pin.Tex[3]).xyz);
+	float t = Luminance(gInputMap.SampleLevel(samPoint, pin.Tex[0], 0).xyz);
+	float l = Luminance(gInputMap.SampleLevel(samPoint, pin.Tex[1], 0).xyz);
+	float r = Luminance(gInputMap.SampleLevel(samPoint, pin.Tex[2], 0).xyz);
+	float b = Luminance(gInputMap.SampleLevel(samPoint, pin.Tex[3], 0).xyz);
 
 	float2 n = float2(-(t - b), r - l);
 	float nl = length(n);
 
 	if (nl < (1.0 / 16.0)) {
-		return gInputMap.Sample(samPoint, pin.Tex[4]);
+		return gInputMap.SampleLevel(samPoint, pin.Tex[4], 0);
 	} else {
 		n *= gScreenSize.zw / nl;
 
-		float4 o = gInputMap.Sample(samPoint, pin.Tex[4]);
-		float4 t0 = gInputMap.Sample(samPoint, pin.Tex[4] + n * 0.5) * 0.9;
-		float4 t1 = gInputMap.Sample(samPoint, pin.Tex[4] - n * 0.5) * 0.9;
-		float4 t2 = gInputMap.Sample(samPoint, pin.Tex[4] + n) * 0.75;
-		float4 t3 = gInputMap.Sample(samPoint, pin.Tex[4] - n) * 0.75;
+		float4 o = gInputMap.SampleLevel(samPoint, pin.Tex[4], 0);
+		float4 t0 = gInputMap.SampleLevel(samPoint, pin.Tex[4] + n * 0.5, 0) * 0.9;
+		float4 t1 = gInputMap.SampleLevel(samPoint, pin.Tex[4] - n * 0.5, 0) * 0.9;
+		float4 t2 = gInputMap.SampleLevel(samPoint, pin.Tex[4] + n, 0) * 0.75;
+		float4 t3 = gInputMap.SampleLevel(samPoint, pin.Tex[4] - n, 0) * 0.75;
 
 		return (o + t0 + t1 + t2 + t3) / 4.3;
 	}
@@ -125,7 +125,7 @@ float4 ps_Average(PS_IN pin) : SV_Target {
 		for (y = -1; y <= 1; y += 0.25) {
 			float2 uv = pin.Tex + float2(x, y) * gScreenSize.zw * 0.5;
 			float w = sqrt(pow(1.5 - abs(x), 2) + pow(1.5 - abs(y), 2));
-			result += gInputMap.Sample(samPoint, uv) * w;
+			result += gInputMap.SampleLevel(samPoint, uv, 0) * w;
 			v += w;
 		}
 	}

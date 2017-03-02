@@ -75,16 +75,20 @@ namespace AcTools.Render.Base {
                     _previousResolutionMultipler = value;
                 }
 
-                UpdateSampleDescription();
-
-                _resized = true;
-                IsDirty = true;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Width));
-                OnPropertyChanged(nameof(Height));
-                OnPropertyChanged(nameof(OutputDownscaleMultipler));
-                OnPropertyChanged(nameof(UseSsaa));
+                OnResolutionMultiplerChanged();
             }
+        }
+
+        protected virtual void OnResolutionMultiplerChanged() {
+            UpdateSampleDescription();
+
+            _resized = true;
+            IsDirty = true;
+            OnPropertyChanged(nameof(ResolutionMultipler));
+            OnPropertyChanged(nameof(Width));
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(OutputDownscaleMultipler));
+            OnPropertyChanged(nameof(UseSsaa));
         }
 
         public bool UseSsaa {

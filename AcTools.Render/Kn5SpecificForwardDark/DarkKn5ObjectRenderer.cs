@@ -330,6 +330,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             base.DrawPrepare();
         }
 
+        /*private bool _temporaryFlag;
+
+        public bool TemporaryFlag {
+            get { return _temporaryFlag; }
+            set {
+                if (Equals(value, _temporaryFlag)) return;
+                _temporaryFlag = value;
+                OnPropertyChanged();
+            }
+        }*/
+
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection) {
             if (_effect == null) {
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
@@ -569,6 +580,7 @@ Distance threshold: {_sslrDistanceThreshold}";
             effect.FxOffset.Set(_sslrOffset);
             effect.FxGlowFix.Set(_sslrGrowFix);
             effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
+            // effect.FxTemporary.Set(TemporaryFlag);
 
             DeviceContextHolder.GetHelper<DarkSslrHelper>().Draw(DeviceContextHolder,
                     _sslrBufferScene.View,

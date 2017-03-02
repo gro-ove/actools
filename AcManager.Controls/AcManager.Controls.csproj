@@ -493,6 +493,10 @@
       <Name>FirstFloor.ModernUI</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\LicensePlates\LicensePlates.csproj">
+      <Project>{BCEA4235-CCBB-4588-A223-67DEAE6C4272}</Project>
+      <Name>LicensePlates</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StringBasedFilter\StringBasedFilter.csproj">
       <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
       <Name>StringBasedFilter</Name>

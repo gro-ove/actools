@@ -31,6 +31,8 @@
 		float gOffset;
 		float gGlowFix;
 		float gDistanceThreshold;
+
+		// bool gTemporary;
     }
 
 // fn structs

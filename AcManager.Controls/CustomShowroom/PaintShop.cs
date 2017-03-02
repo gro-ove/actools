@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AcManager.Tools.Helpers;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using LicensePlates;
 using SlimDX;
 
 namespace AcManager.Controls.CustomShowroom {
     public static class PaintShop {
-        public abstract class PaintableItem : Displayable {
+        public abstract class PaintableItem : Displayable, IDisposable {
             protected PaintableItem(string diffuseTexture) {
                 DiffuseTexture = diffuseTexture;
             }
@@ -52,13 +55,13 @@ namespace AcManager.Controls.CustomShowroom {
 
             private bool _updating;
 
-            private async void Update() {
+            protected async void Update() {
                 if (_updating) return;
 
                 try {
                     _updating = true;
                     await Task.Delay(20);
-                    if (_updating && _enabled) {
+                    if (_updating && _enabled && !_disposed) {
                         Apply();
                     }
                 } finally {
@@ -89,6 +92,12 @@ namespace AcManager.Controls.CustomShowroom {
 
             [NotNull]
             public abstract Task SaveAsync(string location);
+
+            private bool _disposed;
+
+            public virtual void Dispose() {
+                _disposed = true;
+            }
         }
 
         public class TransparentIfFlagged : PaintableItem {
@@ -129,33 +138,238 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             public LicensePlate(LicenseFormat format, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
+                    : this(format.ToString(), diffuseTexture, normalsTexture) {}
+
+            public LicensePlate(string suggestedStyle, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
                     : base(diffuseTexture) {
+                SuggestedStyleName = suggestedStyle;
                 NormalsTexture = normalsTexture;
             }
+
+            public string SuggestedStyleName { get; }
 
             public string NormalsTexture { get; }
 
             public override string DisplayName { get; set; } = "License plate";
 
-            private string _text;
+            private FilesStorage.ContentEntry _selectedStyleEntry;
 
-            public string Text {
-                get { return _text; }
+            [CanBeNull]
+            public FilesStorage.ContentEntry SelectedStyleEntry {
+                get { return _selectedStyleEntry; }
                 set {
-                    if (Equals(value, _text)) return;
-                    _text = value;
+                    if (Equals(value, _selectedStyleEntry)) return;
+                    _selectedStyleEntry = value;
+                    OnPropertyChanged();
+
+                    SelectedStyle = value == null ? null : new LicensePlatesStyle(value.Filename);
+                }
+            }
+
+            private List<FilesStorage.ContentEntry> _styles;
+
+            public List<FilesStorage.ContentEntry> Styles {
+                get { return _styles; }
+                private set {
+                    if (Equals(value, _styles)) return;
+                    _styles = value;
                     OnPropertyChanged();
                 }
             }
 
+            public void SetStyles(List<FilesStorage.ContentEntry> styles) {
+                Styles = styles;
+                SelectedStyleEntry = Styles.FirstOrDefault(x => x.Name == SelectedStyleEntry?.Name) ??
+                        Styles.FirstOrDefault(x => string.Equals(x.Name, SuggestedStyleName, StringComparison.OrdinalIgnoreCase)) ??
+                                Styles.FirstOrDefault(x => x.Name.IndexOf(SuggestedStyleName, StringComparison.OrdinalIgnoreCase) == 0) ??
+                                        Styles.FirstOrDefault();
+            }
+
+            private LicensePlatesStyle _selectedStyle;
+
+            [CanBeNull]
+            public LicensePlatesStyle SelectedStyle {
+                get { return _selectedStyle; }
+                private set {
+                    if (Equals(value, _selectedStyle)) return;
+
+                    if (_selectedStyle != null) {
+                        foreach (var inputParam in _selectedStyle.InputParams) {
+                            inputParam.PropertyChanged -= OnStyleValueChanged;
+                        }
+                    }
+
+                    _selectedStyle?.Dispose();
+                    _selectedStyle = value;
+                    _onlyPreviewModeChanged = false;
+                    OnPropertyChanged();
+
+                    if (value != null) {
+                        foreach (var inputParam in value.InputParams) {
+                            inputParam.PropertyChanged += OnStyleValueChanged;
+                        }
+                    }
+                }
+            }
+
+            private bool _previewMode = true;
+
+            public bool PreviewMode {
+                get { return _previewMode; }
+                set {
+                    if (Equals(value, _previewMode)) return;
+                    _previewMode = value;
+                    _onlyPreviewModeChanged = true;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _updating;
+
+            private async void OnStyleValueChanged(object sender, PropertyChangedEventArgs e) {
+                _onlyPreviewModeChanged = false;
+                if (_updating) return;
+
+                try {
+                    _updating = true;
+                    await Task.Delay(50);
+                    Update();
+                } finally {
+                    _updating = false;
+                }
+            }
+
+            private int _applyId;
+            private bool _keepGoing, _dirty;
+            private Thread _thread;
+            private readonly object _threadObj = new object();
+
+            private bool _flatNormals, _onlyPreviewModeChanged;
+
+            private void ApplyQuick() {
+                var applyId = ++_applyId;
+                
+                var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
+                if (_applyId != applyId) return;
+
+                Renderer?.OverrideTexture(DiffuseTexture, diffuse);
+                if (_applyId != applyId) return;
+
+                if (!_flatNormals) {
+                    _flatNormals = true;
+                    Renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor());
+                }
+            }
+
+            private void ApplySlowDiffuse() {
+                var applyId = ++_applyId;
+
+                var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
+                if (_applyId != applyId) return;
+
+                Renderer?.OverrideTexture(DiffuseTexture, diffuse);
+            }
+
+            private void ApplySlowNormals() {
+                var applyId = ++_applyId;
+
+                var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
+                if (_applyId != applyId) return;
+
+                Renderer?.OverrideTexture(NormalsTexture, normals);
+                _flatNormals = false;
+            }
+
+            private void EnsureThreadCreated() {
+                if (_thread != null) return;
+
+                _thread = new Thread(() => {
+                    try {
+                        while (_keepGoing) {
+                            lock (_threadObj) {
+                                if (_dirty) {
+                                    try {
+                                        if (_onlyPreviewModeChanged) {
+                                            _onlyPreviewModeChanged = false;
+                                            ApplySlowNormals();
+                                        } else {
+                                            Update:
+                                            ApplyQuick();
+                                            _dirty = false;
+
+                                            for (var i = 0; i < 10; i++) {
+                                                if (!_keepGoing) return;
+                                                Monitor.Wait(_threadObj, 50);
+
+                                                if (!_keepGoing) return;
+                                                if (_dirty) goto Update;
+                                            }
+
+                                            ApplySlowDiffuse();
+                                            ApplySlowNormals();
+                                        }
+                                    } catch (Exception e) {
+                                        NonfatalError.Notify("Can’t generate number plate", e);
+                                    } finally {
+                                        _dirty = false;
+                                    }
+                                }
+
+                                if (!_keepGoing) return;
+                                Monitor.Wait(_threadObj);
+                            }
+                        }
+                    } catch (ThreadAbortException) { }
+                }) {
+                    Name = "License Plates Generator",
+                    IsBackground = true,
+                    Priority = ThreadPriority.Lowest
+                };
+
+                _keepGoing = true;
+                _thread.Start();
+            }
+
             protected override void Apply() {
-                throw new NotImplementedException();
-                //Renderer?.OverrideTexture(DiffuseTexture, NormalsTexture, Text);
+                if (SelectedStyle == null) return;
+
+                EnsureThreadCreated();
+                lock (_threadObj) {
+                    ++_applyId;
+                    _dirty = true;
+                    Monitor.PulseAll(_threadObj);
+                }
+            }
+
+            protected override void Reset() {
+                base.Reset();
+                _onlyPreviewModeChanged = false;
+                _flatNormals = false;
             }
 
             public override Task SaveAsync(string location) {
-                throw new NotImplementedException();
-                //Renderer?.SaveTexture(DiffuseTexture, NormalsTexture, Text);
+                if (SelectedStyle == null) return Task.Delay(0);
+                return Task.Run(() => {
+                    SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
+                    SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
+                });
+            }
+
+            public override void Dispose() {
+                _keepGoing = false;
+
+                base.Dispose();
+                SelectedStyle?.Dispose();
+                SelectedStyle = null;
+
+                if (_thread != null) {
+                    lock (_threadObj) {
+                        Monitor.PulseAll(_threadObj);
+                    }
+
+                    _thread.Abort();
+                    _thread = null;
+                }
             }
         }
 

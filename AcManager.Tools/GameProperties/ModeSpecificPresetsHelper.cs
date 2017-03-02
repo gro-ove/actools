@@ -31,7 +31,7 @@ namespace AcManager.Tools.GameProperties {
 
         private IEnumerable<Mode> InitializeModes() {
             if (_modes == null) {
-                _modes = FilesStorage.Instance.GetContentDirectoryFiltered(@"*.json", ContentCategory.PresetsPerModeConditions)
+                _modes = FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PresetsPerModeConditions)
                                      .SelectMany(x => {
                                          try {
                                              return JsonConvert.DeserializeObject<Mode[]>(File.ReadAllText(x.Filename));

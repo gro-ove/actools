@@ -33,7 +33,7 @@ namespace AcManager.Pages.SelectionLists {
 
         public static IEnumerable<SelectCategoryDescription> LoadCategories(string type) {
             _type = type;
-            return FilesStorage.Instance.GetContentDirectoryFiltered(@"*.json", type).Select(x => x.Filename).SelectMany(x => {
+            return FilesStorage.Instance.GetContentFilesFiltered(@"*.json", type).Select(x => x.Filename).SelectMany(x => {
                 try {
                     _source = Path.GetFileNameWithoutExtension(x);
                     return JsonConvert.DeserializeObject<SelectCategoryDescription[]>(File.ReadAllText(x));

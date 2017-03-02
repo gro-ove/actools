@@ -74,7 +74,7 @@ namespace AcManager.Tools.Filters {
 
                 case "newbrand":
                     if (_list == null) {
-                        _list = FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges).Select(x => x.Name).ToList();
+                        _list = FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges).Select(x => x.Name).ToList();
                     }
                     return value.Test(!_list.Contains(obj.Brand));
 

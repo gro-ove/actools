@@ -45,6 +45,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPreviewUpdater", "Cus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.Render.Deferred", "AcTools.Render.Deferred\AcTools.Render.Deferred.csproj", "{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicensePlates", "LicensePlates\LicensePlates.csproj", "{BCEA4235-CCBB-4588-A223-67DEAE6C4272}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicensePlatesGenerator", "LicensePlatesGenerator\LicensePlatesGenerator.csproj", "{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}"
+EndProject
 Global
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true
@@ -256,6 +260,26 @@ Global
 		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x64.Build.0 = Release|x64
 		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x86.ActiveCfg = Release|x86
 		{DC4496F0-C3D8-4DD3-8E8E-D7CC4973B2B0}.Release|x86.Build.0 = Release|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Debug|x64.ActiveCfg = Debug|x64
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Debug|x64.Build.0 = Debug|x64
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Debug|x86.ActiveCfg = Debug|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Debug|x86.Build.0 = Debug|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Release|Any CPU.ActiveCfg = Release|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Release|x64.ActiveCfg = Release|x64
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Release|x64.Build.0 = Release|x64
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Release|x86.ActiveCfg = Release|x86
+		{BCEA4235-CCBB-4588-A223-67DEAE6C4272}.Release|x86.Build.0 = Release|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Debug|x64.ActiveCfg = Debug|x64
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Debug|x64.Build.0 = Debug|x64
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Debug|x86.ActiveCfg = Debug|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Debug|x86.Build.0 = Debug|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Release|Any CPU.ActiveCfg = Release|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Release|x64.ActiveCfg = Release|x64
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Release|x64.Build.0 = Release|x64
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Release|x86.ActiveCfg = Release|x86
+		{4DDEB5BD-5BC9-4C51-B70F-02307C15F849}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

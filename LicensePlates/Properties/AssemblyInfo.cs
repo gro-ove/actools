@@ -1,15 +1,16 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AC Custom Previews Updater")]
-[assembly: AssemblyDescription("Console utility updating previews of AC cars using custom renderer")]
+[assembly: AssemblyTitle("AcTools.LicensePlates")]
+[assembly: AssemblyDescription("Library used for generating number plates using Magick.NET and Lua scripts")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
-[assembly: AssemblyProduct("Custom Previews Updater")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2017")]
+[assembly: AssemblyProduct("AcTools.LicensePlates")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4725cda8-4c1f-43db-888e-5db6493483ed")]
+[assembly: Guid("bcea4235-ccbb-4588-a223-67deae6c4272")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -31,6 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.69.36")]
-[assembly: AssemblyFileVersion("1.0.69.36")]
-// Modified at: 17/02/16 23:32:00
+[assembly: AssemblyVersion("1.0.0.68")]
+[assembly: AssemblyFileVersion("1.0.0.68")]
+// Modified at: 17/03/02 01:52:06

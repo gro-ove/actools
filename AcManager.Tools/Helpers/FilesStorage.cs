@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -23,6 +24,7 @@ namespace AcManager.Tools.Helpers {
         public static readonly string PresetsPerModeConditions = "Presets Per Mode Conditions";
         public static readonly string UpgradeIcons = "Upgrade Icons";
         public static readonly string GridTypes = "Grid Types";
+        public static readonly string LicensePlates = "License Plates";
     }
 
     public class FilesStorage : AbstractFilesStorage {
@@ -54,10 +56,13 @@ namespace AcManager.Tools.Helpers {
             return base.Watcher(Combine(DataUserDirName, Path.Combine(name)));
         }
 
-        public class ContentEntry {
-            internal ContentEntry(string filename, bool userFile) {
+        public class ContentEntry : NotifyPropertyChanged {
+            private readonly bool _isDirectory;
+
+            internal ContentEntry(string filename, bool userFile, bool isDirectory) {
+                _isDirectory = isDirectory;
                 Filename = filename;
-                Name = UnescapeString(Path.GetFileNameWithoutExtension(filename));
+                Name = UnescapeString(_isDirectory ? Path.GetFileName(filename) : Path.GetFileNameWithoutExtension(filename));
                 UserFile = userFile;
             }
 
@@ -68,7 +73,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool UserFile { get; }
 
-            public bool Exists => File.Exists(Filename);
+            public bool Exists => _isDirectory ? Directory.Exists(Filename) : File.Exists(Filename);
         }
 
         [NotNull]
@@ -82,7 +87,7 @@ namespace AcManager.Tools.Helpers {
             EnsureDirectory(Path.GetDirectoryName(contentUserFile));
 
             var isOverrided = File.Exists(contentUserFile);
-            return new ContentEntry(isOverrided ? contentUserFile : contentFile, isOverrided);
+            return new ContentEntry(isOverrided ? contentUserFile : contentFile, isOverrided, false);
         }
 
         public string LoadContentFile(string dir, [Localizable(false)] string name = null) {
@@ -121,20 +126,36 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public IEnumerable<ContentEntry> GetContentDirectoryFiltered(string searchPattern, params string[] name) {
+        public IEnumerable<ContentEntry> GetContentFilesFiltered(string searchPattern, params string[] name) {
             var nameJoined = Path.Combine(name);
             var contentDir = EnsureDirectory(DataDirName, nameJoined);
             var contentUserDir = EnsureDirectory(DataUserDirName, nameJoined);
 
-            var contentUserFiles = Directory.GetFiles(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true)).ToList();
+            var contentUserFiles = Directory.GetFiles(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true, false)).ToList();
             var temp = contentUserFiles.Select(x => x.Name);
 
-            return Directory.GetFiles(contentDir, searchPattern).Select(x => new ContentEntry(x, false))
+            return Directory.GetFiles(contentDir, searchPattern).Select(x => new ContentEntry(x, false, false))
                 .Where(x => !temp.Contains(x.Name)).Concat(contentUserFiles).OrderBy(x => x.Name);
         }
 
-        public IEnumerable<ContentEntry> GetContentDirectory(params string[] name) {
-            return GetContentDirectoryFiltered(@"*", name);
+        public IEnumerable<ContentEntry> GetContentFiles(params string[] name) {
+            return GetContentFilesFiltered(@"*", name);
+        }
+
+        public IEnumerable<ContentEntry> GetContentDirectoriesFiltered(string searchPattern, params string[] name) {
+            var nameJoined = Path.Combine(name);
+            var contentDir = EnsureDirectory(DataDirName, nameJoined);
+            var contentUserDir = EnsureDirectory(DataUserDirName, nameJoined);
+
+            var contentUserFiles = Directory.GetDirectories(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true, true)).ToList();
+            var temp = contentUserFiles.Select(x => x.Name);
+
+            return Directory.GetDirectories(contentDir, searchPattern).Select(x => new ContentEntry(x, false, true))
+                .Where(x => !temp.Contains(x.Name)).Concat(contentUserFiles).OrderBy(x => x.Name);
+        }
+
+        public IEnumerable<ContentEntry> GetContentDirectories(params string[] name) {
+            return GetContentDirectoriesFiltered(@"*", name);
         }
 
         public void AddUserContentToDirectory(string name, string filename, string saveAs) {

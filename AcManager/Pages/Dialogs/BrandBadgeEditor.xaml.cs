@@ -47,7 +47,7 @@ namespace AcManager.Pages.Dialogs {
             Closing += BrandBadgeEditor_Closing;
 
             FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += BrandBadgeEditor_Update;
-            Icons = new BetterObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
+            Icons = new BetterObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges));
             UpdateSelected();
         }
 
@@ -71,7 +71,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void BrandBadgeEditor_Update(object sender, EventArgs e) {
-            Icons.ReplaceEverythingBy(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
+            Icons.ReplaceEverythingBy(FilesStorage.Instance.GetContentFiles(ContentCategory.BrandBadges));
             UpdateSelected();
         }
 

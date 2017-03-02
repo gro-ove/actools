@@ -22,12 +22,11 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ariel_atom_v8\ariel_atom_v8.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\mtx_103c\mtx_103c.kn5";
-            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_gta\alfaromeo_gta.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5";
 
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_mercedes_c9\mercedes_c9.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_nissan_gtr\nissan_gtr.kn5";
-            //kn5file = @"D:\Games\Assetto Corsa\content\cars\mercedes_sls\mercedes_sls.kn5";
+            kn5file = @"D:\Games\Assetto Corsa\content\cars\mercedes_sls\mercedes_sls.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_mclaren_p1\mclaren_p1.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_917_30\porsche_917_30.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_nissan_r33_drift\acc_nissan_r33_drift.kn5";
@@ -41,7 +40,7 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\peugeot_504_tn\peugeot_504.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_porsche_914-6\porsche_914-6.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\vaz2106\vaz2106.kn5";
-            kn5file = @"D:\Games\Assetto Corsa\content\cars\ktm_xbow_r\ktm_xbow_r.kn5"; // WARN
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ktm_xbow_r\ktm_xbow_r.kn5"; // WARN
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_bmw_m4\bmw_m4.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\lotus_elise_sc\lotus_elise_sc.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\gmc_vandura\gmc_vandura.kn5";

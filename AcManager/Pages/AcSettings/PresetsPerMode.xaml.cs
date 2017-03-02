@@ -153,7 +153,7 @@ namespace AcManager.Pages.AcSettings {
             }
 
             private void UpdateModes() {
-                Modes.ReplaceIfDifferBy(FilesStorage.Instance.GetContentDirectoryFiltered(@"*.json", ContentCategory.PresetsPerModeConditions)
+                Modes.ReplaceIfDifferBy(FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PresetsPerModeConditions)
                                                     .SelectMany(x => {
                                                         try {
                                                             return JsonConvert.DeserializeObject<Mode[]>(File.ReadAllText(x.Filename));

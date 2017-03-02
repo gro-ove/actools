@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -23,6 +24,7 @@ using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -58,6 +60,10 @@ namespace AcManager.Controls.CustomShowroom {
             });
             InitializeComponent();
             Buttons = new Button[0];
+
+            this.OnActualUnload(() => {
+                Model.Dispose();
+            });
         }
 
         private DispatcherTimer _timer;
@@ -93,7 +99,7 @@ namespace AcManager.Controls.CustomShowroom {
             Skin
         }
 
-        public class ViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged, IDisposable {
             private Mode _mode = Mode.Main;
 
             public Mode Mode {
@@ -107,6 +113,8 @@ namespace AcManager.Controls.CustomShowroom {
 
                     if (value == Mode.Skin && SkinItems == null) {
                         SkinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
+                        UpdateLicensePlatesStyles();
+                        FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
                     }
 
                     _mode = value;
@@ -368,6 +376,17 @@ namespace AcManager.Controls.CustomShowroom {
                     } catch (NotImplementedException) {}
                 }
             }, () => SkinItems.Any()));
+
+            private void OnLicensePlatesChanged(object sender, EventArgs e) {
+                UpdateLicensePlatesStyles();
+            }
+
+            private void UpdateLicensePlatesStyles() {
+                var styles = FilesStorage.Instance.GetContentDirectories(ContentCategory.LicensePlates).ToList();
+                foreach (var item in SkinItems.OfType<PaintShop.LicensePlate>()) {
+                    item.SetStyles(styles);
+                }
+            }
             #endregion
 
             #region Visual params, colors
@@ -744,6 +763,11 @@ namespace AcManager.Controls.CustomShowroom {
                 new CarTextureDialog(Renderer, Skin, Renderer.Kn5, o.TextureName).ShowDialog();
             }, o => o != null));
             #endregion
+
+            public void Dispose() {
+                SkinItems?.DisposeEverything();
+                FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
+            }
         }
     }
 }

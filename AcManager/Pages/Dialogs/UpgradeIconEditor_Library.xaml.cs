@@ -56,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void UpdateIcons() {
-            Icons = new ObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentDirectory(ContentCategory.UpgradeIcons));
+            Icons = new ObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentFiles(ContentCategory.UpgradeIcons));
 
             if (Icons.Contains(Selected)) return;
             var previous = ValuesStorage.GetString(_key);

@@ -53,7 +53,6 @@ namespace AcManager.Tools.Miscellaneous {
                 };
                 
                 state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType>();
-
                 return state;
             } catch (Exception e) {
                 Logging.Warning("Can’t initialize: " + e);

@@ -504,7 +504,7 @@ namespace AcManager.Controls.ViewModels {
             };
 
             var dataAdded = false;
-            foreach (var entry in FilesStorage.Instance.GetContentDirectory(ContentCategory.GridTypes)) {
+            foreach (var entry in FilesStorage.Instance.GetContentFiles(ContentCategory.GridTypes)) {
                 CandidatesGridMode.SetNamespace(entry.Name);
 
                 try {

@@ -564,7 +564,7 @@ FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
 FXAA: {(UseFxaa ? "Yes" : "No")}
 MSAA: {(UseMsaa ? "Yes" : "No")}
-SSAA: {(TemporaryFlag ? "Yes, Exp." : UseSsaa ? "Yes" : "No")}
+SSAA: {(UseSsaa ? TemporaryFlag ? "Yes, Exp." : "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
