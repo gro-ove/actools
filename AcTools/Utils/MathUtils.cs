@@ -18,6 +18,12 @@ namespace AcTools.Utils {
         public static double Cos(this double v) => Math.Cos(v);
         public static float Cos(this float v) => (float)Math.Cos(v);
 
+        public static double Tan(this double a) => Math.Tan(a);
+        public static float Tan(this float a) => (float)Math.Tan(a);
+
+        public static double Atan(this double f) => Math.Atan(f);
+        public static float Atan(this float f) => (float)Math.Atan(f);
+
         public static int Abs(this int v) => v < 0 ? -v : v;
         public static double Abs(this double v) => v < 0d ? -v : v;
         public static float Abs(this float v) => v < 0f ? -v : v;
@@ -162,6 +168,10 @@ namespace AcTools.Utils {
 
         public static TimeSpan Min(this TimeSpan a, TimeSpan b) {
             return a < b ? a : b;
+        }
+
+        public static float Lerp(float v0, float v1, float t) {
+            return (1 - t) * v0 + t * v1;
         }
     }
 }

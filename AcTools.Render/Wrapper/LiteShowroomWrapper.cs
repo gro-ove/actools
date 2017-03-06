@@ -1,8 +1,11 @@
+// #define SSLR_PARAMETRIZED
+
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using AcTools.Render.Base;
+using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
@@ -91,11 +94,15 @@ namespace AcTools.Render.Wrapper {
 
         protected override void OnTick(object sender, TickEventArgs args) {
             if (!Form.Focused) return;
-            var sslrSetupMode = (_renderer as DarkKn5ObjectRenderer)?.SslrAdjustCurrentMode > DarkKn5ObjectRenderer.SslrAdjustMode.None;
 
+#if SSLR_PARAMETRIZED
+            var sslrSetupMode = (_renderer as DarkKn5ObjectRenderer)?.SslrAdjustCurrentMode > DarkKn5ObjectRenderer.SslrAdjustMode.None;
             if (!sslrSetupMode) {
                 base.OnTick(sender, args);
             }
+#else
+            base.OnTick(sender, args);
+#endif
 
             if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) {
                 if (_renderer.CarNode != null) {
@@ -113,11 +120,11 @@ namespace AcTools.Render.Wrapper {
                 var renderer = _renderer as DarkKn5ObjectRenderer;
                 if (renderer != null) {
                     if (User32.IsKeyPressed(Keys.Up)) {
-                        renderer.ReflectionPower += (1f - renderer.ReflectionPower) / 12f;
+                        renderer.FlatMirrorReflectiveness += (1f - renderer.FlatMirrorReflectiveness) / 12f;
                     }
 
                     if (User32.IsKeyPressed(Keys.Down)) {
-                        renderer.ReflectionPower += (0f - renderer.ReflectionPower) / 12f;
+                        renderer.FlatMirrorReflectiveness += (0f - renderer.FlatMirrorReflectiveness) / 12f;
                     }
 
                     var offset = Vector2.Zero;
@@ -136,7 +143,10 @@ namespace AcTools.Render.Wrapper {
                         renderer.Light = upd;
                     }
                 }
-            } else if (sslrSetupMode && (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey))) {
+            }
+
+#if SSLR_PARAMETRIZED
+            if (sslrSetupMode && (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey))) {
                 var renderer = _renderer as DarkKn5ObjectRenderer;
                 if (renderer != null) {
                     var delta = (User32.IsKeyPressed(Keys.LShiftKey) ? 0.01f : 0.1f) * args.DeltaTime;
@@ -150,8 +160,35 @@ namespace AcTools.Render.Wrapper {
                     }
                 }
             }
+#endif
 
+            if (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey)) {
+                var speed = (User32.IsKeyPressed(Keys.LShiftKey) ? 0.05f : 0.5f) * args.DeltaTime;
 
+                if (User32.IsKeyPressed(Keys.NumPad7)) {
+                    _renderer.ToneExposure += speed;
+                }
+
+                if (User32.IsKeyPressed(Keys.NumPad4)) {
+                    _renderer.ToneExposure -= speed;
+                }
+
+                if (User32.IsKeyPressed(Keys.NumPad8)) {
+                    _renderer.ToneGamma += speed;
+                }
+
+                if (User32.IsKeyPressed(Keys.NumPad5)) {
+                    _renderer.ToneGamma -= speed;
+                }
+
+                if (User32.IsKeyPressed(Keys.NumPad9)) {
+                    _renderer.ToneWhitePoint += speed;
+                }
+
+                if (User32.IsKeyPressed(Keys.NumPad6)) {
+                    _renderer.ToneWhitePoint -= speed;
+                }
+            }
         }
 
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
@@ -168,6 +205,7 @@ namespace AcTools.Render.Wrapper {
             if (args.Handled) return;
 
             switch (args.KeyCode) {
+#if SSLR_PARAMETRIZED
                 case Keys.D1:
                     if (!args.Control && !args.Alt && !args.Shift) {
                         var d = _renderer as DarkKn5ObjectRenderer;
@@ -185,6 +223,7 @@ namespace AcTools.Render.Wrapper {
                         }
                     }
                     break;
+#endif
 
                 case Keys.R:
                     if (!args.Control && !args.Alt && !args.Shift) {
@@ -193,10 +232,19 @@ namespace AcTools.Render.Wrapper {
                             d.UseSslr = !d.UseSslr;
                         }
                     }
+                    break;
+
+                case Keys.A:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.UseSsao = !d.UseSsao;
+                        }
+                    }
                     if (!args.Control && !args.Alt && args.Shift) {
                         var d = _renderer as DarkKn5ObjectRenderer;
                         if (d != null) {
-                            d.SslrLinearFiltering = !d.SslrLinearFiltering;
+                            d.SsaoDebug = !d.SsaoDebug;
                         }
                     }
                     break;
@@ -326,11 +374,29 @@ namespace AcTools.Render.Wrapper {
                     }
                     break;
 
+                case Keys.E:
+                    if (!args.Control &&! args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.CubemapAmbient = !d.CubemapAmbient;
+                        }
+                    } else if (args.Control &&! args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            d.ReflectionsWithShadows = !d.ReflectionsWithShadows;
+                        }
+                    }
+                    break;
+
                 case Keys.B:
                     if (!args.Control && args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.BlurredNodesActive = !_renderer.CarNode.BlurredNodesActive;
                         }
+                    } else if (!args.Control && !args.Alt && args.Shift) {
+                        _renderer.UseToneMapping = !_renderer.UseToneMapping;
+                    } else if (args.Control && !args.Alt && !args.Shift) {
+                        _renderer.UseColorGrading = !_renderer.UseColorGrading;
                     } else {
                         _renderer.UseBloom = !_renderer.UseBloom;
                     }
@@ -431,7 +497,14 @@ namespace AcTools.Render.Wrapper {
                         _renderer.EnableShadows = !_renderer.EnableShadows;
                     }
                     if (args.Control && !args.Alt && args.Shift) {
-                        _renderer.EnablePcssShadows = !_renderer.EnablePcssShadows;
+                        _renderer.UsePcss = !_renderer.UsePcss;
+                    }
+                    if (args.Control && args.Alt && !args.Shift) {
+                        var d = _renderer as DarkKn5ObjectRenderer;
+                        if (d != null) {
+                            var sizes = new[] { 1024, 2048, 4096, 8192 };
+                            d.ShadowMapSize = sizes.ElementAtOr(sizes.IndexOf(d.ShadowMapSize) + 1, sizes[0]);
+                        }
                     }
                     if (!args.Control && !args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {

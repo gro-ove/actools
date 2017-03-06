@@ -173,9 +173,10 @@ namespace CustomShowroom {
                     new LiteShowroomWrapper(renderer).Run();
                 }
             } else if (options.Mode == Mode.Dark) {
-                using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File))) {
+                using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File), showroomKn5File)) {
                     renderer.UseSprite = true;
                     renderer.VisibleUi = true;
+
                     // renderer.FlatMirror = true;
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;

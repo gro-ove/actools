@@ -1,16 +1,30 @@
 /*
-  Before including this shader, don’t forget to specify the number of splits
-  and the size of shadow map.
+  To disable dynamic branching, you can specify fixed values before including
+  this file:
 
-  #define NUM_SPLITS 1
-  #define SHADOW_MAP_SIZE 2048
+  define NUM_SPLITS 1
+  define SHADOW_MAP_SIZE 2048
 */
 
+#ifndef NUM_SPLITS
+#define MAX_NUM_SPLITS 4
+#else
+#define MAX_NUM_SPLITS NUM_SPLITS
+#endif
+
 cbuffer cbShadowsBuffer {
-	matrix gShadowViewProj[NUM_SPLITS];
+	matrix gShadowViewProj[MAX_NUM_SPLITS];
+
+	int gNumSplits;
+	bool gPcssEnabled;
+	float gShadowMapSize;
 }
 
-Texture2D gShadowMaps[NUM_SPLITS];
+Texture2D gShadowMaps[MAX_NUM_SPLITS];
+
+#ifndef SHADOW_MAP_SIZE
+#define SHADOW_MAP_SIZE gShadowMapSize
+#endif
 
 // Skip translation
 
@@ -33,21 +47,17 @@ Texture2D gShadowMaps[NUM_SPLITS];
 	#if ENABLE_PCSS == 1
 		#include "Shadows.PCSS.fx"
 		float GetShadowInner(Texture2D tex, float3 uv) {
-			#ifdef ENABLE_PCSS_DYNAMIC
-				if (ENABLE_PCSS_DYNAMIC) {
-					return PCSS(tex, uv);
-				} else {
-					// uv: only float3 is required
-					float shadow = 0.0, x, y;
-					for (y = -1.5; y <= 1.5; y += 1.0)
-						for (x = -1.5; x <= 1.5; x += 1.0)
-							shadow += tex.SampleCmpLevelZero(samShadow, uv.xy + float2(x, y) * SHADOW_MAP_DX, uv.z).r;
-					// return shadow / 16.0;
-					return saturate((shadow / 16 - 0.5) * 4 + 0.5);
-				}
-			#else
+			if (gPcssEnabled) {
 				return PCSS(tex, uv);
-			#endif
+			} else {
+				// uv: only float3 is required
+				float shadow = 0.0, x, y;
+				for (y = -1.5; y <= 1.5; y += 1.0)
+					for (x = -1.5; x <= 1.5; x += 1.0)
+						shadow += tex.SampleCmpLevelZero(samShadow, uv.xy + float2(x, y) * SHADOW_MAP_DX, uv.z).r;
+				// return shadow / 16.0;
+				return saturate((shadow / 16 - 0.5) * 4 + 0.5);
+			}
 		}
 	#else
 		float GetShadowInner(Texture2D tex, float3 uv) {
@@ -64,7 +74,46 @@ Texture2D gShadowMaps[NUM_SPLITS];
 	#define SHADOW_A 0.0001
 	#define SHADOW_Z 0.9999
 
-	#if NUM_SPLITS == 1
+	#ifndef NUM_SPLITS
+		float GetShadow(float3 position) {
+			if (gNumSplits == 0) return 1.0;
+
+			float4 pos = float4(position, 1.0), uv, nv;
+
+			uv = mul(pos, gShadowViewProj[gNumSplits - 1]);
+			uv.xyz /= uv.w;
+			if (uv.x < SHADOW_A || uv.x > SHADOW_Z || uv.y < SHADOW_A || uv.y > SHADOW_Z)
+				return 1;
+
+			if (gNumSplits > 3) {
+				nv = mul(pos, gShadowViewProj[2]);
+				nv.xyz /= nv.w;
+				if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+					return GetShadowInner(gShadowMaps[3], uv.xyz);
+				uv = nv;
+			}
+
+			if (gNumSplits > 2) {
+				nv = mul(pos, gShadowViewProj[1]);
+				nv.xyz /= nv.w;
+				if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+					return GetShadowInner(gShadowMaps[2], uv.xyz);
+				uv = nv;
+			}
+
+			if (gNumSplits > 1) {
+				nv = mul(pos, gShadowViewProj[0]);
+				nv.xyz /= nv.w;
+				if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+					return GetShadowInner(gShadowMaps[1], uv.xyz);
+				uv = nv;
+			} else {
+				nv = uv;
+			}
+
+			return GetShadowInner(gShadowMaps[0], nv.xyz);
+		}
+	#elif NUM_SPLITS == 1
 		float GetShadow(float3 position) {
 			float4 uv = mul(float4(position, 1.0), gShadowViewProj[0]);
 			uv.xyz /= uv.w;
@@ -93,5 +142,4 @@ Texture2D gShadowMaps[NUM_SPLITS];
 			return GetShadowInner(gShadowMaps[0], nv.xyz);
 		}
 	#endif
-
 #endif

@@ -92,7 +92,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechDepthOnly;
         }
 
-        protected virtual EffectTechnique GetSslrTechnique() {
+        protected virtual EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Standard;
         }
 
@@ -103,7 +103,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             if (mode == SpecialRenderMode.GBuffer) {
                 Effect.FxGPassTransparent.Set(IsBlending);
-                return GetSslrTechnique();
+                Effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.0001f : -1f);
+                return GetGBufferTechnique();
             }
 
             return GetTechnique();

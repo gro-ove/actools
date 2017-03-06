@@ -28,6 +28,11 @@ namespace AcTools.Render.Base.Objects {
         public BoundingBox? BoundingBox { get; protected set; }
 
         public void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            if (mode == SpecialRenderMode.Reflection) { // TODO BUG
+                DrawOverride(contextHolder, camera, mode);
+                return;
+            }
+
             if (filter?.Invoke(this) == false) return;
             if (!IsEnabled || mode == SpecialRenderMode.Reflection && !IsReflectable) return;
 

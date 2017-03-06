@@ -73,7 +73,7 @@ namespace AcTools.Render.Tests {
                     renderer.UseMsaa = false;
                     renderer.UseFxaa = false;
                     renderer.AutoRotate = false;
-                    renderer.SetCamera(new Vector3(3.867643f, 1.42359f, 4.70381f), new Vector3(0.0f, 0.7f, 0.5f), (float)(Math.PI / 180d * 30f), true);
+                    renderer.SetCamera(new Vector3(3.867643f, 1.42359f, 4.70381f), new Vector3(0.0f, 0.7f, 0.5f), (float)(Math.PI / 180d * 30f));
                     renderer.BackgroundColor = Color.FromArgb(220, 220, 220);
 
                     renderer.Initialize();

@@ -37,7 +37,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechReflective;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Reflective;
         }
     }

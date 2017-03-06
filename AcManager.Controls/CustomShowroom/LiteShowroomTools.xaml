@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/CustomShowroom/LiteShowroomSettings.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -85,8 +86,8 @@
                                 <CheckBox IsChecked="{Binding Enabled}">
                                     <Label Content="{Binding DisplayName}" />
                                 </CheckBox>
-                                
-                                <CheckBox IsChecked="{Binding PreviewMode}" Margin="0 4 0 0">
+
+                                <CheckBox IsChecked="{Binding PreviewMode}" Margin="8 4 0 0">
                                     <Label Content="Simplity in preview" ToolTip="Simplify normal map to make it work faster" />
                                 </CheckBox>
 
@@ -178,29 +179,29 @@
                                         <Label Content="Add flakes" />
                                     </CheckBox>
 
-                                    <!--<DockPanel Style="{StaticResource DockPanel}">
-                                                    <mui:ValueLabel Value="{Binding Reflection, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                                            Mode="Number" DockPanel.Dock="Top" Content="Reflection" />
-                                                    <Slider Minimum="0" Maximum="100"
-                                                            Value="{Binding Reflection, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                                                            TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-                                                </DockPanel>
+                                    <DockPanel Style="{StaticResource DockPanel}">
+                                        <mui:ValueLabel Value="{Binding Reflection, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflection" />
+                                        <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
+                                                Value="{Binding Reflection, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    </DockPanel>
 
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <mui:ValueLabel Value="{Binding Blur, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                                            Mode="Number" DockPanel.Dock="Top" Content="Blur" />
-                                                    <Slider Minimum="0" Maximum="100"
-                                                            Value="{Binding Blur, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                                                            TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-                                                </DockPanel>
+                                    <DockPanel Style="{StaticResource DockPanel}">
+                                        <mui:ValueLabel Value="{Binding Blur, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Blur" />
+                                        <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
+                                                Value="{Binding Blur, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    </DockPanel>
 
-                                                <DockPanel Style="{StaticResource DockPanel}">
-                                                    <mui:ValueLabel Value="{Binding Specular, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                                            Mode="Number" DockPanel.Dock="Top" Content="Specular" />
-                                                    <Slider Minimum="0" Maximum="100"
-                                                            Value="{Binding Specular, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                                                            TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
-                                                </DockPanel>-->
+                                    <DockPanel Style="{StaticResource DockPanel}">
+                                        <mui:ValueLabel Value="{Binding Specular, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Specular" />
+                                        <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
+                                                Value="{Binding Specular, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    </DockPanel>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>
@@ -231,70 +232,13 @@
             <ResourceDictionary>
                 <Style TargetType="{x:Type DockPanel}" BasedOn="{StaticResource DockPanel}" />
 
-                <mui:SpacingStackPanel x:Key="VisualSettings" Spacing="4">
-                    <DockPanel Margin="0 0 0 4">
-                        <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
-                                IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
-                                ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                        <TextBlock Text="Settings:" Style="{StaticResource Heading2}" />
-                    </DockPanel>
-
-                    <DockPanel>
-                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
-                        <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
-                    </DockPanel>
-
-                    <DockPanel>
-                        <Label Content="MSAA:" />
-                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.MsaaModes}"
-                                DisplayMemberPath="DisplayName" />
-                    </DockPanel>
-                    <DockPanel>
-                        <Label Content="SSAA:" />
-                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static cs:LiteShowroomTools.SsaaModes}"
-                                DisplayMemberPath="DisplayName" />
-                    </DockPanel>
-                    <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
-                        <Label Content="FXAA" />
-                    </CheckBox>
-                    <!--<CheckBox IsChecked="{Binding Renderer.UseSmaa}" IsEnabled="{Binding Renderer.IsSmaaAvailable}">
-                        <Label Content="SMAA" />
-                    </CheckBox>-->
-
-                    <TextBlock Text="Params:" Style="{StaticResource Heading2}" />
-
-                    <DockPanel>
-                        <Label Content="Background:" />
-                        <mui:ColorPicker Color="{Binding BackgroundColor}" />
-                    </DockPanel>
-
-                    <DockPanel>
-                        <Label Content="Light:" />
-                        <mui:ColorPicker Color="{Binding LightColor}" />
-                    </DockPanel>
-
-                    <DockPanel>
-                        <Label Content="Ambient (u.):" />
-                        <mui:ColorPicker Color="{Binding AmbientUpColor}" />
-                    </DockPanel>
-
-                    <DockPanel>
-                        <Label Content="Ambient (d.):" />
-                        <mui:ColorPicker Color="{Binding AmbientDownColor}" />
-                    </DockPanel>
-
-                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding DarkRenderer.FlatMirror}">
-                        <Label Content="Mirror" />
-                    </CheckBox>
-                </mui:SpacingStackPanel>
-
                 <StackPanel x:Key="Main">
                     <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
                     <DockPanel>
                         <mui:ModernButton Margin="4 0 0 -20" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
                                 IconHeight="10" IconData="{StaticResource GearIconData}" Command="{Binding SelectModeCommand}"
                                 CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}" DockPanel.Dock="Right"
-                                Visibility="{Binding DarkRenderer, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                                Visibility="{Binding Settings, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
                         <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                     </DockPanel>
@@ -385,15 +329,17 @@
                         <DockPanel.InputBindings>
                             <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
                         </DockPanel.InputBindings>
+                        <Button DockPanel.Dock="Right" Height="20" Padding="4 0" Command="{Binding ViewObjectCommand}" Content="…" />
                         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
-                        <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
                     </DockPanel>
                     <DockPanel>
                         <DockPanel.InputBindings>
                             <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
                         </DockPanel.InputBindings>
+                        <Button DockPanel.Dock="Right" Height="20" Padding="4 0" Command="{Binding ViewMaterialCommand}" Content="…" />
                         <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                        <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
                     </DockPanel>
                     <DockPanel>
                         <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
@@ -408,7 +354,7 @@
                                         <Label VerticalAlignment="Center" Width="90">
                                             <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
                                         </Label>
-                                        <TextBlock Text="{Binding TextureName}" />
+                                        <TextBlock Text="{Binding TextureName}" Margin="0 0 4 0" />
                                     </DockPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

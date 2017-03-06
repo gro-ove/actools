@@ -10,6 +10,7 @@ using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DebugMaterial : ISkinnedMaterial, IEmissiveMaterial {
@@ -64,6 +65,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.GBuffer) return;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
 
             if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
@@ -89,7 +91,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow) return false;
+                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
 
             _bonesMode = false;
             PrepareStates(contextHolder, mode);
@@ -110,9 +112,35 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect.FxBoneTransforms.SetMatrixArray(bones);
         }
 
+        protected virtual EffectTechnique GetTechnique() {
+            return _bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug;
+        }
+
+        protected virtual EffectTechnique GetShadowTechnique() {
+            return _bonesMode ? _effect.TechSkinnedDepthOnly : _effect.TechDepthOnly;
+        }
+
+        protected virtual EffectTechnique GetSslrTechnique() {
+            return _bonesMode ? _effect.TechGPass_SkinnedDebug : _effect.TechGPass_Debug;
+        }
+
+        private EffectTechnique GetTechnique(SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.Shadow) {
+                return GetShadowTechnique();
+            }
+
+            if (mode == SpecialRenderMode.GBuffer) {
+                _effect.FxGPassTransparent.Set(IsBlending);
+                _effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.0001f : -1f);
+                return GetSslrTechnique();
+            }
+
+            return GetTechnique();
+        }
+
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = _bonesMode ? _effect.LayoutPNTGW4B : _effect.LayoutPNTG;
-            (_bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug).DrawAllPasses(contextHolder.DeviceContext, indices);
+            GetTechnique(mode).DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }

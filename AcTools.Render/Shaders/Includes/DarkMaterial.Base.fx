@@ -80,8 +80,9 @@ cbuffer cbPerFrame {
 	float3 gBackgroundColor;
 
 	float gReflectionPower;
-	bool gShadowsEnabled;
-	bool gPcssEnabled;
+	bool gEnableAo;
+	bool gCubemapReflections;
+	bool gCubemapAmbient;
 }
 
 cbuffer cbTextureFlatMirror {
@@ -93,28 +94,33 @@ cbuffer cbTextureFlatMirror {
 // z-buffer tricks if needed
 #define FixPosH(x) (x)
 
-#define farplane 500
-#define Fcoef (2.0 / log2(farplane + 1.0))
-
-float4 FixPosH_(float4 posH) {
-	posH.z = log2(max(1e-6, 1.0 + posH.w)) * Fcoef - 1.0;
-	return posH;
-}
-
 float4 CalculatePosH(float3 posL) {
 	return FixPosH(mul(float4(posL, 1.0f), gWorldViewProj));
 }
 
-// real reflection (not used by default)
-TextureCube gReflectionCubemap;
-
 // shadows
 #define ENABLE_SHADOWS 1
 #define ENABLE_PCSS 1
-#define ENABLE_PCSS_DYNAMIC gPcssEnabled
-#define NUM_SPLITS 1
-#define SHADOW_MAP_SIZE 2048
+// define NUM_SPLITS 1
 #include "Shadows.fx"
+
+SamplerState samLinear {
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+
+// AO map for proper SSAO
+Texture2D gAoMap;
+
+float GetAo(float2 screenCoords) {
+	[branch]
+	if (gEnableAo) {
+		return gAoMap.SampleLevel(samLinear, screenCoords / gScreenSize.xy, 0).r * 0.3 + 0.7;
+	} else {
+		return 1.0;
+	}
+}
 
 SamplerState samAnisotropic {
 	Filter = ANISOTROPIC;
@@ -294,10 +300,18 @@ float GetFakeStudioLights(float3 d, float e) {
 		) * saturate(0.3 - abs(0.1 + sin(d.x * 11.0)), e);
 }
 
+// real reflection (not used by default)
+TextureCube gReflectionCubemap;
+
 float3 GetReflection(float3 reflected, float specularExp) {
-	float edge = specularExp / 10.0 + 1.0;
-	float fake = saturate(GetFakeHorizon(reflected, edge) + GetFakeStudioLights(reflected, edge));
-	return (gBackgroundColor * (1 - fake) * 1.1 + fake * 1.8) * gReflectionPower;
+	[branch]
+	if (gCubemapReflections) {
+		return gReflectionCubemap.SampleLevel(samAnisotropic, reflected, saturate(1 - specularExp / 255) * 8).rgb * gReflectionPower;
+	} else {
+		float edge = specularExp / 10.0 + 1.0;
+		float fake = saturate(GetFakeHorizon(reflected, edge) + GetFakeStudioLights(reflected, edge));
+	    return (gBackgroundColor * (1 - fake) * 1.1 + fake * 1.8) * gReflectionPower;
+	}
 }
 
 #define HAS_FLAG(x) ((gMaterial.Flags & x) == x)
@@ -308,7 +322,7 @@ void AlphaTest(float alpha) {
 }
 
 float Luminance(float3 color) {
-	return dot(color, float3(0.299f, 0.587f, 0.114f));
+	return saturate(dot(color, float3(0.299f, 0.587f, 0.114f)));
 }
 
 //////////////// Simple lighting
@@ -340,8 +354,14 @@ float CalculateSpecularLight_Maps_Sun(float3 normal, float3 position, float spec
 }
 
 float3 GetAmbient(float3 normal) {
-	float up = saturate(normal.y * 0.5 + 0.5);
-	return gAmbientDown + up * gAmbientRange;
+	[branch]
+	if (gCubemapAmbient) {
+		float3 refl = gReflectionCubemap.SampleLevel(samAnisotropic, normal, 99).rgb;
+		return refl / (dot(refl, float3(0.299f, 0.587f, 0.114f)) + 0.05);
+	} else {
+		float up = saturate(normal.y * 0.5 + 0.5);
+		return gAmbientDown + up * gAmbientRange;
+	}
 }
 
 float GetDiffuseMultipler(float3 normal) {
@@ -355,7 +375,7 @@ float GetShadow_ConsiderMirror(float3 position) {
 	return GetShadow(position);
 }
 
-float3 CalculateLight(float3 txColor, float3 normal, float3 position) {
+float3 CalculateLight(float3 txColor, float3 normal, float3 position, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal);
 	float diffuseMultipler = GetDiffuseMultipler(normal);
 
@@ -363,11 +383,14 @@ float3 CalculateLight(float3 txColor, float3 normal, float3 position) {
 	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
+	ambient *= GetAo(screenCoords);
+
+	float3 lightResult = diffuseMultipler * gLightColor;
 	float3 specular = CalculateSpecularLight(normal, position);
-	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * gLightColor * diffuseMultipler + gMaterial.Emissive) + specular * diffuseMultipler;
+	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * lightResult + gMaterial.Emissive) + specular * lightResult;
 }
 
-float3 CalculateLight_Maps(float3 txColor, float3 normal, float3 position, float specularMultipler, float specularExpMultipler) {
+float3 CalculateLight_Maps(float3 txColor, float3 normal, float3 position, float specularMultipler, float specularExpMultipler, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal);
 	float diffuseMultipler = GetDiffuseMultipler(normal);
 
@@ -375,11 +398,14 @@ float3 CalculateLight_Maps(float3 txColor, float3 normal, float3 position, float
 	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
+	ambient *= GetAo(screenCoords);
+
+	float3 lightResult = diffuseMultipler * gLightColor;
 	float3 specular = CalculateSpecularLight_Maps(normal, position, specularExpMultipler) * specularMultipler;
-	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * gLightColor * diffuseMultipler + gMaterial.Emissive) + specular * diffuseMultipler;
+	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * gLightColor * diffuseMultipler + gMaterial.Emissive) + specular * lightResult;
 }
 
-float3 CalculateLight_Maps_Sun(float3 txColor, float3 normal, float3 position, float specularMultipler, float specularExpMultipler) {
+float3 CalculateLight_Maps_Sun(float3 txColor, float3 normal, float3 position, float specularMultipler, float specularExpMultipler, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal);
 	float diffuseMultipler = GetDiffuseMultipler(normal);
 
@@ -387,8 +413,11 @@ float3 CalculateLight_Maps_Sun(float3 txColor, float3 normal, float3 position, f
 	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
 
+	ambient *= GetAo(screenCoords);
+
+	float3 lightResult = diffuseMultipler * gLightColor;
 	float3 specular = CalculateSpecularLight_Maps_Sun(normal, position, specularExpMultipler) * specularMultipler;
-	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * gLightColor * diffuseMultipler + gMaterial.Emissive) + specular * diffuseMultipler;
+	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * lightResult + gMaterial.Emissive) + specular * lightResult;
 }
 
 //////////////// Different material types
@@ -398,7 +427,7 @@ void CalculateLighted(PS_IN pin, out float3 lighted, out float alpha, out float3
 
 	alpha = diffuseValue.a;
 	normal = normalize(pin.NormalW);
-	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW);
+	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW, pin.PosH.xy);
 
 	AlphaTest(alpha);
 }
@@ -409,7 +438,7 @@ void CalculateLighted_Nm(PS_IN pin, out float3 lighted, out float alpha, out flo
 
 	alpha = diffuseValue.a * normalValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW);
+	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW, pin.PosH.xy);
 
 	AlphaTest(alpha);
 }
@@ -420,7 +449,7 @@ void CalculateLighted_NmUvMult(PS_IN pin, out float3 lighted, out float alpha, o
 
 	alpha = diffuseValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW);
+	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW, pin.PosH.xy);
 
 	AlphaTest(alpha);
 }
@@ -431,7 +460,7 @@ void CalculateLighted_AtNm(PS_IN pin, out float3 lighted, out float alpha, out f
 
 	alpha = diffuseValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW);
+	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW, pin.PosH.xy);
 
 	AlphaTest(alpha);
 }
@@ -442,7 +471,7 @@ void CalculateLighted_DiffMaps(PS_IN pin, out float3 lighted, out float alpha, o
 
 	alpha = diffuseValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	lighted = CalculateLight_Maps(diffuseValue.rgb, normal, pin.PosW, alpha, alpha);
+	lighted = CalculateLight_Maps(diffuseValue.rgb, normal, pin.PosW, alpha, alpha, pin.PosH.xy);
 
 	AlphaTest(alpha);
 }
@@ -474,8 +503,15 @@ void CalculateLighted_Maps(PS_IN pin, float txMapsSpecularMultipler, float txMap
 		alpha = 1.0;
 	}
 
-	lighted = CalculateLight_Maps_Sun(diffuseValue.rgb, normal, pin.PosW, txMapsSpecularMultipler, txMapsSpecularExpMultipler);
+	lighted = CalculateLight_Maps_Sun(diffuseValue.rgb, normal, pin.PosW, txMapsSpecularMultipler, txMapsSpecularExpMultipler, pin.PosH.xy);
 	AlphaTest(alpha);
+}
+
+float GetReflectionStrength(float3 normalW, float3 toEyeW) {
+	// float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
+	float rid = 1 - saturate(dot(toEyeW, normalW));
+	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
+	return min(max(rim, gReflectiveMaterial.FresnelC), gReflectiveMaterial.FresnelMaxLevel);
 }
 
 float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
@@ -483,10 +519,7 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 	float3 reflected = reflect(-toEyeW, normalW);
 	float3 refl = GetReflection(reflected, gMaterial.SpecularExp);
 
-	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
-	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
-
+	float val = GetReflectionStrength(normalW, toEyeW);
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		lighted *= 1 - val;
 	}
@@ -499,10 +532,7 @@ float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, flo
 	float3 reflected = reflect(-toEyeW, normalW);
 	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
 
-	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
-	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
-
+	float val = GetReflectionStrength(normalW, toEyeW);
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		lighted *= 1 - val;
 	}

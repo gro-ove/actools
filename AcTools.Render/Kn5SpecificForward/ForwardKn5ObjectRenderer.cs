@@ -68,7 +68,9 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public void SetCamera(Vector3 from, Vector3 to, float fovY, bool alignCurrentCar) {
+        private Vector3 _cameraTo;
+
+        public void SetCamera(Vector3 from, Vector3 to, float fovY) {
             var orbit = CameraOrbit ?? CreateCamera(Scene);
 
             Camera = new FpsCamera(fovY) {
@@ -76,18 +78,39 @@ namespace AcTools.Render.Kn5SpecificForward {
                 FarZ = orbit.FarZ
             };
 
+            _cameraTo = to;
             Camera.LookAt(from, to, Vector3.UnitY);
+            Camera.SetLens(AspectRatio);
+
             PrepareCamera(Camera);
+        }
 
-            if (alignCurrentCar) {
-                Camera.SetLens(AspectRatio);
-                Camera.UpdateViewMatrix();
+        public void AlignCar() {
+            var camera = Camera as FpsCamera;
+            if (camera == null) return;
 
-                var offset = GetCameraOffsetForCenterAlignment(Camera, false) + to;
-                offset.Y = 0f;
+            var nbox = CarNode?.BoundingBox;
+            if (!nbox.HasValue) return;
 
-                Camera.LookAt(from + offset, to + offset, Vector3.UnitY);
-            }
+            var offset = nbox.Value.GetCenter();
+            offset.Y = 0f;
+
+            Camera.LookAt(camera.Position + offset, _cameraTo + offset, Vector3.UnitY);
+            Camera.SetLens(AspectRatio);
+        }
+
+        public void AlignCamera(Vector3 alignOffset) {
+            var camera = Camera as FpsCamera;
+            if (camera == null) return;
+
+            Camera.SetLens(AspectRatio);
+            Camera.UpdateViewMatrix();
+            
+            var offset = GetCameraOffsetForCenterAlignmentUsingVertices(Camera);
+            offset.Y = 0f;
+            offset += alignOffset;
+
+            Camera.LookAt(camera.Position + offset, _cameraTo + offset, Vector3.UnitY);
         }
 
         protected virtual void PrepareCamera(BaseCamera camera) { }
@@ -365,11 +388,14 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         public Kn5RenderableCar CarNode { get; private set; }
 
+        [CanBeNull]
+        public Kn5RenderableFile ShowroomNode { get; private set; }
+
         public bool CubemapReflection { get; set; } = false;
 
         public bool EnableShadows { get; set; } = false;
 
-        public bool EnablePcssShadows { get; set; } = false;
+        public bool UsePcss { get; set; } = false;
 
         [CanBeNull]
         private ReflectionCubemap _reflectionCubemap;
@@ -390,7 +416,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             if (_showroomKn5Filename != null) {
                 var kn5 = Kn5.FromFile(_showroomKn5Filename);
-                Scene.Insert(0, new Kn5RenderableFile(kn5, Matrix.Identity));
+                Scene.Insert(0, ShowroomNode = new Kn5RenderableFile(kn5, Matrix.Identity, AsyncTexturesLoading, AllowSkinnedObjects));
             }
 
             _carWrapper = new RenderableList();
@@ -411,7 +437,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             // Scene.Add(new Kn5RenderableFile(Kn5.FromFile(_carKn5), Matrix.Identity));
 
             Scene.UpdateBoundingBox();
-
+            
             if (CubemapReflection) {
                 _reflectionCubemap = CreateReflectionCubemap();
                 _reflectionCubemap?.Initialize(DeviceContextHolder);
@@ -429,6 +455,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             DeviceContextHolder.SceneUpdated += OnSceneUpdated;
+            DeviceContextHolder.TexturesUpdated += OnTexturesUpdated;
         }
 
         [CanBeNull]
@@ -442,7 +469,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         private static CameraOrbit CreateCamera(IRenderableObject node) {
-            return new CameraOrbit(MathF.ToRadians(32f)) {
+            return new CameraOrbit(32f.ToRadians()) {
                 Alpha = 0.9f,
                 Beta = 0.1f,
                 Radius = node?.BoundingBox?.GetSize().Length() ?? 4.8f,
@@ -477,7 +504,19 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        protected virtual Vector3 ReflectionCubemapPosition => CarNode?.BoundingBox?.GetCenter() ?? Vector3.Zero;
+        private bool _reflectionCubemapAtCamera;
+
+        public bool ReflectionCubemapAtCamera {
+            get { return _reflectionCubemapAtCamera; }
+            set {
+                if (Equals(value, _reflectionCubemapAtCamera)) return;
+                _reflectionCubemapAtCamera = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected virtual Vector3 ReflectionCubemapPosition => ReflectionCubemapAtCamera ? Camera.Position :
+                GetCarBoundingBox()?.GetCenter() ?? Vector3.Zero;
 
         private Vector3? _previousShadowsTarget;
 
@@ -491,13 +530,26 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 _light = value;
                 _sceneDirty = true;
+                OnPropertyChanged();
             }
         }
 
         private bool _sceneDirty, _sceneWasDirty, _reflectionCubemapDirty, _shadowsEnabled;
 
+        public void SetShadowsDirty() {
+            _previousShadowsTarget = null;
+        }
+
+        public void SetReflectionCubemapDirty() {
+            _reflectionCubemapDirty = true;
+        }
+
         private void OnSceneUpdated(object sender, EventArgs e) {
             _sceneDirty = true;
+        }
+
+        private void OnTexturesUpdated(object sender, EventArgs e) {
+            SetReflectionCubemapDirty();
         }
 
         protected virtual void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
@@ -523,8 +575,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (!DelayedBoundingBoxUpdate) {
                     Scene.UpdateBoundingBox();
                 }
-                _sceneWasDirty = true;
 
+                _sceneWasDirty = true;
             } else {
                 if (_sceneWasDirty && DelayedBoundingBoxUpdate) {
                     Scene.UpdateBoundingBox();
@@ -537,8 +589,9 @@ namespace AcTools.Render.Kn5SpecificForward {
                 UpdateShadows(_shadows, center);
                 _shadowsEnabled = EnableShadows;
             }
-
+            
             if (_reflectionCubemap != null && (_reflectionCubemap.Update(center) || _reflectionCubemapDirty)) {
+                _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
                 _reflectionCubemap.DrawScene(DeviceContextHolder, this);
                 _reflectionCubemapDirty = false;
             }
@@ -626,13 +679,75 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         
         private BoundingBox? _carBoundingBox;
 
-        private Vector3 GetCameraOffsetForCenterAlignment(ICamera camera, bool limited) {
-            if (_carBoundingBox == null) {
-                _carBoundingBox = CarNode?.BoundingBox;
-                if (_carBoundingBox == null) return Vector3.Zero;
+        protected BoundingBox? GetCarBoundingBox() {
+            return _carBoundingBox ?? (_carBoundingBox = CarNode?.BoundingBox);
+        }
+
+        private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(Kn5RenderableObject obj, Matrix matrix, ref Vector3 min, ref Vector3 max) {
+            if (min.Z != 0f && obj.BoundingBox.HasValue) {
+                var corners = obj.BoundingBox.Value.GetCorners();
+                foreach (var c in corners) {
+                    var sp = Vector3.TransformCoordinate(c, matrix);
+                    if (sp.X < min.X || sp.Y < min.Y || sp.Z < min.Z ||
+                            sp.X > max.X || sp.Y > max.Y || sp.Z > max.Z) {
+                        goto NextStep;
+                    }
+                }
+
+                return;
             }
 
-            var box = _carBoundingBox.Value;
+            NextStep:
+            var wm = obj.ParentMatrix * matrix;
+            var smart = obj.Vertices;
+            for (var i = 0; i < smart.Length; i++) {
+                var sp = Vector3.TransformCoordinate(smart[i].Position, wm);
+                if (min.Z == 0f) {
+                    min = sp;
+                    max = sp;
+                } else {
+                    if (sp.X < min.X) min.X = sp.X;
+                    if (sp.Y < min.Y) min.Y = sp.Y;
+                    if (sp.Z < min.Z) min.Z = sp.Z;
+                    if (sp.X > max.X) max.X = sp.X;
+                    if (sp.Y > max.Y) max.Y = sp.Y;
+                    if (sp.Z > max.Z) max.Z = sp.Z;
+                }
+            }
+        }
+
+        private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(RenderableList list, Matrix matrix, ref Vector3 min, ref Vector3 max) {
+            foreach (var child in list) {
+                var li = child as RenderableList;
+                if (li != null) {
+                    GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(li, matrix, ref min, ref max);
+                } else {
+                    var ro = child as Kn5RenderableObject;
+                    if (ro != null) {
+                        GetCameraOffsetForCenterAlignmentUsingVertices_ProcessObject(ro, matrix, ref min, ref max);
+                    }
+                }
+            }
+        }
+
+        private Vector3 GetCameraOffsetForCenterAlignmentUsingVertices(ICamera camera) {
+            if (CarNode == null) return Vector3.Zero;
+
+            var matrix = camera.ViewProj;
+            var min = Vector3.Zero;
+            var max = Vector3.Zero;
+            GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(CarNode.RootObject, matrix, ref min, ref max);
+
+            var offsetScreen = (min + max) / 2f;
+            return Vector3.TransformCoordinate(offsetScreen, camera.ViewProjInvert) -
+                    Vector3.TransformCoordinate(new Vector3(0f, 0f, offsetScreen.Z), camera.ViewProjInvert);
+        }
+
+        private Vector3 GetCameraOffsetForCenterAlignment(ICamera camera, bool limited) {
+            var nbox = GetCarBoundingBox();
+            if (nbox == null) return Vector3.Zero;
+
+            var box = nbox.Value;
             var corners = box.GetCorners();
 
             if (camera.Position.X >= box.Minimum.X &&
@@ -652,10 +767,10 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             for (var i = 0; i < corners.Length; i++) {
                 var vec = Vector3.TransformCoordinate(corners[i], camera.ViewProj);
                 if (limited && new Vector2(vec.X, vec.Y).Length() > 15f) return Vector3.Zero;
-                center += vec / corners.Length;
+                center += vec;
             }
 
-            var offsetScreen = center;
+            var offsetScreen = center / corners.Length;
             return Vector3.TransformCoordinate(offsetScreen, camera.ViewProjInvert) -
                     Vector3.TransformCoordinate(new Vector3(0f, 0f, offsetScreen.Z), camera.ViewProjInvert);
         }

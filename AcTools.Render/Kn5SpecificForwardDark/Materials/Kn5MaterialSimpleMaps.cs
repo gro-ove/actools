@@ -13,6 +13,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleMaps : Kn5MaterialSimpleReflective {
         private EffectDarkMaterial.MapsMaterial _material;
         private IRenderableTexture _txNormal, _txMaps, _txDetails, _txDetailsNormal;
+        private bool _hasNormalMap;
 
         public Kn5MaterialSimpleMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
 
@@ -23,6 +24,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _txDetailsNormal = GetTexture("txNormalDetail", contextHolder);
 
             if (_txNormal != null) {
+                _hasNormalMap = true;
                 Flags |= EffectDarkMaterial.HasNormalMap;
             }
             
@@ -52,7 +54,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (!base.Prepare(contextHolder, mode)) return false;
 
             Effect.FxMapsMaterial.Set(_material);
-            Effect.FxNormalMap.SetResource(_txNormal);
+
+            if (_hasNormalMap && !Effect.FxNormalMap.SetResource(_txNormal)) {
+                Effect.FxNormalMap.SetResource(contextHolder.GetFlatNmTexture());
+            }
+
             Effect.FxDetailsMap.SetResource(_txDetails);
             Effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
             Effect.FxMapsMap.SetResource(_txMaps);
@@ -63,7 +69,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechMaps;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Maps;
         }
     }
@@ -80,7 +86,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechSkinnedDepthOnly;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_SkinnedMaps;
         }
 

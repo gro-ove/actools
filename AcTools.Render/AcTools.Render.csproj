@@ -101,6 +101,7 @@
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
     <Compile Include="Base\PostEffects\SmaaHelper.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkSsaoHelper.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkSslrHelper.cs" />
     <Compile Include="Base\Reflections\IReflectionDraw.cs" />
     <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
@@ -261,6 +262,7 @@
     <Content Include="Shaders\Pp\PpBasic.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
+    <Content Include="Shaders\Special\SpecialRandom.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />
     <Content Include="Shaders\Sprites\SpriteShader.fx" />

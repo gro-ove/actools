@@ -238,14 +238,18 @@ namespace LicensePlates {
 
         public void CreateDiffuseMap(bool previewMode, string filename) {
             using (var image = CreateDiffuseMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt1");
+                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
+                image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
             }
         }
-
+        
         public void CreateNormalsMap(bool previewMode, string filename) {
             using (var image = CreateNormalsMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt1");
+                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
+                image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
             }
         }

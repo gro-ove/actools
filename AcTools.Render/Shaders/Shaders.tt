@@ -326,7 +326,7 @@ namespace <#= resultNamespace #> {
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
 		
-		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[23]D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();

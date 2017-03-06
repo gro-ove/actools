@@ -1,9 +1,12 @@
 ﻿using System;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
     public abstract class BaseCamera : ICamera {
+        public bool RhMode { get; set; } = true;
+
         public Vector3 Position { get; set; }
 
         public Vector3 Right;
@@ -100,7 +103,8 @@ namespace AcTools.Render.Base.Cameras {
 
         public virtual void SetLens(float aspect) {
             Aspect = aspect;
-            SetProj(Matrix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue));
+            SetProj(RhMode ? Matrix.PerspectiveFovRH(FovY, Aspect, NearZValue, FarZValue) :
+                    Matrix.PerspectiveFovLH(FovY, Aspect, NearZValue, FarZValue));
         }
 
         public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {

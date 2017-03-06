@@ -40,14 +40,14 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private static void Release(FileSystemWatcher watcher) {
             var found = Watchers.FirstOrDefault(x => ReferenceEquals(x.Value.Watcher, watcher));
 
-            if (found.Value != null && --found.Value.Count == 0) {
-                watcher.EnableRaisingEvents = false;
-                watcher.Dispose();
-                Watchers.Remove(found.Key);
-            } else {
+            if (found.Value == null) {
                 watcher.EnableRaisingEvents = false;
                 watcher.Dispose();
                 AcToolsLogging.Write("Can’t release FSW properly: " + watcher.Path);
+            } else if (--found.Value.Count == 0) {
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
+                Watchers.Remove(found.Key);
             }
         }
 

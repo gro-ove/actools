@@ -1,6 +1,5 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
@@ -32,7 +31,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechNmUvMult;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_NmUvMult;
         }
     }

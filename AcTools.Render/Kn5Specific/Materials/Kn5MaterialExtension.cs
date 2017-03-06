@@ -20,8 +20,10 @@ namespace AcTools.Render.Kn5Specific.Materials {
             return GetPropertyValueCByName(mat, name, Vector3.Zero);
         }
 
-        public static void SetResource(this EffectResourceVariable variable, IRenderableTexture texture) {
-            variable.SetResource(texture?.Resource);
+        public static bool SetResource(this EffectResourceVariable variable, IRenderableTexture texture) {
+            var res = texture?.Resource;
+            variable.SetResource(res);
+            return res != null;
         }
     }
 }

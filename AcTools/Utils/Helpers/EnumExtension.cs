@@ -26,6 +26,10 @@ namespace AcTools.Utils.Helpers {
             return Enum.GetValues(typeof(T)).OfType<T>().SkipWhile(x => !Equals(x, value)).Skip(1).FirstOrDefault();
         }
 
+        public static T NValue<T>(int n) where T : struct {
+            return Enum.GetValues(typeof(T)).OfType<T>().Skip(n).FirstOrDefault();
+        }
+
         public static T PreviousValue<T>(this T value) where T : struct {
             T? previous = null;
             foreach (var val in Enum.GetValues(typeof(T)).OfType<T>()) {

@@ -455,7 +455,14 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            private Color _previousColor;
+            private bool _previousFlakes;
+
             protected override void Apply() {
+                if (_previousColor == Color && _previousFlakes == Flakes) return;
+                _previousColor = Color;
+                _previousFlakes = Flakes;
+
                 if (SupportsFlakes && Flakes) {
                     Renderer?.OverrideTextureFlakes(DiffuseTexture, Color.ToColor());
                 } else {
@@ -484,7 +491,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private double _reflection = 1d;
-            private double _previousReflection = 1d;
+            private double _previousReflection = -1d;
 
             public double Reflection {
                 get { return _reflection; }
@@ -496,7 +503,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private double _blur = 1d;
-            private double _previousBlur = 1d;
+            private double _previousBlur = -1d;
 
             public double Blur {
                 get { return _blur; }
@@ -508,7 +515,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private double _specular = 1d;
-            private double _previousSpecular = 1d;
+            private double _previousSpecular = -1d;
 
             public double Specular {
                 get { return _specular; }
@@ -521,13 +528,21 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void Apply() {
                 base.Apply();
+
                 if (Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousBlur - Blur) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
-                    // Renderer?.OverrideTextureMaps(MapsTexture, Reflection, Blur, Specular);
+                    Renderer?.OverrideTextureMaps(MapsTexture, Reflection, Blur, Specular);
                     _previousReflection = Reflection;
                     _previousBlur = Blur;
                     _previousSpecular = Specular;
                 }
+            }
+
+            public override async Task SaveAsync(string location) {
+                if (Renderer == null) return;
+                
+                await base.SaveAsync(location);
+                await Renderer.SaveTextureMaps(Path.Combine(location, MapsTexture), MapsTexture, Reflection, Blur, Specular);
             }
         }
 

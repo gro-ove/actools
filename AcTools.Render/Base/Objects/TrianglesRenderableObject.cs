@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -52,31 +53,40 @@ namespace AcTools.Render.Base.Objects {
         }
 
         private void PrepareSmart() {
-            var positions = new bool[Vertices.Length];
+            var sqrLength = new float[Vertices.Length];
+            var normalized = new Vector3[Vertices.Length];
+
+            for (var i = 0; i < Vertices.Length; i++) {
+                var p = Vertices[i].Position;
+                var l = p.LengthSquared();
+                sqrLength[i] = l;
+                normalized[i] = l == 0f ? Vector3.Zero : p / l.Sqrt();
+            }
 
             var filtered = new List<Vector3>(Vertices.Length);
             for (var i = 0; i < Vertices.Length; i++) {
-                var p = Vertices[i].Position;
-                if (positions[i]) continue;
+                var pl = sqrLength[i];
+                if (sqrLength[i] == 0f) continue;
 
+                var add = true;
                 for (int j = i + 1, l = Math.Min(Vertices.Length, i + 10); j < l; j++) {
-                    var n = Vertices[j].Position;
-                    if (!positions[j] && Vector3.Dot(p, n) > 0.95) {
-                        if (p.LengthSquared() > n.LengthSquared()) {
-                            positions[j] = true;
+                    var nl = sqrLength[j];
+                    if (nl != 0f && Vector3.Dot(normalized[i], normalized[j]) > 0.99) {
+                        if (pl > nl) {
+                            sqrLength[j] = 0f;
                         } else {
-                            goto Next;
+                            add = false;
+                            break;
                         }
                     }
                 }
 
-                filtered.Add(p);
-
-                Next:
-                continue;
+                if (add) {
+                    filtered.Add(Vertices[i].Position);
+                }
             }
 
-            // MessageBox.Show($"{Name}: {100d * filtered.Count / positions.Length:F1}% ({Vertices.Length})");
+            // AcToolsLogging.Write($"{Name}: {100d * filtered.Count / Vertices.Length:F1}% ({Vertices.Length})");
             _positions = filtered.ToArray();
         }
 
@@ -104,6 +114,12 @@ namespace AcTools.Render.Base.Objects {
             if (_positions == null) {
                 PrepareSmart();
                 if (_positions == null) return;
+            }
+
+            if (_positions.Length == 0) {
+                var p = TransformCoordinate(Vector3.Zero, parentMatrix);
+                BoundingBox = new BoundingBox(p, p);
+                return;
             }
 
             var v = TransformCoordinate(_positions[0], parentMatrix);

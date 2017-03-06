@@ -27,6 +27,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         void SetDebugMode(IDeviceContextHolder holder, bool enabled);
 
         void SetEmissive(Vector3? color);
+
+        int TrianglesCount { get; }
     }
 
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
@@ -56,9 +58,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return indices.ToIndicesFixX();
         }
 
+        private readonly bool _isTransparent;
+
         public Kn5RenderableObject(Kn5Node node) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
+            _isTransparent = OriginalNode.IsTransparent;
 
             if (IsEnabled && (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable)) {
                 IsEnabled = false;
@@ -117,7 +122,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             Emissive = color;
         }
 
-        private bool _isTransparent;
+        int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
+
         private IRenderableMaterial _material;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
@@ -125,7 +131,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
             _material.Initialize(contextHolder);
-            _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
 
             if (_mirrorMaterial != null && !_mirrorMaterialInitialized) {
                 _mirrorMaterialInitialized = true;
@@ -146,13 +151,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
 
-
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!(_isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
 
             var material = Material;
             if (!material.Prepare(contextHolder, mode)) return;
+            if (mode == SpecialRenderMode.Reflection) return;
 
             base.DrawOverride(contextHolder, camera, mode);
 

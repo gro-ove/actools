@@ -17,6 +17,8 @@ namespace AcTools.Render.Base.Reflections {
         private RenderTargetView[] _targetView;
         private DepthStencilView _depthTargetView;
 
+        public Color4 BackgroundColor { get; set; }
+
         public ShaderResourceView View => _view;
 
         public ReflectionCubemap(int cubeMapSize) {
@@ -31,7 +33,7 @@ namespace AcTools.Render.Base.Reflections {
             using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription {
                 Width = _cubeMapSize,
                 Height = _cubeMapSize,
-                MipLevels = 2,
+                MipLevels = 11,
                 ArraySize = 6,
                 SampleDescription = new SampleDescription(1, 0),
                 Format = format,
@@ -41,15 +43,13 @@ namespace AcTools.Render.Base.Reflections {
                 OptionFlags = ResourceOptionFlags.GenerateMipMaps | ResourceOptionFlags.TextureCube
             })) {
                 _targetView = Enumerable.Range(0, 6).Select(x => new RenderTargetView(holder.Device, cubeTex,
-                    new RenderTargetViewDescription {
-                        Format = format,
-                        Dimension =
-                            RenderTargetViewDimension
-                        .Texture2DArray,
-                        ArraySize = 1,
-                        FirstArraySlice = x,
-                        MipSlice = 0
-                    })).ToArray();
+                        new RenderTargetViewDescription {
+                            Format = format,
+                            Dimension = RenderTargetViewDimension.Texture2DArray,
+                            ArraySize = 1,
+                            FirstArraySlice = x,
+                            MipSlice = 0
+                        })).ToArray();
 
                 _view = new ShaderResourceView(holder.Device, cubeTex, new ShaderResourceViewDescription {
                     Format = format,
@@ -84,7 +84,7 @@ namespace AcTools.Render.Base.Reflections {
         private Vector3 _previousCenter;
 
         public bool Update(Vector3 center) {
-            if (_cameras[0] != null && (center - _previousCenter).LengthSquared() < 0.01) return false;
+            if (_cameras[0] != null && (center - _previousCenter).LengthSquared() < 0.001) return false;
 
             var targets = new[] {
                 new Vector3(center.X + 1, center.Y, center.Z),
@@ -106,7 +106,8 @@ namespace AcTools.Render.Base.Reflections {
 
             for (var i = 0; i < 6; i++) {
                 _cameras[i] = new FpsCamera(MathF.PI / 2) {
-                    FarZ = 500.0f
+                    FarZ = 500.0f,
+                    RhMode = false
                 };
                 _cameras[i].LookAt(center, targets[i], ups[i]);
                 _cameras[i].SetLens(1f);
@@ -121,7 +122,7 @@ namespace AcTools.Render.Base.Reflections {
             holder.SaveRenderTargetAndViewport();
             holder.DeviceContext.Rasterizer.SetViewports(_viewport);
             for (var i = 0; i < 6; i++) {
-                holder.DeviceContext.ClearRenderTargetView(_targetView[i], new Color4(0));
+                holder.DeviceContext.ClearRenderTargetView(_targetView[i], BackgroundColor);
                 holder.DeviceContext.ClearDepthStencilView(_depthTargetView,
                                                            DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil,
                                                            1.0f, 0);

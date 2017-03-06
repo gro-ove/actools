@@ -20,7 +20,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!base.Prepare(contextHolder, mode)) return false;
 
-            Effect.FxNormalMap.SetResource(_txNormal);
+            if (!Effect.FxNormalMap.SetResource(_txNormal)) {
+                Effect.FxNormalMap.SetResource(contextHolder.GetFlatNmTexture());
+            }
+
             return true;
         }
 
@@ -28,7 +31,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechNm;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Nm;
         }
     }

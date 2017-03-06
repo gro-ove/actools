@@ -5,12 +5,6 @@
     Texture2D gNormalMap;
 	Texture2D gFirstStepMap;
 
-    SamplerState samPoint {
-        Filter = MIN_MAG_MIP_POINT;
-        AddressU = CLAMP;
-        AddressV = CLAMP;
-    };
-
 	SamplerState samLinear {
 		Filter = MIN_MAG_MIP_LINEAR;
 		AddressU = CLAMP;
@@ -26,14 +20,16 @@
         matrix gWorldViewProj;
         float3 gEyePosW;
 
+		// bool gTemporary;
+    }
+
+    /*cbuffer cbSettings {
 		float gStartFrom;
-		float gFixMultipler;
+		float gFixMultiplier;
 		float gOffset;
 		float gGlowFix;
 		float gDistanceThreshold;
-
-		// bool gTemporary;
-    }
+    }*/
 
 // fn structs
     struct VS_IN {
@@ -74,6 +70,13 @@
 		return gNormalMap.Sample(s, coords).xyz;
 	}
 
+// hard-coded consts
+	#define gStartFrom 0.02
+	#define gFixMultiplier 0.7
+	#define gOffset 0.048
+	#define gGlowFix 0.15
+	#define gDistanceThreshold 0.092
+
 // new
     #define ITERATIONS 30
 
@@ -101,7 +104,7 @@
 			float newL = length(position - newPosition);
 			newL = L + min(newL - L, gOffset + L * gGlowFix);
 
-			L = L * (1 - gFixMultipler) + newL * gFixMultipler;
+			L = L * (1 - gFixMultiplier) + newL * gFixMultiplier;
 		}
 
 		calculatedPosition = position + reflectDir * L;
@@ -120,7 +123,7 @@
 	}
 
     float4 ps_Sslr(PS_IN pin) : SV_Target {
-		return SslrFn(pin.Tex, samPoint);
+		return SslrFn(pin.Tex, samLinear);
     }
 
     technique11 Sslr {
@@ -130,55 +133,60 @@
             SetPixelShader( CompileShader( ps_5_0, ps_Sslr() ) );
         }
     }
-
-    float4 ps_Sslr_LinearFiltering(PS_IN pin) : SV_Target {
-		return SslrFn(pin.Tex, samLinear);
-    }
-
-    technique11 Sslr_LinearFiltering {
-        pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_Sslr_LinearFiltering() ) );
-        }
-    }
 	
 	cbuffer POISSON_DISKS {
-		float2 poissonDisk[16] = {
-			float2(-0.94201624, -0.39906216),
-			float2(0.94558609, -0.76890725),
-			float2(-0.094184101, -0.92938870),
-			float2(0.34495938, 0.29387760),
-			float2(-0.91588581, 0.45771432),
-			float2(-0.81544232, -0.87912464),
-			float2(-0.38277543, 0.27676845),
-			float2(0.97484398, 0.75648379),
-			float2(0.44323325, -0.97511554),
-			float2(0.53742981, -0.47373420),
-			float2(-0.26496911, -0.41893023),
-			float2(0.79197514, 0.19090188),
-			float2(-0.24188840, 0.99706507),
-			float2(-0.81409955, 0.91437590),
-			float2(0.19984126, 0.78641367),
-			float2(0.14383161, -0.14100790)
+		float2 poissonDisk[32] = {
+			float2(0.7107409f, 0.5917311f),
+			float2(0.3874443f, 0.7644074f),
+			float2(0.4094146f, 0.151852f),
+			float2(0.3779792f, 0.4699225f),
+			float2(0.9367768f, 0.2930911f),
+			float2(0.1184676f, 0.5660473f),
+			float2(0.5350589f, -0.1797861f),
+			float2(0.05063209f, 0.2463228f),
+			float2(0.6854041f, 0.1558142f),
+			float2(0.8824921f, -0.3403803f),
+			float2(0.2487828f, -0.1240097f),
+			float2(0.1110238f, 0.9691482f),
+			float2(0.6206494f, -0.6748185f),
+			float2(0.3984736f, -0.4907326f),
+			float2(0.9640564f, -0.02796953f),
+			float2(-0.394538f, 0.2868877f),
+			float2(-0.1605287f, -0.001273256f),
+			float2(-0.1351251f, 0.4460111f),
+			float2(-0.1649308f, 0.9423735f),
+			float2(-0.34411f, 0.7086557f),
+			float2(0.07306198f, -0.372647f),
+			float2(-0.6624553f, 0.4340924f),
+			float2(0.01711876f, -0.6439707f),
+			float2(0.3432294f, -0.7902341f),
+			float2(-0.431942f, -0.01264048f),
+			float2(0.0554834f, -0.9162955f),
+			float2(-0.7119419f, 0.1407981f),
+			float2(-0.2572051f, -0.709406f),
+			float2(-0.3534312f, -0.442526f),
+			float2(-0.7836586f, -0.1292122f),
+			float2(-0.5489578f, -0.7478135f),
+			float2(-0.6645309f, -0.4536549f)
 		};
 	};
 
 	float4 GetReflection(float2 baseUv, float2 uv, float blur) {
 		float4 reflection = (float4)0;
 
-		for (float i = 0; i < 16; i++) {
+		for (float i = 0; i < 32; i++) {
 			float2 uvOffset = poissonDisk[i] * blur;
 			reflection += float4(gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb, gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a);
 		}
 
-		return reflection / 16;
+		float4 result = reflection / 32;
+		result.a = pow(max(result.a, 0), 1.5);
+
+		return result;
 	}
 
 	float4 FinalStepFn(float2 coords, SamplerState s) {
 		float4 firstStep = gFirstStepMap.SampleLevel(s, coords, 0);
-		// return firstStep;
-
 		float2 reflectedUv = coords + firstStep.xy;
 
 		float3 diffuseColor = gDiffuseMap.SampleLevel(s, coords, 0).rgb;
@@ -187,13 +195,12 @@
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
 		float blur = saturate(firstStep.b / specularExp / 5.0 - 0.01);
 
-		// return float4(diffuseColor - baseReflection.rgb * baseReflection.a, 1.0);
-
 		float4 reflection;
+		[branch]
 		if (blur < 0.001) {
 			reflection = float4(gDiffuseMap.SampleLevel(s, reflectedUv, 0).rgb, gFirstStepMap.SampleLevel(s, coords, 0).a);
 		} else {
-			reflection = GetReflection(coords, reflectedUv, blur);
+			reflection = GetReflection(coords, reflectedUv, blur * 0.5);
 		}
 
 		float a = reflection.a * baseReflection.a;
@@ -201,7 +208,7 @@
 	}
 
 	float4 ps_FinalStep(PS_IN pin) : SV_Target {
-		return FinalStepFn(pin.Tex, samPoint);
+		return FinalStepFn(pin.Tex, samLinear);
 	}
 
     technique11 FinalStep {
@@ -209,17 +216,5 @@
             SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
             SetGeometryShader( NULL );
             SetPixelShader( CompileShader( ps_5_0, ps_FinalStep() ) );
-        }
-    }
-
-	float4 ps_FinalStep_LinearFiltering(PS_IN pin) : SV_Target {
-		return FinalStepFn(pin.Tex, samLinear);
-	}
-
-    technique11 FinalStep_LinearFiltering {
-        pass P0 {
-            SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
-            SetGeometryShader( NULL );
-            SetPixelShader( CompileShader( ps_5_0, ps_FinalStep_LinearFiltering() ) );
         }
     }

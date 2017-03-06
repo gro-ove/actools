@@ -13,7 +13,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechGl;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Gl;
         }
     }
@@ -30,7 +30,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return Effect.TechSkinnedDepthOnly;
         }
 
-        protected override EffectTechnique GetSslrTechnique() {
+        protected override EffectTechnique GetGBufferTechnique() {
             return Effect.TechGPass_SkinnedGl;
         }
 

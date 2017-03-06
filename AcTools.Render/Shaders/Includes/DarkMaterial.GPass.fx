@@ -10,17 +10,19 @@ struct PS_OUT {
 
 cbuffer cbGPass {
 	bool gGPassTransparent;
+	float gGPassAlphaThreshold;
 };
+
+void GPassAlphaTest(float alpha) {
+	clip(alpha - gGPassAlphaThreshold);
+}
 
 float4 GetReflection(float3 posW, float3 normal, float alpha) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normal);
 	float3 refl = GetReflection(reflected, gMaterial.SpecularExp);
 
-	float rid = 1 - saturate(dot(toEyeW, normal) - gReflectiveMaterial.FresnelC);
-	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
-
+	float val = GetReflectionStrength(normal, toEyeW);
 	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
 }
 
@@ -29,10 +31,7 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 	float3 reflected = reflect(-toEyeW, normal);
 	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
 
-	float rid = 1 - saturate(dot(toEyeW, normal) - gReflectiveMaterial.FresnelC);
-	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel) * reflectionMultipler;
-
+	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultipler;
 	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
 }
 
@@ -45,7 +44,7 @@ PS_OUT PackResult(float4 reflection, float3 normal, float depth, float specularE
 }
 
 PS_OUT GetResult(float depth, float3 posW, float3 normal, float alpha) {
-	AlphaTest(alpha);
+	GPassAlphaTest(alpha);
 	return PackResult(
 			GetReflection(posW, normal, alpha),
 			normal, depth, gMaterial.SpecularExp);
@@ -53,7 +52,7 @@ PS_OUT GetResult(float depth, float3 posW, float3 normal, float alpha) {
 
 PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultipler, float txMapsSpecularExpMultipler,
 	float txMapsReflectionMultipler) {
-	AlphaTest(alpha);
+	GPassAlphaTest(alpha);
 	return PackResult(
 			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultipler, txMapsReflectionMultipler),
 			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultipler);
@@ -66,7 +65,7 @@ float GetDepth(float4 posH) {
 //// Standart
 
 PS_OUT ps_GPass_Standard(PS_IN pin) {
-	AlphaTest(gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
+	GPassAlphaTest(gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
 	return PackResult((float4)0.0, normalize(pin.NormalW), GetDepth(pin.PosH), 0.0);
 }
 
@@ -168,8 +167,7 @@ PS_OUT ps_GPass_Maps(PS_IN pin) {
 		}
 
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	}
-	else {
+	} else {
 		normal = normalize(pin.NormalW);
 		alpha = 1.0;
 	}
@@ -237,5 +235,55 @@ technique10 GPass_FlatMirror {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_GPass_FlatMirror()));
+	}
+}
+
+//// Debug
+
+float4 GetReflection_Debug(float3 posW, float3 normal, float alpha) {
+	float3 toEyeW = normalize(gEyePosW - posW);
+	float3 reflected = reflect(-toEyeW, normal);
+	float3 refl = GetReflection(reflected, 12.0);
+
+	float rid = 1 - saturate(dot(toEyeW, normal) - 0.02);
+	float rim = pow(rid, 4.0);
+	float val = min(rim, 0.05);
+
+	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
+}
+
+PS_OUT ps_GPass_Debug(PS_IN pin){
+	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+
+	float3 normal;
+	float alpha;
+	if (HAS_FLAG(HAS_NORMAL_MAP)) {
+		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
+		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
+	} else {
+		normal = normalize(pin.NormalW);
+		alpha = diffuseMapValue.a;
+	}
+
+	GPassAlphaTest(alpha);
+	return PackResult(
+		GetReflection_Debug(pin.PosW, normal, alpha),
+		normal, GetDepth(pin.PosH), 12.0);
+}
+
+technique10 GPass_Debug {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_GPass_Debug()));
+	}
+}
+
+technique10 GPass_SkinnedDebug {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_GPass_Debug()));
 	}
 }

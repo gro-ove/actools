@@ -113,6 +113,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             Emissive = color;
         }
 
+        int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
+
         private bool _isTransparent;
         private ISkinnedMaterial _material;
 

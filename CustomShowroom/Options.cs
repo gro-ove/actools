@@ -28,7 +28,7 @@ namespace CustomShowroom {
         [Option('x', "fxaa", DefaultValue = true, HelpText = "Use FXAA.")]
         public bool UseFxaa { get; set; }
 
-        [Option('s', "showroom", DefaultValue = "showroom", HelpText = "Specific showroom ID (only for the Custom Showroom mode).")]
+        [Option('s', "showroom", DefaultValue = null, HelpText = "Specific showroom ID (only for the Custom Showroom mode).")]
         public string ShowroomId { get; set; }
 
         [Option('t', "extract-texture", DefaultValue = null, HelpText = "Texture for which UV will be extracted.")]

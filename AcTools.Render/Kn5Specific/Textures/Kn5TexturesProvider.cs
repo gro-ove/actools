@@ -19,7 +19,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
                 if (AsyncLoading) {
-                    result.LoadAsync(contextHolder.Device, data).Forget();
+                    result.LoadAsync(contextHolder.Device, data).ContinueWith(t => {
+                        contextHolder.RaiseTexturesUpdated();
+                    });
                 } else {
                     result.Load(contextHolder.Device, data);
                 }

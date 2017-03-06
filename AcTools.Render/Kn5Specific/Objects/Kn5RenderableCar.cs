@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.KnhFile;
@@ -397,7 +399,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         internal string DebugString => _up?.DebugString;
 
 #if DEBUG
-        private bool _isDriverVisible = true;
+        private bool _isDriverVisible = false;
 #else
         private bool _isDriverVisible;
 #endif
@@ -1025,7 +1027,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #region Adjust position
         private void AdjustPosition() {
             var node = RootObject;
+
+            var sw = Stopwatch.StartNew();
             node.UpdateBoundingBox();
+            AcToolsLogging.Write($"Initial BB update: {sw.Elapsed.TotalMilliseconds:F1} ms");
+
+            node.LocalMatrix = Matrix.Translation(1f, 0f, 0f);
+            sw = Stopwatch.StartNew();
+            node.UpdateBoundingBox();
+            AcToolsLogging.Write($"Second BB update: {sw.Elapsed.TotalMilliseconds:F1} ms");
+
+            node.LocalMatrix = Matrix.Identity;
 
             var wheelLf = GetDummyByName("WHEEL_LF");
             var wheelRf = GetDummyByName("WHEEL_RF");
@@ -1714,14 +1726,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (axis == null) return;
 
             var namePostfix = left ? "LF" : "RF";
-            var names = new[] { $@"WHEEL_{namePostfix}", $@"SUSP_{namePostfix}", $@"HUB_{namePostfix}" /*, $@"DISC_{namePostfix}"*/ };
+
+            var animatedDisc = $@"DISC_{namePostfix}_ANIM";
+            var names = new[] {
+                $@"WHEEL_{namePostfix}", $@"SUSP_{namePostfix}", $@"HUB_{namePostfix}",
+                GetDummyByName(animatedDisc) != null ? null : $@"DISC_{namePostfix}"
+            };
 
             if (_currentLodObject.OriginalMatrices == null) {
                 _currentLodObject.OriginalMatrices = new Dictionary<string, Matrix>(3);
                 UpdateModelMatrixInverted();
             }
 
-            foreach (var dummy in names.Select(GetDummyByName).NonNull()) {
+            foreach (var dummy in names.NonNull().Select(GetDummyByName).NonNull()) {
                 var key = dummy.Name ?? "-";
                 if (!_currentLodObject.OriginalMatrices.ContainsKey(key)) {
                     _currentLodObject.OriginalMatrices[key] = dummy.RelativeToModel;
@@ -1741,7 +1758,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var wheelMatrix = GetSteerWheelMatrix(wheel, axis, -angle);
             if (!wheelMatrix.HasValue) return;
 
-            foreach (var node in Dummies.Where(x => names.Contains(x.Name))) {
+            foreach (var node in Dummies.Where(x => names.NonNull().Contains(x.Name))) {
                 node.LocalMatrix = (GetSteerWheelMatrix(node, axis, -angle) ?? wheelMatrix.Value) *
                         Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
             }

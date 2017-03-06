@@ -433,7 +433,7 @@ namespace AcTools.Render.Data {
         public abstract class EightPointsSuspensionBase : SuspensionBase {
             public Vector3[] Points { get; } = new Vector3[8];
 
-            protected override float KpiOverride => MathF.Atan((this.Points[4].X - this.Points[5].X) / (this.Points[4].Y - this.Points[5].Y)) * 57.2957795f;
+            protected override float KpiOverride => ((this.Points[4].X - this.Points[5].X) / (this.Points[4].Y - this.Points[5].Y)).Atan() * 57.2957795f;
 
             public EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) {}
         }

@@ -3,6 +3,8 @@
 	cbuffer cbPerFrame : register(b0) {
 		float2 gPixel;
 		float2 gCropImage;
+
+		float4 gParams;
 	}
 
 // downsampling
@@ -102,15 +104,51 @@
 			SetPixelShader( CompileShader( ps_4_0, ps_Copy() ) );
 		}
 	}
+
+// color grading
+	Texture3D gColorGradingMap;
+
+	SamplerState samColorGrading {
+		Filter = MIN_MAG_MIP_LINEAR;
+		AddressU = CLAMP;
+		AddressV = CLAMP;
+		AddressW = CLAMP;
+	};
+
+	float4 ps_ColorGrading(PS_IN pin) : SV_Target{
+		float3 value = tex(pin.Tex).rgb;
+		return float4(gColorGradingMap.SampleLevel(samColorGrading, saturate(value), 0).rgb, 1);
+	}
+
+	technique10 ColorGrading {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_ColorGrading()));
+		}
+	}
 	
 // combine
+	#define gamma gParams[0]
+	#define exposure gParams[1]
+	#define whitePoint gParams[2]
+
+	float4 ps_Combine_ToneReinhard(PS_IN pin) : SV_Target {
+		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		return float4(pow(max(ToneReinhard(value, 0.5, exposure, whitePoint), 0.0), 1.0 / gamma), 1.0);
+	}
+
+	technique10 Combine_ToneReinhard {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( CompileShader( ps_4_0, ps_Combine_ToneReinhard() ) );
+		}
+	}
+
 	float4 ps_Combine (PS_IN pin) : SV_Target {
 		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
 		return float4(value, 1.0);
-
-		/*float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
-		return float4(min(saturate(value), 0.5), 1.0);*/
-		//return float4(ToneReinhard(value, 1.5, 0.56, 1.2), 1);
 	}
 
 	technique10 Combine {

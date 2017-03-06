@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Utils {
@@ -316,15 +317,14 @@ namespace AcTools.Render.Base.Utils {
 
                 // Derive texture coordinates from spherical coordinates.
                 var theta = MathF.AngleFromXY(tempMesh.Vertices[i].Position.X, tempMesh.Vertices[i].Position.Z);
-                var phi = MathF.Acos(tempMesh.Vertices[i].Position.Y / radius);
+                var phi = MathUtils.Acos(tempMesh.Vertices[i].Position.Y / radius);
                 var texC = new Vector2(theta / (2 * MathF.PI), phi / MathF.PI);
 
                 // Partial derivative of P with respect to theta
                 var tangent = new Vector3(
-                        -radius * MathF.Sin(phi) * MathF.Sin(theta),
+                        -radius * MathUtils.Sin(phi) * MathUtils.Sin(theta),
                         0,
-                        radius * MathF.Sin(phi) * MathF.Cos(theta)
-                        );
+                        radius * MathUtils.Sin(phi) * MathUtils.Cos(theta));
                 tangent.Normalize();
 
                 tempMesh.Vertices[i] = new Vertex(p, n, tangent, texC);

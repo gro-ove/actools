@@ -4,12 +4,15 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Animations {
     public class KsAnimAnimator {
         private class Wrapper {
             private readonly Kn5RenderableList _object;
+
+            [CanBeNull]
             private readonly Matrix[] _frames;
 
             public Wrapper(Kn5RenderableList parent, KsAnimEntryBase entry) {
@@ -28,26 +31,44 @@ namespace AcTools.Render.Kn5Specific.Animations {
 
             private static Matrix[] ConvertFrames(KsAnimKeyframe[] ksAnimKeyframes) {
                 var result = new Matrix[ksAnimKeyframes.Length];
+                var first = default(Matrix);
+                var same = true;
 
                 for (var i = 0; i < result.Length; i++) {
-                    result[i] = ConvertFrame(ksAnimKeyframes[i]);
+                    var matrix = ConvertFrame(ksAnimKeyframes[i]);
+                    result[i] = matrix;
+
+                    if (i == 0) {
+                        first = matrix;
+                    } else if (matrix != first) {
+                        same = false;
+                    }
                 }
 
-                return result;
+                return same ? null : result;
             }
 
             private static Matrix[] ConvertFrames(float[][] matrices) {
                 var result = new Matrix[matrices.Length];
+                var first = default(Matrix);
+                var same = true;
 
                 for (var i = 0; i < result.Length; i++) {
-                    result[i] = matrices[i].ToMatrix();
+                    var matrix = matrices[i].ToMatrix();
+                    result[i] = matrix;
+
+                    if (i == 0) {
+                        first = matrix;
+                    }else if (matrix != first) {
+                        same = false;
+                    }
                 }
 
-                return result;
+                return same ? null : result;
             }
 
             public void Set(float position) {
-                if (_object == null) return;
+                if (_object == null || _frames == null) return;
 
                 var framesPosition = position * _frames.Length;
                 var frameA = ((int)framesPosition).Clamp(0, _frames.Length - 1);

@@ -26,6 +26,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
      * thing doesn’t need to be disposed — those references are managed outside,
      * and this thing is just a relatively convinient way to pass them down 
      * rendering tree */
+
     public class Kn5LocalDeviceContextHolder : IDeviceContextHolder {
         private readonly IDeviceContextHolder _mainHolder;
         private readonly SharedMaterials _sharedMaterials;
@@ -39,6 +40,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _texturesProvider = texturesProvider;
             _model = model;
         }
+
         public Device Device => _mainHolder.Device;
 
         public DeviceContext DeviceContext => _mainHolder.DeviceContext;
@@ -82,6 +84,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void RaiseSceneUpdated() {
             _mainHolder.RaiseSceneUpdated();
+        }
+
+        public void RaiseTexturesUpdated() {
+            _mainHolder.RaiseTexturesUpdated();
+        }
+
+        public ShaderResourceView GetRandomTexture(int width, int height) {
+            return _mainHolder.GetRandomTexture(width, height);
+        }
+
+        public ShaderResourceView GetFlatNmTexture() {
+            return _mainHolder.GetFlatNmTexture();
         }
     }
 

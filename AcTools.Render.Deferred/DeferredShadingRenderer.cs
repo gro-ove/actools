@@ -395,13 +395,13 @@ namespace AcTools.Render.Deferred {
             }
         }
 
-        protected void FinalStep(TargetResourceTexture source, TargetResourceDepthTexture depth, float sizeMultipler = 0.25f) {
+        protected void FinalStep(TargetResourceTexture source, TargetResourceDepthTexture depth, float sizeMultiplier = 0.25f) {
             DeviceContext.OutputMerger.SetTargets(_outputBuffer.TargetView);
             DeviceContext.ClearRenderTargetView(_outputBuffer.TargetView, ColorTransparent);
             DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _ppBasic.LayoutPT);
 
             _ppBasic.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
-            _ppBasic.FxSizeMultipler.Set(sizeMultipler);
+            _ppBasic.FxSizeMultipler.Set(sizeMultiplier);
             _ppBasic.FxInputMap.SetResource(source.View);
             _ppBasic.FxDepthMap.SetResource(depth.View);
             _ppBasic.TechDepth.DrawAllPasses(DeviceContext, 6);
@@ -447,15 +447,15 @@ namespace AcTools.Render.Deferred {
 
         public bool KeepFxaaWhileShooting;
         
-        public override void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
-            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downscale, 1d)) {
-                base.Shot(multipler, downscale, outputStream, lossless);
+        public override void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
+            if (KeepFxaaWhileShooting || Equals(multiplier, 1d) && Equals(downscale, 1d)) {
+                base.Shot(multiplier, downscale, outputStream, lossless);
             } else {
                 var useFxaa = UseFxaa;
                 UseFxaa = false;
 
                 try {
-                    base.Shot(multipler, downscale, outputStream, lossless);
+                    base.Shot(multiplier, downscale, outputStream, lossless);
                 } finally {
                     UseFxaa = useFxaa;
                 }

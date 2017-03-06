@@ -52,7 +52,8 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void UpdateViewMatrix() {
-            SetView(Matrix.LookAtRH(Position, Position + Look, Vector3.UnitY));
+            SetView(RhMode ? Matrix.LookAtRH(Position, Position + Look, Up) :
+                    Matrix.LookAtLH(Position, Position + Look, Up));
 
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();

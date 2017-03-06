@@ -41,7 +41,7 @@ namespace AcTools.Render.Base.Shadows {
             }
 
             public override bool Visible(BoundingBox box) {
-                return base.Visible(box) && SmallerCamera?._innerCamera.Intersect(box) != FrustrumIntersectionType.Inside;
+                return Frustum.Intersect(box) > 0 && SmallerCamera?._innerCamera.Intersect(box) != FrustrumIntersectionType.Inside;
             }
         }
 
@@ -76,7 +76,7 @@ namespace AcTools.Render.Base.Shadows {
             }
 
             public void LookAt(Vector3 direction, Vector3 lookAt) {
-                Camera.LookAt(lookAt - ClipDistance * Vector3.Normalize(direction), lookAt, new Vector3(0f, 1f, 0f));
+                Camera.LookAt(lookAt - ClipDistance * Vector3.Normalize(direction), lookAt, direction.X == 0f && direction.Z == 0f ? Vector3.UnitX : Vector3.UnitY);
                 Camera.UpdateViewMatrix();
                 ShadowTransform = Camera.ViewProj * new Matrix {
                     M11 = 0.5f,
@@ -99,15 +99,15 @@ namespace AcTools.Render.Base.Shadows {
 
         public Split[] Splits { get; private set; }
 
-        private readonly int _mapSize;
-        private readonly Viewport _viewport;
+        public int MapSize { get; private set; }
+        private Viewport _viewport;
 
         private RasterizerState _rasterizerState;
         private DepthStencilState _depthStencilState;
 
         public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 50f) {
-            _mapSize = mapSize;
-            _viewport = new Viewport(0, 0, _mapSize, _mapSize, 0, 1.0f);
+            MapSize = mapSize;
+            _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
 
             SetSplits(splits, clipDistance);
         }
@@ -130,7 +130,16 @@ namespace AcTools.Render.Base.Shadows {
         public void SetSplits(DeviceContextHolder holder, IEnumerable<float> splits, float clipDistance = 50f) {
             SetSplits(splits, clipDistance);
             foreach (var split in Splits) {
-                split.Buffer.Resize(holder, _mapSize, _mapSize, null);
+                split.Buffer.Resize(holder, MapSize, MapSize, null);
+            }
+        }
+
+        public void SetMapSize(DeviceContextHolder holder, int value) {
+            if (Equals(value, MapSize)) return;
+            MapSize = value;
+            _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
+            foreach (var split in Splits) {
+                split.Buffer.Resize(holder, MapSize, MapSize, null);
             }
         }
 
@@ -138,7 +147,7 @@ namespace AcTools.Render.Base.Shadows {
 
         public void Initialize(DeviceContextHolder holder) {
             foreach (var split in Splits) {
-                split.Buffer.Resize(holder, _mapSize, _mapSize, null);
+                split.Buffer.Resize(holder, MapSize, MapSize, null);
             }
 
             _rasterizerState = RasterizerState.FromDescription(holder.Device, new RasterizerStateDescription {

@@ -1,4 +1,5 @@
 ﻿using System;
+using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Utils {
@@ -46,14 +47,6 @@ namespace AcTools.Render.Base.Utils {
             return Matrix.Transpose(Matrix.Invert(a));
         }
 
-        public static float Tan(this float a) {
-            return (float)Math.Tan(a);
-        }
-
-        public static float Atan(this float f) {
-            return (float)Math.Atan(f);
-        }
-
 
         // heightmap functions
         public static float Noise(int x) {
@@ -95,7 +88,7 @@ namespace AcTools.Render.Base.Utils {
             return (float)Math.Exp(f);
         }
 
-        public static float Pow(this float x, float y) {
+        public static float Pow(float x, float y) {
             return (float)Math.Pow(x, y);
         }
 
@@ -108,18 +101,14 @@ namespace AcTools.Render.Base.Utils {
         public static float AngleFromXY(float x, float y) {
             float theta;
             if (x >= 0.0f) {
-                theta = Atan(y/x);
+                theta = (y / x).Atan();
                 if (theta < 0.0f) {
-                    theta += 2*PI;
+                    theta += 2 * PI;
                 }
             } else {
-                theta = Atan(y/x) + PI;
+                theta = (y / x).Atan() + PI;
             }
             return theta;
-        }
-
-        public static float Acos(this float f) {
-            return (float)Math.Acos(f);
         }
     }
 }

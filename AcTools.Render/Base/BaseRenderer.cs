@@ -52,54 +52,54 @@ namespace AcTools.Render.Base {
 
         public bool SpriteInitialized => _sprite != null;
 
-        private double _resolutionMultipler = 1d;
-        private double _previousResolutionMultipler = 2d;
+        private double _resolutionMultiplier = 1d;
+        private double _previousResolutionMultiplier = 2d;
 
         /// <summary>
         /// Be careful with this option! Don’t forget to call PrepareForFinalPass() if you’re
         /// using it and remember — Z-buffer will be in original (bigger) size, but output buffer
         /// will be smaller.
         /// </summary>
-        public double ResolutionMultipler {
-            get { return _resolutionMultipler; }
+        public double ResolutionMultiplier {
+            get { return _resolutionMultiplier; }
             set {
                 if (value < 0d) {
-                    _previousResolutionMultipler = -value;
+                    _previousResolutionMultiplier = -value;
                     return;
                 }
 
-                if (Equals(value, _resolutionMultipler)) return;
-                _resolutionMultipler = value;
+                if (Equals(value, _resolutionMultiplier)) return;
+                _resolutionMultiplier = value;
 
                 if (!Equals(value, 1d)) {
-                    _previousResolutionMultipler = value;
+                    _previousResolutionMultiplier = value;
                 }
 
-                OnResolutionMultiplerChanged();
+                OnResolutionMultiplierChanged();
             }
         }
 
-        protected virtual void OnResolutionMultiplerChanged() {
+        protected virtual void OnResolutionMultiplierChanged() {
             UpdateSampleDescription();
 
             _resized = true;
             IsDirty = true;
-            OnPropertyChanged(nameof(ResolutionMultipler));
+            OnPropertyChanged(nameof(ResolutionMultiplier));
             OnPropertyChanged(nameof(Width));
             OnPropertyChanged(nameof(Height));
-            OnPropertyChanged(nameof(OutputDownscaleMultipler));
+            OnPropertyChanged(nameof(OutputDownscaleMultiplier));
             OnPropertyChanged(nameof(UseSsaa));
         }
 
         public bool UseSsaa {
-            get { return !Equals(1d, _resolutionMultipler); }
-            set { ResolutionMultipler = value ? _previousResolutionMultipler : 1d; }
+            get { return !Equals(1d, _resolutionMultiplier); }
+            set { ResolutionMultiplier = value ? _previousResolutionMultiplier : 1d; }
         }
 
         public int ActualWidth => _width;
 
         public int Width {
-            get { return (int)(_width * ResolutionMultipler); }
+            get { return (int)(_width * ResolutionMultiplier); }
             set {
                 if (Equals(_width, value)) return;
                 _width = value;
@@ -113,7 +113,7 @@ namespace AcTools.Render.Base {
         public int ActualHeight => _height;
 
         public int Height {
-            get { return (int)(_height * ResolutionMultipler); }
+            get { return (int)(_height * ResolutionMultiplier); }
             set {
                 if (Equals(_height, value)) return;
                 _height = value;
@@ -124,7 +124,7 @@ namespace AcTools.Render.Base {
             }
         }
 
-        public double OutputDownscaleMultipler => 1 / ResolutionMultipler;
+        public double OutputDownscaleMultiplier => 1 / ResolutionMultiplier;
 
         public float AspectRatio => (float)ActualWidth / ActualHeight;
 
@@ -497,13 +497,11 @@ namespace AcTools.Render.Base {
 
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture;
 
-        public virtual void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
-            var width = ActualWidth;
-            var height = ActualHeight;
+        public virtual void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
+            var resolutionMultiplier = ResolutionMultiplier;
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
-            Width = (width * multipler).RoundToInt();
-            Height = (height * multipler).RoundToInt();
+            ResolutionMultiplier = multiplier;
 
             if (Equals(downscale, 1d) && !UseMsaa) {
                 // Simplest case: existing buffer will do just great, so let’s use it
@@ -585,13 +583,12 @@ namespace AcTools.Render.Base {
                 }
             }
 
-            Width = width;
-            Height = height;
+            ResolutionMultiplier = resolutionMultiplier;
         }
 
-        public Image Shot(double multipler, double downscale, bool lossless) {
+        public Image Shot(double multiplier, double downscale, bool lossless) {
             using (var stream = new MemoryStream()) {
-                Shot(multipler, downscale, stream, lossless);
+                Shot(multiplier, downscale, stream, lossless);
                 stream.Position = 0;
                 return Image.FromStream(stream);
             }

@@ -6,9 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using AcTools.Processes;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -16,7 +13,7 @@ using CommandLine;
 using StringBasedFilter;
 
 namespace CustomPreviewUpdater {
-    class Program {
+    public static class Program {
         private static PackedHelper _helper;
 
 #if PLATFORM_X86
@@ -35,6 +32,7 @@ namespace CustomPreviewUpdater {
                 return MainInner(a);
             } catch (Exception e) {
                 Console.Error.WriteLine("Fatal error: " + e.Message + ".");
+                Console.Error.WriteLine(e.StackTrace);
                 Console.ReadLine();
                 return 10;
             }
@@ -49,6 +47,7 @@ namespace CustomPreviewUpdater {
                 try {
                     actualList.AddRange(
                             File.ReadAllLines(preset)
+                                .Where(x => !x.StartsWith("#"))
                                 .Select(x => x.Split(new[] { " #" }, StringSplitOptions.None)[0].Trim())
                                 .Where(x => x.Length > 0));
                 } catch (Exception e) {
@@ -60,6 +59,20 @@ namespace CustomPreviewUpdater {
 
             var options = new Options();
             if (!Parser.Default.ParseArguments(actualList.ToArray(), options)) return 1;
+
+            if (options.ColorGradingFilename != null && presets.Count > 0 && !File.Exists(options.ColorGradingFilename)) {
+                var locations = presets.Select(Path.GetDirectoryName).ToList();
+                var current = Environment.CurrentDirectory;
+                foreach (var location in locations) {
+                    Environment.CurrentDirectory = location;
+                    var path = Path.GetFullPath(options.ColorGradingFilename);
+                    if (File.Exists(path)) {
+                        options.ColorGradingFilename = path;
+                    }
+                }
+
+                Environment.CurrentDirectory = current;
+            }
 
             var acRoot = options.AcRoot == null ? AcRootFinder.TryToFind() : Path.GetFullPath(options.AcRoot);
             if (acRoot == null) {
@@ -107,15 +120,18 @@ namespace CustomPreviewUpdater {
 
             using (var thing = new DarkPreviewsUpdater(acRoot, new DarkPreviewsOptions {
                 PreviewName = options.FileName,
+                Showroom = options.Showroom,
                 AlignCar = options.AlignCar,
-                SsaaMultipler = options.SsaaMultipler,
+                AlignCamera = options.AlignCamera,
+                AlignCameraOffset = options.AlignCameraOffset.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
+                SsaaMultiplier = options.SsaaMultiplier,
                 UseFxaa = options.UseFxaa,
                 UseMsaa = options.UseMsaa,
                 HardwareDownscale = !options.SoftwareDownscale,
                 MsaaSampleCount = options.MsaaSampleCount,
                 PreviewWidth = options.PreviewWidth,
                 PreviewHeight = options.PreviewHeight,
-                BloomRadiusMultipler = options.BloomRadiusMultipler,
+                BloomRadiusMultiplier = options.BloomRadiusMultiplier,
                 FlatMirror = options.FlatMirror,
                 WireframeMode = options.WireframeMode,
                 MeshDebugMode = options.MeshDebugMode,
@@ -135,6 +151,17 @@ namespace CustomPreviewUpdater {
                 AmbientBrightness = options.AmbientBrightness,
                 LightBrightness = options.LightBrightness,
                 DelayedConvertation = !options.SingleThread,
+                UseSslr = options.UseSslr,
+                UseSsao = options.UseSsao,
+                UsePcss = options.UsePcss,
+                EnableShadows = options.EnableShadows,
+                ShadowMapSize = options.ShadowMapSize,
+                ReflectionMultiplier = options.ReflectionMultiplier,
+                ReflectionCubemapAtCamera = options.ReflectionCubemapAtCamera,
+                NoShadowsWithReflections = options.NoShadowsWithReflections,
+                FlatMirrorBlurred = options.FlatMirrorBlurred,
+                FlatMirrorReflectiveness = options.FlatMirrorReflectiveness,
+                LightDirection = options.LightDirection.Split(',').Select(x => FlexibleParser.TryParseDouble(x) ?? 0d).ToArray(),
             })) {
                 foreach (var carId in Directory.GetDirectories(FileUtils.GetCarsDirectory(acRoot))
                                             .Select(Path.GetFileName).Where(x => filter.Test(x))) {

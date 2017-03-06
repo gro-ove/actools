@@ -2,7 +2,7 @@
 
 #define BLOCKER_SEARCH_NUM_SAMPLES 75
 #define PCF_NUM_SAMPLES 75
-#define SCENE_SCALE 0.05
+#define SCENE_SCALE 0.02
 #define LIGHT_SIZE 0.4
 
 cbuffer POISSON_DISKS {

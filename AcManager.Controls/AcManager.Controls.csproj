@@ -149,6 +149,7 @@
     <Compile Include="Converters\TimeSpanConverters.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
     <Compile Include="CustomShowroom\AttachedHelper.cs" />
+    <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\PaintShop.cs" />
     <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
@@ -328,6 +329,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomShowroom\CarTextureDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

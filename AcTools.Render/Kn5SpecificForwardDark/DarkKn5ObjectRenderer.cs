@@ -1,6 +1,11 @@
-﻿using System;
+﻿// #define SSLR_PARAMETRIZED
+
+using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
@@ -22,11 +27,41 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
-        public Color LightColor { get; set; } = Color.FromArgb(200, 180, 180);
+        private Color _lightColor = Color.FromArgb(200, 180, 180);
 
-        public Color AmbientDown { get; set; } = Color.FromArgb(150, 180, 180);
+        public Color LightColor {
+            get { return _lightColor; }
+            set {
+                if (value.Equals(_lightColor)) return;
+                _lightColor = value;
+                OnPropertyChanged();
+                SetReflectionCubemapDirty();
+            }
+        }
 
-        public Color AmbientUp { get; set; } = Color.FromArgb(180, 180, 150);
+        private Color _ambientDown = Color.FromArgb(150, 180, 180);
+
+        public Color AmbientDown {
+            get { return _ambientDown; }
+            set {
+                if (value.Equals(_ambientDown)) return;
+                _ambientDown = value;
+                OnPropertyChanged();
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        private Color _ambientUp = Color.FromArgb(180, 180, 150);
+
+        public Color AmbientUp {
+            get { return _ambientUp; }
+            set {
+                if (value.Equals(_ambientUp)) return;
+                _ambientUp = value;
+                OnPropertyChanged();
+                SetReflectionCubemapDirty();
+            }
+        }
 
         /*
         public Color LightColor { get; set; } = Color.FromArgb(201, 201, 167);
@@ -94,6 +129,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             base.ResizeInner();
             ResizeMirrorBuffers();
             ResizeSslrBuffers();
+            ResizeSsaoBuffers();
+            ResizeGBuffers();
         }
 
         private bool _opaqueGround = true;
@@ -125,6 +162,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (Equals(value, _lightBrightness)) return;
                 _lightBrightness = value;
                 OnPropertyChanged();
+                SetReflectionCubemapDirty();
             }
         }
 
@@ -136,11 +174,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 if (Equals(value, _ambientBrightness)) return;
                 _ambientBrightness = value;
                 OnPropertyChanged();
+                SetReflectionCubemapDirty();
             }
         }
 
-        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection, _sslrBufferNormals;
-        private TargetResourceTexture _sslrBufferMsaaDepth;
+        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection, _gBufferNormals;
+        private TargetResourceTexture _gBufferDepth;
 
         private bool _useSslr;
 
@@ -155,32 +194,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     _sslrBufferScene = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                     _sslrBufferResult = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                     _sslrBufferBaseReflection = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                    _sslrBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                    _sslrBufferMsaaDepth = TargetResourceTexture.Create(Format.R32_Float);
                     //_sslrDepthBuffer = TargetResourceDepthTexture.Create();
+                    if (InitiallyResized) {
+                        ResizeSslrBuffers();
+                    }
                 } else {
                     DisposeHelper.Dispose(ref _sslrBufferScene);
                     DisposeHelper.Dispose(ref _sslrBufferResult);
                     DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
-                    DisposeHelper.Dispose(ref _sslrBufferNormals);
-                    DisposeHelper.Dispose(ref _sslrBufferMsaaDepth);
                     //DisposeHelper.Dispose(ref _sslrDepthBuffer);
                 }
 
-                if (InitiallyResized) {
-                    ResizeSslrBuffers();
-                }
-            }
-        }
-
-        private bool _sslrLinearFiltering = true;
-
-        public bool SslrLinearFiltering {
-            get { return _sslrLinearFiltering; }
-            set {
-                if (Equals(value, _sslrLinearFiltering)) return;
-                _sslrLinearFiltering = value;
-                OnPropertyChanged();
+                UpdateGBuffers();
             }
         }
 
@@ -188,10 +213,71 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _sslrBufferScene?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
             _sslrBufferResult?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
             _sslrBufferBaseReflection?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            _sslrBufferNormals?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            _sslrBufferMsaaDepth?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            //_sslrDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
+
+        private TargetResourceTexture _ssaoBuffer;
+
+        private bool _useSsao;
+
+        public bool UseSsao {
+            get { return _useSsao; }
+            set {
+                if (Equals(value, _useSsao)) return;
+                _useSsao = value;
+                OnPropertyChanged();
+
+                if (value) {
+                    _ssaoBuffer = TargetResourceTexture.Create(Format.R8_UNorm);
+                    if (InitiallyResized) {
+                        ResizeSsaoBuffers();
+                    }
+                } else {
+                    _effect?.FxEnableAo.Set(false);
+                    DisposeHelper.Dispose(ref _ssaoBuffer);
+                }
+
+                UpdateGBuffers();
+            }
+        }
+
+        private bool _ssaoDebug;
+
+        public bool SsaoDebug {
+            get { return _ssaoDebug; }
+            set {
+                if (Equals(value, _ssaoDebug)) return;
+                _ssaoDebug = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void ResizeSsaoBuffers() {
+            _ssaoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
+        }
+
+        private void UpdateGBuffers() {
+            var value = UseSslr || UseSsao;
+            if (_gBufferNormals != null == value) return;
+            
+            if (value) {
+                _gBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                _gBufferDepth = TargetResourceTexture.Create(Format.R32_Float);
+            } else {
+                DisposeHelper.Dispose(ref _gBufferNormals);
+                DisposeHelper.Dispose(ref _gBufferDepth);
+            }
+
+            if (InitiallyResized) {
+                ResizeGBuffers();
+            }
+        }
+
+        private void ResizeGBuffers() {
+            _gBufferNormals?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _gBufferDepth?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+        }
+
+        private readonly bool _showroom;
 
         public DarkKn5ObjectRenderer(CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
             // UseMsaa = true;
@@ -199,35 +285,44 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             UseSprite = false;
             AllowSkinnedObjects = true;
 
+            if (showroomKn5 != null) {
+                _showroom = true;
+                CubemapReflection = true;
+            }
+
             //BackgroundColor = Color.FromArgb(10, 15, 25);
             //BackgroundColor = Color.FromArgb(220, 140, 100);
 
             BackgroundColor = Color.FromArgb(220, 220, 220);
+            BackgroundBrightness = showroomKn5 == null ? 1f : 2f;
             EnableShadows = EffectDarkMaterial.EnableShadows;
 
 #if DEBUG
             //FlatMirror = true;
             //FlatMirrorBlurred = true;
             //ReflectionPower = 1.0f;
-            EnablePcssShadows = true;
+            //EnablePcssShadows = true;
+            //UseSsao = true;
 #endif
         }
 
         protected override void OnBackgroundColorChanged() {
             base.OnBackgroundColorChanged();
-            UiColor = BackgroundColor.GetBrightness() > 0.5 ? Color.Black : Color.White;
+            SetReflectionCubemapDirty();
+            UiColor = BackgroundColor.GetBrightness() > 0.5 && !_showroom ? Color.Black : Color.White;
         }
 
         private static float[] GetSplits(int number, float carSize) {
+            if (carSize > 10f) carSize = 10f;
             switch (number) {
                 case 1:
                     return new[] { carSize };
                 case 2:
-                    return new[] { 5f, 20f };
+                    return new[] { carSize, 20f };
                 case 3:
-                    return new[] { 5f, 20f, 50f };
+                    return new[] { carSize, 20f, 50f };
                 case 4:
-                    return new[] { 5f, 20f, 50f, 200f };
+                    return new[] { carSize, 20f, 50f, 200f };
                 default:
                     return new[] { 10f };
             }
@@ -305,41 +400,62 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private ShadowsDirectional _shadows;
 
         protected override ShadowsDirectional CreateShadows() {
-            _shadows = new ShadowsDirectional(EffectDarkMaterial.ShadowMapSize,
-                    GetSplits(EffectDarkMaterial.NumSplits, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
+            var splits = GetShadowsNumSplits();
+            _shadows = new ShadowsDirectional(ShadowMapSize,
+                    GetSplits(splits, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
             return _shadows;
         }
 
         protected override ReflectionCubemap CreateReflectionCubemap() {
-            return new ReflectionCubemap(1024);
+            return new ReflectionCubemap(2048);
         }
 
         [CanBeNull]
         private EffectDarkMaterial _effect;
         private Vector3 _light;
 
-        private float _reflectionPower = 0.6f;
+        private float _flatMirrorReflectiveness = 0.6f;
 
-        public float ReflectionPower {
-            get { return _reflectionPower; }
+        public float FlatMirrorReflectiveness {
+            get { return _flatMirrorReflectiveness; }
             set {
-                if (Equals(value, _reflectionPower)) return;
-                _reflectionPower = value;
+                if (Equals(value, _flatMirrorReflectiveness)) return;
+                _flatMirrorReflectiveness = value;
                 OnPropertyChanged();
             }
         }
 
+        private int _shadowMapSize = 2048;
+
+        public int ShadowMapSize {
+            get { return _shadowMapSize; }
+            set {
+                if (Equals(value, _shadowMapSize)) return;
+                _shadowMapSize = value;
+                OnPropertyChanged();
+                SetShadowsDirty();
+            }
+        }
+
+        private int GetShadowsNumSplits() {
+            return ShowroomNode == null ? 1 : 3;
+        }
+
         protected override void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
-            shadows.SetSplits(DeviceContextHolder, GetSplits(EffectDarkMaterial.NumSplits, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
+            var splits = GetShadowsNumSplits();
+            shadows.SetSplits(DeviceContextHolder, GetSplits(splits, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
+            shadows.SetMapSize(DeviceContextHolder, ShadowMapSize);
+
             base.UpdateShadows(shadows, center);
 
             if (_effect == null) {
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
             }
 
-            _effect.FxShadowMaps.SetResourceArray(shadows.Splits.Take(EffectDarkMaterial.NumSplits).Select(x => x.View).ToArray());
+            _effect.FxShadowMapSize.Set(ShadowMapSize);
+            _effect.FxShadowMaps.SetResourceArray(shadows.Splits.Take(splits).Select(x => x.View).ToArray());
             _effect.FxShadowViewProj.SetMatrixArray(
-                    shadows.Splits.Take(EffectDarkMaterial.NumSplits).Select(x => x.ShadowTransform).ToArray());
+                    shadows.Splits.Take(splits).Select(x => x.ShadowTransform).ToArray());
         }
 
         protected override void DrawPrepare() {
@@ -349,6 +465,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             base.DrawPrepare();
+        }
+
+        public override void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
+            ShowroomNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
+            CarNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
         }
 
         /*private bool _temporaryFlag;
@@ -362,6 +483,49 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }*/
 
+        private float _materialsReflectiveness = 1f;
+
+        public float MaterialsReflectiveness {
+            get { return _materialsReflectiveness; }
+            set {
+                if (Equals(value, _materialsReflectiveness)) return;
+                _materialsReflectiveness = value;
+                OnPropertyChanged();
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        private bool _reflectionsWithShadows;
+
+        public bool ReflectionsWithShadows {
+            get { return _reflectionsWithShadows; }
+            set {
+                if (Equals(value, _reflectionsWithShadows)) return;
+                _reflectionsWithShadows = value;
+                OnPropertyChanged();
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        private bool _cubemapAmbient;
+
+        public bool CubemapAmbient {
+            get { return _cubemapAmbient; }
+            set {
+                if (Equals(value, _cubemapAmbient)) return;
+                _cubemapAmbient = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public override void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera) {
+            if (ShowroomNode == null) return;
+            DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null);
+            DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
+            ShowroomNode.Draw(holder, camera, SpecialRenderMode.Simple);
+            DeviceContext.Rasterizer.State = null;
+        }
+
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection) {
             if (_effect == null) {
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
@@ -373,17 +537,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _effect.FxLightDir.Set(light);
 
             _effect.FxLightColor.Set(LightColor.ToVector3() * LightBrightness);
-            _effect.FxReflectionPower.Set(1f);
-            _effect.FxShadowsEnabled.Set(EnableShadows);
-            _effect.FxPcssEnabled.Set(EnableShadows && EnablePcssShadows);
+            _effect.FxReflectionPower.Set(MaterialsReflectiveness);
+            _effect.FxCubemapReflections.Set(reflection != null);
+            _effect.FxCubemapAmbient.Set(CubemapAmbient && reflection != null);
+            _effect.FxNumSplits.Set(EnableShadows && shadows != null ? GetShadowsNumSplits() : 0);
+            _effect.FxPcssEnabled.Set(EnableShadows && UsePcss);
             _effect.FxAmbientDown.Set(AmbientDown.ToVector3() * AmbientBrightness);
             _effect.FxAmbientRange.Set((AmbientUp.ToVector3() - AmbientDown.ToVector3()) * AmbientBrightness);
-            _effect.FxBackgroundColor.Set(BackgroundColor.ToVector3());
+            _effect.FxBackgroundColor.Set(BackgroundColor.ToVector3() * BackgroundBrightness);
 
             if (FlatMirror) {
-                _effect.FxFlatMirrorPower.Set(ReflectionPower);
+                _effect.FxFlatMirrorPower.Set(FlatMirrorReflectiveness);
             }
-
+            
             if (reflection != null) {
                 _effect.FxReflectionCubemap.SetResource(reflection.View);
             }
@@ -436,7 +602,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var carNode = CarNode;
 
             // draw reflection if needed
-            if (FlatMirror && _mirror != null) {
+            if (ShowroomNode == null && FlatMirror && _mirror != null) {
                 if (_effect == null) {
                     _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
                 }
@@ -445,7 +611,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 if (FlatMirrorBlurred) {
                     DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, BackgroundColor);
+                    DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
 
                     DeviceContext.OutputMerger.SetTargets(_mirrorDepthBuffer.DepthView, _mirrorBuffer.TargetView);
 
@@ -478,25 +644,43 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             // draw a scene, apart from car
-            // TODO
+            if (ShowroomNode != null) {
+                if (_effect == null) {
+                    _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
+                }
 
-            // draw a mirror
-            if (_mirror != null) {
-                if (!FlatMirror) {
-                    _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.BackgroundGround);
-                    _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
-                } else if (FlatMirrorBlurred && _mirrorBuffer != null) {
-                    if (_effect == null) {
-                        _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
+                if (CubemapAmbient) {
+                    _effect.FxCubemapAmbient.Set(false);
+                }
+
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
+                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
+                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+
+                if (CubemapAmbient) {
+                    _effect.FxCubemapAmbient.Set(CubemapAmbient);
+                }
+            } else {
+                // draw a mirror
+                if (_mirror != null) {
+                    if (!FlatMirror) {
+                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.BackgroundGround);
+                        _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+                    } else if (FlatMirrorBlurred && _mirrorBuffer != null) {
+                        if (_effect == null) {
+                            _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
+                        }
+
+                        _effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
+                        // _effect.FxWorldViewProjInv.SetMatrix(ActualCamera.ViewProjInvert);
+                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TextureMirror);
+                        _mirror.Draw(DeviceContextHolder, ActualCamera, _mirrorBlurBuffer.View, null, null);
+                    } else {
+                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TransparentMirror);
+                        _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
                     }
-
-                    _effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
-                    // _effect.FxWorldViewProjInv.SetMatrix(ActualCamera.ViewProjInvert);
-                    _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TextureMirror);
-                    _mirror.Draw(DeviceContextHolder, ActualCamera, _mirrorBlurBuffer.View, null, null);
-                } else {
-                    _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TransparentMirror);
-                    _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
                 }
             }
 
@@ -524,34 +708,56 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override string GetInformationString() {
+#if SSLR_PARAMETRIZED
             if (SslrAdjustCurrentMode != SslrAdjustMode.None) {
                 return $@"Mode: {SslrAdjustCurrentMode}
 Start from: {_sslrStartFrom}
-Fix multipler: {_sslrFixMultipler}
+Fix multiplier: {_sslrFixMultiplier}
 Offset: {_sslrOffset}
 Grow fix: {_sslrGrowFix}
 Distance threshold: {_sslrDistanceThreshold}";
+            }
+#endif
+
+            var aa = new[] {
+                UseMsaa ? MsaaSampleCount + "xMSAA" : null,
+                UseSsaa ? $"{Math.Pow(ResolutionMultiplier, 2d).Round()}xSSAA{(TemporaryFlag ? " (exp.)" : "")}" : null,
+                UseFxaa ? "FXAA" : null,
+            }.NonNull().JoinToString(", ");
+
+            var se = new[] {
+                UseSslr ? "SSLR" : null,
+                UseSsao ? "SSAO" : null,
+                UseBloom ? "Bloom" : null,
+            }.NonNull().JoinToString(", ");
+
+            var pp = new[] {
+                UseToneMapping ? "Tone Mapping" : null,
+                UseColorGrading && ColorGradingFilename != null ? "Color Grading" : null
+            }.NonNull().JoinToString(", ");
+
+            if (UseToneMapping) {
+                pp += $"\r\nExp./Gamma/White P.: {ToneExposure:F2}, {ToneGamma:F2}, {ToneWhitePoint:F2}";
             }
 
             return CarNode?.DebugString ?? $@"
 FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
-FXAA: {(UseFxaa ? "Yes" : "No")}
-MSAA: {(UseMsaa ? "Yes" : "No")}
-SSAA: {(UseSsaa ? TemporaryFlag ? "Yes, Exp." : "Yes" : "No")}
-Bloom: {(UseBloom ? "Yes" : "No")}
-SSLR: {(UseSslr ? SslrLinearFiltering ? "Yes, Lin." : "Yes" : "No")}
-Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
+AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
+Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
+Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
+Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
         }
 
+#if SSLR_PARAMETRIZED
         public enum SslrAdjustMode {
-            None, StartFrom, FixMultipler, Offset, GrowFix, DistanceThreshold
+            None, StartFrom, FixMultiplier, Offset, GrowFix, DistanceThreshold
         }
 
         public SslrAdjustMode SslrAdjustCurrentMode;
         private bool _sslrParamsChanged = true;
         private float _sslrStartFrom = 0.02f;
-        private float _sslrFixMultipler = 0.7f;
+        private float _sslrFixMultiplier = 0.7f;
         private float _sslrOffset = 0.048f;
         private float _sslrGrowFix = 0.15f;
         private float _sslrDistanceThreshold = 0.092f;
@@ -563,8 +769,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 case SslrAdjustMode.StartFrom:
                     _sslrStartFrom = (_sslrStartFrom + delta / 10f).Clamp(0.0001f, 0.1f);
                     break;
-                case SslrAdjustMode.FixMultipler:
-                    _sslrFixMultipler += delta;
+                case SslrAdjustMode.FixMultiplier:
+                    _sslrFixMultiplier += delta;
                     break;
                 case SslrAdjustMode.Offset:
                     _sslrOffset += delta;
@@ -581,71 +787,137 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
 
             _sslrParamsChanged = true;
         }
+#endif
 
         private DarkSslrHelper _sslrHelper;
+        private DarkSsaoHelper _ssaoHelper;
         private BlurHelper _blurHelper;
 
+        protected void DrawPreparedSceneToBuffer() {
+            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
+
+            if (DepthStencilView != null) {
+                DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                DeviceContext.OutputMerger.SetTargets(DepthStencilView, InnerBuffer.TargetView);
+            } else {
+                DeviceContext.OutputMerger.SetTargets(InnerBuffer.TargetView);
+            }
+
+            DrawScene();
+            DrawAfter();
+
+            DeviceContext.OutputMerger.DepthStencilState = null;
+            DeviceContext.OutputMerger.BlendState = null;
+            DeviceContext.Rasterizer.State = null;
+        }
+
         protected override void DrawSceneToBuffer() {
-            if (!UseSslr) {
+            if (!UseSslr && !UseSsao) {
                 base.DrawSceneToBuffer();
                 return;
             }
 
+            DrawPrepare();
+
             if (_sslrHelper == null) {
                 _sslrHelper = DeviceContextHolder.GetHelper<DarkSslrHelper>();
+            }
+
+            if (_ssaoHelper == null) {
+                _ssaoHelper = DeviceContextHolder.GetHelper<DarkSsaoHelper>();
             }
 
             if (_blurHelper == null) {
                 _blurHelper = DeviceContextHolder.GetHelper<BlurHelper>();
             }
 
-            SetInnerBuffer(_sslrBufferScene);
-            base.DrawSceneToBuffer();
-            SetInnerBuffer(null);
-
+            // Draw scene to G-buffer to get normals, depth and base reflection
             DeviceContext.Rasterizer.SetViewports(Viewport);
-            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslrBufferBaseReflection.TargetView, _sslrBufferNormals.TargetView, _sslrBufferMsaaDepth.TargetView);
+            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView, _gBufferDepth.TargetView);
             DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-            DeviceContext.ClearRenderTargetView(_sslrBufferNormals.TargetView, (Color4)new Vector4(0.5f));
-            DeviceContext.ClearRenderTargetView(_sslrBufferBaseReflection.TargetView, (Color4)new Vector4(0));
-            DeviceContext.ClearRenderTargetView(_sslrBufferMsaaDepth.TargetView, (Color4)new Vector4(1f));
+            DeviceContext.ClearRenderTargetView(_gBufferNormals.TargetView, (Color4)new Vector4(0.5f));
 
-            var carNode = CarNode;
-            if (carNode == null) return;
+            if (_sslrBufferBaseReflection != null) {
+                DeviceContext.ClearRenderTargetView(_sslrBufferBaseReflection.TargetView, (Color4)new Vector4(0));
+            }
 
-            if (FlatMirror && !FlatMirrorBlurred) {
-                _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            DeviceContext.ClearRenderTargetView(_gBufferDepth.TargetView, (Color4)new Vector4(1f));
+
+            DeviceContext.OutputMerger.DepthStencilState = null;
+            DeviceContext.OutputMerger.BlendState = null;
+            DeviceContext.Rasterizer.State = null;
+
+            if (ShowroomNode != null) {
+                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
             } else {
-                _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+                if (_mirror != null) {
+                    if (FlatMirror && !FlatMirrorBlurred) {
+                        _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+                    } else {
+                        _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+                    }
+                }
             }
 
-            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            CarNode?.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
 
-            if (_sslrParamsChanged) {
-                _sslrParamsChanged = false;
+            // AO?
+            if (UseSsao) {
+                _ssaoHelper.Draw(DeviceContextHolder,
+                        _gBufferDepth.View,
+                        _gBufferNormals.View,
+                        ActualCamera, _ssaoBuffer.TargetView);
 
-                var effect = DeviceContextHolder.GetEffect<EffectPpDarkSslr>();
-                effect.FxStartFrom.Set(_sslrStartFrom);
-                effect.FxFixMultipler.Set(_sslrFixMultipler);
-                effect.FxOffset.Set(_sslrOffset);
-                effect.FxGlowFix.Set(_sslrGrowFix);
-                effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
+                if (_effect == null) {
+                    _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>();
+                }
+
+                _effect.FxAoMap.SetResource(_ssaoBuffer.View);
+                _effect.FxEnableAo.Set(true);
+                _effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
+
+                _ssaoHelper.Blur(DeviceContextHolder, _ssaoBuffer, InnerBuffer, Camera);
+
+                if (SsaoDebug) {
+                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _ssaoBuffer.View, InnerBuffer.TargetView);
+                    return;
+                }
             }
 
-            _sslrHelper.LinearFiltering = SslrLinearFiltering;
-            _sslrHelper.Draw(DeviceContextHolder,
-                    _sslrBufferScene.View,
-                    _sslrBufferMsaaDepth.View,
-                    _sslrBufferBaseReflection.View,
-                    _sslrBufferNormals.View,
-                    ActualCamera, _sslrBufferResult.TargetView);
-            _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultipler));
-            _sslrHelper.FinalStep(DeviceContextHolder,
-                    _sslrBufferScene.View,
-                    _sslrBufferResult.View,
-                    _sslrBufferBaseReflection.View,
-                    _sslrBufferNormals.View,
-                    ActualCamera, InnerBuffer.TargetView);
+            if (UseSslr && _sslrBufferBaseReflection != null) {
+                // Draw actual scene to _sslrBufferScene
+                SetInnerBuffer(_sslrBufferScene);
+                DrawPreparedSceneToBuffer();
+                SetInnerBuffer(null);
+
+                // Prepare SSLR and combine buffers
+#if SSLR_PARAMETRIZED
+                if (_sslrParamsChanged) {
+                    _sslrParamsChanged = false;
+                    var effect = DeviceContextHolder.GetEffect<EffectPpDarkSslr>();
+                    effect.FxStartFrom.Set(_sslrStartFrom);
+                    effect.FxFixMultiplier.Set(_sslrFixMultiplier);
+                    effect.FxOffset.Set(_sslrOffset);
+                    effect.FxGlowFix.Set(_sslrGrowFix);
+                    effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
+                }
+#endif
+
+                _sslrHelper.Draw(DeviceContextHolder,
+                        _gBufferDepth.View,
+                        _sslrBufferBaseReflection.View,
+                        _gBufferNormals.View,
+                        ActualCamera, _sslrBufferResult.TargetView);
+                _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultiplier));
+                _sslrHelper.FinalStep(DeviceContextHolder,
+                        _sslrBufferScene.View,
+                        _sslrBufferResult.View,
+                        _sslrBufferBaseReflection.View,
+                        _gBufferNormals.View,
+                        ActualCamera, InnerBuffer.TargetView);
+            } else {
+                DrawPreparedSceneToBuffer();
+            }
         }
 
         private bool _setCameraHigher = true;
@@ -667,10 +939,13 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             DisposeHelper.Dispose(ref _mirrorBlurBuffer);
             DisposeHelper.Dispose(ref _temporaryBuffer);
             DisposeHelper.Dispose(ref _mirrorDepthBuffer);
+
             DisposeHelper.Dispose(ref _sslrBufferScene);
             DisposeHelper.Dispose(ref _sslrBufferResult);
             DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
-            DisposeHelper.Dispose(ref _sslrBufferNormals);
+            DisposeHelper.Dispose(ref _gBufferNormals);
+            DisposeHelper.Dispose(ref _gBufferDepth);
+            DisposeHelper.Dispose(ref _ssaoBuffer);
             //DisposeHelper.Dispose(ref _sslrDepthBuffer);
         }
     }

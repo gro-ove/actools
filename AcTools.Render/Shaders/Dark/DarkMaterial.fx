@@ -198,6 +198,8 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 #if ENABLE_SHADOWS == 1
 	diffuseMultipler *= GetShadow_ConsiderMirror(position);
 #endif
+	
+	ambient *= GetAo(pin.PosH.xy);
 
 	float nDotH = GetNDotH(normal, position);
 	float specular = CalculateSpecularLight(nDotH, 50, 0.5);
@@ -207,9 +209,9 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 	//
 	float3 toEyeW = normalize(gEyePosW - position);
 	float3 reflected = reflect(-toEyeW, normal);
-	float3 refl = GetReflection(reflected, 2);
+	float3 refl = GetReflection(reflected, 12);
 
-	float rid = 1 - saturate(dot(toEyeW, normal) - 0.016);
+	float rid = 1 - saturate(dot(toEyeW, normal) - 0.02);
 	float rim = pow(rid, 4.0);
 	float val = min(rim, 0.05);
 	//
@@ -284,7 +286,7 @@ float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
 
 #if ENABLE_SHADOWS == 1
 	float shadow = GetShadow(pin.PosW);
-	return float4(0.0, 0.0, 0.0, value * (1.0 - shadow * lightBrightness * gShadowsEnabled * 0.95));
+	return float4(0.0, 0.0, 0.0, value * (1.0 - shadow * lightBrightness * step(gNumSplits, 1) * 0.95));
 #else
 	return float4(0.0, 0.0, 0.0, value);
 #endif
@@ -344,7 +346,7 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 	// separately color in lighted and shadowed areas
 	// 100%-target is to match those colors if there is no light (aka no shadow)
 	float3 lightPart = gBackgroundColor * (1 - opacity * lightBrightness) + light * opacity;
-	float3 shadowPart = (1 - lightBrightness) * lightPart + lightBrightness * (ambient * Luminance(gBackgroundColor) * 0.32 + gBackgroundColor * 0.22);
+	float3 shadowPart = (1 - lightBrightness) * lightPart + lightBrightness * (ambient * Luminance(gBackgroundColor) * 0.32 + saturate(gBackgroundColor) * 0.22);
 
 	// combining
 	return float4(lightPart * shadow + shadowPart * (1 - shadow), opacity);

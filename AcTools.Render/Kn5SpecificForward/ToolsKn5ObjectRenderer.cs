@@ -34,6 +34,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         Task SaveTexture(string filename, Color color, double alpha);
 
         Task SaveTextureFlakes(string filename, Color color);
+
+        Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double blur, double specular);
     }
 
     public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer, IPaintShopRenderer {
@@ -337,25 +339,58 @@ namespace AcTools.Render.Kn5SpecificForward {
             return OverrideTexture(textureName, color);
         }
 
-        public bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular) {
-            if (Kn5 == null) return false;
-            using (var image = new MagickImage(Kn5.TexturesData[textureName])) {
-                if (image.Width > 512 || image.Height > 512) {
-                    image.Resize(512, 512);
-                }
-
-                image.BrightnessContrast(new Percentage(reflection * 100d), new Percentage(100d), Channels.Red);
-                image.BrightnessContrast(new Percentage(blur * 100d), new Percentage(100d), Channels.Green);
-                image.BrightnessContrast(new Percentage(specular * 100d), new Percentage(100d), Channels.Blue);
-
-                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
-            }
-        }
-
         public Task SaveTextureFlakes(string filename, Color color) {
             var image = new MagickImage(new MagickColor(color) { A = 250 }, 256, 256);
             image.AddNoise(NoiseType.Poisson, Channels.Alpha);
             return SaveAndDispose(filename, image);
+        }
+
+        private MagickImage _mapsBase;
+
+        public bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular) {
+            if (Kn5 == null) return false;
+
+            if (_mapsBase == null) {
+                Format format;
+                var data = TextureReader.ToPng(DeviceContextHolder, Kn5.TexturesData[textureName], true, out format);
+
+                _mapsBase = new MagickImage(data);
+                if (_mapsBase.Width > 256 || _mapsBase.Height > 256) {
+                    _mapsBase.Resize(256, 256);
+                }
+
+                _mapsBase.AutoLevel(Channels.Red);
+                _mapsBase.AutoLevel(Channels.Green);
+                _mapsBase.AutoLevel(Channels.Blue);
+            }
+
+            using (var image = _mapsBase.Clone()) {
+                image.Evaluate(Channels.All, EvaluateOperator.Multiply, specular);
+                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, blur);
+                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
+                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Png));
+            }
+        }
+
+        public async Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double blur, double specular) {
+            if (Kn5 == null) return;
+
+            MagickImage image = null;
+            await Task.Run(() => {
+                Format format;
+                var data = TextureReader.ToPng(DeviceContextHolder, Kn5.TexturesData[baseTextureName], true, out format);
+
+                image = new MagickImage(data);
+                image.AutoLevel(Channels.Red);
+                image.AutoLevel(Channels.Green);
+                image.AutoLevel(Channels.Blue);
+
+                image.Evaluate(Channels.All, EvaluateOperator.Multiply, specular);
+                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, blur);
+                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
+            });
+
+            await SaveAndDispose(filename, image);
         }
 
         private Task SaveAndDispose(string filename, MagickImage image) {
@@ -366,6 +401,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 image.Quality = 100;
                 image.Settings.SetDefine(MagickFormat.Dds, "compression", "none");
+                image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
+                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
                 var bytes = image.ToByteArray(MagickFormat.Dds);
                 return FileUtils.WriteAllBytesAsync(filename, bytes);
             } finally {
@@ -376,6 +413,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public override void Dispose() {
             DisposeHelper.Dispose(ref _outlineBuffer);
             DisposeHelper.Dispose(ref _outlineDepthBuffer);
+            DisposeHelper.Dispose(ref _mapsBase);
             base.Dispose();
         }
     }

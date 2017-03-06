@@ -35,7 +35,7 @@ namespace AcTools.Render.Base {
             Scene.Draw(holder, camera, SpecialRenderMode.Reflection);
         }
 
-        public void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
+        public virtual void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
             Scene.Draw(holder, camera, SpecialRenderMode.Shadow);
         }
 

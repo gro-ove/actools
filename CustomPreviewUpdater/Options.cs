@@ -12,9 +12,12 @@ namespace CustomPreviewUpdater {
         [Option('r', "root", HelpText = "AC root folder.")]
         public string AcRoot { get; set; }
 
+        [Option('s', "showroom", DefaultValue = null, HelpText = "Showroom ID or its KN5 filename.")]
+        public string Showroom { get; set; }
+
         //[Option('s', "showroom", DefaultValue = "previews", HelpText = "Showroom to shot previews at.")]
         //public string Showroom { get; set; }
-        
+
         /* CAMERA */
         [Option('c', "camera", DefaultValue = "3.867643, 1.42359, 4.70381", HelpText = "Camera position.")]
         public string CameraPosition { get; set; }
@@ -24,13 +27,19 @@ namespace CustomPreviewUpdater {
 
         [Option('v', "fov", DefaultValue = 30.0, HelpText = "Field of view.")]
         public double Fov { get; set; }
-
-        [Option('a', "align", HelpText = "Align car to the center horizontally and then offset using look-at value.")]
+        
+        [Option('a', "align", HelpText = "Align car’s model to X=0 and Z=0.")]
         public bool AlignCar { get; set; }
         
+        [Option("align-camera", HelpText = "Align car’s model in screen space.")]
+        public bool AlignCamera { get; set; }
+        
+        [Option("align-camera-offset", DefaultValue = "0.0, 0.0, 0.0", HelpText = "Camera offset after aligning car’s model in screenspace.")]
+        public string AlignCameraOffset { get; set; }
+        
         /* OPTIONS */
-        [Option("bloom", DefaultValue = 1d, HelpText = "Bloom radius multipler.")]
-        public double BloomRadiusMultipler { get; set; }
+        [Option("bloom", DefaultValue = 1d, HelpText = "Bloom radius multiplier.")]
+        public double BloomRadiusMultiplier { get; set; }
 
         [Option("width", DefaultValue = 1022, HelpText = "Previews width.")]
         public int PreviewWidth { get; set; }
@@ -39,8 +48,8 @@ namespace CustomPreviewUpdater {
         public int PreviewHeight { get; set; }
 
         /* AA-RELATED */
-        [Option("ssaa", DefaultValue = 4d, HelpText = "SSAA multipler.")]
-        public double SsaaMultipler { get; set; }
+        [Option("ssaa", DefaultValue = 4d, HelpText = "SSAA multiplier.")]
+        public double SsaaMultiplier { get; set; }
 
         [Option("fxaa", HelpText = "Enable FXAA.")]
         public bool UseFxaa { get; set; }
@@ -94,11 +103,44 @@ namespace CustomPreviewUpdater {
         [Option("mirror", HelpText = "Flat mirror at the ground.")]
         public bool FlatMirror { get; set; } = false;
 
+        [Option("blur-mirror", HelpText = "Blur flat mirror (if enabled).")]
+        public bool FlatMirrorBlurred { get; set; } = false;
+
+        [Option("mirror-reflectiveness", HelpText = "Reflectiveness level for flat mirror.")]
+        public double FlatMirrorReflectiveness { get; set; } = 1.0;
+
+        [Option("reflection-multiplier", HelpText = "Reflection multiplier for materials.")]
+        public double ReflectionMultiplier { get; set; } = 1.0;
+
+        [Option("reflection-from-camera", HelpText = "Build reflection cubemap at camera position (only with showroom).")]
+        public bool ReflectionCubemapAtCamera { get; set; }
+
+        [Option("no-shadows-with-reflections", HelpText = "Another option to match Kunos apps.")]
+        public bool NoShadowsWithReflections { get; set; }
+
+        [Option("ssao", HelpText = "Enable screen-space ambient occlusion.")]
+        public bool UseSsao { get; set; } = false;
+
+        [Option("sslr", HelpText = "Enable screen-space local reflections.")]
+        public bool UseSslr { get; set; } = false;
+
         [Option("background", HelpText = "Background color.")]
         public string BackgroundColor { get; set; } = "#000000";
 
         [Option("light", HelpText = "Light color.")]
         public string LightColor { get; set; } = "#ffffff";
+
+        [Option("light-direction", DefaultValue = "0.2, 1.0, 0.8", HelpText = "Light direction.")]
+        public string LightDirection { get; set; }
+
+        [Option("shadows", HelpText = "Enable shadows.")]
+        public bool EnableShadows { get; set; } = false;
+
+        [Option("shadows-size", HelpText = "Shadows resolution.")]
+        public int ShadowMapSize { get; set; } = 4096;
+
+        [Option("pcss", HelpText = "Enable smartly blurred shadows.")]
+        public bool UsePcss { get; set; } = false;
 
         [Option("ambient-from", HelpText = "First ambient color (at the bottom).")]
         public string AmbientDown { get; set; } = "#96b4b4";
@@ -106,11 +148,26 @@ namespace CustomPreviewUpdater {
         [Option("ambient-to", HelpText = "Second ambient color (at the top).")]
         public string AmbientUp { get; set; } = "#b4b496";
 
-        [Option("ambient-brightness", HelpText = "Ambient multipler.")]
+        [Option("ambient-brightness", HelpText = "Ambient multiplier.")]
         public double AmbientBrightness { get; set; } = 2d;
 
-        [Option("light-brightness", HelpText = "Light multipler.")]
+        [Option("light-brightness", HelpText = "Light multiplier.")]
         public double LightBrightness { get; set; } = 1.5;
+
+        [Option("tone-mapping", HelpText = "Enable tone mapping.")]
+        public bool UseToneMapping { get; set; } = false;
+
+        [Option("exposure", HelpText = "Exposure for tone mapping.")]
+        public double ToneExposure { get; set; } = 0.8;
+
+        [Option("gamma", HelpText = "Gamma for tone mapping.")]
+        public double ToneGamma { get; set; } = 0.8;
+
+        [Option("white-point", HelpText = "Whit point for tone mapping.")]
+        public double WhitePoint { get; set; } = 1.66;
+
+        [Option("color-grading", HelpText = "Color grading filename.")]
+        public string ColorGradingFilename { get; set; } = null;
 
         [Option('w', "without-previews-only", DefaultValue = false, HelpText = "Update skins only without previews.")]
         public bool WithoutPreviews { get; set; }

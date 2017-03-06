@@ -389,6 +389,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public void SetEmissive(Vector3? color) {}
 
+        int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
+
         private static InputLayouts.VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
             var size = vertices.Length;
             var result = new InputLayouts.VerticeP[size];

@@ -9,6 +9,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -23,6 +24,17 @@ namespace AcTools.Render.Forward {
                 if (Equals(value, _backgroundColor)) return;
                 _backgroundColor = value;
                 OnBackgroundColorChanged();
+            }
+        }
+
+        private float _backgroundBrightness = 1f;
+
+        public float BackgroundBrightness {
+            get { return _backgroundBrightness; }
+            set {
+                if (Equals(value, _backgroundBrightness)) return;
+                _backgroundBrightness = value;
+                OnPropertyChanged();
             }
         }
 
@@ -43,13 +55,48 @@ namespace AcTools.Render.Forward {
 
         // F: full size, A: actual size, H: half size
         private TargetResourceTexture _bufferF, _bufferFSsaaFxaa;
-        private TargetResourceTexture _bufferA;
+        private TargetResourceTexture _bufferA, _bufferAColorGrading;
         private TargetResourceTexture _bufferH1, _bufferH2;
 
         protected override void InitializeInner() {
             _bufferF = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
             _bufferA = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
             UseBloom = true;
+        }
+
+        private string _colorGradingFilename;
+
+        public string ColorGradingFilename {
+            get { return _colorGradingFilename; }
+            set {
+                if (Equals(value, _colorGradingFilename)) return;
+                _colorGradingFilename = value;
+                OnPropertyChanged();
+
+                if (value != null) {
+                    UseColorGrading = true;
+                }
+            }
+        }
+
+        private bool _useColorGrading;
+
+        public bool UseColorGrading {
+            get { return _useColorGrading; }
+            set {
+                if (Equals(value, _useColorGrading)) return;
+                _useColorGrading = value;
+                OnPropertyChanged();
+
+                if (value) {
+                    _bufferAColorGrading = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                    if (InitiallyResized) {
+                        _bufferAColorGrading.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                    }
+                } else {
+                    DisposeHelper.Dispose(ref _bufferAColorGrading);
+                }
+            }
         }
 
         private bool _useFxaa = true;
@@ -94,8 +141,8 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        protected override void OnResolutionMultiplerChanged() {
-            base.OnResolutionMultiplerChanged();
+        protected override void OnResolutionMultiplierChanged() {
+            base.OnResolutionMultiplierChanged();
             UpdateSsaaFxaaBuffer();
         }
 
@@ -176,6 +223,7 @@ namespace AcTools.Render.Forward {
             _bufferFSsaaFxaa?.Resize(DeviceContextHolder, Width, Height, null);
 
             _bufferA?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+            _bufferAColorGrading?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
 
             _bufferH1?.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
             _bufferH2?.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
@@ -220,12 +268,12 @@ namespace AcTools.Render.Forward {
         private BlurHelper _blur;
         private EffectPpLensFlares _lensFlares;
 
-        public float BloomRadiusMultipler = 1f;
+        public float BloomRadiusMultiplier = 1f;
 
         protected virtual void DrawSceneToBuffer() {
             DrawPrepare();
 
-            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, BackgroundColor);
+            DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
 
             if (DepthStencilView != null) {
                 DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
@@ -242,7 +290,60 @@ namespace AcTools.Render.Forward {
             DeviceContext.Rasterizer.State = null;
         }
 
-        protected void FinalPpPass(ShaderResourceView input) {
+        private bool _useToneMapping;
+
+        public bool UseToneMapping {
+            get { return _useToneMapping; }
+            set {
+                if (Equals(value, _useToneMapping)) return;
+                _useToneMapping = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _toneGamma = 1.0f;
+
+        public float ToneGamma {
+            get { return _toneGamma; }
+            set {
+                if (Equals(value, _toneGamma)) return;
+                _toneGamma = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _toneExposure = 0.8f;
+
+        public float ToneExposure {
+            get { return _toneExposure; }
+            set {
+                if (Equals(value, _toneExposure)) return;
+                _toneExposure = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _toneWhitePoint = 1.66f;
+
+        public float ToneWhitePoint {
+            get { return _toneWhitePoint; }
+            set {
+                if (Equals(value, _toneWhitePoint)) return;
+                _toneWhitePoint = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private EffectTechnique GetHdrTechnique() {
+            if (UseToneMapping) {
+                _hdr.FxParams.Set(new Vector4(ToneGamma, ToneExposure, ToneWhitePoint, 0f));
+                return _hdr.TechCombine_ToneReinhard;
+            }
+
+            return _hdr.TechCombine;
+        }
+
+        protected bool HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
             if (UseLensFlares) {
                 // prepare effects
                 if (_lensFlares == null) {
@@ -251,6 +352,9 @@ namespace AcTools.Render.Forward {
 
                 if (_hdr == null) {
                     _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+                }
+
+                if (_blur == null) {
                     _blur = DeviceContextHolder.GetHelper<BlurHelper>();
                 }
 
@@ -275,16 +379,23 @@ namespace AcTools.Render.Forward {
                 _blur.Blur(DeviceContextHolder, _bufferH2, _bufferH1, 2f, 2);
 
                 // combine original buffer and buffer #1 with blurred bright areas to buffer #2
-                DeviceContext.Rasterizer.SetViewports(OutputViewport);
-                DeviceContext.OutputMerger.SetTargets(RenderTargetView);
+                DeviceContext.Rasterizer.SetViewports(viewport);
+                DeviceContext.OutputMerger.SetTargets(output);
 
                 _hdr.FxInputMap.SetResource(input);
                 _hdr.FxBloomMap.SetResource(_bufferH2.View);
-                _hdr.TechCombine.DrawAllPasses(DeviceContext, 6);
-            } else if (UseBloom) {
+                GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
+
+                return true;
+            }
+
+            if (UseBloom) {
                 // prepare effects
                 if (_hdr == null) {
                     _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+                }
+
+                if (_blur == null) {
                     _blur = DeviceContextHolder.GetHelper<BlurHelper>();
                 }
 
@@ -298,21 +409,64 @@ namespace AcTools.Render.Forward {
                 _hdr.TechBloomHighThreshold.DrawAllPasses(DeviceContext, 6);
 
                 // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one
-                _blur.Blur(DeviceContextHolder, _bufferH1, _bufferH2, 0.5f * BloomRadiusMultipler, 2);
+                _blur.Blur(DeviceContextHolder, _bufferH1, _bufferH2, 0.5f * BloomRadiusMultiplier, 2);
 
                 // combine original buffer and buffer #1 with blurred bright areas to buffer #2
-                DeviceContext.Rasterizer.SetViewports(OutputViewport);
-                DeviceContext.OutputMerger.SetTargets(RenderTargetView);
+                DeviceContext.Rasterizer.SetViewports(viewport);
+                DeviceContext.OutputMerger.SetTargets(output);
 
                 _hdr.FxInputMap.SetResource(input);
                 _hdr.FxBloomMap.SetResource(_bufferH1.View);
-                _hdr.TechCombine.DrawAllPasses(DeviceContext, 6);
-            } else {
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, input, RenderTargetView);
+                GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
+
+                return true;
             }
+
+            if (UseToneMapping) {
+                if (_hdr == null) {
+                    _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+                }
+
+                DeviceContext.Rasterizer.SetViewports(viewport);
+                DeviceContext.OutputMerger.SetTargets(output);
+                DeviceContextHolder.PrepareQuad(_hdr.LayoutPT);
+
+                _hdr.FxInputMap.SetResource(input);
+                _hdr.FxBloomMap.SetResource(null);
+                GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
+                return true;
+            }
+
+            return false;
         }
 
-        private ShaderResourceView AaPass(ShaderResourceView input) {
+        private bool _colorGradingSet;
+        private Texture3D _colorGradingTexture;
+        private ShaderResourceView _colorGradingView;
+
+        private bool ColorGradingPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
+            if (ColorGradingFilename == null) return false;
+
+            if (!_colorGradingSet) {
+                _colorGradingSet = true;
+                _colorGradingTexture = Texture3D.FromFile(Device, ColorGradingFilename);
+                _colorGradingView = new ShaderResourceView(Device, _colorGradingTexture);
+            }
+
+            if (_hdr == null) {
+                _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+            }
+
+            DeviceContext.Rasterizer.SetViewports(viewport);
+            DeviceContext.OutputMerger.SetTargets(output);
+
+            _hdr.FxInputMap.SetResource(input);
+            _hdr.FxColorGradingMap.SetResource(_colorGradingView);
+            _hdr.TechColorGrading.DrawAllPasses(DeviceContext, 6);
+            return true;
+        }
+        
+        private bool AaPass(ShaderResourceView input, RenderTargetView output) {
             if (IsSmaaAvailable && UseSmaa) {
                 throw new NotImplementedException();
             }
@@ -324,37 +478,63 @@ namespace AcTools.Render.Forward {
                 }
 
                 DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, input, new Vector2(Width, Height),
-                        _bufferA.TargetView, new Vector2(ActualWidth, ActualHeight), TemporaryFlag);
-
-                return _bufferA.View;
+                        output, new Vector2(ActualWidth, ActualHeight), TemporaryFlag);
+                return true;
             }
 
             if (UseFxaa) {
-                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, _bufferA.TargetView);
-                return _bufferA.View;
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, output);
+                return true;
             }
             
-            return input;
+            return false;
+        }
+
+        private void AaThenBloom() {
+            var aaView = AaPass(_bufferF.View, _bufferA.TargetView) ? _bufferA.View : _bufferF.View;
+
+            if (UseColorGrading) {
+                var hdrView = HdrPass(aaView, _bufferAColorGrading.TargetView, _bufferAColorGrading.Viewport) ? _bufferAColorGrading.View : aaView;
+                if (!ColorGradingPass(hdrView, RenderTargetView, OutputViewport)) {
+                    // nothing happened in color grading stage
+                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, hdrView, RenderTargetView);
+                }
+            } else {
+                if (!HdrPass(aaView, RenderTargetView, OutputViewport)) {
+                    // HDR stage didn’t move AA buffer to RTV
+                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, aaView, RenderTargetView);
+                }
+            }
+        }
+
+        private void BloomThenAa() {
+            var bloomView = HdrPass(_bufferF.View, _bufferA.TargetView, OutputViewport) ? _bufferA.View : _bufferF.View;
+            var aa = AaPass(bloomView, RenderTargetView);
+
+            if (!aa) {
+                // AA stage didn’t move bloomed buffer to RTV
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, bloomView, RenderTargetView);
+            }
         }
 
         protected override void DrawInner() {
             DrawSceneToBuffer();
-            FinalPpPass(AaPass(_bufferF.View));
+            AaThenBloom();
         }
 
         public bool TemporaryFlag { get; set; }
 
         public bool KeepFxaaWhileShooting;
 
-        public override void Shot(double multipler, double downscale, Stream outputStream, bool lossless) {
-            if (KeepFxaaWhileShooting || Equals(multipler, 1d) && Equals(downscale, 1d)) {
-                base.Shot(multipler, downscale, outputStream, lossless);
+        public override void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
+            if (KeepFxaaWhileShooting || Equals(multiplier, 1d) && Equals(downscale, 1d)) {
+                base.Shot(multiplier, downscale, outputStream, lossless);
             } else {
                 var useFxaa = UseFxaa;
                 UseFxaa = false;
 
                 try {
-                    base.Shot(multipler, downscale, outputStream, lossless);
+                    base.Shot(multiplier, downscale, outputStream, lossless);
                 } finally {
                     UseFxaa = useFxaa;
                 }
@@ -374,9 +554,14 @@ namespace AcTools.Render.Forward {
             DisposeHelper.Dispose(ref _bufferFSsaaFxaa);
 
             DisposeHelper.Dispose(ref _bufferA);
+            DisposeHelper.Dispose(ref _bufferAColorGrading);
 
             DisposeHelper.Dispose(ref _bufferH1);
             DisposeHelper.Dispose(ref _bufferH2);
+
+            DisposeHelper.Dispose(ref _colorGradingView);
+            DisposeHelper.Dispose(ref _colorGradingTexture);
+
             base.Dispose();
         }
     }

@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
-using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
@@ -35,20 +33,6 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
     public partial class LiteShowroomTools {
-        public static SettingEntry[] MsaaModes { get; } = {
-            new SettingEntry(0, ToolsStrings.Common_Disabled),
-            new SettingEntry(2, @"2xMSAA"),
-            new SettingEntry(4, @"4xMSAA"),
-            new SettingEntry(8, @"8xMSAA"),
-        };
-
-        public static SettingEntry[] SsaaModes { get; } = {
-            new SettingEntry(1, ToolsStrings.Common_Disabled),
-            new SettingEntry(2, @"2xSSAA"),
-            new SettingEntry(4, @"4xSSAA"),
-            new SettingEntry(8, @"8xSSAA"),
-        };
-
         public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) {
             DataContext = new ViewModel(renderer, car, skinId);
             InputBindings.AddRange(new[] {
@@ -137,10 +121,21 @@ namespace AcManager.Controls.CustomShowroom {
                     if (Equals(value, _renderer)) return;
                     _renderer = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(DarkRenderer));
-                    UpdateColors();
-                    SyncMsaaMode();
-                    SyncSsaaMode();
+
+                    var dark = value as DarkKn5ObjectRenderer;
+                    Settings = dark != null ? new DarkRendererSettings(dark) : null;
+                }
+            }
+
+            private DarkRendererSettings _settings;
+
+            [CanBeNull]
+            public DarkRendererSettings Settings {
+                get { return _settings; }
+                private set {
+                    if (Equals(value, _settings)) return;
+                    _settings = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -204,6 +199,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }, () => {
                     Reset(false);
                 });
+
                 Saveable.Initialize();
             }
 
@@ -245,21 +241,12 @@ namespace AcManager.Controls.CustomShowroom {
 
             private void Renderer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
-                    case nameof(Renderer.LiveReload):
+                    case nameof(Renderer.MagickOverride):
                         SaveLater();
                         break;
 
                     case nameof(Renderer.CarNode):
                         Renderer_CarNodeUpdated();
-                        break;
-
-                    case nameof(Renderer.MsaaSampleCount):
-                    case nameof(Renderer.UseMsaa):
-                        SyncMsaaMode();
-                        break;
-
-                    case nameof(Renderer.ResolutionMultipler):
-                        SyncSsaaMode();
                         break;
 
                     case nameof(Renderer.SelectedObject):
@@ -275,47 +262,6 @@ namespace AcManager.Controls.CustomShowroom {
                         _ambientShadowSizeSaveCommand?.RaiseCanExecuteChanged();
                         _ambientShadowSizeResetCommand?.RaiseCanExecuteChanged();
                         break;
-                }
-            }
-
-            private void SyncMsaaMode() {
-                MsaaMode = Renderer?.UseMsaa != true ? MsaaModes[0] : MsaaModes.GetByIdOrDefault(Renderer?.MsaaSampleCount);
-            }
-
-            private void SyncSsaaMode() {
-                SsaaMode = SsaaModes.GetByIdOrDefault<SettingEntry, int?>(Math.Pow(Renderer?.ResolutionMultipler ?? 1d, 2d).RoundToInt());
-            }
-
-            private SettingEntry _msaaMode = MsaaModes[0];
-
-            public SettingEntry MsaaMode {
-                get { return _msaaMode; }
-                set {
-                    if (!MsaaModes.Contains(value)) value = MsaaModes[0];
-                    if (Equals(value, _msaaMode)) return;
-                    _msaaMode = value;
-                    OnPropertyChanged();
-
-                    if (Renderer != null) {
-                        Renderer.MsaaSampleCount = value.IntValue > 0 ? value.IntValue ?? 4 : 4;
-                        Renderer.UseMsaa = value.IntValue > 0;
-                    }
-                }
-            }
-
-            private SettingEntry _ssaaMode = SsaaModes[0];
-
-            public SettingEntry SsaaMode {
-                get { return _ssaaMode; }
-                set {
-                    if (!SsaaModes.Contains(value)) value = SsaaModes[0];
-                    if (Equals(value, _ssaaMode)) return;
-                    _ssaaMode = value;
-                    OnPropertyChanged();
-
-                    if (Renderer != null) {
-                        Renderer.ResolutionMultipler = Math.Sqrt(value.IntValue ?? 1);
-                    }
                 }
             }
 
@@ -389,86 +335,6 @@ namespace AcManager.Controls.CustomShowroom {
             }
             #endregion
 
-            #region Visual params, colors
-            private void UpdateColors() {
-                var value = Renderer;
-                if (value != null) {
-                    if (BackgroundColor != Colors.Transparent) {
-                        value.BackgroundColor = BackgroundColor.ToColor();
-                    } else {
-                        OnPropertyChanged(nameof(BackgroundColor));
-                    }
-
-                    var dark = value as DarkKn5ObjectRenderer;
-                    if (dark != null) {
-                        if (LightColor != Colors.Transparent) {
-                            dark.LightColor = LightColor.ToColor();
-                        } else {
-                            OnPropertyChanged(nameof(LightColor));
-                        }
-
-                        if (AmbientDownColor != Colors.Transparent) {
-                            dark.AmbientDown = AmbientDownColor.ToColor();
-                        } else {
-                            OnPropertyChanged(nameof(AmbientDownColor));
-                        }
-
-                        if (AmbientUpColor != Colors.Transparent) {
-                            dark.AmbientUp = AmbientUpColor.ToColor();
-                        } else {
-                            OnPropertyChanged(nameof(AmbientUpColor));
-                        }
-                    }
-                }
-            }
-
-            public Color BackgroundColor {
-                get { return Renderer?.BackgroundColor.ToColor() ?? Colors.Transparent; }
-                set {
-                    if (Equals(value, BackgroundColor)) return;
-                    if (Renderer != null) {
-                        Renderer.BackgroundColor = value.ToColor();
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            public DarkKn5ObjectRenderer DarkRenderer => Renderer as DarkKn5ObjectRenderer;
-
-            public Color LightColor {
-                get { return DarkRenderer?.LightColor.ToColor() ?? Colors.Transparent; }
-                set {
-                    if (Equals(value, LightColor)) return;
-                    if (DarkRenderer != null) {
-                        DarkRenderer.LightColor = value.ToColor();
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            public Color AmbientDownColor {
-                get { return DarkRenderer?.AmbientDown.ToColor() ?? Colors.Transparent; }
-                set {
-                    if (Equals(value, AmbientDownColor)) return;
-                    if (DarkRenderer != null) {
-                        DarkRenderer.AmbientDown = value.ToColor();
-                        OnPropertyChanged();
-                    }
-                }
-            }
-
-            public Color AmbientUpColor {
-                get { return DarkRenderer?.AmbientUp.ToColor() ?? Colors.Transparent; }
-                set {
-                    if (Equals(value, AmbientUpColor)) return;
-                    if (DarkRenderer != null) {
-                        DarkRenderer.AmbientUp = value.ToColor();
-                        OnPropertyChanged();
-                    }
-                }
-            }
-            #endregion
-
             #region Ambient Shadows
             private ICommand _toggleAmbientShadowModeCommand;
 
@@ -521,7 +387,7 @@ namespace AcManager.Controls.CustomShowroom {
             public int AmbientShadowIterations {
                 get { return _ambientShadowIterations; }
                 set {
-                    value = value.Round(100).Clamp(400, 4000);
+                    value = value.Round(100).Clamp(400, 8000);
                     if (Equals(value, _ambientShadowIterations)) return;
                     _ambientShadowIterations = value;
                     OnPropertyChanged();

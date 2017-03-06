@@ -18,13 +18,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
     public class DarkPreviewsOptions {
         public string PreviewName = "preview.jpg";
 
-        public double SsaaMultipler = 4d;
+        /// <summary>
+        /// Either ID or KN5’s filename.
+        /// </summary>
+        public string Showroom = null;
+
+        public double SsaaMultiplier = 4d;
         public int PreviewWidth = CommonAcConsts.PreviewWidth;
         public int PreviewHeight = CommonAcConsts.PreviewHeight;
         public bool UseFxaa = false;
         public bool UseMsaa = false;
         public int MsaaSampleCount = 4;
-        public double BloomRadiusMultipler = 1d;
+        public double BloomRadiusMultiplier = 1d;
         public bool HardwareDownscale = true;
 
         public bool WireframeMode = false;
@@ -41,7 +46,23 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double[] CameraLookAt = { 2.945, 0.384, 12.082 };
         public double CameraFov = 9d;
 
+        public bool AlignCar = false;
+        public bool AlignCamera = false;
+        public double[] AlignCameraOffset = { 0.0, 0.0, 0.0 };
+
         public bool FlatMirror = false;
+        public bool FlatMirrorBlurred = false;
+        public double FlatMirrorReflectiveness = 1d;
+
+        public bool UseSslr = false;
+        public bool UseSsao = false;
+        public bool EnableShadows = true;
+        public bool UsePcss = true;
+        public int ShadowMapSize = 4096;
+        public double ReflectionMultiplier = 1d;
+        public bool ReflectionCubemapAtCamera = true;
+        public bool NoShadowsWithReflections = true;
+
         public Color BackgroundColor = Color.Black;
         public Color LightColor = Color.FromArgb(0xffffff);
         public Color AmbientUp = Color.FromArgb(0xb4b496);
@@ -51,8 +72,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double LightBrightness = 1.5;
         public double[] LightDirection = { 0.2, 1.0, 0.8 };
 
+        public bool UseToneMapping = false;
+        public double ToneExposure = 0.8;
+        public double ToneGamma = 1.0;
+        public double ToneWhitePoint = 1.66;
+        public string ColorGradingFilename = null;
+
         public bool DelayedConvertation = true;
-        public bool AlignCar = true;
     }
 
     public class DarkPreviewsUpdater : IDisposable {
@@ -82,30 +108,59 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void UpdateCamera() {
             _renderer.SetCamera(
                     ToVector3(_options.CameraPosition), ToVector3(_options.CameraLookAt),
-                    (float)(MathF.PI / 180f * _options.CameraFov), _options.AlignCar);
+                    (float)(MathF.PI / 180f * _options.CameraFov));
+            
+            if (_options.AlignCar) {
+                _renderer.AlignCar();
+            }
+
+            if (_options.AlignCamera) {
+                _renderer.AlignCamera(ToVector3(_options.AlignCameraOffset));
+            }
         }
 
-        private static DarkKn5ObjectRenderer CreateRenderer(DarkPreviewsOptions options, CarDescription initialCar) {
-            var renderer = new DarkKn5ObjectRenderer(initialCar) {
+        private static DarkKn5ObjectRenderer CreateRenderer(string acRoot, DarkPreviewsOptions options, CarDescription initialCar) {
+            var showroom = options.Showroom;
+
+            if (showroom != null && !File.Exists(showroom)) {
+                var kn5 = Path.Combine(FileUtils.GetShowroomDirectory(acRoot, showroom), $"{showroom}.kn5");
+                showroom = File.Exists(kn5) ? kn5 : null;
+            }
+
+            var renderer = new DarkKn5ObjectRenderer(initialCar, showroom) {
                 // Obvious fixed settings
                 AutoRotate = false,
                 AutoAdjustTarget = false,
                 AsyncTexturesLoading = false,
 
                 // Size-related options
-                Width = (int)(options.PreviewWidth * options.SsaaMultipler),
-                Height = (int)(options.PreviewHeight * options.SsaaMultipler),
+                Width = (int)(options.PreviewWidth * options.SsaaMultiplier),
+                Height = (int)(options.PreviewHeight * options.SsaaMultiplier),
                 UseFxaa = options.UseFxaa,
                 UseMsaa = options.UseMsaa,
                 MsaaSampleCount = options.MsaaSampleCount,
                 KeepFxaaWhileShooting = true,
-                BloomRadiusMultipler = (float)(options.SsaaMultipler * options.BloomRadiusMultipler),
+                BloomRadiusMultiplier = (float)(options.SsaaMultiplier * options.BloomRadiusMultiplier),
 
                 // Switches
-                FlatMirror = options.FlatMirror,
                 ShowWireframe = options.WireframeMode,
                 MeshDebug = options.MeshDebugMode,
                 SuspensionDebug = options.SuspensionDebugMode,
+
+                // Flat mirror
+                FlatMirror = options.FlatMirror,
+                FlatMirrorBlurred = options.FlatMirrorBlurred,
+                FlatMirrorReflectiveness = (float)options.FlatMirrorReflectiveness,
+
+                // Cool effects
+                EnableShadows = options.EnableShadows,
+                UsePcss = options.UsePcss,
+                ShadowMapSize = options.ShadowMapSize,
+                UseSslr = options.UseSslr,
+                UseSsao = options.UseSsao,
+                MaterialsReflectiveness = (float)options.ReflectionMultiplier,
+                ReflectionCubemapAtCamera = options.ReflectionCubemapAtCamera,
+                ReflectionsWithShadows = !options.NoShadowsWithReflections,
 
                 // Colors
                 BackgroundColor = options.BackgroundColor,
@@ -117,6 +172,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 AmbientBrightness = (float)options.AmbientBrightness,
                 LightBrightness = (float)options.LightBrightness,
                 Light = ToVector3(options.LightDirection),
+
+                // Color
+                UseToneMapping = options.UseToneMapping,
+                ToneExposure = (float)options.ToneExposure,
+                ToneGamma = (float)options.ToneGamma,
+                ToneWhitePoint = (float)options.ToneWhitePoint,
+                ColorGradingFilename = options.ColorGradingFilename,
             };
 
             renderer.Initialize();
@@ -172,7 +234,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             var shotStream = new MemoryStream(_approximateSize ?? 100000);
 
-            _renderer.Shot(1d, _options.HardwareDownscale ? 1d / _options.SsaaMultipler : 1d, shotStream, true);
+            _renderer.Shot(1d, _options.HardwareDownscale ? 1d / _options.SsaaMultiplier : 1d, shotStream, true);
             if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
                 _approximateSize = (int)(shotStream.Position * 1.2);
             }
@@ -195,7 +257,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public void Shot(string carId, string skinId, string destination = null, DataWrapper carData = null) {
             if (_carId != carId) {
                 if (_renderer == null) {
-                    _renderer = CreateRenderer(_options, GetCarDescription(carId, carData));
+                    _renderer = CreateRenderer(_acRoot, _options, GetCarDescription(carId, carData));
                 } else {
                     _renderer.SetCar(GetCarDescription(carId, carData), skinId);
                     _renderer.CarNode?.OnTick(float.MaxValue);
@@ -212,7 +274,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public async Task ShotAsync(string carId, string skinId, string destination = null, DataWrapper carData = null) {
             if (_carId != carId) {
                 if (_renderer == null) {
-                    _renderer = await Task.Run(() => CreateRenderer(_options, GetCarDescription(carId, carData))).ConfigureAwait(false);
+                    _renderer = await Task.Run(() => CreateRenderer(_acRoot, _options, GetCarDescription(carId, carData))).ConfigureAwait(false);
                 } else {
                     _renderer.SetCar(GetCarDescription(carId, carData), skinId);
                 }
