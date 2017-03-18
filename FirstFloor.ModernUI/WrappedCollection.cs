@@ -60,7 +60,8 @@ namespace FirstFloor.ModernUI {
         }
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (_items == null) {
+            var items = _items;
+            if (items == null) {
                 Reset();
                 return;
             }
@@ -71,42 +72,42 @@ namespace FirstFloor.ModernUI {
                         Reset();
                     } else {
                         var item = Wrap((TSource)e.NewItems[0]);
-                        _items.Insert(e.NewStartingIndex, item);
+                        items.Insert(e.NewStartingIndex, item);
                         OnCountAndIndexerChanged();
                         OnCollectionChanged(NotifyCollectionChangedAction.Add, item, e.NewStartingIndex);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (e.OldItems == null || e.OldItems.Count != 1 || e.NewItems != null && e.NewItems.Count > 0 ||
-                            e.OldStartingIndex >= _items.Count) {
+                            e.OldStartingIndex >= items.Count) {
                         Reset();
                     } else {
-                        var item = _items[e.OldStartingIndex];
-                        _items.RemoveAt(e.OldStartingIndex);
+                        var item = items[e.OldStartingIndex];
+                        items.RemoveAt(e.OldStartingIndex);
                         OnCountAndIndexerChanged();
                         OnCollectionChanged(NotifyCollectionChangedAction.Remove, item, e.OldStartingIndex);
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     if (e.OldItems != null && e.OldItems.Count != 1 || e.NewItems == null || e.NewItems.Count != 1 ||
-                            e.OldStartingIndex >= _items.Count) {
+                            e.OldStartingIndex >= items.Count) {
                         Reset();
                     } else {
-                        var oldItem = _items[e.OldStartingIndex];
+                        var oldItem = items[e.OldStartingIndex];
                         var newItem = Wrap((TSource)e.NewItems[0]);
-                        _items[e.OldStartingIndex] = newItem;
+                        items[e.OldStartingIndex] = newItem;
                         OnIndexerChanged();
                         OnCollectionChanged(NotifyCollectionChangedAction.Replace, oldItem, newItem, e.OldStartingIndex);
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
                     if (e.OldItems != null && e.OldItems.Count != 1 || e.NewItems != null && e.NewItems.Count != 1 ||
-                            e.OldStartingIndex >= _items.Count) {
+                            e.OldStartingIndex >= items.Count) {
                         Reset();
                     } else {
-                        var item = _items[e.OldStartingIndex];
-                        _items.RemoveAt(e.OldStartingIndex);
-                        _items.Insert(e.NewStartingIndex, item);
+                        var item = items[e.OldStartingIndex];
+                        items.RemoveAt(e.OldStartingIndex);
+                        items.Insert(e.NewStartingIndex, item);
 
                         OnIndexerChanged();
                         OnCollectionChanged(NotifyCollectionChangedAction.Move, item, e.NewStartingIndex, e.OldStartingIndex);

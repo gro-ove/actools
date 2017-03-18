@@ -7,6 +7,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcManager.Tools.Managers.Presets {
@@ -54,7 +55,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         public static event EventHandler<PresetSavedEventArgs> PresetSaved;
 
-        public bool SavePresetUsingDialog(string key, string category, string data, string filename) {
+        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] string category, [CanBeNull] string data, [CanBeNull] string filename) {
             if (data == null) {
                 return false;
             }
@@ -87,7 +88,9 @@ namespace AcManager.Tools.Managers.Presets {
             }
             
             File.WriteAllText(filename, data);
-            PresetSaved?.Invoke(this, new PresetSavedEventArgs(key, filename));
+            if (key != null) {
+                PresetSaved?.Invoke(this, new PresetSavedEventArgs(key, filename));
+            }
             return true;
         }
     }

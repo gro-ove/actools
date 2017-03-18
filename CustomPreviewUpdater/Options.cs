@@ -61,7 +61,7 @@ namespace CustomPreviewUpdater {
         public int MsaaSampleCount { get; set; }
 
         [Option("software-downscale", HelpText = "Use software downscale, notably slower.")]
-        public bool SoftwareDownscale { get; set; }
+        public bool SoftwareDownsize { get; set; }
 
         /* MISC PARAMS */
         [Option("name", DefaultValue = "preview.jpg", HelpText = "Names of preview files.")]

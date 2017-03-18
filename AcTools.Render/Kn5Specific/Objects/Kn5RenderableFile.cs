@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -105,11 +106,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public readonly Kn5 OriginalFile;
 
-        private Kn5RenderableList _rootObject;
         private List<Kn5RenderableList> _dummies;
         private List<IKn5RenderableObject> _meshes;
 
-        public Kn5RenderableList RootObject {
+        private RenderableList _rootObject;
+
+        public RenderableList RootObject {
             get { return _rootObject; }
             protected set {
                 if (_rootObject != null) {
@@ -134,7 +136,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             AllowSkinnedObjects = allowSkinnedObjects;
             OriginalFile = kn5;
             AsyncTexturesLoading = asyncTexturesLoading;
-            RootObject = (Kn5RenderableList)Convert(kn5.RootNode, AllowSkinnedObjects);
+
+            var obj = Convert(kn5.RootNode, AllowSkinnedObjects);
+            RootObject = obj as RenderableList ?? new RenderableList { obj };
             Add(RootObject);
         }
 
@@ -148,7 +152,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _modelMatrixInvertedDirty = true;
         }
 
-        public void UpdateModelMatrixInverted() {
+        protected void UpdateModelMatrixInverted() {
             if (!_modelMatrixInvertedDirty) return;
             _modelMatrixInvertedDirty = false;
 
@@ -156,6 +160,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             foreach (var dummy in Dummies) {
                 dummy.ModelMatrixInverted = inverted;
             }
+
             foreach (var dummy in Meshes) {
                 dummy.ModelMatrixInverted = inverted;
             }
@@ -200,7 +205,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref TexturesProvider);
         }
 
-        public static IRenderableObject Convert(Kn5Node node, bool allowSkinnedObjects) {
+        protected static IRenderableObject Convert(Kn5Node node, bool allowSkinnedObjects) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
                     return new Kn5RenderableList(node, n => Convert(n, allowSkinnedObjects));

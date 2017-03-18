@@ -12,9 +12,7 @@ namespace AcTools.Utils.Helpers {
 
         [ContractAnnotation("a:null, b:null => null; a:notnull => notnull; b:notnull => notnull")]
         public static IDisposable Join(this IDisposable a, IDisposable b) {
-            if (b == null) return a;
-            if (a == null) return b;
-            return new CombinedDisposable(a, b);
+            return b == null ? a : (a == null ? b : new CombinedDisposable(a, b));
         }
 
         private class CombinedDisposable : IDisposable {

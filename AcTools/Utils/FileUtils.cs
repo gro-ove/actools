@@ -239,7 +239,7 @@ namespace AcTools.Utils {
         public static string GetOriginalFilename(string filename) {
             var directory = Path.GetDirectoryName(filename);
             var name = Path.GetFileName(filename);
-            if (directory == null) return filename;
+            if (directory == null || name == null) return filename;
             return Directory.GetFiles(directory, name).FirstOrDefault() ??
                     Directory.GetDirectories(directory, name).FirstOrDefault() ?? filename;
         }

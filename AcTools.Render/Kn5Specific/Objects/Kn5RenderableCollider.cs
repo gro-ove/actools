@@ -10,7 +10,11 @@ using SlimDX;
 namespace AcTools.Render.Kn5Specific.Objects {
     public class Kn5RenderableCollider : Kn5RenderableFile {
         public Kn5RenderableCollider(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, bool allowSkinnedObjects = false)
-                : base(kn5, matrix, asyncTexturesLoading, allowSkinnedObjects) {}
+                : base(kn5, matrix, asyncTexturesLoading, allowSkinnedObjects) {
+            foreach (var mesh in Meshes) {
+                mesh.SetTransparent(true);
+            }
+        }
 
         protected override Kn5SharedMaterials InitializeMaterials(IDeviceContextHolder contextHolder) {
             return new ColliderSharedMaterials(contextHolder, OriginalFile);

@@ -797,17 +797,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
                     try {
                         if (OptionEnsureCacheIsFresh) {
-                            var info = new FileInfo(GetActualFilename(Filename));
-                            if (!info.Exists) {
-                                SetCurrent(BitmapEntry.Empty, true);
-                                return false;
-                            }
-
-                            if (info.LastWriteTime > cached.Date) {
+                            var actual = GetActualFilename(Filename);
+                            if (actual == null) {
                                 RemoveFromCache(Filename);
                             } else {
-                                SetCurrent(cached, true);
-                                return false;
+                                var info = new FileInfo(actual);
+                                if (!info.Exists) {
+                                    SetCurrent(BitmapEntry.Empty, true);
+                                    return false;
+                                }
+
+                                if (info.LastWriteTime > cached.Date) {
+                                    RemoveFromCache(Filename);
+                                } else {
+                                    SetCurrent(cached, true);
+                                    return false;
+                                }
                             }
                         } else {
                             SetCurrent(cached, true);

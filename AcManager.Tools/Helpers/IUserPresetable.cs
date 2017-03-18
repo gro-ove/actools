@@ -11,8 +11,10 @@ namespace AcManager.Tools.Helpers {
         [NotNull]
         string PresetableKey { get; }
 
+        [CanBeNull]
         string DefaultPreset { get; }
 
+        [CanBeNull]
         string ExportToPresetData();
 
         event EventHandler Changed;

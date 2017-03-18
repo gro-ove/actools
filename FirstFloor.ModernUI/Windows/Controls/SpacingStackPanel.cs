@@ -34,12 +34,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var child = InternalChildren[i];
                     child.Measure(childConstraint);
 
-                    var desiredSize = child.DesiredSize;
-                    if (desiredSize.Width > maxWidth) {
-                        maxWidth = desiredSize.Width;
+                    if (child.Visibility != Visibility.Collapsed) {
+                        var desiredSize = child.DesiredSize;
+                        if (desiredSize.Width > maxWidth) {
+                            maxWidth = desiredSize.Width;
+                        }
+
+                        summaryHeight += desiredSize.Height;
                     }
-                    
-                    summaryHeight += desiredSize.Height;
                 }
 
                 return new Size(maxWidth, summaryHeight);
@@ -51,12 +53,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var child = InternalChildren[i];
                     child.Measure(childConstraint);
 
-                    var desiredSize = child.DesiredSize;
-                    if (desiredSize.Height > maxHeight) {
-                        maxHeight = desiredSize.Height;
+                    if (child.Visibility != Visibility.Collapsed) {
+                        var desiredSize = child.DesiredSize;
+                        if (desiredSize.Height > maxHeight) {
+                            maxHeight = desiredSize.Height;
+                        }
+
+                        summaryWidth += desiredSize.Width;
                     }
-                    
-                    summaryWidth += desiredSize.Width;
                 }
 
                 return new Size(summaryWidth, maxHeight);

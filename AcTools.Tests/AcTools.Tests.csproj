@@ -71,6 +71,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DataWrapperTest.cs" />
+    <Compile Include="ExifCommentTest.cs" />
+    <Compile Include="Kn5ReadWriteTest.cs" />
     <Compile Include="SortedListTest.cs" />
     <Compile Include="SublistTest.cs" />
     <Compile Include="Temporary.cs" />

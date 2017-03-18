@@ -23,7 +23,7 @@ float4 GetReflection(float3 posW, float3 normal, float alpha) {
 	float3 refl = GetReflection(reflected, gMaterial.SpecularExp);
 
 	float val = GetReflectionStrength(normal, toEyeW);
-	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
+	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
 }
 
 float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specularExpMultipler, float reflectionMultipler) {
@@ -32,7 +32,12 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
 
 	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultipler;
-	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
+	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
+}
+
+float2 EncodeNormal(float3 n){
+	float p = sqrt(n.z * 8 + 8);
+	return float2(n.xy / p + 0.5);
 }
 
 PS_OUT PackResult(float4 reflection, float3 normal, float depth, float specularExp) {

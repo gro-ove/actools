@@ -17,6 +17,17 @@ namespace AcTools.Render.Base {
             return Scene.GetTrianglesCount();
         }
 
+        private bool _lockCamera;
+
+        public bool LockCamera {
+            get { return _lockCamera; }
+            set {
+                if (Equals(value, _lockCamera)) return;
+                _lockCamera = value;
+                OnPropertyChanged();
+            }
+        }
+
         protected override void ResizeInner() {
             Camera?.SetLens(AspectRatio);
         }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
@@ -280,29 +281,29 @@ namespace AcManager.Tools.AcErrors {
 
                 case AcErrorType.CarSkin_PreviewIsMissing:
                     return new ISolution[] {
-                        new MultiSolution(
+                        new AsyncMultiSolution(
                                 AppStrings.Solution_GeneratePreview,
                                 AppStrings.Solution_GeneratePreview_Details,
-                                e => {
+                                async e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
                                     var skinIds = list.Select(x => x.Target.Id).ToArray();
-                                    if (!new CarUpdatePreviewsDialog(CarsManager.Instance.GetById(carId), skinIds,
-                                            SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog()) {
-                                        throw new SolvingException();
-                                    }
+                                    var car = CarsManager.Instance.GetById(carId);
+                                    if (car == null) throw new SolvingException();
+
+                                    await new ToUpdatePreview(car, skinIds).Run();
                                 }) { IsUiSolution = true },
-                        new MultiSolution(
+                        new AsyncMultiSolution(
                                 AppStrings.Solution_SetupPreview,
                                 AppStrings.Solution_SetupPreview_Details,
-                                e => {
+                                async e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
                                     var skinIds = list.Select(x => x.Target.Id).ToArray();
-                                    if (!new CarUpdatePreviewsDialog(CarsManager.Instance.GetById(carId), skinIds,
-                                            CarUpdatePreviewsDialog.DialogMode.Options).ShowDialog()) {
-                                        throw new SolvingException();
-                                    }
+                                    var car = CarsManager.Instance.GetById(carId);
+                                    if (car == null) throw new SolvingException();
+
+                                    await new ToUpdatePreview(car, skinIds).Run(UpdatePreviewMode.Options);
                                 }) { IsUiSolution = true }
                     };
 

@@ -152,17 +152,18 @@ namespace AcManager {
 
         [NotNull]
         private byte[] GetData(string id) {
-            var bytes = _references?.GetObject(id) as byte[];
+            var references = _references;
+            var bytes = references?.GetObject(id) as byte[];
             if (bytes == null) throw new Exception("Data is missing");
 
-            var key = _references.GetObject(id + "//encrypted") as byte[];
+            var key = references.GetObject(id + "//encrypted") as byte[];
             if (key != null) {
                 Xor(bytes, key);
             }
 
-            if (_references.GetObject(id + "//compressed/lzf") as bool? == true) {
+            if (references.GetObject(id + "//compressed/lzf") as bool? == true) {
                 bytes = DecompressLzfSmart(bytes);
-            } else if (_references.GetObject(id + "//compressed") as bool? == true) {
+            } else if (references.GetObject(id + "//compressed") as bool? == true) {
                 using (var memory = new MemoryStream(bytes))
                 using (var output = new MemoryStream(bytes.Length * 2)) {
                     using (var decomp = new DeflateStream(memory, CompressionMode.Decompress)) {

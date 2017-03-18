@@ -305,7 +305,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _wheelMode = true;
 
             var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
-            foreach (var entry in nodes.Select(x => _carNode.GetDummyByName(x)).Select((x, i) => new {
+            foreach (var entry in nodes.Select(x => _carNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
                 Node = x,
                 Matrix = Matrix.Translation(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f),
                 Filename = $"tyre_{i}_shadow.png"
@@ -390,6 +390,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public void SetEmissive(Vector3? color) {}
 
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
+
+        public void SetTransparent(bool? isTransparent) {}
 
         private static InputLayouts.VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
             var size = vertices.Length;

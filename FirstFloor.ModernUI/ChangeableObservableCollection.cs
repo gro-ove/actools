@@ -118,9 +118,10 @@ namespace FirstFloor.ModernUI {
         protected event PropertyChangedEventHandler PropertyChanged;
         
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            if (CollectionChanged == null) return;
+            var c = CollectionChanged;
+            if (c == null) return;
             using (BlockReentrancy()) {
-                CollectionChanged.Invoke(this, e);
+                c.Invoke(this, e);
             }
         }
 

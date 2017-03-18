@@ -17,6 +17,8 @@ namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
         private readonly ForwardKn5ObjectRenderer _renderer;
 
+        public bool ReplaceableShowroom { get; set; }
+
         private bool _editMode;
 
         public bool EditMode {
@@ -62,9 +64,7 @@ namespace AcTools.Render.Wrapper {
             Form.Top = (Screen.PrimaryScreen.WorkingArea.Height - Form.Height) / 2;
             Form.TopMost = false;
             Kn5ObjectRenderer.VisibleUi = true;
-
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+            UpdateSize();
         }
 
         protected virtual void GoToToolMode() {
@@ -75,9 +75,7 @@ namespace AcTools.Render.Wrapper {
             Form.Left = 80;
             Form.TopMost = true;
             Kn5ObjectRenderer.VisibleUi = false;
-
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+            UpdateSize();
         }
 
         private static readonly Vector2[] Directions = {
@@ -234,20 +232,27 @@ namespace AcTools.Render.Wrapper {
                     }
                     break;
 
-                case Keys.A:
+                case Keys.T:
                     if (!args.Control && !args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.UseSsao = !d.UseSsao;
-                        }
+                        _renderer.ToneMapping = _renderer.ToneMapping.NextValue();
                     }
-                    if (!args.Control && !args.Alt && args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.SsaoDebug = !d.SsaoDebug;
+                    break;
+
+                case Keys.A: {
+                    var d = _renderer as DarkKn5ObjectRenderer;
+                    if (d != null) {
+                        if (!args.Control && !args.Alt && !args.Shift) {
+                            d.UseAo = !d.UseAo;
+                        }
+                        if (!args.Control && !args.Alt && args.Shift) {
+                            d.AoDebug = !d.AoDebug;
+                        }
+                        if (args.Control && !args.Alt && args.Shift) {
+                            d.AoType = d.AoType.NextValue();
                         }
                     }
                     break;
+                }
 
                 /*case Keys.T:
                     if (!args.Control && !args.Alt && !args.Shift) {
@@ -259,32 +264,36 @@ namespace AcTools.Render.Wrapper {
                     break;*/
 
                 case Keys.Space:
-                    if (!args.Control && args.Alt && !args.Shift) {
+                    if (!args.Control && args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;
                     }
                     break;
 
                 case Keys.End:
-                    _renderer.AutoAdjustTarget = !_renderer.AutoAdjustTarget;
+                    if (!Kn5ObjectRenderer.LockCamera) {
+                        _renderer.AutoAdjustTarget = !_renderer.AutoAdjustTarget;
+                    }
                     break;
 
                 case Keys.F1:
-                    if (!args.Control && !args.Alt && !args.Shift) {
+                    if (!args.Control && !args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         _renderer.NextCamera();
                     }
                     break;
 
                 case Keys.F6:
-                    if (!args.Control && !args.Alt && !args.Shift) {
+                    if (!args.Control && !args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         _renderer.NextExtraCamera();
                     }
                     break;
 
                 case Keys.F7:
-                    if (args.Alt) {
-                        _renderer.UseInterpolationCamera = !_renderer.UseInterpolationCamera;
-                    } else {
-                        _renderer.UseFpsCamera = !_renderer.UseFpsCamera;
+                    if (!Kn5ObjectRenderer.LockCamera) {
+                        if (args.Alt) {
+                            _renderer.UseInterpolationCamera = !_renderer.UseInterpolationCamera;
+                        } else {
+                            _renderer.UseFpsCamera = !_renderer.UseFpsCamera;
+                        }
                     }
                     break;
 
@@ -378,7 +387,7 @@ namespace AcTools.Render.Wrapper {
                     if (!args.Control &&! args.Alt && !args.Shift) {
                         var d = _renderer as DarkKn5ObjectRenderer;
                         if (d != null) {
-                            d.CubemapAmbient = !d.CubemapAmbient;
+                            d.CubemapAmbient = d.CubemapAmbient != 0f ? 0f : 0.5f;
                         }
                     } else if (args.Control &&! args.Alt && !args.Shift) {
                         var d = _renderer as DarkKn5ObjectRenderer;
@@ -394,7 +403,7 @@ namespace AcTools.Render.Wrapper {
                             _renderer.CarNode.BlurredNodesActive = !_renderer.CarNode.BlurredNodesActive;
                         }
                     } else if (!args.Control && !args.Alt && args.Shift) {
-                        _renderer.UseToneMapping = !_renderer.UseToneMapping;
+                        _renderer.ToneMapping = _renderer.ToneMapping == ToneMappingFn.None ? ToneMappingFn.Reinhard : ToneMappingFn.Filmic;
                     } else if (args.Control && !args.Alt && !args.Shift) {
                         _renderer.UseColorGrading = !_renderer.UseColorGrading;
                     } else {
@@ -507,8 +516,15 @@ namespace AcTools.Render.Wrapper {
                         }
                     }
                     if (!args.Control && !args.Alt && !args.Shift) {
-                        if (_renderer.CarNode != null) {
-                            //_renderer.CarNode.WingsTest = !_renderer.CarNode.WingsTest;
+                        if (ReplaceableShowroom) {
+                            var dialog = new OpenFileDialog {
+                                Title = @"Select Showroom",
+                                Filter = @"KN5 Files (*.kn5)|*.kn5"
+                            };
+
+                            if (dialog.ShowDialog() == DialogResult.OK) {
+                                _renderer.SetShowroom(dialog.FileName);
+                            }
                         }
                     }
                     if (!args.Control && args.Alt && !args.Shift) {

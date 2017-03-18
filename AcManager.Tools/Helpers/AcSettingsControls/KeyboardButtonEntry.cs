@@ -41,8 +41,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
-            section.SetCommentary("KEY", Input?.DisplayName);
-            section.Set("KEY", Input == null || !CheckValue(Input.Id) ? @"-1" : @"0x" + Input.Id.ToString(@"X"));
+            var input = Input;
+            section.SetCommentary("KEY", input?.DisplayName);
+            section.Set("KEY", input == null || !CheckValue(input.Id) ? @"-1" : @"0x" + input.Id.ToString(@"X"));
         }
     }
 }

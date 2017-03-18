@@ -410,17 +410,18 @@ namespace AcTools.Render.Deferred {
         protected virtual void DrawSpritesInner() {}
 
         protected sealed override void DrawSprites() {
-            if (Sprite == null) throw new NotSupportedException();
+            var sprite = Sprite;
+            if (sprite == null) throw new NotSupportedException();
 
             // drawing GUI
-            Sprite.HandleBlendState = false;
-            Sprite.HandleDepthStencilState = false;
+            sprite.HandleBlendState = false;
+            sprite.HandleDepthStencilState = false;
 
             DeviceContext.OutputMerger.SetTargets(_temporaryBuffer0.TargetView);
             DeviceContext.ClearRenderTargetView(_temporaryBuffer0.TargetView, Color.Transparent);
 
             DrawSpritesInner();
-            Sprite.Flush();
+            sprite.Flush();
 
             // blurring
             DeviceContext.OutputMerger.BlendState = null;

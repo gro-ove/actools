@@ -1,4 +1,5 @@
 ﻿using System;
+using AcTools.Render.Base;
 using JetBrains.Annotations;
 using SlimDX.Direct3D11;
 
@@ -12,6 +13,6 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         bool IsDisposed { get; }
 
-        void SetProceduralOverride(Device device, [CanBeNull] byte[] textureBytes);
+        void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] byte[] textureBytes);
     }
 }

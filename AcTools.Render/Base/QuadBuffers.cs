@@ -11,15 +11,15 @@ namespace AcTools.Render.Base {
 
         public QuadBuffers(Device device) {
             _verticesStream = new DataStream(new[] {
-                new InputLayouts.VerticePT(new Vector3(-1, -1, 0.999f), new Vector2(0, 1)),
-                new InputLayouts.VerticePT(new Vector3(-1, 1, 0.999f), new Vector2(0, 0)),
                 new InputLayouts.VerticePT(new Vector3(1, 1, 0.999f), new Vector2(1, 0)),
+                new InputLayouts.VerticePT(new Vector3(-1, 1, 0.999f), new Vector2(0, 0)),
+                new InputLayouts.VerticePT(new Vector3(-1, -1, 0.999f), new Vector2(0, 1)),
                 new InputLayouts.VerticePT(new Vector3(1, -1, 0.999f), new Vector2(1, 1))
             }, false, false);
             _verticesBuffer = new Buffer(device, _verticesStream, new BufferDescription(InputLayouts.VerticePT.StrideValue * 4,
                     ResourceUsage.Immutable, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
 
-            _indicesStream = new DataStream(new ushort[] { 0, 1, 2, 0, 2, 3 }, false, false);
+            _indicesStream = new DataStream(new ushort[] { 0, 2, 1, 0, 3, 2 }, false, false);
             _indicesBuffer = new Buffer(device, _indicesStream, new BufferDescription(sizeof(short) * 6,
                     ResourceUsage.Immutable, BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0));
 

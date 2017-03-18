@@ -59,6 +59,10 @@
         return float3(pVP.xy, pVP.z / pVP.w);
     }
 
+	float3 GetNormal(float2 coords) {
+		return gNormalMap.Sample(samLinear, coords).xyz;
+	}
+
 // one vertex shader for everything
     PS_IN vs_main(VS_IN vin) {
         PS_IN vout;
@@ -67,12 +71,8 @@
         return vout;
     }
 
-	float3 GetNormal(float2 coords) {
-		return gNormalMap.Sample(samLinear, coords).xyz;
-	}
-
 // hard-coded consts
-	#define RADIUS 0.23
+	#define RADIUS 0.15
 	#define NORMAL_BIAS 0.01
 
 // new

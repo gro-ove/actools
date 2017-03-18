@@ -1,5 +1,7 @@
 ﻿namespace AcTools {
     public static class AcToolsInformation {
-        public static string Name => $"AcTools {typeof(AcToolsInformation).Assembly.GetName().Version}";
+        private static string _name;
+
+        public static string Name => _name ?? (_name = $"AcTools {typeof(AcToolsInformation).Assembly.GetName().Version}");
     }
 }

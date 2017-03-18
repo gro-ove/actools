@@ -35,7 +35,7 @@ namespace AcManager.Tools.Helpers {
         void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load);
     }
 
-    public class SaveHelper<T> : ISaveHelper {
+    public class SaveHelper<T> : ISaveHelper where T : class {
         [CanBeNull]
         private readonly string _key;
         private readonly Func<T> _save;
@@ -130,16 +130,12 @@ namespace AcManager.Tools.Helpers {
                 LoadInner(data);
                 return true;
             } catch (Exception e) {
-                Logging.Warning("Cannot load data: " + e);
+                Logging.Error(e);
             } finally {
                 IsLoading = false;
             }
 
             return false;
-        }
-
-        private static string Serialize<TAny>(TAny obj) {
-            return (obj as IJsonSerializable)?.ToJson() ?? JsonConvert.SerializeObject(obj);
         }
 
         public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);
@@ -154,7 +150,7 @@ namespace AcManager.Tools.Helpers {
                 IsLoading = disableSaving;
                 LoadInner(data);
             } catch (Exception e) {
-                Logging.Warning("Cannot load data: " + e);
+                Logging.Error(e);
             } finally {
                 IsLoading = false;
             }
@@ -169,11 +165,12 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void Save() {
-            if (_key == null) return;
+            var key = _key;
+            if (key == null) return;
 
             var serialized = ToSerializedString();
             if (serialized == null) return;
-            ValuesStorage.Set(_key, serialized);
+            ValuesStorage.Set(key, serialized);
         }
 
         private bool _savingInProgress;
@@ -190,6 +187,29 @@ namespace AcManager.Tools.Helpers {
             
             Save();
             _savingInProgress = false;
+        }
+
+        [CanBeNull, Pure]
+        public static T Load([NotNull] string key) {
+            return LoadSerialized(ValuesStorage.GetString(key));
+        }
+
+        [CanBeNull, Pure]
+        public static T LoadSerialized([CanBeNull] string data) {
+            if (data != null) {
+                try {
+                    return JsonConvert.DeserializeObject<T>(data);
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
+            return null;
+        }
+
+        [CanBeNull, Pure]
+        public static string Serialize(T obj) {
+            return (obj as IJsonSerializable)?.ToJson() ?? JsonConvert.SerializeObject(obj);
         }
     }
 }

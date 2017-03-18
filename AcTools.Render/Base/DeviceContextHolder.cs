@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.PostEffects;
@@ -7,11 +8,13 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using Debug = System.Diagnostics.Debug;
 using Device = SlimDX.Direct3D11.Device;
 using MapFlags = SlimDX.Direct3D11.MapFlags;
 
@@ -43,8 +46,10 @@ namespace AcTools.Render.Base {
 
         void RaiseTexturesUpdated();
 
+        [NotNull]
         ShaderResourceView GetRandomTexture(int width, int height);
 
+        [NotNull]
         ShaderResourceView GetFlatNmTexture();
     }
 
@@ -222,88 +227,146 @@ namespace AcTools.Render.Base {
 
         public CommonStates States => _states ?? (_states = new CommonStates(Device));
 
-        private readonly Dictionary<Tuple<int, int>, TargetResourceTexture> _randomTextures =
-                new Dictionary<Tuple<int, int>, TargetResourceTexture>();
+        private readonly Dictionary<Tuple<int, int>, ShaderResourceView> _randomTextures =
+                new Dictionary<Tuple<int, int>, ShaderResourceView>();
 
         public ShaderResourceView GetRandomTexture(int width, int height) {
             var size = Tuple.Create(width, height);
-            TargetResourceTexture texture;
+            ShaderResourceView texture;
 
             if (!_randomTextures.TryGetValue(size, out texture)) {
-                var effect = GetEffect<EffectSpecialRandom>();
-                texture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-                texture.Resize(this, width, height, null);
-                DeviceContext.Rasterizer.SetViewports(texture.Viewport);
-                DeviceContext.OutputMerger.SetTargets(texture.TargetView);
-                PrepareQuad(effect.LayoutPT);
-                effect.TechMain.DrawAllPasses(DeviceContext, 6);
-
+                texture = CreateTexture(width, height, (x, y) => Color.FromArgb((int)(MathUtils.Random() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
                 _randomTextures[size] = texture;
             }
 
-            return texture.View;
+            return texture;
         }
-
-        private Texture2D _flatNmTexture;
+        
         private ShaderResourceView _flatNmView;
 
-        public ShaderResourceView GetFlatNmTexture() {
-            if (_flatNmView == null) {
-                _flatNmTexture = new Texture2D(Device, new Texture2DDescription {
-                    SampleDescription = new SampleDescription(1, 0),
-                    Width = 4,
-                    Height = 4,
-                    MipLevels = 1,
-                    ArraySize = 1,
-                    Format = Format.R8G8B8A8_UNorm,
-                    Usage = ResourceUsage.Dynamic,
-                    BindFlags = BindFlags.ShaderResource,
-                    CpuAccessFlags = CpuAccessFlags.Write
-                });
-                
-                var rect = DeviceContext.MapSubresource(_flatNmTexture, 0, MapMode.WriteDiscard, MapFlags.None);
-                if (rect.Data.CanWrite) {
-                    for (var row = 0; row < _flatNmTexture.Description.Height; row++) {
-                        var rowStart = row * rect.RowPitch;
-                        rect.Data.Seek(rowStart, System.IO.SeekOrigin.Begin);
-                        for (var col = 0; col < _flatNmTexture.Description.Width; col++) {
-                            rect.Data.WriteByte(127);
-                            rect.Data.WriteByte(127);
-                            rect.Data.WriteByte(255);
-                            rect.Data.WriteByte(255);
-                        }
+        public delegate Color FillColor(int x, int y);
+
+        [NotNull]
+        public ShaderResourceView CreateTexture(int width, int height, FillColor fill) {
+            var texture = new Texture2D(Device, new Texture2DDescription {
+                SampleDescription = new SampleDescription(1, 0),
+                Width = width,
+                Height = height,
+                MipLevels = 1,
+                ArraySize = 1,
+                Format = Format.R8G8B8A8_UNorm,
+                Usage = ResourceUsage.Dynamic,
+                BindFlags = BindFlags.ShaderResource,
+                CpuAccessFlags = CpuAccessFlags.Write
+            });
+
+            var rect = DeviceContext.MapSubresource(texture, 0, MapMode.WriteDiscard, MapFlags.None);
+            if (rect.Data.CanWrite) {
+                for (var y = 0; y < width; y++) {
+                    var rowStart = y * rect.RowPitch;
+                    rect.Data.Seek(rowStart, System.IO.SeekOrigin.Begin);
+                    for (var x = 0; x < width; x++) {
+                        var c = fill.Invoke(x, y);
+                        rect.Data.WriteByte(c.R);
+                        rect.Data.WriteByte(c.G);
+                        rect.Data.WriteByte(c.B);
+                        rect.Data.WriteByte(c.A);
                     }
                 }
-
-                DeviceContext.UnmapSubresource(_flatNmTexture, 0);
-
-                _flatNmView = new ShaderResourceView(Device, _flatNmTexture, new ShaderResourceViewDescription {
-                    Format = _flatNmTexture.Description.Format,
-                    Dimension = ShaderResourceViewDimension.Texture2D,
-                    MostDetailedMip = 0,
-                    MipLevels = 1
-                });
             }
 
-            return _flatNmView;
+            DeviceContext.UnmapSubresource(texture, 0);
+
+            var view = new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
+                Format = texture.Description.Format,
+                Dimension = ShaderResourceViewDimension.Texture2D,
+                MostDetailedMip = 0,
+                MipLevels = 1
+            });
+
+            texture.Dispose();
+            return view;
+        }
+
+        public delegate Color4 FillColor4(int x, int y);
+
+        [NotNull]
+        public ShaderResourceView CreateTexture(int width, int height, FillColor4 fill) {
+            var texture = new Texture2D(Device, new Texture2DDescription {
+                SampleDescription = new SampleDescription(1, 0),
+                Width = width,
+                Height = height,
+                MipLevels = 1,
+                ArraySize = 1,
+                Format = Format.R32G32B32A32_Float,
+                Usage = ResourceUsage.Dynamic,
+                BindFlags = BindFlags.ShaderResource,
+                CpuAccessFlags = CpuAccessFlags.Write
+            });
+
+            var rect = DeviceContext.MapSubresource(texture, 0, MapMode.WriteDiscard, MapFlags.None);
+            if (rect.Data.CanWrite) {
+                for (var y = 0; y < width; y++) {
+                    var rowStart = y * rect.RowPitch;
+                    rect.Data.Seek(rowStart, System.IO.SeekOrigin.Begin);
+                    for (var x = 0; x < width; x++) {
+                        var c = fill.Invoke(x, y);
+                        rect.Data.Write(c.Red);
+                        rect.Data.Write(c.Green);
+                        rect.Data.Write(c.Blue);
+                        rect.Data.Write(c.Alpha);
+                    }
+                }
+            }
+
+            DeviceContext.UnmapSubresource(texture, 0);
+
+            var view = new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
+                Format = texture.Description.Format,
+                Dimension = ShaderResourceViewDimension.Texture2D,
+                MostDetailedMip = 0,
+                MipLevels = 1
+            });
+
+            texture.Dispose();
+            return view;
+        }
+
+        public ShaderResourceView GetFlatNmTexture() {
+            return _flatNmView ?? (_flatNmView = CreateTexture(4, 4, (x, y) => Color.FromArgb(255, 127, 127, 255)));
         }
 
         public void Dispose() {
+            Debug.WriteLine("DeviceContextHolder.Dispose()");
+
             DisposeHelper.Dispose(ref _states);
+            Debug.WriteLine("_states disposed");
+
             DisposeHelper.Dispose(ref _quadBuffers);
+            Debug.WriteLine("_quadBuffers disposed");
 
             _effects.DisposeEverything();
+            Debug.WriteLine("_effects disposed");
+
             _helpers.DisposeEverything();
+            Debug.WriteLine("_helpers disposed");
+
             _randomTextures.DisposeEverything();
+            Debug.WriteLine("_randomTextures disposed");
+
             DisposeHelper.Dispose(ref _flatNmView);
-            DisposeHelper.Dispose(ref _flatNmTexture);
+            Debug.WriteLine("_flatNm disposed");
+
             _something.Values.OfType<IDisposable>().DisposeEverything();
             _something.Clear();
+            Debug.WriteLine("_something disposed");
 
             DeviceContext.ClearState();
             DeviceContext.Flush();
+            // we don’t need to dispose deviceContext — it’s the same as device
+
             Device.Dispose();
-            DeviceContext.Dispose();
+            Debug.WriteLine("Device disposed");
         }
     }
 }

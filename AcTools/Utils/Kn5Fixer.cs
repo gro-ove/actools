@@ -56,7 +56,7 @@ namespace AcTools.Utils {
             }
 
             FileUtils.Recycle(kn5File);
-            kn5.Save(kn5File, true);
+            kn5.SaveAll(kn5File);
             return true;
         }
 
@@ -101,7 +101,7 @@ namespace AcTools.Utils {
             }
 
             FileUtils.Recycle(kn5File);
-            kn5.Save(kn5File, true);
+            kn5.SaveAll(kn5File);
             return true;
         }
 
@@ -121,7 +121,7 @@ namespace AcTools.Utils {
             }
 
             FileUtils.Recycle(kn5File);
-            kn5.Save(kn5File, true);
+            kn5.SaveAll(kn5File);
             return true;
         }
 

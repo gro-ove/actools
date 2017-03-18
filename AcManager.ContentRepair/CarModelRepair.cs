@@ -26,7 +26,7 @@ namespace AcManager.ContentRepair {
                 fix.Invoke(kn5);
 
                 FileUtils.Recycle(kn5Filename);
-                kn5.Save(kn5Filename, saveNodes);
+                kn5.SaveAll(kn5Filename);
 
                 return true;
             });
@@ -42,7 +42,7 @@ namespace AcManager.ContentRepair {
                 var kn5 = Kn5.FromFile(kn5Filename);
                 FixSuspensionNodes(kn5);
                 FileUtils.Recycle(kn5Filename);
-                kn5.Save(kn5Filename, true);
+                kn5.SaveAll(kn5Filename);
 
                 return true;
             });
@@ -83,7 +83,7 @@ namespace AcManager.ContentRepair {
             }
         }
 
-        private ObsoletableAspect TestFrensel(CarObject car,  Kn5 kn5) {
+        private ObsoletableAspect TestFrensel(CarObject car, Kn5 kn5) {
             var any = false;
             foreach (var property in GetFresnelProperties(kn5)) {
                 any = true;
@@ -100,7 +100,7 @@ namespace AcManager.ContentRepair {
             var kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData);
             if (kn5Filename == null || !File.Exists(kn5Filename)) return new ObsoletableAspect[0];
 
-            var kn5 = Kn5.FromFile(kn5Filename, true);
+            var kn5 = Kn5.FromFile(kn5Filename);
 
             return new[] {
                 TestFrensel(car, kn5),

@@ -1425,18 +1425,6 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _liteUseSsaa;
-
-            public bool LiteUseSsaa {
-                get { return _liteUseSsaa ?? (_liteUseSsaa = ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseSsaa", false)).Value; }
-                set {
-                    if (Equals(value, _liteUseSsaa)) return;
-                    _liteUseSsaa = value;
-                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseSsaa", value);
-                    OnPropertyChanged();
-                }
-            }
-
             private bool? _liteUseBloom;
 
             public bool LiteUseBloom {
@@ -1463,14 +1451,61 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _useFxaa;
+            private bool? _customShowroomInstead;
 
-            public bool UseFxaa {
-                get { return _useFxaa ?? (_useFxaa = ValuesStorage.GetBool("Settings.CustomShowroomSettings.UseFxaa", true)).Value; }
+            public bool CustomShowroomInstead {
+                get {
+                    return _customShowroomInstead ??
+                            (_customShowroomInstead = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomInstead", false)).Value;
+                }
                 set {
-                    if (Equals(value, _useFxaa)) return;
-                    _useFxaa = value;
-                    ValuesStorage.Set("Settings.CustomShowroomSettings.UseFxaa", value);
+                    if (Equals(value, _customShowroomInstead)) return;
+                    _customShowroomInstead = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.CustomShowroomInstead", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _customShowroomPreviews;
+
+            public bool CustomShowroomPreviews {
+                get {
+                    return _customShowroomPreviews ??
+                            (_customShowroomPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.CustomShowroomPreviews", false)).Value;
+                }
+                set {
+                    if (Equals(value, _customShowroomPreviews)) return;
+                    _customShowroomPreviews = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.CustomShowroomPreviews", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _detailedExifForPreviews;
+
+            public bool DetailedExifForPreviews {
+                get {
+                    return _detailedExifForPreviews ??
+                            (_detailedExifForPreviews = ValuesStorage.GetBool("Settings.CustomShowroomSettings.DetailedExifForPreviews", true)).Value;
+                }
+                set {
+                    if (Equals(value, _detailedExifForPreviews)) return;
+                    _detailedExifForPreviews = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.DetailedExifForPreviews", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _previewsRecycleOld;
+
+            public bool PreviewsRecycleOld {
+                get {
+                    return _previewsRecycleOld ?? (_previewsRecycleOld = ValuesStorage.GetBool("Settings.CustomShowroomSettings.PreviewsRecycleOld", true)).Value;
+                }
+                set {
+                    if (Equals(value, _previewsRecycleOld)) return;
+                    _previewsRecycleOld = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.PreviewsRecycleOld", value);
                     OnPropertyChanged();
                 }
             }

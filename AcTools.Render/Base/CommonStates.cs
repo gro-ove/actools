@@ -14,7 +14,8 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
         private BlendState _transparentBlendState, _addBlendState;
-        private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState;
+        private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState,
+                _ambientShadowState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -71,7 +72,7 @@ namespace AcTools.Render.Base {
                     DestinationBlend = BlendOption.InverseSourceAlpha,
                     BlendOperation = BlendOperation.Add,
                     SourceBlendAlpha = BlendOption.One,
-                    DestinationBlendAlpha = BlendOption.One,
+                    DestinationBlendAlpha = BlendOption.Zero,
                     BlendOperationAlpha = BlendOperation.Add,
                     RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 }));
@@ -129,6 +130,17 @@ namespace AcTools.Render.Base {
                     IsFrontCounterclockwise = true,
                     IsAntialiasedLineEnabled = false,
                     IsDepthClipEnabled = true
+                }));
+
+        public RasterizerState AmbientShadowState => _ambientShadowState ?? (_ambientShadowState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    FillMode = FillMode.Solid,
+                    CullMode = CullMode.None,
+                    IsFrontCounterclockwise = false,
+                    IsDepthClipEnabled = false,
+                    DepthBias = -1000,
+                    DepthBiasClamp = 0.0f,
+                    SlopeScaledDepthBias = -100f
                 }));
 
         public void Dispose() {

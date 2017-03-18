@@ -461,7 +461,7 @@ namespace AcManager.Pages.Drive {
                     Title = ToolsStrings.Common_Warning,
                     Content = new ScrollViewer {
                         Content = new SelectableBbCodeBlock {
-                            BbCode = $"Most likely, track won’t work with selected mode: {message.ToSentense()}. Are you sure you want to continue?",
+                            BbCode = $"Most likely, track won’t work with selected mode: {message.ToSentenceMember()}. Are you sure you want to continue?",
                             Margin = new Thickness(0, 0, 0, 8)
                         },
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -538,9 +538,11 @@ namespace AcManager.Pages.Drive {
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share() {
+                var data = ExportToPresetData();
+                if (data == null) return;
                 await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
-                        ExportToPresetData());
+                        data);
             }
 
             private void OnSelectedUpdated() {

@@ -8,6 +8,8 @@ namespace AcTools.Render.Base.Cameras {
 
         Matrix Proj { get; }
 
+        Matrix View { get; }
+
         Matrix ViewProjInvert { get; }
 
         bool Visible(BoundingBox box);

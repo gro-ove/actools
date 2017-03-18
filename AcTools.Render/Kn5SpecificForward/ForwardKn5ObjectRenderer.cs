@@ -52,11 +52,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 if (value) {
                     var orbit = CameraOrbit ?? CreateCamera(Scene);
-                    Camera = new FpsCamera(orbit.FovY) {
-                        NearZ = orbit.NearZ,
-                        FarZ = orbit.FarZ
-                    };
-
+                    Camera = new FpsCamera(orbit.FovY);
                     Camera.LookAt(orbit.Position, orbit.Target, orbit.Up);
                     PrepareCamera(Camera);
                 } else {
@@ -65,57 +61,76 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
 
                 Camera.SetLens(AspectRatio);
+                IsDirty = true;
             }
         }
 
-        private Vector3 _cameraTo;
+        private Vector3 _cameraTo, _showroomOffset;
 
-        public void SetCamera(Vector3 from, Vector3 to, float fovY) {
-            var orbit = CameraOrbit ?? CreateCamera(Scene);
-
-            Camera = new FpsCamera(fovY) {
-                NearZ = orbit.NearZ,
-                FarZ = orbit.FarZ
-            };
+        public void SetCamera(Vector3 from, Vector3 to, float fovRadY) {
+            UseFpsCamera = true;
+            Camera = new FpsCamera(fovRadY);
 
             _cameraTo = to;
             Camera.LookAt(from, to, Vector3.UnitY);
             Camera.SetLens(AspectRatio);
+            //Camera.UpdateViewMatrix();
 
             PrepareCamera(Camera);
+            IsDirty = true;
+        }
+
+        public Vector3 CarCenter {
+            get {
+                var result = CarNode?.BoundingBox?.GetCenter() ?? Vector3.Zero;
+                result.Y = 0f;
+                return result;
+            }
         }
 
         public void AlignCar() {
             var camera = Camera as FpsCamera;
             if (camera == null) return;
 
-            var nbox = CarNode?.BoundingBox;
-            if (!nbox.HasValue) return;
+            var offset = CarCenter;
+            camera.LookAt(camera.Position + offset, _cameraTo += offset, Vector3.UnitY);
+            camera.SetLens(AspectRatio);
 
-            var offset = nbox.Value.GetCenter();
-            offset.Y = 0f;
+            offset.Y = 0;
+            _showroomOffset = offset;
+            if (ShowroomNode != null) {
+                ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+            }
 
-            Camera.LookAt(camera.Position + offset, _cameraTo + offset, Vector3.UnitY);
-            Camera.SetLens(AspectRatio);
+            IsDirty = true;
         }
 
-        public void AlignCamera(Vector3 alignOffset) {
-            var camera = Camera as FpsCamera;
+        public void AlignCamera(bool x, float xOffset, bool xOffsetRelative, bool y, float yOffset, bool yOffsetRelative) {
+            if (!x && !y) return;
+
+            var camera = Camera;
             if (camera == null) return;
-
-            Camera.SetLens(AspectRatio);
-            Camera.UpdateViewMatrix();
             
-            var offset = GetCameraOffsetForCenterAlignmentUsingVertices(Camera);
-            offset.Y = 0f;
-            offset += alignOffset;
+            camera.SetLens(AspectRatio);
+            camera.UpdateViewMatrix();
 
-            Camera.LookAt(camera.Position + offset, _cameraTo + offset, Vector3.UnitY);
+            var offset = GetCameraOffsetForCenterAlignmentUsingVertices(camera, x, xOffset, xOffsetRelative, y, yOffset, yOffsetRelative);
+            camera.LookAt(camera.Position + offset, _cameraTo += offset, Vector3.UnitY);
+
+            offset.Y = 0;
+            _showroomOffset += offset;
+            if (ShowroomNode != null) {
+                ShowroomNode.LocalMatrix = Matrix.Translation(_showroomOffset);
+            }
+
+            IsDirty = true;
         }
 
         protected virtual void PrepareCamera(BaseCamera camera) { }
 
         public bool AsyncTexturesLoading { get; set; } = true;
+
+        public bool AsyncOverridesLoading { get; set; } = false;
 
         public bool AllowSkinnedObjects { get; set; } = false;
 
@@ -144,7 +159,12 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void SelectSkin(string skinId) {
-            CarNode?.SelectSkin(DeviceContextHolder, skinId);
+            if (CarNode == null) {
+                _selectSkinLater = true;
+                _selectSkin = skinId;
+            } else {
+                CarNode?.SelectSkin(DeviceContextHolder, skinId);
+            }
         }
 
         private int? _selectLod;
@@ -214,7 +234,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         protected virtual void ClearBeforeChangingCar() { }
 
         private void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
-            newCar.LightsEnabled = oldCar?.LightsEnabled ?? CarLightsEnabled;
+            newCar.HeadlightsEnabled = oldCar?.HeadlightsEnabled ?? CarLightsEnabled;
             newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled ?? CarBrakeLightsEnabled;
             newCar.LeftDoorOpen = oldCar?.LeftDoorOpen ?? false;
             newCar.RightDoorOpen = oldCar?.RightDoorOpen ?? false;
@@ -272,9 +292,10 @@ namespace AcTools.Render.Kn5SpecificForward {
                     Scene.UpdateBoundingBox();
                     return;
                 }
-                
+
                 loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
-                        asyncTexturesLoading: AsyncTexturesLoading, allowSkinnedObjects: AllowSkinnedObjects);
+                        asyncTexturesLoading: AsyncTexturesLoading, asyncOverrideTexturesLoading: AsyncOverridesLoading,
+                        allowSkinnedObjects: AllowSkinnedObjects);
                 _selectSkinLater = false;
                 CopyValues(loaded, CarNode);
 
@@ -288,6 +309,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 CarNode = loaded;
                 _carBoundingBox = null;
 
+                IsDirty = true;
                 Scene.UpdateBoundingBox();
             } catch (Exception e) {
                 MessageBox.Show(e.ToString());
@@ -349,7 +371,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 await Task.Run(() => {
                     loaded = new Kn5RenderableCar(car, Matrix.Identity, _selectSkinLater ? _selectSkin : skinId,
-                            asyncTexturesLoading: AsyncTexturesLoading);
+                            asyncTexturesLoading: AsyncTexturesLoading, asyncOverrideTexturesLoading: AsyncOverridesLoading,
+                            allowSkinnedObjects: AllowSkinnedObjects);
                     _selectSkinLater = false;
                     if (cancellationToken.IsCancellationRequested) return;
 
@@ -374,6 +397,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 CarNode = loaded;
                 _carBoundingBox = null;
 
+                IsDirty = true;
                 Scene.UpdateBoundingBox();
             } catch (Exception e) {
                 MessageBox.Show(e.ToString());
@@ -385,17 +409,126 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        [CanBeNull]
-        public Kn5RenderableCar CarNode { get; private set; }
+        private Kn5RenderableCar _carNode;
 
         [CanBeNull]
-        public Kn5RenderableFile ShowroomNode { get; private set; }
+        public Kn5RenderableCar CarNode {
+            get { return _carNode; }
+            private set {
+                if (Equals(value, _carNode)) return;
+                _carNode = value;
+                IsDirty = true;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CarCenter));
+                OnPropertyChanged(nameof(Kn5));
+                OnPropertyChanged(nameof(SelectedLod));
+                OnPropertyChanged(nameof(LodsCount));
+                OnPropertyChanged(nameof(CarLightsEnabled));
+                OnPropertyChanged(nameof(CarBrakeLightsEnabled));
+            }
+        }
 
-        public bool CubemapReflection { get; set; } = false;
+        private Kn5RenderableFile _showroomNode;
 
-        public bool EnableShadows { get; set; } = false;
+        [CanBeNull]
+        public Kn5RenderableFile ShowroomNode {
+            get { return _showroomNode; }
+            private set {
+                if (Equals(value, _showroomNode)) return;
+                _showroomNode = value;
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+                SetShadowsDirty();
+                OnPropertyChanged();
+            }
+        }
 
-        public bool UsePcss { get; set; } = false;
+        [ContractAnnotation("showroomKn5:null => null; showroomKn5:notnull => notnull")]
+        private Kn5RenderableFile LoadShowroom(string showroomKn5) {
+            if (showroomKn5 != null) {
+                //var kn5 = Kn5.FromFile(showroomKn5);
+                //node = new Kn5RenderableFile(kn5, Matrix.Identity, AsyncTexturesLoading, AllowSkinnedObjects);
+                return Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity, AllowSkinnedObjects);
+            }
+
+            return null;
+        }
+
+        public void SetShowroom(string showroomKn5) {
+            // TODO: errors handling!
+
+            try {
+                if (ShowroomNode != null) {
+                    ShowroomNode.Dispose();
+                    Scene.Remove(ShowroomNode);
+                    ShowroomNode = null;
+                    GC.Collect();
+                }
+
+                var node = LoadShowroom(showroomKn5);
+                ShowroomNode = node;
+
+                if (node != null) {
+                    Scene.Insert(0, node);
+                }
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+            } finally {
+                CubemapReflection = ShowroomNode != null;
+                Scene.UpdateBoundingBox();
+                IsDirty = true;
+                _sceneDirty = true;
+            }
+        }
+
+        private bool _cubemapReflection = false;
+
+        public bool CubemapReflection {
+            get { return _cubemapReflection; }
+            set {
+                if (value == _cubemapReflection) return;
+                _cubemapReflection = value;
+
+                if (value) {
+                    _reflectionCubemap = CreateReflectionCubemap();
+                    if (Initialized) {
+                        _reflectionCubemap?.Initialize(DeviceContextHolder);
+                    }
+                } else {
+                    DisposeHelper.Dispose(ref _reflectionCubemap);
+                }
+
+                IsDirty = true;
+                OnPropertyChanged();
+                OnCubemapReflectionChanged();
+            }
+        }
+        
+        protected virtual void OnCubemapReflectionChanged() {}
+
+        private bool _enableShadows = false;
+
+        public bool EnableShadows {
+            get { return _enableShadows; }
+            set {
+                if (value == _enableShadows) return;
+                _enableShadows = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _usePcss = false;
+
+        public bool UsePcss {
+            get { return _usePcss; }
+            set {
+                if (value == _usePcss) return;
+                _usePcss = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
 
         [CanBeNull]
         private ReflectionCubemap _reflectionCubemap;
@@ -407,6 +540,36 @@ namespace AcTools.Render.Kn5SpecificForward {
             return new MaterialsProviderSimple();
         }
 
+        protected override void DrawScene() {
+            DeviceContext.OutputMerger.DepthStencilState = null;
+            DeviceContext.OutputMerger.BlendState = null;
+            DeviceContext.Rasterizer.State = GetRasterizerState();
+
+            var carNode = CarNode;
+
+            // draw a scene, apart from car
+            if (ShowroomNode != null) {
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
+                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
+                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+            }
+
+            // draw car
+            if (carNode == null) return;
+
+            // shadows
+            carNode.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
+
+            // car itself
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
+            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
+            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+        }
+
         protected virtual void ExtendCar(Kn5RenderableCar car, RenderableList carWrapper) { }
 
         protected override void InitializeInner() {
@@ -415,20 +578,22 @@ namespace AcTools.Render.Kn5SpecificForward {
             DeviceContextHolder.Set(GetMaterialsFactory());
 
             if (_showroomKn5Filename != null) {
-                var kn5 = Kn5.FromFile(_showroomKn5Filename);
-                Scene.Insert(0, ShowroomNode = new Kn5RenderableFile(kn5, Matrix.Identity, AsyncTexturesLoading, AllowSkinnedObjects));
+                ShowroomNode = LoadShowroom(_showroomKn5Filename);
+                Scene.Insert(0, ShowroomNode);
             }
 
             _carWrapper = new RenderableList();
             Scene.Add(_carWrapper);
 
             if (_car != null) {
-                CarNode = new Kn5RenderableCar(_car, Matrix.Identity, _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
-                        asyncTexturesLoading: AsyncTexturesLoading, allowSkinnedObjects: AllowSkinnedObjects);
-                CopyValues(CarNode, null);
+                var carNode = new Kn5RenderableCar(_car, Matrix.Identity, _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
+                        asyncTexturesLoading: AsyncTexturesLoading, asyncOverrideTexturesLoading: AsyncOverridesLoading,
+                        allowSkinnedObjects: AllowSkinnedObjects);
+                CarNode = carNode;
+                CopyValues(carNode, null);
 
                 _selectSkinLater = false;
-                _carWrapper.Add(CarNode);
+                _carWrapper.Add(carNode);
                 _carBoundingBox = null;
 
                 ExtendCar(CarNode, _carWrapper);
@@ -437,11 +602,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             // Scene.Add(new Kn5RenderableFile(Kn5.FromFile(_carKn5), Matrix.Identity));
 
             Scene.UpdateBoundingBox();
-            
-            if (CubemapReflection) {
-                _reflectionCubemap = CreateReflectionCubemap();
-                _reflectionCubemap?.Initialize(DeviceContextHolder);
-            }
+
+            _reflectionCubemap?.Initialize(DeviceContextHolder);
 
             if (EnableShadows) {
                 _shadows = CreateShadows();
@@ -487,10 +649,10 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool CarLightsEnabled {
-            get { return CarNode?.LightsEnabled == true; }
+            get { return CarNode?.HeadlightsEnabled == true; }
             set {
                 if (CarNode != null) {
-                    CarNode.LightsEnabled = value;
+                    CarNode.HeadlightsEnabled = value;
                 }
             }
         }
@@ -511,12 +673,21 @@ namespace AcTools.Render.Kn5SpecificForward {
             set {
                 if (Equals(value, _reflectionCubemapAtCamera)) return;
                 _reflectionCubemapAtCamera = value;
+                IsDirty = true;
                 OnPropertyChanged();
             }
         }
 
-        protected virtual Vector3 ReflectionCubemapPosition => ReflectionCubemapAtCamera ? Camera.Position :
-                GetCarBoundingBox()?.GetCenter() ?? Vector3.Zero;
+        protected Vector3 ShadowsPosition => GetCarBoundingBox()?.GetCenter() ?? Vector3.Zero;
+
+        protected Vector3 ReflectionCubemapPosition {
+            get {
+                if (ReflectionCubemapAtCamera) return Camera.Position;
+
+                var b = GetCarBoundingBox();
+                return b == null ? Vector3.Zero : b.Value.GetCenter() + Vector3.UnitY * b.Value.GetSize().Y * 0.3f;
+            }
+        }
 
         private Vector3? _previousShadowsTarget;
 
@@ -530,6 +701,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 _light = value;
                 _sceneDirty = true;
+                _reflectionCubemapDirty = true;
+                IsDirty = true;
                 OnPropertyChanged();
             }
         }
@@ -565,9 +738,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool DelayedBoundingBoxUpdate { get; set; }
 
-        protected virtual void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
-            var center = ReflectionCubemapPosition;
-
+        protected void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
             var sceneDirty = _sceneDirty;
             _sceneDirty = false;
 
@@ -585,12 +756,14 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _sceneWasDirty = false;
             }
 
-            if (_shadows != null && (_previousShadowsTarget != center || sceneDirty || _shadowsEnabled != EnableShadows)) {
-                UpdateShadows(_shadows, center);
+            var shadowsPosition = ShadowsPosition;
+            if (_shadows != null && (_previousShadowsTarget != shadowsPosition || sceneDirty || _shadowsEnabled != EnableShadows)) {
+                UpdateShadows(_shadows, shadowsPosition);
                 _shadowsEnabled = EnableShadows;
             }
-            
-            if (_reflectionCubemap != null && (_reflectionCubemap.Update(center) || _reflectionCubemapDirty)) {
+
+            var reflectionPosition = ReflectionCubemapPosition;
+            if (_reflectionCubemap != null && (_reflectionCubemap.Update(reflectionPosition) || _reflectionCubemapDirty)) {
                 _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
                 _reflectionCubemap.DrawScene(DeviceContextHolder, this);
                 _reflectionCubemapDirty = false;
@@ -638,7 +811,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             var offset = 15;
             if (CarNode.LodsCount > 0) {
                 var information = CarNode.CurrentLodInformation;
-                _textBlock.DrawString($"LOD #{CarNode.CurrentLod + 1} ({CarNode.LodsCount} in total; shown from {information.In} to {information.Out})",
+                _textBlock.DrawString(
+                        $"LOD #{CarNode.CurrentLod + 1} ({CarNode.LodsCount} in total; shown from {information?.In.ToInvariantString() ?? "?"} to {information?.Out.ToInvariantString() ?? "?"})",
                         new RectangleF(0f, 0f, ActualWidth, ActualHeight - offset),
                         TextAlignment.HorizontalCenter | TextAlignment.Bottom, 16f, UiColor,
                         CoordinateType.Absolute);
@@ -699,9 +873,9 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
 
             NextStep:
             var wm = obj.ParentMatrix * matrix;
-            var smart = obj.Vertices;
-            for (var i = 0; i < smart.Length; i++) {
-                var sp = Vector3.TransformCoordinate(smart[i].Position, wm);
+            var vertices = obj.Vertices;
+            for (var i = 0; i < vertices.Length; i++) {
+                var sp = Vector3.TransformCoordinate(vertices[i].Position, wm);
                 if (min.Z == 0f) {
                     min = sp;
                     max = sp;
@@ -717,7 +891,8 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         private void GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(RenderableList list, Matrix matrix, ref Vector3 min, ref Vector3 max) {
-            foreach (var child in list) {
+            for (var i = 0; i < list.Count; i++) {
+                var child = list[i];
                 var li = child as RenderableList;
                 if (li != null) {
                     GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(li, matrix, ref min, ref max);
@@ -730,7 +905,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             }
         }
 
-        private Vector3 GetCameraOffsetForCenterAlignmentUsingVertices(ICamera camera) {
+        private Vector3 GetCameraOffsetForCenterAlignmentUsingVertices(ICamera camera, bool x, float xOffset, bool xOffsetRelative, bool y, float yOffset, bool yOffsetRelative) {
             if (CarNode == null) return Vector3.Zero;
 
             var matrix = camera.ViewProj;
@@ -738,9 +913,36 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             var max = Vector3.Zero;
             GetCameraOffsetForCenterAlignmentUsingVertices_ProcessList(CarNode.RootObject, matrix, ref min, ref max);
 
-            var offsetScreen = (min + max) / 2f;
+            var center = (min + max) / 2f;
+            var offsetScreen = center;
+            var targetScreen = new Vector3(xOffset, yOffset, offsetScreen.Z);
+
+            if (!x) {
+                targetScreen.X = offsetScreen.X;
+            } else if (xOffsetRelative) {
+                if (xOffset > 0) {
+                    var left = (0.5f - max.X / 2f).Saturate();
+                    targetScreen.X = xOffset * left;
+                } else {
+                    var left = (min.X / 2f + 0.5f).Saturate();
+                    targetScreen.X = xOffset * left;
+                }
+            }
+
+            if (!y) {
+                targetScreen.Y = offsetScreen.Y;
+            } else if (yOffsetRelative) {
+                if (yOffset > 0) {
+                    var left = (0.5f - max.Y / 2f).Saturate();
+                    targetScreen.Y = yOffset * left;
+                } else {
+                    var left = (min.Y / 2f + 0.5f).Saturate();
+                    targetScreen.Y = yOffset * left;
+                }
+            }
+
             return Vector3.TransformCoordinate(offsetScreen, camera.ViewProjInvert) -
-                    Vector3.TransformCoordinate(new Vector3(0f, 0f, offsetScreen.Z), camera.ViewProjInvert);
+                    Vector3.TransformCoordinate(targetScreen, camera.ViewProjInvert);
         }
 
         private Vector3 GetCameraOffsetForCenterAlignment(ICamera camera, bool limited) {

@@ -71,6 +71,11 @@ namespace AcTools.Render.Base.Utils {
             return vec.X * 0.299f + vec.Y * 0.587f + vec.Z * 0.114f;
         }
 
+        public static Vector3 FlipX(this Vector3 vec) {
+            vec.X *= -1f;
+            return vec;
+        }
+
         public static BoundingBox Transform(this BoundingBox bb, Matrix matrix) {
             var a = Vector3.Transform(bb.Minimum, matrix);
             var b = Vector3.Transform(bb.Maximum, matrix);

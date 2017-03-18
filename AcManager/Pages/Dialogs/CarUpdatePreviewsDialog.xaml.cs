@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
@@ -36,6 +37,8 @@ using Application = System.Windows.Application;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
+    // Sorry for all this mess, this was one of the first bits of CM I made. I didn’t really know how to work with MVC
+    // properly back then.
     public partial class CarUpdatePreviewsDialog : INotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
         #region Options
 
@@ -339,16 +342,26 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private readonly ISaveHelper _saveable;
-
-        private void ShowroomMessage([Localizable(false)] string showroomName, [Localizable(false)] string showroomId, [Localizable(false)] string informationUrl) {
+        
+        public class MissingShowroomHelper : IMissingShowroomHelper {
+            public Task OfferToInstall(string showroomName, string showroomId, string informationUrl) {
+                if (ShowMessage(string.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
+                        AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
+                return InstallShowroom(showroomName, showroomId);
+            }
+        }
+        
+        private Task ShowroomMessageInstance([Localizable(false)] string showroomName, [Localizable(false)] string showroomId, [Localizable(false)] string informationUrl) {
             if (ShowMessage(string.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
-                    AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-            InstallShowroom(showroomName, showroomId).Forget();
+                    AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
+            return InstallShowroom(showroomName, showroomId, this);
         }
 
-        private async Task InstallShowroom(string showroomName, string showroomId) {
-            _mode = DialogMode.Options;
-            await Task.Delay(100);
+        private static async Task InstallShowroom(string showroomName, string showroomId, CarUpdatePreviewsDialog instance = null) {
+            if (instance != null) {
+                instance._mode = UpdatePreviewMode.Options;
+                await Task.Delay(100);
+            }
 
             using (var dialog = new WaitingDialog(showroomName)) {
                 dialog.Report(ControlsStrings.Common_Downloading);
@@ -377,31 +390,17 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 await Task.Delay(1000);
-                SelectedShowroom = ShowroomsManager.Instance.GetById(showroomId) ?? SelectedShowroom;
-            }
-        }
 
-        public enum DialogMode {
-            Options, Start, StartManual
+                if (instance != null) {
+                    instance.SelectedShowroom = ShowroomsManager.Instance.GetById(showroomId) ?? instance.SelectedShowroom;
+                }
+            }
         }
 
         private readonly string _loadPreset;
 
         [NotNull]
-        private readonly List<ToUpdate> _toUpdate;
-
-        public class ToUpdate {
-            [NotNull]
-            public CarObject Car { get; }
-
-            [CanBeNull]
-            public string[] SkinIds { get; }
-
-            public ToUpdate([NotNull] CarObject car, [CanBeNull] string[] skinIds) {
-                Car = car;
-                SkinIds = skinIds;
-            }
-        }
+        private readonly IReadOnlyList<ToUpdatePreview> _toUpdate;
 
         private bool _applyImmediately;
 
@@ -414,10 +413,13 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public CarUpdatePreviewsDialog(CarObject carObject, [CanBeNull] string[] skinIds, DialogMode mode, string loadPreset = null)
-                : this(new List<ToUpdate> { new ToUpdate(carObject, skinIds) }, mode, loadPreset) {}
+        public CarUpdatePreviewsDialog(CarObject carObject, UpdatePreviewMode mode, string loadPreset = null)
+            : this(carObject, null, mode, loadPreset) { }
 
-        public CarUpdatePreviewsDialog([NotNull] List<ToUpdate> toUpdate, DialogMode mode, string loadPreset = null, bool applyImmediately = false) {
+        public CarUpdatePreviewsDialog(CarObject carObject, [CanBeNull] string[] skinIds, UpdatePreviewMode mode, string loadPreset = null)
+                : this(new [] { new ToUpdatePreview(carObject, skinIds) }, mode, loadPreset) {}
+
+        public CarUpdatePreviewsDialog([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, UpdatePreviewMode mode, string loadPreset = null, bool applyImmediately = false) {
             if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
             if (toUpdate.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(toUpdate));
 
@@ -447,12 +449,12 @@ namespace AcManager.Pages.Dialogs {
                     if (showroom == null) {
                         switch (o.ShowroomId) {
                             case "at_studio_black":
-                                ShowroomMessage("Studio Black Showroom (AT Previews Special)", "at_studio_black",
+                                ShowroomMessageInstance("Studio Black Showroom (AT Previews Special)", "at_studio_black",
                                         "http://www.racedepartment.com/downloads/studio-black-showroom.4353/");
                                 break;
 
                             case "at_previews":
-                                ShowroomMessage("Kunos Previews Showroom (AT Previews Special)", "at_previews",
+                                ShowroomMessageInstance("Kunos Previews Showroom (AT Previews Special)", "at_previews",
                                         "http://www.assettocorsa.net/assetto-corsa-v1-5-dev-diary-part-33/");
                                 break;
                         }
@@ -494,9 +496,6 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
         }
 
-        public CarUpdatePreviewsDialog(CarObject carObject, DialogMode mode, string loadPreset = null)
-            : this(carObject, null, mode, loadPreset) { }
-
         /*public static void Run(CarObject carObject, string[] skinIds, string presetFilename) {
             new CarUpdatePreviewsDialog(carObject, skinIds, DialogMode.Start).ShowDialog();
         }
@@ -520,14 +519,14 @@ namespace AcManager.Pages.Dialogs {
                         UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
             }
 
-            if (_mode == DialogMode.Options) {
+            if (_mode == UpdatePreviewMode.Options) {
                 SelectPhase(Phase.Options);
             } else {
-                RunShootingProcess(_mode == DialogMode.StartManual).Forget();
+                RunShootingProcess(_mode == UpdatePreviewMode.StartManual).Forget();
             }
         }
 
-        private DialogMode _mode;
+        private UpdatePreviewMode _mode;
         private bool _cancelled;
 
         public new bool ShowDialog() {
@@ -705,23 +704,9 @@ namespace AcManager.Pages.Dialogs {
         [CanBeNull]
         private string _resultDirectory;
 
-        public class ErrorDescription {
-            public ErrorDescription(ToUpdate toUpdate, string message, WhatsGoingOn whatsGoingOn) {
-                ToUpdate = toUpdate;
-                Message = message;
-                WhatsGoingOn = whatsGoingOn;
-            }
+        public BetterObservableCollection<UpdatePreviewError> Errors { get; } = new BetterObservableCollection<UpdatePreviewError>();
 
-            public ToUpdate ToUpdate { get; }
-
-            public string Message { get; }
-
-            public WhatsGoingOn WhatsGoingOn { get; }
-        }
-
-        public BetterObservableCollection<ErrorDescription> Errors { get; } = new BetterObservableCollection<ErrorDescription>();
-
-        private async Task ShootCar([NotNull] ToUpdate toUpdate, string filterId, bool manualMode, bool applyImmediately, CancellationToken cancellation) {
+        private async Task ShootCar([NotNull] ToUpdatePreview toUpdate, string filterId, bool manualMode, bool applyImmediately, CancellationToken cancellation) {
             if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
 
             try {
@@ -730,7 +715,7 @@ namespace AcManager.Pages.Dialogs {
                     AcRoot = AcRootDirectory.Instance.Value,
                     CarId = toUpdate.Car.Id,
                     ShowroomId = SelectedShowroom.Id,
-                    SkinIds = toUpdate.SkinIds,
+                    SkinIds = toUpdate.Skins?.Select(x => x.Id).ToArray(),
                     Filter = filterId,
                     Fxaa = EnableFxaa,
                     SpecialResolution = UseSpecialResolution,
@@ -749,13 +734,13 @@ namespace AcManager.Pages.Dialogs {
                 }, this, cancellation);
                 if (cancellation.IsCancellationRequested) return;
             } catch (ProcessExitedException e) when (applyImmediately) {
-                Errors.Add(new ErrorDescription(toUpdate, e.Message, AcLogHelper.TryToDetermineWhatsGoingOn())); 
+                Errors.Add(new UpdatePreviewError(toUpdate, e.Message, AcLogHelper.TryToDetermineWhatsGoingOn())); 
                 return;
             }
 
             if (applyImmediately) {
                 if (_resultDirectory == null) {
-                    Errors.Add(new ErrorDescription(toUpdate, AppStrings.CarPreviews_SomethingWentWrong, AcLogHelper.TryToDetermineWhatsGoingOn()));
+                    Errors.Add(new UpdatePreviewError(toUpdate, AppStrings.CarPreviews_SomethingWentWrong, AcLogHelper.TryToDetermineWhatsGoingOn()));
                 } else {
                     Progress = AsyncProgressEntry.Indetermitate;
                     await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.RequireValue, toUpdate.Car.Id, _resultDirectory, ResizePreviews,
@@ -814,8 +799,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            if (_toUpdate.Any(u => !u.Car.Enabled ||
-                    u.SkinIds?.Any(x => u.Car.SkinsManager.GetWrapperById(x)?.Value.Enabled == false) == true)) {
+            if (_toUpdate.Any(u => !u.Car.Enabled || u.Skins?.Any(x => x.Enabled == false) == true)) {
                 SelectPhase(Phase.Error, AppStrings.CarPreviews_CannotUpdateForDisabled);
                 return;
             }

@@ -36,6 +36,12 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription(nameof(ToolsStrings.Shared_VideoSettingsPreset))]
         VideoSettingsPreset,
 
+        [LocalizedDescription(nameof(ToolsStrings.Shared_CustomShowroomPreset))]
+        CustomShowroomPreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_CustomPreviewsPreset))]
+        CustomPreviewsPreset,
+
         [LocalizedDescription("Shared_AssistsSetupPreset")]
         AssistsSetupPreset,
 
@@ -131,6 +137,8 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.VideoSettingsPreset:
                 case SharedEntryType.AssistsSetupPreset:
                 case SharedEntryType.RaceGridPreset:
+                case SharedEntryType.CustomShowroomPreset:
+                case SharedEntryType.CustomPreviewsPreset:
                     return @".cmpreset";
 
                 case SharedEntryType.Replay:

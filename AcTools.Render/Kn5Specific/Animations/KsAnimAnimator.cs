@@ -15,7 +15,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
             [CanBeNull]
             private readonly Matrix[] _frames;
 
-            public Wrapper(Kn5RenderableList parent, KsAnimEntryBase entry) {
+            public Wrapper(RenderableList parent, KsAnimEntryBase entry) {
                 _object = parent.GetDummyByName(entry.NodeName);
 
                 var v2 = entry as KsAnimEntryV2;
@@ -100,11 +100,11 @@ namespace AcTools.Render.Kn5Specific.Animations {
             _original = KsAnim.FromFile(filename);
         }
 
-        public void Initialize(Kn5RenderableList parent) {
+        public void Initialize(RenderableList parent) {
             _wrappers = _original.Entries.Values.Select(x => new Wrapper(parent, x)).ToArray();
         }
 
-        public void SetTarget(Kn5RenderableList parent, float position) {
+        public void SetTarget(RenderableList parent, float position) {
             if (_parent != parent) {
                 _parent = parent;
                 Initialize(parent);
@@ -124,7 +124,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
             }
         }
 
-        public void SetImmediate(Kn5RenderableList parent, float position) {
+        public void SetImmediate(RenderableList parent, float position) {
             if (_parent != parent) {
                 _parent = parent;
                 Initialize(parent);
@@ -143,7 +143,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
 
         private int _loopsRemain;
 
-        public void Loop(Kn5RenderableList parent, int limit = -1) {
+        public void Loop(RenderableList parent, int limit = -1) {
             if (_parent != parent) {
                 _parent = parent;
                 Initialize(parent);

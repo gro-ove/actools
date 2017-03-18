@@ -29,6 +29,12 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
+        public void SetImage(string imageFilename) {
+            Height = 434;
+            Image.Visibility = Visibility.Visible;
+            Image.Filename = imageFilename;
+        }
+
         private double? _progress;
 
         public double? Progress {

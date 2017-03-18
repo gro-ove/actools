@@ -1,6 +1,5 @@
 ﻿using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Utils;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
@@ -19,11 +18,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
                 if (AsyncLoading) {
-                    result.LoadAsync(contextHolder.Device, data).ContinueWith(t => {
+                    result.LoadAsync(contextHolder, data).ContinueWith(t => {
                         contextHolder.RaiseTexturesUpdated();
                     });
                 } else {
-                    result.Load(contextHolder.Device, data);
+                    result.Load(contextHolder, data);
                 }
             }
 

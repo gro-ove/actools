@@ -161,7 +161,7 @@ namespace AcManager.Pages.Dialogs {
                     var diffuse = material.GetPropertyByName("ksDiffuse");
                     if (diffuse != null) diffuse.ValueA = InShadow ? 0f : 2f;
 
-                    kn5.Save(Path.Combine(location, ResultId + ".kn5"));
+                    kn5.SaveAll(Path.Combine(location, ResultId + ".kn5"));
                 }
             }
         }

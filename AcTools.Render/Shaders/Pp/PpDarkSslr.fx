@@ -3,12 +3,19 @@
 	Texture2D gDepthMap;
     Texture2D gBaseReflectionMap;
     Texture2D gNormalMap;
+    Texture2D gNoiseMap;
 	Texture2D gFirstStepMap;
 
 	SamplerState samLinear {
 		Filter = MIN_MAG_MIP_LINEAR;
 		AddressU = CLAMP;
 		AddressV = CLAMP;
+	};
+
+	SamplerState samRandom {
+		Filter = MIN_MAG_MIP_POINT;
+		AddressU = Wrap;
+		AddressV = Wrap;
 	};
     
 // input resources
@@ -65,6 +72,16 @@
         vout.Tex = vin.Tex;
         return vout;
     }
+
+	float3 DecodeNm(float2 enc){
+		float2 fenc = enc * 4 - 2;
+		float f = dot(fenc, fenc);
+		float g = sqrt(1 - f / 4);
+		float3 n;
+		n.xy = fenc*g;
+		n.z = 1 - f / 2;
+		return n;
+	}
 
 	float3 GetNormal(float2 coords, SamplerState s) {
 		return gNormalMap.Sample(s, coords).xyz;
@@ -135,53 +152,52 @@
     }
 	
 	cbuffer POISSON_DISKS {
-		float2 poissonDisk[32] = {
-			float2(0.7107409f, 0.5917311f),
-			float2(0.3874443f, 0.7644074f),
-			float2(0.4094146f, 0.151852f),
-			float2(0.3779792f, 0.4699225f),
-			float2(0.9367768f, 0.2930911f),
-			float2(0.1184676f, 0.5660473f),
-			float2(0.5350589f, -0.1797861f),
-			float2(0.05063209f, 0.2463228f),
-			float2(0.6854041f, 0.1558142f),
-			float2(0.8824921f, -0.3403803f),
-			float2(0.2487828f, -0.1240097f),
-			float2(0.1110238f, 0.9691482f),
-			float2(0.6206494f, -0.6748185f),
-			float2(0.3984736f, -0.4907326f),
-			float2(0.9640564f, -0.02796953f),
-			float2(-0.394538f, 0.2868877f),
-			float2(-0.1605287f, -0.001273256f),
-			float2(-0.1351251f, 0.4460111f),
-			float2(-0.1649308f, 0.9423735f),
-			float2(-0.34411f, 0.7086557f),
-			float2(0.07306198f, -0.372647f),
-			float2(-0.6624553f, 0.4340924f),
-			float2(0.01711876f, -0.6439707f),
-			float2(0.3432294f, -0.7902341f),
-			float2(-0.431942f, -0.01264048f),
-			float2(0.0554834f, -0.9162955f),
-			float2(-0.7119419f, 0.1407981f),
-			float2(-0.2572051f, -0.709406f),
-			float2(-0.3534312f, -0.442526f),
-			float2(-0.7836586f, -0.1292122f),
-			float2(-0.5489578f, -0.7478135f),
-			float2(-0.6645309f, -0.4536549f)
+		float2 poissonDisk[25] = {
+			float2(-0.5496699f, -0.3607742f),
+			float2(-0.93247f, -0.2627924f),
+			float2(-0.428109f, 0.2621388f),
+			float2(-0.3889751f, -0.7699139f),
+			float2(-0.007669114f, -0.4256215f),
+			float2(-0.2229971f, -0.03531943f),
+			float2(0.49135f, -0.05647383f),
+			float2(0.3557799f, -0.4577287f),
+			float2(0.02084914f, 0.1899813f),
+			float2(0.1282342f, -0.7269787f),
+			float2(-0.1825718f, 0.4983515f),
+			float2(-0.8501378f, 0.08436206f),
+			float2(-0.2846428f, 0.8403723f),
+			float2(-0.8721611f, 0.4181926f),
+			float2(-0.6079646f, 0.6299406f),
+			float2(0.2123813f, 0.6794029f),
+			float2(0.4791782f, 0.4958593f),
+			float2(0.667411f, 0.2290769f),
+			float2(0.8077992f, 0.5232179f),
+			float2(0.8575023f, -0.29065f),
+			float2(0.9838881f, 0.08113442f),
+			float2(0.4223681f, -0.8714673f),
+			float2(-0.1068291f, -0.9763235f),
+			float2(-0.7130113f, -0.6807091f),
+			float2(0.4687168f, 0.8776741f)
 		};
 	};
 
 	float4 GetReflection(float2 baseUv, float2 uv, float blur) {
 		float4 reflection = (float4)0;
+		float2 random = normalize(gNoiseMap.SampleLevel(samRandom, uv * 1000.0, 0).xy);
 
-		for (float i = 0; i < 32; i++) {
-			float2 uvOffset = poissonDisk[i] * blur;
-			reflection += float4(gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb, gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a);
+		for (float i = 0; i < 25; i++) {
+			float2 uvOffset = reflect(poissonDisk[i], random) * blur;
+
+			float3 reflectedColor = gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb;
+			float reflectedQuality = gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a;
+
+			reflection += float4(reflectedColor, reflectedQuality);
 		}
 
-		float4 result = reflection / 32;
-		result.a = pow(max(result.a, 0), 1.5);
+		//return reflection / max(reflection.a, 1.0);
 
+		float4 result = reflection / 32;
+		result.a = pow(max(result.a, 0), 1.2);
 		return result;
 	}
 
@@ -193,14 +209,14 @@
 		float specularExp = gNormalMap.Sample(s, coords).a;
 
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
-		float blur = saturate(firstStep.b / specularExp / 5.0 - 0.01);
+		float blur = saturate(firstStep.b / specularExp - 0.1) * 0.08;
 
 		float4 reflection;
 		[branch]
-		if (blur < 0.001) {
+		if (blur < 0.001 || baseReflection.a < 0.01) {
 			reflection = float4(gDiffuseMap.SampleLevel(s, reflectedUv, 0).rgb, gFirstStepMap.SampleLevel(s, coords, 0).a);
 		} else {
-			reflection = GetReflection(coords, reflectedUv, blur * 0.5);
+			reflection = GetReflection(coords, reflectedUv, blur);
 		}
 
 		float a = reflection.a * baseReflection.a;

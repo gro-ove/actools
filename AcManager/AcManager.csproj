@@ -459,6 +459,7 @@
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
+    <Compile Include="Tools\CommonPreviewsTools.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteTyresRepair.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
@@ -1349,6 +1350,7 @@
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
     <None Include="Assets\Data\AssistsIntermediate.cmpreset" />
     <None Include="Assets\Data\AT-Previews Special %281.6%29.ini" />
+    <None Include="Assets\Data\Kunos %281.6, Custom%29.cmpreset" />
     <None Include="Assets\Data\Kunos %281.6%29.cmpreset" />
     <None Include="Assets\Data\AssistsPro.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />

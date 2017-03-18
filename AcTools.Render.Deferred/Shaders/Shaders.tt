@@ -2,6 +2,7 @@
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="System.Windows.Forms" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.IO" #>
@@ -11,6 +12,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Windows.Forms" #>
 <#@ output extension=".cs" #>
 <#= string.Join("\n", Encoding.UTF8.GetString(Convert.FromBase64String("R0VORVJBVEVEIEFVVE9NQVRJQ0FMTFkKRE9O4oCZVCBNT0RJRlk="))
 		.Split('\n').Select(x => $"/* {x} */")) #>
@@ -73,7 +75,7 @@ using SlimDX.Direct3D11;
 		} else {
 			resultNamespace = directoryName + "." + resultNamespace;
 		}
-
+		
 		projectRoot = Path.GetDirectoryName(projectRoot);
 		if (projectRoot == null) throw new Exception("Could not find project’s root directory");
 	}
@@ -94,13 +96,54 @@ namespace <#= resultNamespace #> {
 
 	var resxLocation = Path.Combine(projectRoot, resxName);
 
+	var warned = false;
+	Action<string> Warn = msg => {
+		if (warned) return;
+		warned = true;
+		MessageBox.Show(msg, "Shaders Compilation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+	};
+	
+	Func<string, List<string>, DateTime> LastIncludeWriteTime_Inner = null;
+	LastIncludeWriteTime_Inner = (filename, previous) => {
+		var data = File.ReadAllText(filename);
+		previous.Add(filename);
+
+		var lastWrite = default(DateTime);
+		foreach (var match in Regex.Matches(data, @"#include ""([^""]+)""").Cast<Match>()){
+			var included = Path.Combine(dataFolder, "Includes", match.Groups[1].Value);
+			if (previous.Contains(included)) continue;
+
+			var iInfo = new FileInfo(included);
+			if (!iInfo.Exists) {
+				Warn($"Included file “{Path.GetFileName(included)}” not found (from “{Path.GetFileName(filename)}”).");
+				return DateTime.Now;
+			} else {
+				if (iInfo.LastWriteTime > lastWrite) {
+					lastWrite = iInfo.LastWriteTime;
+				}
+
+				var inner = LastIncludeWriteTime_Inner(included, previous);				
+				if (inner > lastWrite) {
+					lastWrite = inner;
+				}
+			}
+		}
+
+		return lastWrite;
+	};
+
+	Func<string, DateTime> LastIncludeWriteTime = filename => {
+		return LastIncludeWriteTime_Inner(filename, new List<string>());
+	};
+
 	Func<string, byte[]> CompileShader = f => {
 		var n = Path.GetFileName(f);
 		var c = f + ".o";
 		var h = Path.Combine(tempFolder, n + ".o");
 		var v = Path.Combine(tempFolder, n + ".warn");
 
-		if (File.Exists(h) && new FileInfo(f).LastWriteTime < new FileInfo(h).LastWriteTime){
+		var hInfo = new FileInfo(h);
+		if (hInfo.Exists && (new FileInfo(f).LastWriteTime < hInfo.LastWriteTime && LastIncludeWriteTime(f) < hInfo.LastWriteTime)){
 			if (File.Exists(v)) Debug.WriteLine(File.ReadAllText(v));
 			return File.ReadAllBytes(h);
 		}
@@ -136,6 +179,7 @@ namespace <#= resultNamespace #> {
 		File.Delete(c);
 
 		if (w.Length > 0){
+			Warn($"While compiling “{Path.GetFileName(f)}”:\n{w}");
 			File.WriteAllText(v, w);
 		} else {
 			File.Delete(v);
@@ -171,6 +215,7 @@ namespace <#= resultNamespace #> {
 			@"(\d+\.\d+\b)", x => x.Value + "f");
 	Func<string,string> MapShaderType = s => 
 		s == "dword" ? "uint" :
+		s == "float4x4" ? "Matrix" :
 		s == "float2" ? "Vector2" :
 		s == "float3" ? "Vector3" :
 		s == "float4" ? "Vector4" :
@@ -193,6 +238,25 @@ namespace <#= resultNamespace #> {
 		var includeName = Path.GetFileName(file);
 		includes[includeName] = File.ReadAllText(file);
 	}
+	
+	Func<string, List<string>, string> PrependIncludes_Inner = null;
+	PrependIncludes_Inner = (data, added) => {
+		foreach (var x in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>().Select(x => x.Groups[1].Value)){
+			if (added.Contains(x)) continue;
+			added.Add(x);
+
+			var included = includes[x];
+			var skip = included.IndexOf("// Skip translation");
+			if (skip != -1) included = included.Substring(0, skip);
+
+			data = PrependIncludes_Inner(included, added) + "\n\n" + data;
+		}
+		return data;
+	};
+
+	Func<string, string> PrependIncludes = data => {
+		return PrependIncludes_Inner(data, new List<string>());
+	};
 
 	foreach (var file in Directory.GetFiles(dataFolder).Union(Directory.GetDirectories(dataFolder).SelectMany(Directory.GetFiles))){
 		if (!file.EndsWith(".fx") || Path.GetDirectoryName(file).EndsWith("\\Includes")){
@@ -206,9 +270,7 @@ namespace <#= resultNamespace #> {
 
 	/* ADD INCLUDED STUFF */
 		var baseData = data;
-		foreach (var match in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>()){
-				data = includes[match.Groups[1].Value] + "\n\n" + data;
-		}
+		data = PrependIncludes(data);
 
 	/* TECHNIQUES */
 		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique(?:1[01])?\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
@@ -227,7 +289,7 @@ namespace <#= resultNamespace #> {
 
 			// # > /* < #= (name + ": " + structName) # > */ < #
 
-			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+\s*\)\s*\{").Cast<Match>()
+			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+.+?\s*\)\s*\{").Cast<Match>()
 				.Select(x => x.Groups[1].Value).SelectMany(x => 
 					ts_tmp.Where(y => y.Groups[3].Value.Contains(x)).Select(y => y.Groups[1].Value)
 				).FirstOrDefault();
@@ -265,23 +327,25 @@ namespace <#= resultNamespace #> {
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
 		
-		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)?(?::.*?)?;").Cast<Match>();
+		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>();
+		var vmsArr = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>();
 		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>();
 		
 	/* CONSTS */
+		var justReadonly = true;
 		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
 			var typeName = MapShaderType(x.Groups[1].Value);
-			var isConst = !typeName.StartsWith("Vector");
+			var isConst = !justReadonly && !typeName.StartsWith("Vector");
 			var constName = ConvertConstName(x.Groups[2].Value);
 			var constValue = ConvertConstValue(x.Groups[3].Value);
 			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		";
 		}).ToList();
 		
 	/* CONSTS FROM DEFINES (ROOT FILE ONLY) */
-		foreach (var x in Regex.Matches(baseData, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
+		foreach (var x in Regex.Matches(data, @"(?:^|\n)\s*#define ((?=[A-Z])\w+)\s+(true|false|float\d.+|\d+.+)\s*(?=\n|$)").Cast<Match>()){
 			var v = x.Groups[2].Value;
 			var constName = ConvertConstName(x.Groups[1].Value);
 			var constValue = ConvertConstValue(v).Trim();
@@ -290,14 +354,20 @@ namespace <#= resultNamespace #> {
 				v.Contains("float2") ? "Vector2" :
 				v.Contains("true") || v.Contains("false") ? "bool" :
 				v.Contains(".") ? "float" : "int";
-			var isConst = !typeName.StartsWith("Vector");
+			var isConst = !justReadonly && !typeName.StartsWith("Vector");
+
+			if (Regex.IsMatch(constName, @"^(?:Enable|Disable)[A-Z]|Flag$") && (constValue == "0" || constValue == "1")){
+				typeName = "bool";
+				constValue = constValue == "1" ? "true" : "false";
+			}
+
 			consts.Add("public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		");
 		}
 
 		consts = consts.Distinct().ToList();
 
 	/* AND EVEN STRUCTS! */
-		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
+		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-zA-Z]+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
 				.Where(x => !x.Groups[1].Value.EndsWith("_IN", StringComparison.OrdinalIgnoreCase) && 
 						!x.Groups[1].Value.EndsWith("_OUTPUT", StringComparison.OrdinalIgnoreCase)).Select(x => {
 			structsNames.Add("Effect" + name + "." + x.Groups[1].Value);
@@ -310,8 +380,14 @@ namespace <#= resultNamespace #> {
 
 		", x.Groups[1].Value, 
 			string.Join("\n",
-				x.Groups[2].Value.Split('\n').Select(y => y.Trim().Split(' ')).Where(y => y.Length == 2)
-					.Select(y => "public " + MapShaderType(y[0]) + " " + y[1])
+				x.Groups[2].Value.Split('\n').Select(y => Regex.Replace(y, @"//.+", "").Trim().Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries)).Where(y => y.Length == 2)
+					.Select(y => {
+						var arrayM = Regex.Match(y[1], @"^(\w+)\[(\d+)\];$");
+						if (arrayM.Success){
+							return "[MarshalAs(UnmanagedType.ByValArray, SizeConst = " + arrayM.Groups[2].Value + ")]\n            public " + MapShaderType(y[0]) + "[] " + arrayM.Groups[1].Value + ";";
+						}
+						return "public " + MapShaderType(y[0]) + " " + y[1];
+					})
 					.Select(y => "            " + y)
 			));
 		});
@@ -335,7 +411,10 @@ namespace <#= resultNamespace #> {
 		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
 <# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
-		public EffectMatrixVariable <#= matriceFieldName #> { get; private set; }
+		public EffectOnlyMatrixVariable <#= matriceFieldName #> { get; private set; }
+<# } #>
+<# foreach (var matriceFieldName in vmsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
+		public EffectOnlyMatrixArrayVariable <#= matriceFieldName #> { get; private set; }
 <# } #>
 <# if (vrs.Any()){ #>
 		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
@@ -367,7 +446,10 @@ namespace <#= resultNamespace #> {
 <# } #>
 
 <# foreach (var x in vms.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix();
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
+<# } #>
+<# foreach (var x in vmsArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
 <# } #>
 <# foreach (var x in vrs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();

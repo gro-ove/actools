@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     internal sealed class Kn5Reader : ReadAheadBinaryReader {
-        public Kn5Reader(string filename, bool withoutHeader = false)
-            : base(filename) {
+        public Kn5Reader(string filename, bool withoutHeader = false) : base(filename) {
             if (!withoutHeader && new string(ReadChars(6)) != "sc6969") {
                 throw new Exception("Not a valid KN5 file.");
             }
         }
 
-        public Kn5Reader(Stream filename, bool withoutHeader = false)
-            : base(filename) {
+        public Kn5Reader(Stream filename, bool withoutHeader = false) : base(filename) {
             if (!withoutHeader && new string(ReadChars(6)) != "sc6969") {
                 throw new Exception("Not a valid KN5 file.");
             }
@@ -175,7 +172,7 @@ namespace AcTools.Kn5File {
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
 
-                    Skip(8); // the only mistery left?
+                    node.MisteryBytes = ReadBytes(8); // the only mistery left?
                     node.IsRenderable = true;
                     break;
             }

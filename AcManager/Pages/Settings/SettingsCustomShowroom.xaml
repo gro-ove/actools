@@ -1,10 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsCustomShowroom" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-             xmlns:c="http://acstuff.ru/app/controls"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsCustomShowroom+ViewModel}">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsCustomShowroom+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,6 +12,32 @@
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding Holder.CustomShowroomInstead}">
+                <Label Content="Use Custom Showroom instead of the original one is some cases">
+                    <Label.ToolTip>Such as double-click on car’s skin icon in Content/Cars</Label.ToolTip>
+                </Label>
+            </CheckBox>
+            
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Previews:" />
+
+            <CheckBox IsChecked="{Binding Holder.CustomShowroomPreviews}">
+                <Label Content="Use Custom Showroom for previews" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.DetailedExifForPreviews}">
+                <Label Content="Add extended information in EXIF data" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.PreviewsRecycleOld}" ToolTip="Quite slow operation">
+                <Label Content="Move previous preview to the Recycle Bin" />
+            </CheckBox>
+
+            <c:MessageBlock CloseKey="fancy-showroom-previews">
+                <mui:BbCodeBlock>
+                    <mui:BbCodeBlock.BbCode>Custom Showroom works faster and has some additional features, such as reflections (both ground and SSLR aka local reflections), smooth shadows (using PCSS technique) or an option to turn on the lights or steer the wheels.</mui:BbCodeBlock.BbCode>
+                </mui:BbCodeBlock>
+            </c:MessageBlock>
+
             <!--<DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_DefaultType}" />
                 <ComboBox ItemsSource="{Binding Holder.ShowroomTypes}" SelectedItem="{Binding Holder.ShowroomType}"
@@ -23,8 +47,8 @@
             <!--<TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:AppStrings.Settings_CustomShowroom_TypeComment}"
                     TextWrapping="Wrap" />-->
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Controls:" />
-            
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Controls:" />
+
             <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot}" />
             </CheckBox>
@@ -38,25 +62,24 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quality:" />
 
             <CheckBox IsChecked="{Binding Holder.UseOldLiteShowroom}">
-                <CheckBox.ToolTip>It’s rendering is way less accurate and it doesn’t support skinned meshes, but if your PC is really not that powerful…</CheckBox.ToolTip>
+                <CheckBox.ToolTip>It’s rendering is way less accurate and it doesn’t support skinned meshes, but maybe you still need it for whatever reason?</CheckBox.ToolTip>
                 <Label Content="Use the old version" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom}" />
-            </CheckBox>
+            <StackPanel Style="{StaticResource SettingsPanel}"
+                    Visibility="{Binding Holder.UseOldLiteShowroom, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom_Tooltip}">
+                    <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom}" />
+                </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa}" />
-            </CheckBox>
+                <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa_Tooltip}">
+                    <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa}" />
+                </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseSsaa}" ToolTip="You can toggle it any time by pressing Ctrl+M">
-                <Label Content="Use SSAA" />
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa}" />
-            </CheckBox>
+                <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa_Tooltip}">
+                    <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa}" />
+                </CheckBox>
+            </StackPanel>
 
             <c:MessageBlock CloseKey="bye-bye-fancy-showroom">
                 <mui:BbCodeBlock>

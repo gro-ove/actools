@@ -14,6 +14,8 @@ namespace AcTools.Render.Base.Cameras {
 
         public Matrix Proj { get; set; }
 
+        public Matrix View { get; set; }
+
         public Matrix ViewProjInvert { get; set; }
 
         public bool Visible(BoundingBox box) {
@@ -34,12 +36,14 @@ namespace AcTools.Render.Base.Cameras {
                 Position = camera.Position;
                 ViewProj = camera.ViewProj;
                 Proj = camera.Proj;
+                View = camera.Proj;
                 ViewProjInvert = camera.ViewProjInvert;
                 _first = false;
             } else {
                 Position = (Position * Smoothiness + camera.Position) / (1f + Smoothiness);
                 ViewProj = (ViewProj * Smoothiness + camera.ViewProj) / (1f + Smoothiness);
                 Proj = (Proj * Smoothiness + camera.Proj) / (1f + Smoothiness);
+                View = (View * Smoothiness + camera.View) / (1f + Smoothiness);
                 ViewProjInvert = (ViewProjInvert * Smoothiness + camera.ViewProjInvert) / (1f + Smoothiness);
             }
         }

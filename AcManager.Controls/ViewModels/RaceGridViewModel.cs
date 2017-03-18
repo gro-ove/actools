@@ -312,8 +312,10 @@ namespace AcManager.Controls.ViewModels {
         private ICommand _savePresetCommand;
 
         public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new DelegateCommand(() => {
+            var data = ExportToPresetData();
+            if (data == null) return;
             PresetsManager.Instance.SavePresetUsingDialog(PresetableKey, PresetableCategory,
-                    ExportToPresetData(), null /* TODO */);
+                    data, null /* TODO */);
         }));
 
         private ICommand _shareCommand;
@@ -321,9 +323,11 @@ namespace AcManager.Controls.ViewModels {
         public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
         private async Task Share() {
+            var data = ExportToPresetData();
+            if (data == null) return;
             await SharingUiHelper.ShareAsync(SharedEntryType.RaceGridPreset,
                     Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
-                    ExportToPresetData());
+                    data);
         }
 
         public static void LoadPreset(string presetFilename) {

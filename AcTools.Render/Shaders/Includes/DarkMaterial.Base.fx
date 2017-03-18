@@ -80,9 +80,9 @@ cbuffer cbPerFrame {
 	float3 gBackgroundColor;
 
 	float gReflectionPower;
-	bool gEnableAo;
+	float gAoPower;
 	bool gCubemapReflections;
-	bool gCubemapAmbient;
+	float gCubemapAmbient;
 }
 
 cbuffer cbTextureFlatMirror {
@@ -115,8 +115,8 @@ Texture2D gAoMap;
 
 float GetAo(float2 screenCoords) {
 	[branch]
-	if (gEnableAo) {
-		return gAoMap.SampleLevel(samLinear, screenCoords / gScreenSize.xy, 0).r * 0.3 + 0.7;
+	if (gAoPower != 0.0) {
+		return 1.0 - (1.0 - gAoMap.SampleLevel(samLinear, screenCoords / gScreenSize.xy, 0).r) * gAoPower;
 	} else {
 		return 1.0;
 	}
@@ -308,7 +308,12 @@ float3 GetReflection(float3 reflected, float specularExp) {
 	if (gCubemapReflections) {
 		return gReflectionCubemap.SampleLevel(samAnisotropic, reflected, saturate(1 - specularExp / 255) * 8).rgb * gReflectionPower;
 	} else {
-		float edge = specularExp / 10.0 + 1.0;
+		[flatten]
+		if (gFlatMirrored) {
+			reflected.y = -reflected.y;
+		}
+
+		float edge = specularExp / 30.0 + 1.0;
 		float fake = saturate(GetFakeHorizon(reflected, edge) + GetFakeStudioLights(reflected, edge));
 	    return (gBackgroundColor * (1 - fake) * 1.1 + fake * 1.8) * gReflectionPower;
 	}
@@ -354,13 +359,15 @@ float CalculateSpecularLight_Maps_Sun(float3 normal, float3 position, float spec
 }
 
 float3 GetAmbient(float3 normal) {
+	float value = abs(gCubemapAmbient);
+	float3 gradient = gCubemapAmbient < 0.0 ? (float3)1.0 : gAmbientDown + saturate(normal.y * 0.5 + 0.5) * gAmbientRange;
+
 	[branch]
-	if (gCubemapAmbient) {
+	if (gCubemapAmbient != 0) {
 		float3 refl = gReflectionCubemap.SampleLevel(samAnisotropic, normal, 99).rgb;
-		return refl / (dot(refl, float3(0.299f, 0.587f, 0.114f)) + 0.05);
+		return max(refl, 0.0) / (max(dot(refl, float3(0.299f, 0.587f, 0.114f)), 0.0) + 0.04) * value + gradient * (1.0 - value);
 	} else {
-		float up = saturate(normal.y * 0.5 + 0.5);
-		return gAmbientDown + up * gAmbientRange;
+		return gradient;
 	}
 }
 
@@ -369,6 +376,7 @@ float GetDiffuseMultipler(float3 normal) {
 }
 
 float GetShadow_ConsiderMirror(float3 position) {
+	[flatten]
 	if (gFlatMirrored) {
 		position.y = -position.y;
 	}
@@ -436,7 +444,7 @@ void CalculateLighted_Nm(PS_IN pin, out float3 lighted, out float alpha, out flo
 	float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 
-	alpha = diffuseValue.a * normalValue.a;
+	alpha = normalValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	lighted = CalculateLight(diffuseValue.rgb, normal, pin.PosW, pin.PosH.xy);
 
@@ -509,9 +517,18 @@ void CalculateLighted_Maps(PS_IN pin, float txMapsSpecularMultipler, float txMap
 
 float GetReflectionStrength(float3 normalW, float3 toEyeW) {
 	// float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
+
+	// float rid = 1 - saturate(dot(toEyeW, normalW));
+	// float rim = pow(rid, gReflectiveMaterial.FresnelExp);
+	// return min(max(rim, gReflectiveMaterial.FresnelC), gReflectiveMaterial.FresnelMaxLevel);
+
 	float rid = 1 - saturate(dot(toEyeW, normalW));
 	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	return min(max(rim, gReflectiveMaterial.FresnelC), gReflectiveMaterial.FresnelMaxLevel);
+	return min(rim + gReflectiveMaterial.FresnelC, gReflectiveMaterial.FresnelMaxLevel);
+
+	//float d = dot(toEyeW, normalW);
+	//float y = 0.0 < d;
+	//return min(exp(log(abs(1.0 - d)) * gReflectiveMaterial.FresnelExp), gReflectiveMaterial.FresnelC) + y;
 }
 
 float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {

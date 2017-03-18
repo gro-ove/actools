@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.TargetTextures;
@@ -76,6 +77,7 @@ namespace AcTools.Render.Base {
                 }
 
                 OnResolutionMultiplierChanged();
+                IsDirty = true;
             }
         }
 
@@ -147,9 +149,18 @@ namespace AcTools.Render.Base {
         public float Elapsed => _stopwatch.ElapsedMilliseconds / 1000f;
         private float _previousElapsed;
 
+        public void ResetDelta() {
+            _previousElapsed = Elapsed;
+        }
+
         protected BaseRenderer() {
+#if DEBUG
+            Configuration.EnableObjectTracking = true;
+            Configuration.DetectDoubleDispose = true;
+#else
             Configuration.EnableObjectTracking = false;
             Configuration.DetectDoubleDispose = false;
+#endif
         }
 
         private SampleDescription GetMsaaDescription(Device device) {
@@ -166,6 +177,7 @@ namespace AcTools.Render.Base {
                 _useMsaa = value;
                 OnPropertyChanged();
                 UpdateSampleDescription();
+                IsDirty = true;
             }
         }
 
@@ -178,6 +190,7 @@ namespace AcTools.Render.Base {
                 _msaaSampleCount = value;
                 OnPropertyChanged();
                 UpdateSampleDescription();
+                IsDirty = true;
             }
         }
 
@@ -295,7 +308,7 @@ namespace AcTools.Render.Base {
                 Usage = Usage.RenderTargetOutput
             };
 
-            _swapChain?.Dispose();
+            DisposeSwapChain();
             _swapChain = new SwapChain(Device.Factory, Device, _swapChainDescription);
 
             _resized = true;
@@ -313,7 +326,7 @@ namespace AcTools.Render.Base {
         public Texture2D DepthBuffer => _depthBuffer;
 
         [CanBeNull]
-        protected virtual Tuple<Texture2D, DepthStencilView> CreateDepthBuffer(int width, int height) {
+        protected Tuple<Texture2D, DepthStencilView> CreateDepthBuffer(int width, int height) {
             var tex = new Texture2D(Device, new Texture2DDescription {
                 Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
                 ArraySize = 1,
@@ -329,7 +342,7 @@ namespace AcTools.Render.Base {
             return Tuple.Create(tex, new DepthStencilView(Device, tex));
         }
 
-        protected virtual void Resize() {
+        protected void Resize() {
             var width = Width;
             var height = Height;
 
@@ -399,7 +412,7 @@ namespace AcTools.Render.Base {
 
         protected RenderTargetView RenderTargetView => _renderView;
 
-        public virtual bool Draw() {
+        public bool Draw() {
             Debug.Assert(Initialized);
             IsDirty = false;
 
@@ -477,22 +490,53 @@ namespace AcTools.Render.Base {
             _swapChain.IsFullScreen = !_swapChain.IsFullScreen;
         }
 
+        protected void DisposeSwapChain() {
+            try {
+                DisposeHelper.Dispose(ref _swapChain);
+                Debug.WriteLine("SWAPCHAIN DISPOSED");
+            } catch (ObjectDisposedException) {
+                Debug.WriteLine("SWAPCHAIN ALREADY DISPOSED?");
+            }
+        }
+
+        private WeakReference<Form> _associatedWindow;
+
+        [CanBeNull]
+        public Form AssociatedWindow {
+            get {
+                if (_associatedWindow != null) {
+                    Form result;
+                    if (_associatedWindow.TryGetTarget(out result)) return result;
+
+                    _associatedWindow = null;
+                }
+
+                return null;
+            }
+        }
+
+        public void SetAssociatedWindow(Form window) {
+            _associatedWindow = window == null ? null : new WeakReference<Form>(window);
+        }
+
         public virtual void Dispose() {
+            DisposeSwapChain();
+
+            DisposeHelper.Dispose(ref _renderView);
+            DisposeHelper.Dispose(ref _renderBuffer);
+
+            DisposeHelper.Dispose(ref _sprite);
+
             DisposeHelper.Dispose(ref _shotRenderBuffer);
             DisposeHelper.Dispose(ref _shotMsaaTemporaryTexture);
             DisposeHelper.Dispose(ref _shotDownsampleTexture);
 
-            DisposeHelper.Dispose(ref _sprite);
-            DisposeHelper.Dispose(ref _renderBuffer);
-            DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
 
             if (!_sharedHolder) {
                 DisposeHelper.Dispose(ref _deviceContextHolder);
             }
-
-            DisposeHelper.Dispose(ref _swapChain);
         }
 
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture;

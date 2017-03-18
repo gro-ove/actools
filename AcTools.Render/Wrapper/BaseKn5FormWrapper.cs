@@ -10,6 +10,8 @@ using SlimDX;
 namespace AcTools.Render.Wrapper {
     public class Kn5WrapperCameraControlHelper {
         public virtual void CameraMousePan(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+            if (renderer.LockCamera) return;
+
             var size = 4.0 / Math.Min(height, width);
             dx *= size;
             dy *= size;
@@ -30,6 +32,8 @@ namespace AcTools.Render.Wrapper {
         }
 
         public virtual void CameraMouseRotate(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+            if (renderer.LockCamera) return;
+
             var size = (renderer.UseFpsCamera ? 140d : 180d) / Math.Min(height, width);
             dx *= size;
             dy *= size;
@@ -41,6 +45,8 @@ namespace AcTools.Render.Wrapper {
         }
 
         public virtual void CameraMouseZoom(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
+            if (renderer.LockCamera) return;
+
             var size = 9.0 / Math.Min(height, width);
             dy *= size;
 
@@ -55,6 +61,7 @@ namespace AcTools.Render.Wrapper {
 
         public virtual void OnTick(IKn5ObjectRenderer renderer, float deltaTime) {
             if (IsPressed(Keys.LMenu) || IsPressed(Keys.RMenu)) return;
+            if (renderer.LockCamera) return;
 
             var speed = 0.1f;
             if (IsPressed(Keys.LShiftKey) || IsPressed(Keys.RShiftKey)) speed *= 0.2f;
@@ -141,6 +148,8 @@ namespace AcTools.Render.Wrapper {
         private bool _moved, _moving, _down;
 
         protected void OnMouseMove(object sender, MouseEventArgs e) {
+            if (Kn5ObjectRenderer.LockCamera) return;
+
             if (!Form.Focused) {
                 _moving = false;
                 return;
@@ -177,6 +186,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected virtual void OnMouseWheel(object sender, MouseEventArgs e) {
+            if (Kn5ObjectRenderer.LockCamera) return;
             var value = e.Delta > 0 ? 1f : -1f;
 
             if (Kn5ObjectRenderer.UseFpsCamera || !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
@@ -209,7 +219,7 @@ namespace AcTools.Render.Wrapper {
 
             switch (args.KeyCode) {
                 case Keys.Home:
-                    if (!args.Control && !args.Alt && !args.Shift) {
+                    if (!args.Control && !args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         Kn5ObjectRenderer.ResetCamera();
                         if (AutoAdjustTargetOnReset) {
                             Kn5ObjectRenderer.AutoAdjustTarget = true;
@@ -239,7 +249,7 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.Space:
-                    if (!args.Control && !args.Alt && !args.Shift) {
+                    if (!args.Control && !args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;
                     }
                     break;

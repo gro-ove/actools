@@ -9,7 +9,6 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -23,6 +22,8 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _backgroundColor)) return;
                 _backgroundColor = value;
+                IsDirty = true;
+                OnPropertyChanged();
                 OnBackgroundColorChanged();
             }
         }
@@ -34,7 +35,9 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _backgroundBrightness)) return;
                 _backgroundBrightness = value;
+                IsDirty = true;
                 OnPropertyChanged();
+                OnBackgroundColorChanged();
             }
         }
 
@@ -64,18 +67,15 @@ namespace AcTools.Render.Forward {
             UseBloom = true;
         }
 
-        private string _colorGradingFilename;
+        private byte[] _colorGradingData;
 
-        public string ColorGradingFilename {
-            get { return _colorGradingFilename; }
+        public byte[] ColorGradingData {
+            get { return _colorGradingData; }
             set {
-                if (Equals(value, _colorGradingFilename)) return;
-                _colorGradingFilename = value;
+                if (Equals(value, _colorGradingData)) return;
+                _colorGradingData = value;
+                IsDirty = true;
                 OnPropertyChanged();
-
-                if (value != null) {
-                    UseColorGrading = true;
-                }
             }
         }
 
@@ -86,6 +86,7 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _useColorGrading)) return;
                 _useColorGrading = value;
+                IsDirty = true;
                 OnPropertyChanged();
 
                 if (value) {
@@ -268,7 +269,17 @@ namespace AcTools.Render.Forward {
         private BlurHelper _blur;
         private EffectPpLensFlares _lensFlares;
 
-        public float BloomRadiusMultiplier = 1f;
+        private float _bloomRadiusMultiplier = 1f;
+
+        public float BloomRadiusMultiplier {
+            get { return _bloomRadiusMultiplier; }
+            set {
+                if (value.Equals(_bloomRadiusMultiplier)) return;
+                _bloomRadiusMultiplier = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
 
         protected virtual void DrawSceneToBuffer() {
             DrawPrepare();
@@ -290,15 +301,36 @@ namespace AcTools.Render.Forward {
             DeviceContext.Rasterizer.State = null;
         }
 
-        private bool _useToneMapping;
 
-        public bool UseToneMapping {
-            get { return _useToneMapping; }
+        private ToneMappingFn _toneMapping;
+
+        public ToneMappingFn ToneMapping {
+            get { return _toneMapping; }
             set {
-                if (Equals(value, _useToneMapping)) return;
-                _useToneMapping = value;
+                if (Equals(value, _toneMapping)) return;
+                _toneMapping = value;
+                IsDirty = true;
                 OnPropertyChanged();
             }
+        }
+
+        private EffectTechnique GetHdrTechnique() {
+            if (ToneMapping != ToneMappingFn.None) {
+                _hdr.FxParams.Set(new Vector4(ToneGamma, ToneExposure, ToneWhitePoint, 0f));
+
+                switch (ToneMapping) {
+                    case ToneMappingFn.Reinhard:
+                        return _hdr.TechCombine_ToneReinhard;
+                    case ToneMappingFn.Filmic:
+                        return _hdr.TechCombine_ToneFilmic;
+                    case ToneMappingFn.FilmicReinhard:
+                        return _hdr.TechCombine_ToneFilmicReinhard;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            return _hdr.TechCombine;
         }
 
         private float _toneGamma = 1.0f;
@@ -308,6 +340,9 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _toneGamma)) return;
                 _toneGamma = value;
+                if (ToneMapping != ToneMappingFn.None) {
+                    IsDirty = true;
+                }
                 OnPropertyChanged();
             }
         }
@@ -319,6 +354,9 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _toneExposure)) return;
                 _toneExposure = value;
+                if (ToneMapping != ToneMappingFn.None) {
+                    IsDirty = true;
+                }
                 OnPropertyChanged();
             }
         }
@@ -330,17 +368,11 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _toneWhitePoint)) return;
                 _toneWhitePoint = value;
+                if (ToneMapping != ToneMappingFn.None) {
+                    IsDirty = true;
+                }
                 OnPropertyChanged();
             }
-        }
-
-        private EffectTechnique GetHdrTechnique() {
-            if (UseToneMapping) {
-                _hdr.FxParams.Set(new Vector4(ToneGamma, ToneExposure, ToneWhitePoint, 0f));
-                return _hdr.TechCombine_ToneReinhard;
-            }
-
-            return _hdr.TechCombine;
         }
 
         protected bool HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
@@ -422,7 +454,7 @@ namespace AcTools.Render.Forward {
                 return true;
             }
 
-            if (UseToneMapping) {
+            if (ToneMapping != ToneMappingFn.None) {
                 if (_hdr == null) {
                     _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
                 }
@@ -444,14 +476,37 @@ namespace AcTools.Render.Forward {
         private Texture3D _colorGradingTexture;
         private ShaderResourceView _colorGradingView;
 
+        /// <summary>
+        /// Throws an exception if something goes wrong.
+        /// </summary>
+        public void LoadColorGradingData() {
+            DisposeHelper.Dispose(ref _colorGradingView);
+            DisposeHelper.Dispose(ref _colorGradingTexture);
+
+            try {
+                _colorGradingTexture = Texture3D.FromMemory(Device, ColorGradingData);
+                _colorGradingView = new ShaderResourceView(Device, _colorGradingTexture);
+            } catch (Exception) {
+                DisposeHelper.Dispose(ref _colorGradingView);
+                DisposeHelper.Dispose(ref _colorGradingTexture);
+                throw;
+            }
+        }
+
         private bool ColorGradingPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
-            if (ColorGradingFilename == null) return false;
+            if (ColorGradingData == null) return false;
 
             if (!_colorGradingSet) {
                 _colorGradingSet = true;
-                _colorGradingTexture = Texture3D.FromFile(Device, ColorGradingFilename);
-                _colorGradingView = new ShaderResourceView(Device, _colorGradingTexture);
+
+                try {
+                    LoadColorGradingData();
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
+                }
             }
+
+            if (_colorGradingView == null) return false;
 
             if (_hdr == null) {
                 _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
@@ -542,9 +597,10 @@ namespace AcTools.Render.Forward {
         }
 
         protected sealed override void DrawSprites() {
-            if (Sprite == null) return;
+            var sprite = Sprite;
+            if (sprite == null) return;
             DrawSpritesInner();
-            Sprite.Flush();
+            sprite.Flush();
         }
 
         protected virtual void DrawSpritesInner() {}

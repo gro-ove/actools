@@ -14,6 +14,8 @@ namespace AcTools.Render.Kn5Specific {
 
         bool AutoRotate { get; set; }
 
+        bool LockCamera { get; }
+
         bool AutoAdjustTarget { get; set; }
 
         bool UseFpsCamera { get; set; }

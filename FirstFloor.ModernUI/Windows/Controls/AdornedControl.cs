@@ -493,11 +493,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Used to avoid logs flooding.
-        /// </summary>
-        private static bool _reported;
-
-        /// <summary>
         /// Update adorner’s order.
         /// </summary>
         private void UpdateOrder() {
@@ -505,11 +500,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 _adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                              .Invoke(_adornerLayer, new object[] { _adorner, Order });
-            } catch (Exception e) {
-                if (!_reported) {
-                    Logging.Error(e);
-                    _reported = true;
-                }
+            } catch {
+                // ignored
             }
         }
         #endregion

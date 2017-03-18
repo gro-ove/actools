@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using AcTools.Render.Wrapper;
 using JetBrains.Annotations;
 using SlimDX.Windows;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace AcManager.Controls.CustomShowroom {
     internal class AttachedHelper {
@@ -29,8 +31,7 @@ namespace AcManager.Controls.CustomShowroom {
         private readonly int _padding;
         private readonly int _offset;
 
-        public AttachedHelper([NotNull] BaseFormWrapper parent, [NotNull] Window window, int offset = 10, int padding = 10) {
-            _offset = offset;
+        public AttachedHelper([NotNull] BaseFormWrapper parent, [NotNull] Window window, int offset = -1, int padding = 10) {
             _padding = padding;
 
             _parent = parent.Form;
@@ -43,21 +44,27 @@ namespace AcManager.Controls.CustomShowroom {
             parent.FullscreenChanged += OnFullscreenChanged;
 
             _child = window;
-            _child.Owner = null;
-            ElementHost.EnableModelessKeyboardInterop(_child);
+            var child = _child;
 
-            _child.Show();
-            _child.Activate();
+            child.Owner = null;
+            child.MaxHeight = _parent.Height - _padding;
+            ElementHost.EnableModelessKeyboardInterop(child);
+
+            child.Show();
+            child.Activate();
+
+            _offset = offset < 0 ? (int)child.ActualWidth - 12 : offset;
+
             UpdatePosition();
 
-            _child.Activated += ChildActivated;
-            _child.Deactivated += ChildDeactivated;
-            _child.Closed += ChildClosed;
-            _child.KeyUp += ChildKeyUp;
-            _child.LocationChanged += ChildLocationChanged;
-            _child.SizeChanged += ChildSizeChanged;
+            child.Activated += ChildActivated;
+            child.Deactivated += ChildDeactivated;
+            child.Closed += ChildClosed;
+            child.KeyUp += ChildKeyUp;
+            child.LocationChanged += ChildLocationChanged;
+            child.SizeChanged += ChildSizeChanged;
 
-            _child.Topmost = true;
+            child.Topmost = true;
             Visible = true;
         }
 
@@ -70,6 +77,10 @@ namespace AcManager.Controls.CustomShowroom {
 
         private void OnResize(object sender, EventArgs e) {
             UpdatePosition();
+
+            if (_child != null) {
+                _child.MaxHeight = _parent.Height - _padding;
+            }
         }
 
         private void OnMove(object sender, EventArgs e) {
@@ -90,7 +101,7 @@ namespace AcManager.Controls.CustomShowroom {
                               let location = GetStickyLocation(i, _child.Width, _child.Height)
                               where location.HasValue
                               let delta = pos - location.Value
-                              where delta.Length < 20
+                              where delta.Length < 5
                               select i) {
                 _stickyLocation = i;
                 UpdatePosition();
@@ -113,12 +124,26 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         private void UpdatePosition(double w, double h) {
-            var location = GetStickyLocation(_stickyLocation, w, h);
-            if (location == null || _child == null) return;
+            var n = GetStickyLocation(_stickyLocation, w, h);
+            if (n == null || _child == null) return;
+
+            var location = n.Value;
+            var screen = Screen.FromControl(_parent);
+
+            if (location.X + _child.Width > screen.Bounds.Width) {
+                location.X = screen.Bounds.Width - _child.Width;
+            }
+
+            if (location.Y + _child.Height > screen.Bounds.Height) {
+                location.Y = screen.Bounds.Height - _child.Height;
+            }
+
+            if (location.X < 0) location.X = 0;
+            if (location.Y < 0) location.Y = 0;
 
             _skip = true;
-            _child.Left = location.Value.X;
-            _child.Top = location.Value.Y;
+            _child.Left = location.X;
+            _child.Top = location.Y;
             _skip = false;
         }
 

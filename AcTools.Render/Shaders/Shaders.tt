@@ -88,8 +88,6 @@ namespace <#= resultNamespace #> {
 	}
 
 <#
-	var structsNames = new List<string>();
-
 /* GENERATE SHADERS */
 	var tempFolder = Path.Combine(projectRoot, "obj", "Shaders");
 	Directory.CreateDirectory(tempFolder);
@@ -215,6 +213,7 @@ namespace <#= resultNamespace #> {
 			@"(\d+\.\d+\b)", x => x.Value + "f");
 	Func<string,string> MapShaderType = s => 
 		s == "dword" ? "uint" :
+		s == "float4x4" ? "Matrix" :
 		s == "float2" ? "Vector2" :
 		s == "float3" ? "Vector3" :
 		s == "float4" ? "Vector4" :
@@ -288,7 +287,7 @@ namespace <#= resultNamespace #> {
 
 			// # > /* < #= (name + ": " + structName) # > */ < #
 
-			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+\s*\)\s*\{").Cast<Match>()
+			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+.+?\s*\)\s*\{").Cast<Match>()
 				.Select(x => x.Groups[1].Value).SelectMany(x => 
 					ts_tmp.Where(y => y.Groups[3].Value.Contains(x)).Select(y => y.Groups[1].Value)
 				).FirstOrDefault();
@@ -326,11 +325,15 @@ namespace <#= resultNamespace #> {
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
 		
-		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[23]D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
-		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>();
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)?(?::.*?)?;").Cast<Match>().ToList();
+		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vmsArr = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
+		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>().ToList();
+		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>().ToList();
+		var vs = Regex.Matches(cbs, @"\n\s+((?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>().Select(x => new {
+			Type = x.Groups[1].Value,
+			Name = x.Groups[2].Value
+		});
 		
 	/* CONSTS */
 		var justReadonly = true;
@@ -365,10 +368,12 @@ namespace <#= resultNamespace #> {
 		consts = consts.Distinct().ToList();
 
 	/* AND EVEN STRUCTS! */
-		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
+		var structsNames = new List<string>();
+		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-zA-Z]+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
 				.Where(x => !x.Groups[1].Value.EndsWith("_IN", StringComparison.OrdinalIgnoreCase) && 
 						!x.Groups[1].Value.EndsWith("_OUTPUT", StringComparison.OrdinalIgnoreCase)).Select(x => {
-			structsNames.Add("Effect" + name + "." + x.Groups[1].Value);
+			structsNames.Add(x.Groups[1].Value);
+
 			return string.Format(@"[StructLayout(LayoutKind.Sequential)]
         public struct {0} {{
 {1}
@@ -376,13 +381,34 @@ namespace <#= resultNamespace #> {
 			public static readonly int Stride = Marshal.SizeOf(typeof({0}));
         }}
 
+        public class EffectStruct{0}Variable {{
+			private readonly EffectVariable _v;
+
+			public EffectStruct{0}Variable(EffectVariable v) {{
+				_v = v;
+			}}
+
+			public void Set({0} value){{
+				 SlimDxExtension.Set(_v, value, {0}.Stride);
+			}}
+        }}
+
 		", x.Groups[1].Value, 
 			string.Join("\n",
-				x.Groups[2].Value.Split('\n').Select(y => y.Trim().Split(' ')).Where(y => y.Length == 2)
-					.Select(y => "public " + MapShaderType(y[0]) + " " + y[1])
+				x.Groups[2].Value.Split('\n').Select(y => Regex.Replace(y, @"//.+", "").Trim().Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries)).Where(y => y.Length == 2)
+					.Select(y => {
+						var arrayM = Regex.Match(y[1], @"^(\w+)\[(\d+)\];$");
+						if (arrayM.Success){
+							return "[MarshalAs(UnmanagedType.ByValArray, SizeConst = " + arrayM.Groups[2].Value + ")]\n            public " + MapShaderType(y[0]) + "[] " + arrayM.Groups[1].Value + ";";
+						}
+						return "public " + MapShaderType(y[0]) + " " + y[1];
+					})
 					.Select(y => "            " + y)
 			));
-		});
+		}).ToList();
+
+		var vsStructs = vs.Where(x => structsNames.Contains(x.Type)).ToList();
+		vs = vs.Where(x => !structsNames.Contains(x.Type)).ToList();
 
 	/* IF SHADER CONTAINS ALL OBJECTS MATRICES */
 		var matricesNames = vms.Select(x => x.Groups[1].Value.Substring(1)).ToList();
@@ -403,7 +429,10 @@ namespace <#= resultNamespace #> {
 		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
 <# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
-		public EffectMatrixVariable <#= matriceFieldName #> { get; private set; }
+		public EffectOnlyMatrixVariable <#= matriceFieldName #> { get; private set; }
+<# } #>
+<# foreach (var matriceFieldName in vmsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
+		public EffectOnlyMatrixArrayVariable <#= matriceFieldName #> { get; private set; }
 <# } #>
 <# if (vrs.Any()){ #>
 		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
@@ -414,8 +443,11 @@ namespace <#= resultNamespace #> {
 <# foreach (var vectorFieldName in vvs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
 		public EffectVectorVariable <#= vectorFieldName #> { get; private set; }
 <# } #>
+<# foreach (var vsStruct in vsStructs){ #>
+		public EffectStruct<#= vsStruct.Type #>Variable <#= ConvertFxName(vsStruct.Name) #> { get; private set; }
+<# } #>
 <# if (vs.Any()){ #>
-		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Name)).Distinct()) #>;
 <# } #>
 
 		public void Initialize(Device device) {
@@ -435,7 +467,10 @@ namespace <#= resultNamespace #> {
 <# } #>
 
 <# foreach (var x in vms.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix();
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
+<# } #>
+<# foreach (var x in vmsArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
 <# } #>
 <# foreach (var x in vrs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();
@@ -446,8 +481,11 @@ namespace <#= resultNamespace #> {
 <# foreach (var x in vvs.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsVector();
 <# } #>
+<# foreach (var x in vsStructs.Distinct()){ #>
+			<#= ConvertFxName(x.Name) #> = new EffectStruct<#= x.Type #>Variable(E.GetVariableByName("<#= x.Name #>"));
+<# } #>
 <# foreach (var x in vs.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>");
+			<#= ConvertFxName(x.Name) #> = E.GetVariableByName("<#= x.Name #>");
 <# } #>
 		}
 
@@ -464,13 +502,13 @@ namespace <#= resultNamespace #> {
 
 <#
 	}
-#>
 
-	public static class EffectExtension {		
-<# foreach (var structsName in structsNames){ #>
-        public static void Set(this EffectVariable variable, <#= structsName #> o) {
-            SlimDxExtension.Set(variable, o, <#= structsName #>.Stride);
+	/*public static class EffectExtension {		
+< # foreach (var structsName in structsNames){ # >
+        public static void Set(this EffectVariable variable, < #= structsName # > o) {
+            SlimDxExtension.Set(variable, o, < #= structsName # >.Stride);
         }
-<# } #>
-	}
+< # } # >
+	}*/
+#>
 }

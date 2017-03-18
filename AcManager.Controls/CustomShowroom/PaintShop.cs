@@ -9,6 +9,7 @@ using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -502,14 +503,14 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private double _blur = 1d;
-            private double _previousBlur = -1d;
+            private double _gloss = 1d;
+            private double _previousGloss = -1d;
 
-            public double Blur {
-                get { return _blur; }
+            public double Gloss {
+                get { return _gloss; }
                 set {
-                    if (Equals(value, _blur)) return;
-                    _blur = value;
+                    if (Equals(value, _gloss)) return;
+                    _gloss = value;
                     OnPropertyChanged();
                 }
             }
@@ -529,20 +530,21 @@ namespace AcManager.Controls.CustomShowroom {
             protected override void Apply() {
                 base.Apply();
 
-                if (Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousBlur - Blur) > 0.001 ||
+                if (Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
-                    Renderer?.OverrideTextureMaps(MapsTexture, Reflection, Blur, Specular);
+                    Renderer?.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular);
                     _previousReflection = Reflection;
-                    _previousBlur = Blur;
+                    _previousGloss = Gloss;
                     _previousSpecular = Specular;
                 }
             }
 
             public override async Task SaveAsync(string location) {
-                if (Renderer == null) return;
+                var renderer = Renderer;
+                if (renderer == null) return;
                 
                 await base.SaveAsync(location);
-                await Renderer.SaveTextureMaps(Path.Combine(location, MapsTexture), MapsTexture, Reflection, Blur, Specular);
+                await renderer.SaveTextureMaps(Path.Combine(location, MapsTexture), MapsTexture, Reflection, Gloss, Specular);
             }
         }
 
@@ -617,12 +619,19 @@ namespace AcManager.Controls.CustomShowroom {
                     };
             }
 
-            return kn5 == null ? new PaintableItem[0] : new PaintableItem[] {
+            if (kn5 == null) return new PaintableItem[0];
+
+            var carPaint = new[] { "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "car_paint.dds", "carpaint.dds" }
+                    .FirstOrDefault(x => kn5.Textures.ContainsKey(x));
+            var mapsMap = kn5.Materials.Values.Where(x => x.ShaderName == "ksPerPixelMultiMap_damage_dirt")
+                             .Select(x => x.GetMappingByName(@"txMaps")?.Texture)
+                             .NonNull()
+                             .FirstOrDefault();
+
+            return new PaintableItem[] {
                 kn5.Textures.ContainsKey("Plate_D.dds") && kn5.Textures.ContainsKey("Plate_NM.dds") ?
                         new LicensePlate(LicensePlate.LicenseFormat.Europe) : null,
-                new[] { "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "car_paint.dds", "carpaint.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                                                             .Select(x => new CarPaint(x))
-                                                                             .FirstOrDefault(),
+                carPaint == null ? null : mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap),
                 new[] { "car_paint_rims.dds" }.Where(x => kn5.Textures.ContainsKey(x))
                                               .Select(x => new ColoredItem(x, Colors.AliceBlue) {
                                                   DisplayName = "Rims",
@@ -630,22 +639,22 @@ namespace AcManager.Controls.CustomShowroom {
                                               })
                                               .FirstOrDefault(),
                 new[] { "car_paint_roll_cage.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                              .Select(x => new ColoredItem(x, Colors.AliceBlue) {
-                                                  DisplayName = "Roll cage",
-                                                  Enabled = false
-                                              })
-                                              .FirstOrDefault(),
+                                                   .Select(x => new ColoredItem(x, Colors.AliceBlue) {
+                                                       DisplayName = "Roll cage",
+                                                       Enabled = false
+                                                   })
+                                                   .FirstOrDefault(),
                 new[] { "car_paint_roll_cage.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                              .Select(x => new ColoredItem(x, Colors.AliceBlue) {
-                                                  DisplayName = "Roll cage",
-                                                  Enabled = false
-                                              })
-                                              .FirstOrDefault(),
+                                                   .Select(x => new ColoredItem(x, Colors.AliceBlue) {
+                                                       DisplayName = "Roll cage",
+                                                       Enabled = false
+                                                   })
+                                                   .FirstOrDefault(),
                 new[] { "ext_glass.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                              .Select(x => new TintedWindows(x) {
-                                                  Enabled = false
-                                              })
-                                              .FirstOrDefault(),
+                                         .Select(x => new TintedWindows(x) {
+                                             Enabled = false
+                                         })
+                                         .FirstOrDefault(),
             }.Where(x => x != null);
         }
     }

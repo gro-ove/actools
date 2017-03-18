@@ -146,10 +146,11 @@
     </Compile>
     <Compile Include="Utils\AcRootFinder.cs" />
     <Compile Include="Utils\ExifWorks.cs" />
-    <Compile Include="Utils\FileUtils_Async.cs" />
-    <Compile Include="Utils\FileUtils_Paths.cs" />
-    <Compile Include="Utils\FileUtils_Load.cs" />
-    <Compile Include="Utils\FileUtils_FindRenamed.cs" />
+    <Compile Include="Utils\ExifComment.cs" />
+    <Compile Include="Utils\FileUtils.Async.cs" />
+    <Compile Include="Utils\FileUtils.Paths.cs" />
+    <Compile Include="Utils\FileUtils.Load.cs" />
+    <Compile Include="Utils\FileUtils.FindRenamed.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\Helpers\AlphanumComparatorFast.cs" />
     <Compile Include="Utils\Helpers\DateTimeExtension.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="Utils\Helpers\Utf8Checker.cs" />
     <Compile Include="Utils\Helpers\DisposeHelper.cs" />
     <Compile Include="Utils\Holder.cs" />
-    <Compile Include="Utils\ImageUtils_Livery.cs" />
+    <Compile Include="Utils\ImageUtils.Livery.cs" />
     <Compile Include="Kn5File\Kn5Header.cs" />
     <Compile Include="Kn5File\Kn5.cs" />
     <Compile Include="Kn5File\Kn5.ExportCollada.cs" />

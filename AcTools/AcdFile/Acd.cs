@@ -17,7 +17,7 @@ namespace AcTools.AcdFile {
 
         public bool IsPacked => _packedFile != null;
 
-        private Acd(string packedFile, string unpackedDirectory) {
+        private Acd([CanBeNull] string packedFile, [CanBeNull] string unpackedDirectory) {
             _packedBytes = packedFile == null ? null : File.ReadAllBytes(packedFile);
             _packedFile = packedFile;
             _unpackedDirectory = unpackedDirectory;
@@ -27,7 +27,7 @@ namespace AcTools.AcdFile {
         private readonly Dictionary<string, AcdEntry> _entries;
 
         [CanBeNull]
-        public AcdEntry GetEntry(string entryName) {
+        public AcdEntry GetEntry([NotNull] string entryName) {
             AcdEntry entry;
 
             if (!_entries.TryGetValue(entryName, out entry)) {
@@ -58,7 +58,7 @@ namespace AcTools.AcdFile {
         }
 
         [CanBeNull]
-        private byte[] ReadPacked(string entryName) {
+        private byte[] ReadPacked([NotNull] string entryName) {
             if (_packedBytes == null) {
                 if (_packedFile == null) return null;
                 _packedBytes = File.ReadAllBytes(_packedFile);
@@ -70,18 +70,18 @@ namespace AcTools.AcdFile {
             }
         }
 
-        private void SetEntry(string entryName, byte[] entryData) {
+        private void SetEntry([NotNull] string entryName, [NotNull] byte[] entryData) {
             _entries[entryName] = new AcdEntry {
                 Name = entryName,
                 Data = entryData
             };
         }
 
-        public void SetEntry(string entryName, string entryData) {
+        public void SetEntry([NotNull] string entryName, [NotNull] string entryData) {
             SetEntry(entryName, Encoding.UTF8.GetBytes(entryData));
         }
 
-        public static Acd FromFile(string filename) {
+        public static Acd FromFile([NotNull] string filename) {
             if (!File.Exists(filename)) throw new FileNotFoundException(filename);
             return new Acd(filename, null);
         }
@@ -123,18 +123,20 @@ namespace AcTools.AcdFile {
         /// <summary>
         /// Works only if loaded from directory!
         /// </summary>
-        public string GetFilename(string entryName) {
+        [NotNull]
+        public string GetFilename([NotNull] string entryName) {
             if (IsPacked) throw new Exception("Can’t do, packed");
             if (_unpackedDirectory == null) throw new Exception("Can’t do, unpacked directory not set");
             return Path.Combine(_unpackedDirectory, entryName);
         }
 
-        public static Acd FromDirectory(string dir) {
+        [NotNull]
+        public static Acd FromDirectory([NotNull] string dir) {
             if (!Directory.Exists(dir)) throw new DirectoryNotFoundException(dir);
             return new Acd(null, dir);
         }
 
-        public void ExportDirectory(string dir) {
+        public void ExportDirectory([NotNull] string dir) {
             EnsureFullyLoaded();
             foreach (var entry in _entries.Values) {
                 var destination = Path.Combine(dir, entry.Name);

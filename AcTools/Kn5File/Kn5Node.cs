@@ -24,6 +24,9 @@ namespace AcTools.Kn5File {
         public float[] BoundingSphereCenter;
         public float BoundingSphereRadius;
 
+        /* Only for skinned meshes */
+        public byte[] MisteryBytes;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertice {
             public float[] Co, Normal, Uv, Tangent;

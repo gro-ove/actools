@@ -26,7 +26,10 @@ namespace AcTools.DataFile {
             for (var i = 0; i < data.Length; i++) {
                 switch (data[i]) {
                     case '\r':
-                        if (i + 1 < data.Length && data[i + 1] == '\n') continue;
+                        if (i + 1 < data.Length) {
+                            var next = data[i + 1];
+                            if (next == '\n' || next == '\r') continue;
+                        }
                         malformed = line;
                         break;
 

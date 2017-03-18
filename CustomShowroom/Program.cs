@@ -181,8 +181,16 @@ namespace CustomShowroom {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
+
+                    renderer.UseAo = true;
+                    renderer.UseSslr = true;
+                    renderer.AoDebug = true;
+                    renderer.AoType = AoType.SsaoAlt;
+                    
                     renderer.MagickOverride = options.MagickOverride;
-                    new LiteShowroomWrapper(renderer).Run();
+                    new LiteShowroomWrapper(renderer) {
+                        ReplaceableShowroom = true
+                    }.Run();
                 }
             } else if (options.Mode == Mode.TrackMap) {
                 using (var renderer = new TrackMapPreparationRenderer(kn5File)) {

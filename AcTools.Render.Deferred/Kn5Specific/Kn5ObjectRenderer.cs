@@ -195,10 +195,10 @@ namespace AcTools.Render.Deferred.Kn5Specific {
         }
 
         public bool CarLightsEnabled {
-            get { return _car?.LightsEnabled == true; }
+            get { return _car?.HeadlightsEnabled == true; }
             set {
                 if (_car != null) {
-                    _car.LightsEnabled = value;
+                    _car.HeadlightsEnabled = value;
                 }
             }
         }

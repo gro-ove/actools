@@ -4,12 +4,10 @@ using System.Text;
 
 namespace AcTools.Kn5File {
     internal sealed class Kn5Writer : BinaryWriter {
-        public Kn5Writer(string filename)
-            : this(File.Open(filename, FileMode.CreateNew)) {
+        public Kn5Writer(string filename) : this(File.Open(filename, FileMode.CreateNew)) {
         }
 
-        public Kn5Writer(Stream output)
-            : base(output) {
+        public Kn5Writer(Stream output) : base(output) {
             Write("sc6969".ToCharArray());
         }
 
@@ -31,8 +29,8 @@ namespace AcTools.Kn5File {
         }
 
         public void Write(float[] values) {
-            foreach (var t in values) {
-                Write(t);
+            for (var i = 0; i < values.Length; i++) {
+                Write(values[i]);
             }
         }
 
@@ -58,16 +56,18 @@ namespace AcTools.Kn5File {
             Write(material.DepthMode);
 
             Write(material.ShaderProperties.Length);
-            foreach (var property in material.ShaderProperties) {
+            for (var i = 0; i < material.ShaderProperties.Length; i++) {
+                var property = material.ShaderProperties[i];
                 Write(property.Name);
                 Write(property.ValueA);
                 Write(property.ValueB);
                 Write(property.ValueC);
                 Write(property.ValueD);
             }
-            
+
             Write(material.TextureMappings.Length);
-            foreach (var mapping in material.TextureMappings) {
+            for (var i = 0; i < material.TextureMappings.Length; i++) {
+                var mapping = material.TextureMappings[i];
                 Write(mapping.Name);
                 Write(mapping.Slot);
                 Write(mapping.Texture);
@@ -92,10 +92,11 @@ namespace AcTools.Kn5File {
 
                     Write(node.Vertices.Length);
                     for (var i = 0; i < node.Vertices.Length; i++) {
-                        Write(node.Vertices[i].Co);
-                        Write(node.Vertices[i].Normal);
-                        Write(node.Vertices[i].Uv);
-                        Write(node.Vertices[i].Tangent);
+                        var v = node.Vertices[i];
+                        Write(v.Co);
+                        Write(v.Normal);
+                        Write(v.Uv);
+                        Write(v.Tangent);
                     }
 
                     Write(node.Indices.Length);
@@ -116,7 +117,39 @@ namespace AcTools.Kn5File {
                     break;
 
                 case Kn5NodeClass.SkinnedMesh:
-                    throw new NotImplementedException();
+                    Write(node.CastShadows);
+                    Write(node.IsVisible);
+                    Write(node.IsTransparent);
+
+                    Write(node.Bones.Length);
+                    for (var i = 0; i < node.Bones.Length; i++) {
+                        var b = node.Bones[i];
+                        Write(b.Name);
+                        Write(b.Transform);
+                    }
+
+                    Write(node.Vertices.Length);
+                    for (var i = 0; i < node.Vertices.Length; i++) {
+                        var v = node.Vertices[i];
+                        Write(v.Co);
+                        Write(v.Normal);
+                        Write(v.Uv);
+                        Write(v.Tangent);
+
+                        var w = node.VerticeWeights[i];
+                        Write(w.Weights);
+                        Write(w.Indices);
+                    }
+
+                    Write(node.Indices.Length);
+                    foreach (var t in node.Indices) {
+                        Write(t);
+                    }
+
+                    Write(node.MaterialId);
+                    Write(node.Layer);
+                    Write(node.MisteryBytes ?? new byte[8]);
+                    break;
             }
         }
 

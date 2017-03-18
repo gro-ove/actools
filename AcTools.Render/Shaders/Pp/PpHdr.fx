@@ -127,15 +127,22 @@
 			SetPixelShader(CompileShader(ps_4_0, ps_ColorGrading()));
 		}
 	}
-	
-// combine
+
+// Tone mapping
 	#define gamma gParams[0]
 	#define exposure gParams[1]
 	#define whitePoint gParams[2]
 
+	/*float3 SaturateColor(float3 color) {
+		// return color / max(max(color.x, 1.0), max(color.y, color.z));
+	}*/
+
+	#define SaturateColor(x) x
+
+// Reinhard (Habrahabr version)
 	float4 ps_Combine_ToneReinhard(PS_IN pin) : SV_Target {
 		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
-		return float4(pow(max(ToneReinhard(value, 0.5, exposure, whitePoint), 0.0), 1.0 / gamma), 1.0);
+		return float4(SaturateColor(pow(max(ToneReinhard(value, 0.5, exposure / 2.0, whitePoint), 0.0), 1.0 / gamma)), 1.0);
 	}
 
 	technique10 Combine_ToneReinhard {
@@ -146,9 +153,76 @@
 		}
 	}
 
+// Filmic
+	#define _SHOULDER_STRENGTH 0.22
+	#define _LINEAR_STRENGTH 0.3
+	#define _LINEAR_ANGLE 0.1
+	#define _TOE_STRENGTH 0.20
+	#define _TOE_NUMERATOR 0.01
+	#define _TOE_DENUMERATOR 0.30
+
+	float FilmicCurve(float x) {
+		return (
+			(x*(_SHOULDER_STRENGTH*x + _LINEAR_ANGLE*_LINEAR_STRENGTH) + _TOE_STRENGTH*_TOE_NUMERATOR) /
+			(x*(_SHOULDER_STRENGTH*x + _LINEAR_STRENGTH) + _TOE_STRENGTH*_TOE_DENUMERATOR)
+		) - _TOE_NUMERATOR / _TOE_DENUMERATOR;
+	}
+
+	float3 Filmic(float3 x) {
+		float w = FilmicCurve(whitePoint);
+		x = max(x, 0.0);
+		return float3(
+			FilmicCurve(x.r),
+			FilmicCurve(x.g),
+			FilmicCurve(x.b)) / w;
+	}
+
+	float4 ps_Combine_ToneFilmic(PS_IN pin) : SV_Target {
+		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		return float4(SaturateColor(pow(max(Filmic(1.6 * exposure * value), 0.0), 1.0 / gamma)), 1.0);
+	}
+
+	technique10 Combine_ToneFilmic {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( CompileShader( ps_4_0, ps_Combine_ToneFilmic() ) );
+		}
+	}
+
+// FilmicReinhard
+	#define _TOE 0.01
+
+	float FilmicReinhardCurve(float x) {
+		float q = (_TOE + 1.0)*x*x;
+		return q / (q + x + _TOE);
+	}
+
+	float3 FilmicReinhard(float3 x) {
+		float w = FilmicReinhardCurve(whitePoint);
+		return float3(
+			FilmicReinhardCurve(x.r),
+			FilmicReinhardCurve(x.g),
+			FilmicReinhardCurve(x.b)) / w;
+	}
+
+	float4 ps_Combine_ToneFilmicReinhard(PS_IN pin) : SV_Target {
+		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		return float4(SaturateColor(pow(max(FilmicReinhard(exposure * value), 0.0), 1.0 / gamma)), 1.0);
+	}
+
+	technique10 Combine_ToneFilmicReinhard {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( CompileShader( ps_4_0, ps_Combine_ToneFilmicReinhard() ) );
+		}
+	}
+
+// Disabled
 	float4 ps_Combine (PS_IN pin) : SV_Target {
 		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
-		return float4(value, 1.0);
+		return float4(SaturateColor(value), 1.0);
 	}
 
 	technique10 Combine {

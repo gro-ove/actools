@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
 using System.Text;
-using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils {
     /// <summary>
@@ -340,14 +339,14 @@ namespace AcTools.Utils {
             }
         }
 
-        private readonly Bitmap _image;
+        private readonly Image _image;
         private readonly string _filename;
 
         /// <summary>
         /// Initializes new instance of this class.
         /// </summary>
         /// <param name="bitmap">Bitmap to read exif information from</param>
-        public ExifWorks(Bitmap bitmap) {
+        public ExifWorks(Image bitmap) {
             if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
             _image = bitmap;
         }
@@ -358,7 +357,7 @@ namespace AcTools.Utils {
         /// <param name="filename">Name of file to be loaded</param>
         public ExifWorks(string filename) {
             _filename = filename;
-            _image = (Bitmap)Image.FromFile(filename);
+            _image = Image.FromFile(filename);
         }
 
         public void Save() {
@@ -386,40 +385,6 @@ namespace AcTools.Utils {
         /// </summary>
         public Bitmap GetBitmap() {
             return (Bitmap)_image.Clone();
-        }
-
-        /// <summary>
-        /// Returns all available data in formatted string form.
-        /// </summary>
-        public override string ToString() {
-            var sb = new StringBuilder();
-
-            sb.Append("Image:");
-            sb.Append("\\n\\tDimensions:        " + Width + " x " + Height + " px");
-            sb.Append("\\n\\tResolution:        " + ResolutionX + " x " + ResolutionY + " dpi");
-            sb.Append("\\n\\tOrientation:       " + Enum.GetName(typeof(Orientations), Orientation));
-            sb.Append("\\n\\tTitle:             " + Title);
-            sb.Append("\\n\\tDescription:       " + Description);
-            sb.Append("\\n\\tCopyright:         " + Copyright);
-            sb.Append("\\nEquipment:");
-            sb.Append("\\n\\tMaker:             " + EquipmentMaker);
-            sb.Append("\\n\\tModel:             " + EquipmentModel);
-            sb.Append("\\n\\tSoftware:          " + Software);
-            sb.Append("\\nDate and time:");
-            sb.Append("\\n\\tGeneral:           " + DateTimeLastModified);
-            sb.Append("\\n\\tOriginal:          " + DateTimeOriginal);
-            sb.Append("\\n\\tDigitized:         " + DateTimeDigitized);
-            sb.Append("\\nShooting conditions:");
-            sb.Append("\\n\\tExposure time:     " + ExposureTime.ToString("N4") + " s");
-            sb.Append("\\n\\tExposure program:  " + Enum.GetName(typeof(ExposurePrograms), ExposureProgram));
-            sb.Append("\\n\\tExposure mode:     " + Enum.GetName(typeof(ExposureMeteringModes), ExposureMeteringMode));
-            sb.Append("\\n\\tAperture:          F" + Aperture.ToString("N2"));
-            sb.Append("\\n\\tISO sensitivity:   " + Iso);
-            sb.Append("\\n\\tSubject distance:  " + SubjectDistance.ToString("N2") + " m");
-            sb.Append("\\n\\tFocal length:      " + FocalLength);
-            sb.Append("\\n\\tFlash:             " + Enum.GetName(typeof(FlashModes), FlashMode));
-            sb.Append("\\n\\tLight source (WB): " + Enum.GetName(typeof(LightSources), LightSource));
-            return sb.ToString();
         }
 
         /// <summary>
@@ -816,7 +781,7 @@ namespace AcTools.Utils {
         /// Reads Int32 from EXIF bytes.
         /// </summary>
         private int GetInt32(byte[] b) {
-            if (b.Length < 4) throw new ArgumentException("Data too short (4 bytes expected)", "b");
+            if (b.Length < 4) throw new ArgumentException("Data too short (4 bytes expected)", nameof(b));
             return b[3] << 24 | b[2] << 16 | b[1] << 8 | b[0];
         }
 
@@ -824,7 +789,7 @@ namespace AcTools.Utils {
         /// Reads Int16 from EXIF bytes.
         /// </summary>
         private short GetInt16(byte[] b) {
-            if (b.Length < 2) throw new ArgumentException("Data too short (2 bytes expected)", "b");
+            if (b.Length < 2) throw new ArgumentException("Data too short (2 bytes expected)", nameof(b));
             return (short)((b[1] << 8) | b[0]);
         }
 
@@ -852,7 +817,9 @@ namespace AcTools.Utils {
         }
 
         public void Dispose() {
-            _image.Dispose();
+            if (_filename != null) {
+                _image.Dispose();
+            }
         }
     }
 }

@@ -33,6 +33,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     public class TrackMapPreparationRenderer : TrackMapRenderer, IKn5ObjectRenderer {
         private TextBlockRenderer _textBlock;
 
+        public bool LockCamera => false;
+
         public TrackMapPreparationRenderer(string mainKn5Filename) : base(mainKn5Filename) {
             Camera = new CameraOrtho();
         }
@@ -132,9 +134,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public void ChangeCameraFov(float newFovY) {}
 
         protected sealed override void DrawSprites() {
-            if (Sprite == null || ShotMode) return;
+            var sprite = Sprite;
+            if (sprite == null || ShotMode) return;
             DrawSpritesInner();
-            Sprite.Flush();
+            sprite.Flush();
         }
 
         protected virtual void DrawSpritesInner() {
@@ -231,7 +234,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public virtual float Scale { get; set; } = 1f;
 
-        public TrackMapRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename, true)) { }
+        public TrackMapRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename)) { }
 
         public TrackMapRenderer(Kn5 kn5) {
             _kn5 = kn5;

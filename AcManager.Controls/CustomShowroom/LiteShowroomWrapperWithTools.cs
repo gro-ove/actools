@@ -134,6 +134,14 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                     break;
 
+                case Keys.Escape:
+                    if (Kn5ObjectRenderer.SelectedObject != null) {
+                        Kn5ObjectRenderer.Deselect();
+                        args.Handled = true;
+                        return;
+                    }
+                    break;
+
                 case Keys.Space:
                     if (args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;
@@ -142,11 +150,13 @@ namespace AcManager.Controls.CustomShowroom {
                     break;
 
                 case Keys.Tab:
-#if !DEBUG
                     if (!args.Control && !args.Alt && !args.Shift) {
                         args.Handled = true;
                     }
-#endif
+
+                    if (args.Control && !args.Alt && args.Shift) {
+                        Renderer.SyncInterval = !Renderer.SyncInterval;
+                    }
                     break;
             }
 

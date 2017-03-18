@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
     [Localizable(false)]
-    public class CmApiProvider {
+    public static class CmApiProvider {
         #region Initialization
         public static readonly string UserAgent;
 

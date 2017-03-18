@@ -56,7 +56,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                     return new Kn5MaterialSimpleDiffMaps(description);
 
                 case "ksWindscreen":
-                    return new Kn5MaterialSimple(description);
+                    return new Kn5MaterialSimpleWindscreen(description);
 
                 case "ksPerPixel":
                 case "ksPerPixelAT":

@@ -160,6 +160,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5OverrideableTexturesProvider : Kn5TexturesProvider {
         private readonly bool _asyncOverride;
 
+        [CanBeNull]
         private IDeviceContextHolder _holder;
         private IDisposable _watching;
 
@@ -172,13 +173,13 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         public virtual void ClearOverridesDirectory() {
             DisposeHelper.Dispose(ref _watching);
-            _holder = null;
-            CurrentDirectory = null;
-
             foreach (var texture in GetExistingTextures()) {
                 // TODO
-                ((RenderableTexture)texture).LoadOverride(null, null);
+                ((RenderableTexture)texture).LoadOverride(_holder, null);
             }
+
+            _holder = null;
+            CurrentDirectory = null;
         }
 
         protected void SetOverridesDirectoryInner([NotNull] IDeviceContextHolder holder, [NotNull] string directory) {
@@ -310,7 +311,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             // TODO
             // await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
-            ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
+            if (_holder == null) return;
+            ((RenderableTexture)texture).LoadOverride(_holder, bytes);
             _holder.RaiseUpdateRequired();
         }
 
@@ -354,9 +356,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
             byte[] data;
             if (Kn5.TexturesData.TryGetValue(key, out data)) {
                 if (AsyncLoading) {
-                    result.LoadAsync(contextHolder.Device, data).Forget();
+                    result.LoadAsync(contextHolder, data).Forget();
                 } else {
-                    result.Load(contextHolder.Device, data);
+                    result.Load(contextHolder, data);
                 }
             }
 
@@ -374,14 +376,14 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private bool LoadOverride(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
             var overrided = GetOverridedData(textureName);
             if (overrided == null) return false;
-            texture.LoadOverride(contextHolder.Device, overrided);
+            texture.LoadOverride(contextHolder, overrided);
             return true;
         }
 
         private async Task<bool> LoadOverrideAsync(IDeviceContextHolder contextHolder, RenderableTexture texture, string textureName) {
             var overrided = await GetOverridedDataAsync(textureName);
             if (overrided == null) return false;
-            texture.LoadOverrideAsync(contextHolder.Device, overrided).Forget();
+            texture.LoadOverrideAsync(contextHolder, overrided).Forget();
             return true;
         }
 
@@ -458,8 +460,12 @@ namespace AcTools.Render.Kn5Specific.Textures {
                                              .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
                                              .OfType<RenderableTexture>().Select(async texture => {
                                                  var overrided = await GetOverridedDataAsync(texture.Name);
+                                                 if (_holder == null) return;
+
                                                  if (overrided != null) {
-                                                     await texture.LoadOverrideAsync(_holder.Device, overrided);
+                                                     await texture.LoadOverrideAsync(_holder, overrided);
+                                                     if (_holder == null) return;
+
                                                      _holder.RaiseUpdateRequired();
                                                  } else {
                                                      texture.Override = null;
@@ -467,24 +473,27 @@ namespace AcTools.Render.Kn5Specific.Textures {
                                              }));
             }
 
-
-            foreach (var texture in Textures.Values
-                                             .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
-                                             .OfType<RenderableTexture>()) {
-                try {
-                    var overrided = GetOverridedData(texture.Name);
-                    if (overrided != null) {
-                        texture.LoadOverride(_holder.Device, overrided);
-                    } else {
+            var holder = _holder;
+            if (holder != null) {
+                foreach (var texture in Textures.Values
+                                                .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
+                                                .OfType<RenderableTexture>()) {
+                    try {
+                        var overrided = GetOverridedData(texture.Name);
+                        if (overrided != null) {
+                            texture.LoadOverride(holder, overrided);
+                        } else {
+                            texture.Override = null;
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning("Can’t load override texture: " + e.Message);
                         texture.Override = null;
                     }
-                } catch (Exception e) {
-                    Logging.Warning("Can’t load override texture: " + e.Message);
-                    texture.Override = null;
                 }
+
+                holder.RaiseUpdateRequired();
             }
 
-            _holder.RaiseUpdateRequired();
             return Task.Delay(0);
         }
 

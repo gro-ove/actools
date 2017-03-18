@@ -4017,6 +4017,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Previews preset.
+        /// </summary>
+        public static string Shared_CustomPreviewsPreset {
+            get {
+                return ResourceManager.GetString("Shared_CustomPreviewsPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Showroom preset.
+        /// </summary>
+        public static string Shared_CustomShowroomPreset {
+            get {
+                return ResourceManager.GetString("Shared_CustomShowroomPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Force Feedback preset.
         /// </summary>
         public static string Shared_ForceFeedbackPreset {

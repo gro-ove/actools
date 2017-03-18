@@ -112,6 +112,15 @@ namespace AcManager.Controls.CustomShowroom {
                 Mode = m;
             }));
 
+            private DelegateCommand _transferToCmPreviewsCommand;
+
+            public DelegateCommand TransferToCmPreviewsCommand => _transferToCmPreviewsCommand ?? (_transferToCmPreviewsCommand = new DelegateCommand(() => {
+                var darkRenderer = Renderer as DarkKn5ObjectRenderer;
+                if (Settings != null && darkRenderer != null) {
+                    CmPreviewsSettings.Transfer(Settings, darkRenderer);
+                }
+            }));
+
             private ToolsKn5ObjectRenderer _renderer;
 
             [CanBeNull]
@@ -188,14 +197,14 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowIterations = AmbientShadowIterations,
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
                     AmbientShadowFade = AmbientShadowFade,
-                    LiveReload = Renderer.MagickOverride,
+                    LiveReload = renderer.MagickOverride,
                 }, o => {
                     AmbientShadowDiffusion = o.AmbientShadowDiffusion;
                     AmbientShadowBrightness = o.AmbientShadowBrightness;
                     AmbientShadowIterations = o.AmbientShadowIterations;
                     AmbientShadowHideWheels = o.AmbientShadowHideWheels;
                     AmbientShadowFade = o.AmbientShadowFade ?? true;
-                    Renderer.MagickOverride = o.LiveReload;
+                    renderer.MagickOverride = o.LiveReload;
                 }, () => {
                     Reset(false);
                 });
@@ -349,10 +358,11 @@ namespace AcManager.Controls.CustomShowroom {
             private DelegateCommand _copyCameraPositionCommand;
 
             public DelegateCommand CopyCameraPositionCommand => _copyCameraPositionCommand ?? (_copyCameraPositionCommand = new DelegateCommand(() => {
-                if (Renderer == null) return;
+                var renderer = Renderer;
+                if (renderer == null) return;
                 ShowMessage(string.Format("Camera position: {0}\nLook at: {1}\nFOV: {2:F1}°",
-                        ToString(Renderer.Camera.Position), ToString(Renderer.Camera.Position + Renderer.Camera.Look),
-                        180d / Math.PI * Renderer.Camera.FovY),
+                        ToString(renderer.Camera.Position), ToString(renderer.Camera.Position + renderer.Camera.Look),
+                        180d / Math.PI * renderer.Camera.FovY),
                         "Camera Position");
             }));
 
@@ -626,7 +636,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer?.Kn5 == null) return;
-                new CarTextureDialog(Renderer, Skin, Renderer.Kn5, o.TextureName).ShowDialog();
+                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName).ShowDialog();
             }, o => o != null));
             #endregion
 

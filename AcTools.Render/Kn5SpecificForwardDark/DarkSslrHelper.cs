@@ -11,6 +11,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public void OnInitialize(DeviceContextHolder holder) {
             _effect = holder.GetEffect<EffectPpDarkSslr>();
+            _effect.FxNoiseMap.SetResource(holder.GetRandomTexture(16, 16));
         }
 
         public void OnResize(DeviceContextHolder holder) {}

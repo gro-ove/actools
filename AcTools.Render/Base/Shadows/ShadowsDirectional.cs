@@ -105,7 +105,7 @@ namespace AcTools.Render.Base.Shadows {
         private RasterizerState _rasterizerState;
         private DepthStencilState _depthStencilState;
 
-        public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 50f) {
+        public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 100f) {
             MapSize = mapSize;
             _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
 
@@ -127,7 +127,7 @@ namespace AcTools.Render.Base.Shadows {
             }
         }
 
-        public void SetSplits(DeviceContextHolder holder, IEnumerable<float> splits, float clipDistance = 50f) {
+        public void SetSplits(DeviceContextHolder holder, IEnumerable<float> splits, float clipDistance = 100f) {
             SetSplits(splits, clipDistance);
             foreach (var split in Splits) {
                 split.Buffer.Resize(holder, MapSize, MapSize, null);
@@ -216,6 +216,12 @@ namespace AcTools.Render.Base.Shadows {
             holder.DeviceContext.Rasterizer.State = null;
             holder.DeviceContext.OutputMerger.DepthStencilState = null;
             holder.RestoreRenderTargetAndViewport();
+        }
+
+        public void FillBlack(DeviceContextHolder holder) {
+            foreach (var split in Splits) {
+                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 0f, 255);
+            }
         }
 
         public void Dispose() {

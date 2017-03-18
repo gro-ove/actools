@@ -2,15 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib"
-                   xmlns:g="clr-namespace:AcManager"
-                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance tools:BatchPreviewsUpdater}"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance tools:BatchPreviewsUpdater}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <FrameworkElement.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
         </ResourceDictionary>
     </FrameworkElement.Resources>
@@ -34,6 +33,16 @@
             <TextBlock Text="{Binding TotalSelected, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {skin} selected in total'}"
                     Style="{StaticResource Small}" Width="100" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0 0 4 0" />
 
+            <mui:ButtonWithComboBox Content="Auto-Select" Command="{Binding SelectDifferentCommand}"
+                    ButtonToolTip="Select all previews made with different style" PreviewMouseDown="OnDifferentButtonMouseDown"
+                    Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:ButtonWithComboBox.MenuItems>
+                    <CompositeCollection>
+                        <CollectionContainer Collection="{Binding Source={StaticResource UpdatePreviewsPresetsItems}}" />
+                    </CompositeCollection>
+                </mui:ButtonWithComboBox.MenuItems>
+            </mui:ButtonWithComboBox>
+
             <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreviews}" Command="{Binding UpdatePreviewsCommand}"
                     ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="OnPreviewsButtonMouseDown">
                 <mui:ButtonWithComboBox.MenuItems>
@@ -42,7 +51,7 @@
                     </CompositeCollection>
                 </mui:ButtonWithComboBox.MenuItems>
             </mui:ButtonWithComboBox>
-            
+
             <Button Content="Options" Command="{Binding UpdatePreviewsOptionsCommand}" />
         </mui:SpacingStackPanel>
 
@@ -64,6 +73,7 @@
                         </mui:HistoricalTextBox.DefaultItems>
                     </mui:HistoricalTextBox>
                 </DockPanel>
+
                 <ListBox ItemsSource="{Binding EntriesView}" Style="{StaticResource VirtualizingListBox}" SelectionMode="Single"
                         SelectedItem="{Binding SelectedEntry, Mode=TwoWay}" PreviewKeyDown="OnCarsListKeyDown">
                     <ListBox.ItemContainerStyle>

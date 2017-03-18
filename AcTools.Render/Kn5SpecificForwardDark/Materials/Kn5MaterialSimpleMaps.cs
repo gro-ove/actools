@@ -58,7 +58,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (_hasNormalMap && !Effect.FxNormalMap.SetResource(_txNormal)) {
                 Effect.FxNormalMap.SetResource(contextHolder.GetFlatNmTexture());
             }
-
+            
             Effect.FxDetailsMap.SetResource(_txDetails);
             Effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
             Effect.FxMapsMap.SetResource(_txMaps);

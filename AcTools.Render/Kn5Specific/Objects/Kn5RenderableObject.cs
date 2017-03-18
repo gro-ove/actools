@@ -9,6 +9,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -29,6 +30,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         void SetEmissive(Vector3? color);
 
         int TrianglesCount { get; }
+
+        void SetTransparent(bool? isTransparent);
     }
 
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
@@ -58,20 +61,24 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return indices.ToIndicesFixX();
         }
 
-        private readonly bool _isTransparent;
+        private bool _isTransparent;
+        private readonly float _distanceFromSqr, _distanceToSqr;
 
         public Kn5RenderableObject(Kn5Node node) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
-            _isTransparent = OriginalNode.IsTransparent;
 
             if (IsEnabled && (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable)) {
                 IsEnabled = false;
             }
 
-            if (OriginalNode.IsTransparent) {
+            if (OriginalNode.IsTransparent || OriginalNode.Layer == 1 /* WHAT? WHAT DOES IT DO? BUT KUNOS PREVIEWS SHOWROOM WORKS THIS WAY, SO… */) {
                 IsReflectable = false;
             }
+
+            _isTransparent = OriginalNode.IsTransparent;
+            _distanceFromSqr = OriginalNode.LodIn.Pow(2f);
+            _distanceToSqr = OriginalNode.LodOut.Pow(2f);
         }
 
         private IRenderableMaterial Material => _debugMaterial ?? _mirrorMaterial ?? _material;
@@ -124,6 +131,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
+        public void SetTransparent(bool? isTransparent) {
+            _isTransparent = isTransparent ?? OriginalNode.IsTransparent;
+        }
+
         private IRenderableMaterial _material;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
@@ -143,11 +154,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        private static readonly SpecialRenderMode TransparentModes = SpecialRenderMode.SimpleTransparent |
+        internal static readonly SpecialRenderMode TransparentModes = SpecialRenderMode.SimpleTransparent |
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.DeferredTransparentForw | SpecialRenderMode.DeferredTransparentDef | SpecialRenderMode.DeferredTransparentMask;
 
-        private static readonly SpecialRenderMode OpaqueModes = SpecialRenderMode.Simple |
+        internal static readonly SpecialRenderMode OpaqueModes = SpecialRenderMode.Simple |
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
 
@@ -155,9 +166,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!(_isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
 
+            if (_distanceFromSqr != 0f || _distanceToSqr != 0f) {
+                var distance = (BoundingBox?.GetCenter() - camera.Position)?.LengthSquared();
+                if (distance < _distanceFromSqr || distance > _distanceToSqr) return;
+            }
+
             var material = Material;
             if (!material.Prepare(contextHolder, mode)) return;
-            if (mode == SpecialRenderMode.Reflection) return;
 
             base.DrawOverride(contextHolder, camera, mode);
 
@@ -192,14 +207,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public override bool IsReflectable => _original.IsReflectable;
 
             protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-                if (_original._isTransparent &&
-                        mode != SpecialRenderMode.Outline &&
-                        mode != SpecialRenderMode.SimpleTransparent &&
-                        mode != SpecialRenderMode.DeferredTransparentForw &&
-                        mode != SpecialRenderMode.DeferredTransparentDef &&
-                        mode != SpecialRenderMode.DeferredTransparentMask) return;
-
+                if (!(_original._isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
                 if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows || _original._material == null) return;
+
+                if (_original._distanceFromSqr != 0f || _original._distanceToSqr != 0f) {
+                    var distance = (BoundingBox?.GetCenter() - camera.Position)?.LengthSquared();
+                    if (distance < _original._distanceFromSqr || distance > _original._distanceToSqr) return;
+                }
 
                 var material = _original.Material;
                 if (!material.Prepare(contextHolder, mode)) return;

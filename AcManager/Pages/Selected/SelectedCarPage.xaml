@@ -74,7 +74,8 @@
                         ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
                     <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}"
                             ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}" InputGestureText="Ctrl+Alt+P"
-                            Command="{Binding UpdatePreviewsManuallyCommand}" />
+                            Command="{Binding UpdatePreviewsManuallyCommand}"
+                            Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                     <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsOptions_Tooltip}"
                             InputGestureText="Ctrl+Shift+P" Command="{Binding UpdatePreviewsOptionsCommand}" />
                     <Separator />

@@ -158,6 +158,37 @@ technique10 SkinnedGl {
 	}
 }
 
+//// Windscreen
+
+float4 ps_Windscreen(PS_IN pin) : SV_Target{
+	float4 txColor = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+
+	float alpha = txColor.a;
+	AlphaTest(alpha);
+
+	float3 normal = normalize(pin.NormalW);
+	// float3 lighted = CalculateLight(txColor.rgb, normal, pin.PosW, pin.PosH.xy);
+
+	float3 fromEyeW = normalize(pin.PosW - gEyePosW);
+	float windscreenK = max(dot(fromEyeW, gLightDir), 0.0) * saturate(Luminance(gLightColor) * 0.76);
+
+#if ENABLE_SHADOWS == 1
+	windscreenK *= GetShadow_ConsiderMirror(pin.PosW);
+#endif
+
+	float3 ambient = GetAmbient(normal);
+	float3 lighted = txColor.rgb * (gMaterial.Ambient * ambient + gMaterial.Diffuse * windscreenK + gMaterial.Emissive);
+	return float4(lighted, alpha > 0.5 ? alpha : alpha * windscreenK);
+}
+
+technique10 Windscreen {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen()));
+	}
+}
+
 //// Collider
 
 float4 ps_Collider(PS_IN pin) : SV_Target {
@@ -270,8 +301,8 @@ pt_PS_IN vs_AmbientShadow(pt_VS_IN vin) {
 	float3 toEyeL = normalize(eyeL - vin.PosL);
 
 	float4 p = CalculatePosH(vin.PosL);
-	float4 r = CalculatePosH(vin.PosL + toEyeL * 0.02);
-	p.z = r.z;
+	//float4 r = CalculatePosH(vin.PosL + toEyeL * 0.02);
+	//p.z = r.z;
 
 	vout.PosH = p;
 	vout.PosW = posW;
@@ -286,7 +317,7 @@ float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
 
 #if ENABLE_SHADOWS == 1
 	float shadow = GetShadow(pin.PosW);
-	return float4(0.0, 0.0, 0.0, value * (1.0 - shadow * lightBrightness * step(gNumSplits, 1) * 0.95));
+	return float4(0.0, 0.0, 0.0, value * (1.0 - shadow * lightBrightness * (gNumSplits > 0 ? 1 : 0) * 0.95));
 #else
 	return float4(0.0, 0.0, 0.0, value);
 #endif
@@ -324,11 +355,14 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 	float fresnel = baseOpacity + frenselOpacity * pow(normalize(eyeW).y, 4);
 
 	// summary opacity (aka non-backgroundy) is combined from viewing angle and distance
-	// for smooth transition
-	float opacity = fresnel * saturate(1.2 - distance / 40);
+	// for smooth transition\w\w not anymore
+	float opacity = fresnel;
+
+	// only light is affected by distance
+	float distanceMultipler = saturate(1.2 - distance / 40);
 
 	// how much surface is lighed according to light direction
-	float3 light = gLightDir.y * gLightColor;
+	float3 light = gLightDir.y * gLightColor * distanceMultipler;
 
 	// shadow at the point
 #if ENABLE_SHADOWS == 1
@@ -341,7 +375,7 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 	float3 ambient = gAmbientDown * 0.73 + gAmbientRange * 0.27;
 
 	// bright light source means more backgroundy surface
-	float lightBrightness = Luminance(gLightColor);
+	float lightBrightness = Luminance(gLightColor) * distanceMultipler;
 
 	// separately color in lighted and shadowed areas
 	// 100%-target is to match those colors if there is no light (aka no shadow)
@@ -352,18 +386,7 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 	return float4(lightPart * shadow + shadowPart * (1 - shadow), opacity);
 }
 
-float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target{
-	/*float3 eyeW = gEyePosW - pin.PosW;
-	float3 toEyeW = normalize(eyeW);
-	float3 normal = float3(0, 1, 0);
-	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
-	float distance = length(eyeW);
-
-	float shadow = GetShadow(pin.PosW);
-	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
-	float opacity = fresnel * saturate(1.2 - distance / 60);
-	return float4(light * opacity * gBackgroundColor, opacity);*/
-
+float4 ps_FlatMirror(pt_PS_IN pin) : SV_Target {
 	float4 ground = GetFlatBackgroundGroundColor(pin.PosW, 0.7, 0.3);
 	ground.a = saturate(1.5 * ground.a * (1.0 - gFlatMirrorPower));
 	return ground;
@@ -381,19 +404,6 @@ float4 ps_FlatTextureMirror(pt_PS_IN pin) : SV_Target{
 	float2 tex = pin.PosH.xy / gScreenSize.xy;
 	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
 
-	// value = float4(value.rgb * gFlatMirrorPower + gBackgroundColor * (1.0 - gFlatMirrorPower), value.a);
-
-	/*float3 eyeW = gEyePosW - pin.PosW;
-	float3 toEyeW = normalize(eyeW);
-	float3 normal = float3(0, 1, 0);
-	float fresnel = (0.7 + 0.3 * pow(dot(toEyeW, normal), 4)) * (1 - gFlatMirrorPower);
-	float distance = length(eyeW);
-
-	float shadow = GetShadow(pin.PosW);
-	float3 light = saturate(dot(normal, gLightDir)) * shadow * gLightColor;
-	float opacity = fresnel * saturate(1.2 - distance / 60);
-	return float4(value.rgb * (1 - opacity) + light * opacity * gBackgroundColor, 1.0);*/
-
 	float4 ground = GetFlatBackgroundGroundColor(pin.PosW, 0.7, 0.3);
 	float alpha = saturate(1.5 * ground.a * (1 - gFlatMirrorPower));
 	return float4(value.rgb * (1 - alpha) + ground.rgb * alpha, 1.0);
@@ -406,46 +416,6 @@ technique10 FlatTextureMirror {
 		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirror()));
 	}
 }
-
-/*float3 GetReflPosition(float2 uv) {
-	float4 position = mul(float4(uv.x * 2 - 1, -(uv.y * 2 - 1), gMapsMap.Sample(samAnisotropic, uv).x, 1), gWorldViewProjInv);
-	return position.xyz / position.w;
-}
-
-float4 ps_FlatTextureMirrorDark(pt_PS_IN pin) : SV_Target{
-	float2 tex = pin.PosH.xy / gScreenSize.xy;
-	float3 position = GetReflPosition(tex);
-
-	float3 reflDelta = gEyePosW - position;
-	float reflDistance = (abs(position.y) / abs(reflDelta.y)) * length(reflDelta);
-
-	// return reflDistance;
-
-	float3 normals = (gNormalMap.Sample(samAnisotropic, pin.Tex * 1000) - 0.5) * 2;
-	tex.x += normals.x * reflDistance / 100.0;
-
-	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
-
-	value = float4(value.rgb * 0.999 + gBackgroundColor * 0.0, value.a);
-
-	float3 eyeW = gEyePosW - pin.PosW;
-	float3 toEyeW = normalize(eyeW);
-	float3 normal = float3(0, 1, 0);
-	float fresnel = 0.11 + 0.52 * pow(dot(toEyeW, normal), 4);
-	float distance = length(eyeW);
-
-	float3 light = saturate(dot(normal, gLightDir)) * GetShadow(pin.PosW) * gLightColor;
-	float opacity = fresnel * saturate(1 - distance / 60);
-	return float4(value * (1 - opacity) + light * opacity, 1.0);
-}
-
-technique10 FlatTextureMirrorDark {
-	pass P0 {
-		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
-		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirrorDark()));
-	}
-}*/
 
 float4 ps_FlatBackgroundGround(pt_PS_IN pin) : SV_Target {
 	return float4(GetFlatBackgroundGroundColor(pin.PosW, 0.21, 0.12).rgb, 1.0);

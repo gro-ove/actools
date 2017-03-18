@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
@@ -67,6 +68,12 @@ namespace AcManager.Tools {
                 case SharedEntryType.Weather:
                     return ProcessSharedWeather(shared, data);
 
+                case SharedEntryType.CustomShowroomPreset:
+                    return ProcessSharedCustomShowroomPreset(shared, data);
+
+                case SharedEntryType.CustomPreviewsPreset:
+                    return ProcessSharedCustomPreviewsPreset(shared, data);
+
                 default:
                     throw new Exception(string.Format(AppStrings.Arguments_SharedUnsupported, shared.EntryType));
             }
@@ -101,6 +108,34 @@ namespace AcManager.Tools {
                         }
                     }
 
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private ArgumentHandleResult ProcessSharedCustomShowroomPreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared, applyable: false);
+            switch (result) {
+                case Choise.Save:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(DarkRendererSettings.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private ArgumentHandleResult ProcessSharedCustomPreviewsPreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared, applyable: false);
+            switch (result) {
+                case Choise.Save:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(CmPreviewsSettings.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
                     return ArgumentHandleResult.SuccessfulShow;
                 default:
                     return ArgumentHandleResult.Failed;

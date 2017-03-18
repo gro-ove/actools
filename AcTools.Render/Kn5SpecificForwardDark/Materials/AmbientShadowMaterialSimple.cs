@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -11,6 +10,8 @@ using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class AmbientShadowMaterialSimple : IRenderableMaterial {
@@ -29,6 +30,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _txDiffuse = contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _description.Filename);
         }
 
+        private RasterizerState _rasterizerState;
+
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
@@ -38,6 +41,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             if (mode != SpecialRenderMode.Outline) {
                 contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
                 contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.ReadOnlyDepthState;
+
+                _rasterizerState = contextHolder.DeviceContext.Rasterizer.State;
+                if (_rasterizerState == null) {
+                    contextHolder.DeviceContext.Rasterizer.State = contextHolder.States.AmbientShadowState;
+                }
             }
 
             return true;
@@ -52,6 +60,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect.TechAmbientShadow.DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+            contextHolder.DeviceContext.Rasterizer.State = _rasterizerState;
         }
 
         public bool IsBlending => false;

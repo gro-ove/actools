@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -358,14 +360,9 @@ namespace AcManager.Pages.ContentTools {
         #endregion
 
         #region Presets, actual shooting
-        private static CarUpdatePreviewsDialog.DialogMode GetAutoUpdatePreviewsDialogMode() {
-            return Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? CarUpdatePreviewsDialog.DialogMode.Options :
-                    CarUpdatePreviewsDialog.DialogMode.Start;
-        }
-
         private bool _showMessage = false;
 
-        private void Run(string preset = null, bool? optionsMode = null) {
+        private async Task Run(string preset = null, UpdatePreviewMode? mode = null) {
             if (TotalSelected == 0) return;
 
             if (_showMessage && ModernDialog.ShowMessage(
@@ -374,34 +371,27 @@ namespace AcManager.Pages.ContentTools {
                 return;
             }
 
-            var mode = optionsMode == true ? CarUpdatePreviewsDialog.DialogMode.Options :
-                    optionsMode == false ? CarUpdatePreviewsDialog.DialogMode.Start :
-                            GetAutoUpdatePreviewsDialogMode();
+            var errors = await Entries.Where(x => x.SelectedSkins.Count > 0)
+                   .Select(x => new ToUpdatePreview(x.Car, x.SelectedSkins.ToList()))
+                   .Run(mode, preset);
 
-            var dialog = new CarUpdatePreviewsDialog(
-                    Entries.Where(x => x.SelectedSkins.Count > 0)
-                           .Select(x => new CarUpdatePreviewsDialog.ToUpdate(x.Car, x.SelectedSkins.Select(y => y.Id).ToArray()))
-                           .ToList(),
-                    mode, preset, true);
-            dialog.ShowDialog();
-
-            foreach (var entry in Entries) {
-                var error = dialog.Errors.Any(x => x.ToUpdate.Car == entry.Car);
-                if (!error) entry.IsSelected = false;
+            if (errors != null) {
+                foreach (var entry in Entries) {
+                    var error = errors.Any(x => x.ToUpdate.Car == entry.Car);
+                    if (!error) entry.IsSelected = false;
+                }
             }
         }
 
-        private DelegateCommand _updatePreviewsCommand;
+        private AsyncCommand _updatePreviewsCommand;
 
-        public DelegateCommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new DelegateCommand(() => {
-            Run();
-        }, () => TotalSelected > 0));
+        public AsyncCommand UpdatePreviewsCommand => _updatePreviewsCommand ??
+                (_updatePreviewsCommand = new AsyncCommand(() => Run(), () => TotalSelected > 0));
 
-        private DelegateCommand _updatePreviewsOptionsCommand;
+        private AsyncCommand _updatePreviewsOptionsCommand;
 
-        public DelegateCommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new DelegateCommand(() => {
-            Run(optionsMode: true);
-        }, () => TotalSelected > 0));
+        public AsyncCommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ??
+                (_updatePreviewsOptionsCommand = new AsyncCommand(() => Run(mode: UpdatePreviewMode.Options), () => TotalSelected > 0));
 
         private HierarchicalItemsView _updatePreviewsPresets;
         private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
@@ -415,12 +405,64 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
-        private void OnPreviewsButtonMouseDown(object sender, MouseButtonEventArgs e) {
-            if (UpdatePreviewsPresets == null) {
-                UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, p => {
-                    Run(p.Filename);
+        private AsyncCommand _selectDifferentCommand;
+
+        public AsyncCommand SelectDifferentCommand => _selectDifferentCommand ?? (_selectDifferentCommand = new AsyncCommand(() => SelectDifferent()));
+
+        private static string GetChecksum(string previewFilename) {
+            var comment = ExifComment.Read(previewFilename);
+            if (comment == null) return null;
+
+            var match = Regex.Match(comment, @"checksum\w*:\s*(\w+)", RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+        private async Task SelectDifferent(string presetFilename = null) {
+            if (!SettingsHolder.CustomShowroom.CustomShowroomPreviews) return;
+            using (var waiting = WaitingDialog.Create("Scanning…")) {
+                var list = Entries.ToList();
+                var cancellation = waiting.CancellationToken;
+
+                await Task.Run(() => {
+                    var checksum = CmPreviewsTools.GetChecksum(presetFilename);
+                    for (var i = 0; i < list.Count; i++) {
+                        if (cancellation.IsCancellationRequested) return;
+
+                        var entry = list[i];
+                        waiting.Report(new AsyncProgressEntry(entry.Car.DisplayName, i, list.Count));
+
+                        var selected = entry.Car.EnabledOnlySkins.Where(x => GetChecksum(x.PreviewImage) != checksum).ToList();
+                        ActionExtension.InvokeInMainThread(() => entry.SelectedSkins = selected);
+                    }
                 });
             }
+        }
+
+        private bool _runButtonClicked;
+
+        private void InitializePreviews() {
+            if (UpdatePreviewsPresets == null) {
+                UpdatePreviewsPresets = _helper.Create(
+                        SettingsHolder.CustomShowroom.CustomShowroomPreviews
+                                ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                        p => {
+                            if (_runButtonClicked) {
+                                Run(p.Filename).Forget();
+                            } else {
+                                SelectDifferent(p.Filename).Forget();
+                            }
+                        });
+            }
+        }
+
+        private void OnPreviewsButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _runButtonClicked = true;
+            InitializePreviews();
+        }
+
+        private void OnDifferentButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _runButtonClicked = false;
+            InitializePreviews();
         }
 
         protected override void DisposeOverride() {

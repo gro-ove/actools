@@ -127,7 +127,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return Titling.Convert(s);
         }
 
-        public static string ToSentense(this string s) {
+        public static string ToSentenceMember(this string s) {
             if (s.Length == 0) return string.Empty;
 
             s = s.Length < 2 || char.IsLower(s[0]) || char.IsUpper(s[1]) ? s :

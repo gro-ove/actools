@@ -27,7 +27,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         bool OverrideTextureFlakes(string textureName, Color color);
 
-        bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular);
+        bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular);
 
         Task SaveTexture(string filename, Color color);
 
@@ -35,7 +35,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         Task SaveTextureFlakes(string filename, Color color);
 
-        Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double blur, double specular);
+        Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double gloss, double specular);
     }
 
     public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer, IPaintShopRenderer {
@@ -214,12 +214,19 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         private Kn5Material GetMaterial(IKn5RenderableObject obj) {
-            var carNode = CarNode;
-            if (carNode != null) {
-                return carNode.GetMaterial(obj);
+            if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
+                return ShowroomNode.OriginalFile.GetMaterial(obj.OriginalNode.MaterialId);
             }
+            
+            return CarNode?.GetMaterial(obj);
+        }
 
-            return null;
+        public Kn5 GetKn5(IKn5RenderableObject obj) {
+            if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
+                return ShowroomNode.OriginalFile;
+            }
+            
+            return CarNode?.GetKn5(obj);
         }
 
         private IKn5RenderableObject _selectedObject;
@@ -347,7 +354,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private MagickImage _mapsBase;
 
-        public bool OverrideTextureMaps(string textureName, double reflection, double blur, double specular) {
+        public bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular) {
             if (Kn5 == null) return false;
 
             if (_mapsBase == null) {
@@ -365,14 +372,14 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             using (var image = _mapsBase.Clone()) {
-                image.Evaluate(Channels.All, EvaluateOperator.Multiply, specular);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, blur);
+                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, specular);
+                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, gloss);
                 image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
                 return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Png));
             }
         }
 
-        public async Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double blur, double specular) {
+        public async Task SaveTextureMaps(string filename, string baseTextureName, double reflection, double gloss, double specular) {
             if (Kn5 == null) return;
 
             MagickImage image = null;
@@ -385,8 +392,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 image.AutoLevel(Channels.Green);
                 image.AutoLevel(Channels.Blue);
 
-                image.Evaluate(Channels.All, EvaluateOperator.Multiply, specular);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, blur);
+                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, specular);
+                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, gloss);
                 image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
             });
 

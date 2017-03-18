@@ -72,15 +72,14 @@ namespace AcManager.Controls.CustomShowroom {
                         var toolsRenderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
                                 new ToolsKn5ObjectRenderer(description) {
                                     VisibleUi = false,
-                                    UseSprite = false
+                                    UseSprite = false,
+                                    UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa,
+                                    UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa,
+                                    UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
                                 } :
                                 new DarkKn5ObjectRenderer(description) {
-                                    // FlatMirror = true,
                                     VisibleUi = false,
-                                    UseSprite = false,
-                                    /*BackgroundColor = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
-                                    AmbientDown = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),
-                                    AmbientUp = ColorExtension.FromHsb(MathUtils.Random(0d, 360d),  1d, 0.8).ToColor(),*/
+                                    UseSprite = false
                                 });
                         wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId);
                         renderer = toolsRenderer;
@@ -89,7 +88,11 @@ namespace AcManager.Controls.CustomShowroom {
                         Logging.Warning($"Found location: “{carObject?.Location ?? @"NULL"}”");
 
                         renderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
-                                new ForwardKn5ObjectRenderer(description) :
+                                new ForwardKn5ObjectRenderer(description) {
+                                    UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa,
+                                    UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa,
+                                    UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
+                                } :
                                 new DarkKn5ObjectRenderer(description) {
                                     FlatMirror = true,
                                     VisibleUi = true,
@@ -102,11 +105,6 @@ namespace AcManager.Controls.CustomShowroom {
                             renderer.SelectSkin(skinId);
                         }
                     }
-
-                    renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
-                    renderer.UseSsaa = SettingsHolder.CustomShowroom.LiteUseSsaa;
-                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-                    renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
 
                     _last = wrapper;
                     SetProperties(wrapper, renderer);

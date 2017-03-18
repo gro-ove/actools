@@ -3,9 +3,12 @@
 namespace AcTools.Kn5File {
     public partial class Kn5 {
         public void SaveAll(string filename) {
+#pragma warning disable 612
             Save(filename, true);
+#pragma warning restore 612
         }
 
+        [Obsolete]
         public void Save(string filename, bool saveNodes = false) {
             using (var writer = new Kn5Writer(filename)) {
                 writer.Write(Header);

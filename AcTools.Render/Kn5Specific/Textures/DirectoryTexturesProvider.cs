@@ -146,9 +146,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             // TODO
             if (_asyncLoading) {
-                await ((RenderableTexture)texture).LoadOverrideAsync(_holder.Device, bytes);
+                await ((RenderableTexture)texture).LoadOverrideAsync(_holder, bytes);
             } else {
-                ((RenderableTexture)texture).LoadOverride(_holder.Device, bytes);
+                ((RenderableTexture)texture).LoadOverride(_holder, bytes);
             }
 
             _holder.RaiseUpdateRequired();
@@ -164,7 +164,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                                                  if (texture.Name == null) return;
                                                  var filename = Path.Combine(_directory, texture.Name);
                                                  if (File.Exists(filename)) {
-                                                     await texture.LoadAsync(_holder.Device, filename);
+                                                     await texture.LoadAsync(_holder, filename);
                                                      _holder.RaiseUpdateRequired();
                                                  } else {
                                                      texture.Resource = null;
@@ -180,7 +180,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                     if (texture.Name == null) continue;
                     var filename = Path.Combine(_directory, texture.Name);
                     if (File.Exists(filename)) {
-                        texture.Load(_holder.Device, filename);
+                        texture.Load(_holder, filename);
                     } else {
                         texture.Resource = null;
                     }
@@ -202,9 +202,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             if (File.Exists(filename)) {
                 if (_asyncLoading) {
-                    result.LoadAsync(contextHolder.Device, filename).Forget();
+                    result.LoadAsync(contextHolder, filename).Forget();
                 } else {
-                    result.Load(contextHolder.Device, filename);
+                    result.Load(contextHolder, filename);
                 }
             }
 

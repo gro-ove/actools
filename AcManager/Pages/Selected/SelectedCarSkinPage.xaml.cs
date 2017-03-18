@@ -3,8 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -65,26 +67,23 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _updatePreviewCommand;
 
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new DelegateCommand(() => {
-                new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
-                        SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
-            }, () => SelectedObject.Enabled));
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ??
+                    (_updatePreviewCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(), () => SelectedObject.Enabled));
 
             private CommandBase _changeLiveryCommand;
 
-            public ICommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new DelegateCommand(() => {
-                new LiveryIconEditor(SelectedObject).ShowDialog();
-            }));
+            public ICommand ChangeLiveryCommand => _changeLiveryCommand ??
+                    (_changeLiveryCommand = new DelegateCommand(() => new LiveryIconEditor(SelectedObject).ShowDialog()));
 
             private CommandBase _generateLiveryCommand;
 
-            public ICommand GenerateLiveryCommand
-                => _generateLiveryCommand ?? (_generateLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateAsync(SelectedObject)));
+            public ICommand GenerateLiveryCommand => _generateLiveryCommand ??
+                    (_generateLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateAsync(SelectedObject)));
 
             private CommandBase _generateRandomLiveryCommand;
 
-            public ICommand GenerateRandomLiveryCommand
-                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
+            public ICommand GenerateRandomLiveryCommand => _generateRandomLiveryCommand ??
+                    (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
         }
 
         private string _carId, _id;

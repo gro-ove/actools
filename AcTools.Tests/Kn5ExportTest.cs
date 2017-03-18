@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using AcTools.Kn5File;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

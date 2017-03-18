@@ -30,6 +30,7 @@ namespace AcTools.Render.Wrapper {
 
             Renderer = renderer;
             Renderer.Initialize(Form.Handle);
+            Renderer.SetAssociatedWindow(Form);
 
             Renderer.Width = Form.ClientSize.Width;
             Renderer.Height = Form.ClientSize.Height;

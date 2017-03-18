@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using JetBrains.Annotations;
+﻿using System.IO;
 
 namespace AcTools.KsAnimFile {
     internal sealed class KsAnimReader : ReadAheadBinaryReader {

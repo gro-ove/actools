@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum SplitButtonMode {
@@ -87,12 +88,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// The Split Button’s Items property maps to the base classes ContextMenu.Items property
         /// </summary>
-        public ItemCollection Items {
-            get {
-                EnsureContextMenuIsValid();
-                return ContextMenu.Items;
-            }
-        }
+        public ItemCollection Items => ContextMenu.Items;
 
         /*
          * DependencyProperty CLR wrappers
@@ -159,8 +155,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static void OnIsContextMenuOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var s = (SplitButton)d;
-            s.EnsureContextMenuIsValid();
-
             if (!s.ContextMenu.HasItems) return;
 
             var value = (bool)e.NewValue;
@@ -173,10 +167,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private static void OnPlacementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var s = d as SplitButton;
-            if (s == null) return;
-
-            s.EnsureContextMenuIsValid();
-            s.ContextMenu.Placement = (PlacementMode)e.NewValue;
+            if (s != null) {
+                s.ContextMenu.Placement = (PlacementMode)e.NewValue;
+            }
         }
         
         /// <summary>
@@ -184,10 +177,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private static void OnPlacementRectangleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var s = d as SplitButton;
-            if (s == null) return;
-
-            s.EnsureContextMenuIsValid();
-            s.ContextMenu.PlacementRectangle = (Rect)e.NewValue;
+            if (s != null) {
+                s.ContextMenu.PlacementRectangle = (Rect)e.NewValue;
+            }
         }
 
         /// <summary>
@@ -195,10 +187,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private static void OnHorizontalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var s = d as SplitButton;
-            if (s == null) return;
-
-            s.EnsureContextMenuIsValid();
-            s.ContextMenu.HorizontalOffset = (double)e.NewValue;
+            if (s != null) {
+                s.ContextMenu.HorizontalOffset = (double)e.NewValue;
+            }
         }
 
         /// <summary>
@@ -206,10 +197,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private static void OnVerticalOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var s = d as SplitButton;
-            if (s == null) return;
+            if (s != null) {
+                s.ContextMenu.VerticalOffset = (double)e.NewValue;
+            }
+        }
 
-            s.EnsureContextMenuIsValid();
-            s.ContextMenu.VerticalOffset = (double)e.NewValue;
+        [NotNull]
+        public new ContextMenu ContextMenu {
+            get {
+                if (base.ContextMenu == null) {
+                    base.ContextMenu = new ContextMenu();
+                    ContextMenu.PlacementTarget = this;
+                    ContextMenu.Placement = Placement;
+
+                    ContextMenu.Opened += ((sender, routedEventArgs) => IsContextMenuOpen = true);
+                    ContextMenu.Closed += ((sender, routedEventArgs) => IsContextMenuOpen = false);
+                }
+
+                return base.ContextMenu;
+            }
         }
 
         /*
@@ -220,22 +226,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Make sure the Context menu is not null
         /// </summary>
-        private void EnsureContextMenuIsValid() {
-            if (ContextMenu == null) {
-                ContextMenu = new ContextMenu();
-                ContextMenu.PlacementTarget = this;
-                ContextMenu.Placement = Placement;
-
-                ContextMenu.Opened += ((sender, routedEventArgs) => IsContextMenuOpen = true);
-                ContextMenu.Closed += ((sender, routedEventArgs) => IsContextMenuOpen = false);
-            }
-        }
-
         private void OnDropdown() {
-            EnsureContextMenuIsValid();
-            if (!ContextMenu.HasItems) return;
-
-            ContextMenu.IsOpen = !IsContextMenuOpen; // open it if closed, close it if open
+            if (ContextMenu.HasItems) {
+                ContextMenu.IsOpen = !IsContextMenuOpen; // open it if closed, close it if open
+            }
         }
 
         /*

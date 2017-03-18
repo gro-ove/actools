@@ -331,6 +331,7 @@ namespace AcTools.Processes {
                 return CarPerTakenPlace ?? BestLaps
                         .GroupBy(x => x.CarNumber)
                         .Select(x => x.MinEntryOrDefault(y => y.Time))
+                        .NonNull()
                         .OrderBy(x => x.Time)
                         .Select(x => x.CarNumber).ToArray();
             }

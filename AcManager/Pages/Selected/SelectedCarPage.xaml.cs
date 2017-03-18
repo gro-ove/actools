@@ -151,27 +151,20 @@ namespace AcManager.Pages.Selected {
             #region Auto-Update Previews
             private ICommand _updatePreviewsCommand;
 
-            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new DelegateCommand(() => {
-                new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode()).ShowDialog();
-            }, () => SelectedObject.Enabled));
+            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ??
+                    (_updatePreviewsCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(), () => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsManuallyCommand;
 
-            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new DelegateCommand(() => {
-                new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.StartManual).ShowDialog();
-            }, () => SelectedObject.Enabled));
+            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ??
+                    (_updatePreviewsManuallyCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(UpdatePreviewMode.StartManual),
+                            () => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsOptionsCommand;
 
-            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new DelegateCommand(() => {
-                new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.Options).ShowDialog();
-            }, () => SelectedObject.Enabled));
-
-            public static CarUpdatePreviewsDialog.DialogMode GetAutoUpdatePreviewsDialogMode() {
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) return CarUpdatePreviewsDialog.DialogMode.Options;
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) return CarUpdatePreviewsDialog.DialogMode.StartManual;
-                return CarUpdatePreviewsDialog.DialogMode.Start;
-            }
+            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ??
+                    (_updatePreviewsOptionsCommand = new AsyncCommand(() => new ToUpdatePreview(SelectedObject).Run(UpdatePreviewMode.Options),
+                            () => SelectedObject.Enabled));
             #endregion
 
             #region Presets
@@ -223,9 +216,10 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, p => {
-                        new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), p.Filename).ShowDialog();
-                    });
+                    UpdatePreviewsPresets = _helper.Create(
+                            SettingsHolder.CustomShowroom.CustomShowroomPreviews
+                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                            p => new ToUpdatePreview(SelectedObject).Run(p.Filename));
                 }
             }
             #endregion
@@ -421,8 +415,7 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(new Separator());
 
             item = new MenuItem { Header = AppStrings.Toolbar_UpdatePreview };
-            item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] { skin.Id },
-                    ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+            item.Click += (sender, args) => new ToUpdatePreview(_model.SelectedObject, skin).Run();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());

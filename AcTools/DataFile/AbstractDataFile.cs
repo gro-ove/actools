@@ -26,7 +26,7 @@ namespace AcTools.DataFile {
 
         public readonly StorageMode Mode;
 
-        private string _acdFilename;
+        private readonly string _acdFilename;
 
         protected AbstractDataFile(string carDir, string name, Acd acd) {
             Name = name;
@@ -73,6 +73,9 @@ namespace AcTools.DataFile {
 
         private void Load() {
             if (_acd != null || Mode == StorageMode.AcdFile) {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                // with StorageMode.AcdFile, Filename is not null
+                // TODO: sort everything better
                 var acd = _acd ?? Acd.FromFile(Filename);
 
                 var entry = acd.GetEntry(Name);
@@ -119,30 +122,32 @@ namespace AcTools.DataFile {
         }
 
         private void UpdateAcd(bool backup) {
-            if (_acd != null) {
-                if (_acd.IsPacked) {
-                    _acd.SetEntry(Name, Stringify());
-                    _acd.Save(_acdFilename);
+            var acd = _acd;
+            if (acd != null) {
+                if (acd.IsPacked) {
+                    acd.SetEntry(Name, Stringify());
+                    acd.Save(_acdFilename);
                 } else {
-                    SaveTo(_acd.GetFilename(Name), backup);
+                    SaveTo(acd.GetFilename(Name), backup);
                 }
             } else {
-                if (Filename == null) {
+                var filename = Filename;
+                if (filename == null) {
                     throw new Exception("File wasn’t loaded to be saved like this");
                 }
 
-                var acd = _acd ?? Acd.FromFile(Filename);
+                acd = Acd.FromFile(filename);
                 acd.SetEntry(Name, Stringify());
 
-                if (File.Exists(Filename)) {
+                if (File.Exists(filename)) {
                     if (backup) {
-                        FileUtils.Recycle(Filename);
+                        FileUtils.Recycle(filename);
                     } else {
-                        File.Delete(Filename);
+                        File.Delete(filename);
                     }
                 }
 
-                acd.Save(Filename);
+                acd.Save(filename);
             }
         }
 

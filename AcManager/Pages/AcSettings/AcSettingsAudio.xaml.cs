@@ -34,9 +34,11 @@ namespace AcManager.Pages.AcSettings {
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share() {
+                var data = Presets.ExportToPresetData();
+                if (data == null) return;
                 await SharingUiHelper.ShareAsync(SharedEntryType.AudioSettingsPreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(Presets.PresetableKey)), null,
-                        Presets.ExportToPresetData());
+                        data);
             }
         }
     }

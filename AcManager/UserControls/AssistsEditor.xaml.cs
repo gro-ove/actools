@@ -19,11 +19,12 @@ namespace AcManager.UserControls {
 
         private async Task Share() {
             var model = DataContext as AssistsViewModel;
-            if (model == null) return;
+            var data = model?.ExportToPresetData();
+            if (data == null) return;
 
             await SharingUiHelper.ShareAsync(SharedEntryType.AssistsSetupPreset,
                     Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(model.PresetableKey)), null,
-                    model.ExportToPresetData());
+                    data);
         }
     }
 }

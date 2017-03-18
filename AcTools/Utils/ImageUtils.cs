@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AcTools.Utils.Helpers;
 using ImageMagick;
 using JetBrains.Annotations;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -179,11 +181,11 @@ namespace AcTools.Utils {
                                     (int)(k * image.Width), (int)(k * image.Height));
                         }
 
-                        var exif = new ExifWorks(bitmap) {
+                        new ExifWorks(bitmap) {
                             Software = AcToolsInformation.Name,
                             Description = information?.Name,
                             Artist = information?.ExifStyle
-                        };
+                        }.Dispose();
 
                         bitmap.Save(destination, encoder, parameters);
                     }
@@ -239,48 +241,6 @@ namespace AcTools.Utils {
             }
         }
 
-        public static bool OptionConvertCombined = true;
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ConvertImageMagick(Stream source, Stream destination, Size? resize, int quality) {
-            using (var image = new MagickImage(source)) {
-                if (resize.HasValue) {
-                    var k = Math.Max((double)resize.Value.Height / image.Height, (double)resize.Value.Width / image.Width);
-                    image.Interpolate = PixelInterpolateMethod.Catrom;
-                    image.FilterType = FilterType.Lanczos;
-                    image.Sharpen();
-                    image.Resize((int)(k * image.Width), (int)(k * image.Height));
-                    image.Crop(resize.Value.Width, resize.Value.Height, Gravity.Center);
-                }
-
-                image.Quality = quality;
-                image.Density = new Density(96, 96);
-                image.Write(destination, MagickFormat.Jpeg);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ConvertCombined(Stream source, Stream destination, Size? resize, int quality) {
-            if (resize == null) {
-                ConvertImageMagick(source, destination, null, quality);
-                return;
-            }
-
-            // Because Magick.NET is terribly slow at resizing big images…
-            using (var memory = new MemoryStream()) {
-                using (var image = Image.FromStream(source))
-                using (var resized = image.HighQualityResize(resize.Value)) {
-                    resized.Save(memory, ImageFormat.Bmp);
-                }
-                
-                using (var image = new MagickImage(memory)) {
-                    image.Quality = quality;
-                    image.Density = new Density(96, 96);
-                    image.Write(destination, MagickFormat.Jpeg);
-                }
-            }
-        }
-
         public static Image HighQualityResize(this Image img, Size size) {
             var percent = Math.Min(size.Width / (float)img.Width, size.Height / (float)img.Height);
             var width = (int)(img.Width * percent);
@@ -295,29 +255,130 @@ namespace AcTools.Utils {
             return b;
         }
 
-        public static void Convert(Stream source, Stream destination, Size? resize, int quality = 95) {
-            if (IsMagickSupported) {
-                if (OptionConvertCombined) {
-                    ConvertCombined(source, destination, resize, quality);
-                } else {
-                    ConvertImageMagick(source, destination, resize, quality);
+        public class ImageInformation {
+            [CanBeNull]
+            public string Software, Copyright, Title, Author, Subject, Comment;
+
+            [CanBeNull]
+            public string[] Tags;
+            public double? Rating;
+        }
+
+        private static void SaveImage(MagickImage image, Stream destination, int quality, ImageInformation exif) {
+            if (exif != null) {
+                var profile = new ExifProfile();
+
+                profile.SetValue(ExifTag.Software, exif.Software == null ? AcToolsInformation.Name : $"{exif.Software} ({AcToolsInformation.Name})");
+                if (exif.Copyright != null) profile.SetValue(ExifTag.Copyright, exif.Copyright);
+
+                if (exif.Title != null) profile.SetValue(ExifTag.XPTitle, Encoding.Unicode.GetBytes(exif.Title));
+                if (exif.Author != null) profile.SetValue(ExifTag.XPAuthor, Encoding.Unicode.GetBytes(exif.Author));
+                if (exif.Tags?.Length > 0) profile.SetValue(ExifTag.XPKeywords, Encoding.Unicode.GetBytes(exif.Tags.JoinToString(';')));
+                if (exif.Subject != null) profile.SetValue(ExifTag.XPSubject, Encoding.Unicode.GetBytes(exif.Subject));
+                if (exif.Comment != null) profile.SetValue(ExifTag.XPComment, Encoding.Unicode.GetBytes(exif.Comment));
+
+                if (exif.Rating.HasValue) {
+                    profile.SetValue(ExifTag.Rating, (ushort)(exif.Rating.Value.Saturate() * 5.0).RoundToInt());
                 }
-            } else {
-                var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
-                var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, quality > 85 ? 100L : quality) } };
-                using (var image = Image.FromStream(source)) {
-                    if (resize.HasValue) {
-                        using (var resized = image.HighQualityResize(resize.Value)) {
-                            resized.Save(destination, encoder, parameters);
-                        }
-                    } else {
-                        image.Save(destination, encoder, parameters);
-                    }
+
+                var date = DateTime.Now.ToString("yyyy\\:MM\\:dd HH\\:mm\\:ss");
+                profile.SetValue(ExifTag.DateTime, date);
+                profile.SetValue(ExifTag.DateTimeOriginal, date);
+                profile.SetValue(ExifTag.DateTimeDigitized, date);
+
+                image.AddProfile(profile);
+            }
+
+            image.Quality = quality;
+            image.Density = new Density(96, 96);
+            image.Write(destination, MagickFormat.Jpeg);
+        }
+
+        private static void SaveImage(Image image, Stream destination, int quality, ImageInformation exif) {
+            if (exif != null) {
+                var date = DateTime.Now;
+
+                var profile = new ExifWorks(image) {
+                    Software = exif.Software == null ? AcToolsInformation.Name : $"{exif.Software} ({AcToolsInformation.Name})",
+                    DateTimeOriginal = date,
+                    DateTimeDigitized = date,
+                    DateTimeLastModified = date
+                };
+
+                if (exif.Copyright != null) profile.Copyright = exif.Copyright;
+                if (exif.Title != null) profile.Title = exif.Title;
+                if (exif.Author != null) profile.Artist = exif.Author;
+                if (exif.Subject != null) profile.Subject = exif.Subject;
+                if (exif.Comment != null) profile.UserComment = exif.Comment;
+            }
+
+            var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
+            var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, quality > 85 ? 100L : quality) } };
+            image.Save(destination, encoder, parameters);
+        }
+
+        public static bool OptionConvertCombined = true;
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ConvertImageMagick(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif) {
+            using (var image = new MagickImage(source)) {
+                if (resize.HasValue) {
+                    var k = Math.Max((double)resize.Value.Height / image.Height, (double)resize.Value.Width / image.Width);
+                    image.Interpolate = PixelInterpolateMethod.Catrom;
+                    image.FilterType = FilterType.Lanczos;
+                    image.Sharpen();
+                    image.Resize((int)(k * image.Width), (int)(k * image.Height));
+                    image.Crop(resize.Value.Width, resize.Value.Height, Gravity.Center);
+                }
+
+                SaveImage(image, destination, quality, exif);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ConvertCombined(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif) {
+            if (resize == null) {
+                ConvertImageMagick(source, destination, null, quality, exif);
+                return;
+            }
+
+            // Because Magick.NET is terribly slow at resizing big images…
+            using (var memory = new MemoryStream()) {
+                using (var image = Image.FromStream(source))
+                using (var resized = image.HighQualityResize(resize.Value)) {
+                    resized.Save(memory, ImageFormat.Bmp);
+                }
+
+                using (var image = new MagickImage(memory)) {
+                    SaveImage(image, destination, quality, exif);
                 }
             }
         }
 
-        public static void Convert(string source, string destination, Size? resize, int quality = 95) {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ConvertGdi(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif) {
+            using (var image = Image.FromStream(source)) {
+                if (resize.HasValue) {
+                    using (var resized = image.HighQualityResize(resize.Value)) {
+                        SaveImage(resized, destination, quality, exif);
+                    }
+                } else {
+                    SaveImage(image, destination, quality, exif);
+                }
+            }
+        }
+
+        public static void Convert(Stream source, Stream destination, Size? resize, int quality = 95, ImageInformation exif = null) {
+            if (!IsMagickSupported) {
+                ConvertGdi(source, destination, resize, quality, exif);
+            } else if (OptionConvertCombined) {
+                ConvertCombined(source, destination, resize, quality, exif);
+            } else {
+                ConvertImageMagick(source, destination, resize, quality, exif);
+            }
+        }
+
+        public static void Convert(string source, string destination, Size? resize, int quality = 95, ImageInformation exif = null) {
             if (File.Exists(destination)) {
                 try {
                     File.Delete(destination);
@@ -329,16 +390,16 @@ namespace AcTools.Utils {
 
             using (var sourceStream = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var destinationStream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
-                Convert(sourceStream, destinationStream, resize, quality);
+                Convert(sourceStream, destinationStream, resize, quality, exif);
             }
         }
 
-        public static void Convert(Stream source, Stream destination, int quality = 95) {
-            Convert(source, destination, null, quality);
+        public static void Convert(Stream source, Stream destination, int quality = 95, ImageInformation exif = null) {
+            Convert(source, destination, null, quality, exif);
         }
 
-        public static void Convert(string source, string destination, int quality = 95) {
-            Convert(source, destination, null, quality);
+        public static void Convert(string source, string destination, int quality = 95, ImageInformation exif = null) {
+            Convert(source, destination, null, quality, exif);
         }
     }
 }

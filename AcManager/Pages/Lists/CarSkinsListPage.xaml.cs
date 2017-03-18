@@ -11,6 +11,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -81,7 +82,7 @@ namespace AcManager.Pages.Lists {
             private ICommand _resetPriorityCommand;
 
             public ICommand ResetPriorityCommand => _resetPriorityCommand ?? (_resetPriorityCommand = new AsyncCommand(async () => {
-                var list = MainList.OfType<AcItemWrapper>().Select(x => x.Value as CarSkinObject).Where(x => x.Priority.HasValue).ToList();
+                var list = MainList.OfType<AcItemWrapper>().Select(x => x.Value as CarSkinObject).NonNull().Where(x => x.Priority.HasValue).ToList();
                 var i = 0;
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report();

@@ -62,6 +62,7 @@ namespace AcManager.Pages.Dialogs {
             public string DisplayName => IsNew ? Entry.Type.GetNew(Entry.Name) : Entry.Type.GetExisting(Entry.Name);
         }
 
+        [CanBeNull]
         public IReadOnlyList<EntryWrapper> Entries {
             get { return _entries; }
             set {
@@ -70,12 +71,14 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsEmpty));
 
-                foreach (var wrapper in _entries) {
-                    wrapper.PropertyChanged += (sender, args) => {
-                        if (args.PropertyName == nameof(EntryWrapper.InstallEntry)) {
-                            InstallCommand.RaiseCanExecuteChanged();
-                        }
-                    };
+                if (value != null) {
+                    foreach (var wrapper in value) {
+                        wrapper.PropertyChanged += (sender, args) => {
+                            if (args.PropertyName == nameof(EntryWrapper.InstallEntry)) {
+                                InstallCommand.RaiseCanExecuteChanged();
+                            }
+                        };
+                    }
                 }
             }
         }
@@ -175,8 +178,11 @@ namespace AcManager.Pages.Dialogs {
         private AsyncCommand _installCommand;
 
         public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async () => {
+            var entries = Entries;
+            if (entries == null) return;
+
             using (var waiting = new WaitingDialog()) {
-                foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
+                foreach (var wrapper in entries.Where(entry => entry.InstallEntry)) {
                     waiting.Title = String.Format(AppStrings.AdditionalContent_Installing, wrapper.Entry.Name);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 

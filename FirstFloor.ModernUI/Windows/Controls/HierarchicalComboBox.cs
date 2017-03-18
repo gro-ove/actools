@@ -330,7 +330,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (_source == null) return;
+            var source = _source;
+            if (source == null) return;
+
             if (!_lazy || _prepared) {
                 if (e.Action == NotifyCollectionChangedAction.Reset) {
                     Rebuild();
@@ -347,8 +349,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     if (e.NewItems != null) {
                         foreach (var n in e.NewItems) {
-                            var index = _source.IndexOf(n);
-                            if (index < 0 || index >= _source.Count - 1) {
+                            var index = source.IndexOf(n);
+                            if (index < 0 || index >= source.Count - 1) {
                                 Add(Wrap(n));
                             } else {
                                 Insert(index, Wrap(n));

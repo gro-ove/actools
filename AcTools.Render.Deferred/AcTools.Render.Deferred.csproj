@@ -94,7 +94,6 @@
     <Compile Include="Lights\ILight.cs" />
     <Compile Include="Lights\PointLight.cs" />
     <Compile Include="Lights\SpecialLightMode.cs" />
-    <Compile Include="PostEffects\Fxaa311Helper.cs" />
     <Compile Include="PostEffects\SslrHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shaders\Shaders.cs">
@@ -120,11 +119,8 @@
     <Content Include="Shaders\Deferred\DeferredTransparent.fx" />
     <Content Include="Shaders\Includes\Common.fx" />
     <Content Include="Shaders\Includes\Deferred.fx" />
-    <Content Include="Shaders\Includes\FXAA.fx" />
-    <Content Include="Shaders\Includes\FXAA_311.fx" />
     <Content Include="Shaders\Includes\Shadows.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
-    <Content Include="Shaders\Pp\PpFxaa311.fx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
