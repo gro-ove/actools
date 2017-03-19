@@ -35,7 +35,7 @@ namespace AcManager.Tools.Helpers {
         void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load);
     }
 
-    public class SaveHelper<T> : ISaveHelper where T : class {
+    public class SaveHelper<T> : ISaveHelper where T : class, new() {
         [CanBeNull]
         private readonly string _key;
         private readonly Func<T> _save;
@@ -48,6 +48,14 @@ namespace AcManager.Tools.Helpers {
             _save = save;
             _load = load;
             _reset = reset;
+            _deserialize = deserialize;
+        }
+
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Func<string, T> deserialize = null) {
+            _key = key;
+            _save = save;
+            _load = load;
+            _reset = () => _load(new T());
             _deserialize = deserialize;
         }
 

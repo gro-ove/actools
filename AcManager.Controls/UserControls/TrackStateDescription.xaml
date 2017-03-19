@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="AcManager.Controls.UserControls.TrackStateDescription" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance viewModels:TrackStateViewModelBase}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <TextBlock Style="{StaticResource Heading2}" Text="Track State:" Margin="0 0 0 8" />
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="180" DockPanel.Dock="Left" Content="Grip at the start:" />
+            <TextBlock Text="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1, StringFormat='{}{0}%'}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="180" DockPanel.Dock="Left" Content="Grip transfer:" />
+            <TextBlock Text="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=1, StringFormat='{}{0}%'}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="180" DockPanel.Dock="Left" Content="Randomness" />
+            <TextBlock Text="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=1, StringFormat='{}{0}%'}" />
+        </DockPanel>
+
+        <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" />
+    </StackPanel>
+</UserControl>

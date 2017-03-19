@@ -43,6 +43,10 @@ namespace AcManager.Tools.Managers.Presets {
             ));
         }
 
+        public void ClearBuiltInPresets(string category) {
+            GetBuiltInPresetsList(category).Clear();
+        }
+
         public IEnumerable<ISavedPresetEntry> GetSavedPresets(string category) {
             var directory = GetDirectory(category);
             var filesList = FileUtils.GetFilesRecursive(directory)
