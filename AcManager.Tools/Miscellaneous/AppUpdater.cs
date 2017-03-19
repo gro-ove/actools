@@ -295,7 +295,7 @@ namespace AcManager.Tools.Miscellaneous {
         public static string PreviousVersion { get; private set; }
 
         public static IEnumerable<ChangelogEntry> LoadChangelog() {
-            return InternalUtils.LoadChangelog(CmApiProvider.UserAgent);
+            return InternalUtils.LoadChangelog(CmApiProvider.UserAgent, true);
         }
     }
 }

@@ -96,7 +96,7 @@ namespace AcManager.Pages.Drive {
             mainWindow.NavigateTo(link.Source);
         }
 
-        public class ViewModel : BaseAcObjectListCollectionViewWrapper<UserChampionshipObject> {
+        public class ViewModel : AcObjectListCollectionViewWrapperBase<UserChampionshipObject> {
             public ViewModel(IFilter<UserChampionshipObject> listFilter)
                     : base(UserChampionshipsManager.Instance, listFilter, false) {
             }

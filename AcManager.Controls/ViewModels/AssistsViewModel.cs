@@ -7,7 +7,7 @@ namespace AcManager.Controls.ViewModels {
     /// Full version with presets. Load-save-switch between presets-save as a preset, full
     /// package. Also, provides previews for presets!
     /// </summary>
-    public class AssistsViewModel : BaseAssistsViewModel, IUserPresetable, IPresetsPreviewProvider {
+    public class AssistsViewModel : AssistsViewModelBase, IUserPresetable, IPresetsPreviewProvider {
         private static AssistsViewModel _instance;
 
         public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel("qdassists"));

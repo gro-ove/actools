@@ -8,11 +8,9 @@ using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -22,7 +20,7 @@ namespace AcManager.Controls.ViewModels {
     /// Could save data too, it depends on creation way. For more information look 
     /// at Constructors region.
     /// </summary>
-    public class BaseAssistsViewModel : NotifyPropertyChanged {
+    public class AssistsViewModelBase : NotifyPropertyChanged {
         private const string DefaultKey = "AssistsViewModel.sd";
 
         public const string UserPresetableKeyValue = "Assists";
@@ -278,20 +276,6 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Saveable
-        public class BoolToDoubleConverter : JsonConverter {
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-                JToken.FromObject(value, serializer).WriteTo(writer);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-                return reader.TokenType == JsonToken.Boolean ? ((bool)reader.Value ? 1d : 0d) : reader.Value.AsDouble();
-            }
-
-            public override bool CanConvert(Type objectType) {
-                return objectType == typeof(double);
-            }
-        }
-
         private class SaveableData : IJsonSerializable {
             public bool IdealLine;
             public bool AutoBlip;
@@ -307,7 +291,7 @@ namespace AcManager.Controls.ViewModels {
             public double TyreWear;
 
             [DefaultValue(1d),
-             JsonConverter(typeof(BoolToDoubleConverter)),
+             JsonConverter(typeof(JsonBoolToDoubleConverter)),
              JsonProperty(@"FuelConsumption", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
             public double FuelConsumption = 1d;
             public bool TyreBlankets;
@@ -348,7 +332,7 @@ namespace AcManager.Controls.ViewModels {
         /// </summary>
         /// <param name="key">ValuesStorage key</param>
         /// <param name="fixedMode">Prevent saving</param>
-        protected BaseAssistsViewModel(string key, bool fixedMode) {
+        protected AssistsViewModelBase(string key, bool fixedMode) {
             Saveable = new SaveHelper<SaveableData>(key ?? DefaultKey, () => fixedMode ? null : new SaveableData {
                 IdealLine = IdealLine,
                 AutoBlip = AutoBlip,
@@ -403,7 +387,7 @@ namespace AcManager.Controls.ViewModels {
         /// Full load-and-save mode. All changes will be saved automatically and loaded 
         /// later (only with this constuctor).
         /// </summary>
-        public BaseAssistsViewModel() : this(null, false) {
+        public AssistsViewModelBase() : this(null, false) {
             Saveable.Initialize();
         }
 
@@ -413,8 +397,8 @@ namespace AcManager.Controls.ViewModels {
         /// </summary>
         /// <param name="serializedData"></param>
         /// <returns></returns>
-        public static BaseAssistsViewModel CreateFixed([NotNull] string serializedData) {
-            var result = new BaseAssistsViewModel(DefaultKey, true);
+        public static AssistsViewModelBase CreateFixed([NotNull] string serializedData) {
+            var result = new AssistsViewModelBase(DefaultKey, true);
             result.Saveable.Reset();
             result.Saveable.FromSerializedString(serializedData);
             return result;

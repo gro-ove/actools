@@ -31,7 +31,7 @@ namespace AcManager.Tools.About {
         }
 
         public void CheckIfThereIsSomethingNew () {
-            HasNewReleaseNotes = ReleaseNotes.Entries.Any(x => x.IsNew);
+            HasNewReleaseNotes = false;
             HasNewImportantTips = ImportantTips.Entries.Any(x => x.IsNew);
         }
 

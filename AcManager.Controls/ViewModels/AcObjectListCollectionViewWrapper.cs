@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
-    public class AcObjectListCollectionViewWrapper<T> : BaseAcObjectListCollectionViewWrapper<T> where T : AcObjectNew {
+    public class AcObjectListCollectionViewWrapper<T> : AcObjectListCollectionViewWrapperBase<T> where T : AcObjectNew {
         public readonly string Key;
 
         protected static string GetKey(string basePart, string filter) {

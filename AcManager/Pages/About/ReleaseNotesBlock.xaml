@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="AcManager.Pages.About.ReleaseNotesBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignData ReleaseNotesBlock}">
+    <ScrollViewer x:Name="Root" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel MinWidth="200" DataContext="{Binding Piece}">
+            <DockPanel Margin="0 0 0 8">
+                <Ellipse DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4" Fill="{DynamicResource Go}" Width="8" Height="8"
+                        ToolTip="{x:Static g:AppStrings.About_NewTooltip}" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock Text="{Binding Version, StringFormat={x:Static g:AppStrings.About_VersionFormat}}" Style="{StaticResource Heading1}" />
+            </DockPanel>
+            <TextBlock Style="{StaticResource Label}" Margin="0 0 0 16" Text="{Binding DisplayName}" />
+            <mui:BbCodeBlock BbCode="{Binding Content}" LineHeight="20" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

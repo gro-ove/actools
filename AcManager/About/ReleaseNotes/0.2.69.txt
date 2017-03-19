@@ -1,8 +1,0 @@
-name: Kunos career, improved driving
-sid: 30_-1151466864_1817729320
-
-Kunos career is ready! Single events, championships, etc. Don’t forget to open settings and change driving options for your taste. Also, now CM can process driving properly (not everywhere, but still).
-
-Of course, different bugs are more than possible. Just for in case, CM will make a backup for career.ini (you can find it in [i]…\Documents\Assetto Corsa\launcherdata\filestore[/i].
-
-Other changes include improved performance and stability and a lot of bug fixes. As usual.

@@ -33,10 +33,10 @@
                             <Ellipse Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="2"
                                     Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Width="8" Height="8"
                                     ToolTip="New!" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}" FontSize="{DynamicResource SmallFontSize}"
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Version}" FontSize="{DynamicResource SmallFontSize}"
                                     TextTrimming="CharacterEllipsis" />
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Version}" Margin="0 0 0 4"
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding DisplayName}" Margin="0 0 0 4"
                                     FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" Opacity="0.5" />
                         </Grid>
                     </DataTemplate>
@@ -47,7 +47,7 @@
             <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
 
             <!-- content -->
-            <about:PieceOfInformationBlock Grid.Column="2" Margin="32 0 0 0" Piece="{Binding NotesList.CurrentItem}" />
+            <about:ReleaseNotesBlock Grid.Column="2" Margin="32 0 0 0" Piece="{Binding NotesList.CurrentItem}" />
         </Grid>
     </Grid>
 </UserControl>

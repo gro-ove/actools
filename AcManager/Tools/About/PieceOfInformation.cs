@@ -10,7 +10,7 @@ namespace AcManager.Tools.About {
     public sealed class PieceOfInformation : Displayable, IWithId {
         private readonly string _sid;
 
-        public PieceOfInformation(string sid, string id, string displayName, string version, string url, string content, bool limited, bool hidden) {
+        private PieceOfInformation(bool packed, string sid, string id, string displayName, string version, string url, string content, bool limited, bool hidden) {
             _sid = @"PieceOfInformation.IsNotNew_" + sid;
             Id = id;
 
@@ -22,7 +22,18 @@ namespace AcManager.Tools.About {
             IsNew = !ValuesStorage.GetBool(_sid);
             IsHidden = IsNew && hidden;
 
-            _packed = content;
+            if (packed) {
+                _packed = content;
+            } else {
+                _content = content;
+            }
+        }
+
+        public PieceOfInformation(string sid, string id, string displayName, string version, string url, string content, bool limited, bool hidden)
+                : this(true, sid, id, displayName, version, url, content, limited, hidden) {}
+
+        public static PieceOfInformation Create(string sid, string id, string displayName, string version, string url, string content, bool limited, bool hidden) {
+            return new PieceOfInformation(false, sid, id, displayName, version, url, content, limited, hidden);
         }
 
         public string Id { get; }

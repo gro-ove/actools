@@ -107,7 +107,7 @@ namespace AcManager.Pages.Drive {
             mainWindow.NavigateTo(link.Source);
         }
 
-        public class ViewModel : BaseAcObjectListCollectionViewWrapper<KunosCareerObject> {
+        public class ViewModel : AcObjectListCollectionViewWrapperBase<KunosCareerObject> {
             public ViewModel(IFilter<KunosCareerObject> listFilter)
                     : base(KunosCareerManager.Instance, listFilter, false) {
             }

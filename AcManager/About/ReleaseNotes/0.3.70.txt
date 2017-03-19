@@ -1,6 +1,0 @@
-name: First release notes
-sid: 19_-4318689_2054519835
-
-I thought this format will be pretty good to pointing out what key changes were made. Maybe not for every new build, only for something significant.
-
-Note should be marked as read after about two seconds of being open.

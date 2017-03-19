@@ -249,7 +249,7 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        public virtual RasterizerState GetRasterizerState() {
+        public RasterizerState GetRasterizerState() {
             return ShowWireframe ? DeviceContextHolder.States.WireframeState : null;
         }
 

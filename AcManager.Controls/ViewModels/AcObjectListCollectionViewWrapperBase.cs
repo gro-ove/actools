@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
-    public abstract class BaseAcObjectListCollectionViewWrapper<T> : NotifyPropertyChanged, IComparer where T : AcObjectNew {
+    public abstract class AcObjectListCollectionViewWrapperBase<T> : NotifyPropertyChanged, IComparer where T : AcObjectNew {
         [NotNull]
         private readonly IAcManagerNew _manager;
 
@@ -40,7 +40,7 @@ namespace AcManager.Controls.ViewModels {
 
         private readonly bool _allowNonSelected;
 
-        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected) {
+        protected AcObjectListCollectionViewWrapperBase([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected) {
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             _manager = manager;
             _list = _manager.WrappersAsIList;
