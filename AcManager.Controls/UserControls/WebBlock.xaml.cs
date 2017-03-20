@@ -72,6 +72,22 @@ namespace AcManager.Controls.UserControls {
             Execute(js, onload);
         }
 
+        public static readonly DependencyProperty IsAddressBarVisibleProperty = DependencyProperty.Register(nameof(IsAddressBarVisible), typeof(bool),
+                typeof(WebBlock), new PropertyMetadata(true, OnIsAddressBarVisibleChanged));
+
+        public bool IsAddressBarVisible {
+            get { return (bool)GetValue(IsAddressBarVisibleProperty); }
+            set { SetValue(IsAddressBarVisibleProperty, value); }
+        }
+
+        private static void OnIsAddressBarVisibleChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((WebBlock)o).OnIsAddressBarVisibleChanged((bool)e.NewValue);
+        }
+
+        private void OnIsAddressBarVisibleChanged(bool newValue) {
+            AddressBar.Visibility = newValue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public static readonly DependencyProperty OpenNewWindowsExternallyProperty = DependencyProperty.Register(nameof(OpenNewWindowsExternally), typeof(bool),
                 typeof(WebBlock), new PropertyMetadata(true));
 
