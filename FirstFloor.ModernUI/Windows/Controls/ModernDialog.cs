@@ -12,6 +12,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// Represents a Modern UI styled dialog window.
     /// </summary>
     public class ModernDialog : DpiAwareWindow {
+        public static readonly DependencyProperty ShowTopBlobProperty = DependencyProperty.Register(nameof(ShowTopBlob), typeof(bool),
+                typeof(ModernDialog), new PropertyMetadata(true));
+
+        public bool ShowTopBlob {
+            get { return (bool)GetValue(ShowTopBlobProperty); }
+            set { SetValue(ShowTopBlobProperty, value); }
+        }
+
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>

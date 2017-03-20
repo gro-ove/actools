@@ -512,7 +512,12 @@ namespace AcTools.Processes {
             }
 
             public void Set(IniFileSection section) {
-                section.Set("PRESET", Preset);
+                if (Preset.HasValue) {
+                    section.Set("PRESET", Preset);
+                } else {
+                    section.Remove("PRESET");
+                }
+
                 section.Set("SESSION_START", SessionStart);
                 section.Set("RANDOMNESS", Randomness);
                 section.Set("LAP_GAIN", LapGain);

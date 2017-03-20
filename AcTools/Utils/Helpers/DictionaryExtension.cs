@@ -37,5 +37,19 @@ namespace AcTools.Utils.Helpers {
                 dictionary.Remove(key);
             }
         }
+        
+        public static WeakList<TValue> GetList<TKey, TValue>([NotNull] this IDictionary<TKey, WeakList<TValue>> dictionary, TKey key) where TValue : class {
+            if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+
+            WeakList<TValue> result;
+            if (dictionary.TryGetValue(key, out result)) {
+                result.Purge();
+            } else {
+                result = new WeakList<TValue>(2);
+                dictionary[key] = result;
+            }
+
+            return result;
+        }
     }
 }

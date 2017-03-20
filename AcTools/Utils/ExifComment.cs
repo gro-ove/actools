@@ -133,6 +133,8 @@ namespace AcTools.Utils {
                     var b = reader.GetTagValue(0x9c9c);
                     return b == null ? null : Encoding.Unicode.GetString(b);
                 }
+            } catch (Exception e) when (e.Message == "Unable to locate EXIF content") {
+                return null;
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
                 return null;

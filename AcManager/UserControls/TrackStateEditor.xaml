@@ -28,8 +28,8 @@
         <StackPanel>
             <mui:ValueLabel Content="Initial grip" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" Postfix="%"
                     ToolTip="Amount of grip at the session start" />
-            <Slider Minimum="0" Maximum="100" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                    TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+            <Slider Minimum="85" Maximum="100" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                    TickFrequency="3" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
         </StackPanel>
 
         <StackPanel>

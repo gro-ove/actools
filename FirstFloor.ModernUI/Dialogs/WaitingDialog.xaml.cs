@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -22,24 +23,58 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public string Message {
             get { return _message; }
-            set {
+            private set {
                 if (Equals(value, _message)) return;
                 _message = value;
                 OnPropertyChanged();
             }
         }
 
+        private string _details;
+
+        public string Details {
+            get { return _details; }
+            private set {
+                if (Equals(value, _details)) return;
+                _details = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void SetMultiline(bool multiline) {
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    MessageBlock.MinHeight = multiline ? 40d : 0d;
+                });
+            }
+        }
+
+        public void SetDetails([CanBeNull] IEnumerable<string> details) {
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    Details = details == null ? null : string.Join(Environment.NewLine, details);
+                });
+            }
+        }
+
+        public void SetDetails([CanBeNull] params string[] details) {
+            SetDetails((IEnumerable<string>)details);
+        }
+
         public void SetImage(string imageFilename) {
-            Height = 434;
-            Image.Visibility = Visibility.Visible;
-            Image.Filename = imageFilename;
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    Image.Visibility = Visibility.Visible;
+                    Image.Filename = imageFilename;
+                });
+            }
         }
 
         private double? _progress;
 
         public double? Progress {
             get { return _progress; }
-            set {
+            private set {
                 if (Equals(value, _progress)) return;
                 _progress = value;
                 OnPropertyChanged();
@@ -50,7 +85,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public bool ProgressIndetermitate {
             get { return _progressIndetermitate; }
-            set {
+            private set {
                 if (Equals(value, _progressIndetermitate)) return;
                 _progressIndetermitate = value;
                 OnPropertyChanged();
@@ -61,7 +96,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public bool IsCancelled {
             get { return _isCancelled; }
-            set {
+            private set {
                 if (Equals(value, _isCancelled)) return;
                 _isCancelled = value;
                 OnPropertyChanged();
@@ -70,8 +105,15 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public WaitingDialog(string title = null) {
             Title = title;
+
+            if (title == null) {
+                ShowTitle = false;
+                ShowTopBlob = false;
+            }
+
             DataContext = this;
             InitializeComponent();
+            Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 0);
             Buttons = new Button[] { };
         }
 
@@ -88,11 +130,15 @@ namespace FirstFloor.ModernUI.Dialogs {
             get {
                 if (_cancellationTokenSource != null) return _cancellationTokenSource.Token;
 
-                _cancellationTokenSource = new CancellationTokenSource();
-                Buttons = new[] { CancelButton };
-                Height = 280;
-                Closing += WaitingDialog_Closing;
-                return _cancellationTokenSource.Token;
+                lock (_lock) {
+                    return Dispatcher.Invoke(() => {
+                        _cancellationTokenSource = new CancellationTokenSource();
+                        Buttons = new[] { CancelButton };
+                        Padding = new Thickness(24, ShowTopBlob ? 20 : 0, 24, 20);
+                        Closing += WaitingDialog_Closing;
+                        return _cancellationTokenSource.Token;
+                    });
+                }
             }
         }
 
@@ -266,7 +312,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

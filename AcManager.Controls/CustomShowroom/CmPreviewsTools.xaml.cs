@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.CustomShowroom {
@@ -382,18 +384,72 @@ namespace AcManager.Controls.CustomShowroom {
                 var checksum = options.GetChecksum();
 
                 var finished = false;
+                var j = 0;
+
                 using (var waiting = new WaitingDialog()) {
+                    var cancellation = waiting.CancellationToken;
+
                     var singleMode = entries.Count == 1;
                     var verySingleMode = singleMode && entries[0].Skins?.Count == 1;
                     var recycled = 0;
 
                     if (!verySingleMode) {
                         waiting.SetImage(null);
+
+                        if (SettingsHolder.CustomShowroom.PreviewsRecycleOld) {
+                            waiting.SetMultiline(true);
+                        }
                     }
 
                     var step = 1d / entries.Count;
                     var postfix = string.Empty;
-                    for (var j = 0; j < entries.Count; j++) {
+
+                    var started = Stopwatch.StartNew();
+                    var approximateSkinsPerCarCars = 1;
+                    var approximateSkinsPerCarSkins = 10;
+
+                    Action<int> updateApproximate = skinsPerCar => {
+                        approximateSkinsPerCarCars++;
+                        approximateSkinsPerCarSkins += skinsPerCar;
+                    };
+
+                    Func<int, int> leftSkins = currentEntry => {
+                        var skinsPerCar = (double)approximateSkinsPerCarSkins / approximateSkinsPerCarCars;
+
+                        var result = 0d;
+                        for (var k = currentEntry; k < entries.Count; k++) {
+                            var entry = entries[k];
+                            result += entry.Skins?.Count ?? skinsPerCar;
+                        }
+
+                        return result.RoundToInt();
+                    };
+
+                    var shotSkins = 0;
+                    var recyclingWarning = false;
+                    Func<CarObject, CarSkinObject, int?, IEnumerable<string>> getDetails = (car, skin, currentEntrySkinsLeft) => {
+                        var left = leftSkins(j) + (currentEntrySkinsLeft ?? approximateSkinsPerCarSkins / approximateSkinsPerCarCars);
+
+                        // ReSharper disable once AccessToModifiedClosure
+                        var speed = shotSkins / started.Elapsed.TotalMinutes;
+                        var remainingTime = speed < 0.0001 ? "Unknown" : $"About {TimeSpan.FromMinutes(left / speed).ToReadableTime()}";
+                        var remainingItems = $"About {left} {PluralizingConverter.Pluralize(left, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}";
+
+                        return new[] {
+                            $"Car: {car?.DisplayName}",
+                            $"Skin: {skin?.DisplayName ?? "?"}",
+                            $"Speed: {speed:F2} {PluralizingConverter.Pluralize(10, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}/{"min"}",
+                            $"Time remaining: {remainingTime}",
+                            $"Items remaining: {remainingItems}",
+
+                            // ReSharper disable once AccessToModifiedClosure
+                            recyclingWarning ? "[i]Recycling seems to take too long? If so, it can always be disabled in Settings.[/i]" : null
+                        }.NonNull();
+                    };
+
+                    for (j = 0; j < entries.Count; j++) {
+                        if (cancellation.IsCancellationRequested) goto Cancel;
+
                         var entry = entries[j];
                         var progress = step * j;
 
@@ -401,32 +457,34 @@ namespace AcManager.Controls.CustomShowroom {
                         var skins = entry.Skins;
 
                         if (skins == null) {
-                            waiting.Report(new AsyncProgressEntry((singleMode ?
-                                    "Loading skins…" :
-                                    $"Loading skins ({car.DisplayName})…") + postfix, verySingleMode ? 0d : progress));
+                            waiting.Report(new AsyncProgressEntry("Loading skins…" + postfix, verySingleMode ? 0d : progress));
+                            waiting.SetDetails(getDetails(car, null, null));
+
                             await car.SkinsManager.EnsureLoadedAsync();
+                            if (cancellation.IsCancellationRequested) goto Cancel;
+
                             skins = car.EnabledOnlySkins.ToList();
+                            updateApproximate(skins.Count);
                         }
 
                         var halfstep = step * 0.5 / skins.Count;
                         for (var i = 0; i < skins.Count; i++) {
-                            var skin = skins[i];
-                            var subprogress = progress + step * (0.1 + 0.8 * i / skins.Count);
+                            if (cancellation.IsCancellationRequested) goto Cancel;
 
+                            var skin = skins[i];
+                            waiting.SetDetails(getDetails(car, skin, skins.Count - i));
+
+                            var subprogress = progress + step * (0.1 + 0.8 * i / skins.Count);
                             if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(skin.PreviewImage)) {
                                 if (++recycled > 5) {
-                                    postfix = "\n" + "[i]Recycling seems to take too long? If so, it can always be disabled in Settings.[/i]";
+                                    recyclingWarning = true;
                                 }
 
-                                waiting.Report(new AsyncProgressEntry((singleMode ?
-                                        $"Recycling current preview for {skin.DisplayName}…" :
-                                        $"Recycling current preview for {skin.DisplayName} ({car.DisplayName})…") + postfix, verySingleMode ? 0d : subprogress));
+                                waiting.Report(new AsyncProgressEntry($"Recycling current preview for {skin.DisplayName}…" + postfix, verySingleMode ? 0d : subprogress));
                                 await Task.Run(() => FileUtils.Recycle(skin.PreviewImage));
                             }
 
-                            waiting.Report(new AsyncProgressEntry((singleMode ?
-                                    $"Updating skin {skin.DisplayName}…" :
-                                    $"Updating skin {skin.DisplayName} ({car.DisplayName})…") + postfix, verySingleMode ? 0d : subprogress + halfstep));
+                            waiting.Report(new AsyncProgressEntry($"Updating skin {skin.DisplayName}…" + postfix, verySingleMode ? 0d : subprogress + halfstep));
 
                             try {
                                 await updater.ShotAsync(car.Id, skin.Id, skin.PreviewImage, car.AcdData, GetInformation(car, skin, presetName, checksum),
@@ -441,8 +499,11 @@ namespace AcManager.Controls.CustomShowroom {
                                                 });
                                             }
                                         });
+                                shotSkins++;
                             } catch (Exception e) {
-                                errors.Add(new UpdatePreviewError(entry, e.Message, null));
+                                if (errors.All(x => x.ToUpdate != entry)) {
+                                    errors.Add(new UpdatePreviewError(entry, e.Message, null));
+                                }
                             }
                         }
                     }
@@ -457,6 +518,14 @@ namespace AcManager.Controls.CustomShowroom {
                     NonfatalError.Notify("Can’t update previews:\n" + errors.Select(x => @"• " + x.Message.ToSentence()).JoinToString(";" + Environment.NewLine));
                 }
 
+                goto End;
+
+                Cancel:
+                for (; j < entries.Count; j++) {
+                    errors.Add(new UpdatePreviewError(entries[j], ControlsStrings.Common_Cancelled, null));
+                }
+
+                End:
                 return errors;
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t update preview", e);

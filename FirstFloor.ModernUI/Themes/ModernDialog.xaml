@@ -54,7 +54,8 @@
 
                                         <!-- top blob -->
                                         <Border Background="{DynamicResource Accent}" Margin="24 18 0 0" Width="100" Height="6" HorizontalAlignment="Left"
-                                                VerticalAlignment="Top" />
+                                                VerticalAlignment="Top"
+                                                Visibility="{TemplateBinding ShowTopBlob, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                         <DockPanel>
                                             <!-- title -->

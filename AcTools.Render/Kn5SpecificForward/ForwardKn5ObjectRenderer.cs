@@ -324,6 +324,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         public async Task SetCarAsync(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin,
                 CancellationToken cancellationToken = default(CancellationToken)) {
             ClearBeforeChangingCar();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 
             try {
                 _loadingCar = car;

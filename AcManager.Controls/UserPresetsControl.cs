@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils;
@@ -31,8 +32,7 @@ namespace AcManager.Controls {
         
         public static bool OptionSmartChangedHandling = true;
 
-        private static readonly Dictionary<string, WeakReference<UserPresetsControl>> Instances =
-                new Dictionary<string, WeakReference<UserPresetsControl>>();
+        private static readonly Dictionary<string, WeakList<UserPresetsControl>> Instances = new Dictionary<string, WeakList<UserPresetsControl>>();
 
         private static event EventHandler<ChangedPresetEventArgs> PresetSelected;
 
@@ -53,21 +53,33 @@ namespace AcManager.Controls {
 
         [NotNull]
         private static IEnumerable<UserPresetsControl> GetInstance(string key) {
-            return Application.Current?.Windows.OfType<Window>()
-                              .SelectMany(VisualTreeHelperEx.FindVisualChildren<UserPresetsControl>)
-                              .Where(x => {
-                                  Logging.Write($"{x._presetable?.PresetableKey} ==? {key}");
-                                  return x._presetable?.PresetableKey == key;
-                              }) ?? new UserPresetsControl[0];
+            return (IEnumerable<UserPresetsControl>)Instances.GetValueOrDefault(key) ?? new UserPresetsControl[0];
         }
 
         public static bool HasInstance(string key) {
             return GetInstance(key).Any();
         }
 
-        public static bool LoadPreset(string key, string filename) {
-            Logging.Debug(filename);
+        public static void RescanCategory([NotNull] string category, bool reloadPresets) {
+            foreach (var c in Instances.Values.SelectMany(x => x)) {
+                if (c?._presetable?.PresetableCategory == category) {
+                    c.UpdateSavedPresets();
 
+                    if (reloadPresets && c._selectedPresetFilename != null) {
+                        var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, c._selectedPresetFilename));
+                        if (entry == null) {
+                            Logging.Warning($@"Can’t set preset to “{c._selectedPresetFilename}”, entry not found");
+                        } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
+                            c.CurrentUserPreset = entry;
+                        } else {
+                            c.SelectionChanged(entry);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static bool LoadPreset(string key, string filename) {
             ValuesStorage.Set("__userpresets_p_" + key, filename);
             ValuesStorage.Set("__userpresets_c_" + key, false);
 
@@ -76,8 +88,6 @@ namespace AcManager.Controls {
                 c.UpdateSavedPresets();
 
                 var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
-                Logging.Debug(entry?.DisplayName);
-
                 if (entry == null) {
                     Logging.Warning($@"Can’t set preset to “{filename}”, entry not found");
                 } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
@@ -280,14 +290,10 @@ namespace AcManager.Controls {
 
         private void OnUserPresetableChanged(IUserPresetable oldValue, IUserPresetable newValue) {
             if (oldValue != null) {
-                Instances.Remove(oldValue.PresetableKey);
+                Instances.GetList(oldValue.PresetableKey).Remove(this);
             }
 
-            Instances.RemoveDeadReferences();
-
-            if (newValue != null) {
-                Instances[newValue.PresetableKey] = new WeakReference<UserPresetsControl>(this);
-            }
+            Instances.GetList(newValue.PresetableKey).Add(this);
 
             if (_presetable != null) {
                 PresetsManager.Instance.Watcher(_presetable.PresetableCategory).Update -= Presets_Update;
@@ -421,6 +427,16 @@ namespace AcManager.Controls {
 
             if (!ReferenceEquals(CurrentUserPreset, entry)) {
                 CurrentUserPreset = entry;
+                foreach (var c in GetInstance(_presetable.PresetableKey).ApartFrom(this)) {
+                    var en = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, entry.Filename));
+                    if (en == null) {
+                        Logging.Warning($@"Can’t set preset to “{entry.Filename}”, entry not found");
+                    } else if (!ReferenceEquals(c.CurrentUserPreset, en)) {
+                        c.CurrentUserPreset = en;
+                    } else {
+                        c.SelectionChanged(en);
+                    }
+                }
             } else {
                 SelectionChanged(entry);
             }

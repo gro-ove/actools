@@ -20,7 +20,7 @@ namespace AcManager.Controls.ViewModels {
         public double GripStart {
             get { return _gripStart; }
             set {
-                value = value.Saturate();
+                value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripStart)) return;
                 _gripStart = value;
                 OnPropertyChanged();
@@ -33,6 +33,7 @@ namespace AcManager.Controls.ViewModels {
         public double GripTransfer {
             get { return _gripTransfer; }
             set {
+                value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripTransfer)) return;
                 _gripTransfer = value;
                 OnPropertyChanged();
@@ -45,6 +46,7 @@ namespace AcManager.Controls.ViewModels {
         public double GripRandomness {
             get { return _gripRandomness; }
             set {
+                value = value.Clamp(0d, 2d);
                 if (Equals(value, _gripRandomness)) return;
                 _gripRandomness = value;
                 OnPropertyChanged();
@@ -120,6 +122,7 @@ namespace AcManager.Controls.ViewModels {
 
         public Game.TrackProperties ToProperties() {
             return new Game.TrackProperties {
+                Preset = null,
                 LapGain = LapGain,
                 Randomness = (GripRandomness * 100d).RoundToInt(),
                 SessionStart = (GripStart * 100d).RoundToInt(),

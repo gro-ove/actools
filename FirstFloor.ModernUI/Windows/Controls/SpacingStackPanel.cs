@@ -29,7 +29,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_orientation == Orientation.Vertical) {
                 var childConstraint = new Size(constraint.Width, double.PositiveInfinity);
                 var maxWidth = 0d;
-                var summaryHeight = (count - 1) * _spacing;
+                var summaryHeight = 0d;
+                var first = true;
                 for (var i = 0; i < count; ++i) {
                     var child = InternalChildren[i];
                     child.Measure(childConstraint);
@@ -40,7 +41,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             maxWidth = desiredSize.Width;
                         }
 
-                        summaryHeight += desiredSize.Height;
+                        summaryHeight += desiredSize.Height + (first ? 0 : _spacing);
+                        first = false;
                     }
                 }
 
@@ -48,7 +50,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 var childConstraint = new Size(double.PositiveInfinity, constraint.Height);
                 var maxHeight = 0d;
-                var summaryWidth = (count - 1) * _spacing;
+                var summaryWidth = 0d;
+                var first = true;
                 for (var i = 0; i < count; ++i) {
                     var child = InternalChildren[i];
                     child.Measure(childConstraint);
@@ -59,7 +62,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             maxHeight = desiredSize.Height;
                         }
 
-                        summaryWidth += desiredSize.Width;
+                        summaryWidth += desiredSize.Width + (first ? 0 : _spacing);
+                        first = false;
                     }
                 }
 

@@ -21,7 +21,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var preparationRenderer = (TrackMapPreparationRenderer)renderer;
                 var camera = preparationRenderer.CameraOrtho;
                 if (camera != null) {
-                    camera.Move(new Vector3((float)(dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
+                    camera.Move(new Vector3((float)(-dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
                     preparationRenderer.AutoResetCamera = false;
                     preparationRenderer.IsDirty = true;
                 }

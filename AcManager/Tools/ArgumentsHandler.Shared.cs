@@ -55,6 +55,9 @@ namespace AcManager.Tools {
                 case SharedEntryType.AssistsSetupPreset:
                     return ProcessSharedAssistsSetupPreset(shared, data);
 
+                case SharedEntryType.TrackStatePreset:
+                    return ProcessSharedTrackStatePreset(shared, data);
+
                 case SharedEntryType.QuickDrivePreset:
                     return ProcessSharedQuickDrivePreset(shared, data);
 
@@ -207,6 +210,27 @@ namespace AcManager.Tools {
                     return ArgumentHandleResult.SuccessfulShow;
                 case Choise.Apply:
                     AssistsViewModel.Instance.ImportFromPresetData(data.ToUtf8String());
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
+            }
+        }
+
+        private ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data) {
+            var result = ShowDialog(shared);
+            switch (result) {
+                case Choise.Save:
+                case Choise.ApplyAndSave:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(
+                            PresetsManager.Instance.GetDirectory(TrackStateViewModelBase.PresetableCategory), @"Loaded", shared.GetFileName()));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllBytes(filename, data);
+                    if (result == Choise.ApplyAndSave) {
+                        UserPresetsControl.LoadPreset(TrackStateViewModel.Instance.PresetableKey, filename);
+                    }
+                    return ArgumentHandleResult.SuccessfulShow;
+                case Choise.Apply:
+                    TrackStateViewModel.Instance.ImportFromPresetData(data.ToUtf8String());
                     return ArgumentHandleResult.SuccessfulShow;
                 default:
                     return ArgumentHandleResult.Failed;

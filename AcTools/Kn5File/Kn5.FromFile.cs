@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime;
-using System.Runtime.CompilerServices;
-using AcTools.DataFile;
 using JetBrains.Annotations;
-using SlimDX;
 
 namespace AcTools.Kn5File {
     public interface IKn5TextureLoader {
@@ -31,7 +27,7 @@ namespace AcTools.Kn5File {
         }
 
         public static MemoryChunk Bytes(int bytes) {
-            return new MemoryChunk(bytes / 1024 / 1024);
+            return new MemoryChunk(10 + bytes / 1024 / 1024);
         }
 
         public static MemoryChunk Megabytes(int megabytes) {

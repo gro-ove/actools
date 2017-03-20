@@ -139,6 +139,7 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.AudioSettingsPreset:
                 case SharedEntryType.VideoSettingsPreset:
                 case SharedEntryType.AssistsSetupPreset:
+                case SharedEntryType.TrackStatePreset:
                 case SharedEntryType.RaceGridPreset:
                 case SharedEntryType.CustomShowroomPreset:
                 case SharedEntryType.CustomPreviewsPreset:

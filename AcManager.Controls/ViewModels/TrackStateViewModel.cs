@@ -11,6 +11,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
@@ -87,8 +88,14 @@ namespace AcManager.Controls.ViewModels {
 
             try {
                 _inProgress = true;
-                await Task.Delay(200);
-                (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(RegisterBuiltInPresets);
+
+                for (var i = 0; i < 10; i++) {
+                    try {
+                        await Task.Delay(300);
+                        (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(RegisterBuiltInPresets);
+                        break;
+                    } catch (IOException) {}
+                }
             } finally {
                 _inProgress = false;
             }
@@ -118,6 +125,8 @@ namespace AcManager.Controls.ViewModels {
             foreach (var preset in GetBuiltInPresets()) {
                 PresetsManager.Instance.RegisterBuiltInPreset(preset.Item2.ToBytes(), TrackStateViewModelBase.PresetableCategory, preset.Item1);
             }
+
+            UserPresetsControl.RescanCategory(TrackStateViewModelBase.PresetableCategory, true);
         }
 
         public void Dispose() {
