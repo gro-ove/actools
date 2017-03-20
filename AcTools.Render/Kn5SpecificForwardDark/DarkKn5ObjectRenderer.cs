@@ -674,6 +674,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var showroomNode = ShowroomNode;
             if (showroomNode == null) return;
 
+            if (UseAo) {
+                Effect.FxAoPower.Set(0f);
+            }
+
             DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null);
             DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
             showroomNode.Draw(holder, camera, SpecialRenderMode.Reflection);
