@@ -8,10 +8,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -49,47 +51,68 @@ namespace AcManager.Controls {
             return ValuesStorage.GetString("__userpresets_p_" + key);
         }
 
-        private static UserPresetsControl GetInstance(string key) {
-            WeakReference<UserPresetsControl> r;
-            UserPresetsControl c;
-            return Instances.TryGetValue(key, out r) && r.TryGetTarget(out c) ? c : null;
+        [NotNull]
+        private static IEnumerable<UserPresetsControl> GetInstance(string key) {
+            return Application.Current?.Windows.OfType<Window>()
+                              .SelectMany(VisualTreeHelperEx.FindVisualChildren<UserPresetsControl>)
+                              .Where(x => {
+                                  Logging.Write($"{x._presetable?.PresetableKey} ==? {key}");
+                                  return x._presetable?.PresetableKey == key;
+                              }) ?? new UserPresetsControl[0];
         }
 
         public static bool HasInstance(string key) {
-            return GetInstance(key) != null;
+            return GetInstance(key).Any();
         }
 
         public static bool LoadPreset(string key, string filename) {
+            Logging.Debug(filename);
+
             ValuesStorage.Set("__userpresets_p_" + key, filename);
             ValuesStorage.Set("__userpresets_c_" + key, false);
 
-            var c = GetInstance(key);
-            if (c == null) return false;
+            var r = false;
+            foreach (var c in GetInstance(key)) {
+                c.UpdateSavedPresets();
 
-            c.UpdateSavedPresets();
+                var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
+                Logging.Debug(entry?.DisplayName);
 
-            var entry = c.SavedPresets.FirstOrDefault(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase));
-            if (entry == null) {
-                Logging.Warning($@"[UserPresetsControl] Can’t set preset to “{filename}”, entry not found");
-            } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
-                c.CurrentUserPreset = entry;
-            } else {
-                c.SelectionChanged(entry);
+                if (entry == null) {
+                    Logging.Warning($@"Can’t set preset to “{filename}”, entry not found");
+                } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
+                    c.CurrentUserPreset = entry;
+                } else {
+                    c.SelectionChanged(entry);
+                }
+
+                r = true;
             }
 
-            return true;
+            return r;
         }
 
         public static bool LoadSerializedPreset([NotNull] string key, [NotNull] string serialized) {
             ValuesStorage.Remove("__userpresets_p_" + key);
             ValuesStorage.Set("__userpresets_c_" + key, false);
 
-            var c = GetInstance(key);
-            if (c == null) return false;
+            var r = false;
+            foreach (var c in GetInstance(key)) {
+                c.CurrentUserPreset = null;
+                c.UserPresetable?.ImportFromPresetData(serialized);
+                r = true;
+            }
 
-            c.CurrentUserPreset = null;
-            c.UserPresetable?.ImportFromPresetData(serialized);
-            return true;
+            return r;
+        }
+
+        public static bool LoadBuiltInPreset([NotNull] string key, [NotNull] string presetName) {
+            return LoadBuiltInPreset(key, key, presetName);
+        }
+
+        public static bool LoadBuiltInPreset([NotNull] string key, [NotNull] string category, [NotNull] string presetName) {
+            var filename = Path.Combine(PresetsManager.Instance.GetDirectory(category), presetName) + PresetsManager.FileExtension;
+            return LoadPreset(key, filename);
         }
 
         private bool _loaded;

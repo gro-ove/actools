@@ -1,15 +1,18 @@
 using System.Text;
 using AcManager.Tools.Helpers;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Controls.ViewModels {
     public class TrackStateViewModelBase : NotifyPropertyChanged {
         private const string DefaultKey = "TrackStateVM.sd";
 
-        public const string UserPresetableKeyValue = "Track States";
+        public const string PresetableCategory = "Track States";
 
         #region Properties
         private double _gripStart;
@@ -77,10 +80,15 @@ namespace AcManager.Controls.ViewModels {
 
         #region Saveable
         private class SaveableData {
+            [JsonProperty("s")]
             public double GripStart = 95d;
+            [JsonProperty("t")]
             public double GripTransfer = 90d;
+            [JsonProperty("r")]
             public double GripRandomness = 2d;
+            [JsonProperty("g")]
             public int LapGain = 132;
+            [JsonProperty("d")]
             public string Description;
         }
 
@@ -108,6 +116,15 @@ namespace AcManager.Controls.ViewModels {
 
         public byte[] ToBytes() {
             return Encoding.UTF8.GetBytes(Saveable.ToSerializedString() ?? "");
+        }
+
+        public Game.TrackProperties ToProperties() {
+            return new Game.TrackProperties {
+                LapGain = LapGain,
+                Randomness = (GripRandomness * 100d).RoundToInt(),
+                SessionStart = (GripStart * 100d).RoundToInt(),
+                SessionTransfer = (GripTransfer * 100d).RoundToInt(),
+            };
         }
         #endregion
 
@@ -137,7 +154,7 @@ namespace AcManager.Controls.ViewModels {
         /// </summary>
         /// <param name="section">INI-file section.</param>
         public static TrackStateViewModelBase CreateBuiltIn([NotNull] IniFileSection section) {
-            return new TrackStateViewModelBase(null, true) {
+            return new TrackStateViewModelBase(null, false) {
                 GripStart = section.GetDouble("SESSION_START", 95d) / 100d,
                 GripTransfer = section.GetDouble("SESSION_TRANSFER", 90d) / 100d,
                 GripRandomness = section.GetDouble("RANDOMNESS", 2d) / 100d,

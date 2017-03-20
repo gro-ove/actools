@@ -113,43 +113,6 @@ namespace AcTools.Kn5File {
             return kn5;
         }
 
-        public void Combine(Kn5 other) {
-            RootNode.Children.Add(other.RootNode);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private float[] CalculateMatrix(float[] position, float[] rotation) {
-            var m = Matrix.Translation(position[0], position[1], position[2]) * Matrix.RotationYawPitchRoll(rotation[0], rotation[1], rotation[2]);
-            return m.ToArray();
-        }
-
-        private void Combine(Kn5 other, float[] position, float[] rotation) {
-            if (position.Any(x => !Equals(x, 0f)) || rotation.Any(x => !Equals(x, 0f))) {
-                other.RootNode.Transform = CalculateMatrix(position, rotation);
-            }
-
-            Combine(other);
-        }
-
-        public static Kn5 FromModelsIniFile(string filename, IKn5TextureLoader textureLoader = null) {
-            if (!File.Exists(filename)) {
-                throw new FileNotFoundException(filename);
-            }
-
-            var result = CreateEmpty();
-            var directory = Path.GetDirectoryName(filename) ?? "";
-            foreach (var section in new IniFile(filename).GetSections("MODEL").Select(x => new {
-                Filename = Path.Combine(directory, x.GetNonEmpty("FILE") ?? ""),
-                Position = x.GetVector3F("POSITION"),
-                Rotation = x.GetVector3F("ROTATION")
-            }).Where(x => File.Exists(x.Filename))) {
-                var kn5 = FromFile(section.Filename, textureLoader);
-                result.Combine(kn5, section.Position, section.Rotation);
-            }
-
-            return result;
-        }
-
         public static Kn5 FromStream(Stream entry, IKn5TextureLoader textureLoader = null) {
             var kn5 = new Kn5(string.Empty);
 

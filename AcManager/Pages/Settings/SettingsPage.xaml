@@ -9,6 +9,7 @@
                 <mui:Link DisplayName="{x:Static g:AppStrings.Settings_General}" Source="/Pages/Settings/SettingsGeneral.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Settings_Plugins}" Source="/Pages/Settings/SettingsPlugins.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Drive}" Source="/Pages/Settings/SettingsDrive.xaml" />
+                <mui:Link DisplayName="Lap Times" Source="/Pages/Settings/SettingsLapTimes.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Live}" Source="/Pages/Settings/SettingsLive.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Language}" Source="/Pages/Settings/SettingsLocale.xaml" />

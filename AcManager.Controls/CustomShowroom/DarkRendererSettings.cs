@@ -153,8 +153,9 @@ namespace AcManager.Controls.CustomShowroom {
         private ISaveHelper _saveable;
 
         protected void SaveLater() {
-            _saveable?.SaveLater();
-            Changed?.Invoke(this, new EventArgs());
+            if (_saveable?.SaveLater() == true) {
+                Changed?.Invoke(this, new EventArgs());
+            }
         }
 
         protected void ResetQuality() {

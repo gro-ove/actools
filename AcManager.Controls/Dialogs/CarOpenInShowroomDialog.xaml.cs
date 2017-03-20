@@ -61,8 +61,9 @@ namespace AcManager.Controls.Dialogs {
             }
 
             private void SaveLater() {
-                _saveable.SaveLater();
-                Changed?.Invoke(this, new EventArgs());
+                if (_saveable.SaveLater()) {
+                    Changed?.Invoke(this, new EventArgs());
+                }
             }
 
             private readonly ISaveHelper _saveable;

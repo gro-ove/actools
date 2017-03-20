@@ -411,6 +411,10 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public void Dispose() {
+            if (_dirty) {
+                Save();
+            }
+
             Exit -= OnExit;
         }
 

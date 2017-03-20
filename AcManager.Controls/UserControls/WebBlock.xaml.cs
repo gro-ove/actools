@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
@@ -58,6 +61,15 @@ namespace AcManager.Controls.UserControls {
             _something.Execute(onload ?
                         @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
                         @"(function(){" + js + @"})();");
+        }
+
+        public void Execute(string fnName, params object[] args) {
+            Execute(fnName, false, args);
+        }
+
+        public void Execute(string fnName, bool onload, params object[] args) {
+            var js = $"{fnName}({args.Select(JsonConvert.SerializeObject).JoinToString(',')})";
+            Execute(js, onload);
         }
 
         public static readonly DependencyProperty OpenNewWindowsExternallyProperty = DependencyProperty.Register(nameof(OpenNewWindowsExternally), typeof(bool),

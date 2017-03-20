@@ -1144,6 +1144,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
         protected override Vector3 AutoAdjustedTarget => base.AutoAdjustedTarget + Vector3.UnitY * (SetCameraHigher ? 0f : 0.2f);
 
         public override void Dispose() {
+            DisposeHelper.Dispose(ref _mirror);
             DisposeHelper.Dispose(ref _mirrorBuffer);
             DisposeHelper.Dispose(ref _mirrorBlurBuffer);
             DisposeHelper.Dispose(ref _temporaryBuffer);

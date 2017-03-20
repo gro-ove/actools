@@ -4892,7 +4892,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lap Times Grid.
+        ///   Looks up a localized string similar to Grid.
         /// </summary>
         public static string Main_LapTimesGrid {
             get {
@@ -5000,7 +5000,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recent Lap Times.
+        ///   Looks up a localized string similar to Recent.
         /// </summary>
         public static string Main_RecentLapTimes {
             get {
@@ -8423,6 +8423,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string TableHeader_Date {
+            get {
+                return ResourceManager.GetString("TableHeader_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Locked.
         /// </summary>
         public static string TableHeader_Locked {
@@ -8446,6 +8455,15 @@ namespace AcManager {
         public static string TableHeader_Nationality {
             get {
                 return ResourceManager.GetString("TableHeader_Nationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track.
+        /// </summary>
+        public static string TableHeader_Track {
+            get {
+                return ResourceManager.GetString("TableHeader_Track", resourceCulture);
             }
         }
         

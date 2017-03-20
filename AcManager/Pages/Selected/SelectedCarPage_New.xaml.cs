@@ -754,7 +754,7 @@ namespace AcManager.Pages.Selected {
 
         #region Skins
         private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
-            if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+            if (e.ClickCount == 2) {
                 e.Handled = true;
 
                 if (SettingsHolder.CustomShowroom.CustomShowroomInstead) {

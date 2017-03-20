@@ -75,7 +75,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        public static Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, string presetFilename) {
+        public static Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, [CanBeNull] string presetFilename) {
             if (toUpdate.Count == 0) return Task.FromResult<IReadOnlyList<UpdatePreviewError>>(new UpdatePreviewError[0]);
             return Run(toUpdate[0].Car, toUpdate[0].Skins?.FirstOrDefault()?.Id, toUpdate, presetFilename);
         }

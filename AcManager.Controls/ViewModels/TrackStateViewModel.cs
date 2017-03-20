@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -9,6 +11,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
@@ -21,7 +24,7 @@ namespace AcManager.Controls.ViewModels {
         public static TrackStateViewModel Instance => _instance ?? (_instance = new TrackStateViewModel("qdtrackstate"));
 
         public TrackStateViewModel([Localizable(false)] string customKey = null) : base(customKey, false) {
-            PresetableKey = customKey ?? UserPresetableKeyValue;
+            PresetableKey = customKey ?? PresetableCategory;
             Saveable.Initialize();
         }
 
@@ -35,7 +38,7 @@ namespace AcManager.Controls.ViewModels {
 
         public string PresetableKey { get; }
 
-        string IUserPresetable.PresetableCategory => UserPresetableKeyValue;
+        string IUserPresetable.PresetableCategory => PresetableCategory;
 
         string IUserPresetable.DefaultPreset => "Green";
 
@@ -95,18 +98,25 @@ namespace AcManager.Controls.ViewModels {
             ReloadLater().Forget();
         }
 
+        private static readonly Regex NameRegex = new Regex(@"(?<=\b[A-Z])[A-Z]+", RegexOptions.Compiled);
+
+        [NotNull]
+        private static string NameFromId([NotNull] string id) {
+            return NameRegex.Replace(id, x => x.Value.ToLower(CultureInfo.CurrentUICulture));
+        }
+
         private IEnumerable<Tuple<string, TrackStateViewModelBase>> GetBuiltInPresets() {
             var filename = Path.Combine(_templates, "tracks.ini");
             var ini = new IniFile(filename);
             foreach (var pair in ini) {
-                yield return Tuple.Create(AcStringValues.NameFromId(pair.Key), TrackStateViewModelBase.CreateBuiltIn(pair.Value));
+                yield return Tuple.Create(NameFromId(pair.Key), TrackStateViewModelBase.CreateBuiltIn(pair.Value));
             }
         }
 
         private void RegisterBuiltInPresets() {
-            PresetsManager.Instance.ClearBuiltInPresets(TrackStateViewModelBase.UserPresetableKeyValue);
+            PresetsManager.Instance.ClearBuiltInPresets(TrackStateViewModelBase.PresetableCategory);
             foreach (var preset in GetBuiltInPresets()) {
-                PresetsManager.Instance.RegisterBuiltInPreset(preset.Item2.ToBytes(), TrackStateViewModelBase.UserPresetableKeyValue, preset.Item1);
+                PresetsManager.Instance.RegisterBuiltInPreset(preset.Item2.ToBytes(), TrackStateViewModelBase.PresetableCategory, preset.Item1);
             }
         }
 

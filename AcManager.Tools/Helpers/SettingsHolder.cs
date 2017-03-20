@@ -1154,6 +1154,76 @@ namespace AcManager.Tools.Helpers {
 
         public static DriveSettings Drive => _drive ?? (_drive = new DriveSettings());
 
+        public class LapTimesSettings : NotifyPropertyChanged {
+            internal LapTimesSettings() {}
+
+            private bool? _sourceCm;
+
+            public bool SourceCm {
+                get { return _sourceCm ?? (_sourceCm = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceCm", true)).Value; }
+                set {
+                    if (Equals(value, _sourceCm)) return;
+                    _sourceCm = value;
+                    ValuesStorage.Set("Settings.LapTimesSettings.SourceCm", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sourceAcDb;
+
+            public bool SourceAcDb {
+                get { return _sourceAcDb ?? (_sourceAcDb = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceAcDb", false)).Value; }
+                set {
+                    if (Equals(value, _sourceAcDb)) return;
+                    _sourceAcDb = value;
+                    ValuesStorage.Set("Settings.LapTimesSettings.SourceAcDb", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sourceAcNew;
+
+            public bool SourceAcNew {
+                get { return _sourceAcNew ?? (_sourceAcNew = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceAcNew", true)).Value; }
+                set {
+                    if (Equals(value, _sourceAcNew)) return;
+                    _sourceAcNew = value;
+                    ValuesStorage.Set("Settings.LapTimesSettings.SourceAcNew", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sourceSidekick;
+
+            public bool SourceSidekick {
+                get { return _sourceSidekick ?? (_sourceSidekick = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceSidekick", true)).Value; }
+                set {
+                    if (Equals(value, _sourceSidekick)) return;
+                    _sourceSidekick = value;
+                    ValuesStorage.Set("Settings.LapTimesSettings.SourceSidekick", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _sourceRaceEssentials;
+
+            public bool SourceRaceEssentials {
+                get {
+                    return _sourceRaceEssentials ?? (_sourceRaceEssentials = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceRaceEssentials", true)).Value;
+                }
+                set {
+                    if (Equals(value, _sourceRaceEssentials)) return;
+                    _sourceRaceEssentials = value;
+                    ValuesStorage.Set("Settings.LapTimesSettings.SourceRaceEssentials", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static LapTimesSettings _lapTimes;
+
+        public static LapTimesSettings LapTimes => _lapTimes ?? (_lapTimes = new LapTimesSettings());
+
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
 

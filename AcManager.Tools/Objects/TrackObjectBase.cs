@@ -168,7 +168,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private static readonly Regex SpecsLengthFix = new Regex(@"^\W*(\d+(?:[\.,]\d+)?)\s*(?:(km|kilometers)|(mi|miles?)|m)\b",
+        private static readonly Regex SpecsLengthFix = new Regex(@"^\W*(\d+(?:[\.,]\d+)?)\W*(?:(km|kilometers)|(mi|miles?)|m)\b",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         private static readonly Regex SpecsDotFixTest = new Regex(@"\d[\.,]\d{3}(?=\D|$)",
@@ -197,7 +197,7 @@ namespace AcManager.Tools.Objects {
 
                 if (m.Success) {
                     var n = m.Groups[1].Value;
-                    if (n.Contains(',')) {
+                    if (n.IndexOf(',') != -1) {
                         n = n.Replace(',', '.');
                     }
 
@@ -357,15 +357,13 @@ namespace AcManager.Tools.Objects {
 
         public string OutlineImage { get; protected set; }
 
-        // public abstract string DataDirectory { get; }
-
         public abstract string MapDirectory { get; }
 
         public string DataDirectory => Path.Combine(MapDirectory, @"data");
 
         public string MapImage => Path.Combine(MapDirectory, @"map.png");
 
-        public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models-{LayoutId}.ini");
+        public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models_{LayoutId}.ini");
 
         #region Draggable
         public const string DraggableFormat = "Data-TrackObject";

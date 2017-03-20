@@ -1,23 +1,72 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Table" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance mi:LapTimes_List+LapTimesViewModel}">
-    <mui:Cell Style="{StaticResource ContentRootWithPadding}">
-        <DataGrid Grid.Row="0" ItemsSource="{Binding List}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
-                MinRowHeight="20">
-            <!--<DataGrid.Columns>
-                <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car"
-                        CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin"
-                        CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
-                <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
-                        CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-                <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
-                        CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-                <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Ai}" SortMemberPath="AiLevel"
-                        CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
-            </DataGrid.Columns>-->
-        </DataGrid>
-    </mui:Cell>
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance mi:LapTimes_Table+ViewModel}">
+    <UserControl.Resources>
+        <Style x:Key="NumberCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="SmallNumberCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="TextBlock.FontSize" Value="{DynamicResource SmallFontSize}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="SmallCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="TextBlock.FontSize" Value="{DynamicResource SmallFontSize}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
+
+    <DataGrid Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Width="1.5*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
+                        <StackPanel Orientation="Horizontal">
+                            <mui:BetterImage x:Name="BrandBadge" Filename="{Binding Car.BrandBadge}" Width="24" Height="24" Margin="0 0 12 0"
+                                    ClearOnChange="True" />
+                            <TextBlock x:Name="Text" Text="{Binding Car.DisplayName}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Car}" Value="{x:Null}">
+                                <Setter TargetName="BrandBadge" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="Text" Property="Text" Value="{Binding Entry.CarId, StringFormat='{}Car {0} is missing'}" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Width="1.5*" Header="{x:Static g:AppStrings.TableHeader_Track}" SortMemberPath="Track.DisplayName">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
+                        <StackPanel Orientation="Horizontal">
+                            <mui:BetterImage x:Name="Outline" Filename="{Binding Track.OutlineImage}" Width="24" Height="24" Margin="0 0 12 0"
+                                    ClearOnChange="True" />
+                            <TextBlock x:Name="Text" Text="{Binding Track.Name}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Track}" Value="{x:Null}">
+                                <Setter TargetName="Outline" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="Text" Property="Text" Value="{Binding Entry.TrackId, StringFormat='{}Track {0} is missing'}" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTextColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_BestLap}" SortMemberPath="Entry.LapTime"
+                    Binding="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" CellStyle="{StaticResource NumberCellStyle}"
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
+            <DataGridTextColumn Width="180" Header="{x:Static g:AppStrings.TableHeader_Date}" SortMemberPath="Entry.EntryDate"
+                    Binding="{Binding Entry.EntryDate}" CellStyle="{StaticResource SmallNumberCellStyle}"
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" SortDirection="Descending" />
+            <DataGridTextColumn Width="140" Header="Source" SortMemberPath="Entry.Source" Binding="{Binding Entry.Source}"
+                    CellStyle="{StaticResource SmallCellStyle}" />
+        </DataGrid.Columns>
+    </DataGrid>
 </UserControl>

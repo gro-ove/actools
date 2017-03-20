@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Xml;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
@@ -18,7 +17,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
-        public static bool OptionCustomThemes = false;
+        public static bool OptionCustomThemes = true;
         public static bool OptionIdealFormattingModeDefaultValue = false;
 
         public const string KeyTheme = "appearance_theme";

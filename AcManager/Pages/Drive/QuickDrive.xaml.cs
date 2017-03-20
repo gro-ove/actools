@@ -23,6 +23,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -114,10 +115,16 @@ namespace AcManager.Pages.Drive {
 
         private class SaveableData {
             public Uri Mode;
-            public string ModeData, CarId, TrackId, WeatherId, TrackPropertiesPreset;
+            public string ModeData, CarId, TrackId, WeatherId;
             public bool RealConditions;
             public double Temperature;
             public int Time, TimeMultipler;
+
+            public string TrackPropertiesPresetFilename, TrackPropertiesData;
+
+            // Obsolete
+            [JsonProperty(@"TrackPropertiesPreset")]
+            public string ObsTrackPropertiesPreset;
 
             [JsonProperty(@"rcTimezones")]
             public bool? RealConditionsTimezones;
@@ -237,19 +244,7 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
-            public IReadOnlyList<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
-
-            private Game.TrackPropertiesPreset _selectedTrackPropertiesPreset;
-
-            public Game.TrackPropertiesPreset SelectedTrackPropertiesPreset {
-                get { return _selectedTrackPropertiesPreset; }
-                set {
-                    if (Equals(value, _selectedTrackPropertiesPreset)) return;
-                    _selectedTrackPropertiesPreset = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
+            public TrackStateViewModel TrackState => TrackStateViewModel.Instance;
 
             public TrackObjectBase SelectedTrack {
                 get { return _selectedTrack; }
@@ -296,8 +291,9 @@ namespace AcManager.Pages.Drive {
             private void SaveLater() {
                 if (!_uiMode) return;
 
-                _saveable.SaveLater();
-                Changed?.Invoke(this, EventArgs.Empty);
+                if (_saveable.SaveLater()) {
+                    Changed?.Invoke(this, EventArgs.Empty);
+                }
             }
 
             private readonly string _carSetupId, _weatherId;
@@ -322,7 +318,10 @@ namespace AcManager.Pages.Drive {
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
                     WeatherId = SelectedWeather?.Id,
-                    TrackPropertiesPreset = SelectedTrackPropertiesPreset.Name,
+
+                    // TODO
+                    TrackPropertiesData = TrackState.ExportToPresetData(),
+                    TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
 
                     Temperature = Temperature,
                     Time = Time,
@@ -358,9 +357,12 @@ namespace AcManager.Pages.Drive {
                         SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
                     }
 
-                    if (o.TrackPropertiesPreset != null) {
-                        SelectedTrackPropertiesPreset =
-                                Game.DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == o.TrackPropertiesPreset) ?? SelectedTrackPropertiesPreset;
+                    if (o.TrackPropertiesPresetFilename != null && File.Exists(o.TrackPropertiesPresetFilename)) {
+                        UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename);
+                    } else if (o.TrackPropertiesData != null) {
+                        UserPresetsControl.LoadSerializedPreset(TrackState.PresetableKey, o.TrackPropertiesData);
+                    } else if (o.ObsTrackPropertiesPreset != null) {
+                        UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, o.ObsTrackPropertiesPreset);
                     }
                 }, () => {
                     RealConditions = false;
@@ -372,7 +374,8 @@ namespace AcManager.Pages.Drive {
                     SelectedCar = CarsManager.Instance.GetDefault();
                     SelectedTrack = TracksManager.Instance.GetDefault();
                     SelectedWeather = WeatherManager.Instance.GetDefault();
-                    SelectedTrackPropertiesPreset = Game.GetDefaultTrackPropertiesPreset();
+
+                    UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Green");
 
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
@@ -527,7 +530,7 @@ namespace AcManager.Pages.Drive {
                         CloudSpeed = 0.2,
 
                         WeatherName = SelectedWeather?.Id
-                    }, SelectedTrackPropertiesPreset.Properties);
+                    }, TrackState.ToProperties());
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
                 }

@@ -18,16 +18,16 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
     public enum SharedEntryType {
-        [LocalizedDescription("Shared_ControlsPreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_ControlsPreset))]
         ControlsPreset,
 
-        [LocalizedDescription("Shared_ForceFeedbackPreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_ForceFeedbackPreset))]
         ForceFeedbackPreset,
 
-        [LocalizedDescription("Shared_QuickDrivePreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_QuickDrivePreset))]
         QuickDrivePreset,
 
-        [LocalizedDescription("Shared_RaceGridPreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_RaceGridPreset))]
         RaceGridPreset,
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_AudioSettingsPreset))]
@@ -42,22 +42,25 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription(nameof(ToolsStrings.Shared_CustomPreviewsPreset))]
         CustomPreviewsPreset,
 
-        [LocalizedDescription("Shared_AssistsSetupPreset")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_AssistsSetupPreset))]
         AssistsSetupPreset,
 
-        [LocalizedDescription("Shared_Replay")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_TrackStatePreset))]
+        TrackStatePreset,
+
+        [LocalizedDescription(nameof(ToolsStrings.Shared_Replay))]
         Replay,
 
-        [LocalizedDescription("Shared_CarSetup")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_CarSetup))]
         CarSetup,
 
-        [LocalizedDescription("Shared_PpFilter")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_PpFilter))]
         PpFilter,
 
-        [LocalizedDescription("Shared_UserChampionship")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_UserChampionship))]
         UserChampionship,
 
-        [LocalizedDescription("Shared_Weather")]
+        [LocalizedDescription(nameof(ToolsStrings.Shared_Weather))]
         Weather
     }
 

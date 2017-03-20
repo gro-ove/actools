@@ -182,8 +182,17 @@
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="{x:Static g:AppStrings.Drive_TrackStateLabel}" Style="{StaticResource Label.Padding}" Margin="0 0 0 4" />
-                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
+                    <DockPanel DataContext="{Binding AssistsViewModel}" Margin="0 0 0 4">
+                        <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <c:ModernPopup Padding="16 12 16 16">
+                                <uc:TrackStateEditor DataContext="{Binding Data.TrackState, Source={StaticResource Model}}" />
+                            </c:ModernPopup>
+                        </mui:ContextMenuButton>
+
+                        <TextBlock Text="{x:Static g:AppStrings.Drive_TrackStateLabel}" Style="{StaticResource Label.Padding}" />
+                    </DockPanel>
+                    <c:UserPresetsControl UserPresetable="{Binding TrackState}" ShowSaveButton="False" />
+                    <!--<ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />-->
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="2">

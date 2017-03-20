@@ -14,10 +14,7 @@ using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Miscellaneous {
-    /// <summary>
-    /// Interaction logic for LapTimes.xaml
-    /// </summary>
-    public partial class LapTimes_List : ILoadableContent, IParametrizedUriContent {
+    public partial class LapTimes_Recent : ILoadableContent, IParametrizedUriContent {
         private string _filter;
 
         public void OnUri(Uri uri) {
@@ -34,15 +31,15 @@ namespace AcManager.Pages.Miscellaneous {
 
         public void Initialize() {
             InitializeComponent();
-            DataContext = new LapTimesViewModel(string.IsNullOrEmpty(_filter) ? null : Filter.Create(LapTimeTester.Instance, _filter));
+            DataContext = new ViewModel(string.IsNullOrEmpty(_filter) ? null : Filter.Create(LapTimeTester.Instance, _filter));
         }
 
-        private LapTimesViewModel Model => (LapTimesViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
-        public class LapTimesViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private readonly IFilter<LapTimeWrapped> _filter;
 
-            public LapTimesViewModel(IFilter<LapTimeWrapped> filter) {
+            public ViewModel(IFilter<LapTimeWrapped> filter) {
                 _filter = filter;
                 List = WrappedCollection.Create(LapTimesManager.Instance.Entries, x => new LapTimeWrapped(x));
                 View = new ListCollectionView((IList)List);

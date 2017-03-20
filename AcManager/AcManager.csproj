@@ -314,17 +314,23 @@
     <Compile Include="Pages\Lists\UserChampionshipsListPage.xaml.cs">
       <DependentUpon>UserChampionshipsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
+      <DependentUpon>LapTimes_Table.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Miscellaneous\LapTimes_Sources.xaml.cs">
+      <DependentUpon>LapTimes_Sources.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Miscellaneous\MostUsed.xaml.cs">
       <DependentUpon>MostUsed.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Miscellaneous\PlayerStats.xaml.cs">
       <DependentUpon>PlayerStats.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Miscellaneous\LapTimes_List.xaml.cs">
-      <DependentUpon>LapTimes_List.xaml</DependentUpon>
+    <Compile Include="Pages\Miscellaneous\LapTimes_Recent.xaml.cs">
+      <DependentUpon>LapTimes_Recent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Miscellaneous\LapTimes_Table.xaml.cs">
-      <DependentUpon>LapTimes_Table.xaml</DependentUpon>
+    <Compile Include="Pages\Miscellaneous\LapTimes_Grid.xaml.cs">
+      <DependentUpon>LapTimes_Grid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
@@ -429,6 +435,9 @@
     </Compile>
     <Compile Include="Pages\ServerPreset\SelectedPage.xaml.cs">
       <DependentUpon>SelectedPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsLapTimes.xaml.cs">
+      <DependentUpon>SettingsLapTimes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsLocale.xaml.cs">
       <DependentUpon>SettingsLocale.xaml</DependentUpon>
@@ -555,6 +564,9 @@
     <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
+    <Compile Include="UserControls\TrackStateEditor.xaml.cs">
+      <DependentUpon>TrackStateEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\AssistsEditor.xaml.cs">
       <DependentUpon>AssistsEditor.xaml</DependentUpon>
     </Compile>
@@ -820,6 +832,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Miscellaneous\LapTimes_Sources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Miscellaneous\MostUsed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -828,11 +848,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Miscellaneous\LapTimes_List.xaml">
+    <Page Include="Pages\Miscellaneous\LapTimes_Recent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Miscellaneous\LapTimes_Table.xaml">
+    <Page Include="Pages\Miscellaneous\LapTimes_Grid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1084,6 +1104,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Settings\SettingsLapTimes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Settings\SettingsLocale.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1317,6 +1341,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="QuickSwitches\QuickSwitchesWidgets.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\TrackStateEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

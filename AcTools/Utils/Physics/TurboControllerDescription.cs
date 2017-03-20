@@ -42,6 +42,7 @@ namespace AcTools.Utils.Physics {
             if (!double.IsNaN(DownLimit) && DownLimit > input) {
                 input = DownLimit;
             }
+
             
             var value = Lut?.InterpolateLinear(input) ?? 0d;
             switch (Combinator) {

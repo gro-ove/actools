@@ -7,7 +7,7 @@ using AcTools.Utils;
 
 namespace AcTools.LapTimes {
     public class AcLapTimesReader : ILapTimesReader {
-        public static readonly string SourceId = "AC";
+        public static readonly string SourceId = "AC Old Database";
 
         private readonly string _sourceDirectory;
         private ChromiumDbWrapper _wrapper;
@@ -43,7 +43,7 @@ namespace AcTools.LapTimes {
                                                .OrderByDescending(f => f).First() : default(DateTime);
         }
 
-        public IEnumerable<LapTimeEntry> GetEntries() {
+        public IEnumerable<LapTimeEntry> Import() {
             Prepare();
             return _wrapper.GetData().Select(bits => {
                 string carId, trackId, date, time;
@@ -55,6 +55,10 @@ namespace AcTools.LapTimes {
                                 TimeSpan.FromMilliseconds(double.Parse(time, CultureInfo.InvariantCulture)))
                         : null;
             }).Where(x => x != null);
+        }
+
+        public void Export(IEnumerable<LapTimeEntry> entries) {
+            throw new NotSupportedException();
         }
 
         private void DisposeTempDirectory() {

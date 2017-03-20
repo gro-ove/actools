@@ -1848,6 +1848,9 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="TableHeader_Car" xml:space="preserve">
     <value>Car</value>
   </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Track</value>
+  </data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
     <value>Time:</value>
   </data>
@@ -2523,6 +2526,9 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="TableHeader_BestLap" xml:space="preserve">
     <value>Best Lap</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Date</value>
   </data>
   <data name="RaceResult_TryAgain" xml:space="preserve">
     <value>Try again</value>
@@ -3515,10 +3521,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Stats</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Recent Lap Times</value>
+    <value>Recent</value>
   </data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
-    <value>Lap Times Grid</value>
+    <value>Grid</value>
   </data>
   <data name="AcSettings_SessionInformation" xml:space="preserve">
     <value>Session information</value>

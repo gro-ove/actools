@@ -179,8 +179,13 @@ namespace AcManager {
 
             FancyBackgroundManager.Initialize();
             DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
-            
-            AppArguments.Set(AppFlag.CustomThemes, ref AppAppearanceManager.OptionCustomThemes);
+
+            if (!AppKeyHolder.IsAllRight) {
+                AppAppearanceManager.OptionCustomThemes = false;
+            } else {
+                AppArguments.Set(AppFlag.CustomThemes, ref AppAppearanceManager.OptionCustomThemes);
+            }
+
             AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));
             AppAppearanceManager.Initialize();

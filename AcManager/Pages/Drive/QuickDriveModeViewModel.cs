@@ -19,8 +19,9 @@ namespace AcManager.Pages.Drive {
         public event EventHandler Changed;
 
         protected void SaveLater() {
-            Saveable.SaveLater();
-            Changed?.Invoke(this, new EventArgs());
+            if (Saveable.SaveLater()) {
+                Changed?.Invoke(this, new EventArgs());
+            }
         }
 
         private Tuple<string, Action<TrackObjectBase>> _trackDoesNotFit;

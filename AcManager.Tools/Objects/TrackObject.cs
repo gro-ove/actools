@@ -222,6 +222,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [CanBeNull]
         private static string FindNameForMultiLayoutMode(IReadOnlyList<TrackObjectBase> obj) {
             var baseName = obj[0].Name;
             if (baseName == null) return null;
@@ -262,6 +263,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [CanBeNull]
         private string _commonName;
 
         public override string NameEditable {
@@ -288,7 +290,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string DisplayName => MultiLayouts?.Count > 1 ?
-                $@"{_commonName} ({MultiLayouts.Count})" : base.DisplayName;
+                $@"{_commonName ?? base.DisplayName} ({MultiLayouts.Count})" : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;
 

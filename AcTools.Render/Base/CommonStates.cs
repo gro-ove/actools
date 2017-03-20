@@ -156,6 +156,7 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _invertedState);
             DisposeHelper.Dispose(ref _wireframeState);
             DisposeHelper.Dispose(ref _wireframeInvertedState);
+            DisposeHelper.Dispose(ref _ambientShadowState);
         }
     }
 }

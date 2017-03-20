@@ -192,6 +192,9 @@
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="StatEntry.cs" />
+    <Compile Include="UserControls\TrackStateDescription.xaml.cs">
+      <DependentUpon>TrackStateDescription.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\CefSharpWrapper.cs" />
     <Compile Include="UserControls\UserChampionshipBlock.xaml.cs">
@@ -273,6 +276,8 @@
     <Compile Include="ViewModels\RaceGridMode.cs" />
     <Compile Include="ViewModels\RaceGridViewModel.cs" />
     <Compile Include="ViewModels\RealismLevel.cs" />
+    <Compile Include="ViewModels\TrackStateViewModel.cs" />
+    <Compile Include="ViewModels\TrackStateViewModelBase.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -436,6 +441,10 @@
     <Compile Include="AcListPage.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControls\TrackStateDescription.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\AssistsDescription.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

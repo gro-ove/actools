@@ -14,11 +14,16 @@ namespace AcManager.Tools.Profile {
 
         private readonly string _sourceId;
 
-        public LapTimesStorage(string sourceId)
-                : base(FilesStorage.Instance.GetFilename("Progress", $"Lap Times ({sourceId}).data"), null, false, false) {
+        public string Filename { get; }
+
+        private LapTimesStorage(string filename, string sourceId)
+                : base(filename, null, false, false) {
+            Filename = filename;
             _sourceId = sourceId;
         }
 
+        public LapTimesStorage(string sourceId)
+                : this(FilesStorage.Instance.GetFilename("Progress", $"Lap Times ({sourceId}).data"), sourceId) {}
 
         private string GetKey(string carId, string trackAcId) {
             return KeyPrefix + carId + ":" + trackAcId.Replace('/', '-');
@@ -81,7 +86,7 @@ namespace AcManager.Tools.Profile {
         public IReadOnlyList<LapTimeEntry> UpdateCachedLapTimesList(ILapTimesReader reader) {
             CleanUp(x => x.StartsWith(KeyPrefix));
 
-            var list = reader.GetEntries().ToList();
+            var list = reader.Import().ToList();
             foreach (var entry in list) {
                 Set(entry);
             }

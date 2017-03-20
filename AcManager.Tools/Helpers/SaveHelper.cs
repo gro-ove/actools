@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public interface ISaveHelper {
+        [CanBeNull]
+        string Key { get; }
+
         bool IsLoading { get; }
 
         void Initialize();
@@ -30,21 +33,21 @@ namespace AcManager.Tools.Helpers {
 
         void Save();
 
-        void SaveLater();
+        bool SaveLater();
 
         void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load);
     }
 
     public class SaveHelper<T> : ISaveHelper where T : class, new() {
-        [CanBeNull]
-        private readonly string _key;
         private readonly Func<T> _save;
         private readonly Action<T> _load;
         private readonly Action _reset;
         private readonly Func<string, T> _deserialize;
 
+        public string Key { get; }
+
         public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset, Func<string, T> deserialize = null) {
-            _key = key;
+            Key = key;
             _save = save;
             _load = load;
             _reset = reset;
@@ -52,7 +55,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Func<string, T> deserialize = null) {
-            _key = key;
+            Key = key;
             _save = save;
             _load = load;
             _reset = () => _load(new T());
@@ -128,9 +131,9 @@ namespace AcManager.Tools.Helpers {
         }
 
         public bool Load() {
-            if (_key == null) return false;
+            if (Key == null) return false;
 
-            var data = ValuesStorage.GetString(_key);
+            var data = ValuesStorage.GetString(Key);
             if (data == null) return false;
 
             try {
@@ -146,7 +149,7 @@ namespace AcManager.Tools.Helpers {
             return false;
         }
 
-        public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);
+        public bool HasSavedData => Key != null && ValuesStorage.Contains(Key);
         
         public string ToSerializedString() {
             var obj = _save();
@@ -158,6 +161,7 @@ namespace AcManager.Tools.Helpers {
                 IsLoading = disableSaving;
                 LoadInner(data);
             } catch (Exception e) {
+                Logging.Error(data);
                 Logging.Error(e);
             } finally {
                 IsLoading = false;
@@ -173,7 +177,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void Save() {
-            var key = _key;
+            var key = Key;
             if (key == null) return;
 
             var serialized = ToSerializedString();
@@ -183,8 +187,14 @@ namespace AcManager.Tools.Helpers {
 
         private bool _savingInProgress;
 
-        public async void SaveLater() {
-            if (IsLoading || _savingInProgress || _key == null) return;
+        public bool SaveLater() {
+            if (IsLoading || _savingInProgress) return false;
+            SaveLaterAsync().Forget();
+            return true;
+        }
+
+        private async Task SaveLaterAsync() {
+            if (IsLoading || _savingInProgress || Key == null) return;
             _savingInProgress = true;
 
             await Task.Delay(300);

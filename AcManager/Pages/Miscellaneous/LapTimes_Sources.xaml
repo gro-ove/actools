@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Sources" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:miscellaneous="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:g="clr-namespace:AcManager"
+        xmlns:lapTimes="clr-namespace:AcTools.LapTimes;assembly=AcTools.LapTimes" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance miscellaneous:LapTimes_Sources+ViewModel}" Margin="{StaticResource ContentMarginWithPadding}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </UserControl.Resources>
+
+    <ScrollViewer>
+        <mui:SpacingStackPanel Spacing="20">
+            <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="20">
+                <mui:SpacingStackPanel Spacing="8">
+                    <CheckBox IsChecked="{Binding LapTimes.SourceCm}" Padding="4 0 0 0" Height="60">
+                        <Label>
+                            <mui:SpacingStackPanel Spacing="4">
+                                <TextBlock Text="Own CM storage" Style="{StaticResource Heading2}" />
+                                <TextBlock Text="Will be filled using shared memory or, if disabled, race results file." Style="{StaticResource Small}"
+                                        TextWrapping="Wrap" />
+                            </mui:SpacingStackPanel>
+                        </Label>
+                    </CheckBox>
+                    <Button Content="Export" ToolTip="Export lap times to CM storage" Command="{Binding ExportLapTimesCommand}"
+                            CommandParameter="{x:Static t:LapTimesManager.SourceId}" />
+                </mui:SpacingStackPanel>
+
+                <mui:SpacingStackPanel Spacing="8">
+                    <CheckBox IsChecked="{Binding LapTimes.SourceAcDb}" Padding="4 0 0 0" Height="60">
+                        <Label>
+                            <mui:SpacingStackPanel Spacing="4">
+                                <TextBlock Text="Old AC database" Style="{StaticResource Heading2}" />
+                                <TextBlock Text="Used by the original launcher. Reading is quite wobbly, so I recommend to keep it disabled."
+                                        Style="{StaticResource Small}" TextWrapping="Wrap" />
+                            </mui:SpacingStackPanel>
+                        </Label>
+                    </CheckBox>
+                </mui:SpacingStackPanel>
+
+                <mui:SpacingStackPanel Spacing="8">
+                    <CheckBox IsChecked="{Binding LapTimes.SourceAcNew}" Padding="4 0 0 0" Height="60">
+                        <Label>
+                            <mui:SpacingStackPanel Spacing="4">
+                                <TextBlock Text="New AC storage" Style="{StaticResource Heading2}" />
+                                <TextBlock Text="Used by the original launcher. Much faster and more stable." Style="{StaticResource Small}" TextWrapping="Wrap" />
+                            </mui:SpacingStackPanel>
+                        </Label>
+                    </CheckBox>
+                    <Button Content="Export" ToolTip="Export lap times to the new AC storage" Command="{Binding ExportLapTimesCommand}"
+                            CommandParameter="{x:Static lapTimes:AcLapTimesNewReader.SourceId}" />
+                </mui:SpacingStackPanel>
+
+                <mui:SpacingStackPanel Spacing="8">
+                    <CheckBox IsChecked="{Binding LapTimes.SourceSidekick}" Padding="4 0 0 0" Height="60">
+                        <Label>
+                            <mui:SpacingStackPanel Spacing="4">
+                                <TextBlock Style="{StaticResource Heading2}">
+                                    <Run Text="Sidekick" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                                            Command="mui:LinkCommands.NavigateLink" CommandParameter="http://www.racedepartment.com/downloads/sidekick.11007/">[?]</Hyperlink>
+                                </TextBlock>
+                                <TextBlock Text="Very good source of lap times, accurate and reliable." Style="{StaticResource Small}" TextWrapping="Wrap" />
+                            </mui:SpacingStackPanel>
+                        </Label>
+                    </CheckBox>
+                    <Button Content="Export" ToolTip="Export lap times to Sidekick storage" Command="{Binding ExportLapTimesCommand}"
+                            CommandParameter="{x:Static lapTimes:SidekickLapTimesReader.SourceId}" />
+                </mui:SpacingStackPanel>
+
+                <mui:SpacingStackPanel Spacing="8">
+                    <CheckBox IsChecked="{Binding LapTimes.SourceRaceEssentials}" Height="60">
+                        <Label>
+                            <mui:SpacingStackPanel Spacing="4">
+                                <TextBlock Style="{StaticResource Heading2}" Text="Race Essentials" />
+                                <TextBlock Text="Quite good source of lap times as well." Style="{StaticResource Small}" TextWrapping="Wrap" />
+                            </mui:SpacingStackPanel>
+                        </Label>
+                    </CheckBox>
+                    <Button Content="Export" ToolTip="Export lap times to Race Essentials storage" Command="{Binding ExportLapTimesCommand}"
+                            CommandParameter="{x:Static lapTimes:RaceEssentialsLapTimesReader.SourceId}" />
+                </mui:SpacingStackPanel>
+            </mui:SpacingUniformGrid>
+        </mui:SpacingStackPanel>
+    </ScrollViewer>
+</UserControl>

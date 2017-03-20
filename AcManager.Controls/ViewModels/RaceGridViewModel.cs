@@ -45,8 +45,9 @@ namespace AcManager.Controls.ViewModels {
         private readonly ISaveHelper _saveable;
 
         private void SaveLater() {
-            _saveable.SaveLater();
-            Changed?.Invoke(this, EventArgs.Empty);
+            if (_saveable.SaveLater()) {
+                Changed?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public bool CanBeSaved => true;
@@ -1091,7 +1092,7 @@ namespace AcManager.Controls.ViewModels {
                 aiLevels = null;
             } else {
                 var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                    select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : 1f - (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
+                                    select AiLevelMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiLevel - AiLevelMin)).RoundToInt();
                 if (AiLevelArrangeReverse) {
                     aiLevelsInner = aiLevelsInner.Reverse();
                 }

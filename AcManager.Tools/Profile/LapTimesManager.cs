@@ -9,6 +9,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.LapTimes;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -23,12 +24,33 @@ namespace AcManager.Tools.Profile {
         public static LapTimesManager Instance => _instance ?? (_instance = new LapTimesManager());
 
         private LapTimesStorage _cmStorage;
-        private LapTimesStorage _acStorage;
+        private LapTimesStorage _acDbStorage;
+        private LapTimesStorage _acStorageNew;
         private LapTimesStorage _sidekickStorage;
         private LapTimesStorage _raceEssentialsStorage;
 
-        public LapTimesManager() {
+        private LapTimesManager() {
             Entries = new BetterObservableCollection<LapTimeEntry>();
+            SettingsHolder.LapTimes.PropertyChanged += OnSettingsChanged;
+        }
+
+        private void OnSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(SettingsHolder.LapTimes.SourceAcDb):
+                    DisposeHelper.Dispose(ref _acDbStorage);
+                    break;
+                case nameof(SettingsHolder.LapTimes.SourceAcNew):
+                    DisposeHelper.Dispose(ref _acStorageNew);
+                    break;
+                case nameof(SettingsHolder.LapTimes.SourceSidekick):
+                    DisposeHelper.Dispose(ref _sidekickStorage);
+                    break;
+                case nameof(SettingsHolder.LapTimes.SourceRaceEssentials):
+                    DisposeHelper.Dispose(ref _raceEssentialsStorage);
+                    break;
+            }
+
+            _lastUpdate = default(DateTime);
         }
 
         public void SetListener() {
@@ -100,8 +122,13 @@ namespace AcManager.Tools.Profile {
         }
 
         private void InitializeAc() {
-            if (_acStorage != null) return;
-            _acStorage = new LapTimesStorage(AcLapTimesReader.SourceId);
+            if (_acDbStorage != null) return;
+            _acDbStorage = new LapTimesStorage(AcLapTimesReader.SourceId);
+        }
+
+        private void InitializeAcNew() {
+            if (_acStorageNew != null) return;
+            _acStorageNew = new LapTimesStorage(AcLapTimesNewReader.SourceId);
         }
 
         private void InitializeSidekick() {
@@ -147,15 +174,42 @@ namespace AcManager.Tools.Profile {
         public async Task UpdateAsync() {
             if (IsActual()) return;
 
-            var cmEntries = ReadCmEntries();
-            var acEntries = await ReadAcEntriesAsync();
-            var sidekickEntries = await ReadSidekickEntriesAsync();
-            var raceEssectialsEntries = await ReadRaceEssentialsEntriesAsync();
+            var cmEntries = SettingsHolder.LapTimes.SourceCm ? ReadCmEntries() : new LapTimeEntry[0];
+            var acDbEntries = SettingsHolder.LapTimes.SourceAcDb ? await ReadAcDbEntriesAsync() : new LapTimeEntry[0];
+            var acNewEntries = SettingsHolder.LapTimes.SourceAcNew ? await ReadAcNewEntriesAsync() : new LapTimeEntry[0];
+            var sidekickEntries = SettingsHolder.LapTimes.SourceSidekick ? await ReadSidekickEntriesAsync() : new LapTimeEntry[0];
+            var raceEssectialsEntries = SettingsHolder.LapTimes.SourceRaceEssentials ? await ReadRaceEssentialsEntriesAsync() : new LapTimeEntry[0];
             Entries.ReplaceEverythingBy(KeepBetterOnes(
-                    cmEntries.Concat(acEntries)
+                    cmEntries.Concat(acDbEntries)
+                             .Concat(acNewEntries)
                              .Concat(sidekickEntries)
                              .Concat(raceEssectialsEntries)
                              .OrderByDescending(x => x.EntryDate)));
+        }
+        
+        public async Task ExportAsync(string key) {
+            ILapTimesReader reader;
+            if (key == SourceId) {
+                InitializeCm();
+                await Task.Run(() => {
+                    foreach (var entry in Entries.ToList()) {
+                        _cmStorage.Set(entry);
+                    }
+                });
+                return;
+            } else if (key == AcLapTimesNewReader.SourceId) {
+                reader = new AcLapTimesNewReader(FileUtils.GetDocumentsDirectory(), this);
+            } else if (key == SidekickLapTimesReader.SourceId) {
+                var sidekickDirectory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick");
+                reader = new SidekickLapTimesReader(sidekickDirectory, this);
+            } else if (key == RaceEssentialsLapTimesReader.SourceId) {
+                var sidekickDirectory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials");
+                reader = new RaceEssentialsLapTimesReader(sidekickDirectory, this);
+            } else {
+                throw new NotSupportedException();
+            }
+
+            await Task.Run(() => reader.Export(Entries));
         }
 
         private IEnumerable<LapTimeEntry> ReadCmEntries() {
@@ -163,16 +217,29 @@ namespace AcManager.Tools.Profile {
             return _cmStorage.GetLapTimes();
         }
 
-        private async Task<IReadOnlyList<LapTimeEntry>> ReadAcEntriesAsync() {
+        private async Task<IReadOnlyList<LapTimeEntry>> ReadAcDbEntriesAsync() {
             InitializeAc();
             return await Task.Run(() => {
                 using (var reader = new AcLapTimesReader(FileUtils.GetDocumentsDirectory())) {
-                    return _acStorage.GetLapTimesList(reader);
+                    return _acDbStorage.GetLapTimesList(reader);
                 }
             });
         }
-        
+
+        private async Task<IReadOnlyList<LapTimeEntry>> ReadAcNewEntriesAsync() {
+            await TracksManager.Instance.EnsureLoadedAsync();
+
+            InitializeAcNew();
+            return await Task.Run(() => {
+                using (var reader = new AcLapTimesNewReader(FileUtils.GetDocumentsDirectory(), this)) {
+                    return _acStorageNew.GetLapTimesList(reader);
+                }
+            });
+        }
+
         private async Task<IReadOnlyList<LapTimeEntry>> ReadSidekickEntriesAsync() {
+            await TracksManager.Instance.EnsureLoadedAsync();
+
             InitializeSidekick();
             var sidekickDirectory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick");
             using (var reader = new SidekickLapTimesReader(sidekickDirectory, this)) {
@@ -183,7 +250,7 @@ namespace AcManager.Tools.Profile {
                 return _sidekickStorage.UpdateCachedLapTimesList(reader);
             }
         }
-        
+
         private async Task<IReadOnlyList<LapTimeEntry>> ReadRaceEssentialsEntriesAsync() {
             InitializeRaceEssentials();
             var raceEssentialsDirectory = Path.Combine(FileUtils.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials");
@@ -194,6 +261,21 @@ namespace AcManager.Tools.Profile {
                 await TracksManager.Instance.EnsureLoadedAsync();
                 return _raceEssentialsStorage.UpdateCachedLapTimesList(reader);
             }
+        }
+
+        public void ClearCache() {
+            DisposeHelper.Dispose(ref _acDbStorage);
+            DisposeHelper.Dispose(ref _acStorageNew);
+            DisposeHelper.Dispose(ref _sidekickStorage);
+            DisposeHelper.Dispose(ref _raceEssentialsStorage);
+
+            foreach (var file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Progress"), "Lap Times (*).data")) {
+                if (!FileUtils.ArePathsEqual(Path.GetFileName(file), _cmStorage.Filename)) {
+                    File.Delete(file);
+                }
+            }
+
+            _lastUpdate = default(DateTime);
         }
 
         public IReadOnlyList<string> GetCarIds() {

@@ -2,15 +2,12 @@
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Input;
-using System.Windows.Navigation;
-using AcManager.Controls;
+using AcManager.Controls.UserControls;
 using AcManager.Tools;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
@@ -23,14 +20,14 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new DelegateCommand(() => {
-                    MapWebBrowser.InvokeScript(@"moveTo", GetQuery(Model.Track));
+                    MapWebBrowser.Execute(@"moveTo", GetQuery(Model.Track));
                 })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CancelButton
             };
 
-            MapWebBrowser.ObjectForScripting = new ScriptProvider(Model);
-            MapWebBrowser.Navigate(GetMapAddress(track));
+            MapWebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            MapWebBrowser.StartPage = GetMapAddress(track);
 
             Model.PropertyChanged += Model_PropertyChanged;
         }
@@ -44,42 +41,27 @@ namespace AcManager.Pages.Dialogs {
                 case nameof(Model.Longitude):
                     var pair = new GeoTagsEntry(Model.Latitude, Model.Longitude);
                     if (!pair.IsEmptyOrInvalid) {
-                        MapWebBrowser.InvokeScript(@"moveTo", pair.LatitudeValue + @";" + pair.LongitudeValue);
+                        MapWebBrowser.Execute(@"moveTo", $@"{pair.LatitudeValue};{pair.LongitudeValue}");
                     }
                     break;
             }
         }
 
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        [ComVisible(true)]
-        public class ScriptProvider {
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+        public class ScriptProvider : ScriptProviderBase {
             private readonly ViewModel _model;
 
             public ScriptProvider(ViewModel model) {
                 _model = model;
             }
 
-            public void Log(string message) {
-                Logging.Write("" + message);
-            }
-
-            public void Alert(string message) {
-                ShowMessage(message);
-            }
-
-            public string Prompt(string message, string defaultValue) {
-                return Controls.Dialogs.Prompt.Show(message, ControlsStrings.WebBrowser_Prompt, defaultValue);
-            }
-
             public void Update(double lat, double lng) {
-                _skipNext = true;
-                _model.Latitude = GeoTagsEntry.ToLat(lat);
-                _model.Longitude = GeoTagsEntry.ToLng(lng);
-                _skipNext = false;
-            }
-
-            public object CmTest() {
-                return true;
+                Sync(() => {
+                    _skipNext = true;
+                    _model.Latitude = GeoTagsEntry.ToLat(lat);
+                    _model.Longitude = GeoTagsEntry.ToLng(lng);
+                    _skipNext = false;
+                });
             }
         }
 
@@ -137,10 +119,6 @@ namespace AcManager.Pages.Dialogs {
             var tags = track.GeoTags;
             return CmHelpersProvider.GetAddress("map") + @"?t#" +
                     (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
-        }
-
-        private void MapWebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
-            WebBrowserHelper.SetSilent(MapWebBrowser, true);
         }
     }
 }

@@ -2,15 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.LapTimes {
-    public interface IAcIdsProvider {
-        IReadOnlyList<string> GetCarIds();
-
-        IReadOnlyList<Tuple<string, string>> GetTrackIds();
-    }
-
     public class SidekickLapTimesReader : ILapTimesReader {
         // http://svn.python.org/projects/python/tags/r32/Lib/pickle.py
         private static bool ReadPickle(BinaryReader reader, out long result) {
@@ -45,6 +40,11 @@ namespace AcTools.LapTimes {
             return false;
         }
 
+        private static void WritePickle(BinaryWriter writer, long value) {
+            writer.Write(new byte[] { 128, 3, (byte)'L' });
+            writer.Write(value);
+        }
+
         private readonly string _sidekickDirectory;
         private readonly IAcIdsProvider _provider;
         private IReadOnlyList<string> _carIds;
@@ -70,18 +70,18 @@ namespace AcTools.LapTimes {
 
                     carId = filename.Substring(0, i);
                     trackLayoutId = filename.Substring(i + 1);
-                    if (!_carIds.Contains(carId)) continue;
+                    if (!_carIds.Contains(carId, StringComparer.OrdinalIgnoreCase)) continue;
                     /* car found! hopefully */
 
                     foreach (var track in _trackLayoutIds) {
                         if (track.Item2 == null) {
-                            if (track.Item1 == trackLayoutId) {
+                            if (string.Equals(track.Item1, trackLayoutId, StringComparison.OrdinalIgnoreCase)) {
                                 /* track found! awesome */
                                 return true;
                             }
-                        } else if (trackLayoutId.StartsWith(track.Item1)) {
+                        } else if (trackLayoutId.StartsWith(track.Item1, StringComparison.OrdinalIgnoreCase)) {
                             var layoutId = trackLayoutId.Substring(track.Item1.Length);
-                            if (track.Item2 == layoutId) {
+                            if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
                                 /* track with layout ID found! can’t believe my luck */
                                 trackLayoutId = track.Item1 + "/" + track.Item2;
                                 return true;
@@ -118,28 +118,35 @@ namespace AcTools.LapTimes {
 
         public static readonly string SourceId = "Sidekick";
 
-        public virtual IEnumerable<LapTimeEntry> GetEntries() {
+        public virtual IEnumerable<LapTimeEntry> Import() {
             return GetEntries(SourceId);
+        }
+
+        public void Export(IEnumerable<LapTimeEntry> entries) {
+            var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
+            if (!directory.Exists) {
+                Directory.CreateDirectory(directory.FullName);
+            }
+
+            foreach (var entry in entries.ToList()) {
+                var name = $"{entry.CarId}_{entry.TrackId.Replace("/", "")}_pb.ini";
+                var filename = Path.Combine(directory.FullName, name);
+
+                using (var stream = File.Open(filename, FileMode.Create, FileAccess.Write))
+                using (var reader = new BinaryWriter(stream)) {
+                    WritePickle(reader, (long)entry.LapTime.TotalMilliseconds);
+                }
+
+                new FileInfo(filename).CreationTime = entry.EntryDate;
+            }
         }
 
         public DateTime GetLastModified() {
             var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
             return directory.Exists ? directory.GetFiles("*_pb.ini").Select(f => f.LastWriteTime)
-                                               .OrderByDescending(f => f).First() : default(DateTime);
+                                               .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default(DateTime) : default(DateTime);
         }
 
         public void Dispose() {}
     }
-
-
-    public class RaceEssentialsLapTimesReader : SidekickLapTimesReader {
-        public RaceEssentialsLapTimesReader(string raceEssentialsDirectory, IAcIdsProvider provider) : base(raceEssentialsDirectory, provider) { }
-
-        public new static readonly string SourceId = "RaceEssentials";
-
-        public override IEnumerable<LapTimeEntry> GetEntries() {
-            return GetEntries(SourceId);
-        }
-    }
-
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,6 +14,7 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
@@ -40,6 +42,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public TrackMapPreparationRenderer(Kn5 kn5) : base(kn5) {
+            Camera = new CameraOrtho();
+        }
+
+        public TrackMapPreparationRenderer(TrackComplexModelDescription description) : base(description) {
             Camera = new CameraOrtho();
         }
 
@@ -220,10 +226,54 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         bool Filter([CanBeNull] string name);
     }
 
+    public class TrackComplexModelEntry {
+        public Kn5 Kn5;
+        public Matrix Matrix;
+    }
+
+    public class TrackComplexModelDescription {
+        private readonly string _modelsIniFilename;
+        private List<TrackComplexModelEntry> _models;
+
+        public TrackComplexModelDescription([NotNull] string modelsIniFilename) {
+            _modelsIniFilename = modelsIniFilename;
+        }
+
+        public static TrackComplexModelDescription CreateLoaded([NotNull] string filename) {
+            var d = new TrackComplexModelDescription(filename);
+            d.Load();
+            return d;
+        }
+
+        private IEnumerable<TrackComplexModelEntry> LoadModels() {
+            var directory = Path.GetDirectoryName(_modelsIniFilename) ?? "";
+            return from section in new IniFile(_modelsIniFilename).GetSections("MODEL")
+                   let rot = section.GetSlimVector3("ROTATION")
+                   select new TrackComplexModelEntry {
+                       Kn5 = Kn5.FromFile(Path.Combine(directory, section.GetNonEmpty("FILE") ?? "")),
+                       Matrix = Matrix.Translation(section.GetSlimVector3("POSITION")) * Matrix.RotationYawPitchRoll(rot.X, rot.Y, rot.Z),
+                   };
+        }
+
+        public void Load() {
+            if (_models != null) return;
+            _models = LoadModels().ToList();
+        }
+
+        internal IEnumerable<TrackComplexModelEntry> GetEntries() {
+            Load();
+            return _models;
+        }
+    }
+
     public class TrackMapRenderer : BaseRenderer {
         public static int OptionMaxSize = 8192;
 
+        [CanBeNull]
         private readonly Kn5 _kn5;
+
+        [CanBeNull]
+        private readonly TrackComplexModelDescription _description;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
@@ -238,6 +288,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public TrackMapRenderer(Kn5 kn5) {
             _kn5 = kn5;
+        }
+
+        public TrackMapRenderer(TrackComplexModelDescription description) {
+            _description = description;
         }
 
         //private Kn5MaterialsProvider _materialsProvider;
@@ -297,9 +351,25 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private TargetResourceTexture _buffer0, _buffer1;
 
+        [NotNull]
+        private static RenderableList ToRenderableList([NotNull] IRenderableObject obj) {
+            return obj as RenderableList ?? new RenderableList { obj };
+        }
+
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new TrackMapMaterialsFactory());
-            RootNode = (RenderableList)Convert(_kn5.RootNode);
+
+            if (_kn5 != null) {
+                RootNode = ToRenderableList(Convert(_kn5.RootNode));
+            } else if (_description != null) {
+                RootNode = new RenderableList("_root", Matrix.Identity, _description.GetEntries().Select(x => {
+                    var node = ToRenderableList(Convert(x.Kn5.RootNode));
+                    node.LocalMatrix = x.Matrix;
+                    return node;
+                }));
+            } else {
+                RootNode = new RenderableList();
+            }
 
             _buffer0 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
@@ -308,11 +378,15 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private static IRenderableObject Convert(Kn5Node node) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node, Convert);
+                    return new Kn5RenderableList(node, Convert) {
+                        IsEnabled = true
+                    };
 
                 case Kn5NodeClass.Mesh:
                 case Kn5NodeClass.SkinnedMesh:
-                    return new Kn5RenderableDepthOnlyObject(node, true);
+                    return new Kn5RenderableDepthOnlyObject(node, true) {
+                        IsEnabled = true
+                    };
 
                 default:
                     throw new ArgumentOutOfRangeException();

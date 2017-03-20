@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_List" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Recent" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance mi:LapTimes_List+LapTimesViewModel}">
+        d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
     <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource VirtualizingItemsControl}">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type t:LapTimeWrapped}">

@@ -87,9 +87,9 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F1, ModifierKeys.Alt)),
                 new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F1, ModifierKeys.Control)),
                 new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
-                new InputBinding(new NavigateCommand(this, "profile"), new KeyGesture(Key.F2)),
-                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F3)),
-                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F4)),
+                new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
+                new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
+                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4))
             });
             InitializeComponent();
 
@@ -129,7 +129,7 @@ namespace AcManager.Pages.Windows {
             Activated += OnActivated;
 
 #if DEBUG
-            LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Table.xaml", UriKind.Relative);
+            LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
         }
 

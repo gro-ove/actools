@@ -79,16 +79,19 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            Kn5 kn5;
-            using (var waiting = new WaitingDialog()) {
-                waiting.Report("Loading model…");
-                kn5 = await Task.Run(() => modelsFilename != null ? Kn5.FromModelsIniFile(modelsFilename) : Kn5.FromFile(kn5Filename));
-            }
+            TrackMapPreparationRenderer renderer = null;
+            try {
+                using (WaitingDialog.Create("Loading model…")) {
+                    renderer = modelsFilename == null ?
+                            new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename))) :
+                            new TrackMapPreparationRenderer(await Task.Run(() => TrackComplexModelDescription.CreateLoaded(modelsFilename)));
+                }
 
-            using (var renderer = new TrackMapPreparationRenderer(kn5)) {
                 var wrapper = new TrackMapRendererWrapper(track, renderer);
                 wrapper.Form.Icon = AppIconService.GetAppIcon();
                 wrapper.Run();
+            } finally {
+                renderer?.Dispose();
             }
         }
     }

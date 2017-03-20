@@ -337,8 +337,9 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void SaveLater() {
-            _saveable.SaveLater();
-            Changed?.Invoke(this, new EventArgs());
+            if (_saveable.SaveLater()) {
+                Changed?.Invoke(this, new EventArgs());
+            }
         }
 
         private readonly ISaveHelper _saveable;
@@ -646,7 +647,7 @@ namespace AcManager.Pages.Dialogs {
 
             switch (phase) {
                 case Phase.Options:
-                    Resize(540d, 460d, false);
+                    Resize(740d, 460d, false);
                     var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual,
                             new AsyncCommand(() => RunShootingProcess(true), () => CanBeSaved).ListenOnWeak(this, nameof(CanBeSaved)));
                     manual.ToolTip = AppStrings.CarPreviews_Manual_Tooltip;
@@ -654,6 +655,13 @@ namespace AcManager.Pages.Dialogs {
                         CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go,
                                 new AsyncCommand(() => RunShootingProcess(), () => CanBeSaved).ListenOnWeak(this, nameof(CanBeSaved))),
                         ApplyImmediately ? null : manual,
+                        CreateExtraDialogButton("Switch To CM Showroom",
+                                new DelegateCommand(() => {
+                                    Close();
+                                    SettingsHolder.CustomShowroom.CustomShowroomPreviews = true;
+                                    _toUpdate.Run(UpdatePreviewMode.Options);
+                                }).ListenOnWeak(this, nameof(CanBeSaved)), 
+                                toolTip: "It’s faster, more reliable and has some additional effects such as SSLR or PCSS"),
                         CloseButton
                     };
                     break;

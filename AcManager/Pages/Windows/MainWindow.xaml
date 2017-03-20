@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
+        Title="{x:Static g:AppStrings.Main_Title}" IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
         FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded"
         Unloaded="OnUnloaded" Closing="OnClosing" Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown"
         PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp" PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown"
@@ -39,17 +39,21 @@
         </mui:LinkGroupFilterable>
 
         <!--lap times-->
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
-        <mui:LinkGroupFilterable x:Name="LapTimesGrid"  GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
+        <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
+        <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Table" Source="/Pages/Miscellaneous/LapTimes_Table.xaml" />
+        <mui:LinkGroupFilterable x:Name="LapTimesGrid" GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
                 Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" />
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
+        <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Sources" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml" />
+
+        <!--stats-->
+        <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
             <mui:LinkGroupFilterable.FixedLinks>
                 <mui:Link DisplayName="Kunos Cars Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
                 <mui:Link DisplayName="Kunos Cars &amp; Tracks Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
                 <mui:Link DisplayName="Mods Only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
             </mui:LinkGroupFilterable.FixedLinks>
         </mui:LinkGroupFilterable>
-        <mui:LinkGroupFilterable GroupKey="profile" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
+        <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most Used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
@@ -105,7 +109,8 @@
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkDrive_OnDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
-        <mui:TitleLink Content="{x:Static g:AppStrings.Main_Profile}" GroupKey="profile" Source="/Pages/Miscellaneous/LapTimes_List.xaml" />
+        <mui:TitleLink Content="Lap Times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
+        <mui:TitleLink Content="{x:Static g:AppStrings.Main_Stats}" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
         <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
             <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkContent_OnDrop"

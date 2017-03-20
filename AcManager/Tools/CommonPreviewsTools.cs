@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,8 +5,6 @@ using System.Windows.Input;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcLog;
-using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;

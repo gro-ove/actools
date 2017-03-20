@@ -4080,6 +4080,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track state preset.
+        /// </summary>
+        public static string Shared_TrackStatePreset {
+            get {
+                return ResourceManager.GetString("Shared_TrackStatePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Championship.
         /// </summary>
         public static string Shared_UserChampionship {

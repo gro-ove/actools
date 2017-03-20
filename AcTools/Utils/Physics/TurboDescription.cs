@@ -15,7 +15,7 @@ namespace AcTools.Utils.Physics {
             if (Controllers == null) return MaxBoost;
 
             var boost = 0d;
-            for (var i = Controllers.Count - 1; i >= 0; i--) {
+            for (var i = 0; i < Controllers.Count; i++) {
                 var controller = Controllers[i];
                 boost = controller.Process(rpm, boost);
             }
