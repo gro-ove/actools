@@ -11,7 +11,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {

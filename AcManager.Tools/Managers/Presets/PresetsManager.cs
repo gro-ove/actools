@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
@@ -32,6 +33,10 @@ namespace AcManager.Tools.Managers.Presets {
         private List<BuiltInPresetEntry> GetBuiltInPresetsList(string category) {
             if (_builtInPresets.ContainsKey(category)) return _builtInPresets[category];
             return _builtInPresets[category] = new List<BuiltInPresetEntry>(1);
+        }
+
+        public bool HasBuiltInPreset(string category, string filename) {
+            return _builtInPresets.GetValueOrDefault(category)?.Any(x => FileUtils.ArePathsEqual(x.Filename, filename)) == true;
         }
 
         public void RegisterBuiltInPreset(byte[] data, string category, params string[] localFilename) {

@@ -106,14 +106,14 @@
 
     <mui:ModernWindow.TitleLinks>
         <mui:TitleLink GroupKey="drive" Source="/Pages/Drive/QuickDrive.xaml">
-            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkDrive_OnDrop"
+            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Drive}, Converter={StaticResource ToUpperConverter}}" Drop="OnDriveTitleLinkDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
         <mui:TitleLink Content="Lap Times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Stats}" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
         <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
         <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
-            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="TitleLinkContent_OnDrop"
+            <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="OnContentTitleLinkDrop"
                     AllowDrop="True" />
         </mui:TitleLink>
         <mui:TitleLink x:Name="ServerGroup" DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False"

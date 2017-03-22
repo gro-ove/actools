@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Objects;
@@ -417,10 +419,23 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void DisposeMagickNet() {
+            DisposeHelper.Dispose(ref _mapsBase);
+        }
+
         public override void Dispose() {
             DisposeHelper.Dispose(ref _outlineBuffer);
             DisposeHelper.Dispose(ref _outlineDepthBuffer);
-            DisposeHelper.Dispose(ref _mapsBase);
+
+            if (ImageUtils.IsMagickSupported) {
+                try {
+                    DisposeMagickNet();
+                } catch {
+                    // ignored
+                }
+            }
+
             base.Dispose();
         }
     }

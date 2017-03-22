@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils;
@@ -14,7 +13,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
@@ -49,6 +47,10 @@ namespace AcManager.Controls {
         [CanBeNull]
         public static string GetCurrentFilename(string key) {
             return ValuesStorage.GetString("__userpresets_p_" + key);
+        }
+        
+        public static bool IsChanged(string key) {
+            return ValuesStorage.GetBool("__userpresets_c_" + key);
         }
 
         [NotNull]
@@ -88,14 +90,35 @@ namespace AcManager.Controls {
                 c.UpdateSavedPresets();
 
                 var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
+                Logging.Debug(entry?.Filename);
                 if (entry == null) {
                     Logging.Warning($@"Can’t set preset to “{filename}”, entry not found");
                 } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
                     c.CurrentUserPreset = entry;
+                    Logging.Debug("CurrentUserPreset=entry");
                 } else {
                     c.SelectionChanged(entry);
+                    Logging.Debug("SelectionChanged(entry)");
                 }
 
+                r = true;
+            }
+
+            return r;
+        }
+
+        public static bool LoadPreset(string key, string filename, string serialized, bool changed) {
+            ValuesStorage.Set("__userpresets_p_" + key, filename);
+            ValuesStorage.Set("__userpresets_c_" + key, changed);
+
+            var r = false;
+            foreach (var c in GetInstance(key)) {
+                c.UpdateSavedPresets();
+
+                var entry = c.SavedPresets.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
+                c.CurrentUserPreset = entry;
+                c.UserPresetable?.ImportFromPresetData(serialized);
+                c.SetChanged(changed);
                 r = true;
             }
 
@@ -293,7 +316,9 @@ namespace AcManager.Controls {
                 Instances.GetList(oldValue.PresetableKey).Remove(this);
             }
 
-            Instances.GetList(newValue.PresetableKey).Add(this);
+            if (newValue != null) {
+                Instances.GetList(newValue.PresetableKey).Add(this);
+            }
 
             if (_presetable != null) {
                 PresetsManager.Instance.Watcher(_presetable.PresetableCategory).Update -= Presets_Update;

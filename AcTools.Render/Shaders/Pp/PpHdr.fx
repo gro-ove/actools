@@ -141,7 +141,7 @@
 
 // Reinhard (Habrahabr version)
 	float4 ps_Combine_ToneReinhard(PS_IN pin) : SV_Target {
-		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		float3 value = max(tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb, 0.0);
 		return float4(SaturateColor(pow(max(ToneReinhard(value, 0.5, exposure / 2.0, whitePoint), 0.0), 1.0 / gamma)), 1.0);
 	}
 
@@ -194,6 +194,7 @@
 	#define _TOE 0.01
 
 	float FilmicReinhardCurve(float x) {
+		x = max(x, 0.0);
 		float q = (_TOE + 1.0)*x*x;
 		return q / (q + x + _TOE);
 	}

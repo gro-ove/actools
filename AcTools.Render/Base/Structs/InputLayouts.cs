@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using AcTools.Kn5File;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -26,7 +27,7 @@ namespace AcTools.Render.Base.Structs {
 
         [StructLayout(LayoutKind.Sequential)]
         public struct VerticeP : IPositionLayout {
-            public readonly Vector3 Position;
+            public Vector3 Position;
 
             public VerticeP(Vector3 p) {
                 Position = p;
@@ -43,12 +44,26 @@ namespace AcTools.Render.Base.Structs {
             public InputElement[] InputElements => InputElementsValue;
 
             Vector3 IPositionLayout.Position => Position;
+            
+            public static VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
+                var size = vertices.Length;
+                var result = new VerticeP[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Co[0];
+                    result[i].Position.Y = x.Co[1];
+                    result[i].Position.Z = x.Co[2];
+                }
+
+                return result;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct VerticePT : IPositionLayout {
-            public readonly Vector3 Position;
-            public readonly Vector2 Tex;
+            public Vector3 Position;
+            public Vector2 Tex;
 
             public VerticePT(Vector3 p, Vector2 t) {
                 Position = p;
@@ -65,8 +80,24 @@ namespace AcTools.Render.Base.Structs {
             public int Stride => StrideValue;
 
             public InputElement[] InputElements => InputElementsValue;
-
+            
             Vector3 IPositionLayout.Position => Position;
+
+            public static VerticePT[] Convert(Kn5Node.Vertice[] vertices) {
+                var size = vertices.Length;
+                var result = new VerticePT[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Co[0];
+                    result[i].Position.Y = x.Co[1];
+                    result[i].Position.Z = x.Co[2];
+                    result[i].Tex.X = x.Uv[0];
+                    result[i].Tex.Y = x.Uv[1];
+                }
+
+                return result;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -123,6 +154,25 @@ namespace AcTools.Render.Base.Structs {
             public InputElement[] InputElements => InputElementsValue;
 
             Vector3 IPositionLayout.Position => Position;
+
+            public static VerticePNT[] Convert(Kn5Node.Vertice[] vertices) {
+                var size = vertices.Length;
+                var result = new VerticePNT[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Co[0];
+                    result[i].Position.Y = x.Co[1];
+                    result[i].Position.Z = x.Co[2];
+                    result[i].Normal.X = x.Normal[0];
+                    result[i].Normal.Y = x.Normal[1];
+                    result[i].Normal.Z = x.Normal[2];
+                    result[i].Tex.X = x.Uv[0];
+                    result[i].Tex.Y = x.Uv[1];
+                }
+
+                return result;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -153,6 +203,28 @@ namespace AcTools.Render.Base.Structs {
             public InputElement[] InputElements => InputElementsValue;
 
             Vector3 IPositionLayout.Position => Position;
+
+            public static VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
+                var size = vertices.Length;
+                var result = new VerticePNTG[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Co[0];
+                    result[i].Position.Y = x.Co[1];
+                    result[i].Position.Z = x.Co[2];
+                    result[i].Normal.X = x.Normal[0];
+                    result[i].Normal.Y = x.Normal[1];
+                    result[i].Normal.Z = x.Normal[2];
+                    result[i].Tex.X = x.Uv[0];
+                    result[i].Tex.Y = x.Uv[1];
+                    result[i].Tangent.X = x.Tangent[0];
+                    result[i].Tangent.Y = x.Tangent[1];
+                    result[i].Tangent.Z = x.Tangent[2];
+                }
+
+                return result;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -189,6 +261,37 @@ namespace AcTools.Render.Base.Structs {
             public InputElement[] InputElements => InputElementsValue;
 
             Vector3 IPositionLayout.Position => Position;
+
+            public static VerticePNTGW4B[] Convert(Kn5Node.Vertice[] vertices, Kn5Node.VerticeWeight[] weights) {
+                var size = vertices.Length;
+                var result = new VerticePNTGW4B[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Co[0];
+                    result[i].Position.Y = x.Co[1];
+                    result[i].Position.Z = x.Co[2];
+                    result[i].Normal.X = x.Normal[0];
+                    result[i].Normal.Y = x.Normal[1];
+                    result[i].Normal.Z = x.Normal[2];
+                    result[i].Tex.X = x.Uv[0];
+                    result[i].Tex.Y = x.Uv[1];
+                    result[i].Tangent.X = x.Tangent[0];
+                    result[i].Tangent.Y = x.Tangent[1];
+                    result[i].Tangent.Z = x.Tangent[2];
+
+                    var w = weights[i];
+                    result[i].BonesWeights.X = w.Weights[0];
+                    result[i].BonesWeights.Y = w.Weights[1];
+                    result[i].BonesWeights.Z = w.Weights[2];
+                    result[i].BonesIndices.X = w.Indices[0] < 0 ? 0 : w.Indices[0];
+                    result[i].BonesIndices.Y = w.Indices[1] < 0 ? 0 : w.Indices[1];
+                    result[i].BonesIndices.Z = w.Indices[2] < 0 ? 0 : w.Indices[2];
+                    result[i].BonesIndices.W = w.Indices[3] < 0 ? 0 : w.Indices[3];
+                }
+
+                return result;
+            }
         }
     }
 }

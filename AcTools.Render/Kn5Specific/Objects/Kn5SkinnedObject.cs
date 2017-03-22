@@ -21,33 +21,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Matrix ModelMatrixInverted { get; set; }
 
-        private static InputLayouts.VerticePNTGW4B[] Convert(Kn5Node.Vertice[] vertices, Kn5Node.VerticeWeight[] weights) {
-            var size = vertices.Length;
-            var result = new InputLayouts.VerticePNTGW4B[size];
-            
-            for (var i = 0; i < size; i++) {
-                var x = vertices[i];
-                var w = weights[i];
-                result[i] = new InputLayouts.VerticePNTGW4B(
-                        x.Co.ToVector3(),
-                        x.Normal.ToVector3(),
-                        x.Uv.ToVector2(),
-                        x.Tangent.ToVector3(),
-                        w.Weights.ToVector3(),
-                        w.Indices.Select(y => y < 0 ? 0 : y).ToArray().ToVector4());
-            }
-
-            return result;
-        }
-
-        private static ushort[] Convert(ushort[] indices) {
-            return indices.ToIndicesFixX();
-        }
-
         private bool _isTransparent;
         private readonly float _distanceFromSqr, _distanceToSqr;
 
-        public Kn5SkinnedObject(Kn5Node node) : base(node.Name, Convert(node.Vertices, node.VerticeWeights), Convert(node.Indices)) {
+        public Kn5SkinnedObject(Kn5Node node) : base(node.Name, InputLayouts.VerticePNTGW4B.Convert(node.Vertices, node.VerticeWeights),
+                node.Indices.ToIndicesFixX()) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
 
@@ -58,7 +36,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (OriginalNode.IsTransparent || OriginalNode.Layer == 1 /* WHAT? WHAT DOES IT DO? BUT KUNOS PREVIEWS SHOWROOM WORKS THIS WAY, SO… */) {
                 IsReflectable = false;
             }
-            
+
             _bonesTransform = node.Bones.Select(x => x.Transform.ToMatrix()).ToArray();
             _bones = _bonesTransform.ToArray();
 
@@ -86,8 +64,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private ISkinnedMaterial Material => _debugMaterial ?? _material;
 
-        public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {}
-        
+        public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) { }
+
         [CanBeNull]
         private ISkinnedMaterial _debugMaterial;
         private bool _debugMaterialInitialized;
@@ -185,7 +163,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var bone1 = _bones[(int)vin.BonesIndices.Y];
             var bone2 = _bones[(int)vin.BonesIndices.Z];
             var bone3 = _bones[(int)vin.BonesIndices.W];
-            
+
             var s = vin.Position;
             var p = weight0 * Vector3.TransformCoordinate(s, bone0);
             p += weight1 * Vector3.TransformCoordinate(s, bone1);
@@ -227,11 +205,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref _debugMaterial);
             base.Dispose();
         }
-        
+
         public override BaseRenderableObject Clone() {
             return new ClonedKn5RenderableObject(this);
         }
-        
+
         internal class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTGW4B> {
             private readonly Kn5SkinnedObject _original;
 

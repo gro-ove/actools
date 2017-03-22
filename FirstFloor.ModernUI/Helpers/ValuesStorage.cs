@@ -145,6 +145,10 @@ namespace FirstFloor.ModernUI.Helpers {
             Storage.Set(key, value);
         }
 
+        public static void SetNonDefault([NotNull, LocalizationRequired(false)] string key, bool value) {
+            Storage.SetNonDefault(key, value);
+        }
+
         public static void Set([NotNull, LocalizationRequired(false)] string key, Point value) {
             Storage.Set(key, value);
         }

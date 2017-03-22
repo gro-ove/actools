@@ -13,7 +13,7 @@
 		Filter = MIN_MAG_LINEAR_MIP_POINT;
 		AddressU = Border;
 		AddressV = Border;
-		BorderColor = float4(0, 0, 0, 1e5f);
+		BorderColor = (float4)1e5f;
 	};
 
 	SamplerState samNoise {

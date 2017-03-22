@@ -28,6 +28,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -96,6 +98,11 @@ namespace AcManager.Controls.CustomShowroom {
                     }
 
                     if (value == Mode.Skin && SkinItems == null) {
+                        if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
+                            NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
+                            value = Mode.Main;
+                        }
+
                         SkinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
                         UpdateLicensePlatesStyles();
                         FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
@@ -166,10 +173,12 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private class SaveableData {
-                public double AmbientShadowDiffusion, AmbientShadowBrightness;
-                public int AmbientShadowIterations;
+                public double AmbientShadowDiffusion = 60d;
+                [JsonProperty("asb")]
+                public double AmbientShadowBrightness = 200d;
+                public int AmbientShadowIterations = 3200;
                 public bool AmbientShadowHideWheels;
-                public bool? AmbientShadowFade;
+                public bool AmbientShadowFade = true;
                 public bool LiveReload;
             }
 
@@ -198,31 +207,25 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
                     AmbientShadowFade = AmbientShadowFade,
                     LiveReload = renderer.MagickOverride,
-                }, o => {
-                    AmbientShadowDiffusion = o.AmbientShadowDiffusion;
-                    AmbientShadowBrightness = o.AmbientShadowBrightness;
-                    AmbientShadowIterations = o.AmbientShadowIterations;
-                    AmbientShadowHideWheels = o.AmbientShadowHideWheels;
-                    AmbientShadowFade = o.AmbientShadowFade ?? true;
-                    renderer.MagickOverride = o.LiveReload;
-                }, () => {
-                    Reset(false);
-                });
+                }, Load);
 
                 Saveable.Initialize();
             }
 
-            private void Reset(bool saveLater) {
-                AmbientShadowDiffusion = 60d;
-                AmbientShadowBrightness = 230d;
-                AmbientShadowIterations = 3200;
-                AmbientShadowHideWheels = false;
-                AmbientShadowFade = true;
+            private void Load(SaveableData o) {
+                AmbientShadowDiffusion = o.AmbientShadowDiffusion;
+                AmbientShadowBrightness = o.AmbientShadowBrightness;
+                AmbientShadowIterations = o.AmbientShadowIterations;
+                AmbientShadowHideWheels = o.AmbientShadowHideWheels;
+                AmbientShadowFade = o.AmbientShadowFade;
 
                 if (Renderer != null) {
-                    Renderer.MagickOverride = false;
+                    Renderer.MagickOverride = o.LiveReload;
                 }
+            }
 
+            private void Reset(bool saveLater) {
+                Load(new SaveableData());
                 if (saveLater) {
                     SaveLater();
                 }
@@ -444,7 +447,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                         await Task.Run(() => {
                             if (Renderer == null) return;
-                            using (var renderer = new AmbientShadowKn5ObjectRenderer(Renderer.Kn5, Car.Location)) {
+                            using (var renderer = new AmbientShadowRenderer(Renderer.Kn5, Car.Location)) {
                                 renderer.DiffusionLevel = (float)AmbientShadowDiffusion / 100f;
                                 renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
                                 renderer.Iterations = AmbientShadowIterations;
@@ -636,7 +639,9 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer?.Kn5 == null) return;
-                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName).ShowDialog();
+                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName) {
+                    Owner = null
+                }.ShowDialog();
             }, o => o != null));
             #endregion
 

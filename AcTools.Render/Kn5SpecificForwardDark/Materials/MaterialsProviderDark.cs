@@ -95,6 +95,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 case "ksSkinnedMesh_NMDetaill":
                     return new Kn5MaterialSimpleSkinnedMaps(description);
 
+                case "ksSky":
+                case "ksSkyBox":
+                    return new Kn5MaterialSimpleSky(description);
+
                 default:
                     if (shader.IndexOf("skinned", StringComparison.OrdinalIgnoreCase) != -1) {
                         return new Kn5MaterialSimpleSkinnedGl(description);

@@ -41,30 +41,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Matrix ModelMatrixInverted { get; set; }
 
-        private static InputLayouts.VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
-            var size = vertices.Length;
-            var result = new InputLayouts.VerticePNTG[size];
-            
-            for (var i = 0; i < size; i++) {
-                var x = vertices[i];
-                result[i] = new InputLayouts.VerticePNTG(
-                        x.Co.ToVector3(),
-                        x.Normal.ToVector3(),
-                        x.Uv.ToVector2(),
-                        x.Tangent.ToVector3());
-            }
-
-            return result;
-        }
-
-        private static ushort[] Convert(ushort[] indices) {
-            return indices.ToIndicesFixX();
-        }
-
         private bool _isTransparent;
         private readonly float _distanceFromSqr, _distanceToSqr;
 
-        public Kn5RenderableObject(Kn5Node node) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
+        public Kn5RenderableObject(Kn5Node node) : base(node.Name, InputLayouts.VerticePNTG.Convert(node.Vertices), node.Indices.ToIndicesFixX()) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
 

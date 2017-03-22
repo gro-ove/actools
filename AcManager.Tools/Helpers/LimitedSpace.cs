@@ -9,6 +9,8 @@ namespace AcManager.Tools.Helpers {
         public const string OnlineSelected = ".OnlineSelected";
         public const string OnlineSelectedCar = ".OnlineSelectedCar";
         public const string OnlineSorting = ".OnlineSorting";
+        public const string LapTimesSortingColumn = ".LapTimesSortingColumn";
+        public const string LapTimesSortingDescending = ".LapTimesSortingDescending";
 
         public static void Initialize() {
             LimitedStorage.RegisterSpace(SelectedSkin, 25);
@@ -18,6 +20,8 @@ namespace AcManager.Tools.Helpers {
             LimitedStorage.RegisterSpace(OnlineSelected, 25);
             LimitedStorage.RegisterSpace(OnlineSelectedCar, 25);
             LimitedStorage.RegisterSpace(OnlineSorting, 25);
+            LimitedStorage.RegisterSpace(LapTimesSortingColumn, 25);
+            LimitedStorage.RegisterSpace(LapTimesSortingDescending, 25);
         }
     }
 }

@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
@@ -549,6 +551,10 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5) {
+            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
+                return new PaintableItem[0];
+            }
+
             switch (carId) {
                 case "peugeot_504":
                     return new PaintableItem[] {

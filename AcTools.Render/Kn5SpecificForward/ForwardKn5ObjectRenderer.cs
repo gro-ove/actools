@@ -1071,7 +1071,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 IsDirty = true;
             } else if (AutoRotate && CameraOrbit != null) {
                 CameraOrbit.Alpha -= dt * 0.29f;
-                CameraOrbit.Beta += (MathF.Sin(_elapsedCamera * 0.39f) * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
+                CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
                 _elapsedCamera += dt;
 
                 IsDirty = true;

@@ -386,7 +386,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private static float Smooth(float input) {
-            return 0.5f - 0.5f * MathF.Sin(MathF.PI * input.Saturate() + 1.5708f);
+            return 0.5f - 0.5f * (MathF.PI * input.Saturate() + 1.5708f).Sin();
         }
 
         public void Update(float offset, Kn5RenderableCar.SteeringWheelParams steeringWheelParams) {

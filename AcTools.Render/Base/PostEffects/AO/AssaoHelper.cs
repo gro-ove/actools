@@ -58,8 +58,8 @@ namespace AcTools.Render.Base.PostEffects.AO {
 
             _dither = holder.CreateTexture(4, 4, (x, y) => {
                 var angle = (float)(2f * Math.PI * MathUtils.Random());
-                var r = MathF.Cos(angle);
-                var g = -MathF.Sin(angle);
+                var r = angle.Cos();
+                var g = -angle.Sin();
                 var b = (float)MathUtils.Random() * 0.01f;
                 return new Color4(r, g, b);
             });
@@ -197,7 +197,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
             consts.PerPassFullResCoordOffset = new Vector2(pass % 2, pass / 2);
             consts.PerPassFullResUVOffset = new Vector2(((pass % 2) - 0.0f) / holder.Width, ((pass / 2) - 0.0f) / holder.Height);
 
-            consts.InvSharpness = MathUtils.Clamp(1.0f - settings.Sharpness, 0.0f, 1.0f);
+            consts.InvSharpness = (1.0f - settings.Sharpness).Clamp(0.0f, 1.0f);
             consts.PassIndex = pass;
             consts.QuarterResPixelSize = new Vector2(0.25f / (float)holder.Width, 0.25f / (float)holder.Height);
 
@@ -216,8 +216,8 @@ namespace AcTools.Render.Base.PostEffects.AO {
                 float angle0 = ((float)a + (float)b / (float)subPassCount) * (3.1415926535897932384626433832795f) * 0.5f;
                 angle0 += additionalAngleOffset;
 
-                ca = MathF.Cos(angle0);
-                sa = MathF.Sin(angle0);
+                ca = angle0.Cos();
+                sa = angle0.Sin();
 
                 float scale = 1.0f + (a - 1.5f + (b - (subPassCount - 1.0f) * 0.5f) / (float)subPassCount) * 0.07f;
                 scale *= additionalRadiusScale;

@@ -20,7 +20,7 @@ using CommandLine;
 namespace CustomShowroom {
     public class Program {
         private static void UpdateAmbientShadows(string kn5) {
-            using (var renderer = new AmbientShadowKn5ObjectRenderer(kn5) {
+            using (var renderer = new AmbientShadowRenderer(kn5) {
                 Iterations = 8000,
                 HideWheels = false
             }) {

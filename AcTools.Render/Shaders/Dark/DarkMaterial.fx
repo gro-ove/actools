@@ -16,6 +16,20 @@ technique10 Standard {
 	}
 }
 
+//// Sky
+
+float4 ps_Sky(PS_IN pin) : SV_Target {
+	return float4(gBackgroundColor, 1.0);
+}
+
+technique10 Sky {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Sky()));
+	}
+}
+
 //// Alpha
 
 float4 ps_Alpha(PS_IN pin) : SV_Target{

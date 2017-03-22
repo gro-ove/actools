@@ -117,9 +117,14 @@ namespace AcManager.Controls.CustomShowroom {
             } catch (Exception e) {
                 NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);
             } finally {
-                renderer?.Dispose();
-                _last = null;
-                _starting = false;
+                try {
+                    renderer?.Dispose();
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t close Custom Showroom", e);
+                } finally {
+                    _last = null;
+                    _starting = false;
+                }
             }
         }
 

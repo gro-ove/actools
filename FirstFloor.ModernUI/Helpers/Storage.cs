@@ -286,6 +286,14 @@ namespace FirstFloor.ModernUI.Helpers {
         public static void Set([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, bool value) {
             storage.SetString(key, value ? @"1" : @"0");
         }
+
+        public static void SetNonDefault([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, bool value) {
+            if (value) {
+                storage.SetString(key, @"1");
+            } else {
+                storage.Remove(key);
+            }
+        }
         
         public static void Set([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, [NotNull] IReadOnlyDictionary<string, string> value) {
             if (value == null) throw new ArgumentNullException(nameof(value));

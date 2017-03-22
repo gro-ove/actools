@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
@@ -496,6 +498,8 @@ namespace AcTools.Render.Base {
                 Debug.WriteLine("SWAPCHAIN DISPOSED");
             } catch (ObjectDisposedException) {
                 Debug.WriteLine("SWAPCHAIN ALREADY DISPOSED?");
+            } catch (Exception) {
+                Debug.WriteLine("WUUT?");
             }
         }
 
@@ -635,6 +639,29 @@ namespace AcTools.Render.Base {
                 Shot(multiplier, downscale, stream, lossless);
                 stream.Position = 0;
                 return Image.FromStream(stream);
+            }
+        }
+
+        protected void SaveRenderBufferAsPng(string filename, float multipler) {
+            using (var stream = new MemoryStream()) {
+                Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
+                stream.Position = 0;
+
+                using (var image = Image.FromStream(stream)) {
+                    if (Equals(multipler, 1f)) {
+                        image.Save(filename, ImageFormat.Png);
+                    } else {
+                        using (var bitmap = new Bitmap((int)(Width * multipler), (int)(Height * multipler)))
+                        using (var graphics = Graphics.FromImage(bitmap)) {
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.SmoothingMode = SmoothingMode.HighQuality;
+                            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                            graphics.DrawImage(image, 0f, 0f, Width * multipler, Height * multipler);
+
+                            bitmap.Save(filename, ImageFormat.Png);
+                        }
+                    }
+                }
             }
         }
 

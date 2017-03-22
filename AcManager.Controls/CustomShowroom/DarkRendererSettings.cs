@@ -534,10 +534,10 @@ namespace AcManager.Controls.CustomShowroom {
             var θ = (90f - θdeg).ToRadians();
             var φ = φdeg.ToRadians();
 
-            var sinθ = MathF.Sin(θ);
-            var cosθ = MathF.Cos(θ);
-            var sinφ = MathF.Sin(φ);
-            var cosφ = MathF.Cos(φ);
+            var sinθ = θ.Sin();
+            var cosθ = θ.Cos();
+            var sinφ = φ.Sin();
+            var cosφ = φ.Cos();
 
             return new Vector3(sinθ * cosφ, cosθ, sinθ * sinφ);
         }

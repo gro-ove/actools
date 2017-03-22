@@ -349,7 +349,7 @@ namespace AcTools.Render.Deferred.Kn5Specific {
                 IsDirty = true;
             } else if (AutoRotate && CameraOrbit != null) {
                 CameraOrbit.Alpha += dt * 0.29f;
-                CameraOrbit.Beta += (MathF.Sin(_elapsedCamera * 0.39f) * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
+                CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
                 _elapsedCamera += dt;
             }
 
@@ -360,9 +360,9 @@ namespace AcTools.Render.Deferred.Kn5Specific {
 
             if (AutoRotateSun && Sun != null) {
                 var dir = Sun.Direction;
-                dir.X += (MathF.Sin(_elapsedSun * 0.15f) - dir.X) / 10f;
+                dir.X += ((_elapsedSun * 0.15f).Sin() - dir.X) / 10f;
                 dir.Y += (-1.5f - dir.Y) / 10f;
-                dir.Z += (MathF.Sin(_elapsedSun * 0.23f + 0.07f) - dir.Z) / 10f;
+                dir.Z += ((_elapsedSun * 0.23f + 0.07f).Sin() - dir.Z) / 10f;
 
                 Sun.Direction = dir;
                 _elapsedSun += dt;
@@ -370,8 +370,8 @@ namespace AcTools.Render.Deferred.Kn5Specific {
 
             foreach (var i in _pointLights) {
                 i.Light.Position = new Vector3(
-                        MathF.Sin(Elapsed * i.B + i.D) * i.C, i.A,
-                        MathF.Sin(Elapsed * i.E + i.F) * i.G) * 0.3f;
+                        (Elapsed * i.B + i.D).Sin() * i.C, i.A,
+                        (Elapsed * i.E + i.F).Sin() * i.G) * 0.3f;
             }
         }
     }

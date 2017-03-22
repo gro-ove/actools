@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -17,9 +20,11 @@ using StringBasedFilter;
 namespace AcManager.Pages.Miscellaneous {
     public partial class LapTimes_Table : ILoadableContent, IParametrizedUriContent {
         private string _filter;
-
+        private string _key;
+        
         public void OnUri(Uri uri) {
             _filter = uri.GetQueryParam("Filter");
+            _key = _filter;
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
@@ -36,7 +41,15 @@ namespace AcManager.Pages.Miscellaneous {
 
         public void Initialize() {
             InitializeComponent();
-            DataContext = new ViewModel(string.IsNullOrEmpty(_filter) ? null : Filter.Create(LapTimeTester.Instance, _filter));
+
+            var savedSortPath = LimitedStorage.Get(LimitedSpace.LapTimesSortingColumn, _filter);
+            var sortDirection = LimitedStorage.Get(LimitedSpace.LapTimesSortingDescending, _filter) == @"1"
+                    ? ListSortDirection.Descending : ListSortDirection.Ascending;
+            var sortedColumn = Grid.Columns.FirstOrDefault(x => x.SortMemberPath == savedSortPath) ?? DefaultColumn;
+            sortedColumn.SortDirection = sortDirection;
+
+            DataContext = new ViewModel(string.IsNullOrEmpty(_filter) ? null : Filter.Create(LapTimeTester.Instance, _filter),
+                    sortedColumn.SortMemberPath, sortDirection);
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -44,7 +57,7 @@ namespace AcManager.Pages.Miscellaneous {
         public class ViewModel : NotifyPropertyChanged {
             private readonly IFilter<LapTimeWrapped> _filter;
 
-            public ViewModel(IFilter<LapTimeWrapped> filter) {
+            public ViewModel(IFilter<LapTimeWrapped> filter, string sortPath, ListSortDirection sortDirection) {
                 _filter = filter;
                 List = WrappedCollection.Create(LapTimesManager.Instance.Entries, x => new LapTimeWrapped(x));
                 View = new ListCollectionView((IList)List);
@@ -55,6 +68,8 @@ namespace AcManager.Pages.Miscellaneous {
                     } else {
                         View.Filter = FilterTest;
                     }
+
+                    View.SortDescriptions.Add(new SortDescription(sortPath, sortDirection));
                 }
             }
 
@@ -66,6 +81,18 @@ namespace AcManager.Pages.Miscellaneous {
             public IReadOnlyList<LapTimeWrapped> List { get; }
 
             public ListCollectionView View { get; }
+        }
+
+        private async void OnGridSorting(object sender, DataGridSortingEventArgs e) {
+            await Task.Delay(1);
+            LimitedStorage.Set(LimitedSpace.LapTimesSortingColumn, _key, e.Column.SortMemberPath);
+            LimitedStorage.Set(LimitedSpace.LapTimesSortingDescending, _key, e.Column.SortDirection == ListSortDirection.Descending ? @"1" : @"0");
+        }
+
+        public static void OnLinkChanged(LinkChangedEventArgs e) {
+            LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, e.OldValue, e.NewValue);
+            LimitedStorage.Move(LimitedSpace.OnlineSelected, e.OldValue, e.NewValue);
+            LimitedStorage.Move(LimitedSpace.OnlineSorting, e.OldValue, e.NewValue);
         }
     }
 }

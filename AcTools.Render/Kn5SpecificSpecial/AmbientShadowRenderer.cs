@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
@@ -17,12 +17,13 @@ using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public class AmbientShadowKn5ObjectRenderer : BaseRenderer {
+    public class AmbientShadowRenderer : BaseRenderer {
         private readonly Kn5 _kn5;
         private readonly RenderableList _scene;
         private readonly CarData _carData;
@@ -30,9 +31,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        public AmbientShadowKn5ObjectRenderer(string mainKn5Filename, string carLocation = null) : this(Kn5.FromFile(mainKn5Filename), carLocation) {}
+        public AmbientShadowRenderer(string mainKn5Filename, string carLocation = null) : this(Kn5.FromFile(mainKn5Filename), carLocation) { }
 
-        public AmbientShadowKn5ObjectRenderer(Kn5 kn5, string carLocation = null) {
+        public AmbientShadowRenderer(Kn5 kn5, string carLocation = null) {
             _kn5 = kn5;
             _carData = new CarData(DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(kn5.OriginalFilename) ?? ""));
             _scene = new RenderableList();
@@ -42,7 +43,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public float SkyBrightnessLevel = 4.0f;
         public float BodyMultipler = 0.8f;
         public float WheelMultipler = 0.69f;
-        public float ClippingCoefficient = 10f;
         public float UpDelta = 0.1f;
         public int Iterations = 2000;
         public bool HideWheels = true;
@@ -74,8 +74,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void InitializeBuffers() {
             _shadowBuffer = TargetResourceDepthTexture.Create();
-            _summBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-            _tempBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+            _summBuffer = TargetResourceTexture.Create(Format.R32_Float);
+            _tempBuffer = TargetResourceTexture.Create(Format.R32_Float);
 
             _blendState = Device.CreateBlendState(new RenderTargetBlendDescription {
                 BlendEnable = true,
@@ -120,6 +120,20 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private EffectSpecialShadow _effect;
         private bool _wheelMode;
 
+        private Kn5RenderableDepthOnlyObject[] _flattenNodes;
+
+        [NotNull]
+        private static IEnumerable<Kn5RenderableDepthOnlyObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
+            return root
+                    .SelectManyRecursive(x => {
+                        var list = x as Kn5RenderableList;
+                        if (list == null || !list.IsEnabled) return null;
+                        return filter?.Invoke(list) == false ? null : list;
+                    })
+                    .OfType<Kn5RenderableDepthOnlyObject>()
+                    .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
+        }
+
         private void DrawShadow(Vector3 from, Vector3? up = null) {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
@@ -132,15 +146,27 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowCamera.LookAt(Vector3.Normalize(from) * _shadowCamera.FarZValue * 0.8f, Vector3.Zero, up ?? Vector3.UnitY);
             _shadowCamera.UpdateViewMatrix();
 
-            if (HideWheels && !_wheelMode) {
-                var wheelNodes = new[] {
-                    "WHEEL_LF", "WHEEL_LR", "WHEEL_RF", "WHEEL_RR",
-                    "HUB_LF", "HUB_LR", "HUB_RF", "HUB_RR",
-                    "SUSP_LF", "SUSP_LR", "SUSP_RF", "SUSP_RR",
-                };
-                _scene.Draw(DeviceContextHolder, _shadowCamera, SpecialRenderMode.Simple, x => !wheelNodes.Contains((x as Kn5RenderableList)?.OriginalNode.Name));
-            } else {
-                _scene.Draw(DeviceContextHolder, _shadowCamera, SpecialRenderMode.Simple);
+            if (_flattenNodes == null) {
+                string[] ignored;
+
+                if (HideWheels && !_wheelMode) {
+                    ignored = new[] {
+                        "WHEEL_LF", "WHEEL_LR", "WHEEL_RF", "WHEEL_RR",
+                        "HUB_LF", "HUB_LR", "HUB_RF", "HUB_RR",
+                        "SUSP_LF", "SUSP_LR", "SUSP_RF", "SUSP_RR",
+                        "COCKPIT_HR", "STEER_HR",
+                    };
+                } else {
+                    ignored = new[] {
+                        "COCKPIT_HR", "STEER_HR",
+                    };
+                }
+
+                _flattenNodes = Flatten(_scene, x => !ignored.Contains((x as Kn5RenderableList)?.Name)).ToArray();
+            }
+
+            for (var i = 0; i < _flattenNodes.Length; i++) {
+                _flattenNodes[i].Draw(DeviceContextHolder, _shadowCamera, SpecialRenderMode.Simple);
             }
         }
 
@@ -164,27 +190,62 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.TechAmbientShadow.DrawAllPasses(DeviceContext, 6);
         }
 
-        private void Draw(float multipler, int size, int padding, bool fade) {
+        private void Draw(float multipler, int size, int padding, float fadeRadius) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
+
+            /*var h = (int)Math.Round(Math.Pow(Iterations, 0.46));
+            var v = (int)Math.Round(Math.Pow(Iterations, 0.54));
+            var t = h * v;*/
+
+            var t = Iterations;
 
             // draw
             var iter = 0f;
-            for (var k = 0; k < Iterations; k++) {
+            for (var k = 0; k < t; k++) {
                 if (DebugMode) {
                     DrawShadow(Vector3.UnitY, Vector3.UnitZ);
                 } else {
-                    var x = MathF.Random(-1f, 1f);
-                    var y = MathF.Random(0.1f, 1f) / DiffusionLevel.Clamp(0.001f, 1.0f);
-                    var z = MathF.Random(-1f, 1f);
+                    /* arranged symmetric version */
+                    /* var diff = DiffusionLevel.Saturate();
 
-                    DrawShadow(new Vector3(x, y, z));
+                     var φdeg = 360f * (k % h) / h;
+                     var θdeg = 2f + 70f * ((float)Math.Floor((double)k / h) / (v - 1));
+                     θdeg = (θdeg * diff + (1f - diff) * 89.9f).Clamp(5f, 89.9f);
+
+                     var θ = (90f - θdeg).ToRadians();
+                     var φ = φdeg.ToRadians();
+
+                     var sinθ = θ.Sin();
+                     var cosθ = θ.Cos();
+                     var sinφ = φ.Sin();
+                     var cosφ = φ.Cos();
+
+                     DrawShadow(new Vector3(sinθ * cosφ, cosθ, sinθ * sinφ));*/
+
+                    /* random distribution */
+
+                    var v3 = default(Vector3);
+                    do {
+                        var x = MathF.Random(-1f, 1f);
+                        var y = MathF.Random(0.1f, 1f) / DiffusionLevel.Clamp(0.001f, 1.0f);
+                        var z = MathF.Random(-1f, 1f);
+                        if (x.Abs() < 0.01 && z.Abs() < 0.01) continue;
+
+                        v3 = new Vector3(x, y, z);
+                    } while (v3.LengthSquared() > 1f);
+
+                    DrawShadow(v3);
                 }
 
                 AddShadow();
                 iter++;
             }
 
+            DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
+            DeviceContext.Rasterizer.State = null;
             DeviceContext.OutputMerger.BlendState = null;
+            DeviceContext.Rasterizer.SetViewports(Viewport);
+
             _effect.FxSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
             // blurring
@@ -210,8 +271,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxInputMap.SetResource(_summBuffer.View);
             _effect.FxCount.Set(iter / SkyBrightnessLevel);
             _effect.FxMultipler.Set(multipler);
-            _effect.FxPadding.Set(fade ? (float)padding / size : 0f);
-            _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z) * ClippingCoefficient);
+            _effect.FxFade.Set(fadeRadius != 0f ? 10f / fadeRadius : 100f);
+            _effect.FxPadding.Set(padding / (size + padding * 2f));
+            _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z));
             _effect.TechResult.DrawAllPasses(DeviceContext, 6);
         }
 
@@ -260,7 +322,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void BackupAndRecycle(string outputDirectory) {
-            var original = new [] {
+            var original = new[] {
                 "body", "tyre_0", "tyre_1", "tyre_2", "tyre_3"
             }.Select(x => Path.Combine(outputDirectory, x + "_shadow.png")).Select(x => new {
                 Original = x,
@@ -294,7 +356,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             // body shadow
             PrepareBuffers(BodySize + BodyPadding * 2, 1024);
             SetBodyShadowCamera();
-            Draw(BodyMultipler, BodySize, BodyPadding, Fade);
+            Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f);
 
             // return;
             SaveResultAs(outputDirectory, "body_shadow.png", BodySize, BodyPadding);
@@ -311,11 +373,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Filename = $"tyre_{i}_shadow.png"
             })) {
                 _scene.Clear();
+                _flattenNodes = null;
+
                 _scene.Add(entry.Node);
                 entry.Node.LocalMatrix = entry.Matrix;
                 _scene.UpdateBoundingBox();
 
-                Draw(WheelMultipler, WheelSize, WheelPadding, false);
+                Draw(WheelMultipler, WheelSize, WheelPadding, 1f);
                 SaveResultAs(outputDirectory, entry.Filename, WheelSize, WheelPadding);
             }
         }
@@ -334,128 +398,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _carNode.Dispose();
             _scene.Dispose();
             base.Dispose();
-        }
-    }
-
-    public class DepthMaterialsFactory : IMaterialsFactory {
-        public IRenderableMaterial CreateMaterial(object key) {
-            if (BasicMaterials.DepthOnlyKey.Equals(key)) {
-                /* Model is loaded directly without using Kn5RenderableFile as a wrapper, so all materials
-                 * keys won’t be converted to Kn5MaterialDescription. We don’t need any information about
-                 * materials anyway. */
-                return new Kn5MaterialDepth();
-            }
-
-            return new InvisibleMaterial();
-        }
-    }
-
-    public class Kn5MaterialDepth : IRenderableMaterial {
-        private EffectSpecialShadow _effect;
-
-        public void Initialize(IDeviceContextHolder contextHolder) {
-            _effect = contextHolder.GetEffect<EffectSpecialShadow>();
-        }
-
-        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple) return false;
-
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
-            return true;
-        }
-
-        public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-        }
-
-        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            _effect.TechSimplest.DrawAllPasses(contextHolder.DeviceContext, indices);
-        }
-
-        public bool IsBlending => false;
-
-        public void Dispose() { }
-    }
-
-    public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticeP>, IKn5RenderableObject {
-        public Kn5Node OriginalNode { get; }
-
-        public Matrix ModelMatrixInverted { get; set; }
-
-        public void SetMirrorMode(IDeviceContextHolder holder, bool enabled) {}
-
-        public void SetDebugMode(IDeviceContextHolder holder, bool enabled) {}
-
-        public void SetEmissive(Vector3? color) {}
-
-        int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
-
-        public void SetTransparent(bool? isTransparent) {}
-
-        private static InputLayouts.VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
-            var size = vertices.Length;
-            var result = new InputLayouts.VerticeP[size];
-            
-            for (var i = 0; i < size; i++) {
-                var x = vertices[i];
-                result[i] = new InputLayouts.VerticeP(x.Co.ToVector3());
-            }
-
-            return result;
-        }
-
-        private static ushort[] Convert(ushort[] indices) {
-            return indices.ToIndicesFixX();
-        }
-
-        public Kn5RenderableDepthOnlyObject(Kn5Node node, bool forceVisible = false) : base(node.Name, Convert(node.Vertices), Convert(node.Indices)) {
-            OriginalNode = node;
-            if (IsEnabled && (!node.Active || !forceVisible && (!node.IsVisible || !node.IsRenderable))) {
-                IsEnabled = false;
-            }
-        }
-
-        private IRenderableMaterial _material;
-
-        protected override void Initialize(IDeviceContextHolder contextHolder) {
-            base.Initialize(contextHolder);
-
-            _material = contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
-            _material.Initialize(contextHolder);
-        }
-
-        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Simple) return;
-            if (!_material.Prepare(contextHolder, mode)) return;
-
-            base.DrawOverride(contextHolder, camera, mode);
-
-            _material.SetMatrices(ParentMatrix, camera);
-            _material.Draw(contextHolder, Indices.Length, mode);
-        }
-
-        public override BaseRenderableObject Clone() {
-            throw new NotSupportedException();
-        }
-
-        public override void Dispose() {
-            DisposeHelper.Dispose(ref _material);
-            base.Dispose();
-        }
-
-        public static IRenderableObject Convert(Kn5Node node) {
-            switch (node.NodeClass) {
-                case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node, Convert);
-
-                case Kn5NodeClass.Mesh:
-                case Kn5NodeClass.SkinnedMesh:
-                    return new Kn5RenderableDepthOnlyObject(node);
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }

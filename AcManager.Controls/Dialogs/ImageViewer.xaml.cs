@@ -284,7 +284,7 @@ namespace AcManager.Controls.Dialogs {
                 if (dialog.ShowDialog() != true) return;
 
                 try {
-                    await Task.Run(() => File.Copy(origin, dialog.FileName));
+                    await Task.Run(() => File.Copy(origin, dialog.FileName, true));
                 } catch (Exception ex) {
                     NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }

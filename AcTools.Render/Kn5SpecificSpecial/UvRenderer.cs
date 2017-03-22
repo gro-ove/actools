@@ -88,29 +88,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private void SaveResultAs(string filename, float multipler) {
-            using (var stream = new MemoryStream()) {
-                Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
-                stream.Position = 0;
-
-                using (var image = Image.FromStream(stream)) {
-                    if (Equals(multipler, 1f)) {
-                        image.Save(filename, ImageFormat.Png);
-                    } else {
-                        using (var bitmap = new Bitmap((int)(Width * multipler), (int)(Height * multipler)))
-                        using (var graphics = Graphics.FromImage(bitmap)) {
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.SmoothingMode = SmoothingMode.HighQuality;
-                            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            graphics.DrawImage(image, 0f, 0f, Width * multipler, Height * multipler);
-
-                            bitmap.Save(filename, ImageFormat.Png);
-                        }
-                    }
-                }
-            }
-        }
-
         public void Shot(string outputFile, string textureName) {
             if (!Initialized) {
                 Initialize();
@@ -121,7 +98,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             Kn5MaterialUv.Filter = textureName;
             Draw();
-            SaveResultAs(outputFile, 1f / Multipler);
+            SaveRenderBufferAsPng(outputFile, 1f / Multipler);
         }
 
         protected override void OnTick(float dt) {}

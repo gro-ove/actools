@@ -79,17 +79,17 @@ namespace AcTools.Render.Base.Cameras {
                 Beta = MinBeta;
             }
 
-            var sideRadius = Radius * MathF.Cos(Beta);
-            var height = Radius * MathF.Sin(Beta);
+            var sideRadius = Radius * Beta.Cos();
+            var height = Radius * Beta.Sin();
 
             if (Target.Y + height < MinY) {
                 height = MinY - Target.Y;
             }
 
             Position = new Vector3(
-                    Target.X + sideRadius * MathF.Cos(Alpha),
+                    Target.X + sideRadius * Alpha.Cos(),
                     Target.Y + height,
-                    Target.Z + sideRadius * MathF.Sin(Alpha));
+                    Target.Z + sideRadius * Alpha.Sin());
 
             SetView(Matrix.LookAtRH(Position, Target, Vector3.UnitY));
 

@@ -29,6 +29,7 @@ using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -57,6 +58,13 @@ namespace AcManager.Pages.Drive {
 
         public void Initialize() {
             DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
+                    OnTrackStateChanged);
+            this.OnActualUnload(() => {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
+                        OnTrackStateChanged);
+            });
+
             _current = new WeakReference<QuickDrive>(this);
 
             InitializeComponent();
@@ -78,7 +86,11 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
         }
-        
+
+        private void OnTrackStateChanged(object sender, PropertyChangedEventArgs e) {
+            Model.SaveLater();
+        }
+
         private DispatcherTimer _realConditionsTimer;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -100,17 +112,13 @@ namespace AcManager.Pages.Drive {
             _realConditionsTimer = null;
         }
 
-        private void ModeTab_OnFrameNavigated(object sender, NavigationEventArgs e) {
+        private void OnModeTabNavigated(object sender, NavigationEventArgs e) {
             var c = ModeTab.Frame.Content as IQuickDriveModeControl;
             if (c != null) {
                 c.Model = Model.SelectedModeViewModel;
             }
 
             // _model.SelectedModeViewModel = (ModeTab.Frame.Content as IQuickDriveModeControl)?.Model;
-        }
-
-        private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            new AssistsDialog(Model.AssistsViewModel).ShowDialog();
         }
 
         private class SaveableData {
@@ -122,9 +130,14 @@ namespace AcManager.Pages.Drive {
 
             public string TrackPropertiesPresetFilename, TrackPropertiesData;
 
+            [JsonProperty(@"tpc")]
+            public bool TrackPropertiesChanged;
+
             // Obsolete
             [JsonProperty(@"TrackPropertiesPreset")]
+#pragma warning disable 649
             public string ObsTrackPropertiesPreset;
+#pragma warning restore 649
 
             [JsonProperty(@"rcTimezones")]
             public bool? RealConditionsTimezones;
@@ -153,7 +166,7 @@ namespace AcManager.Pages.Drive {
                     _selectedMode = value;
                     OnPropertyChanged();
                     SaveLater();
-                    
+
                     switch (value.OriginalString) {
                         case "/Pages/Drive/QuickDrive_Drift.xaml":
                             SelectedModeViewModel = new QuickDrive_Drift.ViewModel(!_skipLoading);
@@ -288,7 +301,7 @@ namespace AcManager.Pages.Drive {
 
             private readonly ISaveHelper _saveable;
 
-            private void SaveLater() {
+            internal void SaveLater() {
                 if (!_uiMode) return;
 
                 if (_saveable.SaveLater()) {
@@ -318,9 +331,9 @@ namespace AcManager.Pages.Drive {
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
                     WeatherId = SelectedWeather?.Id,
-
-                    // TODO
+                    
                     TrackPropertiesData = TrackState.ExportToPresetData(),
+                    TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
 
                     Temperature = Temperature,
@@ -357,7 +370,11 @@ namespace AcManager.Pages.Drive {
                         SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
                     }
 
-                    if (o.TrackPropertiesPresetFilename != null && File.Exists(o.TrackPropertiesPresetFilename)) {
+                    if (o.TrackPropertiesPresetFilename != null && o.TrackPropertiesData != null) {
+                        UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename, o.TrackPropertiesData, o.TrackPropertiesChanged);
+                    } else if (o.TrackPropertiesPresetFilename != null &&
+                            (PresetsManager.Instance.HasBuiltInPreset(TrackStateViewModelBase.PresetableCategory, o.TrackPropertiesPresetFilename) ||
+                                    File.Exists(o.TrackPropertiesPresetFilename))) {
                         UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename);
                     } else if (o.TrackPropertiesData != null) {
                         UserPresetsControl.LoadSerializedPreset(TrackState.PresetableKey, o.TrackPropertiesData);
@@ -402,7 +419,7 @@ namespace AcManager.Pages.Drive {
                 if (trackObject != null) {
                     SelectedTrack = trackObject;
                 }
-                
+
                 UpdateConditions();
             }
 
@@ -685,8 +702,8 @@ namespace AcManager.Pages.Drive {
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Open car in Content tab", () => {
-                         CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
-                     });
+                        CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                    });
         }
 
         private void SelectedTrackContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
@@ -717,7 +734,7 @@ namespace AcManager.Pages.Drive {
                         .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             } else {
                 e.Menu = new ContextMenu()
-                        .AddItem("Set random time",  Model.RandomTimeCommand, @"Ctrl+Alt+3")
+                        .AddItem("Set random time", Model.RandomTimeCommand, @"Ctrl+Alt+3")
                         .AddItem("Set random weather", Model.RandomWeatherCommand, @"Ctrl+Alt+4")
                         .AddItem("Set random temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
                         .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));

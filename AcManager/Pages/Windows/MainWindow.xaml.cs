@@ -20,6 +20,7 @@ using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
+using AcManager.Pages.Miscellaneous;
 using AcManager.Tools;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
@@ -100,9 +101,14 @@ namespace AcManager.Pages.Windows {
                                                  .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += OnlineLinkChanged;
             }
+            
+            foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
+                                                 .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
+                result.LinkChanged += LapTimesLinkChanged;
+            }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.GroupKey == "content")) {
+                                                 .Where(x => x.GroupKey == "media" || x.GroupKey == "content")) {
                 result.LinkChanged += ContentLinkChanged;
             }
 
@@ -239,17 +245,27 @@ namespace AcManager.Pages.Windows {
         }
 
         /// <summary>
+        /// Temporary (?) fix.
+        /// </summary>
+        private static void LapTimesLinkChanged(object sender, LinkChangedEventArgs e) {
+            LapTimes_Table.OnLinkChanged(e);
+        }
+
+        /// <summary>
         /// Temporary (?) fix to keep selected object while editing current filter.
         /// </summary>
         private static void ContentLinkChanged(object sender, LinkChangedEventArgs e) {
-            switch (((LinkGroupFilterable)sender).DisplayName) {
-                case "cars":
+            switch (((LinkGroupFilterable)sender).Source.GetName()) {
+                case nameof(ReplaysListPage):
+                    AcListPageViewModel<ReplayObject>.OnLinkChanged(e);
+                    break;
+                case nameof(CarsListPage):
                     AcListPageViewModel<CarObject>.OnLinkChanged(e);
                     break;
-                case "tracks":
+                case nameof(TracksListPage):
                     AcListPageViewModel<TrackObject>.OnLinkChanged(e);
                     break;
-                case "showrooms":
+                case nameof(ShowroomsListPage):
                     AcListPageViewModel<ShowroomObject>.OnLinkChanged(e);
                     break;
             }
@@ -339,7 +355,7 @@ namespace AcManager.Pages.Windows {
             if (_loaded) return;
             _loaded = true;
 
-            AboutHelper.Instance.PropertyChanged += About_PropertyChanged;
+            AboutHelper.Instance.PropertyChanged += OnAboutPropertyChanged;
             UpdateAboutIsNew();
 
             var background = AppArguments.Get(AppFlag.Background);
@@ -412,7 +428,7 @@ namespace AcManager.Pages.Windows {
                           .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
-        private void About_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnAboutPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(AboutHelper.HasNewReleaseNotes) || e.PropertyName == nameof(AboutHelper.HasNewImportantTips)) {
                 UpdateAboutIsNew();
             }
@@ -423,7 +439,7 @@ namespace AcManager.Pages.Windows {
             _loaded = false;
 
             FancyBackgroundManager.Instance.RemoveListener(this);
-            AboutHelper.Instance.PropertyChanged -= About_PropertyChanged;
+            AboutHelper.Instance.PropertyChanged -= OnAboutPropertyChanged;
 
             if (_hook == null) return;
 
@@ -664,7 +680,7 @@ namespace AcManager.Pages.Windows {
 
         public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
 
-        private void TitleLinkContent_OnDrop(object sender, DragEventArgs e) {
+        private void OnContentTitleLinkDrop(object sender, DragEventArgs e) {
             var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
             if (trackObject != null) {
                 TracksListPage.Show(trackObject);
@@ -689,7 +705,7 @@ namespace AcManager.Pages.Windows {
             e.Effects = DragDropEffects.None;
         }
 
-        private void TitleLinkDrive_OnDrop(object sender, DragEventArgs e) {
+        private void OnDriveTitleLinkDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
 

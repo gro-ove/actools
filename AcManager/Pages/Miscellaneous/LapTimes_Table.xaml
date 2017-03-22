@@ -21,7 +21,8 @@
         </Style>
     </UserControl.Resources>
 
-    <DataGrid Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True">
+    <DataGrid x:Name="Grid" Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource DataGrid.Lite}"
+            IsReadOnly="True" Sorting="OnGridSorting">
         <DataGrid.Columns>
             <DataGridTemplateColumn Width="1.5*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName">
                 <DataGridTemplateColumn.CellTemplate>
@@ -59,12 +60,12 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
 
-            <DataGridTextColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_BestLap}" SortMemberPath="Entry.LapTime"
+            <DataGridTextColumn x:Name="DefaultColumn" Width="120" Header="{x:Static g:AppStrings.TableHeader_BestLap}" SortMemberPath="Entry.LapTime"
                     Binding="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" CellStyle="{StaticResource NumberCellStyle}"
                     HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
             <DataGridTextColumn Width="180" Header="{x:Static g:AppStrings.TableHeader_Date}" SortMemberPath="Entry.EntryDate"
                     Binding="{Binding Entry.EntryDate}" CellStyle="{StaticResource SmallNumberCellStyle}"
-                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" SortDirection="Descending" />
+                    HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
             <DataGridTextColumn Width="140" Header="Source" SortMemberPath="Entry.Source" Binding="{Binding Entry.Source}"
                     CellStyle="{StaticResource SmallCellStyle}" />
         </DataGrid.Columns>

@@ -217,7 +217,7 @@ namespace AcManager.Tools {
         }
 
         private ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data) {
-            var result = ShowDialog(shared);
+            var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:

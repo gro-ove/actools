@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return new KeysList(Sizes[space],
                     ValuesStorage.GetStringList(space)
                                  .Select(y => y.Split(new[] { '\n' }, 2))
-                                 .Select(y => new KeyValue(Storage.Decode(y[0]), y[1])));
+                                 .Select(y => new KeyValue(string.IsNullOrEmpty(y[0]) ? null : Storage.Decode(y[0]), y[1])));
         }
 
         private static LimitedStorage _instance;
@@ -98,7 +98,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 throw new Exception("Unsupported space: " + space);
             }
 
-            ValuesStorage.Set(space, l.Select(x => Storage.Encode(x.Item1) + "\n" + x.Item2));
+            ValuesStorage.Set(space, l.Select(x => Storage.Encode(x.Item1 ?? "") + "\n" + x.Item2));
         }
     }
 }

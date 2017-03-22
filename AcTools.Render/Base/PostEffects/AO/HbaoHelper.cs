@@ -35,8 +35,8 @@ namespace AcTools.Render.Base.PostEffects.AO {
 
             _dither = holder.CreateTexture(16, 16, (x, y) => {
                 var angle = (float)(2f * Math.PI * MathUtils.Random());
-                var r = MathF.Cos(angle);
-                var g = -MathF.Sin(angle);
+                var r = angle.Cos();
+                var g = -angle.Sin();
                 //var b = (float)MathUtils.Random() * 1f;
                 var b = 0.2f;
                 return new Color4(r, g, b);

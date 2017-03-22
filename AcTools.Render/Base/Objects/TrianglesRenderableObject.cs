@@ -165,11 +165,15 @@ namespace AcTools.Render.Base.Objects {
             _indicesBuffer = new Buffer(contextHolder.Device, _indicesStream, ibd);
         }
 
-        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+        public void SetBuffers(IDeviceContextHolder contextHolder) {
             var assembler = contextHolder.DeviceContext.InputAssembler;
             assembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             assembler.SetVertexBuffers(0, _verticesBufferBinding);
             assembler.SetIndexBuffer(_indicesBuffer, Format.R16_UInt, 0);
+        }
+
+        protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            SetBuffers(contextHolder);
         }
 
         /// <summary>

@@ -35,7 +35,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
             get { return _override; }
             internal set {
                 if (Equals(_override, value)) return;
-                DisposeHelper.Dispose(ref _override);
+                if (_override?.Disposed == false) { // wut? how does that happen?
+                    DisposeHelper.Dispose(ref _override);
+                }
                 _override = value;
             }
         }
@@ -94,7 +96,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public void Load([CanBeNull] IDeviceContextHolder holder, string filename) {
             var id = ++_resourceId;
             var resource = LoadSafe(holder?.Device, filename);
-            if (id != _resourceId) return;
+            if (id != _resourceId) {
+                resource?.Dispose();
+                return;
+            }
+
             Resource = resource;
             holder?.RaiseTexturesUpdated();
         }
@@ -102,7 +108,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public void Load([CanBeNull] IDeviceContextHolder holder, byte[] data) {
             var id = ++_resourceId;
             var resource = LoadSafe(holder?.Device, data);
-            if (id != _resourceId) return;
+            if (id != _resourceId) {
+                resource?.Dispose();
+                return;
+            }
+
             Resource = resource;
             holder?.RaiseTexturesUpdated();
         }
@@ -110,7 +120,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public async Task LoadAsync([CanBeNull] IDeviceContextHolder holder, string filename) {
             var id = ++_resourceId;
             var resource = await Task.Run(() => LoadSafe(holder?.Device, filename));
-            if (id != _resourceId) return;
+            if (id != _resourceId) {
+                resource?.Dispose();
+                return;
+            }
+
             Resource = resource;
             holder?.RaiseTexturesUpdated();
         }
@@ -118,7 +132,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public async Task LoadAsync([CanBeNull] IDeviceContextHolder holder, byte[] data) {
             var id = ++_resourceId;
             var resource = await Task.Run(() => LoadSafe(holder?.Device, data));
-            if (id != _resourceId) return;
+            if (id != _resourceId) {
+                resource?.Dispose();
+                return;
+            }
+
             Resource = resource;
             holder?.RaiseTexturesUpdated();
         }
@@ -134,7 +152,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             try {
                 var resource = await Task.Run(() => LoadSafe(holder?.Device, filename));
-                if (id != _overrideId) return;
+                if (id != _overrideId) {
+                    resource?.Dispose();
+                    return;
+                }
+
                 Override = resource;
                 holder?.RaiseTexturesUpdated();
             } catch (Exception) {
@@ -155,7 +177,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             try {
                 var resource = LoadSafe(holder?.Device, data);
-                if (id != _overrideId) return;
+                if (id != _overrideId) {
+                    resource?.Dispose();
+                    return;
+                }
+
                 Override = resource;
                 holder?.RaiseTexturesUpdated();
             } catch (Exception) {
@@ -176,7 +202,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             try {
                 var resource = await Task.Run(() => LoadSafe(holder.Device, data));
-                if (id != _overrideId) return;
+                if (id != _overrideId) {
+                    resource?.Dispose();
+                    return;
+                }
+
                 Override = resource;
                 holder.RaiseTexturesUpdated();
             } catch (Exception) {
@@ -187,6 +217,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         public void Dispose() {
+            ++_overrideId;
             DisposeHelper.Dispose(ref _override);
             DisposeHelper.Dispose(ref _resource);
             Debug.WriteLine("[RenderableTexture] DISPOSED: " + Name);

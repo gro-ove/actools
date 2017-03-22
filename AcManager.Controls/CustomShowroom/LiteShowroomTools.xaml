@@ -464,7 +464,7 @@
                             <DockPanel>
                                 <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
                                         DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                                <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
+                                <Slider Minimum="150" Maximum="400" Value="{Binding AmbientShadowBrightness}" TickFrequency="50" TickPlacement="BottomRight"
                                         IsSnapToTickEnabled="False" />
                             </DockPanel>
                             <DockPanel>

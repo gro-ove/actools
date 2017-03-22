@@ -81,6 +81,14 @@
                 </CheckBox>
             </StackPanel>
 
+            <StackPanel Style="{StaticResource SettingsPanel}"
+                    Visibility="{Binding Holder.UseOldLiteShowroom, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel>
+                    <Label Content="Reset current parameters:" />
+                    <Button Command="{Binding ResetCommand}" Content="Reset" ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+                </DockPanel>
+            </StackPanel>
+
             <c:MessageBlock CloseKey="bye-bye-fancy-showroom">
                 <mui:BbCodeBlock>
                     <mui:BbCodeBlock.BbCode>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially compaing to the new one. And it was very slow.</mui:BbCodeBlock.BbCode>

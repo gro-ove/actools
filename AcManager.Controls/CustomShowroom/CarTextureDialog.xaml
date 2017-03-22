@@ -1,11 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Controls.CustomShowroom.CarTextureDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:Controls="clr-namespace:AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Car Texture"
-        d:DataContext="{d:DesignInstance customShowroom:CarTextureDialog+CarTextureDialogViewModel}" Loaded="CarTextureDialog_OnLoaded"
-        Unloaded="CarTextureDialog_OnUnloaded" WindowStartupLocation="CenterScreen" MaxWidth="999">
+        xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
+        mc:Ignorable="d" Title="Car Texture" d:DataContext="{d:DesignInstance cs:CarTextureDialog+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        WindowStartupLocation="CenterScreen" MaxWidth="999" Topmost="False">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -39,49 +37,98 @@
 
         <DockPanel Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}}" Grid.Column="1" Grid.Row="1">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right" />
-            <TextBlock Text="{x:Static Controls:ControlsStrings.CustomShowroom_TextureIsMissing}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_TextureIsMissing}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
         </DockPanel>
 
         <Grid Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Grid.Column="1" Grid.Row="1">
             <StackPanel VerticalAlignment="Top">
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureTypeLabel}" />
-                    <TextBlock Text="{Binding TextureFormat}" attached:WatermarkService.Watermark="?" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureTypeLabel}" />
+                    <mui:PlaceholderTextBlock Text="{Binding TextureFormat}" Placeholder="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureFormatLabel}" />
-                    <TextBlock Text="{Binding TextureFormatDescription}" attached:WatermarkService.Watermark="?" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureFormatLabel}" />
+                    <mui:PlaceholderTextBlock Text="{Binding TextureFormatDescription}" Placeholder="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureDimensionsLabel}" />
-                    <TextBlock Text="{Binding TextureDimensions}" attached:WatermarkService.Watermark="?" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureDimensionsLabel}" />
+                    <mui:PlaceholderTextBlock Text="{Binding TextureDimensions}" Placeholder="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
-                    <TextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
+                    <mui:PlaceholderTextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
                 </DockPanel>
+
+                <StackPanel Margin="0 20 0 0"
+                        Visibility="{Binding IsChecked, ElementName=ShowOptionsItem, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.From, StringFormat='{}{0:F1}'}" Postfix="°" mui:BetterTextBox.Mode="Number"
+                                DockPanel.Dock="Top" Content="To" />
+                        <Slider Minimum="-89.9999" Maximum="89.9999" Value="{Binding BakedShadows.From}" TickFrequency="36" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.To, StringFormat='{}{0:F1}'}" Postfix="°" mui:BetterTextBox.Mode="Number"
+                                DockPanel.Dock="Top" Content="To" />
+                        <Slider Minimum="-89.9999" Maximum="89.9999" Value="{Binding BakedShadows.To}" TickFrequency="36" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.Brightness, StringFormat='{}{0:F2}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
+                                DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                        <Slider Minimum="50" Maximum="350" Value="{Binding BakedShadows.Brightness}" TickFrequency="60" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.Iterations}" DockPanel.Dock="Top"
+                                Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
+                        <Slider Minimum="100" Maximum="10000" Value="{Binding BakedShadows.Iterations}" TickFrequency="1980" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.Gamma}" DockPanel.Dock="Top" Content="Gamma" Postfix="%" />
+                        <Slider Minimum="0" Maximum="500" Value="{Binding BakedShadows.Gamma}" TickFrequency="50" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.Ambient}" DockPanel.Dock="Top" Content="Ambient" Postfix="%" />
+                        <Slider Minimum="0" Maximum="100" Value="{Binding BakedShadows.Ambient}" TickFrequency="50" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <c:UserPresetsControl UserPresetable="{Binding BakedShadows}" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
 
     <mui:ModernDialog.ButtonsRowContent>
-        <StackPanel Orientation="Horizontal" Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Button Command="{Binding UvCommand}" CommandParameter="2048" ToolTip="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_2048}"
-                    Content="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping}">
-                <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_512}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="1024" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_1024}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="2048" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_2048}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="4096" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_4096}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="custom"
-                                Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_Custom}" />
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
-            <Button Command="{Binding ExportCommand}" Margin="4 0 0 0"
-                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="{x:Static Controls:ControlsStrings.CustomShowroom_Export}" />
-        </StackPanel>
+        <mui:SpacingStackPanel Orientation="Horizontal"
+                Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Spacing="4">
+            <mui:ButtonWithComboBox Command="{Binding UvCommand}" CommandParameter="2048" Content="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping}"
+                    ButtonToolTip="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_2048}">
+                <mui:ButtonWithComboBox.MenuItems>
+                    <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_512}" />
+                    <MenuItem Command="{Binding UvCommand}" CommandParameter="1024" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_1024}" />
+                    <MenuItem Command="{Binding UvCommand}" CommandParameter="2048" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_2048}" />
+                    <MenuItem Command="{Binding UvCommand}" CommandParameter="4096" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_4096}" />
+                    <MenuItem Command="{Binding UvCommand}" CommandParameter="custom" Header="{x:Static c:ControlsStrings.CustomShowroom_ViewMapping_Custom}" />
+                </mui:ButtonWithComboBox.MenuItems>
+            </mui:ButtonWithComboBox>
+
+            <mui:ButtonWithComboBox Content="Calculate AO" Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024">
+                <mui:ButtonWithComboBox.ButtonToolTip>Generate 1024×1024 AO map — it won’t be perfect, but still better than nothing</mui:ButtonWithComboBox.ButtonToolTip>
+                <mui:ButtonWithComboBox.MenuItems>
+                    <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="512" Header="Calculate 512×512 Map" />
+                    <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024" Header="Calculate 1024×1024 Map" />
+                    <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="2048" Header="Calculate 2048×2048 Map" />
+                    <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate Map of Custom Size" />
+                    <Separator />
+                    <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show Options" />
+                </mui:ButtonWithComboBox.MenuItems>
+            </mui:ButtonWithComboBox>
+
+            <Button Command="{Binding ExportCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_Export}"
+                    Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </mui:SpacingStackPanel>
     </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>

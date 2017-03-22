@@ -53,6 +53,14 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure, CanBeNull]
+        public static string GetName([NotNull] this Uri uri) {
+            var s = uri.ToString();
+            var p = s.IndexOf('?');
+            if (p != -1) s = s.Substring(0, p);
+            return s.Split('/', '\\').Last();
+        }
+
+        [Pure, CanBeNull]
         public static string GetQueryParam([NotNull] this Uri uri, [NotNull, Localizable(false)] string key) {
             key = key + "=";
             return (from s in uri.ToString().Split('?', '&')

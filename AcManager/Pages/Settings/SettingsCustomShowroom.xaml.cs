@@ -6,6 +6,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -39,6 +41,12 @@ namespace AcManager.Pages.Settings {
                         ShowroomsManager.Instance.EnabledOnlyCollection.OrderBy(x => x.DisplayName).Prepend(NoneShowroom));
                 SelectedShowroom = Holder.ShowroomId == null ? NoneShowroom : ShowroomsManager.Instance.GetById(Holder.ShowroomId);
             }
+
+            private DelegateCommand _resetCommand;
+
+            public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
+                ValuesStorage.Remove("__DarkRendererSettings");
+            }));
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {

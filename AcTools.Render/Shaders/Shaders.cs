@@ -142,7 +142,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
+		public EffectTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
 
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
@@ -185,6 +185,7 @@ namespace AcTools.Render.Shaders {
 			TechGPass_Debug = E.GetTechniqueByName("GPass_Debug");
 			TechGPass_SkinnedDebug = E.GetTechniqueByName("GPass_SkinnedDebug");
 			TechStandard = E.GetTechniqueByName("Standard");
+			TechSky = E.GetTechniqueByName("Sky");
 			TechAlpha = E.GetTechniqueByName("Alpha");
 			TechReflective = E.GetTechniqueByName("Reflective");
 			TechNm = E.GetTechniqueByName("Nm");
@@ -1260,21 +1261,24 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
-	public class EffectSpecialShadow : IEffectWrapper {
+	public class EffectSpecialShadow : IEffectWrapper, IEffectMatricesWrapper {
 		private ShaderBytecode _b;
 		public Effect E;
 
-        public ShaderSignature InputSignaturePT, InputSignatureP;
-        public InputLayout LayoutPT, LayoutP;
+        public ShaderSignature InputSignaturePT, InputSignatureP, InputSignaturePNTG;
+        public InputLayout LayoutPT, LayoutP, LayoutPNTG;
 
-		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest;
+		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest, TechAo, TechAoResult, TechAoGrow;
 
 		public EffectOnlyMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxInputMap, FxDepthMap;
-		public EffectScalarVariable FxMultipler, FxCount, FxPadding;
+		public EffectOnlyMatrixVariable FxWorld { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
+		public EffectResourceVariable FxInputMap, FxDepthMap, FxNormalMap;
+		public EffectScalarVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxNormalUvMult;
 		public EffectVectorVariable FxSize { get; private set; }
 		public EffectVectorVariable FxShadowSize { get; private set; }
+		public EffectVectorVariable FxLightDir { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialShadow");
@@ -1285,6 +1289,9 @@ namespace AcTools.Render.Shaders {
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechResult = E.GetTechniqueByName("Result");
 			TechSimplest = E.GetTechniqueByName("Simplest");
+			TechAo = E.GetTechniqueByName("Ao");
+			TechAoResult = E.GetTechniqueByName("AoResult");
+			TechAoGrow = E.GetTechniqueByName("AoGrow");
 
 			for (var i = 0; i < TechHorizontalShadowBlur.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechHorizontalShadowBlur.GetPassByIndex(i).Description.Signature;
@@ -1296,16 +1303,29 @@ namespace AcTools.Render.Shaders {
 			}
 			if (InputSignatureP == null) throw new System.Exception("input signature (SpecialShadow, P, Simplest) == null");
 			LayoutP = new InputLayout(device, InputSignatureP, InputLayouts.VerticeP.InputElementsValue);
+			for (var i = 0; i < TechAo.Description.PassCount && InputSignaturePNTG == null; i++) {
+				InputSignaturePNTG = TechAo.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePNTG == null) throw new System.Exception("input signature (SpecialShadow, PNTG, Ao) == null");
+			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
 
 			FxShadowViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gShadowViewProj").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
+			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld").AsMatrix());
+			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
 			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
 			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
+			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
 			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
+			FxGamma = E.GetVariableByName("gGamma").AsScalar();
 			FxCount = E.GetVariableByName("gCount").AsScalar();
+			FxAmbient = E.GetVariableByName("gAmbient").AsScalar();
 			FxPadding = E.GetVariableByName("gPadding").AsScalar();
+			FxFade = E.GetVariableByName("gFade").AsScalar();
+			FxNormalUvMult = E.GetVariableByName("gNormalUvMult").AsScalar();
 			FxSize = E.GetVariableByName("gSize").AsVector();
 			FxShadowSize = E.GetVariableByName("gShadowSize").AsVector();
+			FxLightDir = E.GetVariableByName("gLightDir").AsVector();
 		}
 
         public void Dispose() {
@@ -1314,6 +1334,8 @@ namespace AcTools.Render.Shaders {
             LayoutPT.Dispose();
 			InputSignatureP.Dispose();
             LayoutP.Dispose();
+			InputSignaturePNTG.Dispose();
+            LayoutPNTG.Dispose();
             E.Dispose();
             _b.Dispose();
         }

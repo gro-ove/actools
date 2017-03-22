@@ -150,9 +150,12 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleNm.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleNmMult.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleSky.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
+    <Compile Include="Kn5SpecificSpecial\BakedShadowsRenderer.cs" />
+    <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
@@ -189,7 +192,7 @@
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\TrackMapRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\UvRenderer.cs" />
-    <Compile Include="Kn5SpecificSpecial\AmbientShadowKn5ObjectRenderer.cs" />
+    <Compile Include="Kn5SpecificSpecial\AmbientShadowRenderer.cs" />
     <Compile Include="Kn5Specific\IKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleBase.cs" />

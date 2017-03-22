@@ -240,12 +240,12 @@ namespace AcTools.Render.Base.Utils {
                 for (var j = 0; j <= sliceCount; j++) {
                     var theta = j * thetaStep;
                     var p = new Vector3(
-                            (radius * MathF.Sin(phi) * MathF.Cos(theta)),
-                            (radius * MathF.Cos(phi)),
-                            (radius * MathF.Sin(phi) * MathF.Sin(theta))
+                            (radius * MathUtils.Sin(phi) * MathUtils.Cos(theta)),
+                            (radius * MathUtils.Cos(phi)),
+                            (radius * MathUtils.Sin(phi) * MathUtils.Sin(theta))
                             );
 
-                    var t = new Vector3(-radius * MathF.Sin(phi) * MathF.Sin(theta), 0, radius * MathF.Sin(phi) * MathF.Cos(theta));
+                    var t = new Vector3(-radius * MathUtils.Sin(phi) * MathUtils.Sin(theta), 0, radius * MathUtils.Sin(phi) * MathUtils.Cos(theta));
                     t.Normalize();
                     var n = Vector3.Normalize(p);
 
@@ -407,8 +407,8 @@ namespace AcTools.Render.Base.Utils {
                 var dTheta = 2.0f * MathF.PI / sliceCount;
                 for (var j = 0; j <= sliceCount; j++) {
 
-                    var c = MathF.Cos(j * dTheta);
-                    var s = MathF.Sin(j * dTheta);
+                    var c = MathUtils.Cos(j * dTheta);
+                    var s = MathUtils.Sin(j * dTheta);
 
                     var v = new Vector3(r * c, y, r * s);
                     var uv = new Vector2((float)j / sliceCount, 1.0f - (float)i / stackCount);
@@ -447,8 +447,8 @@ namespace AcTools.Render.Base.Utils {
             var dTheta = 2.0f * MathF.PI / sliceCount;
 
             for (var i = 0; i <= sliceCount; i++) {
-                var x = topRadius * MathF.Cos(i * dTheta);
-                var z = topRadius * MathF.Sin(i * dTheta);
+                var x = topRadius * MathUtils.Cos(i * dTheta);
+                var z = topRadius * MathUtils.Sin(i * dTheta);
 
                 var u = x / height + 0.5f;
                 var v = z / height + 0.5f;
@@ -470,8 +470,8 @@ namespace AcTools.Render.Base.Utils {
             var dTheta = 2.0f * MathF.PI / sliceCount;
 
             for (var i = 0; i <= sliceCount; i++) {
-                var x = bottomRadius * MathF.Cos(i * dTheta);
-                var z = bottomRadius * MathF.Sin(i * dTheta);
+                var x = bottomRadius * MathUtils.Cos(i * dTheta);
+                var z = bottomRadius * MathUtils.Sin(i * dTheta);
 
                 var u = x / height + 0.5f;
                 var v = z / height + 0.5f;
