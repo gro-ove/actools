@@ -3,6 +3,8 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Forward;
@@ -15,6 +17,8 @@ using SlimDX;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
+        public bool OptionHwDownscale = true;
+
         private readonly ForwardKn5ObjectRenderer _renderer;
 
         public bool ReplaceableShowroom { get; set; }
@@ -38,18 +42,7 @@ namespace AcTools.Render.Wrapper {
         public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900)
                 : base(renderer, title, width, height) {
             Form.MouseDoubleClick += OnMouseDoubleClick;
-
             _renderer = renderer;
-            UpdateSize();
-        }
-
-        private void UpdateSize() {
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
-        }
-
-        protected override void OnResize(object sender, EventArgs eventArgs) {
-            UpdateSize();
         }
 
         private void OnMouseDoubleClick(object sender, MouseEventArgs e) {
@@ -189,6 +182,110 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
+        private class ProgressWrapper : IProgress<double> {
+            private IProgress<Tuple<string, double?>> _main;
+            private readonly string _message;
+
+            public ProgressWrapper(IProgress<Tuple<string, double?>> main, string message) {
+                _main = main;
+                _message = message;
+            }
+
+            public void Report(double value) {
+                _main.Report(Tuple.Create(_message, (double?)value));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        protected void SplitShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var dark = (DarkKn5ObjectRenderer)Renderer;
+            var wrapped = progress == null ? null : new ProgressWrapper(progress, "Rendering…");
+
+            if (multipler > 4d) {
+                var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
+                dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
+                        !OptionHwDownscale && downscale, wrapped, cancellation);
+            } else {
+                using (var image = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, wrapped, cancellation)) {
+                    if (cancellation.IsCancellationRequested) return;
+
+                    if (downscale) {
+                        progress?.Report(Tuple.Create("Downscaling…", (double?)0.93));
+                        image.Downscale();
+                        if (cancellation.IsCancellationRequested) return;
+                    }
+
+                    progress?.Report(Tuple.Create("Saving…", (double?)0.95));
+                    ImageUtils.SaveImage(image, filename, 95, new ImageUtils.ImageInformation());
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        protected void ShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            using (var stream = new MemoryStream()) {
+                progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
+                _renderer.Shot(multipler, OptionHwDownscale && downscale ? 0.5 : 1d, stream, true);
+                stream.Position = 0;
+                if (cancellation.IsCancellationRequested) return;
+
+                using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
+                    progress?.Report(Tuple.Create("Saving…", (double?)0.6));
+                    ImageUtils.Convert(stream, destination, !OptionHwDownscale && downscale
+                            ? new Size((_renderer.ActualWidth * multipler / 2).RoundToInt(), (_renderer.ActualHeight * multipler / 2).RoundToInt())
+                            : (Size?)null, 95, new ImageUtils.ImageInformation());
+                }
+            }
+        }
+        
+        protected virtual void SplitShot(double multipler, bool downscale, string filename) {
+            SplitShotInner(multipler, downscale, filename);
+        }
+        
+        protected virtual void Shot(double multipler, bool downscale, string filename) {
+            ShotInner(multipler, downscale, filename);
+        }
+
+        private void Shot() {
+            var splitMode = ImageUtils.IsMagickAsseblyLoaded && Renderer is DarkKn5ObjectRenderer;
+
+            // hold shift to disable downsampling
+            // hold ctrl to render scene in 6x resolution
+            // hold alt to render scene in 4x resolution
+            // hold both for 1x only
+
+            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
+            var altPressed = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
+            var shiftPressed = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
+            var winPressed = User32.IsKeyPressed(Keys.LWin) || User32.IsKeyPressed(Keys.RWin);
+
+            var downscale = !shiftPressed;
+            double multipler;
+            if (winPressed && splitMode) {
+                multipler = altPressed ? ctrlPressed ? 16d : 12d : ctrlPressed ? 10d : 6d;
+            } else if (ctrlPressed) {
+                multipler = altPressed ? 1d : splitMode ? 8d : 4d;
+            } else if (altPressed) {
+                multipler = splitMode ? 4d : 3d;
+            } else {
+                multipler = 2d;
+            }
+
+            _renderer.KeepFxaaWhileShooting = !downscale;
+
+            var directory = FileUtils.GetDocumentsScreensDirectory();
+            FileUtils.EnsureDirectoryExists(directory);
+            var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
+
+            if (splitMode && multipler > 2d) {
+                SplitShot(multipler, downscale, filename);
+            } else {
+                Shot(multipler, downscale, filename);
+            }
+        }
+
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
             if (args.KeyCode == Keys.F2 && !args.Control && !args.Alt && !args.Shift || args.KeyCode == Keys.Escape && EditMode) {
                 EditMode = !EditMode;
@@ -298,48 +395,7 @@ namespace AcTools.Render.Wrapper {
                     break;
 
                 case Keys.F8:
-                    {
-                        double multipler;
-                        bool downscale;
-
-                        {
-                            // hold shift to disable downsampling
-                            // hold ctrl to render scene in 8x resolution
-                            // hold alt to render scene in 4x resolution
-                            // hold both for 1x only
-
-                            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
-                            var altPressed = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
-                            var shiftPressed = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
-
-                            downscale = !shiftPressed;
-
-                            if (ctrlPressed) {
-                                multipler = altPressed ? 1d : 8d;
-                            } else if (altPressed) {
-                                multipler = 4d;
-                            } else {
-                                multipler = 2d;
-                            }
-                        }
-
-                        _renderer.KeepFxaaWhileShooting = !downscale;
-
-                        var directory = FileUtils.GetDocumentsScreensDirectory();
-                        FileUtils.EnsureDirectoryExists(directory);
-                        var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
-
-                        using (var stream = new MemoryStream()) {
-                            _renderer.Shot(multipler, 1d, stream, true);
-                            stream.Position = 0;
-
-                            using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                                ImageUtils.Convert(stream, destination, downscale
-                                        ? new Size((int)(_renderer.ActualWidth * multipler / 2), (int)(_renderer.ActualHeight * multipler / 2))
-                                        : (Size?)null);
-                            }
-                        }
-                    }
+                    Shot();
                     break;
 
                 case Keys.F:
@@ -366,8 +422,6 @@ namespace AcTools.Render.Wrapper {
                                 d.FlatMirror = !d.FlatMirror;
                             }
                         }
-                    } else if (!args.Control && !args.Alt && args.Shift) {
-                        _renderer.TemporaryFlag = !_renderer.TemporaryFlag;
                     } else {
                         _renderer.UseMsaa = !_renderer.UseMsaa;
                     }

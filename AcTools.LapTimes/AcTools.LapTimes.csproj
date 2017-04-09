@@ -84,8 +84,8 @@
     <Compile Include="LevelDbUtils\SnapShot.cs" />
     <Compile Include="LevelDbUtils\WriteBatch.cs" />
     <Compile Include="LevelDbUtils\WriteOptions.cs" />
+    <Compile Include="Ov1InfoLapTimesReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RaceEssentialsLapTimesReader.cs" />
     <Compile Include="SidekickLapTimesReader.cs" />
   </ItemGroup>
   <ItemGroup>

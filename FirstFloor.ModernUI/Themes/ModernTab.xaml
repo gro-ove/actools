@@ -67,6 +67,7 @@
         <Setter Property="LinksHorizontalAlignment" Value="Right" />
         <Setter Property="LinksMargin" Value="{DynamicResource HeaderMargin}" />
         <Setter Property="FrameMargin" Value="0" />
+        <Setter Property="c:ModernFrame.TopSource" Value="{x:Null}" />
 
         <Setter Property="LinksListBoxTemplate">
             <Setter.Value>

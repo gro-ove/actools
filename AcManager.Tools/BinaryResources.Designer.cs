@@ -69,5 +69,15 @@ namespace AcManager.Tools {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SidePassage {
+            get {
+                object obj = ResourceManager.GetObject("SidePassage", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

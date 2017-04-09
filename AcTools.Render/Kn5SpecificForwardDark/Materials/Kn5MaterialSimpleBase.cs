@@ -5,6 +5,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
@@ -71,9 +72,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             }
         }
 
+        private SpecialRenderMode _mode = SpecialRenderMode.SimpleTransparent | SpecialRenderMode.Simple | SpecialRenderMode.Outline |
+                SpecialRenderMode.Reflection | SpecialRenderMode.Shadow | SpecialRenderMode.GBuffer;
+
         public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
+            if ((mode & _mode) == 0) return false;
             PrepareStates(contextHolder, mode);
             return true;
         }
@@ -84,26 +87,26 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             Effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        protected virtual EffectTechnique GetTechnique() {
+        protected virtual EffectReadyTechnique GetTechnique() {
             return Effect.TechStandard;
         }
 
-        protected virtual EffectTechnique GetShadowTechnique() {
+        protected virtual EffectReadyTechnique GetShadowTechnique() {
             return Effect.TechDepthOnly;
         }
 
-        protected virtual EffectTechnique GetGBufferTechnique() {
+        protected virtual EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Standard;
         }
 
-        private EffectTechnique GetTechnique(SpecialRenderMode mode) {
+        private EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 return GetShadowTechnique();
             }
 
             if (mode == SpecialRenderMode.GBuffer) {
                 Effect.FxGPassTransparent.Set(IsBlending);
-                Effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.0001f : -1f);
+                Effect.FxGPassAlphaThreshold.Set(Kn5Material.AlphaTested ? 0.5f : IsBlending ? 0.01f : -1f);
                 return GetGBufferTechnique();
             }
 

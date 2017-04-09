@@ -1,4 +1,5 @@
 using AcTools.Kn5File;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Textures;
 using SlimDX;
@@ -21,6 +22,12 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public static bool SetResource(this EffectResourceVariable variable, IRenderableTexture texture) {
+            var res = texture?.Resource;
+            variable.SetResource(res);
+            return res != null;
+        }
+
+        public static bool SetResource(this EffectOnlyResourceVariable variable, IRenderableTexture texture) {
             var res = texture?.Resource;
             variable.SetResource(res);
             return res != null;

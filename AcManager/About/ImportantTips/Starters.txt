@@ -3,7 +3,9 @@ id: starters
 
 [b]This part is very important. Please, read it.[/b]
 
-Since Steam version of AC can’t be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are three strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that’s why you have to select one which suits you:
+Since Steam version of AC can’t be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are six strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that’s why you have to select one which suits you.
+
+Also, please, don’t forget to backup original executables before using starters which replace them, such as [b]AC Service[/b] or [b]Tricky Starter[/b]. CM will make its own backups, but there are so many things which might go wrong with them… So, just to be sure.
 
  • [b]Official Starter[/b]
 Created after Kunos added official support for custom launchers.
@@ -11,43 +13,56 @@ Created after Kunos added official support for custom launchers.
   + Official: according to Kunos, should be the best way to run the game;
   + Safe: doesn’t mess with [i]AssettoCorsa.exe[/i] or other game files;
   − Slow: use original laucher, which isn’t very fast;
+  − Unreliable: sometimes just stops working;
   − Incompatible: can’t be used when original launcher is running.
+
+ • [b]AC Service [i](new)[/i][/b]
+Replaces original launcher with a small service. Service runs in background (with icon in system tray), consumes about 10 MB of memory and can immediately start race or original launcher (via context menu or special protocol). In my opinion, this is the best way, but it needs testing.
+  + Most Steam-friendly: Steam overlay & achievements will work without any problems, usage time counts as usual;
+  + Fastest: if service is already running, launches race immediately;
+  + Safe: even though it replaces [i]AssettoCorsa.exe[/i] (and renames it to [i]AssettoCorsa_original.exe[/i]), original launcher still can be easily started via icon in tray — and also, default behavior of that service is to run [i]AssettoCorsa_original.exe[/i], so, it’s likely you won’t even notice that replacement;
+  + Compatible: can be used when original launcher is running;
+  + Functional: allows to get Special Challenges progress when Steam profile is private;
+  − Non-finished: apparently, at some point it breaks (you would have to restart Steam), and I haven’t yet figured out why.
+
+ • [b]Replacement [i](new)[/i][/b]
+Replaces original launcher with CM itself. To enable it, just open AC root folder, rename [i]AssettoCorsa.exe[/i] to [i]AssettoCorsa_original.exe[/i] and then put there CM named as [i]AssettoCorsa.exe[/i].
+  + Most Steam-friendly: Steam overlay & achievements will work without any problems, usage time counts as usual;
+  + Fastest: launches race immediately;
+  + Safe: all replacements are done by you, so, CM won’t mess up anything;
+  + Compatible: can launch original launcher (new link will be added in title links);
+  + Functional: allows to get Special Challenges progress when Steam profile is private;
+  + Laconic: minimizes amount of extra entries;
+  − Update-incompatible: if Steam will update original launcher, CM will be replaced back.
 
  • [b]UI Module[/b]
 Starts the game through small UI module (module will be installed and enabled automatically).
-  + Most Steam-friendly: Steam overlay & archievments will work without any problems, usage time counts as usual;
+  + Most Steam-friendly: Steam overlay & archievments will work without any problems, usage time will be an actual CM usage time;
   + Fast: game will be runned in about one second;
   + Safe: doesn’t mess with [i]AssettoCorsa.exe[/i], only adds its harmless UI module;
   + Compatible: can be used when original launcher is running;
+  + Functional: allows to get Special Challenges proress when Steam profile is private;
+  + Tested: it appears, it works fine;
+  − Memory consuming: that original launcher, based on Chromium, can take quite a lot of RAM;
   − Slow-starting: requires original launcher to be starter first.
 
  • [b]Tricky Starter[/b]
 First one added. Uses pretty weird approach, which requires to temporary remove [i]AssettoCorsa.exe[/i] out of the way. On the bright side, this is the only change it does. So:
   + Steam-friendly: Steam overlay & archievments will work without any problems;
-  + Tested: firstly was implemented in Cars Manager;
   + Fast: although its weirdness, works faster than Official Starter;
+  + Tested: firstly was implemented in Cars Manager;
   − Unreliable: using approach could be blocked in any AC update;
   − Tricky: sadly, doesn’t work without Internet connection;
   − Incompatible: can’t be used when original launcher is running;
-  − Unsafe: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
-  − Limited: can’t specify version (32-bit or 64-bit).
+  − Unsafe: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually.
 
- • [b][s]Starter+ (Obsolete)[/s][/b]
-Changes original launcher a little. Obsoleted and removed since AC 1.8 release.
-  + Steam-friendly: Steam overlay & archievments will work without any problems;
-  + Relieable: even though it changes original launcher, it still works as a launcher;
-  − Unreliable: if Kunos will change [i]AssettoCorsa.exe[/i], you won’t get new features until addon will be updated;
-  − Incompatible: can’t be used when original launcher is running;
-  − Slow: use original laucher, which isn’t very fast;
-  − Obsolete: Useless since Official starter was added.
-
- • [b][s]SSE Starter (Obsolete)[/s][/b]
-Quite questionable solution. I won’t spread about it too much, just basics:
+ • [b]SSE Starter[/b]
+Questionable solution. Basically, it runs AC without Steam. So:
   + Compatible: doesn’t mess with [i]AssettoCorsa.exe[/i] at all, can work even if it’s runned;
-  + Tested: surprisingly solid, works without Internet;
+  + Fast: launches race almost immediately;
   − Steam-unfriendly: doesn’t save archievments & challenges progress;
   − Obsoletable: you can miss some updates for AC using it;
-  − Obsolete: doesn’t work with AC 1.6 without fixing [i]acs_x86.exe[/i].
+  − Questionable: since 1.6, it requires [i]acs.exe[/i] and [i]acs_x86.exe[/i] to be patched (don’t worry, patched versions won’t replace original ones, but will be placed nearby).
 
  • [b]Naive Starter[/b]
 CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.

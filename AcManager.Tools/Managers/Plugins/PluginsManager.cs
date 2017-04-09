@@ -62,13 +62,25 @@ namespace AcManager.Tools.Managers.Plugins {
             return Path.Combine(PluginsDirectory, id, fileId);
         }
 
+        private class UniqueIds : IEqualityComparer<PluginEntry> {
+            public bool Equals(PluginEntry x, PluginEntry y) {
+                return x?.Id == y?.Id;
+            }
+
+            public int GetHashCode(PluginEntry obj) {
+                return obj?.Id?.GetHashCode() ?? 0;
+            }
+        }
+
         public void ReloadLocalList() {
             try {
                 List.ReplaceEverythingBy(Directory.GetDirectories(PluginsDirectory)
-                        .Select(x => Path.Combine(x, ManifestName))
-                        .Where(File.Exists)
-                        .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
-                        .Where(x => x.IsAllRight));
+                                                  .Select(x => Path.Combine(x, ManifestName))
+                                                  .Where(File.Exists)
+                                                  .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
+                                                  .Where(x => x.IsAllRight)
+                                                  .Distinct(new UniqueIds())
+                                                  .ToList());
             } catch (Exception e) {
                 List.Clear();
                 Logging.Warning("Cannot get list of installed plugins: " + e);
@@ -94,15 +106,12 @@ namespace AcManager.Tools.Managers.Plugins {
             }
 
             var list = await DownloadAndParseList();
-            if (list == null) {
-                Logging.Warning("Plugins list download failed");
-                return; // TODO: informing
-            }
+            if (list == null) return;
 
             foreach (var plugin in list) {
+                if (plugin.IsObsolete || plugin.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
+                
                 var local = GetById(plugin.Id);
-                if (plugin.IsHidden && !SettingsHolder.Common.MsMode) continue;
-
                 if (local != null) {
                     List.Remove(local);
                     plugin.InstalledVersion = local.InstalledVersion;
@@ -117,7 +126,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 var loaded = await CmApiProvider.GetStringAsync("plugins/list");
                 return loaded == null ? null : JsonConvert.DeserializeObject<PluginEntry[]>(loaded).Where(x => x.IsAllRight);
             } catch (Exception e) {
-                Logging.Warning("Cannot download plugins list: " + e);
+                NonfatalError.NotifyBackground("Can’t download plugins list", e);
                 return null;
             }
         }

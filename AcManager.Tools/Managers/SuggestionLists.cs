@@ -38,7 +38,7 @@ namespace AcManager.Tools.Managers {
         public static ListCollectionView CountriesListView => CountriesList.View;
 
         public static AutocompleteValuesList CitiesList { get; } = new AutocompleteValuesList();
-        public static ListCollectionView CitiesListiew => CitiesList.View;
+        public static ListCollectionView CitiesListView => CitiesList.View;
 
         static SuggestionLists (){}
 

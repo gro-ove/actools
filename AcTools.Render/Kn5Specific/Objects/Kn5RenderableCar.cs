@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -36,7 +35,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public string CarDirectory { get; }
 
         [NotNull]
-        public string CarDirectoryRequire => CarDirectory ?? Path.GetDirectoryName(MainKn5File);
+        public string CarDirectoryRequire => CarDirectory ?? Path.GetDirectoryName(MainKn5File) ?? "";
 
         [CanBeNull]
         public DataWrapper Data { get; }
@@ -1690,6 +1689,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Override textures
+        public bool ReplaceTexture(DeviceContextHolder device, string textureName, byte[] textureBytes) {
+            if (_texturesProvider == null) {
+                InitializeTextures(device);
+            }
+
+            var texture = _texturesProvider?.GetTexture(device, textureName);
+            texture?.SetProceduralOverride(device, textureBytes);
+            return texture != null;
+        }
+
         public bool OverrideTexture(DeviceContextHolder device, string textureName, byte[] textureBytes) {
             if (_texturesProvider == null) {
                 InitializeTextures(device);
@@ -2041,6 +2050,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #region Disposal, INotifyPropertyChanged stuff
         public override void Dispose() {
             base.Dispose();
+
             DisposeHelper.Dispose(ref _ambientShadowsTextures);
             _lodsObjects.Values.ApartFrom(_currentLodObject).DisposeEverything();
             if (_currentLodObject.Materials != null) {

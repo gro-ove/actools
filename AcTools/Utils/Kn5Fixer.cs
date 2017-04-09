@@ -54,9 +54,8 @@ namespace AcTools.Utils {
             if (fixedNodes == 0){
                 return false;
             }
-
-            FileUtils.Recycle(kn5File);
-            kn5.SaveAll(kn5File);
+            
+            kn5.Save(kn5File);
             return true;
         }
 
@@ -99,9 +98,8 @@ namespace AcTools.Utils {
             if (wheels == 0){
                 return false;
             }
-
-            FileUtils.Recycle(kn5File);
-            kn5.SaveAll(kn5File);
+            
+            kn5.Save(kn5File);
             return true;
         }
 
@@ -119,9 +117,8 @@ namespace AcTools.Utils {
             if (added == 0){
                 return false;
             }
-
-            FileUtils.Recycle(kn5File);
-            kn5.SaveAll(kn5File);
+            
+            kn5.Save(kn5File);
             return true;
         }
 

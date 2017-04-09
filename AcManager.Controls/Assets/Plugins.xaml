@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="clr-namespace:AcManager.Controls" mc:Ignorable="d">
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -8,8 +9,8 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="PluginItemTemplate" DataType="t:PluginEntry">
-        <StackPanel Margin="0 0 20 20" IsEnabled="{Binding CanWork}">
-            <DockPanel>
+        <StackPanel Margin="0 0 20 20">
+            <DockPanel IsEnabled="{Binding CanWork}">
                 <!--enabling checkbox-->
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding IsEnabled}" Margin="0 0 4 0"
                         Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -47,27 +48,27 @@
                 </TextBlock>
             </DockPanel>
 
-            <StackPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <!--installation button-->
-                <Button Command="{Binding InstallCommand}" Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="{Binding DisplaySize, StringFormat={x:Static c:ControlsStrings.Plugins_DownloadAndInstall}}" />
-                </Button>
-
-                <!--cancel button-->
-                <Button Command="{Binding CancellationCommand}"
-                        Visibility="{Binding InstallationInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="2 1 2 3">
-                    <Grid>
-                        <TextBlock Text="Cancel" TextAlignment="Center" VerticalAlignment="Center" />
-                        <ProgressBar Height="2" Minimum="0" Maximum="1" Value="{Binding DownloadProgress}"
+            <mui:Switch Value="{Binding InstallationInProgress}" Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button mui:Switch.When="True" Command="{Binding CancellationCommand}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        Padding="2 1 2 3">
+                    <mui:Cell>
+                        <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding DownloadProgress}"
                                 IsIndeterminate="{Binding DownloadProgressIndeterminate}" VerticalAlignment="Bottom" Margin="0" DockPanel.Dock="Bottom" />
-                    </Grid>
+                        <TextBlock Text="Cancel" TextAlignment="Center" VerticalAlignment="Center" Margin="2" />
+                    </mui:Cell>
                 </Button>
 
-                <!--update button-->
-                <Button Visibility="{Binding HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Content="{Binding Version, StringFormat={x:Static c:ControlsStrings.Plugins_Update}}" />
-            </StackPanel>
+                <mui:Switch Value="{Binding HasUpdate}" Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <!--update button-->
+                    <Button mui:Switch.When="True" Command="{Binding InstallCommand}" Content="{Binding Version}"
+                            ContentStringFormat="{x:Static c:ControlsStrings.Plugins_Update}" />
+
+                    <!--installation button-->
+                    <Button Command="{Binding InstallCommand}" Content="{Binding DisplaySize}"
+                            ContentStringFormat="{x:Static c:ControlsStrings.Plugins_DownloadAndInstall}"
+                            Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </mui:Switch>
+            </mui:Switch>
         </StackPanel>
     </DataTemplate>
 </ResourceDictionary>

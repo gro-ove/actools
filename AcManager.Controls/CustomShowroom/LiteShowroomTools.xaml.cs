@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
@@ -29,7 +27,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -48,31 +45,9 @@ namespace AcManager.Controls.CustomShowroom {
             Buttons = new Button[0];
 
             this.OnActualUnload(() => {
+                Model.Renderer = null;
                 Model.Dispose();
             });
-        }
-
-        private DispatcherTimer _timer;
-
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_timer != null) return;
-            _timer = new DispatcherTimer {
-                Interval = TimeSpan.FromMilliseconds(300),
-                IsEnabled = true
-            };
-            _timer.Tick += Timer_Tick;
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            Model.Renderer = null;
-
-            if (_timer == null) return;
-            _timer.Stop();
-            _timer = null;
-        }
-
-        private void Timer_Tick(object sender, EventArgs e) {
-            Model.OnTick();
         }
 
         public ViewModel Model => (ViewModel)DataContext;
@@ -192,9 +167,8 @@ namespace AcManager.Controls.CustomShowroom {
                 if (renderer == null) throw new ArgumentNullException(nameof(renderer));
 
                 Renderer = renderer;
-                renderer.PropertyChanged += Renderer_PropertyChanged;
-                Renderer_CarNodeUpdated();
-                renderer.Tick += Renderer_Tick;
+                renderer.PropertyChanged += OnRendererPropertyChanged;
+                OnCarNodeUpdated();
 
                 Car = carObject;
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
@@ -233,7 +207,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             private INotifyPropertyChanged _carNode;
 
-            private void Renderer_CarNodeUpdated() {
+            private void OnCarNodeUpdated() {
                 if (_carNode != null) {
                     _carNode.PropertyChanged -= CarNode_PropertyChanged;
                 }
@@ -251,35 +225,37 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private void Renderer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
-                        SaveLater();
+                        ActionExtension.InvokeInMainThread(SaveLater);
                         break;
 
                     case nameof(Renderer.CarNode):
-                        Renderer_CarNodeUpdated();
+                        ActionExtension.InvokeInMainThread(OnCarNodeUpdated);
                         break;
 
                     case nameof(Renderer.SelectedObject):
-                        Mode = Renderer?.SelectedObject != null ? Mode.Selected : Mode.Main;
-                        _viewObjectCommand?.RaiseCanExecuteChanged();
+                        ActionExtension.InvokeInMainThread(() => {
+                            Mode = Renderer?.SelectedObject != null ? Mode.Selected : Mode.Main;
+                            _viewObjectCommand?.RaiseCanExecuteChanged();
+                        });
                         break;
 
                     case nameof(Renderer.SelectedMaterial):
-                        _viewMaterialCommand?.RaiseCanExecuteChanged();
+                        ActionExtension.InvokeInMainThread(() => {
+                            _viewMaterialCommand?.RaiseCanExecuteChanged();
+                        });
                         break;
 
                     case nameof(Renderer.AmbientShadowSizeChanged):
-                        _ambientShadowSizeSaveCommand?.RaiseCanExecuteChanged();
-                        _ambientShadowSizeResetCommand?.RaiseCanExecuteChanged();
+                        ActionExtension.InvokeInMainThread(() => {
+                            _ambientShadowSizeSaveCommand?.RaiseCanExecuteChanged();
+                            _ambientShadowSizeResetCommand?.RaiseCanExecuteChanged();
+                        });
                         break;
                 }
             }
-
-            private void Renderer_Tick(object sender, AcTools.Render.Base.TickEventArgs args) { }
-
-            public void OnTick() { }
 
             private DelegateCommand _mainModeCommand;
 
@@ -460,7 +436,6 @@ namespace AcManager.Controls.CustomShowroom {
                         });
 
                         waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Reloading);
-                        GC.Collect();
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.CustomShowroom_AmbientShadows_CannotUpdate, e);
@@ -639,9 +614,10 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer?.Kn5 == null) return;
-                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName) {
-                    Owner = null
-                }.ShowDialog();
+                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
+                        Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue) {
+                            Owner = null
+                        }.ShowDialog();
             }, o => o != null));
             #endregion
 

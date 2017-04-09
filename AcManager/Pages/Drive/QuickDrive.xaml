@@ -8,6 +8,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -128,7 +129,13 @@
                         </Border>
                         <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
                     </DockPanel>
-                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}" />
+                    <mui:BetterComboBox Margin="4 0 4 0" IsEditable="False" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </mui:BetterComboBox>
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
@@ -209,8 +216,23 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <mui:SpacingStackPanel Width="160" Margin="0 0 20 0" Spacing="8">
-                <c:UserPresetsControl UserPresetable="{Binding AssistsViewModel}" ShowSaveButton="False" />
+            <mui:SpacingStackPanel Width="180" Margin="0 0 20 0" Spacing="8">
+                <c:BestLapsList CarId="{Binding SelectedCar.Id}" TrackId="{Binding SelectedTrack.IdWithLayout}" />
+                <TextBlock Text="Best lap on this track:" Style="{StaticResource Label}" />
+                <c:BestLapsList TrackId="{Binding SelectedTrack.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
+
+                <DockPanel Margin="0 20 0 0">
+                    <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…" 
+                            Text="{Binding SelectedCar.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
+                    <TextBlock Text="Driven in car:" Style="{StaticResource Label}" />
+                </DockPanel>
+                <DockPanel>
+                    <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…"
+                            Text="{Binding SelectedTrack.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
+                    <TextBlock Text="Driven on track:" Style="{StaticResource Label}" />
+                </DockPanel>
+
+                <c:UserPresetsControl UserPresetable="{Binding AssistsViewModel}" ShowSaveButton="False" Margin="0 20 0 0" />
 
                 <DockPanel DataContext="{Binding AssistsViewModel}">
                     <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">

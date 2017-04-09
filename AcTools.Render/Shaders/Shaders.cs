@@ -40,7 +40,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(StandartMaterial value){
-				 SlimDxExtension.Set(_v, value, StandartMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
 
@@ -61,7 +61,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(ReflectiveMaterial value){
-				 SlimDxExtension.Set(_v, value, ReflectiveMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
 
@@ -83,7 +83,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(MapsMaterial value){
-				 SlimDxExtension.Set(_v, value, MapsMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
 
@@ -102,7 +102,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(AlphaMaterial value){
-				 SlimDxExtension.Set(_v, value, AlphaMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
 
@@ -122,7 +122,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(NmUvMultMaterial value){
-				 SlimDxExtension.Set(_v, value, NmUvMultMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
 
@@ -142,14 +142,15 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
+		public EffectReadyTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
 
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectOnlyMatrixArrayVariable FxShadowViewProj { get; private set; }
 		public EffectOnlyMatrixArrayVariable FxBoneTransforms { get; private set; }
-		public EffectResourceVariable FxNoiseMap, FxShadowMaps, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap, FxReflectionCubemap;
+		public EffectOnlyResourceVariable FxNoiseMap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap, FxReflectionCubemap;
+		public EffectOnlyResourceArrayVariable FxShadowMaps;
 		public EffectScalarVariable FxGPassTransparent, FxGPassAlphaThreshold, FxNumSplits, FxPcssEnabled, FxFlatMirrored, FxReflectionPower, FxAoPower, FxCubemapReflections, FxCubemapAmbient, FxFlatMirrorPower;
 		public EffectVectorVariable FxPcssScale { get; private set; }
 		public EffectVectorVariable FxShadowMapSize { get; private set; }
@@ -170,44 +171,44 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DarkMaterial");
 			E = new Effect(device, _b);
 
-			TechGPass_Standard = E.GetTechniqueByName("GPass_Standard");
-			TechGPass_Alpha = E.GetTechniqueByName("GPass_Alpha");
-			TechGPass_Reflective = E.GetTechniqueByName("GPass_Reflective");
-			TechGPass_Nm = E.GetTechniqueByName("GPass_Nm");
-			TechGPass_NmUvMult = E.GetTechniqueByName("GPass_NmUvMult");
-			TechGPass_AtNm = E.GetTechniqueByName("GPass_AtNm");
-			TechGPass_Maps = E.GetTechniqueByName("GPass_Maps");
-			TechGPass_SkinnedMaps = E.GetTechniqueByName("GPass_SkinnedMaps");
-			TechGPass_DiffMaps = E.GetTechniqueByName("GPass_DiffMaps");
-			TechGPass_Gl = E.GetTechniqueByName("GPass_Gl");
-			TechGPass_SkinnedGl = E.GetTechniqueByName("GPass_SkinnedGl");
-			TechGPass_FlatMirror = E.GetTechniqueByName("GPass_FlatMirror");
-			TechGPass_Debug = E.GetTechniqueByName("GPass_Debug");
-			TechGPass_SkinnedDebug = E.GetTechniqueByName("GPass_SkinnedDebug");
-			TechStandard = E.GetTechniqueByName("Standard");
-			TechSky = E.GetTechniqueByName("Sky");
-			TechAlpha = E.GetTechniqueByName("Alpha");
-			TechReflective = E.GetTechniqueByName("Reflective");
-			TechNm = E.GetTechniqueByName("Nm");
-			TechNmUvMult = E.GetTechniqueByName("NmUvMult");
-			TechAtNm = E.GetTechniqueByName("AtNm");
-			TechMaps = E.GetTechniqueByName("Maps");
-			TechSkinnedMaps = E.GetTechniqueByName("SkinnedMaps");
-			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
-			TechGl = E.GetTechniqueByName("Gl");
-			TechSkinnedGl = E.GetTechniqueByName("SkinnedGl");
-			TechWindscreen = E.GetTechniqueByName("Windscreen");
-			TechCollider = E.GetTechniqueByName("Collider");
-			TechDebug = E.GetTechniqueByName("Debug");
-			TechSkinnedDebug = E.GetTechniqueByName("SkinnedDebug");
-			TechDepthOnly = E.GetTechniqueByName("DepthOnly");
-			TechSkinnedDepthOnly = E.GetTechniqueByName("SkinnedDepthOnly");
-			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
-			TechMirror = E.GetTechniqueByName("Mirror");
-			TechFlatMirror = E.GetTechniqueByName("FlatMirror");
-			TechFlatTextureMirror = E.GetTechniqueByName("FlatTextureMirror");
-			TechFlatBackgroundGround = E.GetTechniqueByName("FlatBackgroundGround");
-			TechFlatAmbientGround = E.GetTechniqueByName("FlatAmbientGround");
+			TechGPass_Standard = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Standard"));
+			TechGPass_Alpha = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Alpha"));
+			TechGPass_Reflective = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Reflective"));
+			TechGPass_Nm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Nm"));
+			TechGPass_NmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("GPass_NmUvMult"));
+			TechGPass_AtNm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_AtNm"));
+			TechGPass_Maps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Maps"));
+			TechGPass_SkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedMaps"));
+			TechGPass_DiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_DiffMaps"));
+			TechGPass_Gl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Gl"));
+			TechGPass_SkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedGl"));
+			TechGPass_FlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("GPass_FlatMirror"));
+			TechGPass_Debug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Debug"));
+			TechGPass_SkinnedDebug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedDebug"));
+			TechStandard = new EffectReadyTechnique(E.GetTechniqueByName("Standard"));
+			TechSky = new EffectReadyTechnique(E.GetTechniqueByName("Sky"));
+			TechAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha"));
+			TechReflective = new EffectReadyTechnique(E.GetTechniqueByName("Reflective"));
+			TechNm = new EffectReadyTechnique(E.GetTechniqueByName("Nm"));
+			TechNmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("NmUvMult"));
+			TechAtNm = new EffectReadyTechnique(E.GetTechniqueByName("AtNm"));
+			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechSkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedMaps"));
+			TechDiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("DiffMaps"));
+			TechGl = new EffectReadyTechnique(E.GetTechniqueByName("Gl"));
+			TechSkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedGl"));
+			TechWindscreen = new EffectReadyTechnique(E.GetTechniqueByName("Windscreen"));
+			TechCollider = new EffectReadyTechnique(E.GetTechniqueByName("Collider"));
+			TechDebug = new EffectReadyTechnique(E.GetTechniqueByName("Debug"));
+			TechSkinnedDebug = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedDebug"));
+			TechDepthOnly = new EffectReadyTechnique(E.GetTechniqueByName("DepthOnly"));
+			TechSkinnedDepthOnly = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedDepthOnly"));
+			TechAmbientShadow = new EffectReadyTechnique(E.GetTechniqueByName("AmbientShadow"));
+			TechMirror = new EffectReadyTechnique(E.GetTechniqueByName("Mirror"));
+			TechFlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatMirror"));
+			TechFlatTextureMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatTextureMirror"));
+			TechFlatBackgroundGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatBackgroundGround"));
+			TechFlatAmbientGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatAmbientGround"));
 
 			for (var i = 0; i < TechGPass_FlatMirror.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechGPass_FlatMirror.GetPassByIndex(i).Description.Signature;
@@ -230,15 +231,15 @@ namespace AcTools.Render.Shaders {
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
 			FxShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gShadowViewProj").AsMatrix());
 			FxBoneTransforms = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gBoneTransforms").AsMatrix());
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
-			FxShadowMaps = E.GetVariableByName("gShadowMaps").AsResource();
-			FxDiffuseMap = E.GetVariableByName("gDiffuseMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxMapsMap = E.GetVariableByName("gMapsMap").AsResource();
-			FxDetailsMap = E.GetVariableByName("gDetailsMap").AsResource();
-			FxDetailsNormalMap = E.GetVariableByName("gDetailsNormalMap").AsResource();
-			FxAoMap = E.GetVariableByName("gAoMap").AsResource();
-			FxReflectionCubemap = E.GetVariableByName("gReflectionCubemap").AsResource();
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxMapsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMapsMap").AsResource());
+			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap").AsResource());
+			FxDetailsNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsNormalMap").AsResource());
+			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap").AsResource());
+			FxReflectionCubemap = new EffectOnlyResourceVariable(E.GetVariableByName("gReflectionCubemap").AsResource());
+			FxShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gShadowMaps").AsResource());
 			FxGPassTransparent = E.GetVariableByName("gGPassTransparent").AsScalar();
 			FxGPassAlphaThreshold = E.GetVariableByName("gGPassAlphaThreshold").AsScalar();
 			FxNumSplits = E.GetVariableByName("gNumSplits").AsScalar();
@@ -298,7 +299,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(Material value){
-				 SlimDxExtension.Set(_v, value, Material.Stride);
+				 SlimDxExtension.SetObject(_v, value, Material.Stride);
 			}
         }
 
@@ -308,12 +309,12 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePNT;
         public InputLayout LayoutPNT;
 
-		public EffectTechnique TechPerPixel;
+		public EffectReadyTechnique TechPerPixel;
 
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxDiffuseMap;
+		public EffectOnlyResourceVariable FxDiffuseMap;
 		public EffectVectorVariable FxEyePosW { get; private set; }
 		public EffectStructMaterialVariable FxMaterial { get; private set; }
 
@@ -321,7 +322,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "KunosShader");
 			E = new Effect(device, _b);
 
-			TechPerPixel = E.GetTechniqueByName("PerPixel");
+			TechPerPixel = new EffectReadyTechnique(E.GetTechniqueByName("PerPixel"));
 
 			for (var i = 0; i < TechPerPixel.Description.PassCount && InputSignaturePNT == null; i++) {
 				InputSignaturePNT = TechPerPixel.GetPassByIndex(i).Description.Signature;
@@ -332,7 +333,7 @@ namespace AcTools.Render.Shaders {
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld").AsMatrix());
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
-			FxDiffuseMap = E.GetVariableByName("gDiffuseMap").AsResource();
+			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap").AsResource());
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
 			FxMaterial = new EffectStructMaterialVariable(E.GetVariableByName("gMaterial"));
 		}
@@ -354,9 +355,9 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechCopy, TechCopyHq, TechCopyNoAlpha, TechOverlay, TechShadow, TechDepth, TechFxaa;
+		public EffectReadyTechnique TechCopy, TechCut, TechCopyHq, TechCopyNoAlpha, TechOverlay, TechShadow, TechDepth, TechFxaa;
 
-		public EffectResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
+		public EffectOnlyResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
 		public EffectScalarVariable FxSizeMultipler;
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
@@ -364,13 +365,14 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBasic");
 			E = new Effect(device, _b);
 
-			TechCopy = E.GetTechniqueByName("Copy");
-			TechCopyHq = E.GetTechniqueByName("CopyHq");
-			TechCopyNoAlpha = E.GetTechniqueByName("CopyNoAlpha");
-			TechOverlay = E.GetTechniqueByName("Overlay");
-			TechShadow = E.GetTechniqueByName("Shadow");
-			TechDepth = E.GetTechniqueByName("Depth");
-			TechFxaa = E.GetTechniqueByName("Fxaa");
+			TechCopy = new EffectReadyTechnique(E.GetTechniqueByName("Copy"));
+			TechCut = new EffectReadyTechnique(E.GetTechniqueByName("Cut"));
+			TechCopyHq = new EffectReadyTechnique(E.GetTechniqueByName("CopyHq"));
+			TechCopyNoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("CopyNoAlpha"));
+			TechOverlay = new EffectReadyTechnique(E.GetTechniqueByName("Overlay"));
+			TechShadow = new EffectReadyTechnique(E.GetTechniqueByName("Shadow"));
+			TechDepth = new EffectReadyTechnique(E.GetTechniqueByName("Depth"));
+			TechFxaa = new EffectReadyTechnique(E.GetTechniqueByName("Fxaa"));
 
 			for (var i = 0; i < TechCopy.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechCopy.GetPassByIndex(i).Description.Signature;
@@ -378,9 +380,9 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpBasic, PT, Copy) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
-			FxOverlayMap = E.GetVariableByName("gOverlayMap").AsResource();
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap").AsResource());
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
 			FxSizeMultipler = E.GetVariableByName("gSizeMultipler").AsScalar();
 			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 		}
@@ -402,10 +404,10 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechGaussianBlur, TechFlatMirrorBlur, TechDarkSslrBlur0, TechReflectionGaussianBlur;
+		public EffectReadyTechnique TechGaussianBlur, TechFlatMirrorBlur, TechDarkSslrBlur0, TechReflectionGaussianBlur;
 
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
-		public EffectResourceVariable FxInputMap, FxFlatMirrorDepthMap, FxFlatMirrorNormalsMap, FxMapsMap;
+		public EffectOnlyResourceVariable FxInputMap, FxFlatMirrorDepthMap, FxFlatMirrorNormalsMap, FxMapsMap;
 		public EffectScalarVariable FxSampleWeights, FxPower;
 		public EffectVectorVariable FxSampleOffsets { get; private set; }
 		public EffectVectorVariable FxScreenSize { get; private set; }
@@ -414,10 +416,10 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBlur");
 			E = new Effect(device, _b);
 
-			TechGaussianBlur = E.GetTechniqueByName("GaussianBlur");
-			TechFlatMirrorBlur = E.GetTechniqueByName("FlatMirrorBlur");
-			TechDarkSslrBlur0 = E.GetTechniqueByName("DarkSslrBlur0");
-			TechReflectionGaussianBlur = E.GetTechniqueByName("ReflectionGaussianBlur");
+			TechGaussianBlur = new EffectReadyTechnique(E.GetTechniqueByName("GaussianBlur"));
+			TechFlatMirrorBlur = new EffectReadyTechnique(E.GetTechniqueByName("FlatMirrorBlur"));
+			TechDarkSslrBlur0 = new EffectReadyTechnique(E.GetTechniqueByName("DarkSslrBlur0"));
+			TechReflectionGaussianBlur = new EffectReadyTechnique(E.GetTechniqueByName("ReflectionGaussianBlur"));
 
 			for (var i = 0; i < TechGaussianBlur.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechGaussianBlur.GetPassByIndex(i).Description.Signature;
@@ -426,10 +428,10 @@ namespace AcTools.Render.Shaders {
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
 			FxWorldViewProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProjInv").AsMatrix());
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
-			FxFlatMirrorDepthMap = E.GetVariableByName("gFlatMirrorDepthMap").AsResource();
-			FxFlatMirrorNormalsMap = E.GetVariableByName("gFlatMirrorNormalsMap").AsResource();
-			FxMapsMap = E.GetVariableByName("gMapsMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxFlatMirrorDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFlatMirrorDepthMap").AsResource());
+			FxFlatMirrorNormalsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFlatMirrorNormalsMap").AsResource());
+			FxMapsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMapsMap").AsResource());
 			FxSampleWeights = E.GetVariableByName("gSampleWeights").AsScalar();
 			FxPower = E.GetVariableByName("gPower").AsScalar();
 			FxSampleOffsets = E.GetVariableByName("gSampleOffsets").AsVector();
@@ -453,21 +455,21 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechSslr, TechFinalStep;
+		public EffectReadyTechnique TechSslr, TechFinalStep;
 
 		public EffectOnlyMatrixVariable FxCameraProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxCameraProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDarkSslr");
 			E = new Effect(device, _b);
 
-			TechSslr = E.GetTechniqueByName("Sslr");
-			TechFinalStep = E.GetTechniqueByName("FinalStep");
+			TechSslr = new EffectReadyTechnique(E.GetTechniqueByName("Sslr"));
+			TechFinalStep = new EffectReadyTechnique(E.GetTechniqueByName("FinalStep"));
 
 			for (var i = 0; i < TechSslr.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechSslr.GetPassByIndex(i).Description.Signature;
@@ -479,12 +481,12 @@ namespace AcTools.Render.Shaders {
 			FxCameraProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gCameraProj").AsMatrix());
 			FxWorldViewProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProjInv").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
-			FxDiffuseMap = E.GetVariableByName("gDiffuseMap").AsResource();
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxBaseReflectionMap = E.GetVariableByName("gBaseReflectionMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
-			FxFirstStepMap = E.GetVariableByName("gFirstStepMap").AsResource();
+			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap").AsResource());
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxBaseReflectionMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBaseReflectionMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
 		}
 
@@ -504,9 +506,9 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechCopy, TechFound, TechAverage, TechAnisotropic, TechBicubic;
+		public EffectReadyTechnique TechCopy, TechAverage, TechAnisotropic;
 
-		public EffectResourceVariable FxInputMap;
+		public EffectOnlyResourceVariable FxInputMap;
 		public EffectVectorVariable FxScreenSize { get; private set; }
 		public EffectVectorVariable FxMultipler { get; private set; }
 
@@ -514,11 +516,9 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDownsample");
 			E = new Effect(device, _b);
 
-			TechCopy = E.GetTechniqueByName("Copy");
-			TechFound = E.GetTechniqueByName("Found");
-			TechAverage = E.GetTechniqueByName("Average");
-			TechAnisotropic = E.GetTechniqueByName("Anisotropic");
-			TechBicubic = E.GetTechniqueByName("Bicubic");
+			TechCopy = new EffectReadyTechnique(E.GetTechniqueByName("Copy"));
+			TechAverage = new EffectReadyTechnique(E.GetTechniqueByName("Average"));
+			TechAnisotropic = new EffectReadyTechnique(E.GetTechniqueByName("Anisotropic"));
 
 			for (var i = 0; i < TechCopy.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechCopy.GetPassByIndex(i).Description.Signature;
@@ -526,7 +526,7 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpDownsample, PT, Copy) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
 			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 			FxMultipler = E.GetVariableByName("gMultipler").AsVector();
 		}
@@ -548,9 +548,9 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechColorGrading, TechCombine_ToneReinhard, TechCombine_ToneFilmic, TechCombine_ToneFilmicReinhard, TechCombine, TechBloom, TechBloomHighThreshold;
+		public EffectReadyTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechColorGrading, TechCombine_ToneReinhard, TechCombine_ToneFilmic, TechCombine_ToneFilmicReinhard, TechCombine, TechBloom, TechBloomHighThreshold;
 
-		public EffectResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap, FxColorGradingMap;
+		public EffectOnlyResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap, FxColorGradingMap;
 		public EffectVectorVariable FxPixel { get; private set; }
 		public EffectVectorVariable FxCropImage { get; private set; }
 		public EffectVectorVariable FxParams { get; private set; }
@@ -559,17 +559,17 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHdr");
 			E = new Effect(device, _b);
 
-			TechDownsampling = E.GetTechniqueByName("Downsampling");
-			TechAdaptation = E.GetTechniqueByName("Adaptation");
-			TechTonemap = E.GetTechniqueByName("Tonemap");
-			TechCopy = E.GetTechniqueByName("Copy");
-			TechColorGrading = E.GetTechniqueByName("ColorGrading");
-			TechCombine_ToneReinhard = E.GetTechniqueByName("Combine_ToneReinhard");
-			TechCombine_ToneFilmic = E.GetTechniqueByName("Combine_ToneFilmic");
-			TechCombine_ToneFilmicReinhard = E.GetTechniqueByName("Combine_ToneFilmicReinhard");
-			TechCombine = E.GetTechniqueByName("Combine");
-			TechBloom = E.GetTechniqueByName("Bloom");
-			TechBloomHighThreshold = E.GetTechniqueByName("BloomHighThreshold");
+			TechDownsampling = new EffectReadyTechnique(E.GetTechniqueByName("Downsampling"));
+			TechAdaptation = new EffectReadyTechnique(E.GetTechniqueByName("Adaptation"));
+			TechTonemap = new EffectReadyTechnique(E.GetTechniqueByName("Tonemap"));
+			TechCopy = new EffectReadyTechnique(E.GetTechniqueByName("Copy"));
+			TechColorGrading = new EffectReadyTechnique(E.GetTechniqueByName("ColorGrading"));
+			TechCombine_ToneReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneReinhard"));
+			TechCombine_ToneFilmic = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneFilmic"));
+			TechCombine_ToneFilmicReinhard = new EffectReadyTechnique(E.GetTechniqueByName("Combine_ToneFilmicReinhard"));
+			TechCombine = new EffectReadyTechnique(E.GetTechniqueByName("Combine"));
+			TechBloom = new EffectReadyTechnique(E.GetTechniqueByName("Bloom"));
+			TechBloomHighThreshold = new EffectReadyTechnique(E.GetTechniqueByName("BloomHighThreshold"));
 
 			for (var i = 0; i < TechDownsampling.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechDownsampling.GetPassByIndex(i).Description.Signature;
@@ -577,10 +577,10 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpHdr, PT, Downsampling) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
-			FxBrightnessMap = E.GetVariableByName("gBrightnessMap").AsResource();
-			FxBloomMap = E.GetVariableByName("gBloomMap").AsResource();
-			FxColorGradingMap = E.GetVariableByName("gColorGradingMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxBrightnessMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBrightnessMap").AsResource());
+			FxBloomMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBloomMap").AsResource());
+			FxColorGradingMap = new EffectOnlyResourceVariable(E.GetVariableByName("gColorGradingMap").AsResource());
 			FxPixel = E.GetVariableByName("gPixel").AsVector();
 			FxCropImage = E.GetVariableByName("gCropImage").AsVector();
 			FxParams = E.GetVariableByName("gParams").AsVector();
@@ -602,15 +602,15 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechGhosts;
+		public EffectReadyTechnique TechGhosts;
 
-		public EffectResourceVariable FxInputMap;
+		public EffectOnlyResourceVariable FxInputMap;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpLensFlares");
 			E = new Effect(device, _b);
 
-			TechGhosts = E.GetTechniqueByName("Ghosts");
+			TechGhosts = new EffectReadyTechnique(E.GetTechniqueByName("Ghosts"));
 
 			for (var i = 0; i < TechGhosts.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechGhosts.GetPassByIndex(i).Description.Signature;
@@ -618,7 +618,7 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpLensFlares, PT, Ghosts) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
 		}
 
         public void Dispose() {
@@ -638,16 +638,16 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechOutline;
+		public EffectReadyTechnique TechOutline;
 
-		public EffectResourceVariable FxInputMap, FxDepthMap;
+		public EffectOnlyResourceVariable FxInputMap, FxDepthMap;
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpOutline");
 			E = new Effect(device, _b);
 
-			TechOutline = E.GetTechniqueByName("Outline");
+			TechOutline = new EffectReadyTechnique(E.GetTechniqueByName("Outline"));
 
 			for (var i = 0; i < TechOutline.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechOutline.GetPassByIndex(i).Description.Signature;
@@ -655,8 +655,8 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpOutline, PT, Outline) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
 			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 		}
 
@@ -678,9 +678,9 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechBlurH, TechBlurV;
+		public EffectReadyTechnique TechBlurH, TechBlurV;
 
-		public EffectResourceVariable FxDepthMap, FxNormalMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxFirstStepMap;
 		public EffectScalarVariable FxWeights;
 		public EffectVectorVariable FxSourcePixel { get; private set; }
 		public EffectVectorVariable FxNearFarValue { get; private set; }
@@ -689,8 +689,8 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpAoBlur");
 			E = new Effect(device, _b);
 
-			TechBlurH = E.GetTechniqueByName("BlurH");
-			TechBlurV = E.GetTechniqueByName("BlurV");
+			TechBlurH = new EffectReadyTechnique(E.GetTechniqueByName("BlurH"));
+			TechBlurV = new EffectReadyTechnique(E.GetTechniqueByName("BlurV"));
 
 			for (var i = 0; i < TechBlurH.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechBlurH.GetPassByIndex(i).Description.Signature;
@@ -698,9 +698,9 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePT == null) throw new System.Exception("input signature (PpAoBlur, PT, BlurH) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxFirstStepMap = E.GetVariableByName("gFirstStepMap").AsResource();
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxWeights = E.GetVariableByName("gWeights").AsScalar();
 			FxSourcePixel = E.GetVariableByName("gSourcePixel").AsVector();
 			FxNearFarValue = E.GetVariableByName("gNearFarValue").AsVector();
@@ -762,7 +762,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(ASSAOConstants value){
-				 SlimDxExtension.Set(_v, value, ASSAOConstants.Stride);
+				 SlimDxExtension.SetObject(_v, value, ASSAOConstants.Stride);
 			}
         }
 
@@ -777,14 +777,14 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechPrepareDepth, TechAssao;
+		public EffectReadyTechnique TechPrepareDepth, TechAssao;
 
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectOnlyMatrixVariable FxProj { get; private set; }
 		public EffectOnlyMatrixVariable FxProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxNormalsToViewSpace { get; private set; }
-		public EffectResourceVariable Fx_DepthSource, Fx_NormalmapSource, Fx_ViewspaceDepthSource, Fx_ViewspaceDepthSource1, Fx_ViewspaceDepthSource2, Fx_ViewspaceDepthSource3, Fx_ImportanceMap, Fx_LoadCounter, Fx_BlurInput, FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable Fx_DepthSource, Fx_NormalmapSource, Fx_ViewspaceDepthSource, Fx_ViewspaceDepthSource1, Fx_ViewspaceDepthSource2, Fx_ViewspaceDepthSource3, Fx_ImportanceMap, Fx_LoadCounter, Fx_BlurInput, FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
 		public EffectVectorVariable FxViewFrustumVectors { get; private set; }
 		public EffectStructASSAOConstantsVariable Fx_ASSAOConsts { get; private set; }
 
@@ -792,8 +792,8 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpAssao");
 			E = new Effect(device, _b);
 
-			TechPrepareDepth = E.GetTechniqueByName("PrepareDepth");
-			TechAssao = E.GetTechniqueByName("Assao");
+			TechPrepareDepth = new EffectReadyTechnique(E.GetTechniqueByName("PrepareDepth"));
+			TechAssao = new EffectReadyTechnique(E.GetTechniqueByName("Assao"));
 
 			for (var i = 0; i < TechPrepareDepth.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechPrepareDepth.GetPassByIndex(i).Description.Signature;
@@ -806,20 +806,20 @@ namespace AcTools.Render.Shaders {
 			FxProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gProj").AsMatrix());
 			FxProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gProjInv").AsMatrix());
 			FxNormalsToViewSpace = new EffectOnlyMatrixVariable(E.GetVariableByName("gNormalsToViewSpace").AsMatrix());
-			Fx_DepthSource = E.GetVariableByName("g_DepthSource").AsResource();
-			Fx_NormalmapSource = E.GetVariableByName("g_NormalmapSource").AsResource();
-			Fx_ViewspaceDepthSource = E.GetVariableByName("g_ViewspaceDepthSource").AsResource();
-			Fx_ViewspaceDepthSource1 = E.GetVariableByName("g_ViewspaceDepthSource1").AsResource();
-			Fx_ViewspaceDepthSource2 = E.GetVariableByName("g_ViewspaceDepthSource2").AsResource();
-			Fx_ViewspaceDepthSource3 = E.GetVariableByName("g_ViewspaceDepthSource3").AsResource();
-			Fx_ImportanceMap = E.GetVariableByName("g_ImportanceMap").AsResource();
-			Fx_LoadCounter = E.GetVariableByName("g_LoadCounter").AsResource();
-			Fx_BlurInput = E.GetVariableByName("g_BlurInput").AsResource();
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
-			FxDitherMap = E.GetVariableByName("gDitherMap").AsResource();
-			FxFirstStepMap = E.GetVariableByName("gFirstStepMap").AsResource();
+			Fx_DepthSource = new EffectOnlyResourceVariable(E.GetVariableByName("g_DepthSource").AsResource());
+			Fx_NormalmapSource = new EffectOnlyResourceVariable(E.GetVariableByName("g_NormalmapSource").AsResource());
+			Fx_ViewspaceDepthSource = new EffectOnlyResourceVariable(E.GetVariableByName("g_ViewspaceDepthSource").AsResource());
+			Fx_ViewspaceDepthSource1 = new EffectOnlyResourceVariable(E.GetVariableByName("g_ViewspaceDepthSource1").AsResource());
+			Fx_ViewspaceDepthSource2 = new EffectOnlyResourceVariable(E.GetVariableByName("g_ViewspaceDepthSource2").AsResource());
+			Fx_ViewspaceDepthSource3 = new EffectOnlyResourceVariable(E.GetVariableByName("g_ViewspaceDepthSource3").AsResource());
+			Fx_ImportanceMap = new EffectOnlyResourceVariable(E.GetVariableByName("g_ImportanceMap").AsResource());
+			Fx_LoadCounter = new EffectOnlyResourceVariable(E.GetVariableByName("g_LoadCounter").AsResource());
+			Fx_BlurInput = new EffectOnlyResourceVariable(E.GetVariableByName("g_BlurInput").AsResource());
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxDitherMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDitherMap").AsResource());
+			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxViewFrustumVectors = E.GetVariableByName("gViewFrustumVectors").AsVector();
 			Fx_ASSAOConsts = new EffectStructASSAOConstantsVariable(E.GetVariableByName("g_ASSAOConsts"));
 		}
@@ -840,7 +840,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechHbao;
+		public EffectReadyTechnique TechHbao;
 
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxView { get; private set; }
@@ -849,7 +849,7 @@ namespace AcTools.Render.Shaders {
 		public EffectOnlyMatrixVariable FxProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxNormalsToViewSpace { get; private set; }
 		public EffectOnlyMatrixVariable FxProjectionMatrix { get; private set; }
-		public EffectResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
 		public EffectScalarVariable FxDitherScale;
 		public EffectVectorVariable FxViewFrustumVectors { get; private set; }
 		public EffectVectorVariable FxRenderTargetResolution { get; private set; }
@@ -859,7 +859,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHbao");
 			E = new Effect(device, _b);
 
-			TechHbao = E.GetTechniqueByName("Hbao");
+			TechHbao = new EffectReadyTechnique(E.GetTechniqueByName("Hbao"));
 
 			for (var i = 0; i < TechHbao.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechHbao.GetPassByIndex(i).Description.Signature;
@@ -874,11 +874,11 @@ namespace AcTools.Render.Shaders {
 			FxProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gProjInv").AsMatrix());
 			FxNormalsToViewSpace = new EffectOnlyMatrixVariable(E.GetVariableByName("gNormalsToViewSpace").AsMatrix());
 			FxProjectionMatrix = new EffectOnlyMatrixVariable(E.GetVariableByName("gProjectionMatrix").AsMatrix());
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
-			FxDitherMap = E.GetVariableByName("gDitherMap").AsResource();
-			FxFirstStepMap = E.GetVariableByName("gFirstStepMap").AsResource();
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxDitherMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDitherMap").AsResource());
+			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxDitherScale = E.GetVariableByName("gDitherScale").AsScalar();
 			FxViewFrustumVectors = E.GetVariableByName("gViewFrustumVectors").AsVector();
 			FxRenderTargetResolution = E.GetVariableByName("gRenderTargetResolution").AsVector();
@@ -906,13 +906,13 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechSsao, TechBlurH, TechBlurV;
+		public EffectReadyTechnique TechSsao, TechBlurH, TechBlurV;
 
 		public EffectOnlyMatrixVariable FxCameraProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxCameraProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
 		public EffectScalarVariable FxWeights;
 		public EffectVectorVariable FxSamplesKernel { get; private set; }
 		public EffectVectorVariable FxEyePosW { get; private set; }
@@ -924,9 +924,9 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpSsao");
 			E = new Effect(device, _b);
 
-			TechSsao = E.GetTechniqueByName("Ssao");
-			TechBlurH = E.GetTechniqueByName("BlurH");
-			TechBlurV = E.GetTechniqueByName("BlurV");
+			TechSsao = new EffectReadyTechnique(E.GetTechniqueByName("Ssao"));
+			TechBlurH = new EffectReadyTechnique(E.GetTechniqueByName("BlurH"));
+			TechBlurV = new EffectReadyTechnique(E.GetTechniqueByName("BlurV"));
 
 			for (var i = 0; i < TechSsao.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechSsao.GetPassByIndex(i).Description.Signature;
@@ -938,10 +938,10 @@ namespace AcTools.Render.Shaders {
 			FxCameraProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gCameraProj").AsMatrix());
 			FxWorldViewProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProjInv").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
-			FxFirstStepMap = E.GetVariableByName("gFirstStepMap").AsResource();
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxWeights = E.GetVariableByName("gWeights").AsScalar();
 			FxSamplesKernel = E.GetVariableByName("gSamplesKernel").AsVector();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
@@ -968,11 +968,11 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechSsaoVs;
+		public EffectReadyTechnique TechSsaoVs;
 
 		public EffectOnlyMatrixVariable FxViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxViewProj { get; private set; }
-		public EffectResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap;
+		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap;
 		public EffectVectorVariable FxSamplesKernel { get; private set; }
 		public EffectVectorVariable FxNoiseSize { get; private set; }
 
@@ -980,7 +980,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpSsaoAlt");
 			E = new Effect(device, _b);
 
-			TechSsaoVs = E.GetTechniqueByName("SsaoVs");
+			TechSsaoVs = new EffectReadyTechnique(E.GetTechniqueByName("SsaoVs"));
 
 			for (var i = 0; i < TechSsaoVs.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechSsaoVs.GetPassByIndex(i).Description.Signature;
@@ -990,9 +990,9 @@ namespace AcTools.Render.Shaders {
 
 			FxViewProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gViewProjInv").AsMatrix());
 			FxViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gViewProj").AsMatrix());
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxNoiseMap = E.GetVariableByName("gNoiseMap").AsResource();
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
 			FxSamplesKernel = E.GetVariableByName("gSamplesKernel").AsVector();
 			FxNoiseSize = E.GetVariableByName("gNoiseSize").AsVector();
 		}
@@ -1028,7 +1028,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(StandartMaterial value){
-				 SlimDxExtension.Set(_v, value, StandartMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
 
@@ -1049,7 +1049,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(ReflectiveMaterial value){
-				 SlimDxExtension.Set(_v, value, ReflectiveMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
 
@@ -1069,7 +1069,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(MapsMaterial value){
-				 SlimDxExtension.Set(_v, value, MapsMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
 
@@ -1088,7 +1088,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(AlphaMaterial value){
-				 SlimDxExtension.Set(_v, value, AlphaMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
 
@@ -1108,7 +1108,7 @@ namespace AcTools.Render.Shaders {
 			}
 
 			public void Set(NmUvMultMaterial value){
-				 SlimDxExtension.Set(_v, value, NmUvMultMaterial.Stride);
+				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
 
@@ -1125,12 +1125,12 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG;
         public InputLayout LayoutPT, LayoutPNTG;
 
-		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechDiffMaps, TechGl, TechAmbientShadow, TechMirror;
+		public EffectReadyTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechDiffMaps, TechGl, TechAmbientShadow, TechMirror;
 
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap;
+		public EffectOnlyResourceVariable FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap;
 		public EffectVectorVariable FxEyePosW { get; private set; }
 		public EffectStructStandartMaterialVariable FxMaterial { get; private set; }
 		public EffectStructReflectiveMaterialVariable FxReflectiveMaterial { get; private set; }
@@ -1142,17 +1142,17 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SimpleMaterial");
 			E = new Effect(device, _b);
 
-			TechStandard = E.GetTechniqueByName("Standard");
-			TechAlpha = E.GetTechniqueByName("Alpha");
-			TechReflective = E.GetTechniqueByName("Reflective");
-			TechNm = E.GetTechniqueByName("Nm");
-			TechNmUvMult = E.GetTechniqueByName("NmUvMult");
-			TechAtNm = E.GetTechniqueByName("AtNm");
-			TechMaps = E.GetTechniqueByName("Maps");
-			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
-			TechGl = E.GetTechniqueByName("Gl");
-			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
-			TechMirror = E.GetTechniqueByName("Mirror");
+			TechStandard = new EffectReadyTechnique(E.GetTechniqueByName("Standard"));
+			TechAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha"));
+			TechReflective = new EffectReadyTechnique(E.GetTechniqueByName("Reflective"));
+			TechNm = new EffectReadyTechnique(E.GetTechniqueByName("Nm"));
+			TechNmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("NmUvMult"));
+			TechAtNm = new EffectReadyTechnique(E.GetTechniqueByName("AtNm"));
+			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechDiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("DiffMaps"));
+			TechGl = new EffectReadyTechnique(E.GetTechniqueByName("Gl"));
+			TechAmbientShadow = new EffectReadyTechnique(E.GetTechniqueByName("AmbientShadow"));
+			TechMirror = new EffectReadyTechnique(E.GetTechniqueByName("Mirror"));
 
 			for (var i = 0; i < TechAmbientShadow.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechAmbientShadow.GetPassByIndex(i).Description.Signature;
@@ -1168,11 +1168,11 @@ namespace AcTools.Render.Shaders {
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld").AsMatrix());
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
-			FxDiffuseMap = E.GetVariableByName("gDiffuseMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
-			FxMapsMap = E.GetVariableByName("gMapsMap").AsResource();
-			FxDetailsMap = E.GetVariableByName("gDetailsMap").AsResource();
-			FxDetailsNormalMap = E.GetVariableByName("gDetailsNormalMap").AsResource();
+			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
+			FxMapsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMapsMap").AsResource());
+			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap").AsResource());
+			FxDetailsNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsNormalMap").AsResource());
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
 			FxMaterial = new EffectStructStandartMaterialVariable(E.GetVariableByName("gMaterial"));
 			FxReflectiveMaterial = new EffectStructReflectiveMaterialVariable(E.GetVariableByName("gReflectiveMaterial"));
@@ -1199,7 +1199,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePC;
         public InputLayout LayoutPC;
 
-		public EffectTechnique TechMain;
+		public EffectReadyTechnique TechMain;
 
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 
@@ -1207,7 +1207,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialDebugLines");
 			E = new Effect(device, _b);
 
-			TechMain = E.GetTechniqueByName("Main");
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
 
 			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePC == null; i++) {
 				InputSignaturePC = TechMain.GetPassByIndex(i).Description.Signature;
@@ -1234,15 +1234,15 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechMain, TechFlatNormalMap;
+		public EffectReadyTechnique TechMain, TechFlatNormalMap;
 
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialRandom");
 			E = new Effect(device, _b);
 
-			TechMain = E.GetTechniqueByName("Main");
-			TechFlatNormalMap = E.GetTechniqueByName("FlatNormalMap");
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
+			TechFlatNormalMap = new EffectReadyTechnique(E.GetTechniqueByName("FlatNormalMap"));
 
 			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechMain.GetPassByIndex(i).Description.Signature;
@@ -1268,13 +1268,13 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignatureP, InputSignaturePNTG;
         public InputLayout LayoutPT, LayoutP, LayoutPNTG;
 
-		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest, TechAo, TechAoResult, TechAoGrow;
+		public EffectReadyTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest, TechAo, TechAoResult, TechAoGrow;
 
 		public EffectOnlyMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
-		public EffectResourceVariable FxInputMap, FxDepthMap, FxNormalMap;
+		public EffectOnlyResourceVariable FxInputMap, FxDepthMap, FxNormalMap;
 		public EffectScalarVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxNormalUvMult;
 		public EffectVectorVariable FxSize { get; private set; }
 		public EffectVectorVariable FxShadowSize { get; private set; }
@@ -1284,14 +1284,14 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialShadow");
 			E = new Effect(device, _b);
 
-			TechHorizontalShadowBlur = E.GetTechniqueByName("HorizontalShadowBlur");
-			TechVerticalShadowBlur = E.GetTechniqueByName("VerticalShadowBlur");
-			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
-			TechResult = E.GetTechniqueByName("Result");
-			TechSimplest = E.GetTechniqueByName("Simplest");
-			TechAo = E.GetTechniqueByName("Ao");
-			TechAoResult = E.GetTechniqueByName("AoResult");
-			TechAoGrow = E.GetTechniqueByName("AoGrow");
+			TechHorizontalShadowBlur = new EffectReadyTechnique(E.GetTechniqueByName("HorizontalShadowBlur"));
+			TechVerticalShadowBlur = new EffectReadyTechnique(E.GetTechniqueByName("VerticalShadowBlur"));
+			TechAmbientShadow = new EffectReadyTechnique(E.GetTechniqueByName("AmbientShadow"));
+			TechResult = new EffectReadyTechnique(E.GetTechniqueByName("Result"));
+			TechSimplest = new EffectReadyTechnique(E.GetTechniqueByName("Simplest"));
+			TechAo = new EffectReadyTechnique(E.GetTechniqueByName("Ao"));
+			TechAoResult = new EffectReadyTechnique(E.GetTechniqueByName("AoResult"));
+			TechAoGrow = new EffectReadyTechnique(E.GetTechniqueByName("AoGrow"));
 
 			for (var i = 0; i < TechHorizontalShadowBlur.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechHorizontalShadowBlur.GetPassByIndex(i).Description.Signature;
@@ -1313,9 +1313,9 @@ namespace AcTools.Render.Shaders {
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld").AsMatrix());
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
-			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
-			FxNormalMap = E.GetVariableByName("gNormalMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
 			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
 			FxGamma = E.GetVariableByName("gGamma").AsScalar();
 			FxCount = E.GetVariableByName("gCount").AsScalar();
@@ -1349,22 +1349,22 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignatureP, InputSignaturePT;
         public InputLayout LayoutP, LayoutPT;
 
-		public EffectTechnique TechMain, TechPp, TechFinal, TechFinalCheckers, TechPpHorizontalBlur, TechPpVerticalBlur;
+		public EffectReadyTechnique TechMain, TechPp, TechFinal, TechFinalCheckers, TechPpHorizontalBlur, TechPpVerticalBlur;
 
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxInputMap;
+		public EffectOnlyResourceVariable FxInputMap;
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialTrackMap");
 			E = new Effect(device, _b);
 
-			TechMain = E.GetTechniqueByName("Main");
-			TechPp = E.GetTechniqueByName("Pp");
-			TechFinal = E.GetTechniqueByName("Final");
-			TechFinalCheckers = E.GetTechniqueByName("FinalCheckers");
-			TechPpHorizontalBlur = E.GetTechniqueByName("PpHorizontalBlur");
-			TechPpVerticalBlur = E.GetTechniqueByName("PpVerticalBlur");
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
+			TechPp = new EffectReadyTechnique(E.GetTechniqueByName("Pp"));
+			TechFinal = new EffectReadyTechnique(E.GetTechniqueByName("Final"));
+			TechFinalCheckers = new EffectReadyTechnique(E.GetTechniqueByName("FinalCheckers"));
+			TechPpHorizontalBlur = new EffectReadyTechnique(E.GetTechniqueByName("PpHorizontalBlur"));
+			TechPpVerticalBlur = new EffectReadyTechnique(E.GetTechniqueByName("PpVerticalBlur"));
 
 			for (var i = 0; i < TechMain.Description.PassCount && InputSignatureP == null; i++) {
 				InputSignatureP = TechMain.GetPassByIndex(i).Description.Signature;
@@ -1378,7 +1378,7 @@ namespace AcTools.Render.Shaders {
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
-			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
 			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 		}
 
@@ -1393,6 +1393,68 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
+	public class EffectSpecialTrackOutline : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT, InputSignatureP;
+        public InputLayout LayoutPT, LayoutP;
+
+		public EffectReadyTechnique TechFirstStep, TechExtraWidth, TechShadow, TechCombine, TechBlend, TechFinal, TechFinalBg, TechFinalCheckers, TechFirstStepObj;
+
+		public EffectOnlyMatrixVariable FxMatrix { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyResourceVariable FxInputMap, FxBgMap;
+		public EffectScalarVariable FxExtraWidth, FxDropShadowRadius;
+		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxBlendColor { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialTrackOutline");
+			E = new Effect(device, _b);
+
+			TechFirstStep = new EffectReadyTechnique(E.GetTechniqueByName("FirstStep"));
+			TechExtraWidth = new EffectReadyTechnique(E.GetTechniqueByName("ExtraWidth"));
+			TechShadow = new EffectReadyTechnique(E.GetTechniqueByName("Shadow"));
+			TechCombine = new EffectReadyTechnique(E.GetTechniqueByName("Combine"));
+			TechBlend = new EffectReadyTechnique(E.GetTechniqueByName("Blend"));
+			TechFinal = new EffectReadyTechnique(E.GetTechniqueByName("Final"));
+			TechFinalBg = new EffectReadyTechnique(E.GetTechniqueByName("FinalBg"));
+			TechFinalCheckers = new EffectReadyTechnique(E.GetTechniqueByName("FinalCheckers"));
+			TechFirstStepObj = new EffectReadyTechnique(E.GetTechniqueByName("FirstStepObj"));
+
+			for (var i = 0; i < TechExtraWidth.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechExtraWidth.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialTrackOutline, PT, ExtraWidth) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+			for (var i = 0; i < TechFirstStepObj.Description.PassCount && InputSignatureP == null; i++) {
+				InputSignatureP = TechFirstStepObj.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignatureP == null) throw new System.Exception("input signature (SpecialTrackOutline, P, FirstStepObj) == null");
+			LayoutP = new InputLayout(device, InputSignatureP, InputLayouts.VerticeP.InputElementsValue);
+
+			FxMatrix = new EffectOnlyMatrixVariable(E.GetVariableByName("gMatrix").AsMatrix());
+			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxBgMap = new EffectOnlyResourceVariable(E.GetVariableByName("gBgMap").AsResource());
+			FxExtraWidth = E.GetVariableByName("gExtraWidth").AsScalar();
+			FxDropShadowRadius = E.GetVariableByName("gDropShadowRadius").AsScalar();
+			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
+			FxBlendColor = E.GetVariableByName("gBlendColor").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+			InputSignatureP.Dispose();
+            LayoutP.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
 	public class EffectSpecialUv : IEffectWrapper {
 		private ShaderBytecode _b;
 		public Effect E;
@@ -1400,7 +1462,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePNTG;
         public InputLayout LayoutPNTG;
 
-		public EffectTechnique TechMain;
+		public EffectReadyTechnique TechMain;
 
 		public EffectVectorVariable FxOffset { get; private set; }
 
@@ -1408,7 +1470,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialUv");
 			E = new Effect(device, _b);
 
-			TechMain = E.GetTechniqueByName("Main");
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
 
 			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePNTG == null; i++) {
 				InputSignaturePNTG = TechMain.GetPassByIndex(i).Description.Signature;
@@ -1435,15 +1497,15 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignatureSpriteSpecific;
         public InputLayout LayoutSpriteSpecific;
 
-		public EffectTechnique TechRender;
+		public EffectReadyTechnique TechRender;
 
-		public EffectResourceVariable FxTex;
+		public EffectOnlyResourceVariable FxTex;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpriteShader");
 			E = new Effect(device, _b);
 
-			TechRender = E.GetTechniqueByName("Render");
+			TechRender = new EffectReadyTechnique(E.GetTechniqueByName("Render"));
 
 			for (var i = 0; i < TechRender.Description.PassCount && InputSignatureSpriteSpecific == null; i++) {
 				InputSignatureSpriteSpecific = TechRender.GetPassByIndex(i).Description.Signature;
@@ -1451,7 +1513,7 @@ namespace AcTools.Render.Shaders {
 			if (InputSignatureSpriteSpecific == null) throw new System.Exception("input signature (SpriteShader, SpriteSpecific, Render) == null");
 			LayoutSpriteSpecific = new InputLayout(device, InputSignatureSpriteSpecific, Base.Sprites.VerticeSpriteSpecific.InputElementsValue);
 
-			FxTex = E.GetVariableByName("Tex").AsResource();
+			FxTex = new EffectOnlyResourceVariable(E.GetVariableByName("Tex").AsResource());
 		}
 
         public void Dispose() {
@@ -1470,7 +1532,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePC;
         public InputLayout LayoutPC;
 
-		public EffectTechnique TechCube;
+		public EffectReadyTechnique TechCube;
 
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 
@@ -1478,7 +1540,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingCube");
 			E = new Effect(device, _b);
 
-			TechCube = E.GetTechniqueByName("Cube");
+			TechCube = new EffectReadyTechnique(E.GetTechniqueByName("Cube"));
 
 			for (var i = 0; i < TechCube.Description.PassCount && InputSignaturePC == null; i++) {
 				InputSignaturePC = TechCube.GetPassByIndex(i).Description.Signature;
@@ -1505,7 +1567,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePNT;
         public InputLayout LayoutPNT;
 
-		public EffectTechnique TechCube;
+		public EffectReadyTechnique TechCube;
 
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 
@@ -1513,7 +1575,7 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingPnt");
 			E = new Effect(device, _b);
 
-			TechCube = E.GetTechniqueByName("Cube");
+			TechCube = new EffectReadyTechnique(E.GetTechniqueByName("Cube"));
 
 			for (var i = 0; i < TechCube.Description.PassCount && InputSignaturePNT == null; i++) {
 				InputSignaturePNT = TechCube.GetPassByIndex(i).Description.Signature;

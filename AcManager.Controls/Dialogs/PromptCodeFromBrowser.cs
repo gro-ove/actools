@@ -12,7 +12,7 @@ using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {
-    public class PromptCodeFromBrowser {
+    public static class PromptCodeFromBrowser {
         /// <summary>
         /// Hard to describe, but that thing will show a prompt, but also load a web-page and wait for a response code which will
         /// appear in page title. This weird system isn’t actually that weird, Google uses it.
@@ -51,7 +51,7 @@ namespace AcManager.Controls.Dialogs {
                 waiting = false;
 
                 // ReSharper disable once AccessToModifiedClosure
-                code = await Prompt.ShowAsync(title, description, code, watermark, toolTip, multiline, passwordMode, false, maxLength, suggestions, cancellation);
+                code = await Prompt.ShowAsync(title, description, code, watermark, toolTip, multiline, passwordMode, false, maxLength, suggestions, false, cancellation);
                 ready = true;
             };
 

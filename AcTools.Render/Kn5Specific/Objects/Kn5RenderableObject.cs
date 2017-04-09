@@ -41,8 +41,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Matrix ModelMatrixInverted { get; set; }
 
+        private SpecialRenderMode _renderModes;
         private bool _isTransparent;
+
+        private bool IsTransparent {
+            get { return _isTransparent; }
+            set {
+                _isTransparent = value;
+                _renderModes = value ? TransparentModes : OpaqueModes;
+            }
+        }
+
         private readonly float _distanceFromSqr, _distanceToSqr;
+        private readonly bool _distanceLimit;
 
         public Kn5RenderableObject(Kn5Node node) : base(node.Name, InputLayouts.VerticePNTG.Convert(node.Vertices), node.Indices.ToIndicesFixX()) {
             OriginalNode = node;
@@ -56,9 +67,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 IsReflectable = false;
             }
 
-            _isTransparent = OriginalNode.IsTransparent;
-            _distanceFromSqr = OriginalNode.LodIn.Pow(2f);
-            _distanceToSqr = OriginalNode.LodOut.Pow(2f);
+            IsTransparent = OriginalNode.IsTransparent;
+
+            _distanceLimit = OriginalNode.LodIn != 0f || OriginalNode.LodOut != 0f;
+            if (_distanceLimit) {
+                _distanceFromSqr = OriginalNode.LodIn.Pow(2f);
+                _distanceToSqr = OriginalNode.LodOut.Pow(2f);
+            }
         }
 
         private IRenderableMaterial Material => _debugMaterial ?? _mirrorMaterial ?? _material;
@@ -112,7 +127,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
         public void SetTransparent(bool? isTransparent) {
-            _isTransparent = isTransparent ?? OriginalNode.IsTransparent;
+            IsTransparent = isTransparent ?? OriginalNode.IsTransparent;
         }
 
         private IRenderableMaterial _material;
@@ -141,13 +156,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
         internal static readonly SpecialRenderMode OpaqueModes = SpecialRenderMode.Simple |
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
-
+        
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (!(_isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
+            if ((_renderModes & mode) == 0) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
 
-            if (_distanceFromSqr != 0f || _distanceToSqr != 0f) {
-                var distance = (BoundingBox?.GetCenter() - camera.Position)?.LengthSquared();
+            if (_distanceLimit) {
+                var bb = BoundingBox;
+                if (bb == null) return;
+
+                var distance = (bb.Value.GetCenter() - camera.Position).LengthSquared();
                 if (distance < _distanceFromSqr || distance > _distanceToSqr) return;
             }
 
@@ -187,7 +205,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public override bool IsReflectable => _original.IsReflectable;
 
             protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-                if (!(_original._isTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
+                if (!(_original.IsTransparent ? TransparentModes : OpaqueModes).HasFlag(mode)) return;
                 if (mode == SpecialRenderMode.Shadow && !_original.IsCastingShadows || _original._material == null) return;
 
                 if (_original._distanceFromSqr != 0f || _original._distanceToSqr != 0f) {

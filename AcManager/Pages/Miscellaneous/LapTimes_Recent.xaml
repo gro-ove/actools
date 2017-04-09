@@ -3,10 +3,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/LapTimesSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource VirtualizingItemsControl}">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
-                <Grid Height="60" x:Name="Grid">
+                <Grid Height="60" x:Name="Grid" ContextMenu="{StaticResource BestLapWrappedContextMenu}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />

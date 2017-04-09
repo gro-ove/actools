@@ -48,9 +48,9 @@ Lights: {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
             }
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _textBlock);
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

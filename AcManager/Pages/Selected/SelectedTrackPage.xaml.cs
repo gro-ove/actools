@@ -1,9 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.About;
 using AcManager.Controls;
@@ -18,9 +21,14 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
+using AcTools.AiFile;
+using AcTools.DataFile;
+using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -33,6 +41,7 @@ namespace AcManager.Pages.Selected {
         public class ViewModel : SelectedAcObjectViewModel<TrackObject> {
             public ViewModel([NotNull] TrackObject acObject) : base(acObject) {
                 SelectedTrackConfiguration = acObject.SelectedLayout;
+                InitializeSpecs();
             }
 
             private TrackObjectBase _selectedTrackConfiguration;
@@ -41,10 +50,22 @@ namespace AcManager.Pages.Selected {
                 get { return _selectedTrackConfiguration; }
                 set {
                     if (Equals(value, _selectedTrackConfiguration)) return;
+                    _selectedTrackConfiguration?.UnsubscribeWeak(OnSelectedLayoutPropertyChanged);
                     _selectedTrackConfiguration = value;
                     OnPropertyChanged();
 
                     SelectedObject.SelectedLayout = value;
+                    _trackMapUpdateCommand?.RaiseCanExecuteChanged();
+
+                    value.SubscribeWeak(OnSelectedLayoutPropertyChanged);
+                }
+            }
+
+            private void OnSelectedLayoutPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+                switch (propertyChangedEventArgs.PropertyName) {
+                    case nameof(TrackObjectBase.AiLaneFastExists):
+                        _trackMapUpdateCommand?.RaiseCanExecuteChanged();
+                        break;
                 }
             }
 
@@ -78,6 +99,7 @@ namespace AcManager.Pages.Selected {
             public override void Unload() {
                 base.Unload();
                 _helper.Dispose();
+                _selectedTrackConfiguration?.UnsubscribeWeak(OnSelectedLayoutPropertyChanged);
             }
 
             public void InitializeQuickDrivePresets() {
@@ -92,75 +114,41 @@ namespace AcManager.Pages.Selected {
 
             private AsyncCommand _updatePreviewCommand;
 
-            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async () => {
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    UpdatePreviewDirectCommand.Execute(null);
-                    return;
-                }
+            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ??
+                    (_updatePreviewCommand = new AsyncCommand(() => TrackPreviewsCreator.ShotAndApply(SelectedTrackConfiguration),
+                            () => SelectedObject.Enabled));
 
-                if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
-                        ImportantTips.Entries.GetByIdOrDefault(@"trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
-                        MessageBoxResult.OK) {
-                    return;
-                }
+            private AsyncCommand _updatePreviewDirectCommand;
 
-                var directory = FileUtils.GetDocumentsScreensDirectory();
-                var shots = FileUtils.GetFilesSafe(directory);
+            public AsyncCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ??
+                    (_updatePreviewDirectCommand = new AsyncCommand(() => TrackPreviewsCreator.ApplyExisting(SelectedTrackConfiguration)));
 
-                await QuickDrive.RunAsync(track: SelectedTrackConfiguration);
-                if (ScreenshotsConverter.CurrentConversion?.IsCompleted == false) {
-                    await ScreenshotsConverter.CurrentConversion;
-                }
+            private AsyncCommand<bool> _trackMapUpdateCommand;
 
-                var newShots = FileUtils.GetFilesSafe(directory)
-                                        .Where(x => !shots.Contains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
-                if (!newShots.Any()) {
-                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, ControlsStrings.AcObject_CannotUpdatePreview_TrackCommentary);
-                    return;
-                }
+            public AsyncCommand<bool> UpdateMapCommand => _trackMapUpdateCommand ?? (_trackMapUpdateCommand =
+                    new AsyncCommand<bool>(v => TrackMapRendererWrapper.Run(SelectedTrackConfiguration, v),
+                            v => !v || SelectedTrackConfiguration.AiLaneFastExists));
 
-                ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
+            private AsyncCommand<string> _outlineSettingsCommand;
 
-                var shot = new ImageViewer(newShots) {
-                    Model = {
-                        MaxImageHeight = CommonAcConsts.TrackPreviewWidth,
-                        MaxImageWidth = CommonAcConsts.TrackPreviewHeight
-                    }
-                }.ShowDialogInSelectFileMode();
-                if (shot == null) return;
+            public AsyncCommand<string> OutlineSettingsCommand => _outlineSettingsCommand ?? (_outlineSettingsCommand = new AsyncCommand<string>(async layoutId => {
+                if (layoutId == null) {
+                    await TrackOutlineRendererWrapper.Run(SelectedTrackConfiguration);
+                } else {
+                    var layout = SelectedObject.GetLayoutByLayoutId(layoutId);
+                    if (layout == null) return;
 
-                try {
-                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 
-                        CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth, null);
-                } catch (Exception e) {
-                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
-                }
-            }, () => SelectedObject.Enabled));
-
-            private CommandBase _updatePreviewDirectCommand;
-
-            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new DelegateCommand(() => {
-                var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.ImagesFilter,
-                    Title = AppStrings.Common_SelectImageForPreview,
-                    InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
-                    RestoreDirectory = true
-                };
-
-                if (dialog.ShowDialog() == true) {
-                    try {
-                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage,
-                                CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth, null);
-                    } catch (Exception e) {
-                        NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
-                    }
+                    await TrackOutlineRendererWrapper.UpdateAsync(layout);
                 }
             }));
 
-            private DelegateCommand _trackMapUpdateCommand;
+            private AsyncCommand<string> _updateOutlineCommand;
 
-            public DelegateCommand UpdateMapCommand => _trackMapUpdateCommand ?? (_trackMapUpdateCommand = new DelegateCommand(() => {
-                TrackMapRendererWrapper.Run(SelectedTrackConfiguration).Forget();
+            public AsyncCommand<string> UpdateOutlineCommand => _updateOutlineCommand ?? (_updateOutlineCommand = new AsyncCommand<string>(async layoutId => {
+                var layout = layoutId == null ? SelectedTrackConfiguration : SelectedObject.GetLayoutByLayoutId(layoutId);
+                if (layout == null) return;
+
+                await TrackOutlineRendererWrapper.UpdateAsync(layout);
             }));
 
             protected override void FilterExec(string type) {
@@ -192,7 +180,88 @@ namespace AcManager.Pages.Selected {
                         var start = (int)Math.Floor((SelectedTrackConfiguration.Year ?? 0) / 10d) * 10;
                         NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                         break;
+
+                    case "length":
+                        FilterRange("length", SelectedTrackConfiguration.SpecsLength);
+                        break;
+
+                    case "width":
+                        FilterRange("width", SelectedTrackConfiguration.SpecsWidth);
+                        break;
+
+                    case "pits":
+                        FilterRange("pits", SelectedTrackConfiguration.SpecsPitboxes);
+                        break;
+
+                    case "driven":
+                        FilterDistance("driven", SelectedTrackConfiguration.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
+                        break;
                 }
+            }
+
+            private static int CountPits(Kn5 kn5) {
+                return LinqExtension.RangeFrom().TakeWhile(x => kn5.RootNode.GetByName($"AC_PIT_{x}") != null).Count();
+            }
+
+            private static async Task<int> LoadAndCountPits(string kn5Filename) {
+                if (!File.Exists(kn5Filename)) {
+                    throw new InformativeException("Can’t count pits",
+                            $"File “{FileUtils.GetRelativePath(kn5Filename, AcRootDirectory.Instance.RequireValue)}” not found.");
+                }
+
+                var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename, SkippingTextureLoader.Instance)).ConfigureAwait(false);
+                return CountPits(kn5);
+            }
+
+            private AsyncCommand _recalculatePitboxesCommand;
+
+            public AsyncCommand RecalculatePitboxesCommand => _recalculatePitboxesCommand ?? (_recalculatePitboxesCommand = new AsyncCommand(async () => {
+                try {
+                    using (WaitingDialog.Create("Loading model…")) {
+                        int value;
+
+                        var modelsFilename = SelectedTrackConfiguration.ModelsFilename;
+                        if (!File.Exists(modelsFilename)) {
+                            value = await LoadAndCountPits(Path.Combine(SelectedTrackConfiguration.Location, SelectedTrackConfiguration.Id + ".kn5"));
+                        } else {
+                            value = 0;
+                            foreach (var kn5Filename in new IniFile(modelsFilename).GetSections("MODEL")
+                                                                                   .Select(x => x.GetNonEmpty("FILE"))
+                                                                                   .NonNull()
+                                                                                   .Select(x => Path.Combine(SelectedTrackConfiguration.Location, x))) {
+                                value += await LoadAndCountPits(kn5Filename);
+                            }
+                        }
+
+                        SelectedTrackConfiguration.SpecsPitboxes = SpecsFormat(AppStrings.TrackSpecs_Pitboxes_FormatTooltip, value);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t recalculate pitboxes", e);
+                }
+            }));
+
+            private AsyncCommand _recalculateLengthCommand;
+
+            public AsyncCommand RecalculateLengthCommand => _recalculateLengthCommand ?? (_recalculateLengthCommand = new AsyncCommand(async () => {
+                try {
+                    var filename = SelectedTrackConfiguration.AiLaneFastFilename;
+                    if (!File.Exists(filename)) {
+                        throw new InformativeException("Can’t recalculate pitboxes", "AI’s fast lane file is missing");
+                    }
+
+                    using (WaitingDialog.Create("Loading AI lane…")) {
+                        var ai = await Task.Run(() => AiLane.FromFile(filename));
+                        SelectedTrackConfiguration.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, ai.CalculateLength());
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t recalculate pitboxes", e);
+                }
+            }));
+
+            private void InitializeSpecs() {
+                RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => SelectedTrackConfiguration.SpecsLength, v => SelectedTrackConfiguration.SpecsLength = v);
+                RegisterSpec("width", AppStrings.TrackSpecs_Width_FormatTooltip, () => SelectedTrackConfiguration.SpecsWidth, v => SelectedTrackConfiguration.SpecsWidth = v);
+                RegisterSpec("pits", AppStrings.TrackSpecs_Pitboxes_FormatTooltip, () => SelectedTrackConfiguration.SpecsPitboxes, v => SelectedTrackConfiguration.SpecsPitboxes = v);
             }
         }
 
@@ -203,14 +272,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void SpecsInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                e.Handled = true;
-                // new TrackSpecsEditor(SelectedTrack).ShowDialog();
-            }
-        }
-
-        private void GeoTags_KeyDown(object sender, MouseButtonEventArgs e) {
+        private void OnGeoTagsClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new TrackGeoTagsDialog(_model.SelectedTrackConfiguration).ShowDialog();
@@ -243,8 +305,11 @@ namespace AcManager.Pages.Selected {
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(_model.UpdateOutlineCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
+                new InputBinding(_model.OutlineSettingsCommand, new KeyGesture(Key.U, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift))
+                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
             });
             InitializeComponent();
         }
@@ -253,6 +318,24 @@ namespace AcManager.Pages.Selected {
 
         private void ToolbarButtonQuickDrive_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeQuickDrivePresets();
+        }
+
+        private void OnOutlineRightClick(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+
+            var context = ((FrameworkElement)sender).DataContext;
+            var wrapper = context as TrackObjectBase;
+            if (wrapper == null) return;
+
+            new ContextMenu {
+                Items = {
+                    new MenuItem {
+                        Header = "Update Outline",
+                        Command = _model.UpdateOutlineCommand,
+                        CommandParameter = wrapper.LayoutId
+                    }
+                }
+            }.IsOpen = true;
         }
     }
 }

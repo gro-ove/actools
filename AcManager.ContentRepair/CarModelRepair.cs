@@ -24,10 +24,7 @@ namespace AcManager.ContentRepair {
 
                 var kn5 = Kn5.FromFile(kn5Filename);
                 fix.Invoke(kn5);
-
-                FileUtils.Recycle(kn5Filename);
-                kn5.SaveAll(kn5Filename);
-
+                kn5.Save(kn5Filename);
                 return true;
             });
         }
@@ -41,9 +38,7 @@ namespace AcManager.ContentRepair {
 
                 var kn5 = Kn5.FromFile(kn5Filename);
                 FixSuspensionNodes(kn5);
-                FileUtils.Recycle(kn5Filename);
-                kn5.SaveAll(kn5Filename);
-
+                kn5.Save(kn5Filename);
                 return true;
             });
         }

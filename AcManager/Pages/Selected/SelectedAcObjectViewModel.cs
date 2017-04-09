@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -13,6 +15,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
@@ -165,6 +168,89 @@ namespace AcManager.Pages.Selected {
                     NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                     break;
             }
+        }
+        #endregion
+
+        #region Specs, fix formats
+        private readonly List<Tuple<string, string, Func<string>, Action<string>>> _specs =
+                new List<Tuple<string, string, Func<string>, Action<string>>>(7);
+
+        protected void RegisterSpec([Localizable(false),NotNull] string key, [NotNull] string format, [NotNull] Func<string> getter, [NotNull] Action<string> setter) {
+            _specs.Add(Tuple.Create(key, format, getter, setter));
+        }
+
+        protected void RegisterSpec([Localizable(false),NotNull] string key, [NotNull] string format, [NotNull] string propertyName) {
+            RegisterSpec(key, format, () => {
+                var type = SelectedObject.GetType();
+                var property = type.GetProperty(propertyName).GetGetMethod();
+                return property.Invoke(SelectedObject, new object[0])?.ToString();
+            }, v => {
+                var type = SelectedObject.GetType();
+                var property = type.GetProperty(propertyName).GetSetMethod();
+                property.Invoke(SelectedObject, new object[] { v });
+            });
+        }
+
+        [NotNull]
+        protected virtual string GetFormat(string key) {
+            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item2 ?? @"…";
+        }
+
+        [CanBeNull]
+        protected virtual string GetSpecsValue(string key) {
+            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item3.Invoke() ?? null;
+        }
+
+        protected virtual void SetSpecsValue(string key, string value) {
+            var spec = _specs.FirstOrDefault(x => x.Item1 == key);
+            spec?.Item4.Invoke(value);
+
+            if (spec == null) {
+                Logging.Warning("Unexpected key: " + key);
+            }
+        }
+
+        protected virtual IEnumerable<string> GetSpecsKeys() {
+            return _specs.Select(x => x.Item1);
+        }
+
+        protected static string SpecsFormat(string format, object value) {
+            return format.Replace(@"…", value.ToInvariantString());
+        }
+
+        private DelegateCommand<string> _fixFormatCommand;
+
+        public DelegateCommand<string> FixFormatCommand => _fixFormatCommand ?? (_fixFormatCommand = new DelegateCommand<string>(key => {
+            if (key == null) {
+                foreach (var k in GetSpecsKeys()) {
+                    FixFormat(k);
+                }
+            } else {
+                FixFormat(key);
+            }
+        }, key => key == null || !IsFormatCorrect(key)));
+
+        private bool IsFormatCorrect(string key) {
+            var format = GetFormat(key);
+            var value = GetSpecsValue(key);
+            return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
+        }
+
+        private void FixFormat(string key) {
+            var format = GetFormat(key);
+            var value = GetSpecsValue(key);
+            if (value == null) return;
+
+            value = FixFormatCommon(value);
+
+            double actualValue;
+            var replacement = FlexibleParser.TryParseDouble(value, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
+            value = SpecsFormat(format, replacement);
+            SetSpecsValue(key, value);
+        }
+
+        protected virtual string FixFormatCommon(string value) {
+            return value;
         }
         #endregion
     }

@@ -54,41 +54,30 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         [CanBeNull]
-        private static ShaderResourceView LoadSafe([CanBeNull] Device device, byte[] bytes) {
+        private ShaderResourceView LoadSafe([CanBeNull] Device device, byte[] bytes) {
             if (device == null) return null;
             try {
                 return ShaderResourceView.FromMemory(device, bytes);
-            } catch (Exception) {
-                AcToolsLogging.Write("Texture damaged");
+            } catch (Exception e) {
+                AcToolsLogging.Write($"Texture {Name} damaged: {e}");
                 return null;
             }
         }
 
         [CanBeNull]
-        private static ShaderResourceView LoadSafe(Device device, string filename) {
+        private ShaderResourceView LoadSafe(Device device, string filename) {
             if (device == null) return null;
             try {
                 return ShaderResourceView.FromFile(device, filename);
-            } catch (Exception) {
-                AcToolsLogging.Write("Texture damaged");
+            } catch (Exception e) {
+                AcToolsLogging.Write($"Texture {Name} damaged: {e}");
                 return null;
             }
         }
 
         public void SetProceduralOverride(IDeviceContextHolder holder, byte[] textureBytes) {
-            if (textureBytes == null) {
-                ProceduralOverride = null;
-                holder?.RaiseTexturesUpdated();
-                return;
-            }
-
-            try {
-                ProceduralOverride = LoadSafe(holder?.Device, textureBytes);
-                holder?.RaiseTexturesUpdated();
-            } catch (Exception) {
-                ProceduralOverride = null;
-                holder?.RaiseTexturesUpdated();
-            }
+            ProceduralOverride = textureBytes == null ? null : LoadSafe(holder?.Device, textureBytes);
+            holder?.RaiseTexturesUpdated();
         }
 
         private int _resourceId, _overrideId;
@@ -146,24 +135,23 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             if (filename == null || !File.Exists(filename)) {
                 Override = null;
-                holder?.RaiseTexturesUpdated();
-                return;
-            }
+            } else {
+                try {
+                    var resource = await Task.Run(() => LoadSafe(holder?.Device, filename));
+                    if (id != _overrideId) {
+                        resource?.Dispose();
+                        return;
+                    }
 
-            try {
-                var resource = await Task.Run(() => LoadSafe(holder?.Device, filename));
-                if (id != _overrideId) {
-                    resource?.Dispose();
-                    return;
+                    Override = resource;
+                } catch (Exception e) {
+                    if (id != _overrideId) return;
+                    AcToolsLogging.Write(e);
+                    Override = null;
                 }
-
-                Override = resource;
-                holder?.RaiseTexturesUpdated();
-            } catch (Exception) {
-                if (id != _overrideId) return;
-                Override = null;
-                holder?.RaiseTexturesUpdated();
             }
+
+            holder?.RaiseTexturesUpdated();
         }
 
         public void LoadOverride([CanBeNull] IDeviceContextHolder holder, byte[] data) {
@@ -171,49 +159,47 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             if (data == null) {
                 Override = null;
-                holder?.RaiseTexturesUpdated();
-                return;
-            }
+            } else {
+                try {
+                    var resource = LoadSafe(holder?.Device, data);
+                    if (id != _overrideId) {
+                        resource?.Dispose();
+                        return;
+                    }
 
-            try {
-                var resource = LoadSafe(holder?.Device, data);
-                if (id != _overrideId) {
-                    resource?.Dispose();
-                    return;
+                    Override = resource;
+                } catch (Exception e) {
+                    if (id != _overrideId) return;
+                    AcToolsLogging.Write(e);
+                    Override = null;
                 }
-
-                Override = resource;
-                holder?.RaiseTexturesUpdated();
-            } catch (Exception) {
-                if (id != _overrideId) return;
-                Override = null;
-                holder?.RaiseTexturesUpdated();
             }
+
+            holder?.RaiseTexturesUpdated();
         }
 
-        public async Task LoadOverrideAsync([NotNull] IDeviceContextHolder holder, [CanBeNull] byte[] data) {
+        public async Task LoadOverrideAsync([CanBeNull] IDeviceContextHolder holder, [CanBeNull] byte[] data) {
             var id = ++_overrideId;
 
             if (data == null) {
                 Override = null;
-                holder.RaiseTexturesUpdated();
-                return;
-            }
+            } else {
+                try {
+                    var resource = await Task.Run(() => LoadSafe(holder?.Device, data));
+                    if (id != _overrideId) {
+                        resource?.Dispose();
+                        return;
+                    }
 
-            try {
-                var resource = await Task.Run(() => LoadSafe(holder.Device, data));
-                if (id != _overrideId) {
-                    resource?.Dispose();
-                    return;
+                    Override = resource;
+                } catch (Exception e) {
+                    if (id != _overrideId) return;
+                    AcToolsLogging.Write(e);
+                    Override = null;
                 }
-
-                Override = resource;
-                holder.RaiseTexturesUpdated();
-            } catch (Exception) {
-                if (id != _overrideId) return;
-                Override = null;
-                holder.RaiseTexturesUpdated();
             }
+
+            holder?.RaiseTexturesUpdated();
         }
 
         public void Dispose() {

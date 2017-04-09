@@ -1,5 +1,6 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
@@ -26,11 +27,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechAlpha;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Alpha;
         }
     }
@@ -38,11 +39,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleWindscreen : Kn5MaterialSimple {
         public Kn5MaterialSimpleWindscreen([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechWindscreen;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Standard;
         }
     }

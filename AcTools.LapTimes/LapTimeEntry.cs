@@ -2,8 +2,8 @@ using System;
 
 namespace AcTools.LapTimes {
     public class LapTimeEntry {
-        public LapTimeEntry(string sourceId, string carId, string trackId, DateTime entryDate, TimeSpan lapTime) {
-            Source = sourceId;
+        public LapTimeEntry(string sourceDisplayName, string carId, string trackId, DateTime entryDate, TimeSpan lapTime) {
+            Source = sourceDisplayName;
             CarId = carId;
             LapTime = lapTime;
             TrackId = trackId;
@@ -26,7 +26,7 @@ namespace AcTools.LapTimes {
         /// </summary>
         public string TrackAcId { get; }
 
-        public string Source { get; }
+        public string Source { get; set; }
 
         public DateTime EntryDate { get; }
 

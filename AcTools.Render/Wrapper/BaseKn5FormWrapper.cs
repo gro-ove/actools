@@ -97,24 +97,10 @@ namespace AcTools.Render.Wrapper {
         }
     }
 
-    public class BaseKn5FormWrapper : BaseFormWrapper {
-        public readonly IKn5ObjectRenderer Kn5ObjectRenderer;
-
-        public bool AutoAdjustTargetOnReset = true;
-        public bool InvertMouseButtons = false;
-
+    public abstract class BaseMouseFormWrapper : BaseFormWrapper {
         public bool FormMoving;
 
-        private Kn5WrapperCameraControlHelper _helper;
-
-        protected Kn5WrapperCameraControlHelper Helper => _helper ?? (_helper = GetHelper());
-
-        protected virtual Kn5WrapperCameraControlHelper GetHelper() {
-            return new Kn5WrapperCameraControlHelper();
-        }
-
-        public BaseKn5FormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
-            Kn5ObjectRenderer = (IKn5ObjectRenderer)renderer;
+        public BaseMouseFormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
             Form.MouseMove += OnMouseMove;
             Form.MouseDown += OnMouseDown;
             Form.MouseUp += OnMouseUp;
@@ -139,7 +125,7 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        protected virtual void OnClick() {}
+        protected virtual void OnClick() { }
 
         public Point MousePosition { get; private set; }
         private Point _startMousePos;
@@ -147,9 +133,9 @@ namespace AcTools.Render.Wrapper {
 
         private bool _moved, _moving, _down;
 
-        protected void OnMouseMove(object sender, MouseEventArgs e) {
-            if (Kn5ObjectRenderer.LockCamera) return;
+        protected abstract void OnMouseMove(MouseButtons button, int dx, int dy);
 
+        protected virtual void OnMouseMove(object sender, MouseEventArgs e) {
             if (!Form.Focused) {
                 _moving = false;
                 return;
@@ -162,33 +148,65 @@ namespace AcTools.Render.Wrapper {
             }
 
             if (_moving && !_down) {
-                var dx = e.X - _lastMousePos.X;
-                var dy = e.Y - _lastMousePos.Y;
-
-                if (e.Button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) || e.Button == MouseButtons.Left && User32.IsKeyPressed(Keys.Space)) {
-                    Helper.CameraMousePan(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
-                } else if (e.Button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
-                    if (FormMoving) {
-                        Form.Left += e.X - _lastMousePos.X;
-                        Form.Top += e.Y - _lastMousePos.Y;
-                        _lastMousePos = e.Location;
-                        return;
-                    }
-
-                    Helper.CameraMouseRotate(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
-                } else if (e.Button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
-                    Helper.CameraMouseZoom(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
+                if (e.Button == MouseButtons.Left && FormMoving) {
+                    Form.Left += e.X - _lastMousePos.X;
+                    Form.Top += e.Y - _lastMousePos.Y;
+                    _lastMousePos = e.Location;
+                    return;
                 }
+
+                OnMouseMove(e.Button, e.X - _lastMousePos.X, e.Y - _lastMousePos.Y);
             }
 
             _down = false;
             _lastMousePos = e.Location;
         }
 
-        protected virtual void OnMouseWheel(object sender, MouseEventArgs e) {
-            if (Kn5ObjectRenderer.LockCamera) return;
-            var value = e.Delta > 0 ? 1f : -1f;
+        protected abstract void OnMouseWheel(float value);
 
+        protected virtual void OnMouseWheel(object sender, MouseEventArgs e) {
+            OnMouseWheel(e.Delta > 0 ? 1f : -1f);
+            Renderer.IsDirty = true;
+        }
+    }
+
+    public class BaseKn5FormWrapper : BaseMouseFormWrapper {
+        public readonly IKn5ObjectRenderer Kn5ObjectRenderer;
+
+        public bool AutoAdjustTargetOnReset = true;
+        public bool InvertMouseButtons = false;
+
+        private Kn5WrapperCameraControlHelper _helper;
+
+        protected Kn5WrapperCameraControlHelper Helper => _helper ?? (_helper = GetHelper());
+
+        protected virtual Kn5WrapperCameraControlHelper GetHelper() {
+            return new Kn5WrapperCameraControlHelper();
+        }
+
+        public BaseKn5FormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
+            Kn5ObjectRenderer = (IKn5ObjectRenderer)renderer;
+        }
+
+        protected override void OnClick() {}
+
+        protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
+            if (button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) ||
+                    button == MouseButtons.Left && User32.IsKeyPressed(Keys.Space)) {
+                Helper.CameraMousePan(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
+            } else if (button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
+                Helper.CameraMouseRotate(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
+            } else if (button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
+                Helper.CameraMouseZoom(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
+            }
+        }
+
+        protected override void OnMouseMove(object sender, MouseEventArgs e) {
+            if (Kn5ObjectRenderer.LockCamera) return;
+            base.OnMouseMove(sender, e);
+        }
+
+        protected override void OnMouseWheel(float value) {
             if (Kn5ObjectRenderer.UseFpsCamera || !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
                 Kn5ObjectRenderer.Camera.Zoom(value * (Kn5ObjectRenderer.UseFpsCamera ? -0.1f : -0.4f));
             } else {
@@ -196,8 +214,11 @@ namespace AcTools.Render.Wrapper {
                 if (c == null) return;
                 Kn5ObjectRenderer.ChangeCameraFov(c.FovY - value * 0.05f);
             }
+        }
 
-            Renderer.IsDirty = true;
+        protected override void OnMouseWheel(object sender, MouseEventArgs e) {
+            if (Kn5ObjectRenderer.LockCamera) return;
+            base.OnMouseWheel(sender, e);
         }
 
         protected override void OnTick(object sender, TickEventArgs args) {

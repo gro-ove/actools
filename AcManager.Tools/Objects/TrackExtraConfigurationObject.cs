@@ -55,6 +55,6 @@ namespace AcManager.Tools.Objects {
 
         public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
 
-        public override string MapDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
+        public override string LayoutDataDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
     }
 }

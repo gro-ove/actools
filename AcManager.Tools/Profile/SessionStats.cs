@@ -296,6 +296,7 @@ namespace AcManager.Tools.Profile {
                     switch (value) {
                         case Status.Teleported:
                             _completedLaps = 0;
+                            _lapSpoiledId = -1;
                             break;
 
                         case Status.Live:
@@ -335,7 +336,7 @@ namespace AcManager.Tools.Profile {
 
             #region Internal status variables
             private bool _offroad;
-            private int _lapSpoiledId, _completedLaps;
+            private int _lapSpoiledId = -1, _completedLaps;
             private DateTime _offroadTime, _crashTime;
             private Vector3 _coordinates;
             private Vector3 _statusStart;
@@ -382,10 +383,11 @@ namespace AcManager.Tools.Profile {
                 var graphics = current.Graphics;
                 var info = current.StaticInfo;
 
-                /*if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
+                if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
                     CurrentStatus = Status.NotLive;
+                    _lapSpoiledId = graphics.CompletedLaps;
                     return;
-                }*/
+                }
 
                 if (CarId == null) {
                     IniFile raceIni = null;
@@ -404,8 +406,22 @@ namespace AcManager.Tools.Profile {
                 var distance = graphics.CarCoordinates - previous.Graphics.CarCoordinates;
                 var calcSpeed = distance.Length() / 1e3 / time.TotalHours;
 
-                if (graphics.IsInPit || physics.NumberOfTyresOut > OptionTyresOutsideAllowed) {
-                    _lapSpoiledId = graphics.CompletedLaps;
+
+                if (_lapSpoiledId != graphics.CompletedLaps) {
+                    if (graphics.IsInPit) {
+                        Logging.Debug("Lap spoiled: in pits");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
+
+                    if (physics.NumberOfTyresOut > OptionTyresOutsideAllowed) {
+                        Logging.Debug($"Lap spoiled: {physics.NumberOfTyresOut} tyre(s) outside");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
+
+                    if (physics.IsAiControlled) {
+                        Logging.Debug($"Lap spoiled: AI-controlled ({physics.IsAiControlled})");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
                 }
 
                 /* best lap */

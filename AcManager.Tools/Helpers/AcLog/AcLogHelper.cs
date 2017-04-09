@@ -57,6 +57,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                     if (crash.Contains(@"DriverModel::DriverModel")) {
                         return new WhatsGoingOn(WhatsGoingOnType.DriverModelIsMissing);
                     }
+
+                    if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
+                    }
                 } else {
                     crash = null;
                 }

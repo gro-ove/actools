@@ -25,7 +25,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid Width="240" Height="240" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 12 -36">
+        <Grid Width="240" Height="240" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 12 0">
             <!-- TODO -->
             <Image Source="{Binding PreviewImage}" MouseLeftButtonDown="Preview_OnMouseLeftButtonDown"
                     Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -58,6 +58,10 @@
                     <Label DockPanel.Dock="Left" Width="100" Content="{x:Static c:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
                     <mui:PlaceholderTextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
                 </DockPanel>
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Width="100" Content="Used For:" />
+                    <mui:PlaceholderTextBlock Text="{Binding UsedFor}" TextTrimming="CharacterEllipsis" ToolTip="{Binding UsedFor}" />
+                </DockPanel>
 
                 <StackPanel Margin="0 20 0 0"
                         Visibility="{Binding IsChecked, ElementName=ShowOptionsItem, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -86,16 +90,21 @@
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding BakedShadows.Gamma}" DockPanel.Dock="Top" Content="Gamma" Postfix="%" />
+                        <mui:ValueLabel Value="{Binding BakedShadows.Gamma, StringFormat='{}{0:F1}'}" DockPanel.Dock="Top" Content="Gamma" Postfix="%" />
                         <Slider Minimum="0" Maximum="500" Value="{Binding BakedShadows.Gamma}" TickFrequency="50" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding BakedShadows.Ambient}" DockPanel.Dock="Top" Content="Ambient" Postfix="%" />
-                        <Slider Minimum="0" Maximum="100" Value="{Binding BakedShadows.Ambient}" TickFrequency="50" TickPlacement="BottomRight"
+                        <mui:ValueLabel Value="{Binding BakedShadows.Ambient, StringFormat='{}{0:F1}'}" DockPanel.Dock="Top" Content="Ambient" Postfix="%" />
+                        <Slider Minimum="0" Maximum="100" Value="{Binding BakedShadows.Ambient}" TickFrequency="10" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
-                    <c:UserPresetsControl UserPresetable="{Binding BakedShadows}" />
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding BakedShadows.ShadowBias, StringFormat='{}{0:F1}'}" DockPanel.Dock="Top" Content="Bias" Postfix="%" />
+                        <Slider Minimum="-100" Maximum="100" Value="{Binding BakedShadows.ShadowBias}" TickFrequency="20" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <c:UserPresetsControl UserPresetable="{Binding BakedShadows}" Margin="0 8 0 0" />
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -124,6 +133,23 @@
                     <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="custom" Header="Calculate Map of Custom Size" />
                     <Separator />
                     <MenuItem x:Name="ShowOptionsItem" IsCheckable="True" IsChecked="{mui:Stored .BakedShadows.ShowOptions}" Header="Show Options" />
+                </mui:ButtonWithComboBox.MenuItems>
+            </mui:ButtonWithComboBox>
+
+            <mui:ButtonWithComboBox Content="Replace" Command="{Binding ReplaceCommand}">
+                <mui:ButtonWithComboBox.ButtonToolTip>Replace texture in KN5 with something else</mui:ButtonWithComboBox.ButtonToolTip>
+                <mui:ButtonWithComboBox.MenuItems>
+                    <MenuItem Command="{Binding RenameCommand}" Header="Rename Texture" />
+                    <MenuItem Command="{Binding ForkCommand}"
+                            Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                            IsEnabled="{Binding IsForkAvailable}" ToolTip="Fork texture to be used only in this material" Header="{Binding Material.Name}">
+                        <MenuItem.HeaderStringFormat>Fork Texture For Material “{0}”</MenuItem.HeaderStringFormat>
+                    </MenuItem>
+                    <MenuItem Command="{Binding ChangeTextureCommand}"
+                            Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                            IsEnabled="{Binding IsChangeAvailable}" ToolTip="Change texture in this material" Header="{Binding Material.Name}">
+                        <MenuItem.HeaderStringFormat>Change Texture For Material “{0}”</MenuItem.HeaderStringFormat>
+                    </MenuItem>
                 </mui:ButtonWithComboBox.MenuItems>
             </mui:ButtonWithComboBox>
 

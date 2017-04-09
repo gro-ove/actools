@@ -34,6 +34,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
@@ -171,7 +172,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<CommandBase>().NonNull()) {
+                foreach (var command in Buttons.OfType<Button>().Select(x => x.Command).OfType<CommandBase>().NonNull()) {
                     command.RaiseCanExecuteChanged();
                 }
             }
@@ -196,7 +197,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<CommandBase>().NonNull()) {
+                foreach (var command in Buttons.OfType<Button>().Select(x => x.Command).OfType<CommandBase>().NonNull()) {
                     command.RaiseCanExecuteChanged();
                 }
             }

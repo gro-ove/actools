@@ -1,6 +1,5 @@
-﻿using System;
-using AcTools.Render.Base.Utils;
-using AcTools.Utils;
+﻿using AcTools.Utils;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
@@ -44,25 +43,31 @@ namespace AcTools.Render.Base.Cameras {
         protected void SetView(Matrix view) {
             if (view.Equals(View)) return;
             View = view;
+
             _viewProj = null;
-            _viewInvert = null;
             _viewProjInvert = null;
+            _frustumOld = true;
         }
 
         public Matrix Proj { get; private set; }
 
         protected void SetProj(Matrix proj) {
+            if (CutProj != null) {
+                proj = proj * CutProj.Value;
+            }
+
             if (proj.Equals(Proj)) return;
             Proj = proj;
+
             _viewProj = null;
             _viewProjInvert = null;
+            _frustumOld = true;
         }
+
+        public Matrix? CutProj { get; set; }
 
         public Matrix ViewProj => _viewProj ?? (_viewProj = View * Proj).Value;
         private Matrix? _viewProj;
-
-        public Matrix ViewInvert => _viewInvert ?? (_viewInvert = Matrix.Invert(View)).Value;
-        private Matrix? _viewInvert;
 
         public Matrix ViewProjInvert => _viewProjInvert ?? (_viewProjInvert = Matrix.Invert(ViewProj)).Value;
         private Matrix? _viewProjInvert;
@@ -113,14 +118,30 @@ namespace AcTools.Render.Base.Cameras {
             return new Ray(Position, Vector3.Normalize(world - Position));
         }
 
-        protected Frustum Frustum;
+        private Frustum _frustum;
+        private bool _frustumOld;
+
+        [NotNull]
+        protected Frustum Frustum {
+            get {
+                if (_frustum == null) {
+                    _frustum = Frustum.FromViewProj(ViewProj);
+                    _frustumOld = false;
+                }
+
+                if (_frustumOld) {
+                    _frustum.Update(ViewProj);
+                    _frustumOld = false;
+                }
+
+                return _frustum;
+            }
+        }
 
         public bool DisableFrustum { get; set; }
 
         public virtual bool Visible(BoundingBox box) {
-            if (DisableFrustum) return true;
-            if (Frustum == null) throw new Exception("Call SetLens() first");
-            return Frustum.Intersect(box) > 0;
+            return DisableFrustum || Frustum.Intersect(box) > 0;
         }
 
         public FrustrumIntersectionType Intersect(BoundingBox box) {

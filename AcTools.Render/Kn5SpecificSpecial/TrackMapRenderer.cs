@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using AcTools.AiFile;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -16,9 +17,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -45,6 +44,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Camera = new CameraOrtho();
         }
 
+        public TrackMapPreparationRenderer(AiLane kn5) : base(kn5) {
+            Camera = new CameraOrtho();
+        }
+
         public TrackMapPreparationRenderer(TrackComplexModelDescription description) : base(description) {
             Camera = new CameraOrtho();
         }
@@ -56,9 +59,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             IsDirty = true;
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _textBlock);
-            base.Dispose();
+            base.DisposeOverride();
         }
 
         public void Update() {
@@ -273,6 +276,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private readonly Kn5 _kn5;
 
         [CanBeNull]
+        private readonly AiLane _aiLane;
+
+        public bool AiLaneMode => _aiLane != null;
+
+        [CanBeNull]
         private readonly TrackComplexModelDescription _description;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
@@ -288,6 +296,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public TrackMapRenderer(Kn5 kn5) {
             _kn5 = kn5;
+        }
+
+        public TrackMapRenderer(AiLane aiLane) {
+            _aiLane = aiLane;
         }
 
         public TrackMapRenderer(TrackComplexModelDescription description) {
@@ -356,10 +368,51 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return obj as RenderableList ?? new RenderableList { obj };
         }
 
+        private bool _aiLaneDirty;
+        private bool _aiLaneActualWidth;
+
+        public bool AiLaneActualWidth {
+            get { return _aiLaneActualWidth; }
+            set {
+                if (Equals(value, _aiLaneActualWidth)) return;
+                _aiLaneActualWidth = value;
+                OnPropertyChanged();
+                _aiLaneDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private float _aiLaneWidth = 10f;
+
+        public float AiLaneWidth {
+            get { return _aiLaneWidth; }
+            set {
+                if (Equals(value, _aiLaneWidth)) return;
+                _aiLaneWidth = value;
+                OnPropertyChanged();
+                _aiLaneDirty = true;
+                IsDirty = true;
+            }
+        }
+
+        private void RebuildAiLane() {
+            RootNode.Dispose();
+            RootNode = new RenderableList("_root", Matrix.Identity, new[] {
+                AiLaneObject.Create(_aiLane, AiLaneActualWidth ? (float?)null : AiLaneWidth)
+            });
+            UpdateFiltered();
+            _aiLaneDirty = false;
+        }
+
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new TrackMapMaterialsFactory());
 
-            if (_kn5 != null) {
+            if (_aiLane != null) {
+                RootNode = new RenderableList("_root", Matrix.Identity, new [] {
+                    AiLaneObject.Create(_aiLane, AiLaneActualWidth ? (float?)null : AiLaneWidth)
+                });
+                _aiLaneDirty = false;
+            } else if (_kn5 != null) {
                 RootNode = ToRenderableList(Convert(_kn5.RootNode));
             } else if (_description != null) {
                 RootNode = new RenderableList("_root", Matrix.Identity, _description.GetEntries().Select(x => {
@@ -403,8 +456,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private ITrackMapRendererFilter _filter;
 
         protected void UpdateFiltered() {
-            FilteredNode = Filter(RootNode, n => n is RenderableList ||
-                    (_filter?.Filter(n.Name) ?? n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1));
+            if (_aiLane != null) {
+                FilteredNode = RootNode;
+            } else {
+                FilteredNode = Filter(RootNode, n => n is RenderableList ||
+                        (_filter?.Filter(n.Name) ?? n.Name?.IndexOf("ROAD", StringComparison.Ordinal) == 1));
+            }
+
             FilteredNode.UpdateBoundingBox();
             TrianglesCount = FilteredNode.BoundingBox.HasValue ? FilteredNode.GetTrianglesCount() : 0;
             IsDirty = true;
@@ -454,7 +512,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Width = Width - Margin * 2,
                 Height = Height - Margin * 2,
                 Margin = Margin,
-                XOffset = box.Maximum.X + Margin / Scale,
+                XOffset = -box.Minimum.X + Margin / Scale,
                 ZOffset = -box.Minimum.Z + Margin / Scale,
                 ScaleFactor = 1 / Scale
             };
@@ -485,7 +543,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected bool ShotMode { get; private set; }
 
-        protected override void DrawInner() {
+        protected override void DrawOverride() {
+            EnsureAiLaneAllRight();
             Camera.UpdateViewMatrix();
 
             // just in case
@@ -518,6 +577,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
+        protected void EnsureAiLaneAllRight() {
+            if (_aiLaneDirty) {
+                RebuildAiLane();
+            }
+        }
+
         private void SaveResultAs(string filename) {
             using (var stream = new MemoryStream()) { 
                 Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
@@ -537,6 +602,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     Initialize();
                 }
 
+                EnsureAiLaneAllRight();
                 Prepare();
                 Draw();
                 SaveResultAs(outputFile);
@@ -551,11 +617,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override void OnTick(float dt) { }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _buffer0);
             DisposeHelper.Dispose(ref _buffer1);
             // DisposeHelper.Dispose(ref _materialsProvider);
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 
@@ -649,7 +715,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.Simple) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;
+            contextHolder.DeviceContext.OutputMerger.BlendState = null;
             return true;
         }
 

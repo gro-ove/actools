@@ -45,7 +45,7 @@ namespace AcManager.Tools.Lists {
         }
 
         public virtual int Compare(AcItemWrapper x, AcItemWrapper y) {
-            return Compare(x.Value.Id, y.Value.Id);
+            return Compare(x?.Value.Id, y?.Value.Id);
         }
     }
 }

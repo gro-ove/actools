@@ -1,12 +1,12 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleMaps : Kn5MaterialSimpleReflective {
@@ -15,6 +15,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         private bool _hasNormalMap;
 
         public Kn5MaterialSimpleMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
+
+        protected override bool IsAdditive() {
+            var value = Kn5Material.GetPropertyValueAByName("isAdditive");
+            return !Equals(value, 0.0f) && !Equals(value, 2.0f);
+        }
 
         public override void Initialize(IDeviceContextHolder contextHolder) {
             _txNormal = Kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
@@ -26,7 +31,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 _hasNormalMap = true;
                 Flags |= EffectDarkMaterial.HasNormalMap;
             }
-            
+
             if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 2.0f)) {
                 Flags |= EffectDarkMaterial.IsCarpaint;
             }
@@ -64,11 +69,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechMaps;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Maps;
         }
     }
@@ -81,15 +86,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             InputLayout = Effect.LayoutPNTGW4B;
         }
 
-        protected override EffectTechnique GetShadowTechnique() {
+        protected override EffectReadyTechnique GetShadowTechnique() {
             return Effect.TechSkinnedDepthOnly;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_SkinnedMaps;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechSkinnedMaps;
         }
 

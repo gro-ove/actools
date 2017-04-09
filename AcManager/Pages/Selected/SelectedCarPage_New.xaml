@@ -118,7 +118,7 @@
 
                 <mui:Cell MaxWidth="800">
                     <mui:BetterImage x:Name="SelectedSkinPreviewImage" Filename="{Binding SelectedObject.SelectedSkin.PreviewImage}"
-                            PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp"
+                            PreviewMouseLeftButtonDown="OnPreviewClick" PreviewMouseRightButtonUp="OnSkinRightClick"
                             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
                             MaxWidth="800" />
                     <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
@@ -134,7 +134,7 @@
                                 <DataTemplate DataType="{x:Type t:AcItemWrapper}">
                                     <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                     <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
-                                            ClearOnChange="True" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" />
+                                            ClearOnChange="True" PreviewMouseRightButtonUp="OnSkinRightClick" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -189,7 +189,7 @@
                             <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
                                 <mui:BbCodeBlock c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
                                         Text="{Binding SelectedObject.ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}"
-                                        MouseDown="ParentBlock_OnMouseDown" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                                        MouseDown="OnParentBlockClick" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
                                     <FrameworkElement.ToolTip>
                                         <mui:ReferenceSwitch Value="{Binding SelectedObject.Parent}">
                                             <mui:ReferenceSwitch.Null>
@@ -431,8 +431,8 @@
                         <StackPanel
                                 Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
                             <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
-                                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:"
-                                        Text="{Binding TotalDrivenDistance, StringFormat='{}{0:F1} km', TargetNullValue='…'}" Placeholder="…">
+                                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
+                                        Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                                     <FrameworkElement.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}"
@@ -458,25 +458,7 @@
                                 </DockPanel>
                             </c:PropertiesGrid>
 
-                            <TextBlock Text="Best laps:" Style="{StaticResource Label}" Margin="0 20 0 4" />
-                            <mui:Switch Value="{Binding LapTimes.Count, FallbackValue=-1}" Margin="20 0 0 0">
-                                <ProgressBar mui:Switch.When="-1" Height="2" IsIndeterminate="True" Margin="0 4 0 0" />
-                                <TextBlock mui:Switch.When="0" FontStyle="Italic" Opacity="0.5">
-                                    <TextBlock.Text>None</TextBlock.Text>
-                                </TextBlock>
-                                <ItemsControl ItemsSource="{Binding LapTimes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <DockPanel Height="20">
-                                                <TextBlock DockPanel.Dock="Right" Width="80" Margin="4 0 0 0"
-                                                        Text="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" />
-                                                <mui:PlaceholderTextBlock Text="{Binding Track.LayoutName}" Placeholder="{Binding Entry.TrackId}"
-                                                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                                            </DockPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </mui:Switch>
+                            <c:BestLapsList CarId="{Binding SelectedObject.Id}" Margin="0 20 0 0" />
                         </StackPanel>
                     </mui:SpacingUniformGrid>
                 </Grid>

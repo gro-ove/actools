@@ -51,7 +51,7 @@ technique10 Alpha {
 float4 ps_Reflective(PS_IN pin) : SV_Target{
 	float alpha; float3 lighted, normal;
 	CalculateLighted(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal), alpha);
+	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
 }
 
 technique10 Reflective {
@@ -67,7 +67,7 @@ technique10 Reflective {
 float4 ps_Nm(PS_IN pin) : SV_Target{
 	float alpha; float3 lighted, normal;
 	CalculateLighted_Nm(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal), alpha);
+	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
 }
 
 technique10 Nm {
@@ -83,7 +83,7 @@ technique10 Nm {
 float4 ps_NmUvMult(PS_IN pin) : SV_Target{
 	float alpha; float3 lighted, normal;
 	CalculateLighted_NmUvMult(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal), alpha);
+	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
 }
 
 technique10 NmUvMult {
@@ -117,7 +117,7 @@ float4 ps_Maps(PS_IN pin) : SV_Target{
 
 	float alpha, mask; float3 lighted, normal;
 	CalculateLighted_Maps(pin, mapsValue.r, mapsValue.g, lighted, alpha, mask, normal);
-	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, mapsValue.g, mapsValue.b), alpha);
+	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, mapsValue.g, mapsValue.b, alpha), alpha);
 }
 
 technique10 Maps {
@@ -139,7 +139,7 @@ technique10 SkinnedMaps {
 float4 ps_DiffMaps(PS_IN pin) : SV_Target{
 	float alpha, mask; float3 lighted, normal;
 	CalculateLighted_DiffMaps(pin, lighted, alpha, normal);
-	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, alpha, alpha), 1.0);
+	return float4(CalculateReflection_Maps_NoAlpha(lighted, pin.PosW, normal, alpha, alpha), 1.0);
 }
 
 technique10 DiffMaps {

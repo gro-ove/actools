@@ -3,22 +3,14 @@ using System.IO;
 using System.Windows;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
-using AcManager.Tools.Helpers;
-using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public static class ToastWin8Helper {
-        public static readonly ToastNotifier ToastNotifier;
-
-        static ToastWin8Helper() {
-            ToastNotifier = File.Exists(AppShortcut.ShortcutLocation) ? ToastNotificationManager.CreateToastNotifier(AppShortcut.AppUserModelId)
-                    : ToastNotificationManager.CreateToastNotifier();
-        }
+        private static ToastNotifier _toastNotifier;
 
         public static void ShowToast(string title, string message, [NotNull] Uri icon, Action click) {
-            var tempIcon = FilesStorage.Instance.GetFilename("Temporary", "Icon.png");
-
+            var tempIcon = Path.Combine(Path.GetTempPath(), $"tmp_icon_{AppShortcut.AppUserModelId}.png");
             if (!File.Exists(tempIcon)) {
                 using (var iconStream = Application.GetResourceStream(icon)?.Stream) {
                     if (iconStream != null) {
@@ -47,7 +39,13 @@ namespace AcManager.Controls.Helpers {
                 };
             }
 
-            ToastNotifier.Show(toast);
+            if (_toastNotifier == null) {
+                _toastNotifier = File.Exists(AppShortcut.ShortcutLocation) && AppShortcut.AppUserModelId != null ?
+                        ToastNotificationManager.CreateToastNotifier(AppShortcut.AppUserModelId) :
+                        ToastNotificationManager.CreateToastNotifier();
+            }
+
+            _toastNotifier.Show(toast);
         }
     }
 }

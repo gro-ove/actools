@@ -60,7 +60,13 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
-            IniFile.Write(FileUtils.GetRaceIniFilename(), "AUTOSPAWN", "ACTIVE", "1");
+            new IniFile(FileUtils.GetRaceIniFilename()) {
+                ["AUTOSPAWN"] = {
+                    ["ACTIVE"] = true,
+                    ["__CM_SERVICE"] = IniFile.Nothing
+                }
+            }.Save();
+
             SetAcX86Param();
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = LauncherFilename,
@@ -80,7 +86,12 @@ namespace AcManager.Tools.Starters {
 
         public override void CleanUp() {
             base.CleanUp();
-            IniFile.Write(FileUtils.GetRaceIniFilename(), "AUTOSPAWN", "ACTIVE", "0");
+            new IniFile(FileUtils.GetRaceIniFilename()) {
+                ["AUTOSPAWN"] = {
+                    ["ACTIVE"] = IniFile.Nothing,
+                    ["__CM_SERVICE"] = IniFile.Nothing
+                }
+            }.Save();
         }
     }
 }

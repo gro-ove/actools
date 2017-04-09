@@ -602,9 +602,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty TopSourceProperty = DependencyProperty.RegisterAttached(nameof(TopSource), typeof(Uri),
-                typeof(ModernFrame),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.Inherits));
+                typeof(ModernFrame), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
         public static Uri GetTopSource(DependencyObject o) {
             if (o == null) {

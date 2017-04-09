@@ -86,6 +86,29 @@ namespace AcTools.Utils {
                                     FileOperationFlags.FOF_SILENT);
         }
 
+        public class RecycleOriginalHolder : IDisposable {
+            private readonly string _filename;
+
+            internal RecycleOriginalHolder(string filename) {
+                _filename = filename;
+                Filename = EnsureUnique(_filename, ".tmp-{0}");
+            }
+
+            public string Filename { get; }
+
+            public void Dispose() {
+                if (ArePathsEqual(Filename, _filename)) return;
+                if (File.Exists(Filename)) {
+                    Recycle(_filename);
+                    File.Move(Filename, _filename);
+                }
+            }
+        }
+
+        public static RecycleOriginalHolder RecycleOriginal(string filename) {
+            return new RecycleOriginalHolder(filename);
+        }
+
         public static bool Undo() {
             var handle = User32.FindWindowEx(
                     User32.FindWindowEx(User32.FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""),

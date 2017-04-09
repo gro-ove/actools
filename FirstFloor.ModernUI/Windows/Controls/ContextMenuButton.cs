@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var command = Command;
             if (command != null) {
-                command.Execute(null);
+                command.Execute(CommandParameter);
                 return true;
             }
 
@@ -181,6 +181,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ICommand Command {
             get { return (ICommand)GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(nameof(CommandParameter), typeof(object),
+                typeof(ContextMenuButton));
+
+        public object CommandParameter {
+            get { return GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
         }
 
         public static readonly DependencyProperty PropagateToChildrenProperty = DependencyProperty.Register(nameof(PropagateToChildren), typeof(bool),

@@ -34,15 +34,27 @@
 		return vout;
 	}
 
-	float4 ps_Copy(PS_IN pin) : SV_Target {
+	float4 ps_Copy(PS_IN pin) : SV_Target{
 		return gInputMap.Sample(samInputImage, pin.Tex);
 	}
 
-	technique10 Copy {
+		technique10 Copy {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_Copy()));
+		}
+	}
+
+	float4 ps_Cut(PS_IN pin) : SV_Target {
+		return gInputMap.Sample(samInputImage, (pin.Tex - 0.5) * gSizeMultipler + 0.5);
+	}
+
+	technique10 Cut {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Cut()));
 		}
 	}
 

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     /// <summary>
@@ -17,7 +18,7 @@ namespace AcManager.Tools.Helpers {
         /// that we are tracking will be automatically killed, too. If the child process terminates
         /// first, that's fine, too.</summary>
         /// <param name="process"></param>
-        public static void AddProcess(Process process) {
+        public static void AddProcess([NotNull] Process process) {
             if (_jobHandle == IntPtr.Zero) return;
             if (!AssignProcessToJobObject(_jobHandle, process.Handle)) {
                 throw new Win32Exception();

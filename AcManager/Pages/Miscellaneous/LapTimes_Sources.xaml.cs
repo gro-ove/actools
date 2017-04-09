@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Profile;
@@ -6,14 +7,23 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Miscellaneous {
-    public partial class LapTimes_Sources {
+    public partial class LapTimes_Sources : IParametrizedUriContent {
         private ViewModel Model => (ViewModel)DataContext;
 
         public LapTimes_Sources() {
             DataContext = new ViewModel();
             InitializeComponent();
+        }
+
+        public void OnUri(Uri uri) {
+            var filterValue = uri.GetQueryParam("Filter");
+            var filter = string.IsNullOrWhiteSpace(filterValue) ? null : Filter.Create(StringTester.Instance, filterValue);
+            List.ItemsSource = (filter == null ? LapTimesManager.Instance.Sources :
+                    LapTimesManager.Instance.Sources.Where(x => filter.Test(x.DisplayName))).OrderBy(x => x.DisplayName).ToList();
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -23,20 +33,6 @@ namespace AcManager.Pages.Miscellaneous {
 
             public DelegateCommand ClearCacheCommand => _clearCacheCommand ?? (_clearCacheCommand = new DelegateCommand(() => {
                 LapTimesManager.Instance.ClearCache();
-            }));
-
-            private AsyncCommand<string> _exportLapTimesCommand;
-
-            public AsyncCommand<string> ExportLapTimesCommand => _exportLapTimesCommand ?? (_exportLapTimesCommand = new AsyncCommand<string>(async key => {
-                try {
-                    using (var waiting = WaitingDialog.Create("Loading lap times…")) {
-                        await LapTimesManager.Instance.UpdateAsync();
-                        waiting.Report("Exporting…");
-                        await LapTimesManager.Instance.ExportAsync(key);
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t export lap times", e);
-                }
             }));
         }
     }

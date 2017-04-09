@@ -1230,6 +1230,15 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Filter_ByAcceleration" xml:space="preserve">
     <value>Filter By Similar Acceleration</value>
   </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>Filter By Similar Length</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>Filter By Similar Width</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>Filter By Similar Amount Of Pitstops</value>
+  </data>
   <data name="Filter_ByDriver" xml:space="preserve">
     <value>Filter By Driver Name</value>
   </data>
@@ -2288,28 +2297,37 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>P/W Ratio:</value>
   </data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>…bhp</value>
+    <value>… bhp</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
-    <value>…Nm</value>
+    <value>… Nm</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
-    <value>…kg</value>
+    <value>… kg</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
-    <value>…km/h</value>
+    <value>… km/h</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
-    <value>…s 0-100</value>
+    <value>… s 0–100</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
   <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
-    <value>…kg/hp</value>
+    <value>… kg/hp</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
   </data>
   <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
     <value>Automatically recalculate P/W ratio</value>
@@ -2331,6 +2349,15 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
     <value>Power to weight ratio, recommended format: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>Total length, recommended format: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>Average track’s width, recommended format: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>Amount of pit stops as well as limit for a number of cars on the track, recommended format: “{0}”</value>
   </data>
   <data name="CarSpecs_FixFormats" xml:space="preserve">
     <value>Fix Formats</value>
@@ -3102,7 +3129,7 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
     <value>Anisotropic filtering:</value>
   </data>
   <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
-    <value>Anti-aliasing:</value>
+    <value>MSAA:</value>
   </data>
   <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
     <value>Limit framerate</value>

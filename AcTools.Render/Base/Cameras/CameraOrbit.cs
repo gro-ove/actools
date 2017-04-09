@@ -98,8 +98,6 @@ namespace AcTools.Render.Base.Cameras {
 
             Look = new Vector3(View.M13, View.M23, View.M33);
             Look.Normalize();
-
-            Frustum = Frustum.FromViewProj(ViewProj);
         }
     }
 }

@@ -424,7 +424,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             DisposeHelper.Dispose(ref _mapsBase);
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _outlineBuffer);
             DisposeHelper.Dispose(ref _outlineDepthBuffer);
 
@@ -436,7 +436,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
 
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

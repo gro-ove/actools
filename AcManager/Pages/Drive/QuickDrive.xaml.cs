@@ -26,6 +26,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -57,7 +58,7 @@ namespace AcManager.Pages.Drive {
         private static WeakReference<QuickDrive> _current;
 
         public void Initialize() {
-            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack, mode: _selectNextMode);
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
             this.OnActualUnload(() => {
@@ -73,6 +74,12 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
 
+#if DEBUG
+                new InputBinding(new AsyncCommand(() => {
+                    return LapTimesManager.Instance.AddEntry(Model.SelectedCar.Id, Model.SelectedTrack.IdWithLayout, DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)));
+                }), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
+#endif
+
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarSkinCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)),
@@ -85,6 +92,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
+            _selectNextMode = null;
         }
 
         private void OnTrackStateChanged(object sender, PropertyChangedEventArgs e) {
@@ -313,7 +321,8 @@ namespace AcManager.Pages.Drive {
             private readonly int? _forceTime;
 
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
-                    TrackObjectBase trackObject = null, string carSetupId = null, string weatherId = null, int? time = null, bool savePreset = false) {
+                    TrackObjectBase trackObject = null, string carSetupId = null, string weatherId = null, int? time = null, bool savePreset = false,
+                    Uri mode = null) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
                 _weatherId = weatherId;
@@ -418,6 +427,10 @@ namespace AcManager.Pages.Drive {
 
                 if (trackObject != null) {
                     SelectedTrack = trackObject;
+                }
+
+                if (mode != null) {
+                    SelectedMode = mode;
                 }
 
                 UpdateConditions();
@@ -603,8 +616,12 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static bool Run(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null) {
-            return new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId).Run();
+        public static bool Run(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null, Uri mode = null) {
+            return new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId, mode: mode).Run();
+        }
+
+        public static bool RunHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null) {
+            return Run(car, carSkinId, track, carSetupId, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
         }
 
         public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, string carSetupId = null,
@@ -644,8 +661,9 @@ namespace AcManager.Pages.Drive {
         private static CarObject _selectNextCar;
         private static string _selectNextCarSkinId;
         private static TrackObjectBase _selectNextTrack;
+        private static Uri _selectNextMode;
 
-        public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null) {
+        public static void Show(CarObject car = null, string carSkinId = null, TrackObjectBase track = null, Uri mode = null) {
             QuickDrive current;
             if (_current != null && _current.TryGetTarget(out current) && current.IsLoaded) {
                 var vm = current.Model;
@@ -662,8 +680,13 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = car;
             _selectNextCarSkinId = carSkinId;
             _selectNextTrack = track;
+            _selectNextMode = mode;
 
             NavigateToPage();
+        }
+
+        public static void ShowHotlap(CarObject car = null, string carSkinId = null, TrackObjectBase track = null) {
+            Show(car, carSkinId, track, new Uri("/Pages/Drive/QuickDrive_Hotlap.xaml", UriKind.Relative));
         }
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();

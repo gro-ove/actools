@@ -51,7 +51,9 @@ namespace AcTools.DataFile {
         public new dynamic this[[NotNull, LocalizationRequired(false)] string key] {
             get { return ContainsKey(key) ? base[key] : null; }
             set {
-                if (value == null) {
+                if (ReferenceEquals(value, IniFile.Nothing)) {
+                    Remove(key);
+                } else if (value == null) {
                     Set(key, (string)null);
                 } else {
                     Set(key, value);

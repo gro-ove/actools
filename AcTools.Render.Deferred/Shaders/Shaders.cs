@@ -430,7 +430,7 @@ namespace AcTools.Render.Deferred.Shaders {
 
 	public static class EffectExtension {		
         public static void Set(this EffectVariable variable, EffectDeferredGObject.Material o) {
-            SlimDxExtension.Set(variable, o, EffectDeferredGObject.Material.Stride);
+            SlimDxExtension.SetObject(variable, o, EffectDeferredGObject.Material.Stride);
         }
 	}
 }

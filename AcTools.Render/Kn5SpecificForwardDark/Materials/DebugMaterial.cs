@@ -4,6 +4,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
@@ -112,19 +113,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             _effect.FxBoneTransforms.SetMatrixArray(bones);
         }
 
-        protected virtual EffectTechnique GetTechnique() {
+        protected virtual EffectReadyTechnique GetTechnique() {
             return _bonesMode ? _effect.TechSkinnedDebug : _effect.TechDebug;
         }
 
-        protected virtual EffectTechnique GetShadowTechnique() {
+        protected virtual EffectReadyTechnique GetShadowTechnique() {
             return _bonesMode ? _effect.TechSkinnedDepthOnly : _effect.TechDepthOnly;
         }
 
-        protected virtual EffectTechnique GetSslrTechnique() {
+        protected virtual EffectReadyTechnique GetSslrTechnique() {
             return _bonesMode ? _effect.TechGPass_SkinnedDebug : _effect.TechGPass_Debug;
         }
 
-        private EffectTechnique GetTechnique(SpecialRenderMode mode) {
+        private EffectReadyTechnique GetTechnique(SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 return GetShadowTechnique();
             }

@@ -168,7 +168,7 @@ namespace AcManager.Pages.Drive {
             public static readonly IComparer<MenuItem> Instance = new MenuComparer();
 
             public int Compare(MenuItem x, MenuItem y) {
-                return string.Compare(x.Header.ToString(), y.Header.ToString(), StringComparison.CurrentCulture);
+                return string.Compare(x?.Header?.ToString(), y?.Header?.ToString(), StringComparison.CurrentCulture);
             }
         }
 

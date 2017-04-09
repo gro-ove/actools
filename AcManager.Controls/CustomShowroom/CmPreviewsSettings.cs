@@ -143,9 +143,19 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public static DarkPreviewsOptions GetSavedOptions(string presetFilename = null) {
-            return ((presetFilename != null ?
-                    SaveHelper<SaveableData>.LoadSerialized(File.ReadAllText(presetFilename)) :
-                    SaveHelper<SaveableData>.Load(DefaultKey)) ?? new SaveableData()).ToPreviewsOptions(true);
+            if (presetFilename != null && !File.Exists(presetFilename)) {
+                NonfatalError.NotifyBackground("Can’t load preset", $"File “{presetFilename}” not found.");
+            } else {
+                try {
+                    return ((presetFilename != null ?
+                            SaveHelper<SaveableData>.LoadSerialized(File.ReadAllText(presetFilename)) :
+                            SaveHelper<SaveableData>.Load(DefaultKey)) ?? new SaveableData()).ToPreviewsOptions(true);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t load preset", e);
+                }
+            }
+
+            return new SaveableData().ToPreviewsOptions(true);
         }
 
         protected new class SaveableData : DarkRendererSettings.SaveableData {

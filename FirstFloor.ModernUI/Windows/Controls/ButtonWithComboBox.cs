@@ -2,11 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty(@"MenuItems")]
-    public class ButtonWithComboBox : Button {
+    public class ButtonWithComboBox : ContentControl {
         public ButtonWithComboBox() {
             DefaultStyleKey = typeof(ButtonWithComboBox);
             MenuItems = new Collection<DependencyObject>();
@@ -27,5 +28,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ButtonToolTipProperty = DependencyProperty.Register("ButtonToolTip", typeof(object),
                 typeof(ButtonWithComboBox));
+
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(nameof(Command), typeof(ICommand),
+                typeof(ButtonWithComboBox));
+
+        public ICommand Command {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(nameof(CommandParameter), typeof(object),
+                typeof(ButtonWithComboBox));
+
+        public object CommandParameter {
+            get { return (object)GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
     }
 }

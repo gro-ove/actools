@@ -1,18 +1,13 @@
 ﻿using System;
+using System.IO;
+using AcTools.Utils;
 
 namespace AcTools.Kn5File {
     public partial class Kn5 {
-        public void SaveAll(string filename) {
-#pragma warning disable 612
-            Save(filename, true);
-#pragma warning restore 612
-        }
-
-        [Obsolete]
-        public void Save(string filename, bool saveNodes = false) {
-            using (var writer = new Kn5Writer(filename)) {
+        private void SaveInner(string filename, bool saveNodes, bool replaceIfExists) {
+            using (var writer = new Kn5Writer(File.Open(filename, replaceIfExists ? FileMode.Create : FileMode.CreateNew, FileAccess.ReadWrite))) {
                 writer.Write(Header);
-                
+
                 writer.Write(Textures.Count);
                 foreach (var texture in Textures.Values) {
                     var data = TexturesData[texture.Name];
@@ -20,7 +15,7 @@ namespace AcTools.Kn5File {
                     writer.Write(texture);
                     writer.Write(data);
                 }
-                
+
                 writer.Write(Materials.Count);
                 foreach (var material in Materials.Values) {
                     writer.Write(material);
@@ -35,6 +30,30 @@ namespace AcTools.Kn5File {
 
                     writer.Write(NodesBytes);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Saves file under a new name and then renames it back to “filename” to avoid
+        /// breaking stuff if saving goes wrong. Optionally, will move original file
+        /// to the Recycle Bin.
+        /// </summary>
+        public void Save(string filename, bool backup = true) {
+            var newFilename = FileUtils.EnsureUnique(filename);
+            if (newFilename != filename) {
+                if (backup) {
+                    FileUtils.Recycle(newFilename);
+                }
+            }
+
+            SaveInner(newFilename, true, true);
+
+            if (newFilename != filename) {
+                if (File.Exists(filename)) {
+                    File.Delete(filename);
+                }
+
+                File.Move(newFilename, filename);
             }
         }
 

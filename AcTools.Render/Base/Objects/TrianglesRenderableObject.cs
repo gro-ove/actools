@@ -42,7 +42,7 @@ namespace AcTools.Render.Base.Objects {
         }
 
         private Matrix? _parentMatrix;
-        private Vector3[] _positions;
+        private Vector3[] _positions, _temporary;
 
         private void Prepare() {
             var positions = new Vector3[Vertices.Length];
@@ -112,7 +112,7 @@ namespace AcTools.Render.Base.Objects {
             _parentMatrix = parentMatrix;
 
             if (_positions == null) {
-                PrepareSmart();
+                Prepare();
                 if (_positions == null) return;
             }
 
@@ -122,25 +122,17 @@ namespace AcTools.Render.Base.Objects {
                 return;
             }
 
-            var v = TransformCoordinate(_positions[0], parentMatrix);
-            var minX = v.X;
-            var minY = v.Y;
-            var minZ = v.Z;
-            var maxX = v.X;
-            var maxY = v.Y;
-            var maxZ = v.Z;
-
-            for (var i = 1; i < _positions.Length; i++) {
-                var n = TransformCoordinate(_positions[i], parentMatrix);
-                if (minX > n.X) minX = n.X;
-                if (minY > n.Y) minY = n.Y;
-                if (minZ > n.Z) minZ = n.Z;
-                if (maxX < n.X) maxX = n.X;
-                if (maxY < n.Y) maxY = n.Y;
-                if (maxZ < n.Z) maxZ = n.Z;
+            if (_temporary?.Length != _positions.Length) {
+                _temporary = new Vector3[_positions.Length];
             }
 
-            BoundingBox = new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
+            Vector3.TransformCoordinate(_positions, ref parentMatrix, _temporary);
+            var b = new BoundingBox(_temporary[0], _temporary[0]);
+            for (var i = 1; i < _temporary.Length; i++) {
+                SlimDxExtension.Extend(ref b, ref _temporary[i]);
+            }
+
+            BoundingBox = b;
         }
 
         public override BaseRenderableObject Clone() {

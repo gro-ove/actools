@@ -36,9 +36,9 @@ namespace AcTools.Render.Base {
             Camera?.UpdateViewMatrix();
         }
 
-        protected override void DrawInner() {
+        protected override void DrawOverride() {
             DrawPrepare();
-            base.DrawInner();
+            base.DrawOverride();
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Deferred);
         }
 
@@ -50,9 +50,9 @@ namespace AcTools.Render.Base {
             Scene.Draw(holder, camera, SpecialRenderMode.Shadow);
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             Scene.Dispose();
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

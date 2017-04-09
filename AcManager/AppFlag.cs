@@ -328,6 +328,12 @@ namespace AcManager {
         SseName,
 
         /// <summary>
+        /// Enable logging for SSE starter.
+        /// Example: --sse-logging.
+        /// </summary>
+        SseLogging,
+
+        /// <summary>
         /// Custom background, could be animated (put a JPEG file nearby as a replacement
         /// when app isn’t active). If it’s not a full path, CM will look for a file(s) in
         /// …\AppData\Local\AcTools Content Manager\Themes\Backgrounds.

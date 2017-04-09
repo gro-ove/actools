@@ -23,14 +23,11 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.Profile;
 using AcTools;
 using AcTools.AcdFile;
-using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -43,72 +40,29 @@ namespace AcManager.Pages.Selected {
         public static bool OptionExtendedMode = true;
 
         public class ViewModel : SelectedAcObjectViewModel<CarObject> {
-            private double? _totalDrivenDistance;
-
-            public double? TotalDrivenDistance {
-                get { return _totalDrivenDistance; }
-                set {
-                    if (Equals(value, _totalDrivenDistance)) return;
-                    _totalDrivenDistance = value;
-                    OnPropertyChanged();
-                }
-            }
-
             public ViewModel([NotNull] CarObject acObject) : base(acObject) {
-                TotalDrivenDistance = SelectedObject.TotalDrivenDistance / 1e3;
+                InitializeSpecs();
                 InitializeLater().Forget();
             }
 
             public async Task InitializeLater() {
                 await SelectedObject.GetSoundOrigin();
-                await Task.Delay(500);
-                await LapTimesManager.Instance.UpdateAsync();
-                UpdateLapTimes();
-            }
-
-            private void UpdateLapTimes() {
-                LapTimes = new BetterObservableCollection<LapTimeWrapped>(
-                        LapTimesManager.Instance.Entries.Where(x => x.CarId == SelectedObject.Id)
-                                       .OrderBy(x => PlayerStatsManager.Instance.GetDistanceDrivenAtTrackAcId(x.TrackAcId))
-                                       .Take(10)
-                                       .Select(x => new LapTimeWrapped(x)));
-            }
-
-            private BetterObservableCollection<LapTimeWrapped> _lapTimes;
-
-            public BetterObservableCollection<LapTimeWrapped> LapTimes {
-                get { return _lapTimes; }
-                set {
-                    if (Equals(value, _lapTimes)) return;
-                    _lapTimes = value;
-                    OnPropertyChanged();
-                }
             }
 
             public override void Load() {
                 base.Load();
                 SelectedObject.PropertyChanged += OnObjectPropertyChanged;
-                LapTimesManager.Instance.NewEntryAdded += OnNewLapTimeAdded;
             }
 
             public override void Unload() {
                 base.Unload();
                 SelectedObject.PropertyChanged -= OnObjectPropertyChanged;
-                LapTimesManager.Instance.NewEntryAdded -= OnNewLapTimeAdded;
                 _helper.Dispose();
                 ShowroomPresets = QuickDrivePresets = UpdatePreviewsPresets = null;
             }
 
-            private void OnNewLapTimeAdded(object sender, EventArgs e) {
-                Logging.Here();
-                UpdateLapTimes();
-            }
-
             private void OnObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
-                    case nameof(CarObject.TotalDrivenDistance):
-                        TotalDrivenDistance = SelectedObject.TotalDrivenDistance / 1e3;
-                        break;
                     case nameof(CarObject.SpecsBhp):
                     case nameof(CarObject.SpecsWeight):
                         if (RecalculatePwRatioAutomatically) {
@@ -428,107 +382,19 @@ namespace AcManager.Pages.Selected {
                         (weight.Value - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
             }));
 
-            private static string SpecsFormat(string format, object value) {
-                return format.Replace(@"…", value.ToInvariantString());
-            }
-
-            private DelegateCommand<string> _fixFormatCommand;
-
-            public DelegateCommand<string> FixFormatCommand => _fixFormatCommand ?? (_fixFormatCommand = new DelegateCommand<string>(key => {
-                if (key == null) {
-                    foreach (var k in new[] { @"power", @"torque", @"weight", @"topspeed", @"acceleration", @"pwratio" }) {
-                        FixFormat(k);
-                    }
-                } else {
-                    FixFormat(key);
-                }
-            }, key => key == null || !IsFormatCorrect(key)));
-
-            [NotNull]
-            private static string GetFormat(string key) {
-                switch (key) {
-                    case "power":
-                        return AppStrings.CarSpecs_Power_FormatTooltip;
-                    case "torque":
-                        return AppStrings.CarSpecs_Torque_FormatTooltip;
-                    case "weight":
-                        return AppStrings.CarSpecs_Weight_FormatTooltip;
-                    case "topspeed":
-                        return AppStrings.CarSpecs_MaxSpeed_FormatTooltip;
-                    case "acceleration":
-                        return AppStrings.CarSpecs_Acceleration_FormatTooltip;
-                    case "pwratio":
-                        return AppStrings.CarSpecs_PwRatio_FormatTooltip;
-                    default:
-                        return @"…";
-                }
-            }
-
-            [CanBeNull]
-            private string GetSpecsValue(string key) {
-                switch (key) {
-                    case "power":
-                        return SelectedObject.SpecsBhp;
-                    case "torque":
-                        return SelectedObject.SpecsTorque;
-                    case "weight":
-                        return SelectedObject.SpecsWeight;
-                    case "topspeed":
-                        return SelectedObject.SpecsTopSpeed;
-                    case "acceleration":
-                        return SelectedObject.SpecsAcceleration;
-                    case "pwratio":
-                        return SelectedObject.SpecsPwRatio;
-                    default:
-                        return null;
-                }
-            }
-            
-            private void SetSpecsValue(string key, string value) {
-                switch (key) {
-                    case "power":
-                        SelectedObject.SpecsBhp = value;
-                        return;
-                    case "torque":
-                        SelectedObject.SpecsTorque = value;
-                        return;
-                    case "weight":
-                        SelectedObject.SpecsWeight = value;
-                        return;
-                    case "topspeed":
-                        SelectedObject.SpecsTopSpeed = value;
-                        return;
-                    case "acceleration":
-                        SelectedObject.SpecsAcceleration = value;
-                        return;
-                    case "pwratio":
-                        SelectedObject.SpecsPwRatio = value;
-                        return;
-                    default:
-                        Logging.Warning("Unexpected key: " + key);
-                        return;
-                }
-            }
-
-            private bool IsFormatCorrect(string key) {
-                var format = GetFormat(key);
-                var value = GetSpecsValue(key);
-                return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
+            private void InitializeSpecs() {
+                RegisterSpec("power", AppStrings.CarSpecs_Power_FormatTooltip, nameof(SelectedObject.SpecsBhp));
+                RegisterSpec("torque", AppStrings.CarSpecs_Torque_FormatTooltip, nameof(SelectedObject.SpecsTorque));
+                RegisterSpec("weight", AppStrings.CarSpecs_Weight_FormatTooltip, nameof(SelectedObject.SpecsWeight));
+                RegisterSpec("topspeed", AppStrings.CarSpecs_MaxSpeed_FormatTooltip, nameof(SelectedObject.SpecsTopSpeed));
+                RegisterSpec("acceleration", AppStrings.CarSpecs_Acceleration_FormatTooltip, nameof(SelectedObject.SpecsAcceleration));
+                RegisterSpec("pwratio", AppStrings.CarSpecs_PwRatio_FormatTooltip, nameof(SelectedObject.SpecsPwRatio));
             }
 
             private static readonly Regex FixAccelerationRegex = new Regex(@"0\s*[-–—]\s*\d\d+", RegexOptions.Compiled);
 
-            private void FixFormat(string key) {
-                var format = GetFormat(key);
-                var value = GetSpecsValue(key);
-                if (value == null) return;
-
-                value = FixAccelerationRegex.Replace(value, "");
-
-                double actualValue;
-                var replacement = FlexibleParser.TryParseDouble(value, out actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
-                value = SpecsFormat(format, replacement);
-                SetSpecsValue(key, value);
+            protected override string FixFormatCommon(string value) {
+                return FixAccelerationRegex.Replace(value, "");
             }
 
             private DelegateCommand _scaleCurvesCommand;
@@ -734,7 +600,6 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
                 new InputBinding(_model.RecalculatePwRatioCommand, new KeyGesture(Key.W, ModifierKeys.Alt)),
-                new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
 
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
@@ -773,7 +638,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void SelectedSkinPreview_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void OnSkinRightClick(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
 
             var context = ((FrameworkElement)sender).DataContext;
@@ -866,7 +731,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void ParentBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnParentBlockClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new ChangeCarParentDialog((CarObject)SelectedAcObject).ShowDialog();

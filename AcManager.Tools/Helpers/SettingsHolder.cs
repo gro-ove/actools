@@ -482,12 +482,18 @@ namespace AcManager.Tools.Helpers {
 
                 public bool IsAvailable => RequiredAddonId == null || PluginsManager.Instance.IsPluginEnabled(RequiredAddonId);
 
-                internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null) {
+                private readonly bool _nonSelectable;
+
+                public bool IsSelectable => !_nonSelectable && IsAvailable;
+
+                internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null, 
+                        bool nonSelectable = false) {
                     Id = id;
                     DisplayName = displayName;
                     Description = description;
 
                     RequiredAddonId = requiredAddonId;
+                    _nonSelectable = nonSelectable;
                 }
             }
 
@@ -495,6 +501,17 @@ namespace AcManager.Tools.Helpers {
                     "Official",
                     string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
                     ToolsStrings.Settings_Starter_Official_Description);
+
+            public static readonly StarterType SidePassageStarterType = new StarterType(
+                    "AC Service",
+                    "AC Service",
+                    "Replaces original launcher by a small service. Fast and reliable. Original launcher still can be used — take a look at service’s icon in system tray.\n\nJust as a reminder (press “[?]” to read complete description): original launcher is renamed as “AssettoCorsa_original.exe”.");
+
+            public static readonly StarterType SteamStarterType = new StarterType(
+                    "Steam",
+                    "Replacement",
+                    "For this starter, you have to replace the original “AssettoCorsa.exe” with “Content Manager.exe”. This way, CM will get an access to Steam as if it is the original launcher.",
+                    nonSelectable: true);
 
             public static readonly StarterType TrickyStarterType = new StarterType(
                     "Tricky",
@@ -543,6 +560,10 @@ namespace AcManager.Tools.Helpers {
                             ModernDialog.ShowMessage(ToolsStrings.Settings_Starter_UiModule_JustInstalled);
                         }));
                     }
+
+                    if (value != SidePassageStarterType) {
+                        SidePassageStarter.UninstallSidePassage();
+                    }
                 }
             }
 
@@ -565,6 +586,8 @@ namespace AcManager.Tools.Helpers {
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {
                 OfficialStarterType,
+                SidePassageStarterType,
+                SteamStarterType,
                 TrickyStarterType,
                 UiModuleStarterType,
                 // StarterPlusType,

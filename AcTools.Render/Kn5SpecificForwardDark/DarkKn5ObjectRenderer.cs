@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -24,10 +27,13 @@ using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
+using ImageMagick;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum AoType {
@@ -43,7 +49,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         [Description("ASSAO")]
         Assao
     }
-    
+
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
         public static readonly AoType[] ProductionReadyAo = {
             AoType.Ssao, AoType.SsaoAlt
@@ -360,7 +366,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void UpdateGBuffers() {
             var value = UseSslr || UseAo;
             if (_gBufferNormals != null == value) return;
-            
+
             if (value) {
                 _gBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                 _gBufferDepth = TargetResourceTexture.Create(Format.R32_Float);
@@ -389,7 +395,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             if (showroomKn5 != null) {
                 _showroom = true;
-                CubemapReflection = true;
             }
 
             //BackgroundColor = Color.FromArgb(10, 15, 25);
@@ -431,7 +436,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private Kn5RenderableCar _car;
-        private FlatMirror _mirror; 
+        private FlatMirror _mirror;
         private RenderableList _carWrapper;
 
         private void RecreateFlatMirror() {
@@ -491,7 +496,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 orbit.MinBeta = -0.1f;
                 orbit.MinY = 0.05f;
             }
-            
+
             camera.DisableFrustum = true;
         }
 
@@ -717,7 +722,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void PreparePcss(ShadowsDirectional shadows) {
             if (_pcssParamsSet) return;
             _pcssParamsSet = true;
-            
+
             var splits = new Vector4[shadows.Splits.Length];
             var sceneScale = (ShowroomNode == null ? 1f : 2f) * PcssSceneScale;
             var lightScale = PcssLightScale;
@@ -766,7 +771,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (FlatMirror && ShowroomNode == null) {
                 effect.FxFlatMirrorPower.Set(FlatMirrorReflectiveness);
             }
-            
+
             if (reflection != null) {
                 effect.FxReflectionCubemap.SetResource(reflection.View);
             }
@@ -897,7 +902,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             // shadows
             carNode.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
-            
+
             // car itself
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
             carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
@@ -929,7 +934,7 @@ Distance threshold: {_sslrDistanceThreshold}";
 
             var aa = new[] {
                 UseMsaa ? MsaaSampleCount + "xMSAA" : null,
-                UseSsaa ? $"{Math.Pow(ResolutionMultiplier, 2d).Round()}xSSAA{(TemporaryFlag ? " (exp.)" : "")}" : null,
+                UseSsaa ? $"{Math.Pow(ResolutionMultiplier, 2d).Round()}xSSAA" : null,
                 UseFxaa ? "FXAA" : null,
             }.NonNull().JoinToString(", ");
 
@@ -997,7 +1002,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
             _sslrParamsChanged = true;
         }
 #endif
-
+        
         private DarkSslrHelper _sslrHelper;
         private BlurHelper _blurHelper;
 
@@ -1147,7 +1152,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
 
         protected override Vector3 AutoAdjustedTarget => base.AutoAdjustedTarget + Vector3.UnitY * (SetCameraHigher ? 0f : 0.2f);
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _mirror);
             DisposeHelper.Dispose(ref _mirrorBuffer);
             DisposeHelper.Dispose(ref _mirrorBlurBuffer);
@@ -1161,7 +1166,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
             DisposeHelper.Dispose(ref _gBufferDepth);
             DisposeHelper.Dispose(ref _aoBuffer);
 
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

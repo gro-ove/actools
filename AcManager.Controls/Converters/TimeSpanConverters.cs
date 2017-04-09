@@ -13,7 +13,7 @@ namespace AcManager.Controls.Converters {
             if (t < TimeSpan.Zero) {
                 return $@"-{Convert(-t)}";
             }
-            return $@"{t.TotalHours.RoundToInt():D2}:{t.Minutes:D2}";
+            return $@"{t.TotalHours.FloorToInt():D2}:{t.Minutes:D2}";
         }
 
         private static TimeSpan Convert(string s) {
@@ -43,7 +43,7 @@ namespace AcManager.Controls.Converters {
             if (t < TimeSpan.Zero) {
                 return $@"-{Convert(-t)}";
             }
-            return t.TotalHours > 0 ? $@"{t.TotalHours.RoundToInt():D2}:{t.Minutes:D2}:{t.Seconds:D2}" : $@"{t.Minutes:D2}:{t.Seconds:D2}";
+            return t.TotalHours > 0 ? $@"{t.TotalHours.FloorToInt():D2}:{t.Minutes:D2}:{t.Seconds:D2}" : $@"{t.Minutes:D2}:{t.Seconds:D2}";
         }
 
         private static TimeSpan Convert(string s) {

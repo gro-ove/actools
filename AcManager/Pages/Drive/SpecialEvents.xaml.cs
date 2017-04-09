@@ -9,6 +9,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -21,11 +22,18 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using StringBasedFilter;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
-    public partial class SpecialEvents : ILoadableContent {
+    public partial class SpecialEvents : ILoadableContent, IParametrizedUriContent {
         public static bool OptionScalableTiles = true;
+
+        private string _filter;
+
+        public void OnUri(Uri uri) {
+            _filter = uri.GetQueryParam("Filter");
+        }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
             return SpecialEventsManager.Instance.EnsureLoadedAsync();
@@ -36,7 +44,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Initialize() {
-            DataContext = new ViewModel();
+            DataContext = new ViewModel(_filter);
             InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
@@ -62,10 +70,19 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public ViewModel() {
+            public ViewModel(string filter) {
                 List = new AcWrapperCollectionView(SpecialEventsManager.Instance.WrappersAsIList);
                 List.CurrentChanged += OnCurrentChanged;
                 List.MoveCurrentToIdOrFirst(ValuesStorage.GetString(KeySelectedId));
+
+                if (!string.IsNullOrWhiteSpace(filter)) {
+                    var filterObject = Filter.Create(SpecialEventObjectTester.Instance, filter);
+                    List.Filter = wrapper => {
+                        var v = (wrapper as AcItemWrapper)?.Value as SpecialEventObject;
+                        return v != null && filterObject.Test(v);
+                    };
+                }
+
                 List.CustomSort = this;
             }
 
@@ -107,6 +124,32 @@ namespace AcManager.Pages.Drive {
                             NonfatalError.Notify("Can’t get challenges progress", e);
                         }
                     }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.UiModuleStarterType));
+
+            private ICommand _syncronizeProgressUsingSidePassageCommand;
+
+            public ICommand SyncronizeProgressUsingSidePassageCommand => _syncronizeProgressUsingSidePassageCommand ??
+                    (_syncronizeProgressUsingSidePassageCommand = new AsyncCommand(async () => {
+                        try {
+                            using (var waiting = new WaitingDialog()) {
+                                await SpecialEventsManager.Instance.UpdateProgressViaSidePassage(waiting, waiting.CancellationToken);
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get challenges progress", e);
+                        }
+                    }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SidePassageStarterType));
+
+            private AsyncCommand _syncronizeProgressUsingSteamStarterCommand;
+
+            public AsyncCommand SyncronizeProgressUsingSteamStarterCommand => _syncronizeProgressUsingSteamStarterCommand ??
+                    (_syncronizeProgressUsingSteamStarterCommand = new AsyncCommand(async () => {
+                        try {
+                            using (var waiting = new WaitingDialog()) {
+                                await SpecialEventsManager.Instance.UpdateProgressViaSteamStarter(waiting, waiting.CancellationToken);
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get challenges progress", e);
+                        }
+                    }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType));
         }
 
         private ScrollViewer _scroll;

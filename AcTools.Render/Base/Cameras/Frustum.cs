@@ -26,9 +26,35 @@ namespace AcTools.Render.Base.Cameras {
                 new Plane(vp.M14 - vp.M13, vp.M24 - vp.M23, vp.M34 - vp.M33, vp.M44 - vp.M43)
             };
 
-            foreach (var plane in Planes) {
-                plane.Normalize();
+            for (var i = 0; i < 6; i++) {
+                Planes[i].Normalize();
             }
+        }
+
+        public void Update(Matrix vp) {
+            Planes[0].Normal = new Vector3(vp.M14 + vp.M11, vp.M24 + vp.M21, vp.M34 + vp.M31);
+            Planes[0].D = vp.M44 + vp.M41;
+            Planes[0].Normalize();
+
+            Planes[1].Normal = new Vector3(vp.M14 - vp.M11, vp.M24 - vp.M21, vp.M34 - vp.M31);
+            Planes[1].D = vp.M44 - vp.M41;
+            Planes[1].Normalize();
+
+            Planes[2].Normal = new Vector3(vp.M14 + vp.M12, vp.M24 + vp.M22, vp.M34 + vp.M32);
+            Planes[2].D = vp.M44 + vp.M42;
+            Planes[2].Normalize();
+
+            Planes[3].Normal = new Vector3(vp.M14 - vp.M12, vp.M24 - vp.M22, vp.M34 - vp.M32);
+            Planes[3].D = vp.M44 - vp.M42;
+            Planes[3].Normalize();
+
+            Planes[4].Normal = new Vector3(vp.M13, vp.M23, vp.M33);
+            Planes[4].D = vp.M43;
+            Planes[4].Normalize();
+
+            Planes[5].Normal = new Vector3(vp.M14 - vp.M13, vp.M24 - vp.M23, vp.M34 - vp.M33);
+            Planes[5].D = vp.M44 - vp.M43;
+            Planes[5].Normalize();
         }
 
         public Plane[] Planes { get; }

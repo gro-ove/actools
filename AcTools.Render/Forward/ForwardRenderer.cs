@@ -5,6 +5,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
@@ -314,7 +315,7 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        private EffectTechnique GetHdrTechnique() {
+        private EffectReadyTechnique GetHdrTechnique() {
             if (ToneMapping != ToneMappingFn.None) {
                 _hdr.FxParams.Set(new Vector4(ToneGamma, ToneExposure, ToneWhitePoint, 0f));
 
@@ -533,7 +534,7 @@ namespace AcTools.Render.Forward {
                 }
 
                 DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, input, new Vector2(Width, Height),
-                        output, new Vector2(ActualWidth, ActualHeight), TemporaryFlag);
+                        output, new Vector2(ActualWidth, ActualHeight));
                 return true;
             }
 
@@ -572,12 +573,10 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        protected override void DrawInner() {
+        protected override void DrawOverride() {
             DrawSceneToBuffer();
             AaThenBloom();
         }
-
-        public bool TemporaryFlag { get; set; }
 
         public bool KeepFxaaWhileShooting;
 
@@ -605,7 +604,7 @@ namespace AcTools.Render.Forward {
 
         protected virtual void DrawSpritesInner() {}
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _bufferF);
             DisposeHelper.Dispose(ref _bufferFSsaaFxaa);
 
@@ -618,7 +617,7 @@ namespace AcTools.Render.Forward {
             DisposeHelper.Dispose(ref _colorGradingView);
             DisposeHelper.Dispose(ref _colorGradingTexture);
 
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

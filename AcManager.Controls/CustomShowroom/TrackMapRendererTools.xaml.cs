@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -15,6 +16,7 @@ using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -97,7 +99,18 @@ namespace AcManager.Controls.CustomShowroom {
 
             public TrackMapPreparationRenderer Renderer { get; }
 
+            public bool SurfaceMode => !Renderer.AiLaneMode;
+
             private Regex _regex;
+
+            [CanBeNull]
+            private readonly ISaveHelper _save;
+
+            private class SaveableData {
+                public string Filter;
+                public bool IgnoreCase, UseFxaa = true, AiLaneActualWidth = false;
+                public double Scale = 1.0, Margin = 5d, AiLaneWidth = 10d;
+            }
 
             public ViewModel(TrackObjectBase track, TrackMapPreparationRenderer renderer) {
                 Track = track;
@@ -105,11 +118,30 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer.SetFilter(this);
 
                 Surfaces = SurfaceDescription.LoadAll(Path.Combine(track.DataDirectory, "surfaces.ini")).ToList();
-                UpdateFilter(Surfaces.Where(x => x.ShouldBeVisibleOnMap()));
 
-                _useFxaa = Renderer.UseFxaa;
-                _margin = Renderer.Margin;
-                _scale = Renderer.Scale;
+                _save = new SaveHelper<SaveableData>(".TrackMapRendererTools:" + track.Id, () => new SaveableData {
+                    Filter = Filter,
+                    IgnoreCase = FilterIgnoreCase,
+                    UseFxaa = UseFxaa,
+                    Scale = Scale,
+                    Margin = Margin,
+                    AiLaneWidth = AiLaneWidth,
+                    AiLaneActualWidth = AiLaneActualWidth,
+                }, o => {
+                    if (o.Filter == null) {
+                        UpdateFilter(Surfaces.Where(x => x.ShouldBeVisibleOnMap()));
+                    } else {
+                        Filter = o.Filter;
+                    }
+
+                    FilterIgnoreCase = o.IgnoreCase;
+                    UseFxaa = o.UseFxaa;
+                    Scale = o.Scale;
+                    Margin = o.Margin;
+                    AiLaneWidth = o.AiLaneWidth;
+                    AiLaneActualWidth = o.AiLaneActualWidth;
+                }, storage: CacheStorage.Storage);
+                _save.Initialize();
             }
 
             private bool _nonUserChange;
@@ -135,6 +167,18 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            private void RecreateFilter() {
+                try {
+                    _regex = new Regex(Filter, FilterIgnoreCase ? RegexOptions.Compiled | RegexOptions.IgnoreCase : RegexOptions.Compiled);
+                    FilterError = null;
+                } catch (Exception e) {
+                    var s = e.Message.Split(new[] { @" - " }, 2, StringSplitOptions.None);
+                    FilterError = s.Length == 2 ? s[1] : e.Message;
+                }
+
+                Renderer.Update();
+            }
+
             private string _filter;
 
             public string Filter {
@@ -148,16 +192,23 @@ namespace AcManager.Controls.CustomShowroom {
 
                     _filter = value;
                     OnPropertyChanged();
+                    RecreateFilter();
 
-                    try {
-                        _regex = new Regex(value, RegexOptions.Compiled);
-                        FilterError = null;
-                    } catch (Exception e) {
-                        var s = e.Message.Split(new[] { @" - " }, 2, StringSplitOptions.None);
-                        FilterError = s.Length == 2 ? s[1] : e.Message;
-                    }
+                    _save?.SaveLater();
+                }
+            }
 
-                    Renderer.Update();
+            private bool _filterIgnoreCase;
+
+            public bool FilterIgnoreCase {
+                get { return _filterIgnoreCase; }
+                set {
+                    if (Equals(value, _filterIgnoreCase)) return;
+                    _filterIgnoreCase = value;
+                    OnPropertyChanged();
+                    RecreateFilter();
+
+                    _save?.SaveLater();
                 }
             }
 
@@ -191,6 +242,7 @@ namespace AcManager.Controls.CustomShowroom {
                     OnPropertyChanged();
                     Renderer.UseFxaa = value;
                     Renderer.IsDirty = true;
+                    _save?.SaveLater();
                 }
             }
 
@@ -205,6 +257,7 @@ namespace AcManager.Controls.CustomShowroom {
                     OnPropertyChanged();
                     Renderer.Margin = (float)value;
                     Renderer.IsDirty = true;
+                    _save?.SaveLater();
                 }
             }
 
@@ -219,6 +272,34 @@ namespace AcManager.Controls.CustomShowroom {
                     OnPropertyChanged();
                     Renderer.Scale = (float)value;
                     Renderer.IsDirty = true;
+                    _save?.SaveLater();
+                }
+            }
+
+            private double _aiLaneWidth;
+
+            public double AiLaneWidth {
+                get { return _aiLaneWidth; }
+                set {
+                    value = value.Clamp(0, 200);
+                    if (Equals(value, _aiLaneWidth)) return;
+                    _aiLaneWidth = value;
+                    OnPropertyChanged();
+                    Renderer.AiLaneWidth = (float)value;
+                    _save?.SaveLater();
+                }
+            }
+
+            private bool _aiLaneActualWidth;
+
+            public bool AiLaneActualWidth {
+                get { return _aiLaneActualWidth; }
+                set {
+                    if (Equals(value, _aiLaneActualWidth)) return;
+                    _aiLaneActualWidth = value;
+                    OnPropertyChanged();
+                    Renderer.AiLaneActualWidth = value;
+                    _save?.SaveLater();
                 }
             }
 

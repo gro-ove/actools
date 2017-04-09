@@ -384,7 +384,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var checksum = options.GetChecksum();
 
                 var finished = false;
-                var j = 0;
+                int j;
 
                 using (var waiting = new WaitingDialog()) {
                     var cancellation = waiting.CancellationToken;
@@ -417,7 +417,7 @@ namespace AcManager.Controls.CustomShowroom {
                         var skinsPerCar = (double)approximateSkinsPerCarSkins / approximateSkinsPerCarCars;
 
                         var result = 0d;
-                        for (var k = currentEntry; k < entries.Count; k++) {
+                        for (var k = currentEntry + 1; k < entries.Count; k++) {
                             var entry = entries[k];
                             result += entry.Skins?.Count ?? skinsPerCar;
                         }
@@ -427,8 +427,8 @@ namespace AcManager.Controls.CustomShowroom {
 
                     var shotSkins = 0;
                     var recyclingWarning = false;
-                    Func<CarObject, CarSkinObject, int?, IEnumerable<string>> getDetails = (car, skin, currentEntrySkinsLeft) => {
-                        var left = leftSkins(j) + (currentEntrySkinsLeft ?? approximateSkinsPerCarSkins / approximateSkinsPerCarCars);
+                    Func<int, CarObject, CarSkinObject, int?, IEnumerable<string>> getDetails = (currentIndex, car, skin, currentEntrySkinsLeft) => {
+                        var left = leftSkins(currentIndex) + (currentEntrySkinsLeft ?? approximateSkinsPerCarSkins / approximateSkinsPerCarCars);
 
                         // ReSharper disable once AccessToModifiedClosure
                         var speed = shotSkins / started.Elapsed.TotalMinutes;
@@ -458,7 +458,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                         if (skins == null) {
                             waiting.Report(new AsyncProgressEntry("Loading skins…" + postfix, verySingleMode ? 0d : progress));
-                            waiting.SetDetails(getDetails(car, null, null));
+                            waiting.SetDetails(getDetails(j, car, null, null));
 
                             await car.SkinsManager.EnsureLoadedAsync();
                             if (cancellation.IsCancellationRequested) goto Cancel;
@@ -472,7 +472,7 @@ namespace AcManager.Controls.CustomShowroom {
                             if (cancellation.IsCancellationRequested) goto Cancel;
 
                             var skin = skins[i];
-                            waiting.SetDetails(getDetails(car, skin, skins.Count - i));
+                            waiting.SetDetails(getDetails(j, car, skin, skins.Count - i));
 
                             var subprogress = progress + step * (0.1 + 0.8 * i / skins.Count);
                             if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(skin.PreviewImage)) {
@@ -533,7 +533,6 @@ namespace AcManager.Controls.CustomShowroom {
             } finally {
                 if (localUpdater) {
                     updater.Dispose();
-                    GC.Collect();
                 }
             }
         }

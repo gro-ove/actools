@@ -1,5 +1,6 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Materials;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using JetBrains.Annotations;
 using SlimDX;
@@ -9,11 +10,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleGl : Kn5MaterialSimpleBase {
         public Kn5MaterialSimpleGl([NotNull] Kn5MaterialDescription description) : base(description) { }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechGl;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Gl;
         }
     }
@@ -26,15 +27,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             InputLayout = Effect.LayoutPNTGW4B;
         }
 
-        protected override EffectTechnique GetShadowTechnique() {
+        protected override EffectReadyTechnique GetShadowTechnique() {
             return Effect.TechSkinnedDepthOnly;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_SkinnedGl;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechSkinnedGl;
         }
 

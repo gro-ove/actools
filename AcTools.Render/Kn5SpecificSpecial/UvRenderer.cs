@@ -1,7 +1,4 @@
 ﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -10,7 +7,6 @@ using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
@@ -44,7 +40,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public bool UseAntialiazing = true;
         public bool UseFxaa = false;
-        public float Multipler = 1f;
 
         private void RenderUv() {
             var effect = DeviceContextHolder.GetEffect<EffectSpecialUv>();
@@ -57,7 +52,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        protected override void DrawInner() {
+        protected override void DrawOverride() {
             using (var rasterizerState = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
                 FillMode = FillMode.Wireframe,
                 CullMode = CullMode.None,
@@ -69,21 +64,22 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 DeviceContext.Rasterizer.State = rasterizerState;
                 DeviceContext.ClearRenderTargetView(RenderTargetView, Color.Transparent);
 
-                if (UseFxaa) {
-                    using (var buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                        buffer.Resize(DeviceContextHolder, Width, Height, null);
+                using (var buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                    buffer.Resize(DeviceContextHolder, Width, Height, null);
 
-                        DeviceContext.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
-                        DeviceContext.OutputMerger.SetTargets(buffer.TargetView);
+                    DeviceContext.ClearRenderTargetView(buffer.TargetView, Color.Transparent);
+                    DeviceContext.OutputMerger.SetTargets(buffer.TargetView);
 
-                        RenderUv();
-
-                        DeviceContext.Rasterizer.State = null;
-                        DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, buffer.View, RenderTargetView);
-                    }
-                } else {
-                    DeviceContext.OutputMerger.SetTargets(RenderTargetView);
                     RenderUv();
+
+                    DeviceContext.Rasterizer.State = null;
+
+                    PrepareForFinalPass();
+                    if (UseFxaa) {
+                        DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, buffer.View, RenderTargetView);
+                    } else {
+                        DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, buffer.View, RenderTargetView);
+                    }
                 }
             }
         }
@@ -93,12 +89,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Initialize();
             }
 
-            Width = (int)(Width * Multipler);
-            Height = (int)(Height * Multipler);
-
             Kn5MaterialUv.Filter = textureName;
             Draw();
-            SaveRenderBufferAsPng(outputFile, 1f / Multipler);
+            Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
 
         protected override void OnTick(float dt) {}

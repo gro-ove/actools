@@ -35,83 +35,95 @@
         </mui:Cell>
 
         <!-- data section -->
-        <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 8 0 0"
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+        <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 8 -8 0"
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outsize="True" Padding="0 0 8 0">
+            <DockPanel>
                 <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" />
+                <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
+                
+                <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
+                        Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
+                    <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
+                                Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
+                    </c:PropertiesGrid>
+                    <c:BestLapsList CarId="{Binding Id}" Margin="0 4 0 0" Limit="5" />
+                </StackPanel>
 
-                <Grid Margin="0 8 8 8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <StackPanel>
+                    <Grid Margin="0 0 8 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <!-- first row -->
-                    <DockPanel x:Name="InnerBrandArea" Background="Transparent" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource Label.Padding}" Width="80"
-                                DockPanel.Dock="Left" />
-                        <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    </DockPanel>
+                        <!-- first row -->
+                        <DockPanel x:Name="InnerBrandArea" Background="Transparent" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" Style="{StaticResource Label.Padding}" Width="80"
+                                    DockPanel.Dock="Left" />
+                            <mui:PlaceholderTextBlock Text="{Binding Brand}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
 
-                    <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource Label.Padding}" Width="80"
-                                DockPanel.Dock="Left" />
-                        <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    </DockPanel>
+                        <DockPanel x:Name="InnerCountryArea" Background="Transparent" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
+                            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" Style="{StaticResource Label.Padding}" Width="80"
+                                    DockPanel.Dock="Left" />
+                            <mui:PlaceholderTextBlock Text="{Binding Country}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
 
-                    <!-- second row -->
-                    <DockPanel x:Name="InnerClassArea" Background="Transparent" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left"
+                        <!-- second row -->
+                        <DockPanel x:Name="InnerClassArea" Background="Transparent" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}" Width="80" DockPanel.Dock="Left"
+                                    Style="{StaticResource Label.Padding}" />
+                            <mui:PlaceholderTextBlock Text="{Binding CarClass}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+
+                        <DockPanel x:Name="InnerYearArea" Background="Transparent" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2">
+                            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Width="80" DockPanel.Dock="Left"
+                                    Style="{StaticResource Label.Padding}" />
+                            <mui:PlaceholderTextBlock Text="{Binding Year, TargetNullValue=''}" Placeholder="?" TextWrapping="NoWrap"
+                                    TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+
+                        <!-- third row -->
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
                                 Style="{StaticResource Label.Padding}" />
-                        <mui:PlaceholderTextBlock Text="{Binding CarClass}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    </DockPanel>
+                        <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}"
+                                ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
+                                    <Binding Path="Author" />
+                                    <Binding Path="Version" />
+                                    <Binding Path="Url" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
 
-                    <DockPanel x:Name="InnerYearArea" Background="Transparent" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2">
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" Width="80" DockPanel.Dock="Left"
-                                Style="{StaticResource Label.Padding}" />
-                        <mui:PlaceholderTextBlock Text="{Binding Year, TargetNullValue=''}" Placeholder="?" TextWrapping="NoWrap"
+                        <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Grid.Column="1"
+                                Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" />
-                    </DockPanel>
 
-                    <!-- third row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource Label.Padding}" />
-                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource Label.Padding}"
-                            ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
-                                <Binding Path="Author" />
-                                <Binding Path="Version" />
-                                <Binding Path="Url" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <!-- last row -->
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource Label.Padding}" />
+                        <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
+                                TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    </Grid>
 
-                    <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Grid.Column="1"
-                            Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
-                            TextTrimming="CharacterEllipsis" />
+                    <c:OxyPlotGraphViewer Car="{Binding}" Margin="0 8 0 0"
+                            Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                    <!-- last row -->
-                    <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource Label.Padding}" />
-                    <mui:PlaceholderTextBlock Text="{Binding SpecsInfoDisplay}" Placeholder="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
-                            TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                </Grid>
-
-                <c:OxyPlotGraphViewer Car="{Binding}" Margin="0 8 0 0"
-                        Visibility="{Binding CurversInDrive, Source={x:Static t:SettingsHolder.Content}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                <!-- description -->
-                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-            </StackPanel>
+                    <!-- description -->
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
         </ScrollViewer>
     </DockPanel>
 </UserControl>

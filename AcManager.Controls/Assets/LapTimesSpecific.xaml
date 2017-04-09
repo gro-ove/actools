@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:u="clr-namespace:AcManager.Controls.UserControls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:helpers="clr-namespace:AcManager.Controls.Helpers"
+        mc:Ignorable="d">
+    <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <ContextMenu x:Key="BestLapWrappedContextMenu" d:DataContext="{d:DesignInstance t:LapTimeWrapped}">
+        <MenuItem Header="Setup Hotlap" Command="{x:Static helpers:CommonCommands.SetupHotlapCommand}">
+            <MenuItem.CommandParameter>
+                <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                    <Binding Path="Entry.CarId" />
+                    <Binding Path="Entry.TrackId" />
+                </MultiBinding>
+            </MenuItem.CommandParameter>
+        </MenuItem>
+        <MenuItem Header="Start Hotlap" Command="{x:Static helpers:CommonCommands.RunHotlapCommand}" Foreground="{DynamicResource Go}" FontWeight="Bold">
+            <MenuItem.CommandParameter>
+                <MultiBinding Converter="{StaticResource MultiParameterConverter}">
+                    <Binding Path="Entry.CarId" />
+                    <Binding Path="Entry.TrackId" />
+                </MultiBinding>
+            </MenuItem.CommandParameter>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="Remove Entry" Command="{x:Static helpers:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}" />
+    </ContextMenu>
+</ResourceDictionary>

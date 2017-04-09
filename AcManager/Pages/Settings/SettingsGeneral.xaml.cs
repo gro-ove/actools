@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -10,6 +9,7 @@ using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Settings {

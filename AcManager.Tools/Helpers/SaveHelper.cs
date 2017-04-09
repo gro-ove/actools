@@ -44,22 +44,29 @@ namespace AcManager.Tools.Helpers {
         private readonly Action _reset;
         private readonly Func<string, T> _deserialize;
 
+        [NotNull]
+        private readonly IStorage _storage;
+
         public string Key { get; }
 
-        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset, Func<string, T> deserialize = null) {
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset, Func<string, T> deserialize = null,
+                IStorage storage = null) {
             Key = key;
             _save = save;
             _load = load;
             _reset = reset;
             _deserialize = deserialize;
+            _storage = storage ?? ValuesStorage.Storage;
         }
 
-        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Func<string, T> deserialize = null) {
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Func<string, T> deserialize = null,
+                IStorage storage = null) {
             Key = key;
             _save = save;
             _load = load;
             _reset = () => _load(new T());
             _deserialize = deserialize;
+            _storage = storage ?? ValuesStorage.Storage;
         }
 
         private List<IUpgradeEntry> _upgradeEntries;
@@ -133,7 +140,7 @@ namespace AcManager.Tools.Helpers {
         public bool Load() {
             if (Key == null) return false;
 
-            var data = ValuesStorage.GetString(Key);
+            var data = _storage.GetString(Key);
             if (data == null) return false;
 
             try {
@@ -149,7 +156,7 @@ namespace AcManager.Tools.Helpers {
             return false;
         }
 
-        public bool HasSavedData => Key != null && ValuesStorage.Contains(Key);
+        public bool HasSavedData => Key != null && _storage.Contains(Key);
         
         public string ToSerializedString() {
             var obj = _save();
@@ -182,7 +189,7 @@ namespace AcManager.Tools.Helpers {
 
             var serialized = ToSerializedString();
             if (serialized == null) return;
-            ValuesStorage.Set(key, serialized);
+            _storage.Set(key, serialized);
         }
 
         private bool _savingInProgress;
@@ -208,8 +215,13 @@ namespace AcManager.Tools.Helpers {
         }
 
         [CanBeNull, Pure]
-        public static T Load([NotNull] string key) {
-            return LoadSerialized(ValuesStorage.GetString(key));
+        public static T Load([NotNull] string key, IStorage storage = null) {
+            return LoadSerialized((storage ?? ValuesStorage.Storage).GetString(key));
+        }
+
+        [NotNull, Pure]
+        public static T LoadOrReset([NotNull] string key, IStorage storage = null) {
+            return LoadSerialized((storage ?? ValuesStorage.Storage).GetString(key)) ?? new T();
         }
 
         [CanBeNull, Pure]

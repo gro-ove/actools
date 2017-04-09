@@ -96,8 +96,8 @@ namespace AcManager.Controls {
         private int GetChildId(MouseEventArgs e, out double relx) {
             var loc = e.GetPosition(this);
 
-            var row = (loc.Y / _yStep).RoundToInt();
-            var column = (loc.X / _xStep).RoundToInt();
+            var row = (loc.Y / _yStep).FloorToInt();
+            var column = (loc.X / _xStep).FloorToInt();
 
             var id = row * _columns + column;
             relx = loc.X - column * _xStep;

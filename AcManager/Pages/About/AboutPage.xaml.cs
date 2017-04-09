@@ -9,6 +9,7 @@ using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.About {

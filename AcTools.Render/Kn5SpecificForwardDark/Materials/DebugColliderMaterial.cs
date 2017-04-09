@@ -1,9 +1,8 @@
 ﻿using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DebugColliderMaterial : Kn5MaterialSimpleBase {
@@ -19,7 +18,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechCollider;
         }
 

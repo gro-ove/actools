@@ -1026,7 +1026,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anti-aliasing:.
+        ///   Looks up a localized string similar to MSAA:.
         /// </summary>
         public static string AcSettings_Video_AntiAliasingLabel {
             get {
@@ -2299,7 +2299,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …s 0-100.
+        ///   Looks up a localized string similar to … s 0–100.
         /// </summary>
         public static string CarSpecs_Acceleration_FormatTooltip {
             get {
@@ -2371,7 +2371,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …km/h.
+        ///   Looks up a localized string similar to … km/h.
         /// </summary>
         public static string CarSpecs_MaxSpeed_FormatTooltip {
             get {
@@ -2398,7 +2398,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …bhp.
+        ///   Looks up a localized string similar to … bhp.
         /// </summary>
         public static string CarSpecs_Power_FormatTooltip {
             get {
@@ -2425,7 +2425,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …kg/hp.
+        ///   Looks up a localized string similar to … kg/hp.
         /// </summary>
         public static string CarSpecs_PwRatio_FormatTooltip {
             get {
@@ -2560,7 +2560,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …Nm.
+        ///   Looks up a localized string similar to … Nm.
         /// </summary>
         public static string CarSpecs_Torque_FormatTooltip {
             get {
@@ -2614,7 +2614,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to …kg.
+        ///   Looks up a localized string similar to … kg.
         /// </summary>
         public static string CarSpecs_Weight_FormatTooltip {
             get {
@@ -4037,11 +4037,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter By Similar Length.
+        /// </summary>
+        public static string Filter_ByLength {
+            get {
+                return ResourceManager.GetString("Filter_ByLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter By Number.
         /// </summary>
         public static string Filter_ByNumber {
             get {
                 return ResourceManager.GetString("Filter_ByNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter By Similar Amount Of Pitstops.
+        /// </summary>
+        public static string Filter_ByPitboxes {
+            get {
+                return ResourceManager.GetString("Filter_ByPitboxes", resourceCulture);
             }
         }
         
@@ -4141,6 +4159,15 @@ namespace AcManager {
         public static string Filter_ByWeight {
             get {
                 return ResourceManager.GetString("Filter_ByWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter By Similar Width.
+        /// </summary>
+        public static string Filter_ByWidth {
+            get {
+                return ResourceManager.GetString("Filter_ByWidth", resourceCulture);
             }
         }
         
@@ -9562,6 +9589,60 @@ namespace AcManager {
         public static string Toolbar_UploadAndShare_ReplayTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_UploadAndShare_ReplayTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to … m.
+        /// </summary>
+        public static string TrackSpecs_Length_FormatTooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Length_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total length, recommended format: “{0}”.
+        /// </summary>
+        public static string TrackSpecs_Length_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Length_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ….
+        /// </summary>
+        public static string TrackSpecs_Pitboxes_FormatTooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Pitboxes_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount of pit stops as well as limit for a number of cars on the track, recommended format: “{0}”.
+        /// </summary>
+        public static string TrackSpecs_Pitboxes_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Pitboxes_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to … m.
+        /// </summary>
+        public static string TrackSpecs_Width_FormatTooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Width_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average track’s width, recommended format: “{0}”.
+        /// </summary>
+        public static string TrackSpecs_Width_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackSpecs_Width_Tooltip", resourceCulture);
             }
         }
         

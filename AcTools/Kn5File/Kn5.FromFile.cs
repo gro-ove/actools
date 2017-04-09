@@ -10,8 +10,8 @@ namespace AcTools.Kn5File {
         byte[] LoadTexture([NotNull] string textureName, [NotNull] Stream stream, int textureSize);
     }
 
-    public class BlankKn5TextureLoader : IKn5TextureLoader {
-        public static readonly BlankKn5TextureLoader Instance = new BlankKn5TextureLoader();
+    public class SkippingTextureLoader : IKn5TextureLoader {
+        public static readonly SkippingTextureLoader Instance = new SkippingTextureLoader();
 
         public byte[] LoadTexture(string textureName, Stream stream, int textureSize) {
             stream.Seek(textureSize, SeekOrigin.Current);
@@ -35,16 +35,20 @@ namespace AcTools.Kn5File {
         }
 
         private T ExecuteInner<T>(Func<T> action) {
-            if (_sizeInMegabytes < 10) return action();
+            if (_sizeInMegabytes < 20) return action();
+
+            AcToolsLogging.Write($"Going to allocate {_sizeInMegabytes} MB…");
             using (new MemoryFailPoint(_sizeInMegabytes)) return action();
         }
 
         public T Execute<T>(Func<T> action) {
             try {
                 return ExecuteInner(action);
+            } catch (InsufficientMemoryException) {
+                GCHelper.CleanUp();
+                return ExecuteInner(action);
             } catch (OutOfMemoryException) {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                GCHelper.CleanUp();
                 return ExecuteInner(action);
             }
         }
@@ -80,7 +84,7 @@ namespace AcTools.Kn5File {
                 kn5.FromFile_Header(reader);
 
                 if (skipTextures) {
-                    kn5.FromFile_Textures(reader, BlankKn5TextureLoader.Instance);
+                    kn5.FromFile_Textures(reader, SkippingTextureLoader.Instance);
                 } else {
                     kn5.FromFile_Textures(reader, DefaultKn5TextureLoader.Instance);
                 }

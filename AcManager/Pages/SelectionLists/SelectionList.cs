@@ -340,7 +340,7 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         int IComparer<TItem>.Compare(TItem x, TItem y) {
-            return string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal);
+            return string.Compare(x?.DisplayName, y?.DisplayName, StringComparison.Ordinal);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

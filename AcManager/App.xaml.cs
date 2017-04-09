@@ -51,6 +51,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
 using StringBasedFilter;
@@ -166,6 +167,7 @@ namespace AcManager {
             };
 
             AcToolsLogging.Logger = (s, m, p, l) => Logging.Write($"{s} (AcTools)", m, p, l);
+            AcToolsLogging.NonFatalErrorHandler = (s, c, e) => NonfatalError.Notify(s, c, e);
 
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
@@ -176,6 +178,7 @@ namespace AcManager {
             if (!string.IsNullOrWhiteSpace(sseStart)) {
                 SseStarter.OptionStartName = sseStart;
             }
+            AppArguments.Set(AppFlag.SseLogging, ref SseStarter.OptionLogging);
 
             FancyBackgroundManager.Initialize();
             DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
@@ -240,10 +243,13 @@ namespace AcManager {
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
             PrepareUi();
+
+            AppShortcut.Initialize("AcClub.ContentManager", "Content Manager");
             AppIconService.Initialize(this);
+
             Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
                     Current.MainWindow as ModernWindow)?.BringToFront());
-            BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
+            BbCodeBlock.ImageClicked += OnBbImageClick;
             BbCodeBlock.OptionEmojiProvider = InternalUtils.GetEmojiProvider();
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
@@ -252,9 +258,23 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
-            
-            StartupUri = new Uri(!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded() ?
-                    @"Pages/Dialogs/AcRootDirectorySelector.xaml" : @"Pages/Windows/MainWindow.xaml", UriKind.Relative);
+
+            var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
+            StartupUri = new Uri(acRootIsFine ?
+                    @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+
+            if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {
+                if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
+                    SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.SteamStarterType;
+                    Toast.Show("Starter Changed to Replacement", "Enjoy Steam being included into CM");
+                }
+            } else if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType) {
+                SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
+                Toast.Show("Starter Changed to Official", "Steam Starter is unavailable", () => {
+                    ModernDialog.ShowMessage("To use Steam Starter, please make sure CM is taken place of the official launcher and AC root directory is valid.",
+                            "Steam Starter is unavailable", MessageBoxButton.OK);
+                });
+            }
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
@@ -310,7 +330,7 @@ namespace AcManager {
             }
         }
 
-        private void PrepareUi() {
+        private static void PrepareUi() {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
                 ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(700));
@@ -318,8 +338,9 @@ namespace AcManager {
             } catch (Exception e) {
                 Logging.Error(e);
             }
-
+            
             PopupHelper.Initialize();
+            CommonCommands.SetHelper(new SomeCommonCommandsHelper());
         }
 
         private async void TestKey() {
@@ -338,7 +359,16 @@ namespace AcManager {
             });
         }
 
-        private async void BackgroundInitialization() {
+        private static void RevertFileChanges() {
+            PresetsPerModeBackup.Revert();
+            WeatherSpecificCloudsHelper.Revert();
+            WeatherSpecificTyreSmokeHelper.Revert();
+            WeatherSpecificVideoSettingsHelper.Revert();
+            CarSpecificControlsPresetHelper.Revert();
+            CopyFilterToSystemForOculusHelper.Revert();
+        }
+
+        private static async void BackgroundInitialization() {
             try {
                 await Task.Delay(1000);
                 if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
@@ -369,12 +399,7 @@ namespace AcManager {
                 }
 
                 await Task.Delay(1500);
-                PresetsPerModeBackup.Revert();
-                WeatherSpecificCloudsHelper.Revert();
-                WeatherSpecificTyreSmokeHelper.Revert();
-                WeatherSpecificVideoSettingsHelper.Revert();
-                CarSpecificControlsPresetHelper.Revert();
-                CopyFilterToSystemForOculusHelper.Revert();
+                RevertFileChanges();
 
                 await Task.Delay(1500);
                 CustomUriSchemeHelper.EnsureRegistered();
@@ -394,7 +419,7 @@ namespace AcManager {
             }
         }
 
-        private void BbCodeBlock_ImageClicked(object sender, BbCodeImageEventArgs e) {
+        private void OnBbImageClick(object sender, BbCodeImageEventArgs e) {
             new ImageViewer(e.ImageUri.ToString()).ShowDialog();
         }
 

@@ -29,6 +29,9 @@ namespace AcTools.Windows {
             }
         }
 
+        [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
+        public static extern unsafe void CopyMemory(byte* dst, byte* src, long size);
+
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);

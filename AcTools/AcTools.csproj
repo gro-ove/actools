@@ -89,6 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AiFile\Ai.Stats.cs" />
+    <Compile Include="AiFile\AiLane.cs" />
     <Compile Include="AcdFile\AcdEntry.cs" />
     <Compile Include="AcdFile\Acd.cs" />
     <Compile Include="AcdFile\AcdEncryption.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="AcdFile\AcdReader.cs" />
     <Compile Include="AcToolsInformation.cs" />
     <Compile Include="AcToolsLogging.cs" />
+    <Compile Include="AiFile\AiPoint.cs" />
     <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="DataFile\DataWrapper.cs" />
     <Compile Include="DataFile\AbstractDataFile.cs" />
     <Compile Include="DataFile\IniFile.cs" />
+    <Compile Include="GCHelper.cs" />
     <Compile Include="Kn5File\Kn5.CreateEmpty.cs" />
     <Compile Include="Kn5File\Kn5.ExportTextures.cs" />
     <Compile Include="Kn5File\Kn5.Stats.cs" />

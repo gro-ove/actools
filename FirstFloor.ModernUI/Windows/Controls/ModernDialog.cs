@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Identifies the Buttons dependency property.
         /// </summary>
-        public static readonly DependencyProperty ButtonsProperty = DependencyProperty.Register("Buttons", typeof(IEnumerable<Button>), typeof(ModernDialog));
+        public static readonly DependencyProperty ButtonsProperty = DependencyProperty.Register("Buttons", typeof(IEnumerable<Control>), typeof(ModernDialog));
 
         private Button _okButton;
         private Button _goButton;
@@ -46,7 +46,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             CloseCommand = new DelegateCommand<MessageBoxResult?>(CloseWithResult);
-            Buttons = new[] { CloseButton };
+            Buttons = new Control[] { CloseButton };
         }
 
         protected void CloseWithResult(MessageBoxResult? result) {
@@ -194,8 +194,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Gets or sets the dialog buttons.
         /// </summary>
-        public IEnumerable<Button> Buttons {
-            get { return (IEnumerable<Button>)GetValue(ButtonsProperty); }
+        public IEnumerable<Control> Buttons {
+            get { return (IEnumerable<Control>)GetValue(ButtonsProperty); }
             set { SetValue(ButtonsProperty, value); }
         }
 
@@ -248,7 +248,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return ShowMessage(text, "", MessageBoxButton.OK);
         }
 
-        private static IEnumerable<Button> GetButtons(ModernDialog owner, MessageBoxButton button) {
+        private static IEnumerable<Control> GetButtons(ModernDialog owner, MessageBoxButton button) {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (button) {
                 case MessageBoxButton.OK:

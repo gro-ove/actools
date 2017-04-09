@@ -1,11 +1,15 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using AcManager.Tools.Objects;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -25,8 +29,19 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnClick() {
+            if (_busy) return;
             base.OnClick();
             Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
+        }
+
+        protected override void OnMouseWheel(object sender, MouseEventArgs e) {
+            if (_busy) return;
+            base.OnMouseWheel(sender, e);
+        }
+
+        protected override void OnTick(object sender, TickEventArgs args) {
+            if (_busy) return;
+            base.OnTick(sender, args);
         }
 
         private bool _switchingInProgress;
@@ -59,8 +74,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Form.TopMost = false;
                 FullscreenEnabled = ValuesStorage.GetBool(KeyNormalFullscreen);
 
-                Renderer.Width = Form.ClientSize.Width;
-                Renderer.Height = Form.ClientSize.Height;
+                UpdateSize();
 
                 if (_lastVisibleTools.HasValue) {
                     _helper.Visible = _lastVisibleTools.Value;
@@ -78,6 +92,9 @@ namespace AcManager.Controls.CustomShowroom {
                 var size = ValuesStorage.GetPoint(KeyToolSize, new Point(400, 240));
                 var pos = ValuesStorage.GetPoint(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
 
+                _lastVisibleTools = _helper.Visible;
+                _helper.Visible = false;
+
                 FullscreenEnabled = false;
                 Form.WindowState = FormWindowState.Normal;
                 Form.Width = ((int)size.X).Clamp(320, area.Width);
@@ -88,11 +105,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Form.TopMost = true;
 
-                Renderer.Width = Form.ClientSize.Width;
-                Renderer.Height = Form.ClientSize.Height;
-
-                _lastVisibleTools = _helper.Visible;
-                _helper.Visible = false;
+                UpdateSize();
             } finally {
                 _switchingInProgress = false;
             }
@@ -119,7 +132,58 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
+        private bool _busy;
+
+        protected override void UpdateSize() {
+            if (_busy) return;
+            base.UpdateSize();
+        }
+
+        private async void ShotAsync(Action<IProgress<Tuple<string, double?>>, CancellationToken> action) {
+            if (_busy) return;
+            _busy = true;
+
+            try {
+                using (var waiting = new WaitingDialog {
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Owner = null
+                }) {
+                    waiting.Report(AsyncProgressEntry.Indetermitate);
+
+                    var cancellation = waiting.CancellationToken;
+                    Renderer.IsPaused = true;
+
+                    try {
+                        await Task.Run(() => {
+                            action(waiting, cancellation);
+                        });
+                    } finally {
+                        Renderer.IsPaused = false;
+                    }
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t build image", e);
+            } finally {
+                _busy = false;
+                UpdateSize();
+            }
+        }
+
+        protected override void SplitShot(double multipler, bool downscale, string filename) {
+            ShotAsync((progress, token) => {
+                SplitShotInner(multipler, downscale, filename, progress, token);
+            });
+        }
+
+        protected override void Shot(double multipler, bool downscale, string filename) {
+            ShotAsync((progress, token) => {
+                ShotInner(multipler, downscale, filename, progress, token);
+            });
+        }
+
         protected override void OnKeyUp(object sender, KeyEventArgs args) {
+            if (_busy) return;
+
             switch (args.KeyCode) {
                 case Keys.H:
                     if (args.Control && !args.Alt && !args.Shift) {
@@ -165,7 +229,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnRender() {
-            if (Renderer == null || Paused && !_helper.IsActive && !Renderer.IsDirty) return;
+            if (Renderer == null || Paused && !_helper.IsActive && !Renderer.IsDirty || _busy) return;
             Renderer.Draw();
         }
 

@@ -91,17 +91,20 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type c:ButtonWithComboBox}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Style TargetType="{x:Type c:ButtonWithComboBox}" BasedOn="{StaticResource BaseButtonStyle.Control}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:ButtonWithComboBox}">
                     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                         <StackPanel Orientation="Horizontal">
-                            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}" />
+                            <Button x:Name="Presenter" Padding="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}"
+                                    Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}"
+                                    Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderThickness="0"
+                                    VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Style="{StaticResource BaseButtonStyle.Nothing}"
+                                    Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}">
                                 <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
@@ -118,7 +121,7 @@
                             <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
                         </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
+                        <Trigger Property="IsPressed" Value="True" SourceName="Presenter">
                             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
                             <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
@@ -144,10 +147,13 @@
                     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                         <StackPanel Orientation="Horizontal">
-                            <ContentPresenter x:Name="Presenter" Margin="{TemplateBinding Padding}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}" />
+                            <Button x:Name="Presenter" Padding="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}"
+                                    Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}"
+                                    Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderThickness="0"
+                                    VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Style="{StaticResource BaseButtonStyle.Nothing}"
+                                    Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}" FontWeight="Normal">
                                 <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
@@ -164,7 +170,7 @@
                             <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderHover}" />
                             <Setter Property="Foreground" Value="{DynamicResource GoButtonTextHover}" />
                         </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
+                        <Trigger Property="IsPressed" Value="True" SourceName="Presenter">
                             <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundPressed}" />
                             <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderPressed}" />
                             <Setter Property="Foreground" Value="{DynamicResource GoButtonTextPressed}" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -16,6 +17,12 @@ using Newtonsoft.Json;
 namespace AcManager.Tools.Managers.Plugins {
     [JsonObject(MemberSerialization.OptIn)]
     public class PluginEntry : NotifyPropertyChanged, IWithId, IProgress<double?> {
+        [Localizable(false)]
+        public static readonly Tuple<string, string>[] SupportedVersions = {
+            Tuple.Create("Magick", ""),
+            Tuple.Create("SSE", "1.4.2.1"),
+        };
+
         [JsonProperty(PropertyName = @"id")]
         public string Id { get; private set; }
 
@@ -24,6 +31,9 @@ namespace AcManager.Tools.Managers.Plugins {
 
         [JsonProperty(PropertyName = @"hidden")]
         private bool _hidden;
+
+        [JsonProperty(PropertyName = @"platform"), CanBeNull]
+        private string _platform;
 
         [JsonProperty(PropertyName = @"description")]
         private string _description;
@@ -50,8 +60,6 @@ namespace AcManager.Tools.Managers.Plugins {
                 OnPropertyChanged();
             }
         }
-
-        public bool IsObsolete => Id == "Magick";
 
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
 
@@ -96,7 +104,7 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        public bool HasUpdate => IsInstalled && InstalledVersion != Version;
+        public bool HasUpdate => IsInstalled && Version.IsVersionNewerThan(InstalledVersion);
 
         public string InstalledVersion {
             get { return _installedVersion; }
@@ -106,7 +114,10 @@ namespace AcManager.Tools.Managers.Plugins {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsInstalled));
                 OnPropertyChanged(nameof(AvailableToInstall));
+                OnPropertyChanged(nameof(HasUpdate));
                 _installCommand?.RaiseCanExecuteChanged();
+
+                UpdateObsolete();
             }
         }
 
@@ -136,6 +147,17 @@ namespace AcManager.Tools.Managers.Plugins {
                 OnPropertyChanged();
             }
         }
+
+        public string Platform {
+            get { return _platform; }
+            set {
+                if (value == _platform) return;
+                _platform = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PlatformFits => _platform == null || _platform == BuildInformation.Platform;
 
         private bool _installationInProgress;
 
@@ -183,12 +205,34 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         [JsonConstructor, UsedImplicitly]
-        private PluginEntry() { }
+        private PluginEntry(string id, string version) {
+            Id = id;
+            Version = version;
+            UpdateObsolete();
+        }
+
+        private bool _isObsolete;
+
+        public bool IsObsolete {
+            get { return _isObsolete; }
+            set {
+                if (value == _isObsolete) return;
+                _isObsolete = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsEnabled));
+                OnPropertyChanged(nameof(CanWork));
+            }
+        }
+
+        private void UpdateObsolete() {
+            var supported = SupportedVersions.FirstOrDefault(x => x.Item1 == Id);
+            IsObsolete = supported != null && (string.IsNullOrEmpty(supported.Item2) || supported.Item2.IsVersionNewerThan(InstalledVersion ?? Version));
+        }
 
         private CommandBase _installCommand;
 
         public ICommand InstallCommand => _installCommand ??
-                (_installCommand = new AsyncCommand(Install, () => !IsInstalled && !IsInstalling));
+                (_installCommand = new AsyncCommand(Install, () => (!IsInstalled || HasUpdate) && !IsInstalling));
 
         private CancellationTokenSource _cancellation;
 
@@ -213,7 +257,7 @@ namespace AcManager.Tools.Managers.Plugins {
             _cancellation?.Cancel();
         }));
 
-        public bool IsAllRight => Id != null && Name != null && Version != null;
+        public bool IsAllRight => Id != null && Name != null && Version != null && PlatformFits;
 
         [JsonIgnore]
         public string Directory => PluginsManager.Instance.GetPluginDirectory(Id);

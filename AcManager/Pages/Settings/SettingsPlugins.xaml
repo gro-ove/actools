@@ -11,7 +11,5 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
-        <ItemsControl ItemsSource="{Binding List, Source={x:Static t:PluginsManager.Instance}}" ItemTemplate="{StaticResource PluginItemTemplate}" />
-    </ScrollViewer>
+    <ItemsControl ItemsSource="{Binding View}" ItemTemplate="{StaticResource PluginItemTemplate}" Style="{StaticResource VirtualizingItemsControl}" />
 </UserControl>

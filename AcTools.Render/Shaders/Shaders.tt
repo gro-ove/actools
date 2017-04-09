@@ -325,7 +325,8 @@ namespace <#= resultNamespace #> {
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
 		
-		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)?(?::.*?)?;").Cast<Match>().ToList();
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?::.*?)?;").Cast<Match>().ToList();
+		var vrsArr = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)(?::.*?)?;").Cast<Match>().ToList();
 		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>().ToList();
 		var vmsArr = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
 		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>().ToList();
@@ -389,7 +390,7 @@ namespace <#= resultNamespace #> {
 			}}
 
 			public void Set({0} value){{
-				 SlimDxExtension.Set(_v, value, {0}.Stride);
+				 SlimDxExtension.SetObject(_v, value, {0}.Stride);
 			}}
         }}
 
@@ -426,7 +427,7 @@ namespace <#= resultNamespace #> {
         public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
         public InputLayout <#= string.Join(", ", tls.Select(x => "Layout" + x.Type)) #>;
 
-		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
+		public EffectReadyTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
 <# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
 		public EffectOnlyMatrixVariable <#= matriceFieldName #> { get; private set; }
@@ -435,7 +436,10 @@ namespace <#= resultNamespace #> {
 		public EffectOnlyMatrixArrayVariable <#= matriceFieldName #> { get; private set; }
 <# } #>
 <# if (vrs.Any()){ #>
-		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+		public EffectOnlyResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vrsArr.Any()){ #>
+		public EffectOnlyResourceArrayVariable <#= string.Join(", ", vrsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vss.Any()){ #>
 		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
@@ -455,7 +459,7 @@ namespace <#= resultNamespace #> {
 			E = new Effect(device, _b);
 
 <# foreach (var x in ts.Distinct()){ #>
-			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
+			Tech<#= x #> = new EffectReadyTechnique(E.GetTechniqueByName("<#= x #>"));
 <# } #>
 
 <# foreach (var x in tls.Distinct()){ var a = x.Type; var b = x.TechName; var p = x.Custom != null ? x.Custom : "InputLayouts.Vertice" + a; #>
@@ -473,7 +477,10 @@ namespace <#= resultNamespace #> {
 			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
 <# } #>
 <# foreach (var x in vrs.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource());
+<# } #>
+<# foreach (var x in vrsArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource());
 <# } #>
 <# foreach (var x in vss.Distinct()){ #>
 			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsScalar();
@@ -502,13 +509,5 @@ namespace <#= resultNamespace #> {
 
 <#
 	}
-
-	/*public static class EffectExtension {		
-< # foreach (var structsName in structsNames){ # >
-        public static void Set(this EffectVariable variable, < #= structsName # > o) {
-            SlimDxExtension.Set(variable, o, < #= structsName # >.Stride);
-        }
-< # } # >
-	}*/
 #>
 }

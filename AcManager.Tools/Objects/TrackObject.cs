@@ -294,6 +294,6 @@ namespace AcManager.Tools.Objects {
 
         public override TrackObject MainTrackObject => this;
 
-        public override string MapDirectory => LayoutId == null ? Location : Path.Combine(Location, LayoutId);
+        public override string LayoutDataDirectory => LayoutId == null ? Location : Path.Combine(Location, LayoutId);
     }
 }

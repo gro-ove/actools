@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,10 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -32,7 +35,7 @@ namespace AcManager.Controls.CustomShowroom {
         public static readonly string PresetableKeyCategory = "Baked Shadows";
 
         private class SaveableData {
-            public double From = 0d, To = 60d, Brightness = 220d, Gamma = 60d, Ambient = 0d;
+            public double From = 0d, To = 60d, Brightness = 220d, Gamma = 60d, Ambient, ShadowBias;
             public int Iterations = 5000;
         }
 
@@ -54,6 +57,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Gamma = Gamma,
                 Ambient = Ambient,
                 Iterations = Iterations,
+                ShadowBias = ShadowBias,
             }, o => {
                 From = o.From;
                 To = o.To;
@@ -61,6 +65,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Gamma = o.Gamma;
                 Ambient = o.Ambient;
                 Iterations = o.Iterations;
+                ShadowBias = o.ShadowBias;
             });
 
             _saveable.Initialize();
@@ -118,6 +123,17 @@ namespace AcManager.Controls.CustomShowroom {
             set {
                 if (Equals(value, _ambient)) return;
                 _ambient = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _shadowBias;
+
+        public double ShadowBias {
+            get { return _shadowBias; }
+            set {
+                if (Equals(value, _shadowBias)) return;
+                _shadowBias = value;
                 OnPropertyChanged();
             }
         }
@@ -180,6 +196,7 @@ namespace AcManager.Controls.CustomShowroom {
                         SkyBrightnessLevel = (float)Brightness / 100f,
                         Gamma = (float)Gamma / 100f,
                         Ambient = (float)Ambient / 100f,
+                        ShadowBias = (float)ShadowBias / 100f,
                     }) {
                         renderer.Width = width;
                         renderer.Height = height;
@@ -221,7 +238,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                 if (image.BitmapSource != null) {
                     Logging.Debug($"Cached texture loaded: {sw.Elapsed.TotalMilliseconds:F1} ms");
-                    new ImageViewer(new object[] { filename, image }) {
+                    new ImageViewer(new object[] { filename, image.BitmapSource }) {
                         Model = {
                             Saveable = true,
                             SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
@@ -297,19 +314,23 @@ namespace AcManager.Controls.CustomShowroom {
     public partial class CarTextureDialog {
         private ViewModel Model => (ViewModel)DataContext;
 
-        public CarTextureDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName) {
-            DataContext = new ViewModel(renderer, activeSkin, kn5, textureName);
+        public CarTextureDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName, uint materialId) {
+            DataContext = new ViewModel(renderer, activeSkin, kn5, textureName, materialId) { Close = () => Close() };
             InitializeComponent();
 
             Buttons = new[] { CloseButton };
         }
 
         public class ViewModel : NotifyPropertyChanged {
+            internal Action Close;
+
+            [CanBeNull]
             private readonly BaseRenderer _renderer;
 
             [CanBeNull]
             private readonly CarSkinObject _activeSkin;
             private readonly Kn5 _kn5;
+            private readonly uint _materialId;
 
             public BakedShadowsRendererViewModel BakedShadows { get; }
 
@@ -339,7 +360,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            public byte[] Data { get; }
+            public byte[] Data { get; set; }
 
             private bool _loading;
 
@@ -363,11 +384,41 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName) {
+            private Kn5Material _material;
+
+            [CanBeNull]
+            public Kn5Material Material {
+                get { return _material; }
+                set {
+                    if (Equals(value, _material)) return;
+                    _material = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _usedFor;
+
+            public string UsedFor {
+                get { return _usedFor; }
+                set {
+                    if (Equals(value, _usedFor)) return;
+                    _usedFor = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool IsForkAvailable { get; }
+
+            public bool IsChangeAvailable { get; }
+
+            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName, uint materialId) {
                 _renderer = renderer;
                 _activeSkin = activeSkin;
                 _kn5 = kn5;
+                _materialId = materialId;
+
                 TextureName = textureName;
+                Material = kn5.GetMaterial(materialId);
 
                 var format = Regex.Match(textureName, @"(?<=\.)([a-zA-Z]{3,4})$").Value;
                 TextureFormat = string.IsNullOrWhiteSpace(format) ? null : format.ToUpperInvariant();
@@ -376,6 +427,17 @@ namespace AcManager.Controls.CustomShowroom {
                 Data = kn5.TexturesData.TryGetValue(textureName, out data) ? data : null;
 
                 BakedShadows = new BakedShadowsRendererViewModel(renderer, _kn5, TextureName);
+
+                var usedFor = (from material in kn5.Materials.Values
+                               let slots = (from slot in material.TextureMappings
+                                            where string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)
+                                            select slot.Name).ToList()
+                               where slots.Count > 0
+                               orderby material.Name
+                               select $"{material.Name} ({slots.JoinToString(", ")})").ToList();
+                IsForkAvailable = usedFor.Count > 1;
+                IsChangeAvailable = kn5.TexturesData.Count > 1;
+                UsedFor = usedFor.JoinToString(", ");
             }
 
             public async void OnLoaded() {
@@ -448,7 +510,7 @@ namespace AcManager.Controls.CustomShowroom {
             public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
                 var dialog = new SaveFileDialog {
                     InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
-                    Filter = string.Format(@"Textures (*.{0})|*.{0}", TextureFormat.ToLower()),
+                    Filter = string.Format("Textures (*.{0})|*.{0}", TextureFormat.ToLower()),
                     DefaultExt = TextureFormat.ToLower(),
                     FileName = TextureName
                 };
@@ -456,11 +518,166 @@ namespace AcManager.Controls.CustomShowroom {
                 if (dialog.ShowDialog() != true) return;
 
                 try {
-                    await Task.Run(() => File.WriteAllBytes(dialog.FileName, Data));
+                    using (WaitingDialog.Create("Saving…")) {
+                        await FileUtils.WriteAllBytesAsync(dialog.FileName, Data);
+                    }
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotExport, e);
                 }
             }, () => Data != null));
+
+            private async Task UpdateKn5() {
+                await Task.Run(() => _kn5.Save(_kn5.OriginalFilename));
+
+                var car = _activeSkin == null ? null : CarsManager.Instance.GetById(_activeSkin.CarId);
+                if (car != null) {
+                    (_renderer as ToolsKn5ObjectRenderer)?.SetCar(CarDescription.FromKn5(_kn5, car.Location, car.AcdData));
+                }
+
+                Close?.Invoke();
+            }
+
+            private AsyncCommand _replaceCommand;
+
+            public AsyncCommand ReplaceCommand => _replaceCommand ?? (_replaceCommand = new AsyncCommand(async () => {
+                var dialog = new OpenFileDialog {
+                    InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
+                    Filter = FileDialogFilters.TexturesFilter,
+                    FileName = TextureName
+                };
+
+                if (dialog.ShowDialog() != true) return;
+                
+                try {
+                    var info = new FileInfo(dialog.FileName);
+                    if (!string.Equals(info.Extension, ".dds", StringComparison.OrdinalIgnoreCase)) {
+                        if (ShowMessage("Texture is not in DDS format. Are you sure you want to use it?", "Wrong format", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                            return;
+                        }
+                    } else if (info.Length > 30e6) {
+                        if (ShowMessage("Texture is way too big. Are you sure you want to use it?", "Way too big", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                            return;
+                        }
+                    }
+                    
+                    using (WaitingDialog.Create("Replacing…")) {
+                        _kn5.TexturesData[TextureName] = await FileUtils.ReadAllBytesAsync(dialog.FileName);
+                        await UpdateKn5();
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t replace texture", e);
+                }
+            }));
+
+            private AsyncCommand _renameCommand;
+
+            public AsyncCommand RenameCommand => _renameCommand ?? (_renameCommand = new AsyncCommand(async () => {
+                var newName = Prompt.Show("New texture name:", "Rename texture", TextureName, "?", required: true, maxLength: 120)?.Trim();
+                if (string.IsNullOrEmpty(newName)) return;
+
+                try {
+                    if (_kn5.TexturesData.Keys.Contains(newName, StringComparer.OrdinalIgnoreCase)) {
+                        throw new InformativeException("Can’t rename texture", "Name already taken.");
+                    }
+
+                    using (WaitingDialog.Create("Renaming…")) {
+                        _kn5.TexturesData[newName] = _kn5.TexturesData[TextureName];
+                        _kn5.Textures[newName] = _kn5.Textures[TextureName];
+                        _kn5.Textures[newName].Name = newName;
+
+                        _kn5.TexturesData.Remove(TextureName);
+                        _kn5.Textures.Remove(TextureName);
+
+                        foreach (var material in _kn5.Materials.Values) {
+                            foreach (var mapping in material.TextureMappings) {
+                                if (string.Equals(mapping.Texture, TextureName, StringComparison.OrdinalIgnoreCase)) {
+                                    mapping.Texture = newName;
+                                }
+                            }
+                        }
+                        await UpdateKn5();
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t rename texture", e);
+                }
+            }));
+
+            private AsyncCommand _forkCommand;
+
+            public AsyncCommand ForkCommand => _forkCommand ?? (_forkCommand = new AsyncCommand(async () => {
+                var material = Material;
+                if (material == null) return;
+
+                var newName = Prompt.Show("New texture name:", "Fork texture", TextureName, "?", required: true, maxLength: 120)?.Trim();
+                if (string.IsNullOrEmpty(newName)) return;
+
+                try {
+                    if (_kn5.TexturesData.Keys.Contains(newName, StringComparer.OrdinalIgnoreCase)) {
+                        throw new InformativeException("Can’t fork texture", "Name already taken.");
+                    }
+
+                    using (WaitingDialog.Create("Forking…")) {
+                        var usedElsewhere = _kn5.Materials.Values.ApartFrom(material).Any(m =>
+                                m.TextureMappings.Any(slot => string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)));
+
+                        _kn5.TexturesData[newName] = _kn5.TexturesData[TextureName];
+                        _kn5.Textures[newName] = _kn5.Textures[TextureName].Clone();
+                        _kn5.Textures[newName].Name = newName;
+
+                        if (!usedElsewhere) {
+                            _kn5.TexturesData.Remove(TextureName);
+                            _kn5.Textures.Remove(TextureName);
+                        }
+
+                        foreach (var mapping in material.TextureMappings) {
+                            if (string.Equals(mapping.Texture, TextureName, StringComparison.OrdinalIgnoreCase)) {
+                                mapping.Texture = newName;
+                            }
+                        }
+                        await UpdateKn5();
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t fork texture", e);
+                }
+            }));
+
+            private AsyncCommand _changeTextureCommand;
+
+            public AsyncCommand ChangeTextureCommand => _changeTextureCommand ?? (_changeTextureCommand = new AsyncCommand(async () => {
+                var material = Material;
+                if (material == null) return;
+
+                var newName = Prompt.Show("New texture name:", "Change texture", TextureName, "?", required: true, maxLength: 120,
+                        suggestions: _kn5.Textures.Keys.OrderBy(x => x), suggestionsFixed: true)?.Trim();
+                if (string.IsNullOrEmpty(newName) || newName == TextureName) return;
+
+                try {
+                    if (!_kn5.TexturesData.Keys.Contains(newName, StringComparer.OrdinalIgnoreCase)) {
+                        throw new InformativeException("Can’t change texture", "Texture with that name not found.");
+                    }
+
+                    using (WaitingDialog.Create("Changing…")) {
+                        var usedElsewhere = _kn5.Materials.Values.ApartFrom(material).Any(m =>
+                                m.TextureMappings.Any(slot => string.Equals(slot.Texture, TextureName, StringComparison.OrdinalIgnoreCase)));
+
+                        if (!usedElsewhere) {
+                            _kn5.TexturesData.Remove(TextureName);
+                            _kn5.Textures.Remove(TextureName);
+                        }
+
+                        foreach (var mapping in material.TextureMappings) {
+                            if (string.Equals(mapping.Texture, TextureName, StringComparison.OrdinalIgnoreCase)) {
+                                mapping.Texture = newName;
+                            }
+                        }
+
+                        await UpdateKn5();
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t change texture", e);
+                }
+
+            }));
         }
 
         internal class LoadedImage {

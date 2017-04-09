@@ -10,6 +10,7 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {

@@ -31,6 +31,7 @@ using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -38,6 +39,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
@@ -113,11 +115,11 @@ namespace AcManager.Pages.Windows {
             }
 
             UpdateLiveTabs();
-            SettingsHolder.Live.PropertyChanged += Live_PropertyChanged;
+            SettingsHolder.Live.PropertyChanged += OnLiveSettingsPropertyChanged;
 
             UpdateServerTab();
             UpdateMinoratingLink();
-            SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
+            SettingsHolder.Online.PropertyChanged += OnOnlineSettingsPropertyChanged;
 
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
                 Toast.Show("Don’t forget to install plugins!", ""); // TODO?
@@ -130,9 +132,16 @@ namespace AcManager.Pages.Windows {
             if (FileBasedOnlineSources.IsInitialized()) {
                 UpdateOnlineSourcesLinks();
             }
+
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
 
             Activated += OnActivated;
+
+            if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
+                TitleLinks.Remove(OriginalLauncher);
+            } else {
+                LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
+            }
 
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
@@ -178,7 +187,7 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void Online_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnOnlineSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging):
                     UpdateServerTab();
@@ -224,7 +233,7 @@ namespace AcManager.Pages.Windows {
             return true;
         }
 
-        private void Live_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnLiveSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.LiveSettings.RsrEnabled) ||
                     e.PropertyName == nameof(SettingsHolder.LiveSettings.SrsEnabled)) {
                 UpdateLiveTabs();

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Windows.Forms;
+using AcTools;
 using AcTools.Render.Deferred;
 using AcTools.Render.Deferred.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
@@ -182,10 +183,10 @@ namespace CustomShowroom {
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
 
-                    renderer.UseAo = true;
+                    /*renderer.UseAo = true;
                     renderer.UseSslr = true;
                     renderer.AoDebug = true;
-                    renderer.AoType = AoType.SsaoAlt;
+                    renderer.AoType = AoType.SsaoAlt;*/
                     
                     renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomWrapper(renderer) {
@@ -205,8 +206,7 @@ namespace CustomShowroom {
                 }
             }
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            GCHelper.CleanUp();
             return 0;
         }
 

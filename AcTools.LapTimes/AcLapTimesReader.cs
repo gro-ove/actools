@@ -7,8 +7,6 @@ using AcTools.Utils;
 
 namespace AcTools.LapTimes {
     public class AcLapTimesReader : ILapTimesReader {
-        public static readonly string SourceId = "AC Old Database";
-
         private readonly string _sourceDirectory;
         private ChromiumDbWrapper _wrapper;
         private string _tempDirectory;
@@ -43,14 +41,14 @@ namespace AcTools.LapTimes {
                                                .OrderByDescending(f => f).First() : default(DateTime);
         }
 
-        public IEnumerable<LapTimeEntry> Import() {
+        public IEnumerable<LapTimeEntry> Import(string sourceName) {
             Prepare();
             return _wrapper.GetData().Select(bits => {
                 string carId, trackId, date, time;
                 return bits.TryGetValue("car", out carId) && bits.TryGetValue("track", out trackId) &&
                         bits.TryGetValue("date", out date) && bits.TryGetValue("time", out time)
                         ? new LapTimeEntry(
-                                SourceId, carId, trackId,
+                                sourceName, carId, trackId,
                                 new DateTime(1970, 1, 1) + TimeSpan.FromMilliseconds(double.Parse(date, CultureInfo.InvariantCulture)),
                                 TimeSpan.FromMilliseconds(double.Parse(time, CultureInfo.InvariantCulture)))
                         : null;
@@ -58,6 +56,10 @@ namespace AcTools.LapTimes {
         }
 
         public void Export(IEnumerable<LapTimeEntry> entries) {
+            throw new NotSupportedException();
+        }
+
+        public void Remove(string carId, string trackAcId) {
             throw new NotSupportedException();
         }
 
@@ -76,5 +78,7 @@ namespace AcTools.LapTimes {
             _wrapper?.Dispose();
             DisposeTempDirectory();
         }
+
+        public bool CanExport => false;
     }
 }

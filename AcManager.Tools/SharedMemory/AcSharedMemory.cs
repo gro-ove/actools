@@ -158,7 +158,7 @@ namespace AcManager.Tools.SharedMemory {
             if (_physicsFile == null) return;
 
             try {
-                var physics = AcSharedPhysics.FromFile(_physicsFile);
+                var physics = _physicsFile.ToStruct<AcSharedPhysics>(AcSharedPhysics.Buffer);
                 if (physics.PacketId != _previousPacketId) {
                     IsPaused = false;
 
@@ -171,8 +171,8 @@ namespace AcManager.Tools.SharedMemory {
                         KnownProcess = _gameProcess != null;
                     }
 
-                    var graphics = AcSharedGraphics.FromFile(_graphicsFile);
-                    var staticInfo = AcSharedStaticInfo.FromFile(_staticInfoFile);
+                    var graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
+                    var staticInfo = _staticInfoFile.ToStruct<AcSharedStaticInfo>(AcSharedStaticInfo.Buffer);
                     Shared = new AcShared(physics, graphics, staticInfo);
                 } else if (_gameProcess?.HasExitedSafe() ?? (DateTime.Now - _previousPacketTime).TotalSeconds > 1d) {
                     IsPaused = false;

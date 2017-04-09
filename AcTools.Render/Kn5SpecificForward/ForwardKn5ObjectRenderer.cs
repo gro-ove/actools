@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -229,9 +228,10 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             _carWrapper.DisposeEverything();
+            GCHelper.CleanUp();
         }
 
-        protected virtual void ClearBeforeChangingCar() { }
+        protected virtual void ClearBeforeChangingCar() {}
 
         private void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
             newCar.HeadlightsEnabled = oldCar?.HeadlightsEnabled ?? CarLightsEnabled;
@@ -324,8 +324,6 @@ namespace AcTools.Render.Kn5SpecificForward {
         public async Task SetCarAsync(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin,
                 CancellationToken cancellationToken = default(CancellationToken)) {
             ClearBeforeChangingCar();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
 
             try {
                 _loadingCar = car;
@@ -430,15 +428,17 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private Kn5RenderableFile _showroomNode;
+        private Kn5RenderableShowroom _showroomNode;
 
         [CanBeNull]
-        public Kn5RenderableFile ShowroomNode {
+        public Kn5RenderableShowroom ShowroomNode {
             get { return _showroomNode; }
             private set {
                 if (Equals(value, _showroomNode)) return;
                 _showroomNode = value;
+                CubemapReflection = value != null;
                 IsDirty = true;
+                _sceneDirty = true;
                 SetReflectionCubemapDirty();
                 SetShadowsDirty();
                 OnPropertyChanged();
@@ -446,25 +446,16 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         [ContractAnnotation("showroomKn5:null => null; showroomKn5:notnull => notnull")]
-        private Kn5RenderableFile LoadShowroom(string showroomKn5) {
-            if (showroomKn5 != null) {
-                //var kn5 = Kn5.FromFile(showroomKn5);
-                //node = new Kn5RenderableFile(kn5, Matrix.Identity, AsyncTexturesLoading, AllowSkinnedObjects);
-                return Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity, AllowSkinnedObjects);
-            }
-
-            return null;
+        private Kn5RenderableShowroom LoadShowroom(string showroomKn5) {
+            return showroomKn5 != null ? Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity, AllowSkinnedObjects) : null;
         }
 
         public void SetShowroom(string showroomKn5) {
-            // TODO: errors handling!
-
             try {
                 if (ShowroomNode != null) {
                     ShowroomNode.Dispose();
                     Scene.Remove(ShowroomNode);
                     ShowroomNode = null;
-                    GC.Collect();
                 }
 
                 var node = LoadShowroom(showroomKn5);
@@ -474,9 +465,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     Scene.Insert(0, node);
                 }
             } catch (Exception e) {
-                AcToolsLogging.Write(e);
+                AcToolsLogging.NonFatalErrorNotify("Can’t load showroom", null, e);
             } finally {
-                CubemapReflection = ShowroomNode != null;
                 Scene.UpdateBoundingBox();
                 IsDirty = true;
                 _sceneDirty = true;
@@ -487,7 +477,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool CubemapReflection {
             get { return _cubemapReflection; }
-            set {
+            private set {
                 if (value == _cubemapReflection) return;
                 _cubemapReflection = value;
 
@@ -506,7 +496,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
         
-        protected virtual void OnCubemapReflectionChanged() {}
+        protected void OnCubemapReflectionChanged() {}
 
         private bool _enableShadows = false;
 
@@ -792,7 +782,7 @@ FPS: {FramesPerSecond:F0}{(SyncInterval ? " (limited)" : "")}
 Triangles: {CarNode?.TrianglesCount:D}
 FXAA: {(UseFxaa ? "Yes" : "No")}
 MSAA: {(UseMsaa ? "Yes" : "No")}
-SSAA: {(UseSsaa ? TemporaryFlag ? "Yes, Exp." : "Yes" : "No")}
+SSAA: {(UseSsaa ? "Yes" : "No")}
 Bloom: {(UseBloom ? "Yes" : "No")}
 Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
@@ -1083,13 +1073,13 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             }
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _textBlock);
             DisposeHelper.Dispose(ref _shadows);
             DisposeHelper.Dispose(ref _reflectionCubemap);
             _previousCars.SelectMany(x => x.Objects).DisposeEverything();
             _previousCars.Clear();
-            base.Dispose();
+            base.DisposeOverride();
         }
 
         public enum CarCameraMode {

@@ -485,7 +485,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            Buttons = new[] {
+            Buttons = new ContentControl[] {
                 fixButton,
                 fixButton == null ? saveReplayButton : null,
                 fixButton == null ? tryAgainButton : null,

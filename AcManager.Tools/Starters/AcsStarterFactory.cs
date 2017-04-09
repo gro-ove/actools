@@ -35,6 +35,14 @@ namespace AcManager.Tools.Starters {
                 return new SseStarter();
             }
 
+            if (type == SettingsHolder.DriveSettings.SidePassageStarterType) {
+                return new SidePassageStarter();
+            }
+
+            if (type == SettingsHolder.DriveSettings.SteamStarterType) {
+                return new SteamStarter();
+            }
+
             if (type == SettingsHolder.DriveSettings.TrickyStarterType) {
                 return new TrickyStarter(AcRootDirectory.Instance.Value) {
                     Use32Version = SettingsHolder.Drive.Use32BitVersion

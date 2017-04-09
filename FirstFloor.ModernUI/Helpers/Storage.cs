@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         void SetEncryptedString([NotNull, LocalizationRequired(false)] string key, string value);
 
-        void Remove([NotNull, LocalizationRequired(false)] string key);
+        bool Remove([NotNull, LocalizationRequired(false)] string key);
 
         IEnumerable<string> Keys { get; }
     }
@@ -129,8 +129,8 @@ namespace FirstFloor.ModernUI.Helpers {
             _baseStorage.SetEncryptedString(_prefix + key, value);
         }
 
-        public void Remove(string key) {
-            _baseStorage.Remove(_prefix + key);
+        public bool Remove(string key) {
+            return _baseStorage.Remove(_prefix + key);
         }
 
         public IEnumerable<string> Keys => _baseStorage.Keys.Where(x => x.StartsWith(_prefix)).Select(x => x.Substring(_prefix.Length));
@@ -753,14 +753,17 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public void Remove([LocalizationRequired(false)] string key) {
+        public bool Remove([LocalizationRequired(false)] string key) {
             lock (_storage) {
                 if (_storage.ContainsKey(key)) {
                     _storage.Remove(key);
                     Dirty();
                     OnPropertyChanged(nameof(Count));
+                    return true;
                 }
             }
+
+            return false;
         }
 
         public void CleanUp(Func<string, bool> predicate) {

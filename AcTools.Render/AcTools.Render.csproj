@@ -105,6 +105,7 @@
     <Compile Include="Forward\ToneMappingFn.cs" />
     <Compile Include="Base\PostEffects\AO\AssaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkSslrHelper.cs" />
     <Compile Include="Base\Reflections\IReflectionDraw.cs" />
     <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
@@ -154,8 +155,10 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
+    <Compile Include="Kn5SpecificSpecial\AiLaneObject.cs" />
     <Compile Include="Kn5SpecificSpecial\BakedShadowsRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
@@ -281,6 +284,7 @@
     <Content Include="Shaders\Special\SpecialRandom.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />
+    <Content Include="Shaders\Special\SpecialTrackOutline.fx" />
     <Content Include="Shaders\Sprites\SpriteShader.fx" />
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />

@@ -4,7 +4,7 @@
         xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
-        Topmost="True" ShowTitle="False" Loaded="OnLoaded" Unloaded="OnUnloaded" Width="250" SizeToContent="Height" MaxHeight="800">
+        Topmost="True" ShowTitle="False" Width="250" SizeToContent="Height" MaxHeight="800">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -384,7 +384,8 @@
                             <DockPanel.InputBindings>
                                 <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
                             </DockPanel.InputBindings>
-                            <Button DockPanel.Dock="Right" Height="20" Padding="4 0" Command="{Binding ViewObjectCommand}" Content="…" />
+                            <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20"
+                                    Margin="4 0 0 0" Padding="4 0" />
                             <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
                             <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
                         </DockPanel>
@@ -392,7 +393,8 @@
                             <DockPanel.InputBindings>
                                 <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
                             </DockPanel.InputBindings>
-                            <Button DockPanel.Dock="Right" Height="20" Padding="4 0" Command="{Binding ViewMaterialCommand}" Content="…" />
+                            <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
+                                    Margin="4 0 0 0" Padding="4 0" />
                             <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
                             <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
                         </DockPanel>
@@ -403,9 +405,9 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel Margin="8 0 0 0">
-                                            <Button DockPanel.Dock="Right" Height="20" Padding="4 0"
+                                            <mui:ContextMenuButton DockPanel.Dock="Right"
                                                     Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
-                                                    CommandParameter="{Binding}" Content="…" />
+                                                    CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0" />
                                             <Label VerticalAlignment="Center" Width="90">
                                                 <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
                                             </Label>

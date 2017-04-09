@@ -650,12 +650,6 @@ namespace AcManager.Controls.CustomShowroom {
                                                        Enabled = false
                                                    })
                                                    .FirstOrDefault(),
-                new[] { "car_paint_roll_cage.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                                   .Select(x => new ColoredItem(x, Colors.AliceBlue) {
-                                                       DisplayName = "Roll cage",
-                                                       Enabled = false
-                                                   })
-                                                   .FirstOrDefault(),
                 new[] { "ext_glass.dds" }.Where(x => kn5.Textures.ContainsKey(x))
                                          .Select(x => new TintedWindows(x) {
                                              Enabled = false

@@ -1,14 +1,17 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
+using AcTools.AiFile;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using SlimDX;
 
@@ -65,31 +68,44 @@ namespace AcManager.Controls.CustomShowroom {
             Helper.CameraMouseZoom(Kn5ObjectRenderer, 0f, value, Form.ClientSize.Height, Form.ClientSize.Width);
         }
 
-        public static async Task Run(TrackObjectBase track) {
-            var modelsFilename = track.ModelsFilename;
-            Logging.Debug(modelsFilename);
+        public static async Task Run(TrackObjectBase track, bool aiLane) {
+            string modelsFilename = null, kn5Filename = null, aiLaneFilename = null;
 
-            string kn5Filename = null;
-            if (!File.Exists(modelsFilename)) {
-                modelsFilename = null;
-                kn5Filename = Path.Combine(track.Location, track.Id + ".kn5");
-                if (!File.Exists(kn5Filename)) {
-                    ModernDialog.ShowMessage("Model not found");
+            if (!aiLane) {
+                modelsFilename = track.ModelsFilename;
+                if (!File.Exists(modelsFilename)) {
+                    modelsFilename = null;
+                    kn5Filename = Path.Combine(track.Location, track.Id + ".kn5");
+                    if (!File.Exists(kn5Filename)) {
+                        ModernDialog.ShowMessage("Model not found");
+                        return;
+                    }
+                }
+            } else {
+                aiLaneFilename = track.AiLaneFastFilename;
+                if (!File.Exists(aiLaneFilename)) {
+                    ModernDialog.ShowMessage("AI lane not found");
                     return;
                 }
             }
 
+            await PrepareAsync();
+
             TrackMapPreparationRenderer renderer = null;
             try {
                 using (WaitingDialog.Create("Loading model…")) {
-                    renderer = modelsFilename == null ?
-                            new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename))) :
-                            new TrackMapPreparationRenderer(await Task.Run(() => TrackComplexModelDescription.CreateLoaded(modelsFilename)));
+                    renderer = aiLaneFilename == null ?
+                            modelsFilename == null ?
+                                    new TrackMapPreparationRenderer(await Task.Run(() => Kn5.FromFile(kn5Filename))) :
+                                    new TrackMapPreparationRenderer(await Task.Run(() => TrackComplexModelDescription.CreateLoaded(modelsFilename))) :
+                            new TrackMapPreparationRenderer(await Task.Run(() => AiLane.FromFile(aiLaneFilename)));
                 }
 
                 var wrapper = new TrackMapRendererWrapper(track, renderer);
                 wrapper.Form.Icon = AppIconService.GetAppIcon();
                 wrapper.Run();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t update map", e);
             } finally {
                 renderer?.Dispose();
             }

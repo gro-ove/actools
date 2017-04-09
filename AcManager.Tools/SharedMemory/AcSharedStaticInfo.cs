@@ -91,21 +91,24 @@ namespace AcManager.Tools.SharedMemory {
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = AcSharedConsts.LayoutIdSize)]
         public string TrackConfiguration;
 
-        // added 1.10.2
+        // added in 1.10.2
         public float ErsMaxJ;
 
-        [Pure]
-        public static AcSharedStaticInfo FromFile([NotNull] MemoryMappedFile file) {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            using (var stream = file.CreateViewStream())
-            using (var reader = new BinaryReader(stream)) {
-                var size = Marshal.SizeOf(typeof(AcSharedStaticInfo));
-                var bytes = reader.ReadBytes(size);
-                var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-                var data = (AcSharedStaticInfo)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(AcSharedStaticInfo));
-                handle.Free();
-                return data;
-            }
-        }
+        // added in 1.13
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool IsTimedRace;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool HasExtraLap;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+        public string CarSkin;
+
+        public int ReversedGridPositions;
+        public int PitWindowStart;
+        public int PitWindowEnd;
+
+        public static readonly int Size = Marshal.SizeOf(typeof(AcSharedStaticInfo));
+        public static readonly byte[] Buffer = new byte[Size];
     }
 }

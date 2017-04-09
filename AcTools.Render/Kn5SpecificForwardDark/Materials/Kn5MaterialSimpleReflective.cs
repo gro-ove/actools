@@ -1,10 +1,9 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleReflective : Kn5MaterialSimple {
@@ -12,8 +11,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public Kn5MaterialSimpleReflective([NotNull] Kn5MaterialDescription description) : base(description) { }
 
+        protected virtual bool IsAdditive() {
+            return !Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 0.0f);
+        }
+
         public override void Initialize(IDeviceContextHolder contextHolder) {
-            if (Equals(Kn5Material.GetPropertyValueAByName("isAdditive"), 1.0f)) {
+            if (IsAdditive()) {
                 Flags |= EffectDarkMaterial.IsAdditive;
             }
 
@@ -33,11 +36,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return true;
         }
 
-        protected override EffectTechnique GetTechnique() {
+        protected override EffectReadyTechnique GetTechnique() {
             return Effect.TechReflective;
         }
 
-        protected override EffectTechnique GetGBufferTechnique() {
+        protected override EffectReadyTechnique GetGBufferTechnique() {
             return Effect.TechGPass_Reflective;
         }
     }

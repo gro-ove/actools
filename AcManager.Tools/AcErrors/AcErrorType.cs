@@ -1,5 +1,7 @@
 // ReSharper disable InconsistentNaming
 
+using System.ComponentModel;
+
 namespace AcManager.Tools.AcErrors {
     public enum AcErrorType {
         /// <summary>
@@ -115,6 +117,16 @@ namespace AcManager.Tools.AcErrors {
 
         [LocalizedDescription(nameof(ToolsStrings.AcError_UpgradeIconIsMissing))]
         Car_UpgradeIconIsMissing,
+
+
+        [Description("Map is missing")]
+        Track_MapIsMissing,
+
+        [Description("Track’s outline is missing")]
+        Track_OutlineIsMissing,
+
+        [Description("Track’s preview is missing")]
+        Track_PreviewIsMissing,
 
 
         [LocalizedDescription(nameof(ToolsStrings.AcError_SkinsAreMissing))]

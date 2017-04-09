@@ -124,9 +124,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Windows">
-      <HintPath>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -143,6 +140,7 @@
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AvalonExtension.cs" />
+    <Compile Include="BestLapsList.cs" />
     <Compile Include="Converters\AcTimeDisplayConverter.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
@@ -157,9 +155,13 @@
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\PaintShop.cs" />
+    <Compile Include="CustomShowroom\TrackOutlineRendererTools.xaml.cs">
+      <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
       <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
     <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
     <Compile Include="Dialogs\UserChampionshipIntro.xaml.cs">
       <DependentUpon>UserChampionshipIntro.xaml</DependentUpon>
@@ -167,16 +169,12 @@
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="FavouriteButton.cs" />
     <Compile Include="FlexibleDataTemplateSelector.cs" />
-    <Compile Include="Helpers\AppIconService.cs" />
-    <Compile Include="Helpers\AppShortcut.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\CefSharpResolverService.cs" />
+    <Compile Include="Helpers\CommonCommands.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
-    <Compile Include="Helpers\ShellLink.cs" />
-    <Compile Include="Helpers\Toast.cs" />
-    <Compile Include="Helpers\ToastWin8Helper.cs" />
     <Compile Include="IPresetsPreviewProvider.cs" />
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
     <Compile Include="MessageBlock.cs" />
@@ -286,6 +284,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\LapTimesSpecific.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Plugins.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -354,6 +356,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomShowroom\TrackOutlineRendererTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomShowroom\TrackMapRendererTools.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -389,6 +395,10 @@
     <Page Include="QuickSwitches\QuickSwitchesIconData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\BestLapsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\AcObjectBase.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -500,6 +510,10 @@
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
+      <Project>{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}</Project>
+      <Name>AcTools.LapTimes</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>

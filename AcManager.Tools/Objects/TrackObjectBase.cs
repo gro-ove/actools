@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -11,6 +12,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -50,11 +52,48 @@ namespace AcManager.Tools.Objects {
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
                 OnImageChangedValue(PreviewImage);
+                CheckPreview();
             } else if (FileUtils.IsAffected(filename, OutlineImage)) {
                 OnImageChangedValue(OutlineImage);
+                CheckOutline();
+            } else if (FileUtils.IsAffected(filename, MapImage)) {
+                OnImageChangedValue(MapImage);
+                CheckMap();
+            } else if (FileUtils.IsAffected(filename, AiLaneFastFilename)) {
+                _aiLaneFastExists = null;
+                OnPropertyChanged(nameof(AiLaneFastExists));
+            } else if (FileUtils.IsAffected(filename, AiLaneFastCandidateFilename)) {
+                _aiLaneFastCandidateExists = null;
+                OnPropertyChanged(nameof(AiLaneFastCandidateExists));
+                OnPropertyChanged(nameof(AiLaneCandidateExists));
+                _applyAiLaneCandidatesCommand?.RaiseCanExecuteChanged();
+            } else if (FileUtils.IsAffected(filename, AiLanePitCandidateFilename)) {
+                _aiLanePitCandidateExists = null;
+                OnPropertyChanged(nameof(AiLanePitCandidateExists));
+                OnPropertyChanged(nameof(AiLaneCandidateExists));
+                _applyAiLaneCandidatesCommand?.RaiseCanExecuteChanged();
             }
 
             return true;
+        }
+
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+            CheckMap();
+            CheckOutline();
+            CheckPreview();
+        }
+
+        private void CheckMap() {
+            ErrorIf(!File.Exists(MapImage), AcErrorType.Track_MapIsMissing);
+        }
+
+        private void CheckOutline() {
+            ErrorIf(!File.Exists(OutlineImage), AcErrorType.Track_OutlineIsMissing);
+        }
+
+        private void CheckPreview() {
+            ErrorIf(!File.Exists(PreviewImage), AcErrorType.Track_PreviewIsMissing);
         }
 
         [NotNull]
@@ -357,11 +396,48 @@ namespace AcManager.Tools.Objects {
 
         public string OutlineImage { get; protected set; }
 
-        public abstract string MapDirectory { get; }
+        public abstract string LayoutDataDirectory { get; }
 
-        public string DataDirectory => Path.Combine(MapDirectory, @"data");
+        public string DataDirectory => Path.Combine(LayoutDataDirectory, @"data");
 
-        public string MapImage => Path.Combine(MapDirectory, @"map.png");
+        public string MapImage => Path.Combine(LayoutDataDirectory, @"map.png");
+
+        private string _aiLaneFastFilename;
+        public string AiLaneFastFilename => _aiLaneFastFilename ?? (_aiLaneFastFilename = Path.Combine(LayoutDataDirectory, @"ai", @"fast_lane.ai"));
+
+        private string _aiLanePitFilename;
+        public string AiLanePitFilename => _aiLanePitFilename ?? (_aiLanePitFilename = Path.Combine(LayoutDataDirectory, @"ai", @"pit_lane.ai"));
+
+        private string _aiLaneFastCandidateFilename;
+        public string AiLaneFastCandidateFilename => _aiLaneFastCandidateFilename ?? (_aiLaneFastCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"fast_lane.ai.candidate"));
+
+        private string _aiLanePitCandidateFilename;
+        public string AiLanePitCandidateFilename => _aiLanePitCandidateFilename ?? (_aiLanePitCandidateFilename = Path.Combine(LayoutDataDirectory, @"ai", @"pit_lane.ai.candidate"));
+
+        private bool? _aiLaneFastExists;
+        public bool AiLaneFastExists => _aiLaneFastExists ?? (_aiLaneFastExists = File.Exists(AiLaneFastFilename)).Value;
+
+        private bool? _aiLaneFastCandidateExists;
+        public bool AiLaneFastCandidateExists => _aiLaneFastCandidateExists ?? (_aiLaneFastCandidateExists = File.Exists(AiLaneFastCandidateFilename)).Value;
+
+        private bool? _aiLanePitCandidateExists;
+        public bool AiLanePitCandidateExists => _aiLanePitCandidateExists ?? (_aiLanePitCandidateExists = File.Exists(AiLanePitCandidateFilename)).Value;
+
+        public bool AiLaneCandidateExists => AiLanePitCandidateExists || AiLaneFastCandidateExists;
+
+        private DelegateCommand _applyAiLaneCandidatesCommand;
+
+        public DelegateCommand ApplyAiLaneCandidatesCommand => _applyAiLaneCandidatesCommand ?? (_applyAiLaneCandidatesCommand = new DelegateCommand(() => {
+            if (AiLaneFastCandidateExists) {
+                FileUtils.Recycle(AiLaneFastFilename);
+                File.Move(AiLaneFastCandidateFilename, AiLaneFastFilename);
+            }
+
+            if (AiLanePitCandidateExists) {
+                FileUtils.Recycle(AiLanePitFilename);
+                File.Move(AiLanePitCandidateFilename, AiLanePitFilename);
+            }
+        }, () => AiLaneCandidateExists));
 
         public string ModelsFilename => Path.Combine(MainTrackObject.Location, LayoutId == null ? @"models.ini" : $@"models_{LayoutId}.ini");
 

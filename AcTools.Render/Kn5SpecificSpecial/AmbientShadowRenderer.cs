@@ -390,14 +390,14 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override void OnTick(float dt) { }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _blendState);
             DisposeHelper.Dispose(ref _summBuffer);
             DisposeHelper.Dispose(ref _tempBuffer);
             DisposeHelper.Dispose(ref _shadowBuffer);
             _carNode.Dispose();
             _scene.Dispose();
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

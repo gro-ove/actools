@@ -76,8 +76,8 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -104,8 +104,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 0" Text="Parameters:" />
 
@@ -193,8 +193,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <DockPanel>
                 <mui:ValueLabel Value="{Binding SteerDeg, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer"
@@ -237,8 +237,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Background:" Style="{StaticResource Heading2}" />
 
@@ -301,58 +301,57 @@
                 </ListBox.ItemsSource>
             </ListBox>
 
-            <mui:Switch Value="{Binding Showroom}" Margin="0 20 0 0">
-                <mui:SpacingStackPanel mui:Switch.When="{x:Static mui:BetterComboBox.NullValue}" Spacing="4">
-                    <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
-                        <Label Content="Mirror" />
-                    </CheckBox>
+            <mui:SpacingStackPanel mui:Switch.When="{x:Static mui:BetterComboBox.NullValue}" Spacing="4" Margin="0 20 0 0"
+                    Visibility="{Binding Showroom, Converter={StaticResource NullToVisibilityConverter}}">
+                <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
+                    <Label Content="Mirror" />
+                </CheckBox>
 
-                    <CheckBox IsChecked="{Binding Renderer.FlatMirrorBlurred}" IsEnabled="{Binding Renderer.FlatMirror}">
-                        <Label Content="Blurred mirror" />
-                    </CheckBox>
+                <CheckBox IsChecked="{Binding Renderer.FlatMirrorBlurred}" IsEnabled="{Binding Renderer.FlatMirror}">
+                    <Label Content="Blurred mirror" />
+                </CheckBox>
 
-                    <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding FlatMirror}">
-                        <mui:ValueLabel Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
-                        <Slider Minimum="0" Maximum="100"
-                                Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                TickFrequency="10" TickPlacement="BottomRight" />
-                    </DockPanel>
-                </mui:SpacingStackPanel>
+                <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding FlatMirror}">
+                    <mui:ValueLabel Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
+                    <Slider Minimum="0" Maximum="100"
+                            Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="10"
+                            TickPlacement="BottomRight" />
+                </DockPanel>
+            </mui:SpacingStackPanel>
 
-                <mui:SpacingStackPanel Spacing="4">
-                    <DockPanel DataContext="{Binding Renderer}">
-                        <mui:ValueLabel Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from showroom" Postfix="%" />
-                        <Slider Minimum="0" Maximum="100" Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                TickFrequency="10" TickPlacement="BottomRight" />
-                    </DockPanel>
+            <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0" Visibility="{Binding Showroom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel DataContext="{Binding Renderer}">
+                    <mui:ValueLabel Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from showroom" Postfix="%" />
+                    <Slider Minimum="0" Maximum="100" Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            TickFrequency="10" TickPlacement="BottomRight" />
+                </DockPanel>
 
-                    <CheckBox IsChecked="{Binding Renderer.CubemapAmbientWhite}"
-                            IsEnabled="{Binding Renderer.CubemapAmbient, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}">
-                        <Label Content="White ambient as neutral" />
-                    </CheckBox>
+                <CheckBox IsChecked="{Binding Renderer.CubemapAmbientWhite}"
+                        IsEnabled="{Binding Renderer.CubemapAmbient, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}">
+                    <Label Content="White ambient as neutral" />
+                </CheckBox>
 
-                    <CheckBox IsChecked="{Binding Renderer.ReflectionCubemapAtCamera}">
-                        <Label Content="Reflections at camera position">
-                            <Label.ToolTip>AC behaves this way, but I’m not sure if it’s acceptable for showroom</Label.ToolTip>
-                        </Label>
-                    </CheckBox>
+                <CheckBox IsChecked="{Binding Renderer.ReflectionCubemapAtCamera}">
+                    <Label Content="Reflections at camera position">
+                        <Label.ToolTip>AC behaves this way, but I’m not sure if it’s acceptable for showroom</Label.ToolTip>
+                    </Label>
+                </CheckBox>
 
-                    <CheckBox IsChecked="{Binding Renderer.ReflectionsWithShadows}">
-                        <Label Content="Reflections with shadows">
-                            <Label.ToolTip>AC doesn’t draw shadows for reflections</Label.ToolTip>
-                        </Label>
-                    </CheckBox>
-                </mui:SpacingStackPanel>
-            </mui:Switch>
+                <CheckBox IsChecked="{Binding Renderer.ReflectionsWithShadows}">
+                    <Label Content="Reflections with shadows">
+                        <Label.ToolTip>AC doesn’t draw shadows for reflections</Label.ToolTip>
+                    </Label>
+                </CheckBox>
+            </mui:SpacingStackPanel>
 
             <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetSceneCommand}" />
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
@@ -362,7 +361,7 @@
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
             <DockPanel>
-                <Label Content="SSAA:" />
+                <Label Content="Pixel density:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static local:DarkRendererSettings.SsaaModes}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
@@ -420,8 +419,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
@@ -432,14 +431,14 @@
             </DockPanel>
 
             <DockPanel>
-                <Label Content="SSAA:" />
+                <Label Content="Pixel density:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static local:CmPreviewsSettings.SsaaModesExtended}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding HighQualityPreview, Converter={StaticResource InvertBooleanConverter}}">
-                <Label Content="Limit SSAA in editing mode"
-                        ToolTip="Limits the SSAA to 4x while adjusting the settings. Actual previews will still render at whatever setting you choose." />
+                <Label Content="Limit pixel density in editing mode"
+                        ToolTip="Limits the pixel density to 4x while adjusting the settings. Actual previews will still render at whatever setting you choose." />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
@@ -495,7 +494,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Tone mapping:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
@@ -550,8 +550,8 @@
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
-    <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False" Margin="0 0 -12 0" Padding="0 0 12 0"
-            x:Shared="False">
+    <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="PCSS params:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 

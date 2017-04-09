@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.LapTimes {
     public class SidekickLapTimesReader : ILapTimesReader {
         // http://svn.python.org/projects/python/tags/r32/Lib/pickle.py
-        private static bool ReadPickle(BinaryReader reader, out long result) {
+        private static bool ReadPickle(ReadAheadBinaryReader reader, out long result) {
+            if (reader.Length < 2) {
+                result = 0;
+                return false;
+            }
+
             if (reader.ReadByte() != 128 || reader.ReadByte() != 3) {
                 result = 0;
                 return false;
@@ -96,30 +100,34 @@ namespace AcTools.LapTimes {
             return false;
         }
 
-        protected IEnumerable<LapTimeEntry> GetEntries(string sourceId) {
+        public virtual IEnumerable<LapTimeEntry> Import(string sourceName) {
             var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
             if (!directory.Exists) yield break;
 
             foreach (var file in directory.GetFiles("*_pb.ini")) {
                 long time;
 
-                using (var stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (var reader = new BinaryReader(stream)) {
-                    if (!ReadPickle(reader, out time) || time == 0) continue;
+                try {
+                    using (var stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (var reader = new ReadAheadBinaryReader(stream)) {
+                        if (!ReadPickle(reader, out time) || time == 0) continue;
+                    }
+                } catch (Exception e) {
+                    AcToolsLogging.Write($"Can’t read {file.Name}: {e}");
+                    continue;
                 }
 
                 string carId, trackLayoutId;
                 if (TryToGuessCarAndTrack(file.FullName, out carId, out trackLayoutId)) {
-                    yield return new LapTimeEntry(sourceId, carId, trackLayoutId,
-                            file.CreationTime, TimeSpan.FromMilliseconds(time));
+                    yield return new LapTimeEntry(sourceName, carId, trackLayoutId,
+                            file.LastWriteTime, TimeSpan.FromMilliseconds(time));
                 }
             }
         }
 
-        public static readonly string SourceId = "Sidekick";
-
-        public virtual IEnumerable<LapTimeEntry> Import() {
-            return GetEntries(SourceId);
+        private string GetFilename(string carId, string trackId) {
+            var name = $"{carId}_{trackId.Replace("/", "")}_pb.ini";
+            return Path.Combine(_sidekickDirectory, "personal_best", name);
         }
 
         public void Export(IEnumerable<LapTimeEntry> entries) {
@@ -129,15 +137,21 @@ namespace AcTools.LapTimes {
             }
 
             foreach (var entry in entries.ToList()) {
-                var name = $"{entry.CarId}_{entry.TrackId.Replace("/", "")}_pb.ini";
-                var filename = Path.Combine(directory.FullName, name);
-
+                var filename = GetFilename(entry.CarId, entry.TrackId);
                 using (var stream = File.Open(filename, FileMode.Create, FileAccess.Write))
                 using (var reader = new BinaryWriter(stream)) {
                     WritePickle(reader, (long)entry.LapTime.TotalMilliseconds);
                 }
 
-                new FileInfo(filename).CreationTime = entry.EntryDate;
+                new FileInfo(filename).LastWriteTime = entry.EntryDate;
+            }
+        }
+
+        public void Remove(string carId, string trackId) {
+            var filename = GetFilename(carId, trackId);
+            AcToolsLogging.Write(filename);
+            if (File.Exists(filename)) {
+                File.Delete(filename);
             }
         }
 
@@ -148,5 +162,7 @@ namespace AcTools.LapTimes {
         }
 
         public void Dispose() {}
+
+        public bool CanExport => true;
     }
 }

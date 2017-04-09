@@ -162,6 +162,10 @@ namespace AcManager.Tools.Managers {
         }
 
         private static readonly string[] WatchedFileNames = {
+            @"map.png",
+            @"fast_lane.ai",
+            @"fast_lane.ai.candidate",
+            @"pit_lane.ai.candidate",
             @"preview.png",
             @"outline.png",
             @"ui_track.json"

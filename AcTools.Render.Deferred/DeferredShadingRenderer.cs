@@ -121,8 +121,8 @@ namespace AcTools.Render.Deferred {
         public bool BlurLocalReflections = false;
         public bool LimitLightsThroughGlass = true;
 
-        protected override void DrawInner() {
-            base.DrawInner();
+        protected override void DrawOverride() {
+            base.DrawOverride();
 
             switch (Mode) {
                 case RenderingMode.Result:
@@ -463,9 +463,7 @@ namespace AcTools.Render.Deferred {
             }
         }
 
-        public override void Dispose() {
-            base.Dispose();
-
+        protected override void DisposeOverride() {
             Lights.DisposeEverything();
 
             DisposeHelper.Dispose(ref _gBufferBase);
@@ -481,6 +479,8 @@ namespace AcTools.Render.Deferred {
 
             DisposeHelper.Dispose(ref _reflectionCubemap);
             DisposeHelper.Dispose(ref _sunShadows);
+
+            base.DisposeOverride();
         }
     }
 }

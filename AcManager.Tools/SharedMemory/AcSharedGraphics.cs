@@ -59,18 +59,11 @@ namespace AcManager.Tools.SharedMemory {
         public bool IsInPitLane;
         public float SurfaceGrip;
 
-        [Pure]
-        public static AcSharedGraphics FromFile([NotNull] MemoryMappedFile file) {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            using (var stream = file.CreateViewStream())
-            using (var reader = new BinaryReader(stream)) {
-                var size = Marshal.SizeOf(typeof(AcSharedGraphics));
-                var bytes = reader.ReadBytes(size);
-                var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-                var data = (AcSharedGraphics)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(AcSharedGraphics));
-                handle.Free();
-                return data;
-            }
-        }
+        // added in 1.13
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool MandatoryPitDone;
+
+        public static readonly int Size = Marshal.SizeOf(typeof(AcSharedGraphics));
+        public static readonly byte[] Buffer = new byte[Size];
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
@@ -26,16 +26,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void SetActiveChild(UIElement child) {
             if (ReferenceEquals(_child, child)) return;
 
-            RemoveVisualChild(_child);
-            RemoveLogicalChild(_child);
+            try {
+                RemoveVisualChild(_child);
+                RemoveLogicalChild(_child);
 
-            _child = child;
+                _child = child;
 
-            AddLogicalChild(_child);
-            AddVisualChild(_child);
+                AddLogicalChild(_child);
+                AddVisualChild(_child);
 
-            if (ResetElementNameBindings) {
-                child.ResetElementNameBindings();
+                if (ResetElementNameBindings) {
+                    child.ResetElementNameBindings();
+                }
+            } catch (ArgumentException e) {
+                Logging.Error(e);
+                Logging.Error(this.GetParents().Select(x => $"{x.GetType().Name} (name={(x as FrameworkElement)?.Name ?? @"?"})").JoinToReadableString());
             }
         }
 

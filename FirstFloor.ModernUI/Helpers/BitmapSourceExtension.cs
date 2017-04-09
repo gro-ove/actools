@@ -20,6 +20,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void SaveAsPng(this BitmapSource bitmap, string filename) {
+            if (bitmap == null) return;
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using (var s = File.Create(filename)) {

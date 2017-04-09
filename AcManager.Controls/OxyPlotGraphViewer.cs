@@ -8,7 +8,6 @@ using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using OxyPlot;
@@ -23,8 +22,6 @@ namespace AcManager.Controls {
         static CustomTrackerControl() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomTrackerControl), new FrameworkPropertyMetadata(typeof(CustomTrackerControl)));
         }
-
-        public CustomTrackerControl() {}
 
         public static readonly DependencyProperty PositionOverrideProperty = DependencyProperty.Register(nameof(PositionOverride), typeof(ScreenPoint),
                 typeof(CustomTrackerControl), new PropertyMetadata(OnPositionOverrideChanged));
@@ -85,8 +82,8 @@ namespace AcManager.Controls {
 
         private class CustomController : ControllerBase, IPlotController {
             public CustomController() {
-                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.Track);
-                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.PointsOnlyTrack);
+                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.PointsOnlyTrack);
+                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.Track);
             }
         }
 
@@ -416,6 +413,27 @@ namespace AcManager.Controls {
             InvalidatePlot();
         }
 
+        private static IEnumerable<double> Steps() {
+            for (var i = 0; i < 10; i++) {
+                var v = Math.Pow(10d, i - 1);
+                yield return v;
+                yield return v * 2d;
+                yield return v * 4d;
+                yield return v * 5d;
+            }
+        }
+
+        private static double GetStep(double maxValue) {
+            if (maxValue < 1d || maxValue > 1e6) return double.NaN;
+
+            foreach (var v in Steps()) {
+                var a = maxValue / v;
+                if (a >= 2d && a < 4d) return v;
+            }
+
+            return Math.Pow(10d, Math.Floor(Math.Log10(maxValue)));
+        }
+
         private void UpdateMaximumValues() {
             var power = SourcePower;
             var torque = SourceTorque;
@@ -423,6 +441,10 @@ namespace AcManager.Controls {
             var maximumValue = Math.Max(power?.MaxY ?? 0d, torque?.MaxY ?? 0d);
             foreach (var axis in Model.Axes.Where(x => x.Position != AxisPosition.Bottom)) {
                 axis.Maximum = maximumValue * 1.05;
+
+                var step = GetStep(axis.Maximum);
+                axis.MajorStep = step;
+                axis.MinorStep = step / 5d;
             }
 
             SetValue(IsEmptyPropertyKey, !(power?.Points.Count > 1 || torque?.Points.Count > 1));

@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -13,9 +15,12 @@ namespace AcManager.Pages.Settings {
         public class ViewModel : NotifyPropertyChanged {
             public ViewModel() {
                 PluginsManager.Instance.UpdateIfObsolete().Forget();
+
+                View = new BetterListCollectionView(PluginsManager.Instance.List);
+                View.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
             }
 
-            public ObservableCollection<PluginEntry> List => PluginsManager.Instance.List;
+            public BetterListCollectionView View { get; }
         }
     }
 }

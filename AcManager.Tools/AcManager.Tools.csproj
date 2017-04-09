@@ -23,6 +23,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -52,6 +53,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AcTools.CookerHood">
+      <HintPath>..\Libraries\AcTools.CookerHood\AcTools.CookerHood.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
@@ -72,6 +77,11 @@
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>D:\Games\Assetto Corsa\launcher\support\Steamworks.NET.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -176,6 +186,7 @@
     <Compile Include="Filters\LapTimeTester.cs" />
     <Compile Include="Filters\ServerEntryTester.cs" />
     <Compile Include="Filters\ServerPresetObjectTester.cs" />
+    <Compile Include="Filters\SpecialEventObjectTester.cs" />
     <Compile Include="Filters\WeatherObjectTester.cs" />
     <Compile Include="Filters\ShowroomObjectTester.cs" />
     <Compile Include="Filters\TrackBaseObjectTester.cs" />
@@ -312,6 +323,7 @@
     <Compile Include="Objects\UserChampionshipRoundExtended.cs" />
     <Compile Include="Objects\UserChampionshipRules.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
+    <Compile Include="Profile\LapTimesSource.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />
     <Compile Include="Profile\LapTimeWrapped.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
@@ -370,6 +382,8 @@
     <Compile Include="SharedMemory\AcSharedEventArgs.cs" />
     <Compile Include="SharedMemory\AcSharedStaticInfo.cs" />
     <Compile Include="Starters\ModuleStarter.cs" />
+    <Compile Include="Starters\SteamStarter.cs" />
+    <Compile Include="Starters\SidePassageStarter.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -403,7 +417,7 @@
     <Compile Include="Helpers\Api\OpenWeatherApiProvider.cs" />
     <Compile Include="Helpers\FilesStorage.cs" />
     <Compile Include="Helpers\SaveHelper.cs" />
-    <Compile Include="Helpers\StringComparer.cs" />
+    <Compile Include="Helpers\StringCompare.cs" />
     <Compile Include="Miscellaneous\AppReporter.cs" />
     <Compile Include="SemiGui\GameWrapper.cs" />
     <Compile Include="GameProperties\ImmediateStart.cs" />
@@ -508,6 +522,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Assets\CmHelper.zip" />
+    <None Include="Assets\SidePassage.zip" />
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>

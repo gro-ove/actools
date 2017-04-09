@@ -1,15 +1,21 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
+    [Localizable(false)]
     public static class AppShortcut {
-        public static readonly string AppUserModelId = "AcClub.ContentManager";
-        public static readonly string ShortcutLocation;
+        [CanBeNull]
+        public static string AppUserModelId;
+        public static string ShortcutLocation;
 
-        static AppShortcut() {
-            ShortcutLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Microsoft\Windows\Start Menu\Programs\Content Manager.lnk");
+        public static void Initialize([NotNull] string appUserModelId, [NotNull] string shortcutName) {
+            AppUserModelId = appUserModelId;
+            ShortcutLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                            $@"\Microsoft\Windows\Start Menu\Programs\{shortcutName}.lnk");
         }
 
         public static DelegateCommand CreateShortcutCommand { get; } = new DelegateCommand(CreateShortcut, () => !HasShortcut());
@@ -17,6 +23,8 @@ namespace AcManager.Controls.Helpers {
         public static DelegateCommand DeleteShortcutCommand { get; } = new DelegateCommand(DeleteShortcut, HasShortcut);
 
         public static bool HasShortcut() {
+            if (AppUserModelId == null) throw new Exception("AppUserModelId not set");
+
             if (!File.Exists(ShortcutLocation)) return false;
             using (var shortcut = new ShellLink(ShortcutLocation)) {
                 return shortcut.AppUserModelID == AppUserModelId;
@@ -24,6 +32,8 @@ namespace AcManager.Controls.Helpers {
         }
 
         public static void DeleteShortcut() {
+            if (AppUserModelId == null) throw new Exception("AppUserModelId not set");
+
             if (File.Exists(ShortcutLocation)) {
                 File.Delete(ShortcutLocation);
                 CreateShortcutCommand.RaiseCanExecuteChanged();

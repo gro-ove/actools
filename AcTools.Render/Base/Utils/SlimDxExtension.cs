@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using AcTools.Utils;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using Debug = System.Diagnostics.Debug;
@@ -35,6 +36,16 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
+        public static void Extend(ref BoundingBox bb, ref Vector3 v) {
+            if (bb.Maximum.X < v.X) bb.Maximum.X = v.X;
+            if (bb.Maximum.Y < v.Y) bb.Maximum.Y = v.Y;
+            if (bb.Maximum.Z < v.Z) bb.Maximum.Z = v.Z;
+            if (bb.Minimum.X > v.X) bb.Minimum.X = v.X;
+            if (bb.Minimum.Y > v.Y) bb.Minimum.Y = v.Y;
+            if (bb.Minimum.Z > v.Z) bb.Minimum.Z = v.Z;
+        }
+
+        [Pure]
         public static BoundingBox ExtendBy(this BoundingBox bb, BoundingBox next) {
             return new BoundingBox(
                     new Vector3(
@@ -239,7 +250,7 @@ namespace AcTools.Render.Base.Utils {
             variable.SetRawValue(new DataStream(arr, false, false), len);
         }
 
-        public static void Set(EffectVariable variable, object o, int len) {
+        public static void SetObject(EffectVariable variable, object o, int len) {
             if (o == null) {
                 // TODO (?)
             } else {
@@ -256,8 +267,8 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
-        public static void Set(this EffectVariable variable, object o) {
-            Set(variable, o, Marshal.SizeOf(o));
+        public static void SetObject(this EffectVariable variable, object o) {
+            SetObject(variable, o, Marshal.SizeOf(o));
         }
 
         public static BlendState CreateBlendState(this Device device, RenderTargetBlendDescription description) {

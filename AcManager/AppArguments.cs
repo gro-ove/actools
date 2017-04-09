@@ -48,7 +48,9 @@ namespace AcManager {
                 .ToDictionary(x => x.Key.Value, x => x.Value);
 
             Values = list.Where(x => !x.StartsWith("-"))
-                         .Union(list.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-"))).ToList();
+                         .Union(list.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-")))
+                         .Where(x => x != "/dev")
+                         .ToList();
         }
 
         public static void AddFromFile(string filename) {

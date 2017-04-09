@@ -21,7 +21,8 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public ShaderResourceView View { get; protected set; }
 
-        public virtual void Resize(DeviceContextHolder holder, int width, int height, [CanBeNull] SampleDescription? sample) {
+        public virtual void Resize([NotNull] DeviceContextHolder holder, int width, int height, [CanBeNull] SampleDescription? sample) {
+            if (holder == null) throw new ArgumentNullException(nameof(holder));
             if (width == Width && height == Height && (!sample.HasValue || sample == Description.SampleDescription)) return;
             Dispose();
             

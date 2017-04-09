@@ -123,6 +123,12 @@ namespace AcManager.Tools.Filters {
                 case "car":
                     return obj.Cars?.Any(x => value.Test(x.Id) || value.Test(x.CarObject?.Name)) == true;
 
+                case "trackid":
+                    return value.Test(obj.Track?.Id);
+
+                case "track":
+                    return value.Test(obj.Track?.Id) || value.Test(obj.Track?.Name);
+
                 case "a":
                 case "available":
                     return obj.Cars?.Where(x => x.Available > 0).Any(x => value.Test(x.Id) || value.Test(x.CarObject?.Name)) == true;
@@ -134,12 +140,6 @@ namespace AcManager.Tools.Filters {
                 case "driverteam":
                 case "playerteam":
                     return obj.CurrentDrivers?.Any(x => value.Test(x.Team)) == true;
-
-                case "trackid":
-                    return value.Test(obj.Track?.Id);
-
-                case "track":
-                    return value.Test(obj.Track?.Id) || value.Test(obj.Track?.Name);
 
                 case "c":
                 case "cap":

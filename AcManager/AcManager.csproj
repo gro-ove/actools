@@ -464,6 +464,7 @@
     <Compile Include="QuickSwitches\QuickSwitchesBlock.xaml.cs">
       <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SomeCommonCommandsHelper.cs" />
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentHandleResult.cs" />
     <Compile Include="Tools\ArgumentsHandler.SharedUserChampionship.cs" />
@@ -562,6 +563,7 @@
       <DependentUpon>SettingsOnline.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
+    <Compile Include="Tools\TrackPreviewsCreator.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Compile Include="UserControls\TrackStateEditor.xaml.cs">

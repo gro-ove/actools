@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcTools;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SharpCompress.Archives;
@@ -94,7 +95,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public override void Dispose() {
             DisposeHelper.Dispose(ref _extractor);
-            GC.Collect();
+            GCHelper.CleanUp();
         }
     }
 }

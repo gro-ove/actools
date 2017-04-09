@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
@@ -125,7 +124,7 @@ namespace AcTools.Render.Base.Objects {
             LookAtDirMode(_prevLookAtMatrix.GetTranslationVector(), Vector3.UnitY);
         }
 
-        public void LookAt(Kn5RenderableList target) {
+        public void LookAt(RenderableList target) {
             _lookAt = target;
             UpdateLookAt();
         }

@@ -4,39 +4,63 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Windows.Converters {
     public static class ConverterHelper {
         public static int AsInt([CanBeNull] this object value) {
-            return value as int? ?? value?.ToString().AsInt() ?? 0;
+            return value.AsInt(0);
         }
 
         public static int AsInt([CanBeNull] this string value) {
+            return value.AsInt(0);
+        }
+
+        public static int AsInt([CanBeNull] this object value, int defaultValue) {
+            return value as int? ?? value?.ToString().AsInt(defaultValue) ?? defaultValue;
+        }
+
+        public static int AsInt([CanBeNull] this string value, int defaultValue) {
             int result;
             if (value == null || !int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return 0;
+                return defaultValue;
             }
 
             return result;
         }
 
         public static double AsDouble([CanBeNull] this object value) {
-            return value as double? ?? value?.ToString().AsDouble() ?? 0d;
+            return value.AsDouble(0);
         }
 
         public static double AsDouble([CanBeNull] this string value) {
+            return value.AsDouble(0);
+        }
+
+        public static double AsDouble([CanBeNull] this object value, double defaultValue) {
+            return value as double? ?? value?.ToString().AsDouble(defaultValue) ?? defaultValue;
+        }
+
+        public static double AsDouble([CanBeNull] this string value, double defaultValue) {
             double result;
             if (value == null || !double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
-                return 0d;
+                return defaultValue;
             }
 
             return result;
         }
 
         public static bool AsBoolean([CanBeNull] this object value) {
-            return value as bool? ?? value?.ToString().AsBoolean() ?? false;
+            return value.AsBoolean(false);
         }
 
         public static bool AsBoolean([CanBeNull] this string value) {
+            return value.AsBoolean(false);
+        }
+
+        public static bool AsBoolean([CanBeNull] this object value, bool defaultValue) {
+            return value as bool? ?? value?.ToString().AsBoolean(defaultValue) ?? defaultValue;
+        }
+
+        public static bool AsBoolean([CanBeNull] this string value, bool defaultValue) {
             bool result;
             if (value == null || !bool.TryParse(value, out result)) {
-                return false;
+                return defaultValue;
             }
 
             return result;
@@ -56,6 +80,10 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             if (properValue is bool) {
                 return Equals((bool)properValue, xamlValue.AsBoolean());
+            }
+
+            if (properValue is string) {
+                return Equals((string)properValue, xamlValue.ToString());
             }
 
             return Equals(properValue, xamlValue);

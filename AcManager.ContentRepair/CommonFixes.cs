@@ -40,7 +40,7 @@ namespace AcManager.ContentRepair {
                 }
 
                 cancellation.ThrowIfCancellationRequested();
-                kn5.SaveAll(filename);
+                kn5.Save(filename);
             }, cancellation); 
         }
 

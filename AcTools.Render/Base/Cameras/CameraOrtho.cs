@@ -16,7 +16,6 @@ namespace AcTools.Render.Base.Cameras {
 
         public override void UpdateViewMatrix() {
             SetView(Matrix.LookAtRH(Position, Target, Up));
-            Frustum = Frustum.FromViewProj(ViewProj);
         }
 
         public override void Save() {

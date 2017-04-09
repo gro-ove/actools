@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Kn5File;
@@ -11,6 +10,7 @@ using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -49,6 +49,8 @@ namespace AcManager.Controls.CustomShowroom {
                 ModernDialog.ShowMessage("Model not found");
                 return null;
             }
+
+            await PrepareAsync();
 
             Kn5 kn5;
             using (var waiting = new WaitingDialog()) {

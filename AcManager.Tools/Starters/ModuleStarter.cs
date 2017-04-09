@@ -42,7 +42,7 @@ namespace AcManager.Tools.Starters {
         /// <param name="cancellation">Cancellation token.</param>
         /// <exception cref="InformativeException">Thrown if data is unobtainable: AC is not running or connection is failed.</exception>
         /// <returns>Module answer</returns>
-        [ItemNotNull]
+        [ItemCanBeNull]
         public static async Task<string> GetDataAsync([Localizable(false),NotNull] string data, CancellationToken cancellation = default(CancellationToken)) {
             if (!IsAssettoCorsaRunning) {
                 TryToRunAssettoCorsa();
@@ -57,7 +57,9 @@ namespace AcManager.Tools.Starters {
             IniFile.Write(backdoor, "COMMAND", "CURRENT", JsonConvert.SerializeObject(new {
                 name = data
             }).ToBase64());
+
             await Task.Delay(2000, cancellation);
+            if (cancellation.IsCancellationRequested) return null;
 
             var ini = new IniFile(backdoor);
             var result = ini["RESULT"].GetNonEmpty(data.ToUpperInvariant());

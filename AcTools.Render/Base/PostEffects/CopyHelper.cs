@@ -29,6 +29,14 @@ namespace AcTools.Render.Base.PostEffects {
             (hq ? _effect.TechCopyHq : _effect.TechCopy).DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        public void Cut(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, float cut) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxSizeMultipler.Set(1f / cut);
+            _effect.TechCut.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
         public void Dispose() {}
     }
 }

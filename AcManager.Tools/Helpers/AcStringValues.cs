@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Web;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
@@ -103,10 +104,10 @@ namespace AcManager.Tools.Helpers {
         private static Regex _decodeDescriptionRegex, _cleanDescriptionRegex;
 
         /// <summary>
-        /// Converts HTML-like description to a normal one. We don't need any YouTube-players built-in it.
+        /// Converts HTML-like description to a normal one. We don’t need any YouTube-players built-in it.
         /// </summary>
         // TODO: Add support for some tags which could be drawn using MUI bb-codes?
-        [CanBeNull]
+        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
         public static string DecodeDescription([CanBeNull] string s) {
             if (s == null) return null;
 

@@ -1,11 +1,23 @@
 ﻿using System;
-using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcManager.Tools.SharedMemory {
+    internal static class StructExtension {
+        [Pure, NotNull]
+        public static T ToStruct<T>(this MemoryMappedFile file, byte[] buffer) {
+            using (var stream = file.CreateViewStream()) {
+                stream.Read(buffer, 0, buffer.Length);
+                var handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                var data = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+                handle.Free();
+                return data;
+            }
+        }
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode), Serializable]
     public class AcSharedPhysics {
         public int PacketId;
@@ -72,7 +84,7 @@ namespace AcManager.Tools.SharedMemory {
         [MarshalAs(UnmanagedType.Bool)]
         public bool AutoShifterOn;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public float[] RideHeight;
 
         // added in 1.5
@@ -83,7 +95,7 @@ namespace AcManager.Tools.SharedMemory {
         // added in 1.6
         public float AirTemp;
         public float RoadTemp;
-
+        
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] LocalAngularVelocity;
 
@@ -97,8 +109,12 @@ namespace AcManager.Tools.SharedMemory {
         public int ErsHeatCharging;
         public int ErsisCharging;
         public float KersCurrentKJ;
-        public int DrsAvailable;
-        public int DrsEnabled;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool DrsAvailable;
+
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool DrsEnabled;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public float[] BrakeTemperature;
@@ -131,18 +147,11 @@ namespace AcManager.Tools.SharedMemory {
 
         public float BrakeBias;
 
-        [Pure, NotNull]
-        public static AcSharedPhysics FromFile([NotNull] MemoryMappedFile file) {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            using (var stream = file.CreateViewStream())
-            using (var reader = new BinaryReader(stream)) {
-                var size = Marshal.SizeOf(typeof(AcSharedPhysics));
-                var bytes = reader.ReadBytes(size);
-                var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-                var data = (AcSharedPhysics)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(AcSharedPhysics));
-                handle.Free();
-                return data;
-            }
-        }
+        // added in 1.12
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public float[] LocalVelocity;
+        
+        public static readonly int Size = Marshal.SizeOf(typeof(AcSharedPhysics));
+        public static readonly byte[] Buffer = new byte[Size];
     }
 }

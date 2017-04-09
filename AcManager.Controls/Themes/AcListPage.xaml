@@ -9,25 +9,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="ac:AcListPage">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ac:AcListPage">
-                            <mui:Cell>
-                                <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <mui:ModernButton DockPanel.Dock="Left" x:Name="AddCarButton" IconData="{StaticResource AddIconData}"
-                                            ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 0 8 0" Style="{StaticResource NonTransparent}"
-                                            Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                                            Width="24" Height="24" EllipseDiameter="22" />
-                                    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
-                                </DockPanel>
-                            </mui:Cell>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </DataTrigger>
-        </Style.Triggers>
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="mui:InputBindingBehavior.PropagateInputBindingsToWindow" Value="True" />
         <Setter Property="Template">
@@ -74,5 +55,24 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ac:AcListPage">
+                            <mui:Cell>
+                                <DockPanel Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <mui:ModernButton DockPanel.Dock="Left" x:Name="AddCarButton" IconData="{StaticResource AddIconData}"
+                                            ToolTip="Create a new one (Ctrl+Shift+N)" Margin="0 0 8 0" Style="{StaticResource NonTransparent}"
+                                            Visibility="{TemplateBinding AddNewCommand, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                            Width="24" Height="24" EllipseDiameter="22" />
+                                    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+                                </DockPanel>
+                            </mui:Cell>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

@@ -18,7 +18,7 @@ using JetBrains.Annotations;
 namespace AcManager.Controls.Dialogs {
     public partial class Prompt : IValueConverter {
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, bool required,
-                int maxLength, IEnumerable<string> suggestions) {
+                int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed) {
             DataContext = new ViewModel(description, defaultValue, watermark, toolTip, required);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
@@ -49,7 +49,7 @@ namespace AcManager.Controls.Dialogs {
                 element = passwordBox;
             } else if (suggestions != null) {
                 var comboBox = new BetterComboBox {
-                    IsEditable = true,
+                    IsEditable = !suggestionsFixed,
                     IsTextSearchEnabled = true,
                     ItemsSource = suggestions.ToList()
                 };
@@ -184,12 +184,14 @@ namespace AcManager.Controls.Dialogs {
         /// <returns>Result string or null if user cancelled input.</returns>
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
-                bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null) {
+                bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
+                bool suggestionsFixed = false) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
-            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions);
+            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
+                    suggestionsFixed);
             dialog.ShowDialog();
 
             var result = dialog.Result;
@@ -216,12 +218,13 @@ namespace AcManager.Controls.Dialogs {
         [ItemCanBeNull]
         public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                bool suggestionsFixed = false, CancellationToken cancellation = default(CancellationToken)) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
-            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions);
+            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
+                    suggestionsFixed);
             try {
                 await dialog.ShowAsync(cancellation);
             } catch (TaskCanceledException) {

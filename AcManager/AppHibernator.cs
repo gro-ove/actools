@@ -12,6 +12,7 @@ using AcManager.Tools.SharedMemory;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Forms.ContextMenu;

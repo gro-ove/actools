@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -83,6 +84,7 @@ namespace AcTools.Utils {
             }
             
             using (var image = new MagickImage(data)) {
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 return image.ToByteArray(CommonFormat);
             }
         }
@@ -103,6 +105,7 @@ namespace AcTools.Utils {
                     image.HasAlpha = false;
                 }
 
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 return image.ToByteArray(CommonFormat);
             }
         }
@@ -194,10 +197,9 @@ namespace AcTools.Utils {
                         image.Save(destination, encoder, parameters);
                     }
                 }
-
-                GC.Collect();
             }
 
+            GCHelper.CleanUp();
             if (!keepOriginal) {
                 try {
                     File.Delete(source);
@@ -264,7 +266,21 @@ namespace AcTools.Utils {
             public double? Rating;
         }
 
-        private static void SaveImage(MagickImage image, Stream destination, int quality, ImageInformation exif) {
+        public static void Downscale(this MagickImage image, double scale = 0.5) {
+            image.Interpolate = PixelInterpolateMethod.Catrom;
+            image.FilterType = FilterType.Lanczos;
+            image.Sharpen();
+            image.Resize(new Percentage(scale * 100d));
+        }
+
+        public static void SaveImage(MagickImage image, string destination, int quality = 95, ImageInformation exif = null,
+                MagickFormat format = MagickFormat.Jpeg) {
+            using (var stream = File.Open(destination, FileMode.Create, FileAccess.ReadWrite)) {
+                SaveImage(image, stream, quality, exif, format);
+            }
+        }
+
+        public static void SaveImage(MagickImage image, Stream destination, int quality = 95, ImageInformation exif = null, MagickFormat format = MagickFormat.Jpeg) {
             if (exif != null) {
                 var profile = new ExifProfile();
 
@@ -291,7 +307,7 @@ namespace AcTools.Utils {
 
             image.Quality = quality;
             image.Density = new Density(96, 96);
-            image.Write(destination, MagickFormat.Jpeg);
+            image.Write(destination, format);
         }
 
         private static void SaveImage(Image image, Stream destination, int quality, ImageInformation exif) {

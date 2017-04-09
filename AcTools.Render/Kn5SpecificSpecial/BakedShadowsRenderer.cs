@@ -34,6 +34,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public BakedShadowsRenderer(Kn5 kn5) {
             _kn5 = kn5;
             _scene = new RenderableList();
+
+            ResolutionMultiplier = 2d;
         }
         
         public float SkyBrightnessLevel = 2.5f;
@@ -42,6 +44,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public float Gamma = 0.5f;
         public float Ambient = 0.3f;
         public float UpDelta = 0.0f;
+        public float ShadowBias = 0.0f;
         public int Iterations = 500;
         public bool DebugMode = false;
 
@@ -71,19 +74,19 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 SourceBlend = BlendOption.One,
                 DestinationBlend = BlendOption.One,
                 BlendOperation = BlendOperation.Add,
-                SourceBlendAlpha = BlendOption.SourceAlpha,
-                DestinationBlendAlpha = BlendOption.InverseSourceAlpha,
+                SourceBlendAlpha = BlendOption.One,
+                DestinationBlendAlpha = BlendOption.One,
                 BlendOperationAlpha = BlendOperation.Add,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
             });
 
             _bakedBlendState = Device.CreateBlendState(new RenderTargetBlendDescription {
                 BlendEnable = true,
-                SourceBlend = BlendOption.SourceColor,
-                DestinationBlend = BlendOption.DestinationColor,
+                SourceBlend = BlendOption.One,
+                DestinationBlend = BlendOption.One,
                 BlendOperation = BlendOperation.Maximum,
-                SourceBlendAlpha = BlendOption.SourceAlpha,
-                DestinationBlendAlpha = BlendOption.DestinationAlpha,
+                SourceBlendAlpha = BlendOption.One,
+                DestinationBlendAlpha = BlendOption.One,
                 BlendOperationAlpha = BlendOperation.Maximum,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
             });
@@ -95,9 +98,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
-                /*DepthBias = 10,
+                DepthBias = (int)(100 * ShadowBias),
                 DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = 0.5f*/
+                SlopeScaledDepthBias = ShadowBias
             });
 
             DeviceContextHolder.Set<INormalTexturesProvider>(new NormalTexturesProvider(_kn5));
@@ -272,6 +275,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 _effect.TechAoGrow.DrawAllPasses(DeviceContext, 6);
             }
             
+            PrepareForFinalPass();
             if (UseFxaa) {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _tempBuffer.View, RenderTargetView);
             } else {
@@ -292,7 +296,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
         
         public bool UseFxaa = true;
-        public float Multipler = 1.41f;
 
         public void Shot(string outputFile, string textureName, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             if (!Initialized) {
@@ -307,9 +310,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var material = _kn5.GetMaterial(kn5.OriginalNode.MaterialId);
                 return material != null && material.TextureMappings.Any(m => m.Texture == textureName);
             }).ToArray();
-
-            Width = (int)(Width * Multipler);
-            Height = (int)(Height * Multipler);
             
             PrepareBuffers(2048);
             SetBodyShadowCamera();
@@ -318,7 +318,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Draw(1f, progress, cancellation);
             if (cancellation.IsCancellationRequested) return;
 
-            SaveRenderBufferAsPng(outputFile, 1f / Multipler);
+            Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
 
         protected override void OnTick(float dt) { }
@@ -361,7 +361,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _summBlendState);
             DisposeHelper.Dispose(ref _bakedBlendState);
             DisposeHelper.Dispose(ref _summBuffer);
@@ -371,7 +371,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _rasterizerState);
             _carNode.Dispose();
             _scene.Dispose();
-            base.Dispose();
+            base.DisposeOverride();
         }
     }
 }

@@ -2,37 +2,40 @@
 
 namespace AcManager.Tools.Helpers.AcLog {
     public enum WhatsGoingOnType {
-        [LocalizedDescription("LogHelper_PasswordIsInvalid")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_PasswordIsInvalid))]
         OnlineWrongPassword,
 
-        [LocalizedDescription("LogHelper_CannotConnectToRemoteServer")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_CannotConnectToRemoteServer))]
         OnlineConnectionFailed,
 
-        [LocalizedDescription("LogHelper_SuspensionIsMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_SuspensionIsMissing))]
         SuspensionIsMissing,
 
-        [LocalizedDescription("LogHelper_WheelsAreMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_WheelsAreMissing))]
         WheelsAreMissing,
 
-        [LocalizedDescription("LogHelper_DriverIsMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_DriverIsMissing))]
         DriverModelIsMissing,
 
-        [LocalizedDescription("LogHelper_TimeAttackNotSupported")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_TimeAttackNotSupported))]
         TimeAttackNotSupported,
 
-        [LocalizedDescription("LogHelper_DefaultPpFilterIsMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_DefaultPpFilterIsMissing))]
         DefaultPpFilterIsMissing,
 
-        [LocalizedDescription("LogHelper_PpFilterIsMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_PpFilterIsMissing))]
         PpFilterIsMissing,
 
-        [LocalizedDescription("LogHelper_ShaderIsMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_ShaderIsMissing))]
         ShaderIsMissing,
 
-        [LocalizedDescription("LogHelper_CloudsMightBeMissing")]
+        [LocalizedDescription(nameof(ToolsStrings.LogHelper_CloudsMightBeMissing))]
         CloudsMightBeMissing,
 
         // TRANSLATE ME
+        [Description("AI spline might be missing or broken")]
+        AiSplineMissing,
+
         [Description("Game might be obsolete")]
         GameMightBeObsolete,
 

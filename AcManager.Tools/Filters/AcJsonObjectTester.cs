@@ -4,7 +4,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class AcJsonObjectTester : ITester<AcJsonObjectNew> {
-        public static AcJsonObjectTester Instance = new AcJsonObjectTester();
+        public static readonly AcJsonObjectTester Instance = new AcJsonObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
@@ -47,7 +47,8 @@ namespace AcManager.Tools.Filters {
         public bool Test(AcJsonObjectNew obj, string key, ITestEntry value) {
             switch (key) {
                 case "dlc":
-                    return obj.Dlc != null && (value.Test(obj.Dlc.Id) || value.Test(obj.Dlc.ShortName) || value.Test(obj.Dlc.DisplayName));
+                    var dlc = obj.Dlc;
+                    return dlc != null && (value.Test(dlc.Id) || value.Test(dlc.ShortName) || value.Test(dlc.DisplayName));
 
                 case "desc":
                 case "description":
@@ -59,7 +60,7 @@ namespace AcManager.Tools.Filters {
 
                 case "t":
                 case "tag":
-                    return obj.Tags.Any(value.Test);
+                    return obj.Tags?.Any(value.Test) == true;
 
                 case "a":
                 case "author":

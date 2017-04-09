@@ -6,6 +6,7 @@ using AcManager.Tools.GameProperties;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 
 namespace AcManager {

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Application = System.Windows.Application;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public static class Toast {
         public static bool OptionFallbackMode = false;
 

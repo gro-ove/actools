@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Render.Base;
-using AcTools.Render.Temporary;
-using AcTools.Windows;
 using JetBrains.Annotations;
 using SlimDX.Windows;
 using Timer = System.Windows.Forms.Timer;
@@ -19,12 +17,34 @@ namespace AcTools.Render.Wrapper {
 
         protected bool Paused { get; private set; }
 
-        public BaseFormWrapper(BaseRenderer renderer, string title, int width, int height) {
+        private static BaseFormWrapper _current;
+
+        public static bool StopCurrent() {
+            if (_current != null && !_current.Renderer.Disposed && !_current._closed) {
+                _current.Stop();
+                return true;
+            }
+
+            return false;
+        }
+
+        public static Task PrepareAsync() {
+            /* after stopping previous MessagePump (it’s the only thing keeping us from
+             * using several wrappers at once), wait a little to make sure it actually
+             * finished */
+            return Task.Delay(StopCurrent() ? 200 : 0);
+        }
+
+        protected BaseFormWrapper(BaseRenderer renderer, string title, int width, int height) {
+            if (StopCurrent()) {
+                throw new Exception("Can’t have two renderers running at the same time");
+            }
+
+            _current = this;
             _title = title;
 
             Form = new RenderForm(title) {
-                Width = width,
-                Height = height,
+                ClientSize = new Size(width, height),
                 StartPosition = FormStartPosition.CenterScreen
             };
 
@@ -32,8 +52,7 @@ namespace AcTools.Render.Wrapper {
             Renderer.Initialize(Form.Handle);
             Renderer.SetAssociatedWindow(Form);
 
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+            UpdateSize();
 
             Form.UserResized += OnResize;
             Form.KeyDown += OnKeyDown;
@@ -43,6 +62,11 @@ namespace AcTools.Render.Wrapper {
             Form.LostFocus += OnLostFocus;
 
             renderer.Tick += OnTick;
+        }
+
+        protected virtual void UpdateSize() {
+            Renderer.Width = Form.ClientSize.Width;
+            Renderer.Height = Form.ClientSize.Height;
         }
 
         protected virtual void OnTick(object sender, TickEventArgs args) {}
@@ -63,13 +87,12 @@ namespace AcTools.Render.Wrapper {
                 _firstFrame = firstFrame;
                 MessagePump.Run(Form, OnRender);
             } catch (InvalidOperationException e) {
-                Logging.Warning("MessagePump exception: " + e);
+                AcToolsLogging.Write(e);
             }
         }
 
         protected virtual void OnResize(object sender, EventArgs eventArgs) {
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+            UpdateSize();
         }
 
         protected virtual void OnKeyDown(object sender, KeyEventArgs args) {}
@@ -119,6 +142,8 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected virtual void OnRender() {
+            if (_closed) return;
+
             // Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
             if (Paused && !Renderer.IsDirty) {
                 Thread.Sleep(20);

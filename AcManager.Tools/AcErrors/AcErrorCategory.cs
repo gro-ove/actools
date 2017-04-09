@@ -5,6 +5,7 @@ namespace AcManager.Tools.AcErrors {
         Data,
         ExtendedData,
         Car,
+        Track,
         CarSkin,
         CarSetup,
         CarSkins,

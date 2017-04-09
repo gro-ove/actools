@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public interface IAppIconProvider {
         Uri GetTrayIcon();
 

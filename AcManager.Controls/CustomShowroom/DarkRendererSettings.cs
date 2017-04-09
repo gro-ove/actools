@@ -18,6 +18,7 @@ using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -43,12 +44,12 @@ namespace AcManager.Controls.CustomShowroom {
 
         public static SettingEntry[] SsaaModes { get; } = {
             new SettingEntry(1, ToolsStrings.Common_Disabled),
-            new SettingEntry(2, @"2xSSAA"),
-            new SettingEntry(4, @"4xSSAA"),
-            new SettingEntry(8, @"8xSSAA"),
+            new SettingEntry(2, @"2x"),
+            new SettingEntry(4, @"4x"),
+            new SettingEntry(8, @"8x"),
         };
 
-        public static SettingEntry[] SsaaModesExtended { get; } = SsaaModes.Append(new SettingEntry(16, @"16xSSAA")).ToArray();
+        public static SettingEntry[] SsaaModesExtended { get; } = SsaaModes.Append(new SettingEntry(16, @"16x")).ToArray();
 
         public static SettingEntry[] ShadowResolutions { get; } = {
             new SettingEntry(1024, "1024×1024"),
@@ -417,12 +418,12 @@ namespace AcManager.Controls.CustomShowroom {
                 case nameof(Renderer.PcssLightScale):
                 case nameof(Renderer.PcssSceneScale):
                 case nameof(Renderer.AoOpacity):
-                    SaveLater();
+                    ActionExtension.InvokeInMainThread(SaveLater);
                     break;
 
                 case nameof(Renderer.MsaaSampleCount):
                 case nameof(Renderer.UseMsaa):
-                    SyncMsaaMode();
+                    ActionExtension.InvokeInMainThread(SyncMsaaMode);
                     break;
 
                 // case nameof(Renderer.ResolutionMultiplier):
@@ -430,15 +431,15 @@ namespace AcManager.Controls.CustomShowroom {
                 //    break;
 
                 case nameof(Renderer.UseSsaa):
-                    SyncUseSsaa();
+                    ActionExtension.InvokeInMainThread(SyncUseSsaa);
                     break;
                     
                 case nameof(Renderer.ShadowMapSize):
-                    SyncShadowMapSize();
+                    ActionExtension.InvokeInMainThread(SyncShadowMapSize);
                     break;
                     
                 case nameof(Renderer.Light):
-                    SyncLight();
+                    ActionExtension.InvokeInMainThread(SyncLight);
                     break;
             }
         }

@@ -16,8 +16,10 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Managers {
     public class SpecialEventsManager : AcManagerNew<SpecialEventObject> {
@@ -94,11 +96,38 @@ namespace AcManager.Tools.Managers {
         public async Task UpdateProgressViaModule(IProgress<string> progress, CancellationToken cancellation) {
             progress.Report("Getting data…");
             var data = await ModuleStarter.GetDataAsync("achievments", cancellation);
+            if (data == null || cancellation.IsCancellationRequested) return;
 
             foreach (var pair in JsonConvert.DeserializeObject<Dictionary<string, int>>(data)) {
                 var eventObject = GetById(pair.Key);
                 if (eventObject == null) continue;
                 eventObject.TakenPlace = Math.Min(eventObject.TakenPlace, (eventObject.ConditionType == null ? 4 : 3) - pair.Value);
+            }
+        }
+
+        public async Task UpdateProgressViaSidePassage(IProgress<string> progress, CancellationToken cancellation) {
+            progress.Report("Getting data…");
+            var data = await SidePassageStarter.GetAchievementsAsync(cancellation);
+            if (data == null || cancellation.IsCancellationRequested) return;
+
+            foreach (var pair in JObject.Parse(data)["achievements"].ToObject<Dictionary<string, string>[]>()) {
+                var eventObject = GetById(pair.GetValueOrDefault("name") ?? "");
+                if (eventObject == null) continue;
+                eventObject.TakenPlace = Math.Min(eventObject.TakenPlace,
+                        (eventObject.ConditionType == null ? 4 : 3) - pair.GetValueOrDefault("maxTier").AsInt(-1));
+            }
+        }
+
+        public async Task UpdateProgressViaSteamStarter(IProgress<string> progress, CancellationToken cancellation) {
+            progress.Report("Getting data…");
+            var data = await Task.Run(() => SteamStarter.GetAchievements());
+            if (data == null || cancellation.IsCancellationRequested) return;
+
+            foreach (var pair in JObject.Parse(data)["achievements"].ToObject<Dictionary<string, string>[]>()) {
+                var eventObject = GetById(pair.GetValueOrDefault("name") ?? "");
+                if (eventObject == null) continue;
+                eventObject.TakenPlace = Math.Min(eventObject.TakenPlace,
+                        (eventObject.ConditionType == null ? 4 : 3) - pair.GetValueOrDefault("maxTier").AsInt(-1));
             }
         }
 

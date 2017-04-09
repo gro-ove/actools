@@ -52,7 +52,6 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 case "detail_alpinestars_00.dds":
                 case "detail_alpinestars_00_nm.dds":
                     return new AssetPath(false, "GLOVES", "driver_gloves");
-
                 case "driver_gloves.dds":
                 case "driver_gloves_nm.dds":
                 case "driver_suit_nm.dds":
@@ -278,7 +277,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                     return null;
                 }catch (Exception e) {
                     AcToolsLogging.Write(e);
-                    Logging.Warning("UpdateOverrideLater(): " + e.Message);
+                    Logging.Warning("TryLoadBytes(): " + e.Message);
                 }
             }
 
@@ -293,6 +292,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
             if (MagickOverride && magickMode) {
                 if (!ImageUtils.IsMagickSupported) return;
 
+                AcToolsLogging.Write($"Trying to update {localName}…");
+
                 var ext = MagickExtensions.FirstOrDefault(x => localName.EndsWith(x, StringComparison.Ordinal));
                 if (ext != null) {
                     var candidate = localName.ApartFromLast(ext);
@@ -304,7 +305,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             if (texture == null) return;
 
-            var filename = GetOverridedFilename(texture.Name);
+            var filename = GetOverridedFilename(localName);
             var bytes = await TryLoadBytes(filename, magickMode, 5, initialDelay);
 
             _updateInProcess.Remove(localName);
@@ -330,7 +331,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             _updateInProcess.Add(local);
 
             try {
-                await UpdateTexture(local).ConfigureAwait(false);
+                await UpdateTexture(local);
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
             } finally {

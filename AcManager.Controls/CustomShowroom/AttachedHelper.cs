@@ -27,12 +27,14 @@ namespace AcManager.Controls.CustomShowroom {
                 UpdateVisibility(true);
             }
         }
-
+        
         private readonly int _padding;
+        private readonly bool _limitHeight;
         private readonly int _offset;
 
-        public AttachedHelper([NotNull] BaseFormWrapper parent, [NotNull] Window window, int offset = -1, int padding = 10) {
+        public AttachedHelper([NotNull] BaseFormWrapper parent, [NotNull] Window window, int offset = -1, int padding = 10, bool limitHeight = true) {
             _padding = padding;
+            _limitHeight = limitHeight;
 
             _parent = parent.Form;
             _parent.Closed += OnClosed;
@@ -47,7 +49,10 @@ namespace AcManager.Controls.CustomShowroom {
             var child = _child;
 
             child.Owner = null;
-            child.MaxHeight = _parent.Height - _padding;
+            if (_limitHeight) {
+                child.MaxHeight = _parent.Height - _padding;
+            }
+
             ElementHost.EnableModelessKeyboardInterop(child);
 
             child.Show();
@@ -78,7 +83,7 @@ namespace AcManager.Controls.CustomShowroom {
         private void OnResize(object sender, EventArgs e) {
             UpdatePosition();
 
-            if (_child != null) {
+            if (_child != null && Visible && _limitHeight) {
                 _child.MaxHeight = _parent.Height - _padding;
             }
         }
@@ -128,7 +133,13 @@ namespace AcManager.Controls.CustomShowroom {
             if (n == null || _child == null) return;
 
             var location = n.Value;
-            var screen = Screen.FromControl(_parent);
+
+            Screen screen;
+            try {
+                screen = Screen.FromControl(_parent);
+            } catch (Exception) {
+                return;
+            }
 
             if (location.X + _child.Width > screen.Bounds.Width) {
                 location.X = screen.Bounds.Width - _child.Width;

@@ -34,25 +34,29 @@ namespace AcTools.Utils.Physics {
                     input = 0d;
                     break;
             }
-
-            if (!double.IsNaN(UpLimit) && UpLimit < input) {
-                input = UpLimit;
-            }
-
-            if (!double.IsNaN(DownLimit) && DownLimit > input) {
-                input = DownLimit;
-            }
-
             
-            var value = Lut?.InterpolateLinear(input) ?? 0d;
+            var inputValue = Lut?.InterpolateLinear(input) ?? 0d;
+            double resultValue;
             switch (Combinator) {
                 case Combinator.Add:
-                    return boost + value;
+                    resultValue = boost + inputValue;
+                    break;
                 case Combinator.Mult:
-                    return boost * value;
+                    resultValue = boost * inputValue;
+                    break;
                 default:
                     return boost;
             }
+            
+            if (!double.IsNaN(UpLimit) && UpLimit < resultValue) {
+                resultValue = UpLimit;
+            }
+
+            if (!double.IsNaN(DownLimit) && DownLimit > resultValue) {
+                resultValue = DownLimit;
+            }
+
+            return resultValue;
         }
     }
 }

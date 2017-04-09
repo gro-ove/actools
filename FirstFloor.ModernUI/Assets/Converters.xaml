@@ -18,6 +18,7 @@
     <c:MultiplyConverter x:Key="MultiplyConverter" />
     <c:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
     <c:MultiLessToBooleanConverter x:Key="MultiLessToBooleanConverter" />
+    <c:MultiParameterConverter x:Key="MultiParameterConverter" />
     <c:MultiMultiplyConverter x:Key="MultiMultiplyConverter" />
     <c:NullOrWhiteSpaceToBooleanConverter x:Key="NullOrWhiteSpaceToBooleanConverter" />
     <c:NullOrEmptyStringToVisibilityConverter x:Key="NullOrEmptyStringToVisibilityConverter" />
@@ -32,6 +33,7 @@
     <c:SubstractConverter x:Key="SubstractConverter" />
     <c:SumConverter x:Key="SumConverter" />
     <c:ToLowerConverter x:Key="ToLowerConverter" />
+    <c:ToSentenceConverter x:Key="ToSentenceConverter" />
     <c:ToTitleConverter x:Key="ToTitleConverter" />
     <c:ToUpperConverter x:Key="ToUpperConverter" />
     <c:ToUpperSpecialConverter x:Key="ToUpperSpecialConverter" />

@@ -110,6 +110,10 @@
         <mui:BetterImage Width="256" Height="144" Margin="4" Filename="{Binding PreviewImage}" />
     </ToolTip>
 
+    <ToolTip x:Key="WeatherPreviewToolTip" Visibility="{Binding PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}">
+        <mui:BetterImage Width="256" Height="144" Margin="4" Filename="{Binding PreviewImage}" HideBroken="True" />
+    </ToolTip>
+
     <Style x:Key="CarBlockButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Width" Value="64" />

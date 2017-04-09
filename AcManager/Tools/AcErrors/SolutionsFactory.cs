@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
-using AcManager.Pages.Selected;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -203,7 +204,7 @@ namespace AcManager.Tools.AcErrors {
                                 AppStrings.Solution_MakeEmptyModel,
                                 AppStrings.Solution_MakeEmptyModel_Details,
                                 e => {
-                                    Kn5.CreateEmpty().SaveAll(((ShowroomObject)e.Target).Kn5Filename);
+                                    Kn5.CreateEmpty().Save(((ShowroomObject)e.Target).Kn5Filename);
                                 })
                     }.Concat(Solve.TryToFindAnyFile(error.Target.Location, ((ShowroomObject)error.Target).Kn5Filename, @"*.kn5")).Where(x => x != null);
 
@@ -347,6 +348,55 @@ namespace AcManager.Tools.AcErrors {
                                     e.Target.NameEditable = Regex.Replace(e.Target.NameEditable ?? @"-", @"[\[\]]", "");
                                 })
                     };
+
+                case AcErrorType.Data_UserChampionshipCarIsMissing:
+                    break;
+                case AcErrorType.Data_UserChampionshipTrackIsMissing:
+                    break;
+                case AcErrorType.Data_UserChampionshipCarSkinIsMissing:
+                    break;
+                case AcErrorType.ExtendedData_JsonIsDamaged:
+                    break;
+
+                case AcErrorType.Track_MapIsMissing:
+                    return new ISolution[] {
+                        new AsyncSolution(
+                                "Create map from surfaces",
+                                "Choose what surfaces to render to a map and save the result",
+                                e => TrackMapRendererWrapper.Run((TrackObjectBase)e.Target, false)),
+                        ((TrackObjectBase)error.Target).AiLaneFastExists ? new AsyncSolution(
+                                "Create map from AI lane",
+                                "Not sure but I think AC works similar way",
+                                e => TrackMapRendererWrapper.Run((TrackObjectBase)e.Target, true)) : null
+                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((TrackObjectBase)error.Target).MapImage)).NonNull();
+
+                case AcErrorType.Track_OutlineIsMissing:
+                    return new ISolution[] {
+                        new AsyncMultiSolution(
+                                "Create outline",
+                                "Create a new outline image with settings previosly used for this track",
+                                async e => {
+                                    foreach (var err in e) {
+                                        await TrackOutlineRendererWrapper.UpdateAsync((TrackObjectBase)err.Target);
+                                    }
+                                }),
+                        new AsyncSolution(
+                                "Setup outline",
+                                "Specify settings and create a new outline image",
+                                e => TrackOutlineRendererWrapper.Run((TrackObjectBase)e.Target))
+                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((TrackObjectBase)error.Target).MapImage)).NonNull();
+
+                case AcErrorType.Track_PreviewIsMissing:
+                    return new ISolution[] {
+                        new AsyncSolution(
+                                "Create and set a new preview",
+                                "Run AC, make a screenshot and apply it",
+                                e => TrackPreviewsCreator.ShotAndApply((TrackObjectBase)e.Target)),
+                        new AsyncSolution(
+                                "Use existing screenshot",
+                                "Just select any image you already have",
+                                e => TrackPreviewsCreator.ApplyExisting((TrackObjectBase)e.Target))
+                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((TrackObjectBase)error.Target).MapImage)).NonNull();
 
                 default:
                     return null;

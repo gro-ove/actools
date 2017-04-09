@@ -158,8 +158,6 @@ namespace AcTools.Utils.Helpers {
         private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
 
         private static string GetProcessPathUsingPsApi(int pid) {
-            var sw = Stopwatch.StartNew();
-
             var processHandle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryInformation, false, pid);
             if (processHandle == IntPtr.Zero) return null;
 
@@ -173,14 +171,11 @@ namespace AcTools.Utils.Helpers {
                 return null;
             } finally {
                 Kernel32.CloseHandle(processHandle);
-                AcToolsLogging.Write(sw.ElapsedMilliseconds + " ms");
             }
         }
 
         [CanBeNull]
         private static string GetProcessPathUsingManagement(int processId) {
-            var sw = Stopwatch.StartNew();
-
             try {
                 using (var s = new ManagementObjectSearcher($"SELECT ExecutablePath FROM Win32_Process WHERE ProcessId = {processId}"))
                 using (var c = s.Get()) {
@@ -188,8 +183,6 @@ namespace AcTools.Utils.Helpers {
                 }
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
-            } finally {
-                AcToolsLogging.Write(sw.ElapsedMilliseconds + " ms");
             }
 
             return null;

@@ -102,12 +102,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private Kn5MaterialDepth _material;
+        private IRenderableMaterial _material;
+        private Kn5MaterialDepth _materialDepth;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            _material = (Kn5MaterialDepth)contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
+            _material = contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
             _material.Initialize(contextHolder);
         }
 
@@ -117,6 +118,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 if (_pntgObject == null) {
+                    _materialDepth = _material as Kn5MaterialDepth;
+
                     _pntgObject = new TrianglesRenderableObject<InputLayouts.VerticePNTG>("",
                             InputLayouts.VerticePNTG.Convert(OriginalNode.Vertices), Indices);
                     _pntgObject.Draw(contextHolder, camera, SpecialRenderMode.InitializeOnly);
@@ -125,10 +128,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     _txNormalView = _txNormal?.Item1.Resource ?? contextHolder.GetFlatNmTexture();
                 }
 
-                _material.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
+                if (_materialDepth == null) return;
+
+                _materialDepth.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
                 _pntgObject.SetBuffers(contextHolder);
-                _material.SetMatricesAo(ParentMatrix);
-                _material.DrawAo(contextHolder, Indices.Length);
+                _materialDepth.SetMatricesAo(ParentMatrix);
+                _materialDepth.DrawAo(contextHolder, Indices.Length);
             } else {
                 if (mode != SpecialRenderMode.Simple) return;
                 if (!_material.Prepare(contextHolder, mode)) return;

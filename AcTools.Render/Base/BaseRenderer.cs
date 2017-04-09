@@ -2,9 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using AcTools.Render.Base.PostEffects;
@@ -219,14 +218,16 @@ namespace AcTools.Render.Base {
         public SampleDescription SampleDescription { get; private set; } = new SampleDescription(1, 0);
 
         protected abstract FeatureLevel FeatureLevel { get; }
-   
+
+        public DeviceCreationFlags DeviceCreationFlags { get; set; } = DeviceCreationFlags.None;
+
         /// <summary>
         /// Get Device (could be temporary, could be not), set proper SampleDescription
         /// </summary>
         private Device InitializeDevice() {
             Debug.Assert(Initialized == false);
 
-            var device = new Device(DriverType.Hardware, DeviceCreationFlags.None);
+            var device = new Device(DriverType.Hardware, DeviceCreationFlags);
             if (device.FeatureLevel < FeatureLevel) {
                 throw new Exception($"Direct3D Feature {FeatureLevel} unsupported");
             }
@@ -288,7 +289,7 @@ namespace AcTools.Render.Base {
             };
 
             Device device;
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, _swapChainDescription, out device, out _swapChain);
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags, _swapChainDescription, out device, out _swapChain);
             SetDeviceContextHolder(new DeviceContextHolder(device));
 
             using (var factory = _swapChain.GetParent<Factory>()) {
@@ -350,48 +351,50 @@ namespace AcTools.Render.Base {
 
             if (width == 0 || height == 0) return;
 
-            DisposeHelper.Dispose(ref _renderBuffer);
-            DisposeHelper.Dispose(ref _renderView);
-            DisposeHelper.Dispose(ref _depthBuffer);
-            DisposeHelper.Dispose(ref _depthView);
+            lock (Device) {
+                DisposeHelper.Dispose(ref _renderBuffer);
+                DisposeHelper.Dispose(ref _renderView);
+                DisposeHelper.Dispose(ref _depthBuffer);
+                DisposeHelper.Dispose(ref _depthView);
 
-            if (_swapChain != null) {
-                _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, ActualWidth, ActualHeight,
-                        Format.Unknown, SwapChainFlags.None);
-                _renderBuffer = Resource.FromSwapChain<Texture2D>(_swapChain, 0);
-            } else {
-                _renderBuffer = new Texture2D(Device, new Texture2DDescription {
-                    Width = ActualWidth,
-                    Height = ActualHeight,
-                    MipLevels = 1,
-                    ArraySize = 1,
-                    Format = WpfMode ? Format.B8G8R8A8_UNorm : Format.R8G8B8A8_UNorm,
-                    SampleDescription = SampleDescription,
-                    Usage = ResourceUsage.Default,
-                    BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
-                    CpuAccessFlags = CpuAccessFlags.None,
-                    OptionFlags = WpfMode ? ResourceOptionFlags.Shared : ResourceOptionFlags.None
-                });
+                if (_swapChain != null) {
+                    _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, ActualWidth, ActualHeight,
+                            Format.Unknown, SwapChainFlags.None);
+                    _renderBuffer = Resource.FromSwapChain<Texture2D>(_swapChain, 0);
+                } else {
+                    _renderBuffer = new Texture2D(Device, new Texture2DDescription {
+                        Width = ActualWidth,
+                        Height = ActualHeight,
+                        MipLevels = 1,
+                        ArraySize = 1,
+                        Format = WpfMode ? Format.B8G8R8A8_UNorm : Format.R8G8B8A8_UNorm,
+                        SampleDescription = SampleDescription,
+                        Usage = ResourceUsage.Default,
+                        BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
+                        CpuAccessFlags = CpuAccessFlags.None,
+                        OptionFlags = WpfMode ? ResourceOptionFlags.Shared : ResourceOptionFlags.None
+                    });
+                }
+
+                _renderView = new RenderTargetView(Device, _renderBuffer);
+
+                var depth = CreateDepthBuffer(width, height);
+                _depthBuffer = depth?.Item1;
+                _depthView = depth?.Item2;
+
+                DeviceContext.Rasterizer.SetViewports(OutputViewport);
+                Sprite?.RefreshViewport();
+
+                DeviceContext.Rasterizer.SetViewports(Viewport);
+
+                ResetTargets();
+                DeviceContext.OutputMerger.DepthStencilState = null;
+
+                ResizeInner();
+                DeviceContextHolder.OnResize(width, height);
+
+                InitiallyResized = true;
             }
-
-            _renderView = new RenderTargetView(Device, _renderBuffer);
-
-            var depth = CreateDepthBuffer(width, height);
-            _depthBuffer = depth?.Item1;
-            _depthView = depth?.Item2;
-            
-            DeviceContext.Rasterizer.SetViewports(OutputViewport);
-            Sprite?.RefreshViewport();
-
-            DeviceContext.Rasterizer.SetViewports(Viewport);
-
-            ResetTargets();
-            DeviceContext.OutputMerger.DepthStencilState = null;
-
-            ResizeInner();
-            DeviceContextHolder.OnResize(width, height);
-
-            InitiallyResized = true;
         }
 
         protected void PrepareForFinalPass() {
@@ -414,7 +417,15 @@ namespace AcTools.Render.Base {
 
         protected RenderTargetView RenderTargetView => _renderView;
 
+        public float TimeFactor { get; set; } = 1f;
+
+        public bool IsPaused { get; set; }
+
         public bool Draw() {
+            return !IsPaused && DrawInner();
+        }
+
+        private bool DrawInner() {
             Debug.Assert(Initialized);
             IsDirty = false;
 
@@ -428,26 +439,33 @@ namespace AcTools.Render.Base {
                 _stopwatch.Start();
             }
 
-            var elapsed = Elapsed;
-            OnTick(elapsed - _previousElapsed);
-            Tick?.Invoke(this, new TickEventArgs(elapsed - _previousElapsed));
-            _previousElapsed = elapsed;
+            lock (Device) {
+                var elapsed = Elapsed;
+                var dt = (elapsed - _previousElapsed) * TimeFactor;
 
-            if (_frameMonitor.Tick()) {
-                OnPropertyChanged(nameof(FramesPerSecond));
-            }
+                if (dt > 0f) {
+                    OnTick(dt);
+                    Tick?.Invoke(this, new TickEventArgs(dt));
+                }
 
-            DeviceContext.Rasterizer.SetViewports(Viewport);
+                _previousElapsed = elapsed;
 
-            DrawInner();
-            if (SpriteInitialized) {
-                DrawSprites();
-            }
+                if (_frameMonitor.Tick()) {
+                    OnPropertyChanged(nameof(FramesPerSecond));
+                }
 
-            if (_swapChain != null) {
-                _swapChain.Present(SyncInterval ? 1 : 0, PresentFlags.None);
-            } else {
-                DeviceContext.Flush();
+                DeviceContext.Rasterizer.SetViewports(Viewport);
+
+                DrawOverride();
+                if (SpriteInitialized) {
+                    DrawSprites();
+                }
+
+                if (_swapChain != null) {
+                    _swapChain.Present(SyncInterval ? 1 : 0, PresentFlags.None);
+                } else {
+                    DeviceContext.Flush();
+                }
             }
 
             return result;
@@ -464,7 +482,7 @@ namespace AcTools.Render.Base {
             }
         }
 
-        protected virtual void DrawInner() {
+        protected virtual void DrawOverride() {
             DeviceContext.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
             DeviceContext.ClearRenderTargetView(_renderView, Color.DarkCyan);
         }
@@ -498,8 +516,10 @@ namespace AcTools.Render.Base {
                 Debug.WriteLine("SWAPCHAIN DISPOSED");
             } catch (ObjectDisposedException) {
                 Debug.WriteLine("SWAPCHAIN ALREADY DISPOSED?");
+                _swapChain = null;
             } catch (Exception) {
                 Debug.WriteLine("WUUT?");
+                _swapChain = null;
             }
         }
 
@@ -523,7 +543,28 @@ namespace AcTools.Render.Base {
             _associatedWindow = window == null ? null : new WeakReference<Form>(window);
         }
 
-        public virtual void Dispose() {
+        private bool _disposed;
+
+        public bool Disposed {
+            get { return _disposed; }
+            private set {
+                if (value == _disposed) return;
+                _disposed = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected virtual void DisposeOverride() {}
+
+        public void Dispose() {
+            if (Disposed) {
+                AcToolsLogging.Write("Already disposed!");
+                return;
+            }
+
+            Disposed = true;
+
+            DisposeOverride();
             DisposeSwapChain();
 
             DisposeHelper.Dispose(ref _renderView);
@@ -534,6 +575,7 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _shotRenderBuffer);
             DisposeHelper.Dispose(ref _shotMsaaTemporaryTexture);
             DisposeHelper.Dispose(ref _shotDownsampleTexture);
+            DisposeHelper.Dispose(ref _shotCutTexture);
 
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
@@ -541,100 +583,125 @@ namespace AcTools.Render.Base {
             if (!_sharedHolder) {
                 DisposeHelper.Dispose(ref _deviceContextHolder);
             }
+
+            GCHelper.CleanUp();
         }
 
-        private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture;
+        private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture, _shotCutTexture;
+
+        // To avoid adding tons of other options to Shot()
+        public double CutScreenshot { get; set; } = 1d;
 
         public virtual void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
-            var resolutionMultiplier = ResolutionMultiplier;
+            var original = new { Width, Height, ResolutionMultiplier };
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
-            ResolutionMultiplier = multiplier;
+            try {
+                Width = (Width * multiplier).RoundToInt();
+                Height = (Height * multiplier).RoundToInt();
+                ResolutionMultiplier = 1d;
 
-            if (Equals(downscale, 1d) && !UseMsaa) {
-                // Simplest case: existing buffer will do just great, so let’s use it
-                Draw();
-                Texture2D.ToStream(DeviceContext, _renderBuffer, format, outputStream);
-            } else {
-                // More complicated situation: we need to temporary replace existing _renderBuffer
-                // with a custom one
-
-                // Preparing temporary replacement for _renderBuffer…
-                if (_shotRenderBuffer == null) {
-                    // Let’s keep all those buffers in memory between shots to make series shooting faster
-                    _shotRenderBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-                }
-
-                _shotRenderBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-
-                // If we won’t call Resize() here, it will be called in Draw(), and then swap chain will
-                // be recreated in a wrong time
-                if (_resized) {
-                    Resize();
-                    _resized = false;
-                }
-
-                // Destroying current swap chain if needed
-                var swapChainMode = _swapChain != null;
-                if (swapChainMode) {
-                    DisposeHelper.Dispose(ref _swapChain);
-                }
-
-                // Replacing _renderBuffer…
-                var renderView = _renderView;
-                _renderView = _shotRenderBuffer.TargetView;
-
-                // Calculating output width and height and, if needed, preparing downscaled buffer…
-                var outputWidth = (Width * downscale).RoundToInt();
-                var outputHeight = (Height * downscale).RoundToInt();
-
-                if (!Equals(downscale, 1d)) {
-                    if (_shotDownsampleTexture == null) {
-                        _shotDownsampleTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-                    }
-
-                    _shotDownsampleTexture.Resize(DeviceContextHolder, outputWidth, outputHeight, null);
-                }
-                
-                // Ready to draw!
-                Draw();
-
-                // For MSAA, we need to copy the result into a texture without MSAA enabled to save it later
-                TargetResourceTexture result;
-                if (UseMsaa) {
-                    if (_shotMsaaTemporaryTexture == null) {
-                        _shotMsaaTemporaryTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-                    }
-
-                    _shotMsaaTemporaryTexture.Resize(DeviceContextHolder, Width, Height, null);
-
-                    DeviceContextHolder.GetHelper<CopyHelper>()
-                                       .Draw(DeviceContextHolder, _shotRenderBuffer.View, _shotMsaaTemporaryTexture.TargetView);
-                    result = _shotMsaaTemporaryTexture;
+                if (Equals(downscale, 1d) && !UseMsaa && Equals(CutScreenshot, 1d)) {
+                    // Simplest case: existing buffer will do just great, so let’s use it
+                    DrawInner();
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, format, outputStream);
                 } else {
-                    result = _shotRenderBuffer;
-                }
+                    // More complicated situation: we need to temporary replace existing _renderBuffer
+                    // with a custom one
 
-                if (Equals(downscale, 1d)) {
+                    // Preparing temporary replacement for _renderBuffer…
+                    if (_shotRenderBuffer == null) {
+                        // Let’s keep all those buffers in memory between shots to make series shooting faster
+                        _shotRenderBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                    }
+
+                    _shotRenderBuffer.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+
+                    // If we won’t call Resize() here, it will be called in Draw(), and then swap chain will
+                    // be recreated in a wrong time
+                    if (_resized) {
+                        Resize();
+                        _resized = false;
+                    }
+
+                    // Destroying current swap chain if needed
+                    var swapChainMode = _swapChain != null;
+                    if (swapChainMode) {
+                        DisposeSwapChain();
+                    }
+
+                    // Replacing _renderBuffer…
+                    var renderView = _renderView;
+                    _renderView = _shotRenderBuffer.TargetView;
+
+                    // Calculating output width and height and, if needed, preparing downscaled buffer…
+                    var outputWidth = (Width * downscale).RoundToInt();
+                    var outputHeight = (Height * downscale).RoundToInt();
+
+                    // Ready to draw!
+                    DrawInner();
+
+                    // For MSAA, we need to copy the result into a texture without MSAA enabled to save it later
+                    TargetResourceTexture result;
+                    if (UseMsaa) {
+                        if (_shotMsaaTemporaryTexture == null) {
+                            _shotMsaaTemporaryTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        }
+
+                        _shotMsaaTemporaryTexture.Resize(DeviceContextHolder, Width, Height, null);
+
+                        DeviceContextHolder.GetHelper<CopyHelper>()
+                                           .Draw(DeviceContextHolder, _shotRenderBuffer.View, _shotMsaaTemporaryTexture.TargetView);
+                        result = _shotMsaaTemporaryTexture;
+                    } else {
+                        result = _shotRenderBuffer;
+                    }
+
+                    // Optional downscale
+                    if (!Equals(downscale, 1d)) {
+                        if (_shotDownsampleTexture == null) {
+                            _shotDownsampleTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        }
+
+                        _shotDownsampleTexture.Resize(DeviceContextHolder, outputWidth, outputHeight, null);
+
+                        DeviceContextHolder.GetHelper<DownsampleHelper>()
+                                           .Draw(DeviceContextHolder, result, _shotDownsampleTexture);
+                        result = _shotDownsampleTexture;
+                    }
+
+                    // Optional cut
+                    if (!Equals(CutScreenshot, 1d)) {
+                        if (_shotCutTexture == null) {
+                            _shotCutTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                        }
+
+                        var width = (outputWidth / CutScreenshot).RoundToInt();
+                        var height = (outputHeight / CutScreenshot).RoundToInt();
+                        DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, width, height));
+                        _shotCutTexture.Resize(DeviceContextHolder, width, height, null);
+                        DeviceContextHolder.GetHelper<CopyHelper>()
+                                           .Cut(DeviceContextHolder, result.View, _shotCutTexture.TargetView, (float)CutScreenshot);
+                        result = _shotCutTexture;
+                    }
+
                     Texture2D.ToStream(DeviceContext, result.Texture, format, outputStream);
-                } else {
-                    DeviceContextHolder.GetHelper<DownsampleHelper>()
-                                       .Draw(DeviceContextHolder, result, _shotDownsampleTexture, false);
-                    Texture2D.ToStream(DeviceContext, _shotDownsampleTexture.Texture, format, outputStream);
-                }
 
-                // Restoring old stuff
-                _renderView = renderView;
+                    // Restoring old stuff
+                    _renderView = renderView;
 
-                if (swapChainMode) {
-                    RecreateSwapChain();
+                    if (swapChainMode) {
+                        RecreateSwapChain();
+                    }
                 }
+            } finally {
+                Width = original.Width;
+                Height = original.Height;
+                ResolutionMultiplier = original.ResolutionMultiplier;
             }
-
-            ResolutionMultiplier = resolutionMultiplier;
         }
 
-        public Image Shot(double multiplier, double downscale, bool lossless) {
+        public virtual Image Shot(double multiplier, double downscale, bool lossless) {
             using (var stream = new MemoryStream()) {
                 Shot(multiplier, downscale, stream, lossless);
                 stream.Position = 0;
@@ -642,33 +709,10 @@ namespace AcTools.Render.Base {
             }
         }
 
-        protected void SaveRenderBufferAsPng(string filename, float multipler) {
-            using (var stream = new MemoryStream()) {
-                Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
-                stream.Position = 0;
-
-                using (var image = Image.FromStream(stream)) {
-                    if (Equals(multipler, 1f)) {
-                        image.Save(filename, ImageFormat.Png);
-                    } else {
-                        using (var bitmap = new Bitmap((int)(Width * multipler), (int)(Height * multipler)))
-                        using (var graphics = Graphics.FromImage(bitmap)) {
-                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            graphics.SmoothingMode = SmoothingMode.HighQuality;
-                            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            graphics.DrawImage(image, 0f, 0f, Width * multipler, Height * multipler);
-
-                            bitmap.Save(filename, ImageFormat.Png);
-                        }
-                    }
-                }
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

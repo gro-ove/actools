@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair {
-    public class CarAiUpRepair : CarRepairBase {
+    /*public class CarAiUpRepair : CarRepairBase {
         protected Task<bool> FixAsync([NotNull] CarObject car, Action<DataWrapper> action, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
@@ -72,5 +72,5 @@ namespace AcManager.ContentRepair {
         }
 
         public override bool AffectsData => true;
-    }
+    }*/
 }

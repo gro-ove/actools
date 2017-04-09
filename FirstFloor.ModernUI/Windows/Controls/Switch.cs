@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -24,6 +25,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(Switch), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsParentMeasure, OnWhenChanged));
 
         protected override bool TestChild(UIElement child) {
+            // Logging.Debug($"{((FrameworkElement)child).Name}: {Value} ({Value?.GetType().Name ?? "<NULL>"}) == {GetWhen(child)} ({GetWhen(child)?.GetType().Name ?? "<NULL>"})");
             return Value.XamlEquals(GetWhen(child));
         }
 

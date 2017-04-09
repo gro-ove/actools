@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.LapTimes;
 using AcTools.Utils.Helpers;
@@ -12,21 +13,24 @@ namespace AcManager.Tools.Profile {
         private const string KeyPrefix = "laptime:";
         private const string KeyLastUpdated = "lastUpdated";
 
-        private readonly string _sourceId;
+        private readonly string _displayName;
 
         public string Filename { get; }
 
-        private LapTimesStorage(string filename, string sourceId)
-                : base(filename, null, false, false) {
+        public DateTime? LastModified { get; private set; }
+
+        private LapTimesStorage(string displayName, string filename, bool disableCompression)
+                : base(filename, null, disableCompression) {
             Filename = filename;
-            _sourceId = sourceId;
+            _displayName = displayName;
+            LastModified = this.GetDateTime(KeyLastUpdated);
         }
 
-        public LapTimesStorage(string sourceId)
-                : this(FilesStorage.Instance.GetFilename("Progress", $"Lap Times ({sourceId}).data"), sourceId) {}
+        public LapTimesStorage(string displayName, string sourceId)
+                : this(displayName, FilesStorage.Instance.GetFilename("Progress", $"Lap Times ({sourceId}).data"), false) {}
 
-        private string GetKey(string carId, string trackAcId) {
-            return KeyPrefix + carId + ":" + trackAcId.Replace('/', '-');
+        private string GetKey(string carId, string trackAnyId) {
+            return KeyPrefix + carId + ":" + trackAnyId.Replace('/', '-');
         }
 
         private string Pack(LapTimeEntry entry) {
@@ -53,7 +57,7 @@ namespace AcManager.Tools.Profile {
             DateTime date;
             TimeSpan lapTime;
             return Unpack(packedValue, out date, out lapTime) ?
-                    new LapTimeEntry(_sourceId, carId, trackAcId, date, lapTime) : null;
+                    new LapTimeEntry(_displayName, carId, trackAcId, date, lapTime) : null;
         }
 
         [CanBeNull]
@@ -61,7 +65,7 @@ namespace AcManager.Tools.Profile {
             return GetLapTime(carId, trackAcId, GetString(GetKey(carId, trackAcId)));
         }
 
-        public IEnumerable<LapTimeEntry> GetLapTimes() {
+        public IEnumerable<LapTimeEntry> GetCached() {
             return from p in this
                    where p.Key.StartsWith(KeyPrefix)
                    let s = p.Key.Split(':')
@@ -75,29 +79,42 @@ namespace AcManager.Tools.Profile {
             this.Set(GetKey(entry.CarId, entry.TrackAcId), Pack(entry));
         }
 
-        [CanBeNull]
-        public IReadOnlyList<LapTimeEntry> GetCachedLapTimesList(ILapTimesReader reader) {
-            var lastUpdated = this.GetDateTime(KeyLastUpdated);
-            return lastUpdated.HasValue && reader.GetLastModified() < lastUpdated.Value ?
-                    GetLapTimes().ToList() : null;
+        public bool Remove([NotNull] string carId, [NotNull] string trackAnyId) {
+            if (carId == null) throw new ArgumentNullException(nameof(carId));
+            if (trackAnyId == null) throw new ArgumentNullException(nameof(trackAnyId));
+            return Remove(GetKey(carId, trackAnyId));
+        }
+
+        public bool IsActual(ILapTimesReader reader) {
+            return LastModified.HasValue && reader.GetLastModified() < LastModified.Value;
         }
 
         [NotNull]
-        public IReadOnlyList<LapTimeEntry> UpdateCachedLapTimesList(ILapTimesReader reader) {
+        public IReadOnlyList<LapTimeEntry> UpdateCached(ILapTimesReader reader) {
             CleanUp(x => x.StartsWith(KeyPrefix));
 
-            var list = reader.Import().ToList();
+            var list = reader.Import(_displayName).ToList();
             foreach (var entry in list) {
                 Set(entry);
             }
 
-            this.Set(KeyLastUpdated, reader.GetLastModified());
+            SyncLastModified(reader);
             return list;
         }
 
-        [NotNull]
-        public IReadOnlyList<LapTimeEntry> GetLapTimesList(ILapTimesReader reader) {
-            return GetCachedLapTimesList(reader) ?? UpdateCachedLapTimesList(reader);
+        [ItemNotNull]
+        public Task<IReadOnlyList<LapTimeEntry>> UpdateCachedAsync(ILapTimesReader reader) {
+            return Task.Run(() => UpdateCached(reader));
+        }
+
+        public void SyncLastModified(ILapTimesReader reader) {
+            LastModified = reader.GetLastModified();
+            this.Set(KeyLastUpdated, LastModified.Value);
+        }
+
+        public void SyncLastModified() {
+            LastModified = DateTime.Now;
+            this.Set(KeyLastUpdated, LastModified.Value);
         }
 
         public bool IsBetter([NotNull] LapTimeEntry entry) {

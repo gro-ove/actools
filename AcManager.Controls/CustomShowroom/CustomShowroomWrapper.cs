@@ -15,6 +15,7 @@ using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
@@ -28,8 +29,7 @@ namespace AcManager.Controls.CustomShowroom {
                 return false;
             }
         }
-
-        private static BaseFormWrapper _last;
+        
         private static bool _starting;
 
         private static void SetProperties(BaseKn5FormWrapper wrapper, IKn5ObjectRenderer renderer) {
@@ -45,8 +45,7 @@ namespace AcManager.Controls.CustomShowroom {
             if (_starting) return;
             _starting = true;
 
-            _last?.Stop();
-            _last = null;
+            await BaseFormWrapper.PrepareAsync();
 
             ForwardKn5ObjectRenderer renderer = null;
             Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);
@@ -105,15 +104,12 @@ namespace AcManager.Controls.CustomShowroom {
                             renderer.SelectSkin(skinId);
                         }
                     }
-
-                    _last = wrapper;
+                    
                     SetProperties(wrapper, renderer);
-
                     wrapper.Form.Icon = AppIconService.GetAppIcon();
                 }
 
                 wrapper.Run(() => _starting = false);
-                GC.Collect();
             } catch (Exception e) {
                 NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);
             } finally {
@@ -122,7 +118,6 @@ namespace AcManager.Controls.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t close Custom Showroom", e);
                 } finally {
-                    _last = null;
                     _starting = false;
                 }
             }

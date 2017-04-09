@@ -87,6 +87,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +117,7 @@
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="NotifyExtension.cs" />
     <Compile Include="TaskExtension.cs" />
     <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>
@@ -121,6 +126,8 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="ActualUnloadedHelper.cs" />
+    <Compile Include="Windows\AppIconService.cs" />
+    <Compile Include="Windows\AppShortcut.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\Attached\FancyScrollHelper.cs" />
     <Compile Include="Windows\Attached\SaveScroll.cs" />
@@ -151,8 +158,10 @@
     <Compile Include="Windows\Controls\TimePassedBlock.cs" />
     <Compile Include="Windows\Converters\AndConverter.cs" />
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
+    <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
+    <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
@@ -337,8 +346,11 @@
     <Compile Include="Windows\Navigation\NavigationFailedEventArgs.cs" />
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
+    <Compile Include="Windows\ShellLink.cs" />
     <Compile Include="Windows\Stored.cs" />
     <Compile Include="Windows\TaskbarProgress.cs" />
+    <Compile Include="Windows\Toast.cs" />
+    <Compile Include="Windows\ToastWin8Helper.cs" />
     <Compile Include="WrappedCollection.cs" />
   </ItemGroup>
   <ItemGroup>

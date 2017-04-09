@@ -74,7 +74,7 @@ namespace AcTools.Render.Base {
                     SourceBlendAlpha = BlendOption.One,
                     DestinationBlendAlpha = BlendOption.Zero,
                     BlendOperationAlpha = BlendOperation.Add,
-                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.All
                 }));
 
         public BlendState AddBlendState => _addBlendState ?? (_addBlendState =
@@ -144,19 +144,23 @@ namespace AcTools.Render.Base {
                 }));
 
         public void Dispose() {
-            DisposeHelper.Dispose(ref _normalDepthState);
-            DisposeHelper.Dispose(ref _readOnlyDepthState);
-            DisposeHelper.Dispose(ref _greaterReadOnlyDepthState);
-            DisposeHelper.Dispose(ref _lessEqualDepthState);
-            DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
-            DisposeHelper.Dispose(ref _transparentBlendState);
-            DisposeHelper.Dispose(ref _addBlendState);
-            DisposeHelper.Dispose(ref _doubleSidedState);
-            DisposeHelper.Dispose(ref _doubleSidedSmoothLinesState);
-            DisposeHelper.Dispose(ref _invertedState);
-            DisposeHelper.Dispose(ref _wireframeState);
-            DisposeHelper.Dispose(ref _wireframeInvertedState);
-            DisposeHelper.Dispose(ref _ambientShadowState);
+            try {
+                DisposeHelper.Dispose(ref _normalDepthState);
+                DisposeHelper.Dispose(ref _readOnlyDepthState);
+                DisposeHelper.Dispose(ref _greaterReadOnlyDepthState);
+                DisposeHelper.Dispose(ref _lessEqualDepthState);
+                DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
+                DisposeHelper.Dispose(ref _transparentBlendState);
+                DisposeHelper.Dispose(ref _addBlendState);
+                DisposeHelper.Dispose(ref _doubleSidedState);
+                DisposeHelper.Dispose(ref _doubleSidedSmoothLinesState);
+                DisposeHelper.Dispose(ref _invertedState);
+                DisposeHelper.Dispose(ref _wireframeState);
+                DisposeHelper.Dispose(ref _wireframeInvertedState);
+                DisposeHelper.Dispose(ref _ambientShadowState);
+            } catch (Exception e) {
+                AcToolsLogging.Write(e);
+            }
         }
     }
 }

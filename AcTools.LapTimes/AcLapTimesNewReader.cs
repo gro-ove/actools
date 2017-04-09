@@ -7,18 +7,48 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.LapTimes {
-    public class AcLapTimesNewReader : ILapTimesReader {
-        public static readonly string SourceId = "AC New";
-
-        private readonly string _filename;
+    internal class TrackIdsFixer {
         private readonly IAcIdsProvider _provider;
+
+        public TrackIdsFixer(IAcIdsProvider provider) {
+            if (provider == null) throw new ArgumentNullException(nameof(provider));
+            _provider = provider;
+        }
+
         private IReadOnlyList<Tuple<string, string>> _trackLayoutIds;
 
-        public AcLapTimesNewReader(string acDocumentsDirectory, IAcIdsProvider provider) {
-            if (provider == null) throw new ArgumentNullException(nameof(provider));
+        public string FixTrackId(string kunosLayoutId) {
+            if (kunosLayoutId.IndexOf('-') == -1) return kunosLayoutId;
 
+            if (_trackLayoutIds == null) _trackLayoutIds = _provider.GetTrackIds();
+            for (var i = _trackLayoutIds.Count - 1; i >= 0; i--) {
+                var track = _trackLayoutIds[i];
+
+                if (track.Item2 == null) {
+                    if (string.Equals(track.Item1, kunosLayoutId, StringComparison.OrdinalIgnoreCase)) {
+                        /* track found! awesome */
+                        return kunosLayoutId;
+                    }
+                } else if (kunosLayoutId.StartsWith(track.Item1 + "-", StringComparison.OrdinalIgnoreCase)) {
+                    var layoutId = kunosLayoutId.Substring(track.Item1.Length + 1);
+                    if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
+                        /* track with layout ID found! can’t believe my luck */
+                        return track.Item1 + "/" + track.Item2;
+                    }
+                }
+            }
+
+            return kunosLayoutId;
+        }
+    }
+
+    public class AcLapTimesNewReader : ILapTimesReader {
+        private readonly string _filename;
+        private readonly TrackIdsFixer _fixer;
+
+        public AcLapTimesNewReader(string acDocumentsDirectory, IAcIdsProvider provider) {
             _filename = Path.Combine(acDocumentsDirectory, "personalbest.ini");
-            _provider = provider;
+            _fixer = new TrackIdsFixer(provider);
         }
 
         public void Dispose() { }
@@ -31,32 +61,11 @@ namespace AcTools.LapTimes {
             }
 
             carId = s[0].ToLowerInvariant();
-            trackLayoutId = s[1].ToLowerInvariant();
-            if (trackLayoutId.IndexOf('-') == -1) return true;
-
-            if (_trackLayoutIds == null) _trackLayoutIds = _provider.GetTrackIds();
-            foreach (var track in _trackLayoutIds) {
-                if (track.Item2 == null) {
-                    if (string.Equals(track.Item1, trackLayoutId, StringComparison.OrdinalIgnoreCase)) {
-                        /* track found! awesome */
-                        return true;
-                    }
-                } else if (trackLayoutId.StartsWith(track.Item1 + "-", StringComparison.OrdinalIgnoreCase)) {
-                    var layoutId = trackLayoutId.Substring(track.Item1.Length + 1);
-                    if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
-                        /* track with layout ID found! can’t believe my luck */
-                        trackLayoutId = track.Item1 + "/" + track.Item2;
-                        return true;
-                    }
-                }
-            }
-
-            carId = null;
-            trackLayoutId = null;
-            return false;
+            trackLayoutId = _fixer.FixTrackId(s[1].ToLowerInvariant());
+            return true;
         }
 
-        public IEnumerable<LapTimeEntry> Import() {
+        public IEnumerable<LapTimeEntry> Import(string sourceName) {
             return new IniFile(_filename).Select(p => {
                 var date = p.Value.GetDouble("DATE", 0);
                 var time = p.Value.GetDouble("TIME", 0);
@@ -65,7 +74,7 @@ namespace AcTools.LapTimes {
                 string carId, trackLayoutId;
                 if (!TryToGuessCarAndTrack(p.Key, out carId, out trackLayoutId)) return null;
 
-                return new LapTimeEntry(SourceId, carId, trackLayoutId,
+                return new LapTimeEntry(sourceName, carId, trackLayoutId,
                         new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(date).ToLocalTime(),
                         TimeSpan.FromMilliseconds(time));
             }).NonNull();
@@ -83,9 +92,18 @@ namespace AcTools.LapTimes {
             iniFile.Save();
         }
 
+        public void Remove(string carId, string trackId) {
+            var iniFile = new IniFile(_filename);
+            var key = $"{carId.ToUpperInvariant()}@{trackId.Replace('/', '-').ToUpperInvariant()}";
+            iniFile.Remove(key);
+            iniFile.Save();
+        }
+
         public DateTime GetLastModified() {
             var fi = new FileInfo(_filename);
             return fi.Exists ? fi.LastWriteTime : default(DateTime);
         }
+
+        public bool CanExport => true;
     }
 }

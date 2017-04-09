@@ -2,14 +2,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls" xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Title="Track's Map" d:DataContext="{d:DesignInstance cs:TrackMapRendererTools+ViewModel}" Topmost="True" Width="250"
-        SizeToContent="Height">
+        d:DesignWidth="300" d:DataContext="{d:DesignInstance cs:TrackMapRendererTools+ViewModel}" Topmost="True" Width="250" SizeToContent="Height">
+    <mui:ModernDialog.Title>Track’s Map</mui:ModernDialog.Title>
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
                 <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
@@ -38,24 +39,49 @@
             </ResourceDictionary>
         </FrameworkElement.Resources>
 
-        <Label Content="Filter road surface by:" Margin="0 0 0 0" />
-        <!--<mui:HistoricalTextBox Text="{Binding Filter, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8"
-                SaveKey="TrackMapFilter" />-->
-        <mui:BetterTextBox Text="{Binding Filter, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 4 0 0" />
+        <mui:Switch Value="{Binding SurfaceMode}">
+            <StackPanel mui:Switch.When="True">
+                <TextBlock Text="Surface mode" Style="{StaticResource Heading2}" />
 
-        <Label Content="Surfaces:" Margin="0 8 0 0" />
-        <ListBox x:Name="SurfacesListBox" ItemsSource="{Binding Surfaces}" SelectionMode="Extended" SelectionChanged="OnSelectionChanged" MaxHeight="220"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
-                ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" Margin="0 4 0 0">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel>
-                        <TextBlock Text="{Binding Key}" Margin="0 0 0 4" DockPanel.Dock="Top" />
-                        <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" />
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <Label Content="Filter road surface by:" Margin="0 0 0 0" />
+                <!--<mui:HistoricalTextBox Text="{Binding Filter, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 8"
+                SaveKey="TrackMapFilter" />-->
+                <mui:BetterTextBox Text="{Binding Filter, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 4 0 0" />
+
+                <CheckBox Margin="0 4 0 0" IsChecked="{Binding FilterIgnoreCase}">
+                    <Label Content="Ignore case" />
+                </CheckBox>
+
+                <Label Content="Surfaces:" Margin="0 8 0 0" />
+                <ListBox x:Name="SurfacesListBox" ItemsSource="{Binding Surfaces}" SelectionMode="Multiple" SelectionChanged="OnSelectionChanged"
+                        MaxHeight="220" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
+                        VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
+                        Margin="0 4 0 0" ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock Text="{Binding Key}" Margin="0 0 0 4" DockPanel.Dock="Top" />
+                                <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+            <StackPanel mui:Switch.When="False">
+                <TextBlock Text="Surface mode" Style="{StaticResource Heading2}" />
+
+                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AiLaneActualWidth}">
+                    <Label Content="Actual width" />
+                </CheckBox>
+
+                <DockPanel IsEnabled="{Binding AiLaneActualWidth, Converter={StaticResource InvertBooleanConverter}}" Margin="0 4 0 0">
+                    <mui:ValueLabel Value="{Binding AiLaneWidth, StringFormat='\{0:F1\}'}" Postfix=" m" mui:BetterTextBox.Mode="Integer"
+                            DockPanel.Dock="Top" Content="Width" />
+                    <Slider Minimum="1" Maximum="50" Value="{Binding AiLaneWidth}" TickFrequency="4.9" TickPlacement="BottomRight"
+                            IsSnapToTickEnabled="False" />
+                </DockPanel>
+            </StackPanel>
+        </mui:Switch>
 
         <TextBlock Text="View" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
 

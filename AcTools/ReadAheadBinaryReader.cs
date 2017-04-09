@@ -13,7 +13,7 @@ namespace AcTools {
     /// 
     /// Mostly, was made for Kunos binary files.
     /// </summary>
-    internal class ReadAheadBinaryReader : IDisposable {
+    public class ReadAheadBinaryReader : IDisposable {
         public static readonly bool IsLittleEndian = true;
 
         private readonly Stream _stream;
@@ -145,6 +145,20 @@ namespace AcTools {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static unsafe long ToInt64(byte[] value, int startIndex) {
+            fixed (byte* numPtr = &value[startIndex]) {
+                if (startIndex % 8 == 0) return *(long*)numPtr;
+                if (BitConverter.IsLittleEndian) {
+                    return (uint)(*numPtr | numPtr[1] << 8 | numPtr[2] << 16 | numPtr[3] << 24) |
+                            (long)(numPtr[4] | numPtr[5] << 8 | numPtr[6] << 16 | numPtr[7] << 24) << 32;
+                }
+
+                int num = *numPtr << 24 | numPtr[1] << 16 | numPtr[2] << 8 | numPtr[3];
+                return (uint)(numPtr[4] << 24 | numPtr[5] << 16 | numPtr[6] << 8) | numPtr[7] | (long)num << 32;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static unsafe float ToSingle(byte[] value, int startIndex) {
             var val = ToInt32(value, startIndex);
             return *(float*)&val;
@@ -162,6 +176,11 @@ namespace AcTools {
         public int ReadInt32() {
             var pos = GetPosAndMove(4);
             return ToInt32(_buffer, pos);
+        }
+
+        public long ReadInt64() {
+            var pos = GetPosAndMove(8);
+            return ToInt64(_buffer, pos);
         }
 
         public bool ReadBoolean() {
