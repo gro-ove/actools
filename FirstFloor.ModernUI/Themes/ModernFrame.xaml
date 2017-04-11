@@ -24,8 +24,7 @@
                         <DataTemplate DataType="{x:Type sys:Exception}">
                             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="20">
-                                    <TextBlock
-                                            Text="{Binding Source={x:Static mui:UiStrings.NavigationFailed}, Converter={StaticResource ToTitleConverter}}"
+                                    <TextBlock Text="{Binding Source={x:Static mui:UiStrings.NavigationFailed}, Converter={StaticResource ToTitleConverter}}"
                                             Style="{StaticResource Heading1}" />
                                     <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0 0 0 8" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static mui:UiStrings.Source}" FontWeight="Bold" />
@@ -55,8 +54,10 @@
                                     Transition="{TemplateBinding TransitionName}" />
 
                             <!-- display progress bar while content is being loaded -->
-                            <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0"
-                                    Visibility="{TemplateBinding IsLoadingContent, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <c:Switch Value="{TemplateBinding IsLoadingContent}">
+                                <ProgressBar c:Switch.When="True" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4"
+                                        Margin="20 0 20 0" />
+                            </c:Switch>
                         </c:Cell>
                     </Border>
                 </ControlTemplate>

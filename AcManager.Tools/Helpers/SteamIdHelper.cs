@@ -31,23 +31,25 @@ namespace AcManager.Tools.Helpers {
 
         public static SteamIdHelper Instance { get; private set; }
 
-        public static SteamIdHelper Initialize(string forced = null) {
+        public static void Initialize(string forced = null) {
             if (Instance != null) throw new Exception(@"Already initialized");
-            return Instance = new SteamIdHelper(forced);
+            Instance = new SteamIdHelper(forced);
         }
 
         private SteamIdHelper(string forced) {
             if (IsValidSteamId(forced)) {
                 _value = forced;
                 _loaded = true;
-            } else if (forced != null) {
-                Logging.Warning($"Invalid forced value: “{forced}”");
-            }
-
-            if (ValuesStorage.Contains(Key)) {
-                var loaded = ValuesStorage.GetString(Key);
-                _value = loaded == NoneValue ? null : loaded;
-                _loaded = true;
+            } else {
+                if (forced != null) {
+                    Logging.Warning($"Invalid forced value: “{forced}”");
+                } else {
+                    if (ValuesStorage.Contains(Key)) {
+                        var loaded = ValuesStorage.GetString(Key);
+                        _value = loaded == NoneValue ? null : loaded;
+                        _loaded = true;
+                    }
+                }
             }
         }
 

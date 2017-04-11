@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsGeneral">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
@@ -52,7 +52,8 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_CheckForUpdatesLabel}" />
-                <ComboBox ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Common.UpdatePeriod}" DisplayMemberPath="DisplayName" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Common.UpdatePeriod}"
+                        DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <!--app version-->

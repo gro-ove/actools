@@ -482,7 +482,7 @@ Author: [b]{3}[/b]</value>
     <value>Live</value>
   </data>
   <data name="Main_Language" xml:space="preserve">
-    <value>Language</value>
+    <value>Language &amp; Regional</value>
   </data>
   <data name="Main_Online" xml:space="preserve">
     <value>Online</value>
@@ -1694,8 +1694,8 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
     <value>Air temp.</value>
   </data>
-  <data name="Common_RoadTemperatureFormat" xml:space="preserve">
-    <value>Road temperature: {0:F1} °C</value>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Road temperature: </value>
   </data>
   <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
     <value>Clouds:</value>

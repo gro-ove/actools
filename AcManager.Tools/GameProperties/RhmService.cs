@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
@@ -14,8 +15,6 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.GameProperties {
     public class RhmService : NotifyPropertyChanged, IDisposable {
-        public static TimeSpan OptionKeepRunning = TimeSpan.Zero;
-
         private static RhmService _instance;
 
         public static RhmService Instance => _instance ?? (_instance = new RhmService());
@@ -47,33 +46,94 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private async void KeepRunning() {
-            do {
-                if (!await EnsureRunnedAsync()) {
-                    Logging.Error("Can’t keep RHM service running");
-                    break;
-                }
+            try {
+                _keepAliveCancellation?.Cancel();
 
-                if (_process == null) {
-                    Logging.Unexpected();
-                    break;
-                }
+                do {
+                    if (!await EnsureRunnedAsync()) {
+                        Logging.Error("Can’t keep RHM service running");
+                        break;
+                    }
 
-                await _process.WaitForExitAsync();
-            } while (Active);
+                    if (_process == null) {
+                        Logging.Unexpected();
+                        break;
+                    }
+
+                    await _process.WaitForExitAsync();
+                } while (Active);
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
         }
 
         private void OnGameEnded(object sender, GameEndedArgs e) {
             Active = false;
-            EnsureStoppedLater().Forget();
+            EnsureStoppedLater();
         }
 
         private int _stoppingLaterId;
+        private Task _keepAliveTask;
+        private CancellationTokenSource _keepAliveCancellation;
+        private TimeSpan _keptAlive;
 
-        private async Task EnsureStoppedLater() {
-            var id = ++_stoppingLaterId;
-            await Task.Delay(OptionKeepRunning);
-            if (id == _stoppingLaterId && !Active) {
-                EnsureStopped();
+        private async Task KeepAlive(TimeSpan timeout) {
+            try {
+                var id = ++_stoppingLaterId;
+
+                if (timeout < TimeSpan.Zero) {
+                    EnsureStopped();
+                    return;
+                }
+
+                using (var cancellation = new CancellationTokenSource()) {
+                    try {
+                        _keepAliveCancellation = cancellation;
+                        var token = _keepAliveCancellation.Token;
+
+                        var s = Stopwatch.StartNew();
+                        Logging.Debug("RHM will be killed after: " + timeout);
+
+                        try {
+                            await Task.Delay(timeout, token);
+                        } catch (TaskCanceledException) {}
+                        
+                        _keptAlive += s.Elapsed;
+
+                        if (!token.IsCancellationRequested && id == _stoppingLaterId && !Active) {
+                            EnsureStopped();
+                        }
+                    } finally {
+                        _keepAliveCancellation = null;
+                        _keepAliveTask = null;
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
+        private async Task ResetKeepAlive() {
+            try {
+                if (_keepAliveCancellation != null) {
+                    _keepAliveCancellation.Cancel();
+                    if (_keepAliveTask != null) {
+                        await _keepAliveTask;
+                    }
+                    
+                    _keepAliveTask = KeepAlive(SettingsHolder.Drive.RhmKeepAlivePeriod.TimeSpan - _keptAlive);
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
+        private void EnsureStoppedLater() {
+            try {
+                _keptAlive = TimeSpan.Zero;
+                _keepAliveTask = KeepAlive(SettingsHolder.Drive.RhmKeepAlivePeriod.TimeSpan);
+            } catch (Exception e) {
+                Logging.Error(e);
             }
         }
 
@@ -83,6 +143,9 @@ namespace AcManager.Tools.GameProperties {
                 case nameof(SettingsHolder.Drive.RhmIntegration):
                     _showSettingsCommand?.RaiseCanExecuteChanged();
                     EnsureStopped();
+                    break;
+                case nameof(SettingsHolder.Drive.RhmKeepAlivePeriod):
+                    ResetKeepAlive().Forget();
                     break;
             }
         }

@@ -214,6 +214,10 @@
                                 </FrameworkElement.ToolTip>
                                 <FrameworkElement.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Command="{Binding RecalculateWidthCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}">
+                                            <MenuItem.ToolTip>Recalculate track’s width from fast_lane.ai</MenuItem.ToolTip>
+                                        </MenuItem>
+                                        <Separator />
                                         <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="torque"
                                                 Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
                                         <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}"

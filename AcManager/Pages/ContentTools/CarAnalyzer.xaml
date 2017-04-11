@@ -1,8 +1,8 @@
-﻿<tools:ContentTool x:Class="AcManager.Pages.ContentTools.MigrationHelper" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<tools:ContentTool x:Class="AcManager.Pages.ContentTools.CarAnalyzer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance tools:MigrationHelper}">
+        d:DataContext="{d:DesignInstance tools:CarAnalyzer}">
     <FrameworkElement.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,16 +15,16 @@
         <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
         <TextBlock Text="{Binding ProgressValue.Message}" />
     </mui:SpacingStackPanel>
-    
+
     <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
         <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
     </DockPanel>
-    
+
     <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
         <TextBlock Text="Some error happened" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
         <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
     </DockPanel>
-    
+
     <Grid mui:Switch.When="{x:Static tools:Stage.Ready}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
@@ -32,9 +32,9 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <ListBox ItemsSource="{Binding ObsoleteCars}" Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding ObsoleteCar}">
+        <ListBox ItemsSource="{Binding BrokenCars}" Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding BrokenCar}">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type tools:MigrationHelper+ObsoleteDetails}">
+                <DataTemplate DataType="{x:Type tools:CarAnalyzer+BrokenDetails}">
                     <DockPanel Margin="8 4">
                         <TextBlock Text="{Binding LeftUnsolved}" Style="{StaticResource Small}" VerticalAlignment="Center" DockPanel.Dock="Right" />
                         <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}"
@@ -48,11 +48,20 @@
 
         <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
 
-        <ScrollViewer Grid.Column="2" DataContext="{Binding ObsoleteCar}" Margin="20 0 20 0" mui:FancyScrollHelper.Outsize="True">
-            <mui:SpacingStackPanel Spacing="20" d:DataContext="{d:DesignInstance {x:Type tools:MigrationHelper+ObsoleteDetails}}">
+        <ScrollViewer Grid.Column="2" DataContext="{Binding BrokenCar}" Margin="20 0 20 0" mui:FancyScrollHelper.Outsize="True">
+            <mui:SpacingStackPanel Spacing="20" d:DataContext="{d:DesignInstance {x:Type tools:CarAnalyzer+BrokenDetails}}">
                 <DockPanel>
                     <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="0 0 8 0" Filename="{Binding Car.BrandBadge}" />
                     <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <DockPanel
+                        Visibility="{Binding Car.Author, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:AcCommonObject.AuthorKunos}}">
+                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                            Margin="2 2 4 0" VerticalAlignment="Center" />
+                    <TextBlock Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Small}">
+                        <TextBlock.Text>This is a car from Kunos, please, be very careful. In fact, I wouldn’t recommend to use this tool on it at all.</TextBlock.Text>
+                    </TextBlock>
                 </DockPanel>
 
                 <TextBlock Text="{Binding LeftUnsolved, StringFormat='{}{0} unsolved issues:'}" Style="{StaticResource Label.Padding}" />
@@ -61,14 +70,25 @@
                     <TextBlock mui:Switch.When="0" Opacity="0.5" Text="No issues found" />
                     <ItemsControl ItemsSource="{Binding Aspects}" IsEnabled="{Binding ReloadCommand.IsAbleToExecute}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type t:ObsoletableAspect}">
+                            <DataTemplate DataType="{x:Type t:ContentRepairSuggestion}">
                                 <mui:Cell Margin="0 0 0 20">
                                     <DockPanel IsEnabled="{Binding IsSolved, Converter={StaticResource InvertBooleanConverter}}">
-                                        <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Right" Margin="8 0 5 0" Width="100">
-                                            <Button Content="{Binding FixCaption, TargetNullValue='Fix It'}" Click="OnFixButtonClick" />
+                                        <!--<Separator DockPanel.Dock="Bottom" Margin="0 0 0 -10" Background="{DynamicResource SeparatorBackground}" />-->
+                                        <StackPanel DockPanel.Dock="Right" Margin="8 0 5 0" Width="100">
+                                            <ItemsControl ItemsSource="{Binding Fixes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Content="{Binding FixCaption, TargetNullValue='Fix It'}" Click="OnFixButtonClick"
+                                                                Margin="0 0 0 4" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                             <Button Content="Hide" Command="{Binding HideCommand}" />
-                                        </mui:SpacingStackPanel>
-                                        <mui:BbCodeBlock BbCode="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                                        </StackPanel>
+                                        <DockPanel Dock="Top" Margin="0 0 0 4">
+                                            <mui:BbCodeBlock DockPanel.Dock="Right" BbCode="{Binding Category}" Style="{StaticResource Small}" Margin="8 2 8 0" />
+                                            <mui:BbCodeBlock DockPanel.Dock="Top" BbCode="{Binding DisplayName}" FontWeight="Bold" />
+                                        </DockPanel>
                                         <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" />
                                     </DockPanel>
                                     <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"

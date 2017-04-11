@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers {
         private static Regex _nameYearRegex;
 
         private static Regex NameYearRegex => _nameYearRegex ??
-                                              (_nameYearRegex = new Regex(@"\s(?:['’](\d\d)|['’]?((?:19[2-9]|20[01])\d))$", RegexOptions.Compiled));
+                                              (_nameYearRegex = new Regex(@"\s(?:['’](\d\d))$", RegexOptions.Compiled));
         
         public static int? GetYearFromName([NotNull] string name) {
             if (name == null) throw new ArgumentNullException(nameof(name));

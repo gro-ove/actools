@@ -10,7 +10,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarSoundRepair : CarRepairBase {
         private static readonly int OptionChecksumFastSize = 16000;
 
@@ -44,20 +44,20 @@ namespace AcManager.ContentRepair {
             return true;
         }
 
-        public override IEnumerable<ObsoletableAspect> GetObsoletableAspects(CarObject car) {
+        public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var soundDonor = car.GetSoundOrigin().ConfigureAwait(false).GetAwaiter().GetResult();
             var soundDonorObject = soundDonor == null ? null : CarsManager.Instance.GetById(soundDonor);
-            if (soundDonorObject == null || soundDonor == @"tatuusfa1") return new ObsoletableAspect[0];
+            if (soundDonorObject == null || soundDonor == @"tatuusfa1") return new ContentRepairSuggestion[0];
 
             var soundDonorChecksum = GetSoundbankChecksum(soundDonor);
-            if (soundDonorChecksum == null) return new ObsoletableAspect[0];
+            if (soundDonorChecksum == null) return new ContentRepairSuggestion[0];
 
             var soundChecksum = GetSoundbankChecksum(car.Id);
-            if (soundChecksum == null || soundChecksum == soundDonorChecksum) return new ObsoletableAspect[0];
+            if (soundChecksum == null || soundChecksum == soundDonorChecksum) return new ContentRepairSuggestion[0];
 
 
             return new[] {
-                new ObsoletableAspect("Sound might be obsolete",
+                new ContentObsoleteSuggestion("Sound might be obsolete",
                         $"Judging by GUIDs, it looks like sound for this car is taken from {soundDonorObject.DisplayName}, but soundbank is different. Most likely, it was taken before some update and might not work now properly.",
                         (p, c) => FixAsync(car, soundDonorObject, p, c))
             };

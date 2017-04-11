@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -260,7 +261,7 @@ namespace AcManager.Controls {
             
             var selectedId = presets.FindIndex(x => x.Filename == SelectedPresetFilename);
             if (selectedId == -1) {
-                var defaultPreset = _presetable.DefaultPreset;
+                var defaultPreset = (_presetable as IUserPresetableDefaultPreset)?.DefaultPreset;
                 CurrentUserPreset = presets.FirstOrDefault(x => x.DisplayName == defaultPreset) ?? presets.FirstOrDefault();
             } else if (++selectedId >= presets.Count) {
                 CurrentUserPreset = presets.FirstOrDefault();
@@ -274,7 +275,7 @@ namespace AcManager.Controls {
 
             var selectedId = presets.FindIndex(x => x.Filename == SelectedPresetFilename);
             if (selectedId == -1) {
-                var defaultPreset = _presetable.DefaultPreset;
+                var defaultPreset = (_presetable as IUserPresetableDefaultPreset)?.DefaultPreset;
                 CurrentUserPreset = presets.FirstOrDefault(x => x.DisplayName == defaultPreset) ?? presets.FirstOrDefault();
             } else if (--selectedId < 0) {
                 CurrentUserPreset = presets.LastOrDefault();
@@ -345,7 +346,63 @@ namespace AcManager.Controls {
             return from;
         }
 
-        public static IEnumerable<object> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory) {
+        public class InnerSavedPresetEntry : ISavedPresetEntry {
+            private readonly ISavedPresetEntry _baseEntry;
+
+            public InnerSavedPresetEntry([NotNull] ISavedPresetEntry baseEntry, [NotNull] IUserPresetableCustomDisplay customDisplay) {
+                _baseEntry = baseEntry;
+                DisplayName = customDisplay.GetDisplayName(baseEntry.DisplayName, ReadData());
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged {
+                add { _baseEntry.PropertyChanged += value; }
+                remove { _baseEntry.PropertyChanged -= value; }
+            }
+
+            public bool Equals(ISavedPresetEntry other) {
+                return _baseEntry.Equals(other);
+            }
+
+            public string DisplayName { get; }
+
+            public string Filename => _baseEntry.Filename;
+
+            private string _data;
+
+            public string ReadData() {
+                return _data ?? (_data = _baseEntry.ReadData());
+            }
+
+            public void SetParent(string baseDirectory) {
+                _baseEntry.SetParent(baseDirectory);
+            }
+        }
+
+        private static ISavedPresetEntry Fix(ISavedPresetEntry entry, string parent, [CanBeNull] IUserPresetableCustomDisplay customDisplay) {
+            entry.SetParent(parent);
+
+            if (customDisplay != null) {
+                entry = new InnerSavedPresetEntry(entry, customDisplay);
+            }
+            
+            return entry;
+        }
+
+        private class UserPresetableComparer : IComparer<ISavedPresetEntry> {
+            private readonly IUserPresetableCustomSorting _sorting;
+
+            public UserPresetableComparer([NotNull] IUserPresetableCustomSorting sorting) {
+                _sorting = sorting;
+            }
+
+            public int Compare(ISavedPresetEntry x, ISavedPresetEntry y) {
+                if (x == null || y == null) return 0;
+                return _sorting.Compare(x.DisplayName, x.ReadData(), y.DisplayName, y.ReadData());
+            }
+        }
+
+        public static IEnumerable<object> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, 
+                [CanBeNull] IUserPresetableCustomDisplay customDisplay, [CanBeNull] IUserPresetableCustomSorting sorting) {
             var list = entries.Select(x => new {
                 Entry = x,
                 Directory = GetHead(x.Filename, mainDirectory)
@@ -355,21 +412,34 @@ namespace AcManager.Controls {
                 var directoryValue = directory;
                 var subList = list.Where(x => x.Directory == directoryValue).Select(x => x.Entry).ToList();
                 if (subList.Count > 1){
-                    yield return new HierarchicalGroup(Path.GetFileName(directory), GroupPresets(subList, directory));
+                    yield return new HierarchicalGroup(Path.GetFileName(directory), GroupPresets(subList, directory, customDisplay, sorting));
                 } else if (list.Any()) {
-                    subList[0].SetParent(mainDirectory);
-                    yield return subList[0];
+                    yield return Fix(subList[0], mainDirectory, customDisplay);
                 }
             }
 
-            foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
-                entry.Entry.SetParent(mainDirectory);
-                yield return entry.Entry;
+            var enumerable = list.Where(x => x.Directory == mainDirectory);
+            if (sorting != null) {
+                var sorted = enumerable.Select(x => x.Entry).ToList();
+                sorted.Sort(new UserPresetableComparer(sorting));
+                for (var i = 0; i < sorted.Count; i++) {
+                    yield return Fix(sorted[i], mainDirectory, customDisplay);
+                }
+            } else {
+                foreach (var entry in enumerable) {
+                    yield return Fix(entry.Entry, mainDirectory, customDisplay);
+                }
             }
         }
 
         public static IEnumerable<object> GroupPresets(string presetableKey) {
-            return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey), PresetsManager.Instance.GetDirectory(presetableKey));
+            return GroupPresets(presetableKey, null, null);
+        }
+
+        public static IEnumerable<object> GroupPresets(string presetableKey, [CanBeNull] IUserPresetableCustomDisplay customDisplay,
+                [CanBeNull] IUserPresetableCustomSorting sorting) {
+            return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey), PresetsManager.Instance.GetDirectory(presetableKey), 
+                customDisplay, sorting);
         }
 
         private void UpdateSavedPresets() {
@@ -378,10 +448,11 @@ namespace AcManager.Controls {
             var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
             SetValue(SavedPresetsPropertyKey, presets);
             SetValue(SavedPresetsGroupedPropertyKey, new HierarchicalGroup("",
-                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory))));
+                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), _presetable as IUserPresetableCustomDisplay,
+                            _presetable as IUserPresetableCustomSorting)));
             
             _ignoreNext = true;
-            var defaultPreset = _presetable.DefaultPreset;
+            var defaultPreset = (_presetable as IUserPresetableDefaultPreset)?.DefaultPreset;
             CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename) ??
                     (defaultPreset == null ? null : presets.FirstOrDefault(x => x.DisplayName == defaultPreset));
             _ignoreNext = false;
@@ -433,20 +504,20 @@ namespace AcManager.Controls {
 
         public override void OnApplyTemplate() {
             if (_comboBox != null) {
-                _comboBox.ItemSelected -= ComboBox_SelectionChanged;
+                _comboBox.ItemSelected -= OnSelectionChanged;
                 _comboBox.PreviewProvider = null;
             }
 
             _comboBox = GetTemplateChild(@"PART_ComboBox") as HierarchicalComboBox;
             if (_comboBox != null) {
-                _comboBox.ItemSelected += ComboBox_SelectionChanged;
+                _comboBox.ItemSelected += OnSelectionChanged;
                 _comboBox.PreviewProvider = this;
             }
 
             base.OnApplyTemplate();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectedItemChangedEventArgs e) {
+        private void OnSelectionChanged(object sender, SelectedItemChangedEventArgs e) {
             var entry = _comboBox?.SelectedItem as ISavedPresetEntry;
             if (entry == null) return;
 

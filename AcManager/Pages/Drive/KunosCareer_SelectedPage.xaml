@@ -261,9 +261,9 @@
                 </DockPanel>
                 <DockPanel Grid.Column="0" Grid.Row="2">
                     <Label Content="{x:Static g:AppStrings.KunosCareer_TemperatureLabel}" />
-                    <TextBlock Text="{Binding Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}}" Style="{StaticResource Value}" />
+                    <c:TemperatureBlock Text="{Binding Temperature}" Style="{StaticResource Value}" />
                     <DockPanel.ToolTip>
-                        <TextBlock Text="{Binding RoadTemperature, StringFormat={x:Static g:AppStrings.Common_RoadTemperatureFormat}}" />
+                        <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1" Text="{Binding RoadTemperature}" />
                     </DockPanel.ToolTip>
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="2">

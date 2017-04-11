@@ -2857,11 +2857,11 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Road temperature: {0:F1} °C.
+        ///   Looks up a localized string similar to Road temperature: .
         /// </summary>
-        public static string Common_RoadTemperatureFormat {
+        public static string Common_RoadTemperature {
             get {
-                return ResourceManager.GetString("Common_RoadTemperatureFormat", resourceCulture);
+                return ResourceManager.GetString("Common_RoadTemperature", resourceCulture);
             }
         }
         
@@ -4910,7 +4910,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language.
+        ///   Looks up a localized string similar to Language &amp; Regional.
         /// </summary>
         public static string Main_Language {
             get {

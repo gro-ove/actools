@@ -18,23 +18,23 @@ namespace AcManager.ContentRepair {
             Types.Add(typeof(T));
         }
 
-        public static IEnumerable<ObsoletableAspect> GetObsoletableAspects([NotNull] CarObject car, bool checkResources) {
+        public static IEnumerable<ContentRepairSuggestion> GetObsoletableAspects([NotNull] CarObject car, bool checkResources) {
             var repairs = Assembly.GetExecutingAssembly().GetTypes()
                                   .Concat(Types)
                                   .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(CarRepairBase)))
-                                  .Select(x => ((CarRepairBase)Activator.CreateInstance(x)));
+                                  .Select(x => (CarRepairBase)Activator.CreateInstance(x));
 
             if (!checkResources) {
                 repairs = repairs.Where(x => x.AffectsData);
             }
 
-            return repairs.SelectMany(x => x.GetObsoletableAspects(car)).NonNull().OrderBy(x => x.DisplayName);
+            return repairs.SelectMany(x => x.GetSuggestions(car)).NonNull().OrderBy(x => x.DisplayName);
         }
     }
 
     public abstract class CarRepairBase {
         [NotNull]
-        public abstract IEnumerable<ObsoletableAspect> GetObsoletableAspects([NotNull] CarObject car);
+        public abstract IEnumerable<ContentRepairSuggestion> GetSuggestions([NotNull] CarObject car);
 
         public abstract bool AffectsData { get; }
     }
@@ -53,16 +53,16 @@ namespace AcManager.ContentRepair {
 
         protected abstract void Fix([NotNull] CarObject car, [NotNull] DataWrapper data);
         
-        public override IEnumerable<ObsoletableAspect> GetObsoletableAspects(CarObject car) {
+        public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var data = car.AcdData;
-            if (data == null || data.IsEmpty) return new ObsoletableAspect[0];
+            if (data == null || data.IsEmpty) return new ContentRepairSuggestion[0];
 
             var aspect = GetObsoletableAspect(car, data);
-            return aspect == null ? new ObsoletableAspect[0] : new[] { aspect };
+            return aspect == null ? new ContentRepairSuggestion[0] : new[] { aspect };
         }
 
         [CanBeNull]
-        protected abstract ObsoletableAspect GetObsoletableAspect([NotNull] CarObject car, [NotNull] DataWrapper data);
+        protected abstract ContentRepairSuggestion GetObsoletableAspect([NotNull] CarObject car, [NotNull] DataWrapper data);
 
         public override bool AffectsData => true;
     }

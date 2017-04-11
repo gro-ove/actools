@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     internal partial class BbCodeParser : Parser<Span> {
-        private static FileCache _imageCache;
+        private static FileCache _imageCache, _emojiCache;
         
         private const string TagBold = "b";
         private const string TagMono = "mono";
@@ -216,7 +216,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                     var emoji = context.ImageUri.Substring(8);
                                     uri = string.Format(provider, emoji);
                                     cache = BbCodeBlock.OptionEmojiCacheDirectory == null ? null :
-                                            _imageCache ?? (_imageCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
+                                            _emojiCache ?? (_emojiCache = new FileCache(BbCodeBlock.OptionEmojiCacheDirectory));
                                 }
                             } else {
                                 toolTip = true;
@@ -245,7 +245,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                             }
 
                             if (uri != null) {
-                                var image = new Image (cache) { ImageUrl = uri };
+                                FrameworkElement image = new Image (cache) { ImageUrl = uri };
                                 if (toolTip) {
                                     image.ToolTip = new ToolTip {
                                         Content = new TextBlock { Text = token.Value }

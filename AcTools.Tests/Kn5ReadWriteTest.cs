@@ -7,6 +7,16 @@ namespace AcTools.Tests {
     [TestClass]
     public class Kn5ReadWriteTest {
         [TestMethod]
+        public void SkipTexturesTest() {
+            var f = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
+            f = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_911_carrera_rsr\porsche_911_carrera_rsr.kn5";
+            
+            var normal = Kn5.FromFile(f);
+            var withoutTexture = Kn5.FromFile(f, SkippingTextureLoader.Instance);
+            Assert.IsTrue(normal.Nodes.Select(x => x.Name).SequenceEqual(withoutTexture.Nodes.Select(x => x.Name)));
+        }
+
+        [TestMethod]
         public void Main() {
             var f = @"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504.kn5";
             f = @"D:\Games\Assetto Corsa\content\cars\ks_porsche_911_carrera_rsr\porsche_911_carrera_rsr.kn5";

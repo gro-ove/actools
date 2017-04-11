@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -164,6 +165,12 @@ namespace AcManager.Tools.Objects {
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
+            } else if (FileUtils.IsAffected(filename, SoundbankFilename)) {
+                _soundDonorId = null;
+                _soundDonor = null;
+                _soundDonorSet = false;
+                OnPropertyChanged(nameof(SoundDonorId));
+                OnPropertyChanged(nameof(SoundDonor));
             } else if (_acdDataRead && FileUtils.IsAffected(Path.Combine(Location, "data.acd"), filename)) {
                 if (_acdData == null) {
                     _acdDataRead = false;
@@ -327,6 +334,16 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public double? GetWidthValue() {
+            double v;
+            if (!FlexibleParser.TryParseDouble(_specsWeight, out v)) {
+                return null;
+            }
+
+            // specially for cars with wrongly placed delimiter
+            return v < 4 ? v * 1e3 : v;
+        }
+
         private string _specsTopSpeed;
 
         [CanBeNull]
@@ -378,15 +395,47 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private double? _rpmMaxValue;
+
+        public double GetRpmMaxValue() {
+            return _rpmMaxValue ?? (_rpmMaxValue = SpecsTorqueCurve?.MaxX ?? SpecsPowerCurve?.MaxX ?? double.NaN).Value;
+        }
+
+        public double GetSpecsPwRatioValue() {
+            double value;
+            if (!FlexibleParser.TryParseDouble(_specsPwRatio, out value)) return double.NaN;
+            
+            if (SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio)) {
+                value = 1 / value;
+            }
+
+            return value;
+        }
+
+        private static readonly Regex FixMissingSpace = new Regex(@"(\d)([a-z])/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex PwUsualFormat = new Regex(@"(\d|\b)kg\s*/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private string FixSpec(string v) {
+            if (v == null || !SettingsHolder.Content.CarsFixSpecs) return v;
+            return FixMissingSpace.Replace(v, @"\1 \2");
+        }
+
         [CanBeNull]
         public string SpecsInfoDisplay {
             get {
                 var result = new StringBuilder();
+
+                var pwRatio = SpecsPwRatio;
+                if (pwRatio != null && SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(pwRatio)) {
+                    double value;
+                    pwRatio = FlexibleParser.TryParseDouble(pwRatio, out value) ? $"{1 / value:F2} hp/kg" : pwRatio;
+                }
+
                 foreach (var val in new[] {
                     SpecsBhp,
                     SpecsTorque,
                     SpecsWeight,
-                    SpecsPwRatio,
+                    pwRatio,
                     SpecsTopSpeed,
                     SpecsAcceleration
                 }.Where(val => val?.Length > 0 && char.IsDigit(val[0]))) {
@@ -394,7 +443,7 @@ namespace AcManager.Tools.Objects {
                         result.Append(@", ");
                     }
 
-                    result.Append(val.Replace(' ', ' '));
+                    result.Append(FixSpec(val).Replace(' ', ' '));
                 }
                 
                 return result.Length > 0 ? result.ToString() : null;
@@ -409,6 +458,7 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsTorqueCurve) return;
                 _specsTorqueCurve = value;
+                _rpmMaxValue = null;
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsTorqueCurve));
@@ -425,6 +475,7 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsPowerCurve) return;
                 _specsPowerCurve = value;
+                _rpmMaxValue = null;
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsPowerCurve));

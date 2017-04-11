@@ -14,10 +14,8 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarFlamesRepair : CarRepairBase {
-        public static readonly CarFlamesRepair Instance = new CarFlamesRepair();
-
         private static byte[] _flamesTextures;
 
         private static async Task<byte[]> GetFlamesTexturesAsync(IProgress<AsyncProgressEntry> progress = null,
@@ -84,7 +82,7 @@ namespace AcManager.ContentRepair {
             });
         }
 
-        private static ObsoletableAspect TestFlamesVersion(CarObject car, out bool hasFlames) {
+        private static ContentRepairSuggestion TestFlamesVersion(CarObject car, out bool hasFlames) {
             var data = car.AcdData;
             if (data == null) {
                 hasFlames = false;
@@ -94,22 +92,22 @@ namespace AcManager.ContentRepair {
             hasFlames = data.GetIniFile("flames.ini").GetSections("FLAME").Any();
             if (!hasFlames || data.GetRawFile(@"flame_presets.ini").Content.Length != 0) return null;
 
-            return new ObsoletableAspect("Obsolete flames", "First version of flames used, but the second one is already available.",
+            return new ContentObsoleteSuggestion("Obsolete flames", "First version of flames used, but the second one is already available.",
                 (p, c) => UpgradeToSecondVersionAsync(car, p, c)) {
                 AffectsData = true
             };
         }
 
-        private static ObsoletableAspect TestFlamesTexturesExistance(CarObject car, bool firstVersion) {
+        private static ContentRepairSuggestion TestFlamesTexturesExistance(CarObject car, bool firstVersion) {
             var dir = new DirectoryInfo(Path.Combine(car.Location, "texture", "flames"));
             var regex = firstVersion ? new Regex(@"^\d+\.png$", RegexOptions.IgnoreCase) :
                     new Regex(@"^[flx]\d+\.dds$", RegexOptions.IgnoreCase);
             if (dir.Exists && dir.GetFiles().Any(x => regex.IsMatch(x.Name))) return null;
-            return new ObsoletableAspect("Flames textures missing", "It was all right before, but now it will cause game to crash.",
+            return new ContentObsoleteSuggestion("Flames textures missing", "It was all right before, but now it will cause game to crash.",
                     (p, c) => FixMissingTexturesAsync(car, p, c));
         }
 
-        public override IEnumerable<ObsoletableAspect> GetObsoletableAspects(CarObject car) {
+        public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             bool hasFlames;
             var obsoleteFlames = TestFlamesVersion(car, out hasFlames);
             var missingFlames = hasFlames ? TestFlamesTexturesExistance(car, obsoleteFlames != null) : null;

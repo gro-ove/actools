@@ -108,7 +108,7 @@ namespace AcTools.AiFile {
                 if (j == 0 && Length(p0, p1) > 20f) continue;
 
                 result += CalculateLength(j >= 2 ? points[j - 2].Position : p0, p0, p1, j < points.Length - 1 ? points[j + 1].Position : p1,
-                        1f, 0.0027f);
+                        1f, 0.05f);
             }
 
             return result;

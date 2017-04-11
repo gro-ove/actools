@@ -1,11 +1,32 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarTransmissionLossSelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance di:CarTransmissionLossSelector}"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DataContext="{d:DesignInstance di:CarTransmissionLossSelector}"
         Title="{Binding Car.DisplayName, StringFormat={x:Static g:AppStrings.CarSpecs_TransmissionLossTitle}}">
     <StackPanel>
-        <mui:ValueLabel Value="{Binding Value}" Content="{x:Static g:AppStrings.CarSpecs_TransmissionLoss}" Postfix="%" Margin="0 0 0 4" />
-        <Slider Value="{Binding Value}" Minimum="0" Maximum="45" TickFrequency="4" TickPlacement="BottomRight" />
+        <mui:ValueLabel Value="{Binding Value, Converter={StaticResource PercentageConverter}}" Content="{x:Static g:AppStrings.CarSpecs_TransmissionLoss}"
+                Postfix="%" Margin="0 0 0 4" />
+        <Slider Value="{Binding Value, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" Minimum="2" Maximum="50" TickFrequency="4"
+                TickPlacement="BottomRight" />
+
+        <c:PropertiesGrid Margin="0 20 0 0" LabelWidth="160">
+            <TextBlock c:PropertiesGrid.Label="Power at wheels (data):">
+                <Run Text="{Binding DataPower, Mode=OneWay, StringFormat='{}{0:F0}'}" />
+                <Run Text="{x:Static t:ToolsStrings.Units_BHP}" />
+            </TextBlock>
+            <TextBlock c:PropertiesGrid.Label="Power at crankshaft (UI):">
+                <Run Text="{Binding UiPower, Mode=OneWay, StringFormat='{}{0:F0}'}" />
+                <Run Text="{x:Static t:ToolsStrings.Units_BHP}" />
+            </TextBlock>
+            <TextBlock c:PropertiesGrid.Label="Torque at wheels (data):">
+                <Run Text="{Binding DataTorque, Mode=OneWay, StringFormat='{}{0:F0}'}" />
+                <Run Text="{x:Static t:ToolsStrings.Units_Nm}" />
+            </TextBlock>
+            <TextBlock c:PropertiesGrid.Label="Torque at crankshaft (UI):">
+                <Run Text="{Binding UiTorque, Mode=OneWay, StringFormat='{}{0:F0}'}" />
+                <Run Text="{x:Static t:ToolsStrings.Units_Nm}" />
+            </TextBlock>
+        </c:PropertiesGrid>
     </StackPanel>
 </mui:ModernDialog>

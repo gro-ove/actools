@@ -133,6 +133,10 @@ namespace AcTools {
             return Encoding.ASCII.GetString(_buffer, GetPosAndMove(length), length);
         }
 
+        public void SkipString() {
+            Skip(ReadInt32());
+        }
+
         #region Some convertation stuff
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static unsafe int ToInt32(byte[] value, int startIndex) {
@@ -269,6 +273,7 @@ namespace AcTools {
                 }
             }
 
+            _left = 0;
             return _stream.Seek(target, SeekOrigin.Begin);
         }
 

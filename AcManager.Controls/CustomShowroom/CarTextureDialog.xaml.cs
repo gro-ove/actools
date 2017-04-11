@@ -285,8 +285,6 @@ namespace AcManager.Controls.CustomShowroom {
 
         public string PresetableKey => PresetableKeyCategory;
 
-        public string DefaultPreset => null;
-
         public string ExportToPresetData() {
             return _saveable.ToSerializedString();
         }

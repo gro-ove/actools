@@ -6,7 +6,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsContent">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Content_MarkAsNewLabel}" />
@@ -64,6 +64,15 @@
 
             <CheckBox IsChecked="{Binding Holder.CarsYearPostfix}">
                 <Label Content="{x:Static g:AppStrings.Settings_Content_AddYearPostfix}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.CarsFixSpecs}">
+                <Label Content="Fix missing spaces in specs in Drive section" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.CarsProperPwRatio}">
+                <CheckBox.ToolTip>The more is better! As it should, unless it’s 0–100 time</CheckBox.ToolTip>
+                <Label Content="Inverse P/W ratio to horsepowers per kilogram" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}" ToolTip="I hope AC won’t brake because of it with some future update">

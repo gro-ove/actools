@@ -21,7 +21,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsSharing">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">
                 <Label Content="{x:Static g:AppStrings.Settings_Sharing_CopyLinkAutomatically}" />

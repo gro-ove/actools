@@ -6,38 +6,45 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsLapTimes">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
                 <TextBlock.Text>Sources:</TextBlock.Text>
             </TextBlock>
 
-            <CheckBox IsChecked="{Binding LapTimes.SourceCm}">
-                <Label Content="Own CM database" ToolTip="Will be filled using shared memory or, if disabled, race results file" />
-            </CheckBox>
+            <ItemsControl ItemsSource="{Binding Sources, Source={x:Static t:LapTimesManager.Instance}}" Margin="0 -12 0 0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="t:LapTimesSource">
+                        <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
+                            <DockPanel Margin="0 -12 0 0">
+                                <!--name-->
+                                <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32" DockPanel.Dock="Top" Margin="0 0 0 2">
+                                    <mui:ReferenceSwitch.Null>
+                                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
+                                    </mui:ReferenceSwitch.Null>
+                                    <mui:ReferenceSwitch.NonNull>
+                                        <TextBlock VerticalAlignment="Bottom">
+                                            <Run Text="{Binding DisplayName}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
+                                                    BaselineAlignment="Superscript" Command="mui:LinkCommands.NavigateLink"
+                                                    CommandParameter="{Binding DetailsUrl}">[?]</Hyperlink>
+                                        </TextBlock>
+                                    </mui:ReferenceSwitch.NonNull>
+                                </mui:ReferenceSwitch>
 
-            <CheckBox IsChecked="{Binding LapTimes.SourceAcDb}">
-                <Label Content="Old AC database" ToolTip="Reading code is quite wobbly, so I recommend to keep it disabled" />
-            </CheckBox>
+                                <!--description-->
+                                <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+                            </DockPanel>
+                        </CheckBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <mui:SpacingStackPanel Spacing="4" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
 
-            <CheckBox IsChecked="{Binding LapTimes.SourceAcNew}">
-                <Label Content="New AC storage" ToolTip="Fast and reliable" />
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding LapTimes.SourceSidekick}">
-                <Label ToolTip="Of course, only if installed">
-                    <TextBlock>
-                            <Run Text="Sidekick" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                Command="mui:LinkCommands.NavigateLink" CommandParameter="http://www.racedepartment.com/downloads/sidekick.11007/">[?]</Hyperlink>
-                    </TextBlock>
-                </Label>
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding LapTimes.SourceRaceEssentials}">
-                <Label Content="Race Essentials" ToolTip="Of course, only if installed" />
-            </CheckBox>
-
-            <Button Content="Clear Cache" Command="{Binding ClearCacheCommand}" />
+            <Button Content="Clear Cache" Command="{Binding ClearCacheCommand}" Margin="0 20 0 0" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

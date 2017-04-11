@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsReplays">
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Drive.TryToLoadReplays}" ToolTip="{x:Static g:AppStrings.Settings_Replays_LoadInformation_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Replays_LoadInformation}" />

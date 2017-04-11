@@ -58,7 +58,7 @@ namespace AcManager.Tools.GameProperties {
 
         public IEnumerable<PresetPerMode> GetPassedModes(IniFile file) {
             var presetsPerMode = new PresetsPerModeReadOnly().GetEntries().ToListIfItIsNot();
-            foreach (var mode in presetsPerMode) {
+            foreach (var mode in presetsPerMode.Where(x => x.Enabled)) {
                 var script = GetFn(mode);
                 if (string.IsNullOrWhiteSpace(script)) continue;
 

@@ -48,12 +48,13 @@
 
                             <mui:SpacingStackPanel Spacing="4"
                                     Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
-                                        Postfix="{x:Static ac:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
+                                <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                        Content="{x:Static g:AppStrings.Drive_Temperature}">
                                     <mui:ValueLabel.ToolTip>
-                                        <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
+                                        <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1"
+                                                Text="{Binding RoadTemperature}" />
                                     </mui:ValueLabel.ToolTip>
-                                </mui:ValueLabel>
+                                </c:TemperatureValueLabel>
                                 <Slider Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight"
                                         Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
                             </mui:SpacingStackPanel>

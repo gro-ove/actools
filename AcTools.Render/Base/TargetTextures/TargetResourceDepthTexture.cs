@@ -5,7 +5,7 @@ namespace AcTools.Render.Base.TargetTextures {
     public class TargetResourceDepthTexture : BaseTargetResourceTexture {
         public DepthStencilView DepthView { get; private set; }
 
-        private TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
+        protected TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
 
         public override void Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
             if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return;
@@ -26,7 +26,7 @@ namespace AcTools.Render.Base.TargetTextures {
             });
         }
 
-        private static Format GetDepthStencilViewFormat(Format texture) {
+        protected static Format GetDepthStencilViewFormat(Format texture) {
             switch (texture) {
                 case Format.R16_Typeless:
                     return Format.R16_Float;
@@ -41,7 +41,7 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
-        private static Format GetShaderResourceViewFormat(Format texture) {
+        protected static Format GetShaderResourceViewFormat(Format texture) {
             switch (texture) {
                 case Format.R16_Typeless:
                     return Format.R16_Typeless;

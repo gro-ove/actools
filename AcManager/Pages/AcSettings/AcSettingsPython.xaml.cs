@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,6 +10,8 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -24,6 +27,34 @@ namespace AcManager.Pages.AcSettings {
             public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
             public AcEnabledOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.EnabledOnlyCollection;
+
+            private double _scaleValue = 1d;
+
+            public double ScaleValue {
+                get { return _scaleValue; }
+                set {
+                    value = value.Clamp(0d, 100d);
+                    if (Equals(value, _scaleValue)) return;
+                    _scaleValue = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelegateCommand _setScaleCommand;
+
+            public DelegateCommand SetScaleCommand => _setScaleCommand ?? (_setScaleCommand = new DelegateCommand(() => {
+                foreach (var entry in Forms.Entries) {
+                    entry.Scale = Math.Max((100 * ScaleValue).RoundToInt(), 1);
+                }
+            }));
+
+            private DelegateCommand _multiplyScaleCommand;
+
+            public DelegateCommand MultiplyScaleCommand => _multiplyScaleCommand ?? (_multiplyScaleCommand = new DelegateCommand(() => {
+                foreach (var entry in Forms.Entries) {
+                    entry.Scale = Math.Max((entry.Scale * ScaleValue).RoundToInt(), 1);
+                }
+            }));
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {

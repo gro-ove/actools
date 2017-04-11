@@ -136,6 +136,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
+    <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
@@ -425,6 +427,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\StatEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\TemperatureValueLabel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

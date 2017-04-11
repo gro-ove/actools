@@ -117,6 +117,7 @@
     <Compile Include="Kn5File\Kn5.ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbx.cs" />
     <Compile Include="Kn5File\Kn5.FromJson.cs" />
+    <Compile Include="Utils\MemoryChunk.cs" />
     <Compile Include="KnhFile\Knh.cs" />
     <Compile Include="KnhFile\Knh.FromFile.cs" />
     <Compile Include="KnhFile\KnhEntry.cs" />

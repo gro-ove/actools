@@ -63,6 +63,10 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_CarSetups}" Command="{Binding ManageSetupsCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_CarSetups_Tooltip}" />
             </ToolBar>
+            <ToolBar Band="0" BandIndex="0">
+                <Button Content="Analyze" Command="{Binding CarAnalyzerCommand}" />
+                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}" />
+            </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
@@ -103,9 +107,6 @@
                         Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
-                <Separator />
-                <Button Content="Migration Helper" Command="{Binding MigrationHelperCommand}" />
-                <Button Content="Replace Tyres" Command="{Binding ReplaceTyresCommand}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 
@@ -430,13 +431,24 @@
 
                         <StackPanel
                                 Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
-                            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
                                 <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                                         Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                                     <FrameworkElement.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Filter By Similar Driven Distance" Command="{Binding Path=FilterCommand}"
                                                     CommandParameter="driven" />
+                                        </ContextMenu>
+                                    </FrameworkElement.ContextMenu>
+                                </mui:PlaceholderTextBlock>
+
+                                <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
+                                        Text="{Binding SelectedObject.MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
+                                        Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
+                                    <FrameworkElement.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Filter By Similar Max Speed Achieved" Command="{Binding Path=FilterCommand}"
+                                                    CommandParameter="topspeedachieved" />
                                         </ContextMenu>
                                     </FrameworkElement.ContextMenu>
                                 </mui:PlaceholderTextBlock>

@@ -8,6 +8,10 @@ namespace AcTools.Utils {
         public static Lazier<T> Create<T>(Func<T> fn) {
             return new Lazier<T>(fn);
         }
+
+        public static Lazier<T> Create<T>(T obj) {
+            return new Lazier<T>(obj);
+        }
     }
     
     public class Lazier<T> : INotifyPropertyChanged {
@@ -38,6 +42,7 @@ namespace AcTools.Utils {
         }
 
         public void Reset() {
+            if (_fn == null) return;
             _value = default(T);
             OnPropertyChanged(nameof(Value));
             IsSet = false;
@@ -45,6 +50,10 @@ namespace AcTools.Utils {
 
         public Lazier(Func<T> fn) {
             _fn = fn;
+        }
+
+        public Lazier(T obj) {
+            _value = obj;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

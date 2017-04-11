@@ -101,6 +101,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnScroll(object sender, ScrollChangedEventArgs e) {
             var c = (ScrollViewer)sender;
+            if (!c.IsLoaded) return;
+
             var k = GetProperKey(sender);
             if ((DateTime.Now - _lastScrolled).TotalSeconds > 0.5) {
                 c.ScrollChanged -= OnViewportResize;

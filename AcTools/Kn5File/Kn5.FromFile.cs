@@ -1,73 +1,142 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime;
+using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public interface IKn5TextureLoader {
         [CanBeNull]
-        byte[] LoadTexture([NotNull] string textureName, [NotNull] Stream stream, int textureSize);
+        byte[] LoadTexture([NotNull] string textureName, [NotNull] ReadAheadBinaryReader reader, int textureSize);
     }
 
     public class SkippingTextureLoader : IKn5TextureLoader {
         public static readonly SkippingTextureLoader Instance = new SkippingTextureLoader();
 
-        public byte[] LoadTexture(string textureName, Stream stream, int textureSize) {
-            stream.Seek(textureSize, SeekOrigin.Current);
+        private SkippingTextureLoader() { }
+
+        public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
+            reader.Skip(textureSize);
             return null;
-        }
-    }
-
-    public class MemoryChunk {
-        private readonly int _sizeInMegabytes;
-
-        private MemoryChunk(int sizeInMegabytes) {
-            _sizeInMegabytes = sizeInMegabytes;
-        }
-
-        public static MemoryChunk Bytes(int bytes) {
-            return new MemoryChunk(10 + bytes / 1024 / 1024);
-        }
-
-        public static MemoryChunk Megabytes(int megabytes) {
-            return new MemoryChunk(megabytes);
-        }
-
-        private T ExecuteInner<T>(Func<T> action) {
-            if (_sizeInMegabytes < 20) return action();
-
-            AcToolsLogging.Write($"Going to allocate {_sizeInMegabytes} MB…");
-            using (new MemoryFailPoint(_sizeInMegabytes)) return action();
-        }
-
-        public T Execute<T>(Func<T> action) {
-            try {
-                return ExecuteInner(action);
-            } catch (InsufficientMemoryException) {
-                GCHelper.CleanUp();
-                return ExecuteInner(action);
-            } catch (OutOfMemoryException) {
-                GCHelper.CleanUp();
-                return ExecuteInner(action);
-            }
-        }
-
-        public void Execute(Action action) {
-            Execute(() => {
-                action();
-                return 0;
-            });
         }
     }
 
     internal class DefaultKn5TextureLoader : IKn5TextureLoader {
         public static readonly DefaultKn5TextureLoader Instance = new DefaultKn5TextureLoader();
 
-        public byte[] LoadTexture(string textureName, Stream stream, int textureSize) {
+        private DefaultKn5TextureLoader() { }
+
+        public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
             var result = MemoryChunk.Bytes(textureSize).Execute(() => new byte[textureSize]);
-            stream.Read(result, 0, textureSize);
+            reader.ReadBytes(result, 0, textureSize);
             return result;
+        }
+    }
+
+    public interface IKn5MaterialLoader {
+        [CanBeNull]
+        Kn5Material LoadMaterial([NotNull] ReadAheadBinaryReader reader);
+    }
+
+    public class SkippingMaterialLoader : IKn5MaterialLoader {
+        public static readonly SkippingMaterialLoader Instance = new SkippingMaterialLoader();
+
+        private SkippingMaterialLoader() {}
+
+        public Kn5Material LoadMaterial(ReadAheadBinaryReader reader) {
+            ((Kn5Reader)reader).SkipMaterial();
+            return null;
+        }
+    }
+
+    internal class DefaultKn5MaterialLoader : IKn5MaterialLoader {
+        public static readonly DefaultKn5MaterialLoader Instance = new DefaultKn5MaterialLoader();
+
+        private DefaultKn5MaterialLoader() { }
+
+        public Kn5Material LoadMaterial(ReadAheadBinaryReader reader) {
+            return ((Kn5Reader)reader).ReadMaterial();
+        }
+    }
+
+    public interface IKn5NodeLoader {
+        [CanBeNull]
+        Kn5Node LoadNode([NotNull] ReadAheadBinaryReader reader);
+    }
+
+    public class HierarchyOnlyNodeLoader : IKn5NodeLoader {
+        public static readonly HierarchyOnlyNodeLoader Instance = new HierarchyOnlyNodeLoader();
+
+        private HierarchyOnlyNodeLoader() { }
+
+        private static Kn5Node LoadHierarchy(Kn5Reader reader) {
+            var node = reader.ReadNodeHierarchy();
+            var capacity = node.Children.Capacity;
+
+            try {
+                for (var i = 0; i < capacity; i++) {
+                    node.Children.Add(LoadHierarchy(reader));
+                }
+            } catch (EndOfStreamException) {
+                node.Children.Capacity = node.Children.Count;
+            }
+
+            return node;
+        }
+
+        public Kn5Node LoadNode(ReadAheadBinaryReader reader) {
+            return LoadHierarchy((Kn5Reader)reader);
+        }
+    }
+
+    public class SkippingNodeLoader : IKn5NodeLoader {
+        public static readonly SkippingNodeLoader Instance = new SkippingNodeLoader();
+
+        private SkippingNodeLoader() { }
+
+        private static Kn5Node SkipNode(Kn5Reader reader) {
+            var node = reader.ReadNodeHierarchy();
+            var capacity = node.Children.Capacity;
+
+            try {
+                for (var i = 0; i < capacity; i++) {
+                    node.Children.Add(SkipNode(reader));
+                }
+            } catch (EndOfStreamException) {
+                node.Children.Capacity = node.Children.Count;
+            }
+
+            return node;
+        }
+
+        public Kn5Node LoadNode(ReadAheadBinaryReader reader) {
+            SkipNode((Kn5Reader)reader);
+            return null;
+        }
+    }
+
+    internal class DefaultKn5NodeLoader : IKn5NodeLoader {
+        public static readonly DefaultKn5NodeLoader Instance = new DefaultKn5NodeLoader();
+
+        private DefaultKn5NodeLoader() { }
+
+        private static Kn5Node LoadNode(Kn5Reader reader) {
+            var node = reader.ReadNode();
+            var capacity = node.Children.Capacity;
+
+            try {
+                for (var i = 0; i < capacity; i++) {
+                    node.Children.Add(LoadNode(reader));
+                }
+            } catch (EndOfStreamException) {
+                node.Children.Capacity = node.Children.Count;
+            }
+
+            return node;
+        }
+
+        public Kn5Node LoadNode(ReadAheadBinaryReader reader) {
+            return LoadNode((Kn5Reader)reader);
         }
     }
 
@@ -89,14 +158,20 @@ namespace AcTools.Kn5File {
                     kn5.FromFile_Textures(reader, DefaultKn5TextureLoader.Instance);
                 }
 
-                kn5.FromFile_Materials(reader);
-                kn5.FromFile_Nodes(reader, readNodesAsBytes);
+                kn5.FromFile_Materials(reader, DefaultKn5MaterialLoader.Instance);
+
+                if (readNodesAsBytes) {
+                    kn5.FromFile_NodeBytes(reader);
+                }
+
+                kn5.FromFile_Nodes(reader, DefaultKn5NodeLoader.Instance);
             }
 
             return kn5;
         }
 
-        public static Kn5 FromFile(string filename, IKn5TextureLoader textureLoader = null) {
+        public static Kn5 FromFile(string filename, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
+                IKn5NodeLoader nodeLoader = null) {
             if (!File.Exists(filename)) {
                 throw new FileNotFoundException(filename);
             }
@@ -106,21 +181,22 @@ namespace AcTools.Kn5File {
             using (var reader = new Kn5Reader(filename)) {
                 kn5.FromFile_Header(reader);
                 kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
-                kn5.FromFile_Materials(reader);
-                kn5.FromFile_Nodes(reader, false);
+                kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
+                kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
             }
 
             return kn5;
         }
 
-        public static Kn5 FromStream(Stream entry, IKn5TextureLoader textureLoader = null) {
+        public static Kn5 FromStream(Stream entry, IKn5TextureLoader textureLoader = null, IKn5MaterialLoader materialLoader = null,
+                IKn5NodeLoader nodeLoader = null) {
             var kn5 = new Kn5(string.Empty);
 
             using (var reader = new Kn5Reader(entry)) {
                 kn5.FromFile_Header(reader);
                 kn5.FromFile_Textures(reader, textureLoader ?? DefaultKn5TextureLoader.Instance);
-                kn5.FromFile_Materials(reader);
-                kn5.FromFile_Nodes(reader, false);
+                kn5.FromFile_Materials(reader, materialLoader ?? DefaultKn5MaterialLoader.Instance);
+                kn5.FromFile_Nodes(reader, nodeLoader ?? DefaultKn5NodeLoader.Instance);
             }
 
             return kn5;
@@ -147,7 +223,7 @@ namespace AcTools.Kn5File {
                     var texture = reader.ReadTexture();
                     if (texture.Length > 0) {
                         Textures[texture.Name] = texture;
-                        TexturesData[texture.Name] = textureLoader.LoadTexture(texture.Name, reader.BaseStream, texture.Length) ?? new byte[0];
+                        TexturesData[texture.Name] = textureLoader.LoadTexture(texture.Name, reader, texture.Length) ?? new byte[0];
                     }
                 }
             } catch (NotImplementedException) {
@@ -156,49 +232,31 @@ namespace AcTools.Kn5File {
             }
         }
 
-        private void FromFile_Materials(Kn5Reader reader) {
+        private void FromFile_Materials(Kn5Reader reader, [NotNull] IKn5MaterialLoader materialLoader) {
             try {
                 var count = reader.ReadInt32();
 
                 Materials = new Dictionary<string, Kn5Material>(count);
-
                 for (var i = 0; i < count; i++) {
-                    var material = reader.ReadMaterial();
-                    Materials[material.Name] = material;
+                    var material = materialLoader.LoadMaterial(reader);
+                    if (material != null) {
+                        Materials[material.Name] = material;
+                    }
                 }
             } catch (NotImplementedException) {
                 Materials = null;
             }
         }
 
-        private void FromFile_Nodes(Kn5Reader reader, bool readAsBytes) {
-            if (readAsBytes) {
-                var nodesStart = reader.BaseStream.Position;
-                var nodesLength = reader.BaseStream.Length - nodesStart;
-                NodesBytes = reader.ReadBytes((int)nodesLength);
-                reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
-            }
-
-            try {
-                RootNode = FromFile_Node(reader);
-            } catch (NotImplementedException) {
-                RootNode = null;
-            }
+        private void FromFile_NodeBytes(Kn5Reader reader) {
+            var nodesStart = reader.BaseStream.Position;
+            var nodesLength = reader.BaseStream.Length - nodesStart;
+            NodesBytes = reader.ReadBytes((int)nodesLength);
+            reader.BaseStream.Seek(nodesStart, SeekOrigin.Begin);
         }
 
-        private Kn5Node FromFile_Node(Kn5Reader reader) {
-            var node = reader.ReadNode();
-            var capacity = node.Children.Capacity;
-
-            try {
-                for (var i = 0; i < capacity; i++) {
-                    node.Children.Add(FromFile_Node(reader));
-                }
-            } catch (EndOfStreamException) {
-                node.Children.Capacity = node.Children.Count;
-            }
-
-            return node;
+        private void FromFile_Nodes(Kn5Reader reader, [NotNull] IKn5NodeLoader nodeLoader) {
+            RootNode = nodeLoader.LoadNode(reader);
         }
     }
 }

@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer x:Name="ScrollViewer">
+    <ScrollViewer x:Name="ScrollViewer" mui:SaveScroll.Key="SettingsDev">
         <StackPanel>
             <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
                 <DockPanel>

@@ -10,7 +10,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsCustomShowroom">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Holder.CustomShowroomInstead}">
                 <Label Content="Use Custom Showroom instead of the original one is some cases">

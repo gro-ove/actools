@@ -200,31 +200,32 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RecalculateCurves(object sender, RoutedEventArgs e) {
-            var dlg = new CarTransmissionLossSelector(Car);
-            dlg.ShowDialog();
-            if (!dlg.IsResultOk) return;
+            var o = Car;
 
-            var lossMultipler = 100.0 / (100.0 - dlg.Value);
-
-            var data = Car.AcdData;
+            var data = o.AcdData;
             if (data == null) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
                 return;
             }
 
-            Lut torque;
+            Lut torque, power;
             try {
                 torque = TorquePhysicUtils.LoadCarTorque(data);
+                power = TorquePhysicUtils.TorqueToPower(torque);
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
                 return;
             }
 
-            torque.TransformSelf(x => x.Y * lossMultipler);
-            var power = TorquePhysicUtils.TorqueToPower(torque);
+            var dlg = new CarTransmissionLossSelector(o, torque.MaxY, power.MaxY);
+            dlg.ShowDialog();
+            if (!dlg.IsResultOk) return;
 
-            TorqueGraph = new GraphData(torque);
-            PowerGraph = new GraphData(power);
+            torque.TransformSelf(x => x.Y * dlg.Multipler);
+            power.TransformSelf(x => x.Y * dlg.Multipler);
+
+            o.SpecsTorqueCurve = new GraphData(torque);
+            o.SpecsPowerCurve = new GraphData(power);
 
             if (ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                 // MaxY values were updated while creating new GraphData instances above

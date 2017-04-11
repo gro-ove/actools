@@ -1,0 +1,15 @@
+﻿sid: 30_828530664_757602046
+
+Not sure why would you need it (apart from downsizing it later to get the best antialiasing available), but now CM is able to create 15360×8640. It could be much more, but screen-space effects (SSAO or SSLR) won’t work — to make “screenshot” this big, CM breaks image to a lot of parts. Even at 15360×8640, in some views, those effects will break.
+
+To make a shot:
+
+ • Go to fullscreen mode (F11);
+ • Press Ctrl+Shift+F8 (without “+Shift”, CM will downsize image twice automatically);
+ • Wait for a while.
+
+At this point, you’ll get a new folder with all pieces. For now, CM is unable to join them together by itself — not sure its 2 GB of RAM allowed by .NET will be enough — but you can always join them yourself using, for example, ImageMagick. Just go to [url="https://www.imagemagick.org/script/binary-releases.php"]this page[/url], download portable version for Windows and put “montage.exe” to result folder or, for example, to current user’s folder (so it will be available in CMD). And then, just run “join.bat”.
+
+ [img="http://i.imgur.com/3KAGDAX.jpg|360"]Example[/img]
+ [i]Full 15360×8640 version is [url="https://yadi.sk/i/EGQ7K3173GocaT"]here[/url].[/i]
+

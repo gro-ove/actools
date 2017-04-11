@@ -369,6 +369,10 @@
             <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
                 <Label Content="FXAA" />
             </CheckBox>
+            
+            <c:MessageBlock>
+                <TextBlock>MSAA is not compatible with FXAA or SSLR yet. Please, don’t use them together (FXAA+SSLR is fine though).</TextBlock>
+            </c:MessageBlock>
 
             <!--<CheckBox IsChecked="{Binding Renderer.UseSmaa}" IsEnabled="{Binding Renderer.IsSmaaAvailable}">
                 <Label Content="SMAA" />

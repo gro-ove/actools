@@ -23,6 +23,10 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcObjectViewModel : NotifyPropertyChanged {
+        public static string SpecsFormat(string format, object value) {
+            return format.Replace(@"…", value.ToInvariantString());
+        }
+
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
                 var obj = values.FirstOrDefault() as IAcObjectAuthorInformation;
@@ -212,10 +216,6 @@ namespace AcManager.Pages.Selected {
 
         protected virtual IEnumerable<string> GetSpecsKeys() {
             return _specs.Select(x => x.Item1);
-        }
-
-        protected static string SpecsFormat(string format, object value) {
-            return format.Replace(@"…", value.ToInvariantString());
         }
 
         private DelegateCommand<string> _fixFormatCommand;

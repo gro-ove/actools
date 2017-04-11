@@ -210,13 +210,17 @@ namespace AcManager.Pages.Drive {
             public double Temperature {
                 get { return _temperature; }
                 set {
-                    value = value.Round(0.5);
-                    if (Equals(value, _temperature)) return;
-                    _temperature = value.Clamp(CommonAcConsts.TemperatureMinimum,
+                    value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
                             SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
-                    
+                    if (Equals(value, _temperature)) return;
+                    _temperature = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
+                    OnPropertyChanged(nameof(RecommendedRoadTemperature));
+
+                    if (!_customRoadTemperatureValue.HasValue) {
+                        OnPropertyChanged(nameof(CustomRoadTemperatureValue));
+                    }
 
                     if (RealConditions) {
                         TryToSetWeatherLater();
@@ -233,8 +237,38 @@ namespace AcManager.Pages.Drive {
                 Temperature = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
             }));
 
-            public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
-                    SelectedWeather?.TemperatureCoefficient ?? 0.0);
+            public double RecommendedRoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
+                            SelectedWeather?.TemperatureCoefficient ?? 0.0);
+
+            public double RoadTemperature => CustomRoadTemperatureEnabled ? CustomRoadTemperatureValue : RecommendedRoadTemperature;
+
+            private bool _customRoadTemperatureEnabled;
+
+            public bool CustomRoadTemperatureEnabled {
+                get { return _customRoadTemperatureEnabled; }
+                set {
+                    if (Equals(value, _customRoadTemperatureEnabled)) return;
+                    _customRoadTemperatureEnabled = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(RoadTemperature));
+                    SaveLater();
+                }
+            }
+
+            private double? _customRoadTemperatureValue;
+
+            public double CustomRoadTemperatureValue {
+                get { return _customRoadTemperatureValue ?? RecommendedRoadTemperature; }
+                set {
+                    value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
+                            SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
+                    if (Equals(value, _customRoadTemperatureValue)) return;
+                    _customRoadTemperatureValue = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(RoadTemperature));
+                    SaveLater();
+                }
+            }
 
             private int _time;
 

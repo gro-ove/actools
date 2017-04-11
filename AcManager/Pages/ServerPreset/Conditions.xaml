@@ -23,8 +23,8 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding BaseAmbientTemperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
-                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}" />
+                        <c:TemperatureValueLabel Value="{Binding BaseAmbientTemperature, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                Content="{x:Static g:AppStrings.Drive_Temperature}" />
                         <Slider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
                                 Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
                     </DockPanel>
@@ -33,21 +33,21 @@
                             Style="{StaticResource SettingsPanel.Small}" />
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
-                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Road temperature" />
+                        <c:TemperatureValueLabel Value="{Binding BaseRoadTemperature, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                Content="Road temperature" />
                         <Slider TickFrequency="3" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}"
                                 Minimum="{x:Static a:CommonAcConsts.RoadTemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.RoadTemperatureMaximum}" />
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding AmbientTemperatureVariation, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent" Prefix="±"
-                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Temp. variation" />
+                        <c:TemperatureValueLabel Value="{Binding AmbientTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
+                                Content="Temp. variation" />
                         <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding AmbientTemperatureVariation}" Minimum="0" Maximum="10" />
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding RoadTemperatureVariation, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent" Prefix="±"
-                                Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="Road t. variation" />
+                        <c:TemperatureValueLabel Value="{Binding RoadTemperatureVariation, StringFormat='\{0:F1\}'}" Background="Transparent" Prefix="±"
+                                Content="Road t. variation" />
                         <Slider TickFrequency="1" TickPlacement="BottomRight" Value="{Binding RoadTemperatureVariation}" Minimum="0" Maximum="10" />
                     </DockPanel>
 

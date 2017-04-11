@@ -20,8 +20,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             string IUserPresetable.PresetableCategory => PresetableKey;
 
-            string IUserPresetable.DefaultPreset => null;
-
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
                     PythonData = Python.Export(),
@@ -76,8 +74,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             public string PresetableKey => VideoPresetsKey;
 
             string IUserPresetable.PresetableCategory => VideoPresetsKey;
-
-            string IUserPresetable.DefaultPreset => null;
 
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
@@ -135,8 +131,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             public string PresetableKey => AudioPresetsKey;
 
             string IUserPresetable.PresetableCategory => AudioPresetsKey;
-
-            string IUserPresetable.DefaultPreset => null;
 
             public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {

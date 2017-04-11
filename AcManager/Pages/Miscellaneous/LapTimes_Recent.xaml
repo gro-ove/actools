@@ -14,7 +14,7 @@
     <ItemsControl Margin="{StaticResource ContentMarginWithPadding}" ItemsSource="{Binding View}" Style="{StaticResource VirtualizingItemsControl}">
         <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type t:LapTimeWrapped}">
-                <Grid Height="60" x:Name="Grid" ContextMenu="{StaticResource BestLapWrappedContextMenu}">
+                <Grid Height="60" x:Name="Grid" ContextMenu="{StaticResource BestLapWrappedContextMenu}" Background="Transparent">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />

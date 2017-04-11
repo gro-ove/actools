@@ -16,7 +16,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
     public class SidePassageStarter : BaseStarter {
-        private static readonly string Version = @"1.0.2.49";
+        private static readonly string Version = @"1.0.3.64";
 
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 

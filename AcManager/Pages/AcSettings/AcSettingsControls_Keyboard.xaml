@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="AcSettingsControls_Keyboard">
         <StackPanel>
             <ItemsControl ItemsSource="{Binding Controls.KeyboardSpecificButtonEntries}" ItemTemplate="{StaticResource KeyboardButtonEntryTemplate}"
                     ItemsPanel="{StaticResource TwoColumnsPanel}" />

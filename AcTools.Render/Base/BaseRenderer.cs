@@ -165,7 +165,7 @@ namespace AcTools.Render.Base {
         }
 
         private SampleDescription GetMsaaDescription(Device device) {
-            var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, MsaaSampleCount);
+            var msaaQuality = device.CheckMultisampleQualityLevels(Format.R16G16B16A16_Float, MsaaSampleCount);
             return new SampleDescription(MsaaSampleCount, msaaQuality - 1);
         }
 

@@ -12,13 +12,24 @@ namespace AcManager.Tools.Helpers {
         string PresetableKey { get; }
 
         [CanBeNull]
-        string DefaultPreset { get; }
-
-        [CanBeNull]
         string ExportToPresetData();
 
         event EventHandler Changed;
 
         void ImportFromPresetData([NotNull] string data);
+    }
+
+    public interface IUserPresetableDefaultPreset {
+        [CanBeNull]
+        string DefaultPreset { get; }
+    }
+
+    public interface IUserPresetableCustomDisplay {
+        [NotNull]
+        string GetDisplayName([NotNull] string name, [NotNull] string data);
+    }
+
+    public interface IUserPresetableCustomSorting {
+        int Compare([NotNull] string aName, [NotNull] string aData, [NotNull] string bName, [NotNull] string bData);
     }
 }

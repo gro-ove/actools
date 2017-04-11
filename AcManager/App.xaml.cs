@@ -93,8 +93,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
-
-            AppArguments.Set(AppFlag.ForceSteamId, ref SteamIdHelper.OptionForceValue);
             
             AppArguments.Set(AppFlag.NoProxy, ref KunosApiProvider.OptionNoProxy);
 
@@ -256,6 +254,9 @@ namespace AcManager {
             
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
+            BetterImage.RemoteUserAgent = CmApiProvider.UserAgent;
+            BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;
+
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
 
@@ -299,7 +300,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RaceInformationWebserverFile, ref PlayerStatsManager.OptionWebserverFilename);
             PlayerStatsManager.Instance.SetListener();
 
-            AppArguments.Set(AppFlag.RhmKeepAlive, ref RhmService.OptionKeepRunning);
+            // AppArguments.Set(AppFlag.RhmKeepAlive, ref RhmService.OptionKeepRunning);
             RhmService.Instance.SetListener();
 
             _hibernator = new AppHibernator();

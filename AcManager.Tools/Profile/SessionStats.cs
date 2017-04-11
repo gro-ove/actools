@@ -383,12 +383,7 @@ namespace AcManager.Tools.Profile {
                 var graphics = current.Graphics;
                 var info = current.StaticInfo;
 
-                if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
-                    CurrentStatus = Status.NotLive;
-                    _lapSpoiledId = graphics.CompletedLaps;
-                    return;
-                }
-
+                /* set car ID if missing */
                 if (CarId == null) {
                     IniFile raceIni = null;
                     CarId = GetCarId(info, ref raceIni);
@@ -396,9 +391,35 @@ namespace AcManager.Tools.Profile {
                     Penalties = info.PenaltiesEnabled == 1;
                 }
 
+                /* mark lap as spoiled if needed */
+                if (_lapSpoiledId != graphics.CompletedLaps) {
+                    if (graphics.IsInPit) {
+                        Logging.Debug($"Lap spoiled: in pits (ID: {_lapSpoiledId})");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
+
+                    if (physics.NumberOfTyresOut > OptionTyresOutsideAllowed) {
+                        Logging.Debug($"Lap spoiled: {physics.NumberOfTyresOut} tyre(s) outside (ID: {_lapSpoiledId})");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
+
+                    if (physics.IsAiControlled) {
+                        Logging.Debug($"Lap spoiled: AI-controlled (ID: {_lapSpoiledId})");
+                        _lapSpoiledId = graphics.CompletedLaps;
+                    }
+                }
+
+                /* AI-controlled? doesn’t count */
+                if (physics.IsAiControlled || previous.Physics.IsAiControlled) {
+                    CurrentStatus = Status.NotLive;
+                    return;
+                }
+
                 _coordinates = graphics.CarCoordinates;
 
-                if (graphics.CurrentTimeMs < previous.Graphics.CurrentTimeMs) {
+                /* current lap time suddenly got lower, but completed laps number is the same or less */
+                if (graphics.CurrentTimeMs < previous.Graphics.CurrentTimeMs && graphics.CompletedLaps <= previous.Graphics.CompletedLaps) {
+                    Logging.Debug($"Teleported: current time={graphics.CurrentTimeMs} ms, previous time={previous.Graphics.CurrentTimeMs} ms");
                     CurrentStatus = Status.Teleported;
                     return;
                 }
@@ -406,26 +427,17 @@ namespace AcManager.Tools.Profile {
                 var distance = graphics.CarCoordinates - previous.Graphics.CarCoordinates;
                 var calcSpeed = distance.Length() / 1e3 / time.TotalHours;
 
-
-                if (_lapSpoiledId != graphics.CompletedLaps) {
-                    if (graphics.IsInPit) {
-                        Logging.Debug("Lap spoiled: in pits");
-                        _lapSpoiledId = graphics.CompletedLaps;
-                    }
-
-                    if (physics.NumberOfTyresOut > OptionTyresOutsideAllowed) {
-                        Logging.Debug($"Lap spoiled: {physics.NumberOfTyresOut} tyre(s) outside");
-                        _lapSpoiledId = graphics.CompletedLaps;
-                    }
-
-                    if (physics.IsAiControlled) {
-                        Logging.Debug($"Lap spoiled: AI-controlled ({physics.IsAiControlled})");
-                        _lapSpoiledId = graphics.CompletedLaps;
-                    }
+                /* compare calculated from coordinates speed with actual speed — if much more, 
+                 * assume that car was teleported */
+                var jumped = calcSpeed > physics.SpeedKmh * 3d + 10;
+                if (jumped) {
+                    Logging.Debug($"Teleported: calculated speed={calcSpeed} km/h, actual={physics.SpeedKmh} km/h");
+                    CurrentStatus = Status.Teleported;
+                    return;
                 }
 
                 /* best lap */
-                if (graphics.CompletedLaps != _completedLaps) {
+                if (graphics.CompletedLaps > _completedLaps) {
                     if (graphics.LastTimeMs == 0) {
                         Logging.Debug("Lap time: 0");
                     } else if (graphics.CompletedLaps - 1 > _lapSpoiledId) {
@@ -438,7 +450,7 @@ namespace AcManager.Tools.Profile {
                             Logging.Debug("Lap time is worse or the same");
                         }
                     } else {
-                        Logging.Debug("Lap spoiled");
+                        Logging.Debug($"Lap spoiled (before: {_completedLaps}), last spoiled: {_lapSpoiledId})");
                     }
 
                     _completedLaps = graphics.CompletedLaps;
@@ -452,12 +464,6 @@ namespace AcManager.Tools.Profile {
                 var paused = physics.SpeedKmh > 5 && calcSpeed < physics.SpeedKmh * 0.1d;
                 if (paused) {
                     CurrentStatus = Status.Paused;
-                    return;
-                }
-
-                var jumped = calcSpeed > physics.SpeedKmh * 3d + 10;
-                if (jumped) {
-                    CurrentStatus = Status.Teleported;
                     return;
                 }
 

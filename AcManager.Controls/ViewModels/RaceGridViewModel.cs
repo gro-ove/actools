@@ -56,8 +56,6 @@ namespace AcManager.Controls.ViewModels {
 
         public string PresetableKey => PresetableKeyValue;
 
-        public string DefaultPreset => null;
-
         public string ExportToPresetData() {
             return _saveable.ToSerializedString();
         }

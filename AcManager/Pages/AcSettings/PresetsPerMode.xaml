@@ -19,6 +19,10 @@
                 <Setter Property="DockPanel.Dock" Value="Left" />
             </Style>
 
+            <Style x:Key="CheckBox.Separate" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}">
+                <Setter Property="Margin" Value="0 0 16 0" />
+            </Style>
+
             <DataTemplate x:Key="SelectedDataTemplate">
                 <TextBlock x:Name="TextBlock" TextTrimming="CharacterEllipsis"
                         Text="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" />
@@ -57,6 +61,10 @@
                         </mui:HierarchicalComboBox>
                     </DockPanel>
 
+                    <CheckBox IsChecked="{Binding Enabled}" Style="{StaticResource CheckBox.Separate}">
+                        <Label Content="Enabled" />
+                    </CheckBox>
+                    
                     <DockPanel DataContext="{Binding Apps}" Margin="0 20 0 8">
                         <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
                             <Label Content="Apps:" />
@@ -93,6 +101,10 @@
                         </Border>
                     </DockPanel>
 
+                    <CheckBox IsChecked="{Binding RearViewMirror}" Style="{StaticResource CheckBox.Separate}" IsThreeState="True">
+                        <Label Content="Rear view mirror" />
+                    </CheckBox>
+
                     <TextBlock Text="{Binding ConditionId, StringFormat='ID: {0}'}" Style="{StaticResource Small}" Margin="0 20 0 0"
                             TextTrimming="CharacterEllipsis" />
                     <TextBlock Text="{Binding ConditionFn, StringFormat='Func.: {0}'}" Style="{StaticResource Small}" Margin="0 0 0 8"
@@ -117,7 +129,7 @@
         </CheckBox>
 
         <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:PresetPerMode.DraggableFormat}" ScrollViewer.CanContentScroll="False"
-                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="320" VerticalAlignment="Top"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="360" VerticalAlignment="Top"
                 mui:FancyScrollHelper.Outsize="True">
             <ListBox.ItemTemplateSelector>
                 <c:FlexibleDataTemplateSelector DataTemplate="{StaticResource EntryDataTemplate}" />

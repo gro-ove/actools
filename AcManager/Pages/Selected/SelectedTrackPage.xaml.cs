@@ -65,6 +65,8 @@ namespace AcManager.Pages.Selected {
                 switch (propertyChangedEventArgs.PropertyName) {
                     case nameof(TrackObjectBase.AiLaneFastExists):
                         _trackMapUpdateCommand?.RaiseCanExecuteChanged();
+                        _recalculateWidthCommand?.RaiseCanExecuteChanged();
+                        _recalculatePitboxesCommand?.RaiseCanExecuteChanged();
                         break;
                 }
             }
@@ -209,7 +211,8 @@ namespace AcManager.Pages.Selected {
                             $"File “{FileUtils.GetRelativePath(kn5Filename, AcRootDirectory.Instance.RequireValue)}” not found.");
                 }
 
-                var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename, SkippingTextureLoader.Instance)).ConfigureAwait(false);
+                var kn5 = await Task.Run(() => Kn5.FromFile(kn5Filename, SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance,
+                        HierarchyOnlyNodeLoader.Instance)).ConfigureAwait(false);
                 return CountPits(kn5);
             }
 
@@ -246,17 +249,42 @@ namespace AcManager.Pages.Selected {
                 try {
                     var filename = SelectedTrackConfiguration.AiLaneFastFilename;
                     if (!File.Exists(filename)) {
-                        throw new InformativeException("Can’t recalculate pitboxes", "AI’s fast lane file is missing");
+                        throw new InformativeException("Can’t recalculate length", "AI fast lane file is missing");
                     }
 
                     using (WaitingDialog.Create("Loading AI lane…")) {
-                        var ai = await Task.Run(() => AiLane.FromFile(filename));
-                        SelectedTrackConfiguration.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, ai.CalculateLength());
+                        var length = (await Task.Run(() => AiLane.FromFile(filename).CalculateLength())).ToString("F0");
+                        SelectedTrackConfiguration.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, length);
                     }
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t recalculate pitboxes", e);
+                    NonfatalError.Notify("Can’t recalculate length", e);
                 }
-            }));
+            }, () => SelectedTrackConfiguration.AiLaneFastExists));
+
+            private AsyncCommand _recalculateWidthCommand;
+
+            public AsyncCommand RecalculateWidthCommand => _recalculateWidthCommand ?? (_recalculateWidthCommand = new AsyncCommand(async () => {
+                try {
+                    var filename = SelectedTrackConfiguration.AiLaneFastFilename;
+                    if (!File.Exists(filename)) {
+                        throw new InformativeException("Can’t recalculate width", "AI fast lane file is missing");
+                    }
+
+                    using (WaitingDialog.Create("Loading AI lane…")) {
+                        var width = await Task.Run(() => AiLane.FromFile(filename).CalculateWidth());
+                        if (width.Item2 < 1f) {
+                            throw new InformativeException("Can’t recalculate width", "It appears AI fast lane has no width");
+                        }
+
+                        var minWidth = width.Item1.ToString("F0");
+                        var maxWidth = width.Item2.ToString("F0");
+                        var value = minWidth == maxWidth ? maxWidth : $"{minWidth}–{maxWidth}";
+                        SelectedTrackConfiguration.SpecsWidth = SpecsFormat(AppStrings.TrackSpecs_Width_FormatTooltip, value);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t recalculate width", e);
+                }
+            }, () => SelectedTrackConfiguration.AiLaneFastExists));
 
             private void InitializeSpecs() {
                 RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => SelectedTrackConfiguration.SpecsLength, v => SelectedTrackConfiguration.SpecsLength = v);

@@ -80,6 +80,25 @@ namespace AcTools.Kn5File {
             return material;
         }
 
+        public void SkipMaterial() {
+            SkipString(); // name
+            SkipString(); // shader name
+            Skip(6); // blend (byte) + alphatested (byte) + depth mode
+
+            var properties = ReadInt32();
+            for (var i = 0; i < properties; i++) {
+                SkipString();
+                Skip(40);
+            }
+
+            var mappings = ReadInt32();
+            for (var i = 0; i < mappings; i++) {
+                SkipString();
+                Skip(4);
+                SkipString();
+            }
+        }
+
         public Kn5Node ReadNode() {
             var nodeClass = ReadNodeClass();
             var nodeName = ReadString();
@@ -178,6 +197,111 @@ namespace AcTools.Kn5File {
             }
 
             return node;
+        }
+
+        /// <summary>
+        /// Only hierarchy, without meshes or bones.
+        /// </summary>
+        public Kn5Node ReadNodeHierarchy() {
+            var nodeClass = ReadNodeClass();
+            var nodeName = ReadString();
+            var nodeChildren = ReadInt32();
+            var nodeActive = ReadBoolean();
+
+            var node = new Kn5Node {
+                NodeClass = nodeClass,
+                Name = nodeName,
+                Children = new List<Kn5Node>(nodeChildren),
+                Active = nodeActive
+            };
+
+            switch (node.NodeClass) {
+                case Kn5NodeClass.Base:
+                    node.Transform = ReadMatrix();
+                    break;
+
+                case Kn5NodeClass.Mesh:
+                    node.CastShadows = ReadBoolean();
+                    node.IsVisible = ReadBoolean();
+                    node.IsTransparent = ReadBoolean();
+
+                    node.Vertices = new Kn5Node.Vertice[0];
+                    node.Indices = new ushort[0];
+
+                    Skip((int)(44 * ReadUInt32()));
+                    Skip((int)(2 * ReadUInt32()));
+
+                    node.MaterialId = ReadUInt32();
+                    node.Layer = ReadUInt32();
+
+                    node.LodIn = ReadSingle();
+                    node.LodOut = ReadSingle();
+
+                    node.BoundingSphereCenter = ReadSingle3D();
+                    node.BoundingSphereRadius = ReadSingle();
+
+                    node.IsRenderable = ReadBoolean();
+                    break;
+
+                case Kn5NodeClass.SkinnedMesh:
+                    node.CastShadows = ReadBoolean();
+                    node.IsVisible = ReadBoolean();
+                    node.IsTransparent = ReadBoolean();
+
+                    node.Bones = new Kn5Node.Bone[0];
+                    node.Vertices = new Kn5Node.Vertice[0];
+                    node.VerticeWeights = new Kn5Node.VerticeWeight[0];
+                    node.Indices = new ushort[0];
+                    
+                    var bones = ReadUInt32();
+                    for (var i = 0; i < bones; i++) {
+                        SkipString();
+                        Skip(64);
+                    }
+                    
+                    Skip((int)(76 * ReadUInt32()));
+                    Skip((int)(2 * ReadUInt32()));
+
+                    node.MaterialId = ReadUInt32();
+                    node.Layer = ReadUInt32();
+
+                    node.MisteryBytes = ReadBytes(8); // the only mistery left?
+                    node.IsRenderable = true;
+                    break;
+            }
+
+            return node;
+        }
+        
+        public int SkipNode() {
+            var nodeClass = ReadNodeClass();
+            SkipString();
+
+            var children = ReadInt32();
+            switch (nodeClass) {
+                case Kn5NodeClass.Base:
+                    Skip(65); // active flag (byte) + transform matrix
+                    break;
+
+                case Kn5NodeClass.Mesh:
+                    Skip(4); // active flag + cast shadow + is visible + transparent
+                    Skip((int)(44 * ReadUInt32()));
+                    Skip((int)(2 * ReadUInt32()) + 33);
+                    break;
+
+                case Kn5NodeClass.SkinnedMesh:
+                    Skip(4); // active flag + cast shadow + is visible + transparent
+                    var bones = ReadUInt32();
+                    for (var i = 0; i < bones; i++) {
+                        SkipString();
+                        Skip(64);
+                    }
+                    Skip((int)(76 * ReadUInt32()));
+                    Skip((int)(2 * ReadUInt32()) + 16);
+                    break;
+            }
+
+            return children;
         }
     }
 }

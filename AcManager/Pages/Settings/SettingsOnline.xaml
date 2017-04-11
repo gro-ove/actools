@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsOnline">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />

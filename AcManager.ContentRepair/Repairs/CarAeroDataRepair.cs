@@ -1,7 +1,7 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarAeroDataRepair : CarSimpleRepairBase {
         public static readonly CarAeroDataRepair Instance = new CarAeroDataRepair();
 
@@ -11,12 +11,12 @@ namespace AcManager.ContentRepair {
             aero.Save();
         }
 
-        protected override ObsoletableAspect GetObsoletableAspect(CarObject car, DataWrapper data) {
+        protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             if (car.AcdData?.GetIniFile(@"aero.ini").ContainsKey(@"DATA") != true) return null;
-            return new ObsoletableAspect("Obsolete section DATA in aero.ini", "How old is this mod? ಠ_ಠ", 
+            return new ContentObsoleteSuggestion("Obsolete section DATA in aero.ini", "How old is this mod? ಠ_ಠ",
                     (p, c) => FixAsync(car, p, c)) {
-                        AffectsData = true
-                    };
+                AffectsData = true
+            };
         }
     }
 }

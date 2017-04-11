@@ -520,6 +520,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  °F.
+        /// </summary>
+        public static string Common_FahrenheitPostfix {
+            get {
+                return ResourceManager.GetString("Common_FahrenheitPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter:.
         /// </summary>
         public static string Common_FilterLabel {

@@ -36,9 +36,8 @@
 
         <StackPanel Grid.Column="0" Grid.Row="1">
             <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-            <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                    SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
+            <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.CanContentScroll="True" SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel IsItemsHost="True" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
@@ -64,10 +63,22 @@
         </StackPanel>
 
         <DockPanel Grid.Column="1" Grid.Row="1">
+            <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
+                <Label Margin="0 0 0 8" Content="Scale apps:" DockPanel.Dock="Top" />
+                <DockPanel>
+                    <Button Content="Set Scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+                    <Button Content="Multiply Scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+                    <mui:ValueLabel Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Integer" Postfix="%"
+                            Content="Value" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                    <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            TickFrequency="20" TickPlacement="BottomRight" />
+                </DockPanel>
+            </mui:SpacingStackPanel>
+
             <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" DockPanel.Dock="Top" />
-            <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
-                    Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                    IsReadOnly="False" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
+            <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False"
+                    EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="3*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName">
                         <DataGridTemplateColumn.CellTemplate>
@@ -76,31 +87,48 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX">
+                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX"
+                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" />
+                                <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
+                                        TextAlignment="Right" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY">
+                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY"
+                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" />
+                                <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
+                                        TextAlignment="Right" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Visible}" SortMemberPath="IsVisible">
+                    <DataGridTemplateColumn Width="80" Header="Scale" SortMemberPath="Scale" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <DockPanel>
+                                    <TextBlock Text="%" DockPanel.Dock="Right" Margin="2 0 0 0" />
+                                    <mui:BetterTextBox Text="{Binding Scale}" Mode="Integer" Placeholder="100" Style="{StaticResource Borderless.White}"
+                                            TextAlignment="Right" />
+                                </DockPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Locked}" SortMemberPath="IsBlocked">
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Visible}" SortMemberPath="IsVisible"
+                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Locked}" SortMemberPath="IsBlocked"
+                            HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

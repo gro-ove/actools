@@ -22,6 +22,7 @@ namespace AcManager.Tools.Profile {
         private const string KeyOverall = "overall";
         private const string KeyDistancePerCarPrefix = "distancePerCar:";
         private const string KeyDistancePerTrackPrefix = "distancePerTrack:";
+        private const string KeyMaxSpeedPerCarPrefix = "maxSpeedPerCar:";
         private const string KeySessionStatsPrefix = "sessionStats:";
 
         public static int OptionRunStatsWebserver = 0;
@@ -307,9 +308,12 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        private static void UpdateCarDrivenDistance(SessionStats current) {
-            if (current.CarId == null) return;
-            (CarsManager.Instance.GetWrapperById(current.CarId)?.Value as CarObject)?.RaiseTotalDrivenDistanceChanged();
+        private static void UpdateCarDrivenDistanceAndMaxSpeed(SessionStats current) {
+            var car = current.CarId == null ? null : CarsManager.Instance.GetWrapperById(current.CarId)?.Value as CarObject;
+            if (car == null) return;
+            
+            car.RaiseMaxSpeedAchievedChanged();
+            car.RaiseTotalDrivenDistanceChanged();
         }
 
         private static void UpdateTrackDrivenDistance(SessionStats current) {
@@ -332,7 +336,7 @@ Gone offroad: {current.GoneOffroad} time(s)");
 
             ExtendOveralls(current);
             AppendSession(current);
-            UpdateCarDrivenDistance(current);
+            UpdateCarDrivenDistanceAndMaxSpeed(current);
             UpdateTrackDrivenDistance(current);
         }
 
@@ -443,6 +447,10 @@ Gone offroad: {current.GoneOffroad} time(s)");
 
         public double GetDistanceDrivenByCar(string carId) {
             return GetMainStorage().GetDouble(KeyDistancePerCarPrefix + carId);
+        }
+
+        public double GetMaxSpeedByCar(string carId) {
+            return GetMainStorage().GetDouble(KeyMaxSpeedPerCarPrefix + carId);
         }
 
         public IEnumerable<string> GetTrackLayoutsIds() {

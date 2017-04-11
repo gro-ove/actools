@@ -175,7 +175,7 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
-        public SelectCarDialog(CarObject car) {
+        public SelectCarDialog(CarObject car, string defaultFilter = null) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
@@ -207,17 +207,32 @@ namespace AcManager.Pages.Dialogs {
             };
 
             Buttons = new [] { OkButton, CancelButton };
+
+            if (defaultFilter != null) {
+                Tabs.SavePolicy = SavePolicy.SkipLoading;
+                Tabs.SelectedSource = UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={0}", defaultFilter);
+            }
         }
 
         [CanBeNull]
         public static CarObject Show(CarObject car = null) {
-            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault());
+            return Show(car, null);
+        }
+
+        [CanBeNull]
+        public static CarObject Show(string defaultFilter) {
+            return Show(null, defaultFilter);
+        }
+
+        [CanBeNull]
+        public static CarObject Show([CanBeNull] CarObject car, string defaultFilter) {
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault(), defaultFilter);
             dialog.ShowDialog();
             return dialog.IsResultOk ? dialog.SelectedCar : null;
         }
 
         [CanBeNull]
-        public static CarObject Show(CarObject car, ref CarSkinObject carSkin) {
+        public static CarObject Show([CanBeNull] CarObject car, ref CarSkinObject carSkin) {
             var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
                 SelectedSkin = car?.SkinsActualList.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
             };

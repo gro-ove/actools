@@ -3,30 +3,53 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarTransmissionLossSelector : INotifyPropertyChanged {
+        public double DataTorque { get; }
+
+        public double DataPower { get; }
+
+        public double UiTorque => DataTorque * Multipler;
+
+        public double UiPower => DataPower * Multipler;
+
         public CarObject Car { get; }
 
-        private int _value;
+        private double _value;
+        private double _multipler;
 
-        public int Value {
+        public double Value {
             get { return _value; }
             set {
-                value = value.Clamp(0, 100);
+                value = value.Clamp(0d, 0.95d);
                 if (value == _value) return;
                 _value = value;
+                _multipler = 1d / (1d - value);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Multipler));
+                OnPropertyChanged(nameof(UiPower));
+                OnPropertyChanged(nameof(UiTorque));
+                CacheStorage.Set(_key, value);
             }
         }
 
-        public CarTransmissionLossSelector(CarObject car) {
+        public double Multipler => _multipler;
+
+        private readonly string _key;
+
+        public CarTransmissionLossSelector(CarObject car, double dataTorque, double dataPower) {
+            DataTorque = dataTorque;
+            DataPower = dataPower;
             Car = car;
+
+            _key = ".CarTransmissionLossSelector:" + car.Id;
+            Value = CacheStorage.GetDouble(_key, 0.13d);
 
             InitializeComponent();
             DataContext = this;
 
-            Value = 13;
             Buttons = new[] { OkButton, CancelButton };
         }
 

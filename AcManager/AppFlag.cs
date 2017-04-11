@@ -16,16 +16,6 @@ namespace AcManager {
         AutoConnectPeriod,
 
         /// <summary>
-        /// Delay, after which RHM service will be unloaded after the end of race (time 
-        /// interval or seconds). Default value: 1 minute (because, at least on my PC,
-        /// it appears that RHM a lot of CPU in background). But you can increase it
-        /// if you want.
-        /// Example: --rhm-keep-alive=30:00.
-        /// </summary>
-        [FlagDefaultValue("01:00")]
-        RhmKeepAlive,
-
-        /// <summary>
         /// Maximum size of generated track map. Default value is 8192, could be upped
         /// to 16384 (DX11 required), but 16K maps might cause performance issues.
         /// Example: --track-map-generator-max-size=16384.

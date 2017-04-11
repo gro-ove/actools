@@ -130,6 +130,18 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public CustomPresetEntryBase Video { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.VideoPresetsKey);
 
         public CustomPresetEntryBase Controls { get; } = new ControlsPresetEntry(false, null);
+
+        private bool? _rearViewMirror;
+
+        public bool? RearViewMirror {
+            get { return _rearViewMirror; }
+            set {
+                if (Equals(value, _rearViewMirror)) return;
+                _rearViewMirror = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(PresetPerMode.Serialized));
+            }
+        }
     }
 
     public class PresetsPerModeBackup : IDisposable {
@@ -158,6 +170,10 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 if (backup.Controls != null) {
                     File.WriteAllText(AcSettingsHolder.Controls.Filename, backup.Controls);
                 }
+
+                if (backup.RearViewMirror != null) {
+                    AcSettingsHolder.Gameplay.DisplayMirror = backup.RearViewMirror.Value;
+                }
             } catch (Exception e) {
                 throw new InformativeException("Can’t restore presets after setting mode-specific ones", e);
             }
@@ -171,6 +187,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         private class Backup {
             public string Apps, Audio, Video, Controls;
+            public bool? RearViewMirror;
         }
 
         public PresetsPerModeBackup(PresetPerModeBase set) {
@@ -194,6 +211,10 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 } catch (Exception e) {
                     Logging.Warning(e);
                 }
+            }
+
+            if (set.RearViewMirror.HasValue) {
+                backup.RearViewMirror = set.RearViewMirror.Value;
             }
 
             try {
@@ -228,6 +249,8 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                     ((CustomPresetEntryBase)p.GetValue(this)).CopyFrom(e);
                 }
             }
+
+            RearViewMirror = ext.RearViewMirror ?? RearViewMirror;
         }
 
         [CanBeNull]
@@ -291,6 +314,10 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             Apply(Video, AcSettingsHolder.VideoPresets, "video");
             Apply(Controls, AcSettingsHolder.Controls.Filename, "controls");
 
+            if (RearViewMirror.HasValue) {
+                AcSettingsHolder.Gameplay.DisplayMirror = RearViewMirror.Value;
+            }
+
             // We need apps to be disposed first: when disposing, it will update preset is settings
             // changed, so we must revert them after that check.
             return apps.Join(backup);
@@ -348,6 +375,18 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         public virtual void OnConditionChanged() { }
 
+        private bool _enabled = true;
+
+        public bool Enabled {
+            get { return _enabled; }
+            set {
+                if (Equals(value, _enabled)) return;
+                _enabled = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Serialized));
+            }
+        }
+
         private bool _deleted;
 
         public bool Deleted {
@@ -369,6 +408,8 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             var jObject = JObject.Parse(serialized);
             ConditionId = jObject.GetStringValueOnly("id");
             ConditionFn = jObject.GetStringValueOnly("fn");
+            Enabled = jObject.GetBoolValueOnly("enabled") ?? true;
+            RearViewMirror = jObject.GetBoolValueOnly("mirror");
             Controls.Import(jObject["controls"] as JObject);
             Apps.Import(jObject["apps"] as JObject);
             Audio.Import(jObject["audio"] as JObject);
@@ -378,6 +419,8 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public string Serialized => new JObject {
             ["id"] = ConditionId,
             ["fn"] = ConditionFn,
+            ["enabled"] = Enabled,
+            ["mirror"] = RearViewMirror,
             ["controls"] = Controls.Export(),
             ["apps"] = Apps.Export(),
             ["audio"] = Audio.Export(),

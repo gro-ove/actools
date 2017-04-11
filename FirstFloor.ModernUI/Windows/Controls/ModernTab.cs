@@ -25,7 +25,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Save or load even if there is no link with that URI.
         /// </summary>
-        Flexible
+        Flexible,
+
+        /// <summary>
+        /// Do not load URI, but instead use current Source value.
+        /// </summary>
+        SkipLoading
     }
 
     public class DirectContentLoaderEntry {
@@ -125,7 +130,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateSelection(bool skipLoading) {
-            if (_linkList == null || Links == null) {
+            if (_linkList == null || Links == null || SavePolicy == SavePolicy.SkipLoading && Frame.Source != null) {
                 return;
             }
 

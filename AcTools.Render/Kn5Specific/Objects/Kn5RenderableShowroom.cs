@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -31,14 +32,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _ready = new Dictionary<string, Tuple<Texture2D, ShaderResourceView>>();
             }
 
-            public byte[] LoadTexture(string textureName, Stream stream, int textureSize) {
+            public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
                 if (textureSize > 4e6) {
                     AcToolsLogging.Write($"{textureName}: {(double)textureSize / 1024 / 1024:F1} MB");
                 }
 
                 MemoryChunk.Bytes(textureSize).Execute(() => {
-                    var bytes = new byte[textureSize];
-                    stream.Read(bytes, 0, textureSize);
+                    var bytes = reader.ReadBytes(textureSize);
 
                     // FromStream simply reads Stream to byte[] underneath, so we could just do it here in
                     // a more controlled manner

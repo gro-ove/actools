@@ -34,8 +34,6 @@ namespace AcManager.Controls.Dialogs {
 
         public string PresetableKey => _key;
 
-        public string DefaultPreset => null;
-
         public string ExportToPresetData() {
             return null;
         }
@@ -237,8 +235,6 @@ namespace AcManager.Controls.Dialogs {
             string IUserPresetable.PresetableKey => PresetableKeyValue;
 
             string IUserPresetable.PresetableCategory => PresetableKeyValue;
-
-            string IUserPresetable.DefaultPreset => null;
 
             public string ExportToPresetData() {
                 return _saveable.ToSerializedString();

@@ -3,10 +3,8 @@ using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using JetBrains.Annotations;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarDriver3DRepair : CarSimpleRepairBase {
-        public static readonly CarDriver3DRepair Instance = new CarDriver3DRepair();
-
         [CanBeNull]
         private static string[] GetHiddenNodes(string driverModel) {
             switch (driverModel) {
@@ -38,7 +36,7 @@ namespace AcManager.ContentRepair {
             driver.Save();
         }
 
-        protected override ObsoletableAspect GetObsoletableAspect(CarObject car, DataWrapper data) {
+        protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             var driver = data.GetIniFile(@"driver3d.ini");
             var hidden = GetHiddenNodes(driver["MODEL"].GetNonEmpty("NAME"));
             if (hidden == null) return null;
@@ -53,7 +51,7 @@ namespace AcManager.ContentRepair {
             return null;
 
             Error:
-            return new ObsoletableAspect("Incorrect driver params",
+            return new ContentObsoleteSuggestion("Incorrect driver params",
                     "When Kunos updated drivers models, they’ve changed names of some nodes as well, thus making some [mono]HIDE_OBJECT[/mono] sections invalid. Because of that, you might see some bits of driver’s face while driving.",
                     (p, c) => FixAsync(car, p, c)) {
                 AffectsData = true

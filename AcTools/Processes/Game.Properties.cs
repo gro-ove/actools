@@ -149,39 +149,43 @@ namespace AcTools.Processes {
         }
 
         public class OnlineProperties : BaseModeProperties {
-            public string ServerName, ServerIp, Guid, Password, RequestedCar;
+            public string ServerName, ServerIp, Guid, Password, RequestedCar, SessionName;
             public int ServerPort;
             public int? ServerHttpPort;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
 
-                var section = file["REMOTE"];
-                section.Set("SERVER_IP", ServerIp);
-                section.Set("SERVER_PORT", ServerPort);
-                
-                if (ServerName != null) {
-                    /*if (!Regex.IsMatch(ServerName, @"^[\w -]+$")) {
-                        AcToolsLogging.Write($"(Warning) For safety reasons, can’t set server name to “{ServerName}”");
-                    } else {
+                {
+                    var section = file["REMOTE"];
+                    section.Set("SERVER_IP", ServerIp);
+                    section.Set("SERVER_PORT", ServerPort);
+
+                    if (ServerName != null) {
                         section.Set("SERVER_NAME", ServerName);
-                    }*/
+                    } else {
+                        section.Remove("SERVER_NAME");
+                    }
 
-                    section.Set("SERVER_NAME", ServerName);
-                } else {
-                    section.Remove("SERVER_NAME");
+                    if (ServerHttpPort.HasValue) {
+                        section.Set("SERVER_HTTP_PORT", ServerHttpPort);
+                    } else {
+                        section.Remove("SERVER_HTTP_PORT");
+                    }
+
+                    section.Set("REQUESTED_CAR", RequestedCar ?? file["RACE"].GetPossiblyEmpty("MODEL"));
+                    section.Set("GUID", Guid);
+                    section.Set("PASSWORD", Password);
+                    section.Set("ACTIVE", true);
                 }
 
-                if (ServerHttpPort.HasValue) {
-                    section.Set("SERVER_HTTP_PORT", ServerHttpPort);
-                } else {
-                    section.Remove("SERVER_HTTP_PORT");
+                {
+                    // specially for SimRacers.es app
+                    var section = file["SESSION_0"];
+                    section.Set("NAME", "Nothing");
+                    section.Set("TYPE", SessionType.Practice);
+                    section.Set("DURATION_MINUTES", Duration);
                 }
-
-                section.Set("REQUESTED_CAR", RequestedCar ?? file["RACE"].GetPossiblyEmpty("MODEL"));
-                section.Set("GUID", Guid);
-                section.Set("PASSWORD", Password);
-                section.Set("ACTIVE", true);
             }
         }
 

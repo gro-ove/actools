@@ -2,10 +2,8 @@
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarPitStopParamsRepair : CarSimpleRepairBase {
-        public static readonly CarPitStopParamsRepair Instance = new CarPitStopParamsRepair();
-
         /// <summary>
         /// Sets pit stop parameters.
         /// </summary>
@@ -40,9 +38,9 @@ namespace AcManager.ContentRepair {
             SetPitParams(data);
         }
 
-        protected override ObsoletableAspect GetObsoletableAspect(CarObject car, DataWrapper data) {
+        protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             if (data.GetIniFile(@"car.ini").ContainsKey(@"PIT_STOP")) return null;
-            return new ObsoletableAspect("Pit stop parameters missing", "You might want to add them.",
+            return new ContentObsoleteSuggestion("Pit stop parameters missing", "You might want to add them.",
                     (p, c) => FixAsync(car, p, c)) {
                 AffectsData = true
             };

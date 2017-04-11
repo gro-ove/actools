@@ -1,0 +1,15 @@
+﻿sid: 22_-1921414468_1645627313
+
+To solve the issue with race loading starting with quite a delay, I’ve added a new starter. I’m not entirely sure, but I think it might be the best one so far. Let me explain how it works.
+
+First of all, why do we have this issue at all? By default (and, as far as I know, there is no easy way to change it) “acs.exe” checks if it is running thought Steam and, if not, closes and asks Steam to restart AC. And Steam, as it was hard-coded, runs “AssettoCorsa.exe” — original launcher — which then runs “acs.exe” without any difficulty (since it runs thought Steam, all children processes are considered to be running through Steam as well). So, running “acs.exe” from CM could be a bit tricky.
+
+Official way offered by Kunos is to set a special flag to “race.ini” and then start the original launcher. After initialization, it checks this flag, starts “acs.exe” and closes itself. But there are two problems with this approach — first of all, it takes quite a lot of time for original launcher to initialize. And second, when it’s being started though Steam, Steam takes some time as well, and sometimes just fails to load. Rarely, but it happens.
+
+For a while, there were some other solutions, such as UI Module (basically a backdoor for the original launcher allowing to control it from the outside), faking Steam SSE or Tricky. All of them faster, but not without drawbacks. For example, UI Module requires original launcher to run — and it could take some time and memory. SSE doesn’t work with x64. Tricky replaces original launcher with dummy (and occasionaly because of some crash might forget to change it back) and has that Steam initialization stage as well.
+
+AC Service, on the other hand, I believe, doesn’t have any of those issues. It’s fast, reliable, doesn’t consume much memory (only about ≈10 MB), works with everything, allows to use original launcher and provides an access to Special Challenges progress. Although, right now it’s quite raw and might be buggy.
+
+The way it works is quite simple. It replaces the original launcher (renaming it to “AssettoCorsa_original.exe”) with a new small app behaving like a background service with a tray icon. When Steam will try to launch Assetto Corsa, instead that service will be started. And now it has a full access to Steam on behalf of AC launcher, and will be able to run “acs.exe” as if nothing changed!
+
+Quite a lot of text for nothing, not needed actually?

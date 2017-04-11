@@ -11,14 +11,18 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
     /// Full version with presets. Load-save-switch between presets-save as a preset, full
     /// package. Also, provides previews for presets!
     /// </summary>
-    public class TrackStateViewModel : TrackStateViewModelBase, IUserPresetable, IPresetsPreviewProvider {
+    public class TrackStateViewModel : TrackStateViewModelBase, IUserPresetable, IUserPresetableDefaultPreset, IUserPresetableCustomDisplay, 
+            IUserPresetableCustomSorting, IPresetsPreviewProvider {
         private static TrackStateViewModel _instance;
 
         public static TrackStateViewModel Instance => _instance ?? (_instance = new TrackStateViewModel("qdtrackstate"));
@@ -40,7 +44,7 @@ namespace AcManager.Controls.ViewModels {
 
         string IUserPresetable.PresetableCategory => PresetableCategory;
 
-        string IUserPresetable.DefaultPreset => "Green";
+        string IUserPresetableDefaultPreset.DefaultPreset => "Green";
 
         public string ExportToPresetData() {
             return Saveable.ToSerializedString();
@@ -54,6 +58,28 @@ namespace AcManager.Controls.ViewModels {
 
         object IPresetsPreviewProvider.GetPreview(string data) {
             return new UserControls.TrackStateDescription { DataContext = CreateFixed(data) };
+        }
+
+        private static double? LoadGrip(string data) {
+            try {
+                var o = JObject.Parse(data);
+                return o["s"].AsDouble();
+            } catch (Exception e) {
+                Logging.Error(e.Message);
+                return null;
+            }
+        }
+
+        string IUserPresetableCustomDisplay.GetDisplayName(string name, string data) {
+            var g = LoadGrip(data);
+            return g.HasValue ? $"{name} ({g.Value * 100:F0}%)" : $"{name} (?)";
+        }
+
+        int IUserPresetableCustomSorting.Compare(string aName, string aData, string bName, string bData) {
+            var aGrip = LoadGrip(aData);
+            var bGrip = LoadGrip(bData);
+            if (aGrip == bGrip) return string.Compare(aName, bName, StringComparison.Ordinal);
+            return (aGrip ?? 0d).CompareTo(bGrip ?? 0d);
         }
         #endregion
     }

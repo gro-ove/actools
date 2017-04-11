@@ -212,8 +212,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection, _gBufferNormals;
-        private TargetResourceTexture _gBufferDepth;
+        public bool GBufferMsaa { get; set; } = true;
+
+        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection;
 
         private bool _useSslr;
 
@@ -245,9 +246,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void ResizeSslrBuffers() {
-            _sslrBufferScene?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            _sslrBufferResult?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            _sslrBufferBaseReflection?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            var sample = GBufferMsaa ? SampleDescription : (SampleDescription?)null;
+            _sslrBufferScene?.Resize(DeviceContextHolder, Width, Height, sample);
+            _sslrBufferResult?.Resize(DeviceContextHolder, Width, Height, sample);
+            _sslrBufferBaseReflection?.Resize(DeviceContextHolder, Width, Height, sample);
         }
 
         private TargetResourceTexture _aoBuffer;
@@ -363,16 +365,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
+        private TargetResourceTexture _gBufferNormals, _gBufferDepthAlt;
+        private TargetResourceDepthTexture _gBufferDepthD;
+
         private void UpdateGBuffers() {
             var value = UseSslr || UseAo;
             if (_gBufferNormals != null == value) return;
 
             if (value) {
                 _gBufferNormals = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                _gBufferDepth = TargetResourceTexture.Create(Format.R32_Float);
+                _gBufferDepthAlt = TargetResourceTexture.Create(Format.R32_Float);
+                _gBufferDepthD = TargetResourceDepthTexture.Create();
             } else {
                 DisposeHelper.Dispose(ref _gBufferNormals);
-                DisposeHelper.Dispose(ref _gBufferDepth);
+                DisposeHelper.Dispose(ref _gBufferDepthAlt);
+                DisposeHelper.Dispose(ref _gBufferDepthD);
             }
 
             if (InitiallyResized) {
@@ -381,8 +388,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void ResizeGBuffers() {
-            _gBufferNormals?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
-            _gBufferDepth?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            var sample = GBufferMsaa ? SampleDescription : (SampleDescription?)null;
+            _gBufferNormals?.Resize(DeviceContextHolder, Width, Height, sample);
+            // _gBufferDepthAlt?.Resize(DeviceContextHolder, Width, Height, sample);
+            // _gBufferDepthD?.Resize(DeviceContextHolder, Width, Height, sample);
         }
 
         private readonly bool _showroom;
@@ -1038,19 +1047,36 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
 
             if (_blurHelper == null) {
                 _blurHelper = DeviceContextHolder.GetHelper<BlurHelper>();
+                /* 
+            DeviceContext.Rasterizer.State = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
+                IsMultisampleEnabled = false
+            }); */
             }
 
             // Draw scene to G-buffer to get normals, depth and base reflection
             DeviceContext.Rasterizer.SetViewports(Viewport);
-            DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView, _gBufferDepth.TargetView);
-            DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+
+            var sample = GBufferMsaa ? SampleDescription : (SampleDescription?)null;
+            ShaderResourceView depth;
+            if (UseMsaa && GBufferMsaa) {
+                _gBufferDepthAlt.Resize(DeviceContextHolder, Width, Height, sample);
+                DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView,
+                        _gBufferDepthAlt.TargetView);
+                DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                DeviceContext.ClearRenderTargetView(_gBufferDepthAlt.TargetView, (Color4)new Vector4(1f));
+                depth = _gBufferDepthAlt.View;
+            } else {
+                _gBufferDepthD.Resize(DeviceContextHolder, Width, Height, sample);
+                DeviceContext.OutputMerger.SetTargets(_gBufferDepthD.DepthView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView);
+                DeviceContext.ClearDepthStencilView(_gBufferDepthD.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                depth = _gBufferDepthD.View;
+            }
+
             DeviceContext.ClearRenderTargetView(_gBufferNormals.TargetView, (Color4)new Vector4(0.5f));
 
             if (_sslrBufferBaseReflection != null) {
                 DeviceContext.ClearRenderTargetView(_sslrBufferBaseReflection.TargetView, (Color4)new Vector4(0));
             }
-
-            DeviceContext.ClearRenderTargetView(_gBufferDepth.TargetView, (Color4)new Vector4(1f));
 
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
@@ -1085,10 +1111,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
                     SetInnerBuffer(null);
                 }
 
-                aoHelper.Draw(DeviceContextHolder,
-                        _gBufferDepth.View,
-                        _gBufferNormals.View,
-                        ActualCamera, _aoBuffer.TargetView);
+                aoHelper.Draw(DeviceContextHolder, depth, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView);
                 aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
 
                 var effect = Effect;
@@ -1120,19 +1143,12 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
                     effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
                 }
 #endif
-
-                _sslrHelper.Draw(DeviceContextHolder,
-                        _gBufferDepth.View,
-                        _sslrBufferBaseReflection.View,
-                        _gBufferNormals.View,
-                        ActualCamera, _sslrBufferResult.TargetView);
+                
+                _sslrHelper.Draw(DeviceContextHolder, depth, _sslrBufferBaseReflection.View, _gBufferNormals.View, ActualCamera,
+                        _sslrBufferResult.TargetView);
                 _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultiplier));
-                _sslrHelper.FinalStep(DeviceContextHolder,
-                        _sslrBufferScene.View,
-                        _sslrBufferResult.View,
-                        _sslrBufferBaseReflection.View,
-                        _gBufferNormals.View,
-                        ActualCamera, InnerBuffer.TargetView);
+                _sslrHelper.FinalStep(DeviceContextHolder, _sslrBufferScene.View, _sslrBufferResult.View, _sslrBufferBaseReflection.View,
+                        _gBufferNormals.View, ActualCamera, InnerBuffer.TargetView);
             } else {
                 DrawPreparedSceneToBuffer();
             }
@@ -1163,7 +1179,8 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
             DisposeHelper.Dispose(ref _sslrBufferResult);
             DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
             DisposeHelper.Dispose(ref _gBufferNormals);
-            DisposeHelper.Dispose(ref _gBufferDepth);
+            DisposeHelper.Dispose(ref _gBufferDepthD);
+            DisposeHelper.Dispose(ref _gBufferDepthAlt);
             DisposeHelper.Dispose(ref _aoBuffer);
 
             base.DisposeOverride();

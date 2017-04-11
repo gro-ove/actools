@@ -678,8 +678,6 @@ namespace AcManager.Controls.CustomShowroom {
 
         string IUserPresetable.PresetableCategory => _presetableKeyValue;
 
-        string IUserPresetable.DefaultPreset => null;
-
         public string ExportToPresetData() {
             return _saveable?.ToSerializedString();
         }

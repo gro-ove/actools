@@ -11,11 +11,11 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarModelRepair : CarRepairBase {
         private static readonly string[] SuspensionNodes = { "SUSP_LF", "SUSP_RF", "SUSP_LR", "SUSP_RR" };
 
-        private Task<bool> FixAsync([NotNull] CarObject car, Action<Kn5> fix, bool saveNodes, IProgress<AsyncProgressEntry> progress = null,
+        private Task<bool> FixAsync([NotNull] CarObject car, Action<Kn5> fix, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return Task.Run(() => {
@@ -55,12 +55,12 @@ namespace AcManager.ContentRepair {
             }
         }
 
-        private ObsoletableAspect TestSuspensionNodes(CarObject car, Kn5 kn5) {
+        private ContentRepairSuggestion TestSuspensionNodes(CarObject car, Kn5 kn5) {
             if (SuspensionNodes.All(name => kn5.FirstByName(name) != null)) return null;
 
-            return new ObsoletableAspect("Suspension nodes missing",
+            return new ContentObsoleteSuggestion("Suspension nodes missing",
                     "Might cause crashes, especially in showroom.",
-                    (p, c) => FixAsync(car, FixSuspensionNodes, true, p, c));
+                    (p, c) => FixAsync(car, FixSuspensionNodes, p, c));
         }
 
         private static IEnumerable<Kn5Material.ShaderProperty> GetFresnelProperties(Kn5 kn5) {
@@ -78,7 +78,7 @@ namespace AcManager.ContentRepair {
             }
         }
 
-        private ObsoletableAspect TestFrensel(CarObject car, Kn5 kn5) {
+        private ContentRepairSuggestion TestFrensel(CarObject car, Kn5 kn5) {
             var any = false;
             foreach (var property in GetFresnelProperties(kn5)) {
                 any = true;
@@ -86,14 +86,14 @@ namespace AcManager.ContentRepair {
             }
 
             if (!any) return null;
-            return new ObsoletableAspect("Car paint might be not reflective enough",
+            return new ContentObsoleteSuggestion("Car paint might be not reflective enough",
                     "In one of updates, Kunos changed behavior of some shaders, and so now you need to set fresnelMaxLevel to be about two times bigger.",
-                    (p, c) => FixAsync(car, FixFrensel, false, p, c));
+                    (p, c) => FixAsync(car, FixFrensel, p, c));
         }
 
-        public override IEnumerable<ObsoletableAspect> GetObsoletableAspects(CarObject car) {
+        public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData);
-            if (kn5Filename == null || !File.Exists(kn5Filename)) return new ObsoletableAspect[0];
+            if (kn5Filename == null || !File.Exists(kn5Filename)) return new ContentRepairSuggestion[0];
 
             var kn5 = Kn5.FromFile(kn5Filename);
 

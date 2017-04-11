@@ -118,7 +118,7 @@ namespace AcManager.Controls.Helpers {
 
         private HierarchicalGroup Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
             var directory = Path.Combine(ControlsSettings.PresetsDirectory, sub);
-            return new HierarchicalGroup(header, UserPresetsControl.GroupPresets(presets, directory));
+            return new HierarchicalGroup(header, UserPresetsControl.GroupPresets(presets, directory, null, null));
         }
 
         public void SwitchToPreset(ISavedPresetEntry entry) {

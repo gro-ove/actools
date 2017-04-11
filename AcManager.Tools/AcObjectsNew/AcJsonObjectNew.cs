@@ -163,7 +163,7 @@ namespace AcManager.Tools.AcObjectsNew {
         protected virtual void LoadYear(JObject json) {
             Year = json.GetIntValueOnly("year");
             if (!Year.HasValue && Name != null) {
-                Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
+                Year = AcStringValues.GetYearFromName(Name);
             }
         }
 

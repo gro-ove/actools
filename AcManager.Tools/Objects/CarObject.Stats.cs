@@ -10,5 +10,14 @@ namespace AcManager.Tools.Objects {
             _totalDrivenDistance = null;
             OnPropertyChanged(nameof(TotalDrivenDistance));
         }
+
+        private double? _maxSpeedAchieved;
+
+        public double MaxSpeedAchieved => _maxSpeedAchieved ?? (_maxSpeedAchieved = PlayerStatsManager.Instance.GetMaxSpeedByCar(Id)).Value;
+
+        public void RaiseMaxSpeedAchievedChanged() {
+            _maxSpeedAchieved = null;
+            OnPropertyChanged(nameof(MaxSpeedAchieved));
+        }
     }
 }

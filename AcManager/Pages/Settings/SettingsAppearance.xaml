@@ -6,7 +6,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsAppearance">
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}"
                     Margin="0 0 0 16">

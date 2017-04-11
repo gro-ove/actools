@@ -108,8 +108,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             for (var i = 0; i < emoji.Length; i++) {
                 int code;
-                if (Char.IsHighSurrogate(emoji, i)) {
-                    code = Char.ConvertToUtf32(emoji, i);
+                if (char.IsHighSurrogate(emoji, i)) {
+                    code = char.ConvertToUtf32(emoji, i);
                     i++;
                 } else {
                     code = emoji[i];

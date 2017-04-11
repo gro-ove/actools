@@ -23,7 +23,7 @@ Replaces original launcher with a small service. Service runs in background (wit
   + Safe: even though it replaces [i]AssettoCorsa.exe[/i] (and renames it to [i]AssettoCorsa_original.exe[/i]), original launcher still can be easily started via icon in tray — and also, default behavior of that service is to run [i]AssettoCorsa_original.exe[/i], so, it’s likely you won’t even notice that replacement;
   + Compatible: can be used when original launcher is running;
   + Functional: allows to get Special Challenges progress when Steam profile is private;
-  − Non-finished: apparently, at some point it breaks (you would have to restart Steam), and I haven’t yet figured out why.
+  − Non-finished: apparently, at some point it breaks (you would have to restart Steam or go to Task Manager and kill “AC Service Passage”), and I haven’t yet figured out why.
 
  • [b]Replacement [i](new)[/i][/b]
 Replaces original launcher with CM itself. To enable it, just open AC root folder, rename [i]AssettoCorsa.exe[/i] to [i]AssettoCorsa_original.exe[/i] and then put there CM named as [i]AssettoCorsa.exe[/i].

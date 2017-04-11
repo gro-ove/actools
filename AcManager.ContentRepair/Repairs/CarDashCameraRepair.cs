@@ -1,10 +1,8 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarDashCameraRepair : CarSimpleRepairBase {
-        public static readonly CarDashCameraRepair Instance = new CarDashCameraRepair();
-
         protected override void Fix(CarObject car, DataWrapper data) {
             var dashCam = data.GetIniFile("dash_cam.ini");
             var section = dashCam["DASH_CAM"];
@@ -16,10 +14,10 @@ namespace AcManager.ContentRepair {
             dashCam.Save();
         }
 
-        protected override ObsoletableAspect GetObsoletableAspect(CarObject car, DataWrapper data) {
+        protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             var dashCam = data.GetIniFile(@"dash_cam.ini");
             if (!dashCam.IsEmptyOrDamaged()) return null;
-            return new ObsoletableAspect("Dash camera is not set", "By default, its position is below the car, which is quite unusable.",
+            return new ContentObsoleteSuggestion("Dash camera is not set", "By default, its position is below the car, which is quite unusable.",
                     (p, c) => FixAsync(car, p, c)) {
                 AffectsData = true
             };

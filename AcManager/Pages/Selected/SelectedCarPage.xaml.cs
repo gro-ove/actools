@@ -17,6 +17,7 @@ using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.ContentRepairUi;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -282,10 +283,8 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _replaceSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() => {
-                var donor = SelectCarDialog.Show();
-                return donor == null ? Task.Delay(0) : SelectedObject.ReplaceSound(donor);
-            }));
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ??
+                    (_replaceSoundCommand = new AsyncCommand(() => CarSoundReplacer.Replace(SelectedObject)));
 
             private AsyncCommand _replaceTyresCommand;
 

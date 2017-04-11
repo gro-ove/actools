@@ -140,12 +140,37 @@
 
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" mui:BetterTextBox.Mode="Number" Background="Transparent"
-                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
-                        <mui:ValueLabel.ToolTip>
-                            <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
-                        </mui:ValueLabel.ToolTip>
-                    </mui:ValueLabel>
+                    <DockPanel>
+                        <!--todo: road temp. slider-->
+                        <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <c:ModernPopup Padding="16 12 16 16">
+                                <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}">
+                                    <CheckBox IsChecked="{Binding CustomRoadTemperatureEnabled}" DockPanel.Dock="Top">
+                                        <Label Content="Custom road temperature" />
+                                    </CheckBox>
+                                    <c:TemperatureValueLabel IsEnabled="{Binding CustomRoadTemperatureEnabled}"
+                                            Value="{Binding CustomRoadTemperatureValue, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                            Content="Road temperature" Margin="-8 0 0 0">
+                                        <mui:ValueLabel.ToolTip>
+                                            <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1"
+                                                    Text="{Binding RoadTemperature}" />
+                                        </mui:ValueLabel.ToolTip>
+                                    </c:TemperatureValueLabel>
+                                    <Slider IsEnabled="{Binding CustomRoadTemperatureEnabled}" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
+                                            Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" Value="{Binding CustomRoadTemperatureValue}"
+                                            TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" Margin="-5 0 0 0" />
+                                    <c:TemperatureBlock Text="{Binding RecommendedRoadTemperature}" Prefix="Recommended: " Style="{StaticResource Small}" />
+                                </mui:SpacingStackPanel>
+                            </c:ModernPopup>
+                        </mui:ContextMenuButton>
+
+                        <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                Content="{x:Static g:AppStrings.Drive_Temperature}">
+                            <mui:ValueLabel.ToolTip>
+                                <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1" Text="{Binding RoadTemperature}" />
+                            </mui:ValueLabel.ToolTip>
+                        </c:TemperatureValueLabel>
+                    </DockPanel>
                     <mui:Cell Margin="0 0 0 4" Background="Transparent">
                         <mui:Cell.ToolTip>
                             <ToolTip Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -222,10 +247,11 @@
                 <c:BestLapsList TrackId="{Binding SelectedTrack.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
 
                 <DockPanel Margin="0 20 0 0">
-                    <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…" 
+                    <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…"
                             Text="{Binding SelectedCar.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
                     <TextBlock Text="Driven in car:" Style="{StaticResource Label}" />
                 </DockPanel>
+
                 <DockPanel>
                     <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…"
                             Text="{Binding SelectedTrack.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />

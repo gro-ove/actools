@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer>
+        <ScrollViewer mui:SaveScroll.Key="AcSettingsAudio">
             <StackPanel Style="{StaticResource SettingsPanel}">
                 <!--<DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel}" />

@@ -788,7 +788,12 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value> °C</value>
-  <comment>@Invariant</comment></data>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+    <comment>@Invariant</comment>
+  </data>
   <data name="Common_CelsiusFormat" xml:space="preserve">
     <value>{0:F0} °C</value>
   <comment>@Invariant</comment>

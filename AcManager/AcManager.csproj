@@ -454,8 +454,8 @@
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ContentTools\MigrationHelper.xaml.cs">
-      <DependentUpon>MigrationHelper.xaml</DependentUpon>
+    <Compile Include="Pages\ContentTools\CarAnalyzer.xaml.cs">
+      <DependentUpon>CarAnalyzer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
@@ -474,7 +474,11 @@
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
     <Compile Include="Tools\CommonPreviewsTools.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteTyresRepair.cs" />
+    <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
+    <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
+    <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
+    <Compile Include="Tools\CarSoundReplacer.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
@@ -1154,7 +1158,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ContentTools\MigrationHelper.xaml">
+    <Page Include="Pages\ContentTools\CarAnalyzer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1634,6 +1638,8 @@
     <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="About\ImportantTips\AC Service.txt.off" />
+    <None Include="About\ImportantTips\Custom Showroom Big Screenshots.txt" />
     <Content Include="About\Licenses\ExifWorks\ExifWorks.txt" />
     <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
     <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />

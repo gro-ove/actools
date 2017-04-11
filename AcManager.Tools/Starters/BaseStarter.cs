@@ -24,6 +24,10 @@ namespace AcManager.Tools.Starters {
         
         public abstract void Run();
 
+        protected BaseStarter() {
+            PrepareEnvironment();
+        }
+
         [CanBeNull]
         private Process TryToGetGameProcess() {
             return Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -103,6 +107,12 @@ namespace AcManager.Tools.Starters {
                     return;
                 }
             }
+        }
+
+        protected void PrepareEnvironment() {
+            Environment.SetEnvironmentVariable("PYTHONHOME", string.Empty);
+            Environment.SetEnvironmentVariable("PYTHONOPTIMIZE", string.Empty);
+            Environment.SetEnvironmentVariable("PYTHONPATH", string.Empty);
         }
 
         public virtual async Task WaitGameAsync(CancellationToken cancellation) {

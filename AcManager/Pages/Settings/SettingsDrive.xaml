@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsDrive">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label>
@@ -149,6 +149,12 @@
                 <Label Content="RHM location:" />
                 <Button Content="Browse" Command="{Binding SelectRhmLocationCommand}" />
                 <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+            </DockPanel>
+            
+            <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
+                <Label Content="Keep alive for:" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
+                        DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <!--game-related events-->

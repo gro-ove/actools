@@ -11,7 +11,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -113,6 +116,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static StringComparison OptionCacheStringComparison = StringComparison.Ordinal;
 
+        /// <summary>
+        /// What User-Agent to use while loading remote images.
+        /// </summary>
+        public static string RemoteUserAgent;
+
+        /// <summary>
+        /// Where to store cached images.
+        /// </summary>
+        public static string RemoteCacheDirectory;
+
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
             // In most cases, it’s BitmapSource.
@@ -213,7 +226,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Without cropping, if set to -1 (default value), MaxWidth or Width will be used instead. Set to 0 
         /// if you want to disable this behavior and force full-size decoding. 
         /// </summary>
-        public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(BetterImage.DecodeWidth), typeof(int),
+        public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(DecodeWidth), typeof(int),
                 typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
                     ((BetterImage)o)._decodeWidth = (int)e.NewValue;
                 }));
@@ -313,7 +326,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(CropProperty, value); }
         }
 
-        public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(BetterImage.CropUnits), typeof(ImageCropMode),
+        public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(CropUnits), typeof(ImageCropMode),
                 typeof(BetterImage), new FrameworkPropertyMetadata(ImageCropMode.Relative, FrameworkPropertyMetadataOptions.AffectsMeasure, (o, e) => {
                     ((BetterImage)o)._cropUnits = (ImageCropMode)e.NewValue;
                 }));
@@ -358,6 +371,75 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Loading
+        [CanBeNull]
+        private static string GetCachedFilename(Uri uri) {
+            if (RemoteCacheDirectory == null) return null;
+
+            try {
+                if (!Directory.Exists(RemoteCacheDirectory)) {
+                    Directory.CreateDirectory(RemoteCacheDirectory);
+                }
+            } catch (Exception e) {
+                Logging.Error(e.Message);
+                return null;
+            }
+
+            var fileNameBuilder = new StringBuilder();
+            using (var sha1 = new SHA1Managed()) {
+                var canonicalUrl = uri.ToString();
+                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
+                fileNameBuilder.Append(BitConverter.ToString(hash).Replace(@"-", "").ToLower());
+                if (Path.HasExtension(canonicalUrl)) {
+                    fileNameBuilder.Append(Path.GetExtension(canonicalUrl));
+                }
+            }
+
+            var fileName = fileNameBuilder.ToString();
+            return Path.Combine(RemoteCacheDirectory, fileName);
+        }
+
+        private static BitmapEntry LoadRemoteBitmap(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
+            var httpRequest = (HttpWebRequest)WebRequest.Create(uri);
+            httpRequest.Method = "GET";
+
+            if (RemoteUserAgent != null) {
+                httpRequest.UserAgent = RemoteUserAgent;
+            }
+
+            var cache = GetCachedFilename(uri);
+            var cacheFile = cache == null ? null : new FileInfo(cache);
+            if (cacheFile?.Exists == true) {
+                httpRequest.IfModifiedSince = cacheFile.LastWriteTime;
+            }
+
+            try {
+                using (var memory = new MemoryStream())
+                using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
+                    using (var stream = response.GetResponseStream()) {
+                        if (stream == null) {
+                            return cacheFile == null ? BitmapEntry.Empty :
+                                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                        }
+
+                        stream.CopyTo(memory);
+                    }
+
+                    var bytes = memory.ToArray();
+                    if (cache != null) {
+                        File.WriteAllBytes(cache, bytes);
+                        cacheFile.LastWriteTime = response.LastModified;
+                    }
+
+                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
+                }
+            } catch (WebException e) {
+                Logging.Error(e.Message);
+            }
+
+            return cacheFile == null ? BitmapEntry.Empty :
+                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+        }
+
         public static BitmapEntry LoadBitmapSource(string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (string.IsNullOrEmpty(filename)) {
                 return BitmapEntry.Empty;
@@ -384,6 +466,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return BitmapEntry.Empty;
             }
 
+            var remote = uri.Scheme == "http" || uri.Scheme == "https";
+            if (remote) {
+                return LoadRemoteBitmap(uri);
+            }
+
             try {
                 var bi = new BitmapImage();
                 bi.BeginInit();
@@ -404,15 +491,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     downsized = true;
                 }
 
-                var remote = uri.Scheme == "http" || uri.Scheme == "https";
-                bi.CreateOptions = remote ? BitmapCreateOptions.None : BitmapCreateOptions.IgnoreImageCache;
+                bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = uri;
                 bi.EndInit();
-
-                if (!remote) {
-                    bi.Freeze();
-                }
+                bi.Freeze();
 
                 if (decodeWidth <= 0) {
                     width = bi.PixelWidth;
@@ -1139,3 +1222,4 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
     }
 }
+

@@ -545,8 +545,6 @@ namespace AcManager.Pages.Dialogs {
 
         string IUserPresetable.PresetableCategory => PresetableKeyValue;
 
-        string IUserPresetable.DefaultPreset => null;
-
         public string ExportToPresetData() {
             return _saveable.ToSerializedString();
         }

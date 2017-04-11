@@ -5,6 +5,7 @@
     <c:CarIdToCarWrapperConverter x:Key="CarIdToCarWrapperConverter" />
     <c:CountryIdToImageConverter x:Key="CountryIdToImageConverter" />
     <c:RealismLevelToColorConverter x:Key="RealismLevelToColorConverter" />
+    <c:TemperatureToFahrenheitConverter x:Key="TemperatureToFahrenheitConverter" />
     <c:TimeSpanHhMmConverter x:Key="TimeSpanHhMmConverter" />
     <c:TimeSpanHhMmSsConverter x:Key="TimeSpanHhMmSsConverter" />
     <c:TimeSpanMinutesConverter x:Key="TimeSpanMinutesConverter" />

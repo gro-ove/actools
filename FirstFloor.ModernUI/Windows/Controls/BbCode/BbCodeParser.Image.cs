@@ -118,8 +118,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                     var canonicalUrl = uri.ToString();
                     var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
                     fileNameBuilder.Append(BitConverter.ToString(hash).Replace(@"-", "").ToLower());
-                    if (Path.HasExtension(canonicalUrl))
+                    if (Path.HasExtension(canonicalUrl)) {
                         fileNameBuilder.Append(Path.GetExtension(canonicalUrl));
+                    }
                 }
 
                 var fileName = fileNameBuilder.ToString();
@@ -157,8 +158,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         int bytesRead;
                         do {
                             bytesRead = await responseStream.ReadAsync(bytebuffer, 0, 100);
-                            if (fileStream != null)
+                            if (fileStream != null) {
                                 await fileStream.WriteAsync(bytebuffer, 0, bytesRead);
+                            }
                             await memoryStream.WriteAsync(bytebuffer, 0, bytesRead);
                         } while (bytesRead > 0);
                         if (fileStream != null) {

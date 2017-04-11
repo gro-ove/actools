@@ -79,14 +79,14 @@
 
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
-                                    <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
+                                    <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0 0 0 4"
+                                            Content="{x:Static t:ToolsStrings.Common_Time}" />
                                     <Slider Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
                                             IsSnapToTickEnabled="False" Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
                                             Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
                                 </StackPanel>
                                 <StackPanel Width="120">
-                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number"
-                                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}"
+                                    <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}"
                                             Content="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientAirTemperature}" />
                                     <Slider Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}"
                                             Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
@@ -94,8 +94,8 @@
                                 </StackPanel>
                             </StackPanel>
 
-                            <TextBlock Style="{StaticResource Heading2}"
-                                    Text="{Binding RoadTemperature, StringFormat={x:Static g:AppStrings.Common_RoadTemperatureFormat}}" />
+                            <c:TemperatureBlock Style="{StaticResource Heading2}" Prefix="{x:Static g:AppStrings.Common_RoadTemperature}"
+                                    Text="{Binding RoadTemperature}" />
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -181,8 +181,7 @@
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    mui:BetterTextBox.Mode="Number"
-                                    Content="{x:Static g:AppStrings.WeatherEdit_Blend}" />
+                                    mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_Blend}" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>

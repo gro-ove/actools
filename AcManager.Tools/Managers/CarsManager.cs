@@ -61,9 +61,10 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (inner.StartsWith(@"data\")) return false;
+            if (inner.StartsWith(@"data\") && (inner.EndsWith(@".ini") || inner.EndsWith(@".lut")) ||
+                inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
 
-            if (!inner.StartsWith(@"skins\") && !inner.StartsWith(@"data\") || // sfx\…
+            if (!inner.StartsWith(@"skins\") || // texture\…
                     inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png
                     inner.EndsWith(@".dds", StringComparison.OrdinalIgnoreCase)) {
                 return true;

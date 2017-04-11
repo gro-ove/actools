@@ -26,6 +26,9 @@ namespace AcManager.Tools.Filters {
                 case "drivendistance":
                     return nameof(CarObject.TotalDrivenDistance);
 
+                case "topspeedachieved":
+                    return nameof(CarObject.MaxSpeedAchieved);
+
                 case "bhp":
                 case "power":
                     return nameof(CarObject.SpecsBhp);
@@ -47,6 +50,9 @@ namespace AcManager.Tools.Filters {
                 case "pw":
                 case "pwratio":
                     return nameof(CarObject.SpecsPwRatio);
+
+                case "maxrpm":
+                    return nameof(CarObject.SpecsTorqueCurve);
                     
                 case "skin":
                 case "skins":
@@ -89,6 +95,9 @@ namespace AcManager.Tools.Filters {
                 case "drivendistance":
                     return value.Test(obj.TotalDrivenDistance);
 
+                case "topspeedachieved":
+                    return value.Test(obj.MaxSpeedAchieved);
+
                 case "bhp":
                 case "power":
                     return value.Test(obj.SpecsBhp);
@@ -107,9 +116,12 @@ namespace AcManager.Tools.Filters {
                 case "topspeed":
                     return value.Test(obj.SpecsTopSpeed);
 
+                case "maxrpm":
+                    return value.Test(obj.GetRpmMaxValue());
+
                 case "pw":
                 case "pwratio":
-                    return value.Test(obj.SpecsPwRatio);
+                    return value.Test(obj.GetSpecsPwRatioValue());
 
                 case "skins":
                     return value.Test(obj.SkinsEnabledWrappersList?.Count ?? 0);

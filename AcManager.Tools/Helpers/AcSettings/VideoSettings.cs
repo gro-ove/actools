@@ -127,6 +127,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         };
 
         public SettingEntry[] ShadowMapSizes { get; } = {
+            new SettingEntry("-1", ToolsStrings.AcSettings_Off),
+            new SettingEntry("32", @"32×32"),
+            new SettingEntry("64", @"64×64"),
+            new SettingEntry("128", @"128×128"),
             new SettingEntry("256", @"256×256"),
             new SettingEntry("512", @"512×512"),
             new SettingEntry("1024", @"1024×1024"),
@@ -169,7 +173,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new SettingEntry("0", ToolsStrings.AcSettings_Off),
             new SettingEntry("256", @"64×256"),
             new SettingEntry("512", @"128×512"),
-            new SettingEntry("1024", @"256×1024")
+            new SettingEntry("1024", @"256×1024"),
+            new SettingEntry("2048", @"512×2048"),
         };
 
         public SettingEntry[] CubemapResolutions { get; } = {

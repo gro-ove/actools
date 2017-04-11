@@ -20,7 +20,18 @@ using StringBasedFilter;
 // ReSharper disable RedundantArgumentDefaultValue
 
 namespace AcManager.Tools.Helpers {
-    public class SettingsHolder {
+    public enum TemperatureUnitMode {
+        [Description("Celsius")]
+        Celsius,
+
+        [Description("Fahrenheit")]
+        Fahrenheit,
+
+        [Description("Celsius and Fahrenheit")]
+        Both
+    }
+
+    public static class SettingsHolder {
         public sealed class PeriodEntry : Displayable {
             public TimeSpan TimeSpan { get; }
 
@@ -36,6 +47,18 @@ namespace AcManager.Tools.Helpers {
             public PeriodEntry(string displayName) {
                 TimeSpan = TimeSpan.MaxValue;
                 DisplayName = displayName;
+            }
+        }
+
+        public sealed class DelayEntry : Displayable {
+            public TimeSpan TimeSpan { get; }
+
+            public DelayEntry() {}
+
+            public DelayEntry(TimeSpan timeSpan, string displayName = null) {
+                TimeSpan = timeSpan;
+                DisplayName = displayName ?? (timeSpan == TimeSpan.Zero ? ToolsStrings.Common_Disabled :
+                        timeSpan.ToReadableTime());
             }
         }
 
@@ -350,6 +373,23 @@ namespace AcManager.Tools.Helpers {
 
         public class CommonSettings : NotifyPropertyChanged {
             internal CommonSettings() {}
+
+            public TemperatureUnitMode[] TemperatureUnitModes { get; } = EnumExtension.GetValues<TemperatureUnitMode>();
+
+            private TemperatureUnitMode? _temperatureUnitMode;
+
+            public TemperatureUnitMode TemperatureUnitMode {
+                get {
+                    return _temperatureUnitMode ??
+                            (_temperatureUnitMode = ValuesStorage.GetEnum("Settings.CommonSettings.TemperatureUnitMode", TemperatureUnitMode.Celsius)).Value;
+                }
+                set {
+                    if (Equals(value, _temperatureUnitMode)) return;
+                    _temperatureUnitMode = value;
+                    ValuesStorage.SetEnum("Settings.CommonSettings.TemperatureUnitMode", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private PeriodEntry[] _periodEntries;
 
@@ -1171,81 +1211,39 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private DelayEntry[] _rhmKeepAlivePeriods;
+
+            public DelayEntry[] RhmKeepAlivePeriods => _rhmKeepAlivePeriods ?? (_rhmKeepAlivePeriods = new[] {
+                new DelayEntry(TimeSpan.Zero),
+                new DelayEntry(TimeSpan.FromMinutes(2)),
+                new DelayEntry(TimeSpan.FromMinutes(5)),
+                new DelayEntry(TimeSpan.FromMinutes(15)),
+                new DelayEntry(TimeSpan.FromMinutes(30)),
+                new DelayEntry(TimeSpan.FromHours(1)),
+                new DelayEntry(TimeSpan.FromHours(3))
+            });
+
+            private DelayEntry _rhmKeepAlivePeriod;
+
+            public DelayEntry RhmKeepAlivePeriod {
+                get {
+                    var saved = ValuesStorage.GetTimeSpan("Settings.DriveSettings.RhmKeepAlivePeriod");
+                    return _rhmKeepAlivePeriod ?? (_rhmKeepAlivePeriod = RhmKeepAlivePeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            RhmKeepAlivePeriods.ElementAt(4));
+                }
+                set {
+                    if (Equals(value, _rhmKeepAlivePeriod)) return;
+                    _rhmKeepAlivePeriod = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RhmKeepAlivePeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;
 
         public static DriveSettings Drive => _drive ?? (_drive = new DriveSettings());
-
-        public class LapTimesSettings : NotifyPropertyChanged {
-            internal LapTimesSettings() {}
-
-            private bool? _sourceCm;
-
-            public bool SourceCm {
-                get { return _sourceCm ?? (_sourceCm = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceCm", true)).Value; }
-                set {
-                    if (Equals(value, _sourceCm)) return;
-                    _sourceCm = value;
-                    ValuesStorage.Set("Settings.LapTimesSettings.SourceCm", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _sourceAcDb;
-
-            public bool SourceAcDb {
-                get { return _sourceAcDb ?? (_sourceAcDb = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceAcDb", false)).Value; }
-                set {
-                    if (Equals(value, _sourceAcDb)) return;
-                    _sourceAcDb = value;
-                    ValuesStorage.Set("Settings.LapTimesSettings.SourceAcDb", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _sourceAcNew;
-
-            public bool SourceAcNew {
-                get { return _sourceAcNew ?? (_sourceAcNew = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceAcNew", true)).Value; }
-                set {
-                    if (Equals(value, _sourceAcNew)) return;
-                    _sourceAcNew = value;
-                    ValuesStorage.Set("Settings.LapTimesSettings.SourceAcNew", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _sourceSidekick;
-
-            public bool SourceSidekick {
-                get { return _sourceSidekick ?? (_sourceSidekick = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceSidekick", true)).Value; }
-                set {
-                    if (Equals(value, _sourceSidekick)) return;
-                    _sourceSidekick = value;
-                    ValuesStorage.Set("Settings.LapTimesSettings.SourceSidekick", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool? _sourceRaceEssentials;
-
-            public bool SourceRaceEssentials {
-                get {
-                    return _sourceRaceEssentials ?? (_sourceRaceEssentials = ValuesStorage.GetBool("Settings.LapTimesSettings.SourceRaceEssentials", true)).Value;
-                }
-                set {
-                    if (Equals(value, _sourceRaceEssentials)) return;
-                    _sourceRaceEssentials = value;
-                    ValuesStorage.Set("Settings.LapTimesSettings.SourceRaceEssentials", value);
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private static LapTimesSettings _lapTimes;
-
-        public static LapTimesSettings LapTimes => _lapTimes ?? (_lapTimes = new LapTimesSettings());
 
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
@@ -1312,6 +1310,30 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _carsYearPostfix)) return;
                     _carsYearPostfix = value;
                     ValuesStorage.Set("Settings.ContentSettings.CarsYearPostfix", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _carsFixSpecs;
+
+            public bool CarsFixSpecs {
+                get { return _carsFixSpecs ?? (_carsFixSpecs = ValuesStorage.GetBool("Settings.ContentSettings.CarsFixSpecs", true)).Value; }
+                set {
+                    if (Equals(value, _carsFixSpecs)) return;
+                    _carsFixSpecs = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsFixSpecs", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _carsProperPwRatio;
+
+            public bool CarsProperPwRatio {
+                get { return _carsProperPwRatio ?? (_carsProperPwRatio = ValuesStorage.GetBool("Settings.ContentSettings.CarsProperPwRatio", false)).Value; }
+                set {
+                    if (Equals(value, _carsProperPwRatio)) return;
+                    _carsProperPwRatio = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsProperPwRatio", value);
                     OnPropertyChanged();
                 }
             }
@@ -1383,21 +1405,21 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private PeriodEntry[] _periodEntries;
+            private DelayEntry[] _periodEntries;
 
-            public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry(TimeSpan.Zero),
-                new PeriodEntry(TimeSpan.FromDays(1)),
-                new PeriodEntry(TimeSpan.FromDays(3)),
-                new PeriodEntry(TimeSpan.FromDays(7)),
-                new PeriodEntry(TimeSpan.FromDays(14)),
-                new PeriodEntry(TimeSpan.FromDays(30)),
-                new PeriodEntry(TimeSpan.FromDays(60))
+            public DelayEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
+                new DelayEntry(TimeSpan.Zero),
+                new DelayEntry(TimeSpan.FromDays(1)),
+                new DelayEntry(TimeSpan.FromDays(3)),
+                new DelayEntry(TimeSpan.FromDays(7)),
+                new DelayEntry(TimeSpan.FromDays(14)),
+                new DelayEntry(TimeSpan.FromDays(30)),
+                new DelayEntry(TimeSpan.FromDays(60))
             });
 
-            private PeriodEntry _newContentPeriod;
+            private DelayEntry _newContentPeriod;
 
-            public PeriodEntry NewContentPeriod {
+            public DelayEntry NewContentPeriod {
                 get {
                     var saved = ValuesStorage.GetTimeSpan("Settings.ContentSettings.NewContentPeriod");
                     return _newContentPeriod ?? (_newContentPeriod = NewContentPeriods.FirstOrDefault(x => x.TimeSpan == saved) ??

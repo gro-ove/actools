@@ -12,8 +12,27 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="SettingsLocale">
         <StackPanel Style="{StaticResource SettingsPanel}">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
+                <TextBlock.Text>Regional Settings:</TextBlock.Text>
+            </TextBlock>
+
+            <DockPanel>
+                <Label Content="Temperature units:" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.TemperatureUnitModes}" SelectedItem="{Binding Common.TemperatureUnitMode}">
+                    <mui:BetterComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                        </DataTemplate>
+                    </mui:BetterComboBox.ItemTemplate>
+                </mui:BetterComboBox>
+            </DockPanel>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
+                <TextBlock.Text>Language:</TextBlock.Text>
+            </TextBlock>
+
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Locale_LanguageLabel}" />
                 <ComboBox ItemsSource="{Binding Locales}" SelectedItem="{Binding CurrentLocale}">

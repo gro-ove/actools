@@ -8,6 +8,10 @@ namespace FirstFloor.ModernUI {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(action);
         }
 
+        public static T InvokeInMainThread<T>(this Func<T> action) {
+            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(action);
+        }
+
         public static void InvokeInMainThreadAsync(this Action action) {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).InvokeAsync(action);
         }

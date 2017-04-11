@@ -32,6 +32,12 @@ namespace AcTools.Utils.Physics {
             return Equals(rpm, 0d) ? 0d : power / rpm / TorqueRpmToBhpMultipler;
         }
 
+        private static Lut Result(Lut v) {
+            v = v.Optimize();
+            v.UpdateBoundingBox();
+            return v;
+        }
+
         [NotNull]
         public static Lut TorqueToPower(Lut torque, int detalization = 100) {
             torque.UpdateBoundingBox();
@@ -62,8 +68,8 @@ namespace AcTools.Utils.Physics {
                 result.Add(new LutPoint(rpm, TorqueToPower(torque.InterpolateLinear(rpm), rpm)));
                 previousRpm = rpm;
             }
-
-            return result.Optimize();
+            
+            return Result(result);
         }
 
         [NotNull]
@@ -97,7 +103,7 @@ namespace AcTools.Utils.Physics {
                 previousRpm = rpm;
             }
 
-            return result.Optimize();
+            return Result(result);
         }
 
         [CanBeNull]
@@ -160,7 +166,7 @@ namespace AcTools.Utils.Physics {
                 previousRpm = rpm;
             }
 
-            return result.Optimize();
+            return Result(result);
         }
 
         [Obsolete]

@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer>
+        <ScrollViewer mui:SaveScroll.Key="AcSettingsVideo">
             <StackPanel Style="{StaticResource SettingsPanel}">
                 <CheckBox IsChecked="{Binding Video.Fullscreen}">
                     <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fullscreen}" />

@@ -155,6 +155,12 @@ namespace AcManager.Pages.Drive {
 
             [JsonProperty(@"rcLw")]
             public bool? RealConditionsLocalWeather;
+
+            [JsonProperty(@"crt")]
+            public bool CustomRoadTemperature;
+
+            [JsonProperty(@"crtv")]
+            public double? CustomRoadTemperatureValue;
         }
 
         public partial class ViewModel : NotifyPropertyChanged, IUserPresetable {
@@ -348,6 +354,9 @@ namespace AcManager.Pages.Drive {
                     Temperature = Temperature,
                     Time = Time,
                     TimeMultipler = TimeMultipler,
+
+                    CustomRoadTemperature = CustomRoadTemperatureEnabled,
+                    CustomRoadTemperatureValue = _customRoadTemperatureValue
                 }, o => {
                     TimeMultipler = o.TimeMultipler;
 
@@ -358,6 +367,10 @@ namespace AcManager.Pages.Drive {
 
                     Temperature = o.Temperature;
                     Time = o.Time;
+
+                    CustomRoadTemperatureEnabled = o.CustomRoadTemperature;
+                    _customRoadTemperatureValue = o.CustomRoadTemperatureValue;
+                    OnPropertyChanged(nameof(CustomRoadTemperatureValue));
 
                     if (RealConditions) {
                         UpdateConditions();
@@ -406,6 +419,10 @@ namespace AcManager.Pages.Drive {
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
                     TimeMultipler = 1;
+
+                    CustomRoadTemperatureEnabled = false;
+                    _customRoadTemperatureValue = null;
+                    OnPropertyChanged(nameof(CustomRoadTemperatureValue));
                 });
 
                 if (string.IsNullOrEmpty(serializedPreset)) {
@@ -442,8 +459,6 @@ namespace AcManager.Pages.Drive {
             string IUserPresetable.PresetableCategory => PresetableKeyValue;
 
             string IUserPresetable.PresetableKey => PresetableKeyValue;
-
-            string IUserPresetable.DefaultPreset => null;
 
             public string ExportToPresetData() {
                 return _saveable.ToSerializedString();
@@ -553,7 +568,7 @@ namespace AcManager.Pages.Drive {
                         TrackConfigurationId = SelectedTrack.LayoutId
                     }, AssistsViewModel.ToGameProperties(), new Game.ConditionProperties {
                         AmbientTemperature = Temperature,
-                        RoadTemperature = RoadTemperature,
+                        RoadTemperature = CustomRoadTemperatureEnabled ? CustomRoadTemperatureValue : RoadTemperature,
 
                         SunAngle = Game.ConditionProperties.GetSunAngle(_forceTime ?? Time),
                         TimeMultipler = TimeMultipler,

@@ -19,6 +19,7 @@ using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.ContentRepairUi;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -85,6 +86,9 @@ namespace AcManager.Pages.Selected {
                             }
                         }
                         break;
+                    case nameof(CarObject.SoundDonorId):
+                        SelectedObject.GetSoundOrigin().Forget();
+                        break;
                 }
             }
             
@@ -124,6 +128,10 @@ namespace AcManager.Pages.Selected {
 
                     case "driven":
                         FilterDistance("driven", SelectedObject.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
+                        break;
+
+                    case "topspeedachieved":
+                        FilterDistance("topspeedachieved", SelectedObject.MaxSpeedAchieved, roundTo: 0.1, range: 0.3);
                         break;
                 }
 
@@ -306,21 +314,20 @@ namespace AcManager.Pages.Selected {
 
             private CommandBase _replaceSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(() => {
-                var donor = SelectCarDialog.Show();
-                return donor == null ? Task.Delay(0) : SelectedObject.ReplaceSound(donor);
-            }));
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ??
+                    (_replaceSoundCommand = new AsyncCommand(() => CarSoundReplacer.Replace(SelectedObject)));
 
             private AsyncCommand _replaceTyresCommand;
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
                     (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
 
-            private AsyncCommand _migrationHelperCommand;
+            private AsyncCommand _carAnalyzerCommand;
 
-            public AsyncCommand MigrationHelperCommand => _migrationHelperCommand ?? (_migrationHelperCommand = new AsyncCommand(() => {
+            public AsyncCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new AsyncCommand(() => {
                 var dialog = new ModernDialog {
-                    Title = "Migration Helper",
+                    ShowTitle = false,
+                    Title = "Analyzer",
                     SizeToContent = SizeToContent.Manual,
                     ResizeMode = ResizeMode.CanResizeWithGrip,
                     LocationAndSizeKey = @"lsMigrationHelper",
@@ -331,7 +338,7 @@ namespace AcManager.Pages.Selected {
                     MaxWidth = 99999,
                     MaxHeight = 99999,
                     Content = new ModernFrame {
-                        Source = UriExtension.Create("/Pages/ContentTools/MigrationHelper.xaml?Id={0}&Models=True", SelectedObject.Id)
+                        Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True", SelectedObject.Id)
                     }
                 };
                 return dialog.ShowAndWaitAsync();
@@ -508,29 +515,28 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand RecalculateCurvesCommand => _recalculateCurvesCommand ?? (_recalculateCurvesCommand = new DelegateCommand(() => {
                 var o = SelectedObject;
-
-                var dlg = new CarTransmissionLossSelector(o);
-                dlg.ShowDialog();
-                if (!dlg.IsResultOk) return;
-
-                var lossMultipler = 100.0 / (100.0 - dlg.Value);
-
+                
                 var data = o.AcdData;
                 if (data == null) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
                     return;
                 }
 
-                Lut torque;
+                Lut torque, power;
                 try {
                     torque = TorquePhysicUtils.LoadCarTorque(data);
+                    power = TorquePhysicUtils.TorqueToPower(torque);
                 } catch (Exception ex) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, ex);
                     return;
                 }
 
-                torque.TransformSelf(x => x.Y * lossMultipler);
-                var power = TorquePhysicUtils.TorqueToPower(torque);
+                var dlg = new CarTransmissionLossSelector(o, torque.MaxY, power.MaxY);
+                dlg.ShowDialog();
+                if (!dlg.IsResultOk) return;
+                
+                torque.TransformSelf(x => x.Y * dlg.Multipler);
+                power.TransformSelf(x => x.Y * dlg.Multipler);
 
                 o.SpecsTorqueCurve = new GraphData(torque);
                 o.SpecsPowerCurve = new GraphData(power);

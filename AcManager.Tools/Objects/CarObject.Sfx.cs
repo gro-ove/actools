@@ -52,7 +52,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public CarObject SoundDonor => _soundDonor?.Value;
-        private Lazy<CarObject> _soundDonor;
+        private Lazier<CarObject> _soundDonor;
 
         [ItemCanBeNull]
         public async Task<string> GetSoundOrigin() {
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Objects {
                 foreach (var line in lines) {
                     var m = _guidsRegex.Match(line);
                     if (m.Success && m.Groups[2].Value == Id && _kunosGuids.TryGetValue(m.Groups[1].Value, out _soundDonorId)) {
-                        _soundDonor = new Lazy<CarObject>(() => SoundDonorId == null ? null : CarsManager.Instance.GetById(SoundDonorId));
+                        _soundDonor = new Lazier<CarObject>(() => SoundDonorId == null ? null : CarsManager.Instance.GetById(SoundDonorId));
                         OnPropertyChanged(nameof(SoundDonorId));
                         OnPropertyChanged(nameof(SoundDonor));
                         return _soundDonorId;
@@ -141,9 +141,6 @@ namespace AcManager.Tools.Objects {
 
                         FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
                     });
-
-                    _soundDonorSet = true;
-                    _soundDonorId = donor.Id;
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Car_ReplaceSound_CannotReplace, ToolsStrings.Car_ReplaceSound_CannotReplace_Commentary, e);

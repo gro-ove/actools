@@ -27,8 +27,6 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            public SettingsHolder.LapTimesSettings LapTimes => SettingsHolder.LapTimes;
-
             private DelegateCommand _clearCacheCommand;
 
             public DelegateCommand ClearCacheCommand => _clearCacheCommand ?? (_clearCacheCommand = new DelegateCommand(() => {

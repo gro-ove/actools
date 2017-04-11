@@ -7,7 +7,7 @@
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
-    <ScrollViewer>
+    <ScrollViewer mui:SaveScroll.Key="AcSettingsGeneral">
         <StackPanel Style="{StaticResource SettingsPanel}">
             <!--exposure-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8" Text="{x:Static c:ControlsStrings.Common_ExposureLabel}" />

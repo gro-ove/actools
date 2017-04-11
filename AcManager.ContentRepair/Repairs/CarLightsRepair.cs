@@ -5,10 +5,8 @@ using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.ContentRepair {
+namespace AcManager.ContentRepair.Repairs {
     public class CarLightsRepair : CarSimpleRepairBase {
-        public static readonly CarLightsRepair Instance = new CarLightsRepair();
-
         public void Multiply([NotNull] DataWrapper data, double multipler) {
             var lightsIni = data.GetIniFile("lights.ini");
             foreach (var section in lightsIni.GetSections("LIGHT")) {
@@ -55,9 +53,9 @@ namespace AcManager.ContentRepair {
             return true;
         }
 
-        protected override ObsoletableAspect GetObsoletableAspect(CarObject car, DataWrapper data) {
+        protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {
             if (!CheckIfObsolete(data)) return null;
-            return new ObsoletableAspect("Lights might be too dim",
+            return new ContentObsoleteSuggestion("Lights might be too dim",
                     "When Kunos changed HDR parameters, values in [mono]lights.ini[/mono] were increased in several times.",
                     (p, c) => FixAsync(car, p, c)) {
                 AffectsData = true
