@@ -6,11 +6,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AcTools.LapTimes.LevelDbUtils;
+using AcTools.LapTimes.LevelDb.LevelDbUtils;
 
-namespace AcTools.LapTimes {
+namespace AcTools.LapTimes.LevelDb {
     internal class ChromiumDbWrapper : IDisposable {
-        private readonly LevelDb _levelDb;
+        private readonly LevelDbUtils.LevelDb _levelDb;
         private readonly Comparator _comparator;
         private readonly Options _options;
 
@@ -22,7 +22,7 @@ namespace AcTools.LapTimes {
                 Comparator = _comparator
             };
 
-            _levelDb = new LevelDb(_options, directory);
+            _levelDb = new LevelDbUtils.LevelDb(_options, directory);
         }
 
         public IEnumerable<Dictionary<string, string>> GetData() {

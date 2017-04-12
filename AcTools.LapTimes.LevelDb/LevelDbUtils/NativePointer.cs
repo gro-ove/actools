@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     // note: sizeof(Ptr<>) == sizeof(IntPtr) allows you to create Ptr<Ptr<>> of arbitrary depth and "it just works"
     // IntPtr severely lacks appropriate arithmetic operators; up-promotions to ulong used instead.
     internal struct Ptr<T> where T : struct {

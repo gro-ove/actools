@@ -11,7 +11,7 @@
 
 using System;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// A Snapshot is an immutable object and can therefore be safely
     /// accessed from multiple threads without any external synchronization.

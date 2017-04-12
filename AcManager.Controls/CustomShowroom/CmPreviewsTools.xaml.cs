@@ -99,8 +99,6 @@ namespace AcManager.Controls.CustomShowroom {
             [NotNull]
             public CmPreviewsSettings Settings { get; }
 
-            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId);
-
             private CarObject _car;
 
             [CanBeNull]
@@ -141,9 +139,9 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer = renderer;
                 Settings = new CmPreviewsSettings(renderer);
 
-                renderer.PropertyChanged += Renderer_PropertyChanged;
-                Renderer_CarNodeUpdated();
-                renderer.Tick += Renderer_Tick;
+                renderer.PropertyChanged += OnRendererPropertyChanged;
+                OnCarNodeUpdated();
+                renderer.Tick += OnRendererTick;
 
                 Car = carObject;
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
@@ -164,9 +162,9 @@ namespace AcManager.Controls.CustomShowroom {
 
             private INotifyPropertyChanged _carNode;
 
-            private void Renderer_CarNodeUpdated() {
+            private void OnCarNodeUpdated() {
                 if (_carNode != null) {
-                    _carNode.PropertyChanged -= CarNode_PropertyChanged;
+                    _carNode.PropertyChanged -= OnCarNodePropertyChanged;
                 }
 
                 _carNode = Renderer.CarNode;
@@ -176,11 +174,11 @@ namespace AcManager.Controls.CustomShowroom {
                 Skin = Car?.GetSkinById(Renderer.CarNode?.CurrentSkin ?? "");
 
                 if (_carNode != null) {
-                    _carNode.PropertyChanged += CarNode_PropertyChanged;
+                    _carNode.PropertyChanged += OnCarNodePropertyChanged;
                 }
             }
 
-            private void CarNode_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnCarNodePropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.CarNode.CurrentSkin):
                         Skin = Car?.GetSkinById(Renderer.CarNode?.CurrentSkin ?? "");
@@ -188,19 +186,19 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private void Renderer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
                         SaveLater();
                         break;
 
                     case nameof(Renderer.CarNode):
-                        Renderer_CarNodeUpdated();
+                        OnCarNodeUpdated();
                         break;
                 }
             }
 
-            private void Renderer_Tick(object sender, AcTools.Render.Base.TickEventArgs args) {}
+            private void OnRendererTick(object sender, AcTools.Render.Base.TickEventArgs args) {}
 
             public void OnTick() {}
 

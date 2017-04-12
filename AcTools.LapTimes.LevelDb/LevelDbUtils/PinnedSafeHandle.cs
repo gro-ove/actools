@@ -12,7 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     internal class PinnedSafeHandle<T> : SafeHandle where T : struct {
         private GCHandle _pinnedRawData;
 

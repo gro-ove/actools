@@ -147,6 +147,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _debugMaterialInitialized = true;
                 _debugMaterial.Initialize(contextHolder);
             }
+
+            var node = OriginalNode;
+            if (node.Name.EndsWith(" Light") && !node.IsTransparent && !node.CastShadows && Material.IsBlending) {
+                // shameless fix for some of cars I made 🙃
+                _renderModes &= ~SpecialRenderMode.GBuffer;
+            }
         }
 
         internal static readonly SpecialRenderMode TransparentModes = SpecialRenderMode.SimpleTransparent |

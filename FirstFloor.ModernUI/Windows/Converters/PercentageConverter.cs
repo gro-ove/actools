@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return value.AsDouble() * 100;
+            return Math.Round(value.AsDouble() * 1000000) / 10000;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

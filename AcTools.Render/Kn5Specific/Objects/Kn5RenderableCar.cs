@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Kn5File;
@@ -1236,6 +1238,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                              .ToArray();
         }
 
+        public bool HasFans {
+            get {
+                InitializeRotatingObjects();
+                return _rotatingObjects.Length > 0;
+            }
+        }
+
         private bool _fansEnabled;
 
         public bool FansEnabled {
@@ -1252,15 +1261,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Extra animations
-        private AnimationEntry[] _extras;
+        public class ExtraAnimationEntry : AnimationEntry {
+            public ExtraAnimationEntry(Kn5RenderableCar carNode, string ksAnimName, float duration) : base(carNode, ksAnimName, duration) {}
 
-        public IReadOnlyList<AnimationEntry> Extras => _extras;
+            protected override void OnActiveChanged(bool newValue) {
+                CarNode.ToggleExtra(CarNode.Extras.IndexOf(this), newValue);
+            }
+        }
+
+        private ExtraAnimationEntry[] _extras;
+
+        public IReadOnlyList<ExtraAnimationEntry> Extras {
+            get {
+                InitializeExtras();
+                return _extras;
+            }
+        }
 
         private void InitializeExtras() {
             if (_extras != null) return;
 
             _extras = _carData.GetExtraAnimations()
-                             .Select(x => new AnimationEntry(_rootDirectory, x.KsAnimName, x.Duration))
+                             .Select(x => new ExtraAnimationEntry(this, x.KsAnimName, x.Duration))
                              .ToArray();
             OnPropertyChanged(nameof(Extras));
         }
@@ -1277,9 +1299,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private void ResetExtras() {
-            if (_extras == null) return;
-            for (var i = 0; i < _extras.Length; i++) {
-                _extras[i].Update(RootObject, 0f);
+            if (_extras != null) {
+                for (var i = 0; i < _extras.Length; i++) {
+                    _extras[i].Update(RootObject, 0f);
+                }
+            }
+
+            if (_rotatingObjects != null) {
+                _rotatingObjects = null;
+                OnPropertyChanged(nameof(HasFans));
+
+                if (FansEnabled) {
+                    _fansEnabled = false;
+                    FansEnabled = true;
+                }
             }
         }
 
@@ -1329,6 +1362,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 }
             }
         }
+
+        public bool HasWipers {
+            get {
+                InitializeWipers();
+                return _wipersAnimator.Value != null;
+            }
+        }
         #endregion
 
         #region Doors
@@ -1363,6 +1403,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public bool HasLeftDoorAnimation {
+            get {
+                InitializeDoors();
+                return _doorLeftAnimator.Value != null;
+            }
+        }
+
         private bool _rightDoorOpen;
 
         public bool RightDoorOpen {
@@ -1377,17 +1424,43 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _doorRightAnimator.Value?.SetTarget(RootObject, value ? 1f : 0f);
             }
         }
+
+        public bool HasRightDoorAnimation {
+            get {
+                InitializeDoors();
+                return _doorRightAnimator.Value != null;
+            }
+        }
         #endregion
 
         #region Wings
-        public class AnimationEntry : INotifyPropertyChanged {
+        public abstract class AnimationEntry : INotifyPropertyChanged {
             private readonly Lazier<KsAnimAnimator> _animator;
+            protected readonly Kn5RenderableCar CarNode;
             internal float Value;
 
-            public AnimationEntry(string rootDirectory, string ksAnimName, float duration) {
-                _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(rootDirectory, ksAnimName, duration));
+            public AnimationEntry(Kn5RenderableCar carNode, string ksAnimName, float duration) {
+                _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(carNode._rootDirectory, ksAnimName, duration));
+                CarNode = carNode;
+                DisplayName = GetKsAnimDisplayName(ksAnimName);
             }
 
+            public string DisplayName { get; }
+
+            private bool _active;
+
+            public bool Active {
+                get { return _active; }
+                set {
+                    if (Equals(value, _active)) return;
+                    _active = value;
+                    OnPropertyChanged();
+                    OnActiveChanged(value);
+                }
+            }
+
+            protected abstract void OnActiveChanged(bool newValue);
+            
             internal void Update(RenderableList parent, float value) {
                 _animator.Value?.SetTarget(parent, value);
                 Value = value;
@@ -1407,23 +1480,46 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        private static string GetKsAnimDisplayName(string fileName) {
+            var s = Regex.Replace(fileName.ApartFromLast(".ksanim"), @"[^a-zA-Z0-9]+|(?<=[a-z])(?=[A-Z])", " ").Trim().Split(' ');
+            var b = new List<string>();
+            foreach (var p in s) {
+                if (p.Length < 3 && !Regex.IsMatch(p, @"^(?:a|an|as|at|by|en|if|in|of|on|or|the|to|vs)$")) {
+                    b.Add(p.ToUpperInvariant());
+                } else {
+                    b.Add(char.ToUpper(p[0]) + p.Substring(1).ToLowerInvariant());
+                }
+            }
+            return b.JoinToString(' ');
+        }
+
         public class SpoilerEntry : AnimationEntry {
             public readonly CarData.WingAnimation Description;
 
-            public SpoilerEntry(string rootDirectory, CarData.WingAnimation description) : base(rootDirectory, description.KsAnimName, description.Duration) {
+            public SpoilerEntry(Kn5RenderableCar carNode, CarData.WingAnimation description) : base(carNode, 
+                    description.KsAnimName, description.Duration) {
                 Description = description;
+            }
+
+            protected override void OnActiveChanged(bool newValue) {
+                CarNode.ToggleWing(CarNode.Wings.IndexOf(this), newValue);
             }
         }
 
         private SpoilerEntry[] _wings;
 
-        public IReadOnlyList<SpoilerEntry> Wings => _wings;
+        public IReadOnlyList<SpoilerEntry> Wings {
+            get {
+                InitializeWings();
+                return _wings;
+            }
+        }
 
         private void InitializeWings() {
             if (_wings != null) return;
 
             _wings = _carData.GetWingsAnimations()
-                             .Select(x => new SpoilerEntry(_rootDirectory, x))
+                             .Select(x => new SpoilerEntry(this, x))
                              .ToArray();
             OnPropertyChanged(nameof(Wings));
         }
@@ -1689,16 +1785,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Override textures
-        public bool ReplaceTexture(DeviceContextHolder device, string textureName, byte[] textureBytes) {
-            if (_texturesProvider == null) {
-                InitializeTextures(device);
-            }
-
-            var texture = _texturesProvider?.GetTexture(device, textureName);
-            texture?.SetProceduralOverride(device, textureBytes);
-            return texture != null;
-        }
-
         public bool OverrideTexture(DeviceContextHolder device, string textureName, byte[] textureBytes) {
             if (_texturesProvider == null) {
                 InitializeTextures(device);

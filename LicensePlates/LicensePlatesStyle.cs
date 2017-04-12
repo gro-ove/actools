@@ -274,6 +274,10 @@ namespace LicensePlates {
             }
         }
 
+        private static TypeMetric Measure(MagickImage image, string line, bool ignoreNewLines = false) {
+            return string.IsNullOrEmpty(line) ? image.FontTypeMetrics("​") : image.FontTypeMetrics(line, ignoreNewLines);
+        }
+
         private static TextSize DrawText(MagickImage image, string line, double[] spaces, double offsetX, double offsetY, Gravity position, bool measureOnly) {
             if (string.IsNullOrWhiteSpace(line)) return new TextSize(0d, 0d);
 
@@ -288,11 +292,11 @@ namespace LicensePlates {
                     image.Draw(drawable, gravity);
                 }
 
-                var metrics = image.FontTypeMetrics(line);
+                var metrics = Measure(image, line);
                 return new TextSize(metrics.TextWidth, metrics.Ascent - metrics.Descent);
             } else {
                 var words = line.Split(' ');
-                var metrics = words.Select(x => image.FontTypeMetrics(x, true)).ToArray();
+                var metrics = words.Select(x => Measure(image, x, true)).ToArray();
 
                 var totalSpace = words.Take(words.Length - 1).Select((x, i) => i < spaces.Length ? spaces[i] : spaces.LastOrDefault()).Sum();
                 var totalWidth = metrics.Select(x => x.TextWidth).Sum() + totalSpace;
@@ -347,11 +351,11 @@ namespace LicensePlates {
 
                     var gravity = new DrawableGravity(Gravity.Northwest);
                     for (var i = 0; i < words.Length; i++) {
-                        var drawable = new DrawableText(currentX, currentY, words[i]);
-                        image.Draw(drawable, gravity);
+                        if (!string.IsNullOrWhiteSpace(words[i])) {
+                            image.Draw(new DrawableText(currentX, currentY, words[i]), gravity);
+                        }
 
-                        var metric = metrics[i];
-                        currentX += metric.TextWidth + (i < spaces.Length ? spaces[i] : spaces.LastOrDefault());
+                        currentX += metrics[i].TextWidth + (i < spaces.Length ? spaces[i] : spaces.LastOrDefault());
                     }
                 }
 

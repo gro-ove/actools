@@ -1,14 +1,20 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using SlimDX;
@@ -166,6 +172,59 @@ namespace AcManager.Controls.CustomShowroom {
             } finally {
                 _busy = false;
                 UpdateSize();
+            }
+        }
+
+        private static bool _warningShown;
+
+        protected override void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var plugin = PluginsManager.Instance.GetById("ImageMontage");
+            if (plugin == null || !plugin.CanWork) {
+                if (!_warningShown) {
+                    _warningShown = true;
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
+                    });
+                }
+
+                base.SplitShotPieces(multipler, downscale, filename, progress, cancellation);
+            } else {
+                var dark = (DarkKn5ObjectRenderer)Renderer;
+                var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
+                var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
+                        !OptionHwDownscale && downscale, Wrap(progress), cancellation);
+
+                progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.92));
+
+                using (var process = new Process {
+                    StartInfo = {
+                    FileName =  plugin.GetFilename("montage.exe"),
+                    WorkingDirectory = destination,
+                    Arguments = $"*-*.{information.Extension} -tile {information.Cuts}x{information.Cuts} -geometry +0+0 out.jpg",
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                },
+                    EnableRaisingEvents = true
+                }) {
+                    process.Start();
+                    process.WaitForExit(60000);
+                    if (!process.HasExited) {
+                        process.Kill();
+                    }
+                }
+
+                progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.96));
+
+                var result = Path.Combine(destination, "out.jpg");
+                if (!File.Exists(result)) {
+                    throw new Exception("Combining failed, file not found");
+                }
+
+                File.Move(result, filename);
+                Directory.Delete(destination, true);
             }
         }
 

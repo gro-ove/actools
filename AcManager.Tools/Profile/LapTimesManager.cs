@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define AC_OLD_DB
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +13,6 @@ using AcManager.Tools.SemiGui;
 using AcTools.LapTimes;
 using AcTools.Processes;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -24,7 +25,11 @@ namespace AcManager.Tools.Profile {
         public static readonly string CmSourceId = @"Content Manager";
         public static readonly string SidekickSourceId = "Sidekick";
         public static readonly string AcNewSourceId = "AC New";
+
+#if AC_OLD_DB
         public static readonly string AcOldSourceId = "AC Old Database";
+#endif
+
         public static readonly string RaceEssentialsSourceId = "Race Essentials";
         public static readonly string Ov1InfoSourceId = "OV1Info";
 
@@ -48,10 +53,12 @@ namespace AcManager.Tools.Profile {
                         "New AC storage", "Used by the original launcher. Much faster and more stable.",
                         "Settings.LapTimesSettings.SourceAcNew", true, true,
                         () => new AcLapTimesNewReader(FileUtils.GetDocumentsDirectory(), this), () => TracksManager.Instance.EnsureLoadedAsync()),
+#if AC_OLD_DB
                 new LapTimesSource(AcOldSourceId,
                         "Old AC database", "Used by the original launcher. Reading is quite wobbly, so I recommend to keep it disabled.",
                         "Settings.LapTimesSettings.SourceAcDb", false, false,
                         () => new AcLapTimesReader(FileUtils.GetDocumentsDirectory()), null),
+#endif
                 new LapTimesSource(SidekickSourceId,
                         "Sidekick", "Very good source of lap times, accurate and reliable.",
                         "Settings.LapTimesSettings.SourceSidekick", true, false,

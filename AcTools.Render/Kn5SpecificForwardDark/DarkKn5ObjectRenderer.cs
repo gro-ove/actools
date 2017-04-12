@@ -1,15 +1,9 @@
 ﻿// #define SSLR_PARAMETRIZED
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -27,13 +21,10 @@ using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using AcTools.Windows;
-using ImageMagick;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
-using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public enum AoType {
@@ -595,24 +586,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        public event EventHandler CameraMoved;
-        private Matrix _cameraView;
-
         protected override void DrawPrepare() {
             if (_mirrorDirty) {
                 _mirrorDirty = false;
                 RecreateFlatMirror();
-            }
-
-            var cameraMoved = CameraMoved;
-            if (cameraMoved != null) {
-                Camera.UpdateViewMatrix();
-                if (_cameraView != Camera.ViewProj) {
-                    _cameraView = Camera.ViewProj;
-                    cameraMoved.Invoke(this, EventArgs.Empty);
-                    Camera.UpdateViewMatrix();
-                    _cameraView = Camera.ViewProj;
-                }
             }
 
             base.DrawPrepare();

@@ -137,6 +137,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
+    <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
+    <Compile Include="CustomShowroom\PaintShop.Items.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />

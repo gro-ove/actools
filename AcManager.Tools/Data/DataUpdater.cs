@@ -102,6 +102,7 @@ namespace AcManager.Tools.Data {
         }
 
         protected override void OnUpdated() {
+            base.OnUpdated();
             DataProvider.Instance.RefreshData();
         }
     }

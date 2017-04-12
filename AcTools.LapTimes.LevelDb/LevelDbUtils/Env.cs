@@ -9,7 +9,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// A default environment to access operating system functionality like 
     /// the filesystem etc of the current operating system.

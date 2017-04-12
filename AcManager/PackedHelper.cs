@@ -310,7 +310,7 @@ namespace AcManager {
         private string ExtractUnmanaged(string id) {
             var size = _references?.GetString(id + "//size");
             if (size == null) {
-                throw new Exception($"Assembly {id} is missing");
+                throw new DllNotFoundException($"Assembly {id} is missing");
             }
 
             var sizeLong = long.Parse(size, CultureInfo.InvariantCulture);
@@ -339,7 +339,7 @@ namespace AcManager {
         private string ExtractToFile(string id) {
             var hash = _references?.GetString(id + "//hash");
             if (hash == null) {
-                throw new Exception($"Assembly {id} is missing");
+                throw new DllNotFoundException($"Assembly {id} is missing");
             }
 
 #if LOCALIZABLE
@@ -466,6 +466,8 @@ namespace AcManager {
 
             try {
                 ExtractUnmanaged(id);
+            } catch (DllNotFoundException e) {
+                Log(e.Message);
             } catch (MissingManifestResourceException) {}
         }
 

@@ -9,7 +9,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// DB contents are stored in a set of blocks, each of which holds a
     /// sequence of key,value pairs.  Each block may be compressed before

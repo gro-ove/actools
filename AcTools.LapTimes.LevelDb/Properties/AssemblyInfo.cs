@@ -1,16 +1,16 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AcTools.LicensePlates")]
-[assembly: AssemblyDescription("Library used for generating number plates using Magick.NET and Lua scripts")]
+[assembly: AssemblyTitle("AcTools.LapTimes.LevelDb")]
+[assembly: AssemblyDescription("This library allows to get lap times from Assetto Corsa old database")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
-[assembly: AssemblyProduct("AcTools.LicensePlates")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
+[assembly: AssemblyProduct("AcTools.LapTimes.LevelDb")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bcea4235-ccbb-4588-a223-67deae6c4272")]
+[assembly: Guid("3efb040e-3114-4df6-ad0e-d86ab59b5d85")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,6 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.73")]
-[assembly: AssemblyFileVersion("1.0.0.73")]
-// Modified at: 17/04/12 18:57:51
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

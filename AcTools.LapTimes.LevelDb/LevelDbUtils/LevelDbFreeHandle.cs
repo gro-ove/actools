@@ -13,7 +13,7 @@ using System;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// Wraps pointers to be freed with leveldb_free (e.g. returned by leveldb_get).
     /// Reference on safe handles: http://blogs.msdn.com/b/bclteam/archive/2006/06/23/644343.aspx.

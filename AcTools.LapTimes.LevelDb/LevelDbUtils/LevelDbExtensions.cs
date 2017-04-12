@@ -9,7 +9,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     internal static class LevelDbExtensions {
         public static void CopyToByteArray(this int source, byte[] destination, int offset) {
             //if (destination == null) throw new ArgumentException("Destination array cannot be null");

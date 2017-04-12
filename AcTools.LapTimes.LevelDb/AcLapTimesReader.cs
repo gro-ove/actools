@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using AcTools.Utils;
 
-namespace AcTools.LapTimes {
+namespace AcTools.LapTimes.LevelDb {
     public class AcLapTimesReader : ILapTimesReader {
         private readonly string _sourceDirectory;
         private ChromiumDbWrapper _wrapper;

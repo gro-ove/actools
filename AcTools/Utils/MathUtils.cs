@@ -12,6 +12,9 @@ namespace AcTools.Utils {
         public static double Acos(this double v) => Math.Acos(v);
         public static float Acos(this float v) => (float)Math.Acos(v);
 
+        public static double Asin(this double v) => Math.Asin(v);
+        public static float Asin(this float v) => (float)Math.Asin(v);
+
         public static double Sin(this double v) => Math.Sin(v);
         public static float Sin(this float v) => (float)Math.Sin(v);
 

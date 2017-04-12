@@ -1,631 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
-using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using LicensePlates;
-using SlimDX;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.CustomShowroom {
-    public static class PaintShop {
-        public abstract class PaintableItem : Displayable, IDisposable {
-            protected PaintableItem(string diffuseTexture) {
-                DiffuseTexture = diffuseTexture;
-            }
-
-            public string DiffuseTexture { get; }
-
-            [CanBeNull]
-            protected IPaintShopRenderer Renderer { get; private set; }
-
-            public void SetRenderer(IPaintShopRenderer renderer) {
-                Renderer = renderer;
-            }
-
-            private bool _enabled = true;
-
-            public bool Enabled {
-                get { return _enabled; }
-                set {
-                    if (Equals(value, _enabled)) return;
-
-                    if (value) {
-                        try {
-                            Apply();
-                        } catch (NotImplementedException) {
-                            return;
-                        }
-                    } else {
-                        Reset();
-                    }
-
-                    _enabled = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _updating;
-
-            protected async void Update() {
-                if (_updating) return;
-
-                try {
-                    _updating = true;
-                    await Task.Delay(20);
-                    if (_updating && _enabled && !_disposed) {
-                        Apply();
-                    }
-                } finally {
-                    _updating = false;
-                }
-            }
-
-            public void ApplyImmediate() {
-                if (!_updating) return;
-                if (_enabled) {
-                    Apply();
-                }
-                _updating = false;
-            }
-
-            protected override void OnPropertyChanged(string propertyName = null) {
-                base.OnPropertyChanged(propertyName);
-                if (_enabled) {
-                    Update();
-                }
-            }
-
-            protected abstract void Apply();
-
-            protected virtual void Reset() {
-                Renderer?.OverrideTexture(DiffuseTexture, null);
-            }
-
-            [NotNull]
-            public abstract Task SaveAsync(string location);
-
-            private bool _disposed;
-
-            public virtual void Dispose() {
-                _disposed = true;
-            }
-        }
-
-        public class TransparentIfFlagged : PaintableItem {
-            public TransparentIfFlagged(string diffuseTexture, bool byDefault, bool inverse) : base(diffuseTexture) {
-                _flag = byDefault;
-                _inverse = inverse;
-            }
-
-            private bool _flag;
-            private readonly bool _inverse;
-
-            public bool Flag {
-                get { return _flag; }
-                set {
-                    if (Equals(value, _flag)) return;
-                    _flag = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            protected override void Apply() {
-                if (_inverse ? !Flag : Flag) {
-                    Renderer?.OverrideTexture(DiffuseTexture, System.Drawing.Color.Black, 0d);
-                } else {
-                    Renderer?.OverrideTexture(DiffuseTexture, null);
-                }
-            }
-
-            public override Task SaveAsync(string location) {
-                return ((_inverse ? !Flag : Flag) ? Renderer?.SaveTexture(Path.Combine(location, DiffuseTexture), System.Drawing.Color.Black, 0d) : null) ??
-                        Task.Delay(0);
-            }
-        }
-
-        public class LicensePlate : PaintableItem {
-            public enum LicenseFormat {
-                Europe, Japan
-            }
-
-            public LicensePlate(LicenseFormat format, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
-                    : this(format.ToString(), diffuseTexture, normalsTexture) {}
-
-            public LicensePlate(string suggestedStyle, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
-                    : base(diffuseTexture) {
-                SuggestedStyleName = suggestedStyle;
-                NormalsTexture = normalsTexture;
-            }
-
-            public string SuggestedStyleName { get; }
-
-            public string NormalsTexture { get; }
-
-            public override string DisplayName { get; set; } = "License plate";
-
-            private FilesStorage.ContentEntry _selectedStyleEntry;
-
-            [CanBeNull]
-            public FilesStorage.ContentEntry SelectedStyleEntry {
-                get { return _selectedStyleEntry; }
-                set {
-                    if (Equals(value, _selectedStyleEntry)) return;
-                    _selectedStyleEntry = value;
-                    OnPropertyChanged();
-
-                    SelectedStyle = value == null ? null : new LicensePlatesStyle(value.Filename);
-                }
-            }
-
-            private List<FilesStorage.ContentEntry> _styles;
-
-            public List<FilesStorage.ContentEntry> Styles {
-                get { return _styles; }
-                private set {
-                    if (Equals(value, _styles)) return;
-                    _styles = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            public void SetStyles(List<FilesStorage.ContentEntry> styles) {
-                Styles = styles;
-                SelectedStyleEntry = Styles.FirstOrDefault(x => x.Name == SelectedStyleEntry?.Name) ??
-                        Styles.FirstOrDefault(x => string.Equals(x.Name, SuggestedStyleName, StringComparison.OrdinalIgnoreCase)) ??
-                                Styles.FirstOrDefault(x => x.Name.IndexOf(SuggestedStyleName, StringComparison.OrdinalIgnoreCase) == 0) ??
-                                        Styles.FirstOrDefault();
-            }
-
-            private LicensePlatesStyle _selectedStyle;
-
-            [CanBeNull]
-            public LicensePlatesStyle SelectedStyle {
-                get { return _selectedStyle; }
-                private set {
-                    if (Equals(value, _selectedStyle)) return;
-
-                    if (_selectedStyle != null) {
-                        foreach (var inputParam in _selectedStyle.InputParams) {
-                            inputParam.PropertyChanged -= OnStyleValueChanged;
-                        }
-                    }
-
-                    _selectedStyle?.Dispose();
-                    _selectedStyle = value;
-                    _onlyPreviewModeChanged = false;
-                    OnPropertyChanged();
-
-                    if (value != null) {
-                        foreach (var inputParam in value.InputParams) {
-                            inputParam.PropertyChanged += OnStyleValueChanged;
-                        }
-                    }
-                }
-            }
-
-            private bool _previewMode = true;
-
-            public bool PreviewMode {
-                get { return _previewMode; }
-                set {
-                    if (Equals(value, _previewMode)) return;
-                    _previewMode = value;
-                    _onlyPreviewModeChanged = true;
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _updating;
-
-            private async void OnStyleValueChanged(object sender, PropertyChangedEventArgs e) {
-                _onlyPreviewModeChanged = false;
-                if (_updating) return;
-
-                try {
-                    _updating = true;
-                    await Task.Delay(50);
-                    Update();
-                } finally {
-                    _updating = false;
-                }
-            }
-
-            private int _applyId;
-            private bool _keepGoing, _dirty;
-            private Thread _thread;
-            private readonly object _threadObj = new object();
-
-            private bool _flatNormals, _onlyPreviewModeChanged;
-
-            private void ApplyQuick() {
-                var applyId = ++_applyId;
-                
-                var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
-
-                Renderer?.OverrideTexture(DiffuseTexture, diffuse);
-                if (_applyId != applyId) return;
-
-                if (!_flatNormals) {
-                    _flatNormals = true;
-                    Renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor());
-                }
-            }
-
-            private void ApplySlowDiffuse() {
-                var applyId = ++_applyId;
-
-                var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
-
-                Renderer?.OverrideTexture(DiffuseTexture, diffuse);
-            }
-
-            private void ApplySlowNormals() {
-                var applyId = ++_applyId;
-
-                var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
-
-                Renderer?.OverrideTexture(NormalsTexture, normals);
-                _flatNormals = false;
-            }
-
-            private void EnsureThreadCreated() {
-                if (_thread != null) return;
-
-                _thread = new Thread(() => {
-                    try {
-                        while (_keepGoing) {
-                            lock (_threadObj) {
-                                if (_dirty) {
-                                    try {
-                                        if (_onlyPreviewModeChanged) {
-                                            _onlyPreviewModeChanged = false;
-                                            ApplySlowNormals();
-                                        } else {
-                                            Update:
-                                            ApplyQuick();
-                                            _dirty = false;
-
-                                            for (var i = 0; i < 10; i++) {
-                                                if (!_keepGoing) return;
-                                                Monitor.Wait(_threadObj, 50);
-
-                                                if (!_keepGoing) return;
-                                                if (_dirty) goto Update;
-                                            }
-
-                                            ApplySlowDiffuse();
-                                            ApplySlowNormals();
-                                        }
-                                    } catch (Exception e) {
-                                        NonfatalError.Notify("Can’t generate number plate", e);
-                                    } finally {
-                                        _dirty = false;
-                                    }
-                                }
-
-                                if (!_keepGoing) return;
-                                Monitor.Wait(_threadObj);
-                            }
-                        }
-                    } catch (ThreadAbortException) { }
-                }) {
-                    Name = "License Plates Generator",
-                    IsBackground = true,
-                    Priority = ThreadPriority.Lowest
-                };
-
-                _keepGoing = true;
-                _thread.Start();
-            }
-
-            protected override void Apply() {
-                if (SelectedStyle == null) return;
-
-                EnsureThreadCreated();
-                lock (_threadObj) {
-                    ++_applyId;
-                    _dirty = true;
-                    Monitor.PulseAll(_threadObj);
-                }
-            }
-
-            protected override void Reset() {
-                base.Reset();
-                _onlyPreviewModeChanged = false;
-                _flatNormals = false;
-            }
-
-            public override Task SaveAsync(string location) {
-                if (SelectedStyle == null) return Task.Delay(0);
-                return Task.Run(() => {
-                    SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
-                    SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
-                });
-            }
-
-            public override void Dispose() {
-                _keepGoing = false;
-
-                base.Dispose();
-                SelectedStyle?.Dispose();
-                SelectedStyle = null;
-
-                if (_thread != null) {
-                    lock (_threadObj) {
-                        Monitor.PulseAll(_threadObj);
-                    }
-
-                    _thread.Abort();
-                    _thread = null;
-                }
-            }
-        }
-
-        public class ColoredItem : PaintableItem {
-            public ColoredItem([Localizable(false)] string diffuseTexture, Color defaultColor) : base(diffuseTexture) {
-                DefaultColor = defaultColor;
-            }
-
-            public Color DefaultColor { get; }
-
-            private Color? _color;
-
-            public Color Color {
-                get { return _color ?? DefaultColor; }
-                set {
-                    if (Equals(value, _color)) return;
-                    _color = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            protected override void Apply() {
-                Renderer?.OverrideTexture(DiffuseTexture, Color.ToColor());
-            }
-
-            public override Task SaveAsync(string location) {
-                return Renderer?.SaveTexture(Path.Combine(location, DiffuseTexture), Color.ToColor()) ?? Task.Delay(0);
-            }
-        }
-
-        public class TintedWindows : ColoredItem {
-            public double DefaultAlpha { get; set; }
-
-            public TintedWindows([Localizable(false)] string diffuseTexture, double defaultAlpha = 0.23, Color? defaultColor = null)
-                    : base(diffuseTexture, defaultColor ?? Color.FromRgb(41, 52, 55)) {
-                DefaultAlpha = defaultAlpha;
-            }
-
-            public override string DisplayName { get; set; } = "Windows";
-
-            private double? _alpha;
-
-            public double Alpha {
-                get { return _alpha ?? DefaultAlpha; }
-                set {
-                    if (Equals(value, _alpha)) return;
-                    _alpha = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(Transparency));
-                }
-            }
-
-            public double Transparency {
-                get { return 1d - Alpha; }
-                set { Alpha = 1d - value; }
-            }
-
-            protected override void Apply() {
-                Renderer?.OverrideTexture(DiffuseTexture, Color.ToColor(), Alpha);
-            }
-
-            public override Task SaveAsync(string location) {
-                return Renderer?.SaveTexture(Path.Combine(location, DiffuseTexture), Color.ToColor(), Alpha) ?? Task.Delay(0);
-            }
-        }
-
-        public class CarPaint : ColoredItem {
-            public CarPaint(string detailsTexture , Color? defaultColor = null)
-                    : base(detailsTexture, defaultColor ?? Color.FromRgb(255, 255, 255)) {}
-
-            public bool SupportsFlakes { get; internal set; } = true;
-
-            public override string DisplayName { get; set; } = "Car paint";
-
-            private bool _flakes = true;
-
-            public bool Flakes {
-                get { return _flakes; }
-                set {
-                    if (Equals(value, _flakes)) return;
-                    _flakes = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private Color _previousColor;
-            private bool _previousFlakes;
-
-            protected override void Apply() {
-                if (_previousColor == Color && _previousFlakes == Flakes) return;
-                _previousColor = Color;
-                _previousFlakes = Flakes;
-
-                if (SupportsFlakes && Flakes) {
-                    Renderer?.OverrideTextureFlakes(DiffuseTexture, Color.ToColor());
-                } else {
-                    Renderer?.OverrideTexture(DiffuseTexture, Color.ToColor());
-                }
-            }
-
-            public override Task SaveAsync(string location) {
-                if (Renderer == null) return Task.Delay(0);
-                return SupportsFlakes && Flakes ? Renderer.SaveTextureFlakes(Path.Combine(location, DiffuseTexture), Color.ToColor()) :
-                        Renderer.SaveTexture(Path.Combine(location, DiffuseTexture), Color.ToColor());
-            }
-        }
-
-        public class ComplexCarPaint : CarPaint {
-            public string MapsTexture { get; }
-
-            [Localizable(false)]
-            public string TakeOriginalMapsFromDiffuse { get; internal set; }
-
-            public bool AutoAdjustOriginalMaps { get; internal set; }
-
-            public ComplexCarPaint([Localizable(false)] string detailsTexture, [Localizable(false)] string mapsTexture, Color? defaultColor = null)
-                    : base(detailsTexture, defaultColor) {
-                MapsTexture = mapsTexture;
-            }
-
-            private double _reflection = 1d;
-            private double _previousReflection = -1d;
-
-            public double Reflection {
-                get { return _reflection; }
-                set {
-                    if (Equals(value, _reflection)) return;
-                    _reflection = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private double _gloss = 1d;
-            private double _previousGloss = -1d;
-
-            public double Gloss {
-                get { return _gloss; }
-                set {
-                    if (Equals(value, _gloss)) return;
-                    _gloss = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private double _specular = 1d;
-            private double _previousSpecular = -1d;
-
-            public double Specular {
-                get { return _specular; }
-                set {
-                    if (Equals(value, _specular)) return;
-                    _specular = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            protected override void Apply() {
-                base.Apply();
-
-                if (Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
-                        Math.Abs(_previousSpecular - Specular) > 0.001) {
-                    Renderer?.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular);
-                    _previousReflection = Reflection;
-                    _previousGloss = Gloss;
-                    _previousSpecular = Specular;
-                }
-            }
-
-            public override async Task SaveAsync(string location) {
-                var renderer = Renderer;
-                if (renderer == null) return;
-                
-                await base.SaveAsync(location);
-                await renderer.SaveTextureMaps(Path.Combine(location, MapsTexture), MapsTexture, Reflection, Gloss, Specular);
-            }
-        }
-
-        public static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5) {
-            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
-                return new PaintableItem[0];
-            }
-
-            switch (carId) {
-                case "peugeot_504":
-                    return new PaintableItem[] {
-                        new LicensePlate(LicensePlate.LicenseFormat.Europe),
-                        new ComplexCarPaint("car_paint.dds", "carpaint_MAP.dds", Colors.BurlyWood),
-                        new ColoredItem("rims_color.dds", Colors.CadetBlue) {
-                            DisplayName = "Rims",
-                            Enabled = false
-                        },
-                        new ColoredItem("int_inside_color.dds", Colors.Wheat) {
-                            DisplayName = "Interior",
-                            Enabled = false
-                        },
-                        new ColoredItem("int_leather_color.dds", Colors.Brown) {
-                            DisplayName = "Leather",
-                            Enabled = false
-                        },
-                        new ColoredItem("int_cloth_color.dds", Colors.Wheat) {
-                            DisplayName = "Cloth",
-                            Enabled = false
-                        },
-                        new TransparentIfFlagged("ext_headlight_yellow.dds", true, true) {
-                            DisplayName = "Yellow headlights"
-                        },
-                        new TintedWindows("ext_glass.dds") {
-                            Enabled = false
-                        },
-                    };
-
-                case "peugeot_504_tn":
-                    return new PaintableItem[] {
-                        new LicensePlate(LicensePlate.LicenseFormat.Europe),
-                        new ComplexCarPaint("tn_car_paint.dds", "tn_carpaint_MAP.dds") {
-                            TakeOriginalMapsFromDiffuse = "tn_carpaint_SKIN.dds"
-                        },
-                        new ColoredItem("tn_rims_color.dds", Colors.Black) {
-                            DisplayName = "Rims",
-                            Enabled = false
-                        },
-                        new ColoredItem("tn_int_inside_color.dds", Colors.Wheat) {
-                            DisplayName = "Interior",
-                            Enabled = false
-                        },
-                        new ColoredItem("tn_int_leather_color.dds", Colors.Black) {
-                            DisplayName = "Leather",
-                            Enabled = false
-                        },
-                        new ColoredItem("tn_int_cloth_color.dds", Colors.Wheat) {
-                            DisplayName = "Cloth",
-                            Enabled = false
-                        },
-                        new TintedWindows("ext_glass.dds") {
-                            Enabled = false
-                        },
-                    };
-
-                case "acc_porsche_914-6":
-                    return new PaintableItem[] {
-                        new LicensePlate(LicensePlate.LicenseFormat.Europe),
-                        new ComplexCarPaint("car_paint.dds", "ext_MAP.dds"),
-                        new ColoredItem("car_paint_rims.dds", Colors.Black) {
-                            DisplayName = "Rims",
-                            Enabled = false
-                        },
-                        new TintedWindows("ext_glass.dds") {
-                            Enabled = false
-                        },
-                    };
-            }
-
-            if (kn5 == null) return new PaintableItem[0];
+    public static partial class PaintShop {
+        private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
+            if (kn5 == null) yield break;
 
             var carPaint = new[] { "Metal_detail.dds", "carpaint_detail.dds", "metal_detail.dds", "car_paint.dds", "carpaint.dds" }
                     .FirstOrDefault(x => kn5.Textures.ContainsKey(x));
@@ -634,28 +26,248 @@ namespace AcManager.Controls.CustomShowroom {
                              .NonNull()
                              .FirstOrDefault();
 
-            return new PaintableItem[] {
-                kn5.Textures.ContainsKey("Plate_D.dds") && kn5.Textures.ContainsKey("Plate_NM.dds") ?
-                        new LicensePlate(LicensePlate.LicenseFormat.Europe) : null,
-                carPaint == null ? null : mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap),
-                new[] { "car_paint_rims.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                              .Select(x => new ColoredItem(x, Colors.AliceBlue) {
-                                                  DisplayName = "Rims",
-                                                  Enabled = false
-                                              })
-                                              .FirstOrDefault(),
-                new[] { "car_paint_roll_cage.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                                   .Select(x => new ColoredItem(x, Colors.AliceBlue) {
-                                                       DisplayName = "Roll cage",
-                                                       Enabled = false
-                                                   })
-                                                   .FirstOrDefault(),
-                new[] { "ext_glass.dds" }.Where(x => kn5.Textures.ContainsKey(x))
-                                         .Select(x => new TintedWindows(x) {
-                                             Enabled = false
-                                         })
-                                         .FirstOrDefault(),
-            }.Where(x => x != null);
+            if (kn5.Textures.ContainsKey("Plate_D.dds") && kn5.Textures.ContainsKey("Plate_NM.dds")) {
+                yield return new LicensePlate(LicensePlate.LicenseFormat.Europe);
+            }
+
+            if (carPaint != null) {
+                yield return mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap);
+            }
+
+            var rims = new[] { "car_paint_rims.dds" }
+                    .Where(x => kn5.Textures.ContainsKey(x))
+                    .Select(x => new ColoredItem(x, Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
+                    .FirstOrDefault();
+            if (rims != null) yield return rims;
+
+            var rollCage = new[] { "car_paint_roll_cage.dds" }
+                    .Where(x => kn5.Textures.ContainsKey(x))
+                    .Select(x => new ColoredItem(x, Colors.AliceBlue) { DisplayName = "Roll cage", Enabled = false })
+                    .FirstOrDefault();
+            if (rollCage != null) yield return rollCage;
+
+            var glass = new[] { "ext_glass.dds" }
+                    .Where(x => kn5.Textures.ContainsKey(x))
+                    .Select(x => new TintedWindows(x) { Enabled = false })
+                    .FirstOrDefault();
+            if (glass != null) yield return glass;
+        }
+
+        private static IEnumerable<PaintableItem> GuessPaintableItems([CanBeNull] Kn5 kn5) {
+            foreach (var item in GuessPaintableItemsInner(kn5)) {
+                item.Guessed = true;
+                yield return item;
+            }
+        }
+
+        [CanBeNull, ContractAnnotation(@"defaultValue: notnull => notnull")]
+        private static string GetString(JObject j, string key, string defaultValue = null) {
+            return j.GetStringValueOnly(key) ?? defaultValue;
+        }
+
+        [NotNull]
+        private static string RequireString(JObject j, string key) {
+            var s = j.GetStringValueOnly(key);
+            if (s == null) {
+                throw new Exception($"Value required: “{key}”");
+            }
+            return s;
+        }
+        
+        private static Color GetColor(JObject j, string key, Color? defaultColor = null) {
+            var s = j.GetStringValueOnly(key);
+            return (s == null ? defaultColor : s.ToColor() ?? defaultColor) ?? Colors.White;
+        }
+        
+        private static double GetDouble(JObject j, string key, double defaultValue = 0d) {
+            var s = j.GetStringValueOnly(key);
+            return s == null ? defaultValue : FlexibleParser.TryParseDouble(s) ?? defaultValue;
+        }
+
+        [CanBeNull]
+        private static PaintableItem GetPaintableItem([NotNull] JObject e, Func<string, byte[]> extraData) {
+            const string typeColor = "color";
+            const string typeCarPaint = "carpaint";
+            const string typeTintedWindow = "tintedwindow";
+            const string typeLicensePlate = "licenseplate";
+            const string typeSolidColorIfFlagged = "solidcolorifflagged";
+            const string typeTransparentIfFlagged = "transparentifflagged";
+            const string typeReplacedIfFlagged = "replacedifflagged";
+
+            const string keyName = "name";
+            const string keyEnabled = "enabled";
+            const string keyInverse = "inverse";
+            const string keyType = "type";
+            const string keyStyle = "style";
+            const string keyTexture = "texture";
+            const string keyNormalsTexture = "normals";
+            const string keyMapsDefault = "mapsTexture";
+            const string keyMapsDefaultTexture = "mapsDefaultTexture";
+            const string keyMapsAutoLevel = "mapsAutoLevel";
+            const string keyColor = "color";
+            const string keyOpacity = "opacity";
+            const string keyDefaultColor = "defaultColor";
+            const string keyDefaultOpacity = "defaultOpacity";
+            const string keyTintBase = "tintBase";
+
+            PaintableItem result;
+
+            var type = GetString(e, keyType, typeColor).ToLowerInvariant();
+            switch (type) {
+                case typeCarPaint:
+                    var maps = GetString(e, keyMapsDefault);
+                    if (maps != null) {
+                        result = new ComplexCarPaint(RequireString(e, keyTexture), maps, GetColor(e, keyDefaultColor)) {
+                            AutoAdjustLevels = e.GetBoolValueOnly(keyMapsAutoLevel) ?? false,
+                            MapsDefaultTexture = GetString(e, keyMapsDefaultTexture),
+                        };
+                    } else {
+                        result = new CarPaint(RequireString(e, keyTexture), GetColor(e, keyDefaultColor));
+                    }
+                    break;
+                case typeColor:
+                    result = new ColoredItem(RequireString(e, keyTexture), GetColor(e, keyDefaultColor));
+                    break;
+                case typeLicensePlate:
+                    result = new LicensePlate(GetString(e, keyStyle, "Europe"), GetString(e, keyTexture, "Plate_D.dds"),
+                            GetString(e, keyNormalsTexture, "Plate_NM.dds"));
+                    break;
+                case typeTintedWindow:
+                    result = new TintedWindows(RequireString(e, keyTexture), GetDouble(e, keyDefaultOpacity, 0.23),
+                            GetColor(e, keyDefaultColor, Color.FromRgb(41, 52, 55)), e.GetBoolValueOnly(keyTintBase) ?? false);
+                    break;
+                case typeSolidColorIfFlagged:
+                    result = new SolidColorIfFlagged(RequireString(e, keyTexture), e.GetBoolValueOnly(keyInverse) ?? false, 
+                            GetColor(e, keyColor), GetDouble(e, keyOpacity, 0.23));
+                    break;
+                case typeTransparentIfFlagged:
+                    result = new TransparentIfFlagged(RequireString(e, keyTexture), e.GetBoolValueOnly(keyInverse) ?? false);
+                    break;
+                case typeReplacedIfFlagged:
+                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(keyInverse) ?? false,
+                            e["pairs"].ToObject<Dictionary<string, string>>().ToDictionary(
+                                    x => x.Key,
+                                    x => extraData(x.Value)));
+                    break;
+                default:
+                    throw new Exception($"Not supported type: {type}");
+            }
+
+            var name = GetString(e, keyName);
+            if (name != null) {
+                result.DisplayName = name;
+            }
+
+            var enabled = e.GetBoolValueOnly(keyEnabled);
+            if (enabled.HasValue) {
+                result.Enabled = enabled.Value;
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<PaintableItem> GetPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, string filename) {
+            var result = new List<PaintableItem>();
+            ZipArchive[] data = { null };
+
+            try {
+                foreach (var item in array) {
+                    if (item.Type == JTokenType.String) {
+                        var s = (string)item;
+                        if (!s.StartsWith("@")) {
+                            result.AddRange(GetPaintableItems(s, kn5, previousIds, false));
+                        } else if (string.Equals(s, "@guess", StringComparison.OrdinalIgnoreCase)) {
+                            result.AddRange(GuessPaintableItems(kn5));
+                        }
+                    } else {
+                        var o = item as JObject;
+                        if (o == null) {
+                            Logging.Warning("Unknown entry: " + item);
+                        } else {
+                            try {
+                                var i = GetPaintableItem(o, s => {
+                                    if (data[0] == null) {
+                                        data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
+                                        if (data[0] == null) return null;
+                                    }
+
+                                    return data[0].Entries.FirstOrDefault(x => x.FullName == s)?.Open().ReadAsBytesAndDispose();
+                                });
+                                if (i != null) {
+                                    result.Add(i);
+                                }
+                            } catch (Exception e) {
+                                Logging.Error(e.Message);
+                            }
+                        }
+
+                    }
+                }
+
+                return result;
+            } finally {
+                DisposeHelper.Dispose(ref data[0]);
+            }
+        }
+
+        private static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, 
+                bool fallbackToGuess) {
+            var carIdLower = carId.ToLowerInvariant();
+            if (previousIds.Contains(carIdLower)) return new PaintableItem[0];
+            previousIds.Add(carIdLower);
+
+            var car = CarsManager.Instance.GetById(carId);
+            var candidate = car == null ? null : Path.Combine(car.Location, "ui", "cm_paintshop.json");
+            if (car != null && File.Exists(candidate)) {
+                try {
+                    var t = JToken.Parse(File.ReadAllText(candidate));
+                    var j = (t as JObject)?.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray ?? t as JArray;
+                    if (j != null) {
+                        return GetPaintableItems(j, kn5, previousIds, candidate);
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e.Message);
+                }
+            } else {
+                foreach (var filename in FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PaintShop).Select(x => x.Filename)) {
+                    try {
+                        var j = JObject.Parse(File.ReadAllText(filename));
+                        var d = j.GetValue(carId, StringComparison.OrdinalIgnoreCase) as JArray;
+                        if (d != null) {
+                            return GetPaintableItems(d, kn5, previousIds, filename);
+                        }
+                    } catch (Exception e) {
+                        Logging.Error(e.Message);
+                    }
+                }
+            }
+
+            return fallbackToGuess ? GuessPaintableItems(kn5) : new PaintableItem[0];
+        }
+
+        private class PaintableItemComparer : IComparer<PaintableItem>, IEqualityComparer<PaintableItem> {
+            internal static readonly PaintableItemComparer Instance = new PaintableItemComparer();
+
+            public int Compare(PaintableItem x, PaintableItem y) {
+                var c = string.CompareOrdinal(x?.DisplayName ?? "", y?.DisplayName ?? "");
+                return c == 0 ? x?.Guessed == true ? y?.Guessed == true ? 0 : 1 : -1 : c;
+            }
+
+            public bool Equals(PaintableItem x, PaintableItem y) {
+                return x?.DisplayName == y?.DisplayName;
+            }
+
+            public int GetHashCode(PaintableItem obj) {
+                return obj?.DisplayName.GetHashCode() ?? -1;
+            }
+        }
+
+        public static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5) {
+            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) return new PaintableItem[0];
+
+            var result = GetPaintableItems(carId, kn5, new List<string>(2), true).ToList();
+            result.Sort(PaintableItemComparer.Instance);
+            return result.Distinct(PaintableItemComparer.Instance);
         }
     }
 }

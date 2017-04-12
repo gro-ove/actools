@@ -23,11 +23,11 @@ namespace AcManager.About {<#
         #>
 
     public static class <#= className #> {
-        public static readonly PieceOfInformation[] Entries = new []{<#
+<#
 
 		var subDirectory = new DirectoryInfo(sub);
-            
-        foreach (var entry in subDirectory.GetDirectories().OrderBy(f => f.Name)){
+
+		var subDirectoryEntries = subDirectory.GetDirectories().OrderBy(f => f.Name).Select((entry, i) => {
             string sid = null;
             string id = null;
             string name = entry.Name;
@@ -72,9 +72,45 @@ namespace AcManager.About {<#
                 sid = name.Length + "_" + name.GetHashCode() + "_" + content?.GetHashCode();
                 File.WriteAllLines(meta, lines.Union(new[]{ "sid: " + sid }));
             }
+
+			return new {
+				fid = entry.Name.ToLowerInvariant(), uid = i.ToString(),
+				sid, id, name, version, 
+				contentFileName, content, contentReferenced = new[]{ 0 }, contentParentId = new[]{ (string)null },
+				url, limited, hidden
+			};
+		}).ToList();
+
+		foreach (var entry in subDirectoryEntries){
+			if (entry.contentFileName?.StartsWith("..") == true){
+				entry.contentParentId[0] = entry.contentFileName.Split(new[]{ '/', '\\' })[1].ToLowerInvariant();
+				try {
+					var p = subDirectoryEntries.Single(x => x.fid == entry.contentParentId[0]);
+					p.contentReferenced[0]++;
+					entry.contentParentId[0] = p.uid;
+				} catch (Exception){
+					throw new Exception($"Not found: {entry.contentParentId[0]}");
+				}
+			}
+		}
+
+		foreach (var entry in subDirectoryEntries.Where(x => x.contentReferenced[0] > 0)){
+		#>
+        private static readonly string C<#= entry.uid #> = <#= C(entry.content) #>;		
+<#
+		}
+
+		#>
+        public static readonly PieceOfInformation[] Entries = new []{<#
+            
+        foreach (var entry in subDirectoryEntries){
+			var content = entry.contentReferenced[0] == 0 && entry.contentParentId[0] == null ?
+					C(entry.content) :
+					"C" + (entry.contentParentId[0] ?? entry.uid);
+
             #>
 
-            new PieceOfInformation(<#= O(sid) #>, <#= O(id) #>, <#= O(name) #>, <#= O(version) #>, <#= O(url) #>, <#= C(content) #>, <#= O(limited) #>, <#= O(hidden) #>),<#
+            new PieceOfInformation(<#= O(entry.sid) #>, <#= O(entry.id) #>, <#= O(entry.name) #>, <#= O(entry.version) #>, <#= O(entry.url) #>, <#= content #>, <#= O(entry.limited) #>, <#= O(entry.hidden) #>),<#
         }
             
         foreach (var entry in subDirectory.GetFiles("*.txt", SearchOption.TopDirectoryOnly)

@@ -58,6 +58,8 @@ namespace AcManager.Pages.Drive {
         private static WeakReference<QuickDrive> _current;
 
         public void Initialize() {
+            OnSizeChanged(null, null);
+
             DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack, mode: _selectNextMode);
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
@@ -777,6 +779,10 @@ namespace AcManager.Pages.Drive {
                         .AddItem("Set random temperature", Model.RandomTemperatureCommand, @"Ctrl+Alt+5")
                         .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"));
             }
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            LeftPanel.Width = 180 + ((ActualWidth - 800) / 2d).Clamp(0, 60);
         }
     }
 }

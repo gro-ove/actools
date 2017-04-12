@@ -196,18 +196,31 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
+        protected static IProgress<double> Wrap(IProgress<Tuple<string, double?>> baseProgress, string message = null) {
+            return new ProgressWrapper(baseProgress, message ?? "Rendering…");
+        }
+
+        protected virtual void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var dark = (DarkKn5ObjectRenderer)Renderer;
+            var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
+            var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
+                    !OptionHwDownscale && downscale, Wrap(progress), cancellation);
+            File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
+rem Use montage.exe from ImageMagick for Windows to run this script 
+rem and combine images: https://www.imagemagick.org/script/binary-releases.php
+montage.exe *-*.{information.Extension} -tile {information.Cuts}x{information.Cuts} -geometry +0+0 out.jpg
+echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         protected void SplitShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var dark = (DarkKn5ObjectRenderer)Renderer;
-            var wrapped = progress == null ? null : new ProgressWrapper(progress, "Rendering…");
-
             if (multipler > 4d) {
-                var destination = filename.ApartFromLast(".jpg", StringComparison.OrdinalIgnoreCase);
-                dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
-                        !OptionHwDownscale && downscale, wrapped, cancellation);
+                SplitShotPieces(multipler, downscale, filename, progress, cancellation);
             } else {
-                using (var image = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, wrapped, cancellation)) {
+                var dark = (DarkKn5ObjectRenderer)Renderer;
+                using (var image = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, Wrap(progress), cancellation)) {
                     if (cancellation.IsCancellationRequested) return;
 
                     if (downscale && !OptionHwDownscale) {

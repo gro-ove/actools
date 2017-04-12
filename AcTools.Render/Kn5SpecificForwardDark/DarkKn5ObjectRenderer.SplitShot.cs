@@ -96,8 +96,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             return result;
         }
+
+        public class SplitShotInformation {
+            public string Extension;
+            public int Cuts;
+        }
         
-        public void SplitShot(double multiplier, double downscale, string destination, bool softwareDownscale, IProgress<double> progress = null,
+        public SplitShotInformation SplitShot(double multiplier, double downscale, string destination, bool softwareDownscale, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height };
             var expand = UseSslr || UseAo;
@@ -137,11 +142,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             });
 
-            File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
-rem Use montage.exe from ImageMagick for Windows to run this script 
-rem and combine images: https://www.imagemagick.org/script/binary-releases.php
-montage.exe *-*.{extension} -tile {cuts}x{cuts} -geometry +0+0 out.jpg
-echo @del *-*.{extension} delete-pieces.bat join.bat > delete-pieces.bat");
+            return new SplitShotInformation {
+                Cuts = cuts,
+                Extension = extension
+            };
         }
     }
 }

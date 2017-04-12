@@ -137,6 +137,8 @@ namespace AcManager.Tools.Starters {
             return pipeProxy;
         }
 
+        private static bool _listeningForExit;
+
         private static void StartSidePassage() {
             Logging.Write("Starting Side Passage service…");
             File.WriteAllBytes(BackgroundFlagFilename, new byte[0]);
@@ -147,7 +149,18 @@ namespace AcManager.Tools.Starters {
                         "Please, make sure AC Service (replacement for AssettoCorsa.exe — don’t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is installed well.");
             }
 
-            ChildProcessTracker.AddProcess(process);
+            if (!_listeningForExit) {
+                _listeningForExit = true;
+                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+            }
+        }
+
+        private static void OnProcessExit(object sender, EventArgs e) {
+            try {
+                ConnectToSidePassage().Stop();
+            } catch (Exception) {
+                // ignored
+            }
         }
 
         [CanBeNull]

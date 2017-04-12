@@ -12,7 +12,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     internal static class LevelDbInterop {
         #region DB
         [DllImport("LevelDB.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]

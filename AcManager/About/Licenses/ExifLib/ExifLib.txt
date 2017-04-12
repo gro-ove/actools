@@ -1,0 +1,4 @@
+name: ExifLib
+url: https://www.codeproject.com/articles/36342/exiflib-a-fast-exif-data-extractor-for-net-2-0
+content: ../AdornedControl/LICENSE
+sid: 7_-1097500142_-1001197761

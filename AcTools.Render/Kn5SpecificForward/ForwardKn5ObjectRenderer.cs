@@ -32,9 +32,27 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public FpsCamera FpsCamera => Camera as FpsCamera;
 
-        public bool AutoRotate { get; set; } = true;
+        private bool _autoRotate = true;
 
-        public bool AutoAdjustTarget { get; set; } = true;
+        public bool AutoRotate {
+            get { return _autoRotate; }
+            set {
+                if (value == _autoRotate) return;
+                _autoRotate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _autoAdjustTarget = true;
+
+        public bool AutoAdjustTarget {
+            get { return _autoAdjustTarget; }
+            set {
+                if (value == _autoAdjustTarget) return;
+                _autoAdjustTarget = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool VisibleUi { get; set; } = true;
 
@@ -69,6 +87,19 @@ namespace AcTools.Render.Kn5SpecificForward {
         public void SetCamera(Vector3 from, Vector3 to, float fovRadY) {
             UseFpsCamera = true;
             Camera = new FpsCamera(fovRadY);
+
+            _cameraTo = to;
+            Camera.LookAt(from, to, Vector3.UnitY);
+            Camera.SetLens(AspectRatio);
+            //Camera.UpdateViewMatrix();
+
+            PrepareCamera(Camera);
+            IsDirty = true;
+        }
+
+        public void SetCameraOrbit(Vector3 from, Vector3 to, float fovRadY) {
+            UseFpsCamera = false;
+            Camera = new CameraOrbit(fovRadY);
 
             _cameraTo = to;
             Camera.LookAt(from, to, Vector3.UnitY);

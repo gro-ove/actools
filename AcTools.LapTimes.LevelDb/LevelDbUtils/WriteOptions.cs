@@ -9,7 +9,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// Options that control write operations.
     /// </summary>

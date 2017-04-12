@@ -15,6 +15,8 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -57,7 +59,9 @@ namespace AcManager.Controls.CustomShowroom {
             VisualSettings,
             Selected,
             AmbientShadows,
-            Skin
+            Car,
+            Skin,
+            Camera,
         }
 
         public class ViewModel : NotifyPropertyChanged, IDisposable {
@@ -70,6 +74,12 @@ namespace AcManager.Controls.CustomShowroom {
 
                     if (_mode == Mode.AmbientShadows && Renderer != null) {
                         Renderer.AmbientShadowHighlight = false;
+                    }
+
+                    if (value != Mode.Skin) {
+                        SkinItems?.DisposeEverything();
+                        FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
+                        SkinItems = null;
                     }
 
                     if (value == Mode.Skin && SkinItems == null) {
@@ -112,11 +122,14 @@ namespace AcManager.Controls.CustomShowroom {
                     if (Equals(value, _renderer)) return;
                     _renderer = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(DarkRenderer));
 
                     var dark = value as DarkKn5ObjectRenderer;
                     Settings = dark != null ? new DarkRendererSettings(dark) : null;
                 }
             }
+
+            public DarkKn5ObjectRenderer DarkRenderer => _renderer as DarkKn5ObjectRenderer;
 
             private DarkRendererSettings _settings;
 
@@ -155,6 +168,24 @@ namespace AcManager.Controls.CustomShowroom {
                 public bool AmbientShadowHideWheels;
                 public bool AmbientShadowFade = true;
                 public bool LiveReload;
+
+                [JsonProperty("cp")]
+                public double[] CameraPosition = { 3.194, 0.342, 13.049 };
+
+                [JsonProperty("cl")]
+                public double[] CameraLookAt = { 0, 0, 0 };
+
+                [JsonProperty("cf")]
+                public float CameraFov = 36f;
+
+                [JsonProperty("co")]
+                public bool CameraOrbit = true;
+
+                [JsonProperty("cr")]
+                public bool CameraAutoRotate = true;
+
+                [JsonProperty("cg")]
+                public bool CameraAutoAdjustTarget = true;
             }
 
             protected ISaveHelper Saveable { set; get; }
@@ -168,7 +199,11 @@ namespace AcManager.Controls.CustomShowroom {
 
                 Renderer = renderer;
                 renderer.PropertyChanged += OnRendererPropertyChanged;
+                Renderer.CameraMoved += OnCameraMoved;
                 OnCarNodeUpdated();
+
+                CameraLookAt.PropertyChanged += OnCameraCoordinatesChanged;
+                CameraPosition.PropertyChanged += OnCameraCoordinatesChanged;
 
                 Car = carObject;
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
@@ -181,10 +216,139 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
                     AmbientShadowFade = AmbientShadowFade,
                     LiveReload = renderer.MagickOverride,
+
+                    CameraPosition = CameraPosition.ToArray(),
+                    CameraLookAt = CameraLookAt.ToArray(),
+                    CameraFov = CameraFov,
+                    CameraOrbit = CameraOrbit,
+                    CameraAutoRotate = CameraAutoRotate,
+                    CameraAutoAdjustTarget = CameraAutoAdjustTarget,
                 }, Load);
 
                 Saveable.Initialize();
             }
+
+            #region Camera
+            public Coordinates CameraPosition { get; } = new Coordinates();
+
+            public Coordinates CameraLookAt { get; } = new Coordinates();
+
+            private void OnCameraCoordinatesChanged(object sender, PropertyChangedEventArgs e) {
+                SaveLater();
+                UpdateCamera();
+            }
+
+            private float _cameraFov;
+
+            public float CameraFov {
+                get { return _cameraFov; }
+                set {
+                    if (Equals(value, _cameraFov)) return;
+                    _cameraFov = value;
+                    OnPropertyChanged();
+                    UpdateCamera();
+                    SaveLater();
+                }
+            }
+
+            private bool _cameraOrbit;
+
+            public bool CameraOrbit {
+                get { return _cameraOrbit; }
+                set {
+                    if (Equals(value, _cameraOrbit)) return;
+                    _cameraOrbit = value;
+                    OnPropertyChanged();
+                    UpdateCamera();
+                    SaveLater();
+                }
+            }
+
+            private bool _cameraAutoRotate;
+
+            public bool CameraAutoRotate {
+                get { return _cameraAutoRotate; }
+                set {
+                    if (Equals(value, _cameraAutoRotate)) return;
+                    _cameraAutoRotate = value;
+
+                    if (!_cameraBusy && !_cameraIgnoreNext && Renderer != null) {
+                        Renderer.AutoRotate = value;
+                    }
+
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private bool _cameraAutoAdjustTarget;
+
+            public bool CameraAutoAdjustTarget {
+                get { return _cameraAutoAdjustTarget; }
+                set {
+                    if (Equals(value, _cameraAutoAdjustTarget)) return;
+                    _cameraAutoAdjustTarget = value;
+
+                    if (!_cameraBusy && !_cameraIgnoreNext && Renderer != null) {
+                        Renderer.AutoAdjustTarget = value;
+                    }
+
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private DelegateCommand _resetCameraCommand;
+
+            public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => {
+                Renderer?.ResetCamera();
+            }));
+
+            private bool _cameraBusy, _cameraIgnoreNext;
+
+            private void OnCameraMoved(object sender, EventArgs e) {
+                if (_cameraIgnoreNext) {
+                    _cameraIgnoreNext = false;
+                } else {
+                    SyncCamera();
+                }
+            }
+
+            private void SyncCamera() {
+                var renderer = Renderer;
+                if (renderer == null || _cameraBusy) return;
+                _cameraBusy = true;
+
+                try {
+                    CameraPosition.Set(renderer.Camera.Position);
+                    CameraLookAt.Set(renderer.CameraOrbit?.Target ?? renderer.Camera.Position + renderer.Camera.Look);
+                    CameraFov = renderer.Camera.FovY.ToDegrees();
+                    CameraOrbit = renderer.CameraOrbit != null;
+                } finally {
+                    _cameraBusy = false;
+                }
+            }
+
+            private void UpdateCamera() {
+                var renderer = Renderer;
+                if (renderer == null || _cameraBusy) return;
+                _cameraBusy = true;
+
+                try {
+                    if (CameraOrbit) {
+                        renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians());
+                    } else {
+                        renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians());
+                    }
+
+                    renderer.AutoRotate = CameraAutoRotate;
+                    renderer.AutoAdjustTarget = CameraAutoAdjustTarget;
+                    _cameraIgnoreNext = true;
+                } finally {
+                    _cameraBusy = false;
+                }
+            }
+            #endregion
 
             private void Load(SaveableData o) {
                 AmbientShadowDiffusion = o.AmbientShadowDiffusion;
@@ -195,6 +359,19 @@ namespace AcManager.Controls.CustomShowroom {
 
                 if (Renderer != null) {
                     Renderer.MagickOverride = o.LiveReload;
+                }
+
+                _cameraBusy = true;
+                try {
+                    CameraPosition.Set(o.CameraPosition);
+                    CameraLookAt.Set(o.CameraLookAt);
+                    CameraFov = o.CameraFov;
+                    CameraOrbit = o.CameraOrbit;
+                    CameraAutoRotate = o.CameraAutoRotate;
+                    CameraAutoAdjustTarget = o.CameraAutoAdjustTarget;
+                } finally {
+                    _cameraBusy = false;
+                    UpdateCamera();
                 }
             }
 
@@ -209,15 +386,15 @@ namespace AcManager.Controls.CustomShowroom {
 
             private void OnCarNodeUpdated() {
                 if (_carNode != null) {
-                    _carNode.PropertyChanged -= CarNode_PropertyChanged;
+                    _carNode.PropertyChanged -= OnCarNodePropertyChanged;
                 }
                 _carNode = _renderer.CarNode;
                 if (_carNode != null) {
-                    _carNode.PropertyChanged += CarNode_PropertyChanged;
+                    _carNode.PropertyChanged += OnCarNodePropertyChanged;
                 }
             }
 
-            private void CarNode_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnCarNodePropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.CarNode.CurrentSkin):
                         Skin = Car.GetSkinById(Renderer?.CarNode?.CurrentSkin ?? "");
@@ -233,6 +410,14 @@ namespace AcManager.Controls.CustomShowroom {
 
                     case nameof(Renderer.CarNode):
                         ActionExtension.InvokeInMainThread(OnCarNodeUpdated);
+                        break;
+
+                    case nameof(Renderer.AutoAdjustTarget):
+                        CameraAutoAdjustTarget = Renderer?.AutoAdjustTarget != false;
+                        break;
+
+                    case nameof(Renderer.AutoRotate):
+                        CameraAutoRotate = Renderer?.AutoRotate != false;
                         break;
 
                     case nameof(Renderer.SelectedObject):
@@ -304,7 +489,7 @@ namespace AcManager.Controls.CustomShowroom {
                         ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
                                 MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
-                foreach (var item in SkinItems.Where(x => x.Enabled)) {
+                foreach (var item in SkinItems) {
                     try {
                         await item.SaveAsync(Skin.Location);
                     } catch (NotImplementedException) {}

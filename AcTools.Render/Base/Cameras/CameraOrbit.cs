@@ -46,10 +46,16 @@ namespace AcTools.Render.Base.Cameras {
         public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
             Target = target;
             Position = pos;
-            Look = Vector3.Normalize(target - pos);
+
+            var delta = target - pos;
+            Radius = delta.Length();
+            Look = Vector3.Normalize(delta);
+
+            Alpha = MathF.AngleFromXY(-Look.X, -Look.Z);
+            Beta = (-Look.Y).Asin();
+
             Right = Vector3.Normalize(Vector3.Cross(up, Look));
             Up = Vector3.Cross(Look, Right);
-            Radius = (target - pos).Length();
         }
 
         public override void Strafe(float d) {

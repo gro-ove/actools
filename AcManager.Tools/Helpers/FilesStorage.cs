@@ -25,6 +25,7 @@ namespace AcManager.Tools.Helpers {
         public static readonly string UpgradeIcons = "Upgrade Icons";
         public static readonly string GridTypes = "Grid Types";
         public static readonly string LicensePlates = "License Plates";
+        public static readonly string PaintShop = "Paint Shop";
     }
 
     public class FilesStorage : AbstractFilesStorage {

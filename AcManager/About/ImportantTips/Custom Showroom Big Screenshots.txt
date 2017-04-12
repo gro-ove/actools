@@ -9,7 +9,7 @@ To make a shot:
  • Press Ctrl+Shift+F8 (without “+Shift”, CM will downsize image twice automatically);
  • Wait for a while.
 
-At this point, you’ll get a new folder with all pieces. For now, CM is unable to join them together by itself — not sure its 2 GB of RAM allowed by .NET will be enough — but you can always join them yourself using, for example, ImageMagick. Just go to [url="https://www.imagemagick.org/script/binary-releases.php"]this page[/url], download portable version for Windows and put “montage.exe” to result folder or, for example, to current user’s folder (so it will be available in CMD). And then, just run “join.bat”.
+To combine all pieces together, you could either use something like ImageMagick (just go to [url="https://www.imagemagick.org/script/binary-releases.php"]this page[/url], download portable version for Windows, put “montage.exe” to result folder or, for example, to current user’s folder (so it will be available in CMD) and then, just run “join.bat”) or simply go to Settings/Plugins and install “ImageMagick Montage” before making a screenshot.
 
  [img="http://i.imgur.com/3KAGDAX.jpg|360"]Example[/img]
  [i]Full 15360×8640 version is [url="https://yadi.sk/i/EGQ7K3173GocaT"]here[/url].[/i]

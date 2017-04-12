@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged"
         d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -241,7 +241,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <mui:SpacingStackPanel Width="180" Margin="0 0 20 0" Spacing="8">
+            <mui:SpacingStackPanel x:Name="LeftPanel" Width="180" Margin="0 0 20 0" Spacing="8">
                 <c:BestLapsList CarId="{Binding SelectedCar.Id}" TrackId="{Binding SelectedTrack.IdWithLayout}" />
                 <TextBlock Text="Best lap on this track:" Style="{StaticResource Label}" />
                 <c:BestLapsList TrackId="{Binding SelectedTrack.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />

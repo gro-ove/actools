@@ -144,7 +144,7 @@ namespace AcManager {
 
             TestKey();
 
-            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             if (!AppArguments.GetBool(AppFlag.PreventDisableWebBrowserEmulationMode) && (
                     ValuesStorage.GetInt(WebBrowserEmulationModeDisabledKey) < WebBrowserHelper.EmulationModeDisablingVersion ||
@@ -466,7 +466,7 @@ namespace AcManager {
             TrackStatesHelper.Initialize();
         }
 
-        private void CurrentDomain_ProcessExit(object sender, EventArgs e) {
+        private void OnProcessExit(object sender, EventArgs e) {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();

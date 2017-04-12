@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     internal class Comparator : LevelDbHandle {
         private sealed class Inner : IDisposable {
             [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

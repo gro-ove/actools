@@ -9,7 +9,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// A Cache is an interface that maps keys to values.  It has internal
     /// synchronization and may be safely accessed concurrently from

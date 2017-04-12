@@ -12,7 +12,7 @@
 using System;
 using System.Text;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// WriteBatch holds a collection of updates to apply atomically to a DB.
     ///

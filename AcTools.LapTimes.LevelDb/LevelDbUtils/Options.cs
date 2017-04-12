@@ -11,7 +11,7 @@
 
 using System;
 
-namespace AcTools.LapTimes.LevelDbUtils {
+namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// Options to control the behavior of a database (passed to Open)
     /// 
