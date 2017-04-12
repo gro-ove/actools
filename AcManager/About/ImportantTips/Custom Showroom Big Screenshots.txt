@@ -1,4 +1,5 @@
 ﻿sid: 30_828530664_757602046
+id: bigScreenshots
 
 Not sure why would you need it (apart from downsizing it later to get the best antialiasing available), but now CM is able to create 15360×8640. It could be much more, but screen-space effects (SSAO or SSLR) won’t work — to make “screenshot” this big, CM breaks image to a lot of parts. Even at 15360×8640, in some views, those effects will break.
 

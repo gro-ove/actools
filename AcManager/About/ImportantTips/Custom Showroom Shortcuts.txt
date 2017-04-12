@@ -1,0 +1,71 @@
+sid: 25_285232230_841254338
+Here is a small list of shortcuts available for Custom Showroom in 0.8.808:
+
+[b]Camera controls:[/b]
+ • [b]Mouse wheel[/b]: zoom;
+ • [b]Ctrl+Mouse wheel[/b]: adjust FOV while keeping car the same size on the screen;
+ • [b]Home[/b]: reset camera;
+ • [b]End[/b]: enable camera target auto-adjusting (pan a bit to disable it);
+ • [b]Ctrl+Space[/b]: auto-rotation;
+ • [b]F1[/b]: main car cameras;
+ • [b]F6[/b]: additional car cameras;
+ • [b]F7[/b]: free camera;
+ • [b]Alt+F7[/b]: smooth interpolated aka mad camera.
+[b]Rendering controls:[/b]
+ • [b]F11[/b]: toggle fullscreen mode;
+ • [b]F[/b]: toggle FXAA;
+ • [b]M[/b]: toggle MSAA;
+ • [b]Ctrl+M[/b]: toggle SSAA;
+ • [b]B[/b]: toggle bloom;
+ • [b]Ctrl+S[/b]: toggle shadows;
+ • [b]Ctrl+Shift+S[/b]: toggle PCSS (blurred shadows);
+ • [b]R[/b]: toggle SSLR (local reflections);
+ • [b]Shift+R[/b]: toggle SSLR’s interpolation mode (point/linear; linear by default, so I wouldn’t recommend to press it);
+ • [b]W[/b]: toggle wireframe mode.
+[b]Shots:[/b]
+ • [b]F8[/b]: take a shot in 4xSSAA resolution and then downsize it to 50% for best antialising;
+ • [b]F8+Shift[/b]: take a shot in 4xSSAA resolution, but don’t downsize;
+ • [b]F8+Alt[/b]: take a shot in 16xSSAA resolution, downsize to 50%;
+ • [b]F8+Alt+Shift[/b]: take a shot in 16xSSAA resolution, but don’t downsize;
+ • [b]F8+Ctrl[/b]: take a shot in 64xSSAA resolution, downsize to 50% (will be splitted to pieces, more details [url="/Pages/About/ImportantTipsPage.xaml?Key=bigScreenshots"]here[/url]);
+ • [b]F8+Ctrl+Shift[/b]: take a shot in 64xSSAA resolution, but don’t downsize;
+ • [b]F8+Ctrl+Alt[/b]: take a shot in original resolution, downsize to 50%;
+ • [b]F8+Ctrl+Alt+Shift[/b]: take a shot in original resolution, but don’t downsize.
+[b]Car:[/b]
+ • [b]PageUp, PageDown[/b]: change skins;
+ • [b]Alt+PageUp, Alt+PageDown[/b]: change LODs;
+ • [b]Alt+B[/b]: toggle blurred rims;
+ • [b]Alt+S[/b]: toggle seatbelts;
+ • [b]Alt+C[/b]: toggle low-resolution interior;
+ • [b]L[/b]: toggle all lights;
+ • [b]Ctrl+L[/b]: toggle headlights;
+ • [b]Alt+L[/b]: toggle brake lights;
+ • [b]D[/b]: toggle all doors;
+ • [b]Ctrl+D[/b]: toggle left door;
+ • [b]Alt+D[/b]: toggle right door;
+ • [b]C[/b]: collider debug;
+ • [b]U[/b]: suspension debug;
+ • [b]Ctrl+U[/b]: model debug;
+ • [b]Alt+←, Alt+→[/b]: steering (totally experimental and mostly fake);
+ • [b]Num 0–Num 3[/b]: toggle wings;
+ • [b]Num 4–Num 6[/b]: change animation speed;
+ • [b]Num 7–Num 9[/b]: toggle extra animations;
+ • [b]Alt+F[/b]: toggle rotating fans;
+ • [b]Alt+W[/b]: toggle wipers.
+[b]People:[/b]
+ • [b]Ctrl+Shift+D[/b]: toggle driver;
+ • [b]Ctrl+Shift+C[/b]: toggle crew.
+[b]Miscellaneous:[/b]
+ • [b]Alt+M[/b]: toggle mirror;
+ • [b]Ctrl+Alt+M[/b]: toggle blurry mirror;
+ • [b]Alt+↑, Alt+↓[/b]: adjust reflection power;
+ • [b]Alt+Num 1–Alt+Num 9[/b]: rotate light;
+ • [b]Ctrl+H[/b]: toggle UI;
+ • [b]F2[/b]: toggle compact mode (useful for skin editing with live reload and PSD reading);
+ • [b]F11[/b]: fullscreen.
+[b]Small bonus:[/b]
+If you want to use this showroom without Content Manager (for example, if you don’t have AC installed), here it is:
+ • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOTWx2cnB3NVNzc0U"]v1.1.38 (same as in CM v0.8.947)[/url];
+ • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOcGF2RTBkT3JrQTg"]v1.1.33 (same as in CM v0.8.862)[/url];
+ • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pObnpJSmVFaDJPWlE"]v1.1.29 (same as in CM v0.8.813)[/url];
+ • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOT3huRUZteW5IZTg"]v1.1.28 (same as in CM v0.8.808)[/url].

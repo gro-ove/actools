@@ -1640,6 +1640,7 @@
   <ItemGroup>
     <None Include="About\ImportantTips\AC Service.txt.off" />
     <None Include="About\ImportantTips\Custom Showroom Big Screenshots.txt" />
+    <None Include="About\ImportantTips\Custom Showroom Shortcuts.txt" />
     <Content Include="About\Licenses\ExifWorks\ExifWorks.txt" />
     <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
     <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />

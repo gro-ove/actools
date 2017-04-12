@@ -242,7 +242,7 @@
             <TextBlock Text="Hold Shift to swap tyres" Style="{StaticResource Small}" TextAlignment="Center" />
         </Border>
 
-        <mui:ModernTabSplitter Grid.Column="1" SaveKey="CarReplaceTyresDialog" />
+        <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarReplaceTyresDialog" />
 
         <DockPanel Grid.Column="2" Margin="8 0 0 0">
             <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">

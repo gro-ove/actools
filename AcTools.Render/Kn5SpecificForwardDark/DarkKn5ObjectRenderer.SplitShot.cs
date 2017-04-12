@@ -48,7 +48,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     callback(s => {
                         CutScreenshot = OptionHwCrop && expand ? OptionGBufferExtra : 1d;
                         Shot(halfMultiplier, downscale, s, true);
-                    }, x, y, original.Width, original.Height);
+                    }, x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
 
                 }
             } finally {
@@ -68,7 +68,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var original = new { Width, Height };
             var expand = UseSslr || UseAo;
             var cuts = Math.Ceiling(multiplier / OptionMaxMultipler).FloorToInt();
-            var result = new MagickImage(MagickColors.Black, original.Width * cuts, original.Height * cuts);
+            var result = new MagickImage(MagickColors.Black,
+                    (original.Width * cuts * downscale).RoundToInt(),
+                    (original.Height * cuts * downscale).RoundToInt());
 
             var total = cuts * cuts;
             var index = 0;

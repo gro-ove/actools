@@ -210,7 +210,7 @@ namespace AcTools.Render.Wrapper {
                 using (var image = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, wrapped, cancellation)) {
                     if (cancellation.IsCancellationRequested) return;
 
-                    if (downscale) {
+                    if (downscale && !OptionHwDownscale) {
                         progress?.Report(Tuple.Create("Downscaling…", (double?)0.93));
                         image.Downscale();
                         if (cancellation.IsCancellationRequested) return;
