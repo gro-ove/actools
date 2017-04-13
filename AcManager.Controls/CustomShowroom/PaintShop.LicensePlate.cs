@@ -11,6 +11,7 @@ using AcTools.Render.Kn5SpecificForward;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using LicensePlates;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.CustomShowroom {
     public static partial class PaintShop {
@@ -138,12 +139,12 @@ namespace AcManager.Controls.CustomShowroom {
                 var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
                 if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(DiffuseTexture, diffuse);
+                _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
                 if (_applyId != applyId) return;
 
                 if (!_flatNormals) {
                     _flatNormals = true;
-                    _renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor());
+                    _renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor(), 1d);
                 }
             }
 
@@ -153,7 +154,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
                 if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(DiffuseTexture, diffuse);
+                _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
             }
 
             private void ApplySlowNormals() {
@@ -162,7 +163,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
                 if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(NormalsTexture, normals);
+                _renderer?.OverrideTexture(NormalsTexture, normals == null ? null : new PaintShopSource(normals));
                 _flatNormals = false;
             }
 
@@ -258,6 +259,47 @@ namespace AcManager.Controls.CustomShowroom {
                     _thread.Abort();
                     _thread = null;
                 }
+            }
+
+            public override JObject Serialize() {
+                if (SelectedStyleEntry == null || SelectedStyle == null) return null;
+
+                var obj = new JObject { ["style"] = SelectedStyleEntry.Name };
+                foreach (var p in SelectedStyle.InputParams) {
+                    obj[@"param" + NameToId(p.Name, true)] = p.Value;
+                }
+
+                return obj;
+            }
+
+            public override void Deserialize(JObject data) {
+                if (data == null) return;
+
+                var style = data["style"]?.ToString();
+                var selected = Styles.FirstOrDefault(x => string.Equals(x.Name, style, StringComparison.OrdinalIgnoreCase));
+                if (selected == null) {
+                    Logging.Warning($"Style not found: {style}");
+                    return;
+                }
+
+                SelectedStyleEntry = selected;
+                if (SelectedStyle == null) {
+                    Logging.Unexpected();
+                    return;
+                }
+
+                foreach (var pair in data) {
+                    if (pair.Key.StartsWith(@"param")) {
+                        var p = SelectedStyle.InputParams.FirstOrDefault(x => NameToId(x.Name, true) == pair.Key.Substring(5));
+                        if (p == null) {
+                            Logging.Warning($"Parameter not found: {pair.Key.Substring(6)}");
+                        } else {
+                            p.Value = pair.Value?.ToString();
+                        }
+                    }
+                }
+
+                base.Deserialize(data);
             }
         }
     }

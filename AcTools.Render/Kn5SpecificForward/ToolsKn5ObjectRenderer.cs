@@ -1,50 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using ImageMagick;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    public interface IPaintShopRenderer {
-        bool OverrideTexture(string textureName, byte[] textureBytes);
-
-        bool OverrideTexture(string textureName, Color color);
-
-        bool OverrideTexture(string textureName, Color color, double alpha);
-
-        bool OverrideTextureFlakes(string textureName, Color color);
-
-        bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool autoAdjustLevels, [CanBeNull] string baseTextureName);
-
-        bool OverrideTextureTint(string textureName, Color color, double alphaAdd, [CanBeNull] string baseTextureName);
-
-        Task SaveTextureAsync(string filename, Color color);
-
-        Task SaveTextureAsync(string filename, Color color, double alpha);
-
-        Task SaveTextureFlakesAsync(string filename, Color color);
-
-        Task SaveTextureMaps(string filename, double reflection, double gloss, double specular, bool autoAdjustLevels, [NotNull] string baseTextureName);
-
-        Task SaveTextureTintAsync(string filename, Color color, double alphaAdd, [NotNull] string baseTextureName);
-    }
-
-    public class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer, IPaintShopRenderer {
+    public partial class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer {
         public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) {
             UseSprite = false;
         }
@@ -337,189 +308,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             _previousSelectedFirstObject = null;
         }
 
-        public bool OverrideTexture(string textureName, byte[] textureBytes) {
-            if (CarNode == null) return true;
-            return CarNode.OverrideTexture(DeviceContextHolder, textureName, textureBytes);
-        }
-
-        public bool OverrideTexture(string textureName, Color color) {
-            using (var image = new MagickImage(new MagickColor(color), 4, 4)) {
-                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
-            }
-        }
-
-        public Task SaveTextureAsync(string filename, Color color) {
-            return SaveAndDispose(filename, new MagickImage(new MagickColor(color), 16, 16));
-        }
-
-        public bool OverrideTexture(string textureName, Color color, double alpha) {
-            using (var image = new MagickImage(new MagickColor(color) { A = (byte)(255 * alpha) }, 4, 4)) {
-                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Bmp));
-            }
-        }
-
-        public Task SaveTextureAsync(string filename, Color color, double alpha) {
-            return SaveAndDispose(filename, new MagickImage(new MagickColor(color) { A = (byte)(255 * alpha) }, 16, 16));
-        }
-
-        public virtual bool OverrideTextureFlakes(string textureName, Color color) {
-            return OverrideTexture(textureName, color);
-        }
-
-        public Task SaveTextureFlakesAsync(string filename, Color color) {
-            var image = new MagickImage(new MagickColor(color) { A = 250 }, 256, 256);
-            image.AddNoise(NoiseType.Poisson, Channels.Alpha);
-            return SaveAndDispose(filename, image);
-        }
-
-        private Dictionary<string, byte[]> _decodedToPng;
-
-        [NotNull]
-        private byte[] GetDecoded(string textureName) {
-            if (Kn5 == null) throw new Exception("Kn5 = null");
-
-            if (_decodedToPng == null) {
-                _decodedToPng = new Dictionary<string, byte[]>(6);
-            }
-
-            byte[] result;
-            if (!_decodedToPng.TryGetValue(textureName, out result)) {
-                Format format;
-                _decodedToPng[textureName] = result = TextureReader.ToPng(DeviceContextHolder, Kn5.TexturesData[textureName], false, out format);
-            }
-
-            return result;
-        }
-
-        [CanBeNull]
-        private MagickImage GetOriginal(ref Dictionary<string, MagickImage> storage, [NotNull] string textureName, int maxSize = 256, Action<MagickImage> preparation = null) {
-            if (Kn5 == null) return null;
-
-            if (storage == null) {
-                storage = new Dictionary<string, MagickImage>(2);
-            }
-
-            MagickImage original;
-            if (!storage.TryGetValue(textureName, out original)) {
-                original = new MagickImage(GetDecoded(textureName));
-                if (original.Width > maxSize || original.Height > maxSize) {
-                    original.Resize(maxSize, maxSize);
-                }
-
-                preparation?.Invoke(original);
-                storage[textureName] = original;
-            }
-
-            return original;
-        }
-
-        private Dictionary<string, MagickImage> _mapsBase;
-
-        public bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool autoAdjustLevels,
-                string baseTextureName) {
-            var original = GetOriginal(ref _mapsBase, baseTextureName ?? textureName, 256, image => {
-                if (autoAdjustLevels) {
-                    image.AutoLevel(Channels.Red);
-                    image.AutoLevel(Channels.Green);
-                    image.AutoLevel(Channels.Blue);
-                }
-            });
-            if (original == null) return false;
-            using (var image = original.Clone()) {
-                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, specular);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, gloss);
-                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
-                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Png));
-            }
-        }
-
-        public async Task SaveTextureMaps(string filename, double reflection, double gloss, double specular, bool autoAdjustLevels, string baseTextureName) {
-            if (Kn5 == null) return;
-
-            MagickImage image = null;
-            await Task.Run(() => {
-                image = new MagickImage(GetDecoded(baseTextureName));
-                if (autoAdjustLevels) {
-                    image.AutoLevel(Channels.Red);
-                    image.AutoLevel(Channels.Green);
-                    image.AutoLevel(Channels.Blue);
-                }
-
-                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, specular);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, gloss);
-                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, reflection);
-            });
-
-            await SaveAndDispose(filename, image);
-        }
-
-        private Dictionary<string, MagickImage> _tintBase;
-
-        public bool OverrideTextureTint(string textureName, Color color, double alphaAdd, string baseTextureName) {
-            var original = GetOriginal(ref _tintBase, baseTextureName ?? textureName);
-            if (original == null) return false;
-            using (var image = original.Clone()) {
-                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, color.R / 255d);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, color.G / 255d);
-                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, color.B / 255d);
-                if (alphaAdd != 0d) {
-                    image.Evaluate(Channels.Alpha, EvaluateOperator.Add, 255 * alphaAdd);
-                }
-                return OverrideTexture(textureName, image.ToByteArray(MagickFormat.Png));
-            }
-        }
-
-        public async Task SaveTextureTintAsync(string filename, Color color, double alphaAdd, string baseTextureName) {
-            if (Kn5 == null) return;
-
-            MagickImage image = null;
-            await Task.Run(() => {
-                image = new MagickImage(GetDecoded(baseTextureName));
-                image.Evaluate(Channels.Red, EvaluateOperator.Multiply, color.R / 255d);
-                image.Evaluate(Channels.Green, EvaluateOperator.Multiply, color.G / 255d);
-                image.Evaluate(Channels.Blue, EvaluateOperator.Multiply, color.B / 255d);
-
-                if (alphaAdd != 0d) {
-                    image.Evaluate(Channels.Alpha, EvaluateOperator.Add, alphaAdd);
-                }
-            });
-
-            await SaveAndDispose(filename, image);
-        }
-
-        private Task SaveAndDispose(string filename, MagickImage image) {
-            try {
-                if (File.Exists(filename)) {
-                    FileUtils.Recycle(filename);
-                }
-
-                image.Quality = 100;
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "none");
-                image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
-                image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
-                var bytes = image.ToByteArray(MagickFormat.Dds);
-                return FileUtils.WriteAllBytesAsync(filename, bytes);
-            } finally {
-                image.Dispose();
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void DisposeMagickNet() {
-            _mapsBase.DisposeEverything();
-        }
-
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _outlineBuffer);
             DisposeHelper.Dispose(ref _outlineDepthBuffer);
 
-            if (ImageUtils.IsMagickSupported) {
-                try {
-                    DisposeMagickNet();
-                } catch {
-                    // ignored
-                }
-            }
+            DisposePaintShop();
 
             base.DisposeOverride();
         }

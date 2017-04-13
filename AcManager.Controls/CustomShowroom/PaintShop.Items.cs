@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.CustomShowroom {
     public static partial class PaintShop {
+        [JsonObject(MemberSerialization.OptIn)]
         public abstract class PaintableItem : Displayable, IDisposable {
             protected PaintableItem(bool enabledByDefault) {
                 _enabled = enabledByDefault;
@@ -26,6 +30,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             private bool _enabled;
 
+            [JsonProperty("enabled")]
             public bool Enabled {
                 get { return _enabled; }
                 set {
@@ -56,7 +61,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                 try {
                     _updating = true;
-                    await Task.Delay(20);
+                    await Task.Delay(10);
                     if (_updating && !_disposed) {
                         UpdateOverride();
                     }
@@ -109,6 +114,15 @@ namespace AcManager.Controls.CustomShowroom {
 
                 _disposed = true;
             }
+
+            [CanBeNull]
+            public virtual JObject Serialize() {
+                return JObject.FromObject(this);
+            }
+
+            public virtual void Deserialize([CanBeNull] JObject data) {
+                data?.Populate(this);
+            }
         }
 
         public class SolidColorIfFlagged : PaintableItem {
@@ -150,7 +164,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public class ReplacedIfFlagged : PaintableItem {
-            public ReplacedIfFlagged(bool inverse, Dictionary<string, byte[]> replacements) : base(false) {
+            public ReplacedIfFlagged(bool inverse, Dictionary<string, PaintShopSource> replacements) : base(false) {
                 _inverse = inverse;
                 _replacements = replacements;
             }
@@ -158,7 +172,7 @@ namespace AcManager.Controls.CustomShowroom {
             public override string DisplayName { get; set; } = "Replaced If Enabled";
             
             private readonly bool _inverse;
-            private readonly Dictionary<string, byte[]> _replacements;
+            private readonly Dictionary<string, PaintShopSource> _replacements;
 
             protected override bool IsActive() {
                 return Enabled ^ _inverse;
@@ -178,7 +192,11 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in _replacements) {
-                    await FileUtils.WriteAllBytesAsync(Path.Combine(location, replacement.Key), replacement.Value);
+                    if (replacement.Value.Data != null) {
+                        await FileUtils.WriteAllBytesAsync(Path.Combine(location, replacement.Key), replacement.Value.Data);
+                    } else if (replacement.Value.Name != null) {
+                        await renderer.SaveTextureAsync(replacement.Key, replacement.Value);
+                    }
                 }
             }
         }
@@ -197,6 +215,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             private Color? _color;
 
+            [JsonProperty("color")]
             public Color Color {
                 get { return _color ?? DefaultColor; }
                 set {
@@ -207,7 +226,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
-                renderer.OverrideTexture(DiffuseTexture, Color.ToColor());
+                renderer.OverrideTexture(DiffuseTexture, Color.ToColor(), 1d);
             }
 
             protected override void ResetOverride(IPaintShopRenderer renderer) {
@@ -215,7 +234,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
-                return renderer.SaveTextureAsync(Path.Combine(location, DiffuseTexture), Color.ToColor());
+                return renderer.SaveTextureAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), 1d);
             }
         }
 
@@ -234,6 +253,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             private double? _alpha;
 
+            [JsonProperty("alpha")]
             public double Alpha {
                 get { return _alpha ?? DefaultAlpha; }
                 set {
@@ -251,14 +271,16 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 if (_tintBase) {
-                    renderer.OverrideTextureTint(DiffuseTexture, Color.ToColor(), Alpha, null);
+                    renderer.OverrideTextureTint(DiffuseTexture, Color.ToColor(), false, Alpha, PaintShopSource.InputSource);
                 } else {
                     renderer.OverrideTexture(DiffuseTexture, Color.ToColor(), Alpha);
                 }
             }
 
             protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
-                return _tintBase ? renderer.SaveTextureTintAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), Alpha, DiffuseTexture) :
+                return _tintBase
+                        ? renderer.SaveTextureTintAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), false, Alpha,
+                                new PaintShopSource(DiffuseTexture)) :
                         renderer.SaveTextureAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), Alpha);
             }
         }
@@ -273,9 +295,10 @@ namespace AcManager.Controls.CustomShowroom {
 
             public override string DisplayName { get; set; } = "Car paint";
 
-            private bool _flakes = true;
+            private double _flakes = 0.3d;
 
-            public bool Flakes {
+            [JsonProperty("flakes")]
+            public double Flakes {
                 get { return _flakes; }
                 set {
                     if (Equals(value, _flakes)) return;
@@ -285,7 +308,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private Color? _previousColor;
-            private bool _previousFlakes;
+            private double? _previousFlakes;
 
             protected override void OnEnabledChanged() {
                 _previousColor = null;
@@ -296,17 +319,17 @@ namespace AcManager.Controls.CustomShowroom {
                 _previousColor = Color;
                 _previousFlakes = Flakes;
 
-                if (SupportsFlakes && Flakes) {
-                    renderer.OverrideTextureFlakes(DiffuseTexture, Color.ToColor());
+                if (SupportsFlakes && Flakes > 0d) {
+                    renderer.OverrideTextureFlakes(DiffuseTexture, Color.ToColor(), Flakes);
                 } else {
-                    renderer.OverrideTexture(DiffuseTexture, Color.ToColor());
+                    renderer.OverrideTexture(DiffuseTexture, Color.ToColor(), 1d);
                 }
             }
 
             protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
-                return SupportsFlakes && Flakes ?
-                        renderer.SaveTextureFlakesAsync(Path.Combine(location, DiffuseTexture), Color.ToColor()) :
-                        renderer.SaveTextureAsync(Path.Combine(location, DiffuseTexture), Color.ToColor());
+                return SupportsFlakes && Flakes > 0d ?
+                        renderer.SaveTextureFlakesAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), Flakes) :
+                        renderer.SaveTextureAsync(Path.Combine(location, DiffuseTexture), Color.ToColor(), 1d);
             }
         }
 
@@ -314,7 +337,7 @@ namespace AcManager.Controls.CustomShowroom {
             public string MapsTexture { get; }
 
             [CanBeNull, Localizable(false)]
-            public string MapsDefaultTexture { get; internal set; }
+            public PaintShopSource MapsDefaultTexture { get; internal set; }
 
             public bool AutoAdjustLevels { get; internal set; }
 
@@ -323,9 +346,23 @@ namespace AcManager.Controls.CustomShowroom {
                 MapsTexture = mapsTexture;
             }
 
+            private bool _complexMode;
+            private bool? _previousComplexMode;
+
+            [JsonProperty("complex")]
+            public bool ComplexMode {
+                get { return _complexMode; }
+                set {
+                    if (Equals(value, _complexMode)) return;
+                    _complexMode = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private double _reflection = 1d;
             private double _previousReflection = -1d;
 
+            [JsonProperty("reflection")]
             public double Reflection {
                 get { return _reflection; }
                 set {
@@ -338,6 +375,7 @@ namespace AcManager.Controls.CustomShowroom {
             private double _gloss = 1d;
             private double _previousGloss = -1d;
 
+            [JsonProperty("gloss")]
             public double Gloss {
                 get { return _gloss; }
                 set {
@@ -350,6 +388,7 @@ namespace AcManager.Controls.CustomShowroom {
             private double _specular = 1d;
             private double _previousSpecular = -1d;
 
+            [JsonProperty("specular")]
             public double Specular {
                 get { return _specular; }
                 set {
@@ -366,9 +405,16 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 base.ApplyOverride(renderer);
-                if (Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
+                if (_previousComplexMode != _complexMode || Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
-                    renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, AutoAdjustLevels, MapsDefaultTexture);
+                    if (ComplexMode) {
+                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, AutoAdjustLevels,
+                                MapsDefaultTexture ?? PaintShopSource.InputSource);
+                    } else {
+                        renderer.OverrideTexture(MapsTexture, null);
+                    }
+
+                    _previousComplexMode = _complexMode;
                     _previousReflection = Reflection;
                     _previousGloss = Gloss;
                     _previousSpecular = Specular;
@@ -382,8 +428,10 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 await base.SaveOverrideAsync(renderer, location);
-                await renderer.SaveTextureMaps(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, AutoAdjustLevels,
-                    MapsDefaultTexture ?? MapsTexture);
+                if (ComplexMode) {
+                    await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, AutoAdjustLevels,
+                            MapsDefaultTexture ?? new PaintShopSource(MapsTexture));
+                }
             }
         }
     }

@@ -61,6 +61,12 @@ namespace AcTools.Utils.Helpers {
     }
 
     public static class JsonExtension {
+        public static void Populate([NotNull] this JToken value, [NotNull] object target){
+            using (var sr = value.CreateReader()) {
+                JsonSerializer.CreateDefault().Populate(sr, target);
+            }
+        }
+
         public static JObject Parse([LocalizationRequired(false)] string data) {
             try {
                 return JObject.Parse(data);

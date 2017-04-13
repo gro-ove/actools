@@ -36,6 +36,11 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_UiModuleFallback}" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Drive.AcServiceStopAtExit}"
+                    Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='AC Service'}">
+                <Label Content="Stop service on CM exit" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_32bit}" />
             </CheckBox>

@@ -622,6 +622,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _acServiceStopAtExit;
+
+            public bool AcServiceStopAtExit {
+                get { return _acServiceStopAtExit ?? (_acServiceStopAtExit = ValuesStorage.GetBool("Settings.DriveSettings.AcServiceStopAtExit", true)).Value; }
+                set {
+                    if (Equals(value, _acServiceStopAtExit)) return;
+                    _acServiceStopAtExit = value;
+                    ValuesStorage.Set("Settings.DriveSettings.AcServiceStopAtExit", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private StarterType[] _starterTypes;
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {

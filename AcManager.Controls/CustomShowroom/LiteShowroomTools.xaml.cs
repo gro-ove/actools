@@ -29,6 +29,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -77,20 +78,16 @@ namespace AcManager.Controls.CustomShowroom {
                     }
 
                     if (value != Mode.Skin) {
-                        SkinItems?.DisposeEverything();
-                        FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
-                        SkinItems = null;
+                        DisposeSkinItems();
                     }
 
                     if (value == Mode.Skin && SkinItems == null) {
                         if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
+                        } else {
+                            LoadSkinItems();
                         }
-
-                        SkinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
-                        UpdateLicensePlatesStyles();
-                        FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
                     }
 
                     _mode = value;
@@ -449,8 +446,35 @@ namespace AcManager.Controls.CustomShowroom {
             }));
 
             #region Skin
+            private void DisposeSkinItems() {
+                FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
+                SkinItems = null;
+            }
+
+            private void LoadSkinItems() {
+                var skinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
+                SkinItems = skinItems;
+                UpdateLicensePlatesStyles();
+                FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
+
+                try {
+                    var skin = Path.Combine(Skin.Location, "cm_skin.json");
+                    if (File.Exists(skin)) {
+                        var jObj = JObject.Parse(File.ReadAllText(skin));
+                        foreach (var pair in jObj) {
+                            if (pair.Value.Type != JTokenType.Object) continue;
+                            skinItems.FirstOrDefault(x => PaintShop.NameToId(x.DisplayName, false) == pair.Key)?
+                                     .Deserialize((JObject)pair.Value);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            }
+
             private IList<PaintShop.PaintableItem> _skinItems;
 
+            [CanBeNull]
             public IList<PaintShop.PaintableItem> SkinItems {
                 get { return _skinItems; }
                 set {
@@ -458,6 +482,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     if (_skinItems != null) {
                         foreach (var item in _skinItems) {
+                            item.Dispose();
                             item.SetRenderer(null);
                         }
                     }
@@ -483,26 +508,36 @@ namespace AcManager.Controls.CustomShowroom {
             private AsyncCommand _skinSaveChangesCommand;
 
             public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand = new AsyncCommand(async () => {
-                if (Renderer == null) return;
+                var skinsItems = SkinItems;
+                if (Renderer == null || skinsItems == null) return;
 
                 if (Directory.GetFiles(Skin.Location, "*.dds").Any() &&
                         ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
                                 MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
-                foreach (var item in SkinItems) {
-                    try {
-                        await item.SaveAsync(Skin.Location);
-                    } catch (NotImplementedException) {}
+                using (WaitingDialog.Create("Saving…")) {
+                    var jObj = new JObject();
+                    foreach (var item in skinsItems.ToList()) {
+                        try {
+                            jObj[PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
+                            await item.SaveAsync(Skin.Location);
+                        } catch (NotImplementedException) {}
+                    }
+
+                    File.WriteAllText(Path.Combine(Skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
                 }
-            }, () => SkinItems.Any()));
+            }, () => SkinItems?.Any() == true));
 
             private void OnLicensePlatesChanged(object sender, EventArgs e) {
                 UpdateLicensePlatesStyles();
             }
 
             private void UpdateLicensePlatesStyles() {
+                var skinsItems = SkinItems;
+                if (Renderer == null || skinsItems == null) return;
+
                 var styles = FilesStorage.Instance.GetContentDirectories(ContentCategory.LicensePlates).ToList();
-                foreach (var item in SkinItems.OfType<PaintShop.LicensePlate>()) {
+                foreach (var item in skinsItems.OfType<PaintShop.LicensePlate>()) {
                     item.SetStyles(styles);
                 }
             }
@@ -801,14 +836,13 @@ namespace AcManager.Controls.CustomShowroom {
                 if (Renderer?.Kn5 == null) return;
                 new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
                         Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue) {
-                            Owner = null
-                        }.ShowDialog();
+                    Owner = null
+                }.ShowDialog();
             }, o => o != null));
             #endregion
 
             public void Dispose() {
-                SkinItems?.DisposeEverything();
-                FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
+                DisposeSkinItems();
             }
         }
     }

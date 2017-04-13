@@ -124,7 +124,7 @@ float GetAo(float2 screenCoords) {
 
 SamplerState samAnisotropic {
 	Filter = ANISOTROPIC;
-	MaxAnisotropy = 8;
+	MaxAnisotropy = 16;
 
 	AddressU = WRAP;
 	AddressV = WRAP;

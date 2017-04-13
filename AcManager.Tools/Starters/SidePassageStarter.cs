@@ -156,10 +156,12 @@ namespace AcManager.Tools.Starters {
         }
 
         private static void OnProcessExit(object sender, EventArgs e) {
-            try {
-                ConnectToSidePassage().Stop();
-            } catch (Exception) {
-                // ignored
+            if (SettingsHolder.Drive.AcServiceStopAtExit) {
+                try {
+                    ConnectToSidePassage().Stop();
+                } catch (Exception) {
+                    // ignored
+                }
             }
         }
 

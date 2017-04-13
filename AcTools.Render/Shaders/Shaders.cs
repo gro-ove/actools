@@ -1227,6 +1227,55 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
+	public class EffectSpecialPaintShop : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT;
+        public InputLayout LayoutPT;
+
+		public EffectReadyTechnique TechFill, TechFlakes, TechMaps, TechMaximum, TechMaximumApply, TechTint;
+
+		public EffectOnlyResourceVariable FxInputMap, FxOverlayMap, FxNoiseMap;
+		public EffectScalarVariable FxNoiseMultipler, FxFlakes;
+		public EffectVectorVariable FxColor { get; private set; }
+		public EffectVectorVariable FxSize { get; private set; }
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
+			E = new Effect(device, _b);
+
+			TechFill = new EffectReadyTechnique(E.GetTechniqueByName("Fill"));
+			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
+			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechMaximum = new EffectReadyTechnique(E.GetTechniqueByName("Maximum"));
+			TechMaximumApply = new EffectReadyTechnique(E.GetTechniqueByName("MaximumApply"));
+			TechTint = new EffectReadyTechnique(E.GetTechniqueByName("Tint"));
+
+			for (var i = 0; i < TechFill.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechFill.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialPaintShop, PT, Fill) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap").AsResource());
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
+			FxNoiseMultipler = E.GetVariableByName("gNoiseMultipler").AsScalar();
+			FxFlakes = E.GetVariableByName("gFlakes").AsScalar();
+			FxColor = E.GetVariableByName("gColor").AsVector();
+			FxSize = E.GetVariableByName("gSize").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+            E.Dispose();
+            _b.Dispose();
+        }
+	}
+
 	public class EffectSpecialRandom : IEffectWrapper {
 		private ShaderBytecode _b;
 		public Effect E;

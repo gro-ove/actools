@@ -33,13 +33,15 @@ namespace AcTools.Render.Base.TargetTextures {
             Texture = new Texture2D(holder.Device, Description);
         }
 
+        public bool KeepView { get; set; }
+
         public virtual void Dispose() {
             if (Texture != null) {
                 Texture.Dispose();
                 Texture = null;
             }
 
-            if (View != null) {
+            if (View != null && !KeepView) {
                 View.Dispose();
                 View = null;
             }

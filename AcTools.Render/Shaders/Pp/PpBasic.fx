@@ -34,11 +34,11 @@
 		return vout;
 	}
 
-	float4 ps_Copy(PS_IN pin) : SV_Target{
+	float4 ps_Copy(PS_IN pin) : SV_Target {
 		return gInputMap.Sample(samInputImage, pin.Tex);
 	}
 
-		technique10 Copy {
+	technique10 Copy {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);

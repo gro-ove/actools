@@ -29,7 +29,12 @@ namespace LicensePlates {
             MagickImage result;
             filename = filename.ToLowerInvariant();
             if (_images.TryGetValue(filename, out result)) return result;
-            return _images[filename] = new MagickImage(filename);
+
+            try {
+                return _images[filename] = new MagickImage(filename);
+            } catch (Exception) {
+                return _images[filename] = new MagickImage(MagickColors.Transparent, 4, 4);
+            }
         }
 
         public IReadOnlyList<PlateValueBase> InputParams => _inputParams;

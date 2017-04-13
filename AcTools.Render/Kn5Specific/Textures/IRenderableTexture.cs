@@ -13,6 +13,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         bool IsDisposed { get; }
 
+        void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] ShaderResourceView textureBytes, bool disposeLater);
+
         void SetProceduralOverride([CanBeNull] IDeviceContextHolder holder, [CanBeNull] byte[] textureBytes);
     }
 }

@@ -27,6 +27,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class CarDescription {
@@ -1785,13 +1786,23 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Override textures
-        public bool OverrideTexture(DeviceContextHolder device, string textureName, byte[] textureBytes) {
+        public bool OverrideTexture(DeviceContextHolder device, string textureName, [CanBeNull] byte[] textureBytes) {
             if (_texturesProvider == null) {
                 InitializeTextures(device);
             }
 
             var texture = _texturesProvider?.GetTexture(device, textureName);
             texture?.SetProceduralOverride(device, textureBytes);
+            return texture != null;
+        }
+
+        public bool OverrideTexture(DeviceContextHolder device, string textureName, [CanBeNull] ShaderResourceView textureView, bool disposeLater) {
+            if (_texturesProvider == null) {
+                InitializeTextures(device);
+            }
+
+            var texture = _texturesProvider?.GetTexture(device, textureName);
+            texture?.SetProceduralOverride(device, textureView, disposeLater);
             return texture != null;
         }
 

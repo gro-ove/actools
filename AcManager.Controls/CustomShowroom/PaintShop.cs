@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
+using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -16,6 +19,27 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Controls.CustomShowroom {
     public static partial class PaintShop {
+        public static string NameToId(string name, bool upperFirst) {
+            var s = Regex.Split(name.ToLowerInvariant(), @"\W+");
+            var b = new StringBuilder();
+
+            if (!upperFirst) {
+                b.Append(s[0]);
+            }
+
+            for (var i = upperFirst ? 0 : 1; i < s.Length; i++) {
+                var p = s[i];
+                if (p.Length < 1) continue;
+
+                b.Append(char.ToUpperInvariant(p[0]));
+                if (p.Length > 1) {
+                    b.Append(p.Substring(1));
+                }
+            }
+
+            return b.ToString();
+        }
+
         private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
             if (kn5 == null) yield break;
 
@@ -31,7 +55,9 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             if (carPaint != null) {
-                yield return mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap);
+                yield return mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap) {
+                    AutoAdjustLevels = true
+                };
             }
 
             var rims = new[] { "car_paint_rims.dds" }
@@ -110,6 +136,24 @@ namespace AcManager.Controls.CustomShowroom {
             const string keyDefaultOpacity = "defaultOpacity";
             const string keyTintBase = "tintBase";
 
+            Func<JToken, PaintShopSource> getSource = j => {
+                if (j.Type == JTokenType.Boolean) {
+                    var b = (bool)j;
+                    return b ? PaintShopSource.InputSource : null;
+                }
+
+                if (j.Type != JTokenType.String) {
+                    return null;
+                }
+
+                var s = j.ToString();
+                if (s.StartsWith("./") || s.StartsWith(".\\")) {
+                    return new PaintShopSource(extraData(s.Substring(2)));
+                } else {
+                    return new PaintShopSource(s);
+                }
+            };
+
             PaintableItem result;
 
             var type = GetString(e, keyType, typeColor).ToLowerInvariant();
@@ -119,7 +163,7 @@ namespace AcManager.Controls.CustomShowroom {
                     if (maps != null) {
                         result = new ComplexCarPaint(RequireString(e, keyTexture), maps, GetColor(e, keyDefaultColor)) {
                             AutoAdjustLevels = e.GetBoolValueOnly(keyMapsAutoLevel) ?? false,
-                            MapsDefaultTexture = GetString(e, keyMapsDefaultTexture),
+                            MapsDefaultTexture = getSource(e[keyMapsDefaultTexture]),
                         };
                     } else {
                         result = new CarPaint(RequireString(e, keyTexture), GetColor(e, keyDefaultColor));
@@ -145,9 +189,12 @@ namespace AcManager.Controls.CustomShowroom {
                     break;
                 case typeReplacedIfFlagged:
                     result = new ReplacedIfFlagged(e.GetBoolValueOnly(keyInverse) ?? false,
-                            e["pairs"].ToObject<Dictionary<string, string>>().ToDictionary(
+                            e["pairs"].ToObject<Dictionary<string, JToken>>().Select(x => new {
+                                x.Key,
+                                Source = getSource(x.Value)
+                            }).Where(x => x.Source != null).ToDictionary(
                                     x => x.Key,
-                                    x => extraData(x.Value)));
+                                    x => x.Source));
                     break;
                 default:
                     throw new Exception($"Not supported type: {type}");
@@ -191,7 +238,9 @@ namespace AcManager.Controls.CustomShowroom {
                                         if (data[0] == null) return null;
                                     }
 
-                                    return data[0].Entries.FirstOrDefault(x => x.FullName == s)?.Open().ReadAsBytesAndDispose();
+                                    return data[0].Entries.FirstOrDefault(x => string.Equals(x.FullName, s, StringComparison.OrdinalIgnoreCase))?
+                                                  .Open()
+                                                  .ReadAsBytesAndDispose();
                                 });
                                 if (i != null) {
                                     result.Add(i);

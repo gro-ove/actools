@@ -33,7 +33,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
             
             _effect.FxSampleDirections.Set(samplesKernel);
 
-            _dither = holder.CreateTexture(16, 16, (x, y) => {
+            _dither = holder.CreateTextureView(16, 16, (x, y) => {
                 var angle = (float)(2f * Math.PI * MathUtils.Random());
                 var r = angle.Cos();
                 var g = -angle.Sin();

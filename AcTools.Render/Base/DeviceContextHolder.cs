@@ -232,7 +232,7 @@ namespace AcTools.Render.Base {
             ShaderResourceView texture;
 
             if (!_randomTextures.TryGetValue(size, out texture)) {
-                texture = CreateTexture(width, height, (x, y) => Color.FromArgb((int)(MathUtils.Random() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
+                texture = CreateTextureView(width, height, (x, y) => Color.FromArgb((int)(MathUtils.Random() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
                 _randomTextures[size] = texture;
             }
 
@@ -244,7 +244,7 @@ namespace AcTools.Render.Base {
         public delegate Color FillColor(int x, int y);
 
         [NotNull]
-        public ShaderResourceView CreateTexture(int width, int height, FillColor fill) {
+        public Texture2D CreateTexture(int width, int height, FillColor fill) {
             var texture = new Texture2D(Device, new Texture2DDescription {
                 SampleDescription = new SampleDescription(1, 0),
                 Width = width,
@@ -273,22 +273,25 @@ namespace AcTools.Render.Base {
             }
 
             DeviceContext.UnmapSubresource(texture, 0);
+            return texture;
+        }
 
-            var view = new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
-                Format = texture.Description.Format,
-                Dimension = ShaderResourceViewDimension.Texture2D,
-                MostDetailedMip = 0,
-                MipLevels = 1
-            });
-
-            texture.Dispose();
-            return view;
+        [NotNull]
+        public ShaderResourceView CreateTextureView(int width, int height, FillColor fill) {
+            using (var texture = CreateTexture(width, height, fill)) {
+                return new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
+                    Format = texture.Description.Format,
+                    Dimension = ShaderResourceViewDimension.Texture2D,
+                    MostDetailedMip = 0,
+                    MipLevels = 1
+                });
+            }
         }
 
         public delegate Color4 FillColor4(int x, int y);
 
         [NotNull]
-        public ShaderResourceView CreateTexture(int width, int height, FillColor4 fill) {
+        public Texture2D CreateTexture(int width, int height, FillColor4 fill) {
             var texture = new Texture2D(Device, new Texture2DDescription {
                 SampleDescription = new SampleDescription(1, 0),
                 Width = width,
@@ -317,20 +320,23 @@ namespace AcTools.Render.Base {
             }
 
             DeviceContext.UnmapSubresource(texture, 0);
+            return texture;
+        }
 
-            var view = new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
-                Format = texture.Description.Format,
-                Dimension = ShaderResourceViewDimension.Texture2D,
-                MostDetailedMip = 0,
-                MipLevels = 1
-            });
-
-            texture.Dispose();
-            return view;
+        [NotNull]
+        public ShaderResourceView CreateTextureView(int width, int height, FillColor4 fill) {
+            using (var texture = CreateTexture(width, height, fill)) {
+                return new ShaderResourceView(Device, texture, new ShaderResourceViewDescription {
+                    Format = texture.Description.Format,
+                    Dimension = ShaderResourceViewDimension.Texture2D,
+                    MostDetailedMip = 0,
+                    MipLevels = 1
+                });
+            }
         }
 
         public ShaderResourceView GetFlatNmTexture() {
-            return _flatNmView ?? (_flatNmView = CreateTexture(4, 4, (x, y) => Color.FromArgb(255, 127, 127, 255)));
+            return _flatNmView ?? (_flatNmView = CreateTextureView(4, 4, (x, y) => Color.FromArgb(255, 127, 127, 255)));
         }
 
         public void Dispose() {

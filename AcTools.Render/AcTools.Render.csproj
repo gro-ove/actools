@@ -155,6 +155,8 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
+    <Compile Include="Kn5SpecificForward\IPaintShopRenderer.cs" />
+    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Paintshop.cs" />
     <Compile Include="Kn5SpecificSpecial\AiLaneObject.cs" />
     <Compile Include="Kn5SpecificSpecial\BakedShadowsRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
@@ -281,6 +283,7 @@
     <Content Include="Shaders\Pp\PpBasic.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
+    <Content Include="Shaders\Special\SpecialPaintShop.fx" />
     <Content Include="Shaders\Special\SpecialRandom.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Special\SpecialDebugLines.fx" />

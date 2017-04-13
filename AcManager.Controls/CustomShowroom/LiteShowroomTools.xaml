@@ -154,10 +154,13 @@
                                         <mui:ColorPicker Color="{Binding Color}" />
                                     </DockPanel>
 
-                                    <CheckBox IsChecked="{Binding Flakes}"
-                                            Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Label Content="Add flakes" />
-                                    </CheckBox>
+                                    <DockPanel Style="{StaticResource DockPanel}">
+                                        <mui:ValueLabel Value="{Binding Flakes, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Flakes" />
+                                        <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
+                                                Value="{Binding Flakes, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    </DockPanel>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>
@@ -173,13 +176,20 @@
                                         <Label Content="Color:" />
                                         <mui:ColorPicker Color="{Binding Color}" />
                                     </DockPanel>
+                                    
+                                    <DockPanel Style="{StaticResource DockPanel}">
+                                        <mui:ValueLabel Value="{Binding Flakes, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Flakes" />
+                                        <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
+                                                Value="{Binding Flakes, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                                TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                                    </DockPanel>
 
-                                    <CheckBox IsChecked="{Binding Flakes}"
-                                            Visibility="{Binding SupportsFlakes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Label Content="Add flakes" />
+                                    <CheckBox IsChecked="{Binding ComplexMode}">
+                                        <Label Content="Specify params" />
                                     </CheckBox>
 
-                                    <DockPanel Style="{StaticResource DockPanel}">
+                                    <DockPanel Style="{StaticResource DockPanel}" IsEnabled="{Binding ComplexMode}">
                                         <mui:ValueLabel Value="{Binding Reflection, Converter={StaticResource PercentageConverter}}" Postfix="%"
                                                 mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflection" />
                                         <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
@@ -187,7 +197,7 @@
                                                 TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                                     </DockPanel>
 
-                                    <DockPanel Style="{StaticResource DockPanel}">
+                                    <DockPanel Style="{StaticResource DockPanel}" IsEnabled="{Binding ComplexMode}">
                                         <mui:ValueLabel Value="{Binding Gloss, Converter={StaticResource PercentageConverter}}" Postfix="%"
                                                 mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Gloss" />
                                         <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"
@@ -195,7 +205,7 @@
                                                 TickFrequency="20" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                                     </DockPanel>
 
-                                    <DockPanel Style="{StaticResource DockPanel}">
+                                    <DockPanel Style="{StaticResource DockPanel}" IsEnabled="{Binding ComplexMode}">
                                         <mui:ValueLabel Value="{Binding Specular, Converter={StaticResource PercentageConverter}}" Postfix="%"
                                                 mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Specular" />
                                         <Slider Minimum="0" Maximum="100" Margin="0 0 20 0"

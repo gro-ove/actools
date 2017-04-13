@@ -11,6 +11,7 @@ using AcManager.Pages.Windows;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -92,7 +93,12 @@ namespace AcManager.Pages.Drive {
                 DisplayName = championship.DisplayName,
                 Source = uri
             };
-            links.Insert(4, link);
+
+            var index = links.FindIndex(x => x.Source.OriginalString == "/Pages/Drive/UserChampionships.xaml");
+            if (index != -1) {
+                links.Insert(index + 1, link);
+            }
+
             mainWindow.NavigateTo(link.Source);
         }
 
