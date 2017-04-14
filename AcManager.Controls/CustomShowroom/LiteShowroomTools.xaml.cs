@@ -54,7 +54,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public ViewModel Model => (ViewModel)DataContext;
-
+        
         public enum Mode {
             Main,
             VisualSettings,
@@ -64,6 +64,8 @@ namespace AcManager.Controls.CustomShowroom {
             Skin,
             Camera,
         }
+
+        public bool CanSelectNodes => Model.Mode == Mode.Main || Model.Mode == Mode.Selected;
 
         public class ViewModel : NotifyPropertyChanged, IDisposable {
             private Mode _mode = Mode.Main;

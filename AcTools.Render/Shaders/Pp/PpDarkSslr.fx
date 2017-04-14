@@ -27,6 +27,8 @@
         matrix gWorldViewProj;
         float3 gEyePosW;
 
+		float4 gScreenSize;
+
 		// bool gTemporary;
     }
 
@@ -112,7 +114,19 @@
 		float3 calculatedPosition, newPosition;
 		float newL;
 
-		for (int i = 0; i < ITERATIONS; i++) {
+		/*[unroll]
+		for (int i = 0; i < 35; i++) {
+			calculatedPosition = position + reflectDir * L;
+
+			newUv = GetUv(calculatedPosition);
+			newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
+
+			float newL = length(position - newPosition);
+			L = L + 0.01 * saturate(abs(newL - L) * 50 - 0.2);
+		}*/
+
+		[unroll]
+		for (int j = 0; j < ITERATIONS; j++) {
 			calculatedPosition = position + reflectDir * L;
 
 			newUv = GetUv(calculatedPosition);
@@ -132,7 +146,7 @@
 		float quality = 1 - saturate(abs(length(calculatedPosition - newPosition)) / gDistanceThreshold);
 
 		float alpha = fresnel * quality * saturate(min(newUv.x, 1 - newUv.x) / 0.1) * saturate(min(newUv.y, 1 - newUv.y) / 0.1);
-		return float4(newUv.xy - coords, saturate(L / quality), alpha);
+		return float4(newUv.xy - coords, saturate(2.0 * L / quality), alpha);
 	}
 
 	float4 SslrFn(float2 coords, SamplerState s) {
@@ -186,18 +200,19 @@
 		float2 random = normalize(gNoiseMap.SampleLevel(samRandom, uv * 1000.0, 0).xy);
 
 		for (float i = 0; i < 25; i++) {
-			float2 uvOffset = reflect(poissonDisk[i], random) * blur;
+			float2 uvOffset = reflect(poissonDisk[i], random) * blur;// *gScreenSize.zw;
 
-			float3 reflectedColor = gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb;
+			float3 reflectedColor = min(gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb, 2.0);
 			float reflectedQuality = gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a;
 
-			reflection += float4(reflectedColor, reflectedQuality);
+			if (reflectedQuality > 0.02) {
+				reflection += float4(reflectedColor, reflectedQuality);
+			}
 		}
 
-		//return reflection / max(reflection.a, 1.0);
-
-		float4 result = reflection / 32;
-		result.a = pow(max(result.a, 0), 1.2);
+		// return reflection / max(reflection.a, 1.0);
+		float4 result = reflection / 25;
+		// result.a = pow(max(result.a, 0), 1.2);
 		return result;
 	}
 
@@ -209,7 +224,9 @@
 		float specularExp = gNormalMap.Sample(s, coords).a;
 
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
-		float blur = saturate(firstStep.b / specularExp - 0.1) * 0.08;
+		float blur = saturate(firstStep.b / specularExp - 0.1) * 0.1;
+
+		// return gDiffuseMap.SampleLevel(s, reflectedUv, 0) * gFirstStepMap.SampleLevel(s, coords, 0).a;
 
 		float4 reflection;
 		[branch]
@@ -218,6 +235,8 @@
 		} else {
 			reflection = GetReflection(coords, reflectedUv, blur);
 		}
+
+		// baseReflection.a = 1.0; // BUG
 
 		float a = reflection.a * baseReflection.a;
 		return float4(diffuseColor + (reflection.rgb - baseReflection.rgb) * a, 1.0);

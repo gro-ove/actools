@@ -43,6 +43,11 @@ namespace AcTools.Render.Wrapper {
                 : base(renderer, title, width, height) {
             Form.MouseDoubleClick += OnMouseDoubleClick;
             _renderer = renderer;
+
+#if SSLR_PARAMETRIZED
+            _renderer.UseSprite = true;
+            _renderer.VisibleUi = true;
+#endif
         }
 
         private void OnMouseDoubleClick(object sender, MouseEventArgs e) {

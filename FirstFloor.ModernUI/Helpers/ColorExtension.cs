@@ -6,7 +6,7 @@ using Color = System.Windows.Media.Color;
 namespace FirstFloor.ModernUI.Helpers {
     public static class ColorExtension {
         public static string ToHexString(this Color color, bool alphaChannel = false) {
-            return $"#{(alphaChannel ? color.A.ToString("X2") : string.Empty)}{color.R.ToString("X2")}{color.G.ToString("X2")}{color.B.ToString("X2")}";
+            return $"#{(alphaChannel ? color.A.ToString("X2") : string.Empty)}{color.R:X2}{color.G:X2}{color.B:X2}";
         }
 
         public static Color ToColor(this System.Drawing.Color color) {

@@ -6,6 +6,7 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -61,7 +62,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty(@"track"), NotNull]
         public string TrackId { get; set; }
 
-        [NotNull]
+        [JsonIgnore, NotNull]
         public string KunosTrackId => TrackId.Replace('/', '-');
 
         private int _time = ((CommonAcConsts.TimeMinimum + CommonAcConsts.TimeMaximum) / 2).Round();
@@ -121,7 +122,12 @@ namespace AcManager.Tools.Objects {
         }
 
         [JsonProperty(@"weather")]
-        public string WeatherId => Weather?.Id;
+        public string WeatherId {
+            get { return Weather?.Id; }
+            private set {
+                // ignored
+            }
+        }
 
         private Game.TrackPropertiesPreset _trackProperties;
 
@@ -158,6 +164,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [JsonIgnore]
         public string DisplayDescription {
             get {
                 if (Description != null) {
@@ -175,10 +182,14 @@ namespace AcManager.Tools.Objects {
         }
 
         [JsonConstructor]
-        public UserChampionshipRoundExtended(string track, string weather, int surface) {
-            TrackId = track;
-            Track = TracksManager.Instance.GetLayoutById(track);
-            Weather = WeatherManager.Instance.GetById(weather);
+        public UserChampionshipRoundExtended([CanBeNull] string track, [CanBeNull] string weather, int surface) {
+            if (track == null) {
+                Logging.Warning("Track=null!");
+            }
+
+            TrackId = track ?? TracksManager.Instance.GetDefault()?.IdWithLayout ?? @"imola";
+            Track = TracksManager.Instance.GetLayoutById(TrackId);
+            Weather = weather == null ? null : WeatherManager.Instance.GetById(weather);
             TrackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(surface) ?? Game.GetDefaultTrackPropertiesPreset();
         }
 

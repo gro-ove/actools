@@ -53,7 +53,7 @@ namespace AcManager.Tools.Lists {
         }
 
         [CanBeNull]
-        public AcItemWrapper GetByIdOrDefault(string id) {
+        public AcItemWrapper GetByIdOrDefault([NotNull] string id) {
             AcItemWrapper result;
             return _index.TryGetValue(id.ToLowerInvariant(), out result) ? result : null;
         }

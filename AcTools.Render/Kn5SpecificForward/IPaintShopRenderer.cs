@@ -4,9 +4,12 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public class PaintShopSource {
-        public static readonly PaintShopSource InputSource = new PaintShopSource(true);
+        public static readonly PaintShopSource InputSource = new PaintShopSource();
+        public static readonly PaintShopSource White = new PaintShopSource(System.Drawing.Color.White);
 
         public readonly bool UseInput;
+
+        public readonly Color? Color;
 
         [CanBeNull]
         public readonly string Name;
@@ -14,8 +17,12 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         public readonly byte[] Data;
 
-        public PaintShopSource(bool useInput) {
-            UseInput = useInput;
+        public PaintShopSource() {
+            UseInput = true;
+        }
+
+        public PaintShopSource(Color baseColor) {
+            Color = baseColor;
         }
 
         public PaintShopSource([NotNull] string name) {
@@ -27,11 +34,12 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public override int GetHashCode() {
-            return UseInput ? -1 : Name?.GetHashCode() ?? Data?.GetHashCode() ?? 0;
+            return UseInput ? -1 : Color?.GetHashCode() ?? Name?.GetHashCode() ?? Data?.GetHashCode() ?? 0;
         }
 
         public override string ToString() {
             if (UseInput) return "( PaintShopSource: use input )";
+            if (Color != null) return $"( PaintShopSource: color={Color.Value} )";
             if (Name != null) return $"( PaintShopSource: name={Name} )";
             if (Data != null) return $"( PaintShopSource: {Data} bytes )";
             return "( PaintShopSource: nothing )";
@@ -51,7 +59,11 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         bool OverrideTextureFlakes(string textureName, Color color, double flakes);
 
-        bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool autoAdjustLevels, [NotNull] PaintShopSource source);
+        bool OverrideTexturePattern(string textureName, [NotNull] PaintShopSource ao, bool autoAdjustLevels, [NotNull] PaintShopSource pattern,
+                [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors);
+
+        bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool autoAdjustLevels, bool fixGloss,
+                [NotNull] PaintShopSource source);
 
         bool OverrideTextureTint(string textureName, Color color, bool autoAdjustLevels, double alphaAdd, [NotNull] PaintShopSource source);
 
@@ -61,7 +73,11 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         Task SaveTextureFlakesAsync(string filename, Color color, double flakes);
 
-        Task SaveTextureMapsAsync(string filename, double reflection, double gloss, double specular, bool autoAdjustLevels, [NotNull] PaintShopSource source);
+        Task SaveTexturePatternAsync(string filename, [NotNull] PaintShopSource ao, bool autoAdjustLevels, [NotNull] PaintShopSource pattern,
+                [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors);
+
+        Task SaveTextureMapsAsync(string filename, double reflection, double gloss, double specular, bool autoAdjustLevels, bool fixGloss,
+                [NotNull] PaintShopSource source);
 
         Task SaveTextureTintAsync(string filename, Color color, bool autoAdjustLevels, double alphaAdd, [NotNull] PaintShopSource source);
     }

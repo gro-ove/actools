@@ -297,7 +297,11 @@ namespace AcManager.Pages.Drive {
                     _currentRoundWeather = round.Weather;
                 }
 
-                if (!_acObject.RealConditions) return;
+                if (!_acObject.RealConditions) {
+                    OnPropertyChanged(nameof(CurrentRoundWeather));
+                    OnPropertyChanged(nameof(CurrentRoundTemperature));
+                    return;
+                }
 
                 WeatherType? weatherType = null;
                 ConditionsLoading = true;
@@ -309,20 +313,22 @@ namespace AcManager.Pages.Drive {
                                 _acObject.RealConditionsManualTime
                                         ? default(Action<int>)
                                         : t => {
-                                            CurrentRoundTime = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                                            _currentRoundTime = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                                         }, w => {
-                                            CurrentRoundTemperature = w.Temperature.Clamp(CommonAcConsts.TemperatureMinimum,
+                                            _currentRoundTemperature = w.Temperature.Clamp(CommonAcConsts.TemperatureMinimum,
                                                     CommonAcConsts.TemperatureMaximum);
                                             weatherType = w.Type;
                                         }, cancellation.Token);
                         if (cancellation.Token.IsCancellationRequested) return;
                     } finally {
+                        OnPropertyChanged(nameof(CurrentRoundTemperature));
+                        OnPropertyChanged(nameof(CurrentRoundTime));
                         if (ReferenceEquals(_conditionsTokenSource, cancellation)) {
                             _conditionsTokenSource = null;
                         }
                     }
                 }
-
+                
                 ConditionsLoading = false;
 
                 if (weatherType != null) {
@@ -330,6 +336,8 @@ namespace AcManager.Pages.Drive {
                     var weather = CurrentRoundWeather;
                     if (_weatherTypeHelper.TryToGetWeather(weatherType.Value, ref weather)) {
                         CurrentRoundWeather = weather;
+                    } else {
+                        OnPropertyChanged(nameof(CurrentRoundWeather));
                     }
                 }
             }

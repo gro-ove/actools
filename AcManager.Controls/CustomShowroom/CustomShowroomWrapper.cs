@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

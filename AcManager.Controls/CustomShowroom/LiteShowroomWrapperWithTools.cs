@@ -23,11 +23,12 @@ using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 namespace AcManager.Controls.CustomShowroom {
     public class LiteShowroomWrapperWithTools : LiteShowroomWrapper {
         private readonly AttachedHelper _helper;
+        private readonly LiteShowroomTools _tools;
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
         public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) : base(renderer, car.DisplayName) {
-            _helper = new AttachedHelper(this, new LiteShowroomTools(renderer, car, skinId));
+            _helper = new AttachedHelper(this, _tools = new LiteShowroomTools(renderer, car, skinId));
             GoToNormalMode();
 
             renderer.VisibleUi = false;
@@ -35,7 +36,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnClick() {
-            if (_busy) return;
+            if (_busy || !_tools.CanSelectNodes) return;
             base.OnClick();
             Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
         }

@@ -1,5 +1,6 @@
 // textures
 	Texture2D gInputMap;
+	Texture2D gAoMap;
 	Texture2D gOverlayMap;
 	Texture2D gNoiseMap;
 
@@ -15,10 +16,16 @@
 		AddressV = CLAMP;
 	};
 
-	SamplerState samRandom {
+	SamplerState samLinearWrap {
+		Filter = MIN_MAG_MIP_LINEAR;
+		AddressU = WRAP;
+		AddressV = WRAP;
+	};
+
+	SamplerState samPointWrap {
 		Filter = MIN_MAG_MIP_POINT;
-		AddressU = Wrap;
-		AddressV = Wrap;
+		AddressU = WRAP;
+		AddressV = WRAP;
 	};
 
 // common functions
@@ -32,6 +39,7 @@
 		float4 gSize;
 		float gNoiseMultipler;
 		float gFlakes;
+		float4 gColors[3];
 	}
 
 // fn structs
@@ -65,8 +73,59 @@
 		}
 	}
 
+	float4 ps_Pattern(PS_IN pin) : SV_Target {
+		float4 pattern = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 ao = gAoMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 overlay = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+
+		float3 resultColor = pattern.rgb;
+		resultColor = resultColor * pattern.a + (float3)(1.0 - pattern.a);
+		resultColor *= ao.rgb;
+
+		float4 result = float4(resultColor, pattern.a);
+		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
+		result.a = saturate(result.a + overlay.a);
+		return result;
+	}
+
+	technique10 Pattern {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Pattern()));
+		}
+	}
+
+	float4 ps_ColorfulPattern(PS_IN pin) : SV_Target {
+		float4 pattern = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 ao = gAoMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 overlay = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+
+		float3 resultColor = gColors[0].rgb * pattern.r;
+		resultColor += gColors[1].rgb * pattern.g;
+		resultColor += gColors[2].rgb * pattern.b;
+
+		float patternA = pow(abs(pattern.a), 0.5);
+		resultColor = resultColor * patternA + (float3)(1.0 - patternA);
+		resultColor *= ao.rgb;
+
+		float4 result = float4(resultColor, pattern.a);
+		result.rgb = result.rgb * (1.0 - overlay.a) + overlay.rgb * overlay.a;
+		result.a = saturate(result.a + overlay.a);
+
+		return result;
+	}
+
+	technique10 ColorfulPattern {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_ColorfulPattern()));
+		}
+	}
+
 	float4 ps_Flakes(PS_IN pin) : SV_Target {
-		float random = gNoiseMap.SampleLevel(samRandom, pin.Tex * gNoiseMultipler, 0).x;
+		float random = gNoiseMap.SampleLevel(samPointWrap, pin.Tex * gNoiseMultipler, 0).x;
 		return float4(gColor.rgb, saturate(1.0 - random * gFlakes));
 	}
 
@@ -88,6 +147,19 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		}
+	}
+
+	float4 ps_MapsFillGreen(PS_IN pin) : SV_Target {
+		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return saturate(float4(base.r * gColor.r, gColor.g, base.b * gColor.b, 1.0));
+	}
+
+	technique10 MapsFillGreen {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_MapsFillGreen()));
 		}
 	}
 

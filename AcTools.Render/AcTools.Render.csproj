@@ -156,7 +156,8 @@
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
     <Compile Include="Kn5SpecificForward\IPaintShopRenderer.cs" />
-    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Paintshop.cs" />
+    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Textures.cs" />
+    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.PaintShop.cs" />
     <Compile Include="Kn5SpecificSpecial\AiLaneObject.cs" />
     <Compile Include="Kn5SpecificSpecial\BakedShadowsRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -95,7 +95,7 @@ namespace AcManager.Controls.CustomShowroom {
         private static string RequireString(JObject j, string key) {
             var s = j.GetStringValueOnly(key);
             if (s == null) {
-                throw new Exception($"Value required: �{key}�");
+                throw new Exception($"Value required: “{key}”");
             }
             return s;
         }
@@ -111,101 +111,164 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         [CanBeNull]
+        private static PaintShopSource GetSource(JToken j, Func<string, byte[]> extraData) {
+            if (j == null) return null;
+
+            if (j.Type == JTokenType.Boolean) {
+                var b = (bool)j;
+                return b ? PaintShopSource.InputSource : null;
+            }
+
+            if (j.Type != JTokenType.String) {
+                return null;
+            }
+
+            var s = j.ToString();
+            if (s == "@self" || s == "#self") {
+                return PaintShopSource.InputSource;
+            }
+
+            if (s.StartsWith("#")) {
+                return new PaintShopSource(s.ToColor()?.ToColor() ?? System.Drawing.Color.White);
+            }
+
+            if (s.StartsWith("./") || s.StartsWith(".\\")) {
+                return new PaintShopSource(extraData(s.Substring(2)));
+            }
+
+            return new PaintShopSource(s);
+        }
+
+        private const string TypeColor = "color";
+        private const string TypeCarPaint = "carpaint";
+        private const string TypeTintedWindow = "tintedwindow";
+        private const string TypeLicensePlate = "licenseplate";
+        private const string TypeSolidColorIfFlagged = "solidcolorifflagged";
+        private const string TypeTransparentIfFlagged = "transparentifflagged";
+        private const string TypeReplacedIfFlagged = "replacedifflagged";
+
+        private const string KeyName = "name";
+        private const string KeyEnabled = "enabled";
+        private const string KeyInverse = "inverse";
+        private const string KeyType = "type";
+        private const string KeyStyle = "style";
+        private const string KeyTexture = "texture";
+        private const string KeyTextures = "textures";
+        private const string KeyNormalsTexture = "normals";
+        private const string KeyMapsDefault = "mapsTexture";
+        private const string KeyMapsDefaultTexture = "mapsDefaultTexture";
+        private const string KeyMapsAutoLevel = "mapsAutoLevel";
+        private const string KeyColor = "color";
+        private const string KeyOpacity = "opacity";
+        private const string KeyDefaultColor = "defaultColor";
+        private const string KeyDefaultOpacity = "defaultOpacity";
+        private const string KeyTintBase = "tintBase";
+        private const string KeyAutoLevel = "autoLevel";
+        private const string KeyPairs = "pairs";
+
+        /// <summary>
+        /// Load entries from pairs table: KN5’s texture → replacement.
+        /// </summary>
+        [CanBeNull]
+        private static Dictionary<string, PaintShopSource> GetTextureSourcePairs(JObject e, Func<string, byte[]> extraData) {
+            return e[KeyPairs]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+                x.Key,
+                Source = GetSource(x.Value, extraData)
+            }).Where(x => x.Source != null).ToDictionary(
+                    x => x.Key,
+                    x => x.Source);
+        }
+
+        /// <summary>
+        /// Similar to GetTextureSourcePairs, but with a fallback.
+        /// </summary>
+        [CanBeNull]
+        private static Dictionary<string, PaintShopSource> GetTintedPairs(JObject e, Func<string, byte[]> extraData) {
+            return GetTextureSourcePairs(e, extraData) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, PaintShopSource> {
+                [RequireString(e, KeyTexture)] = PaintShopSource.InputSource
+            } : new Dictionary<string, PaintShopSource> {
+                [RequireString(e, KeyTexture)] = PaintShopSource.White
+            });
+        }
+
+        /// <summary>
+        /// Returns either texture or textures.
+        /// </summary>
+        [CanBeNull]
+        private static string[] GetTextures(JObject e) {
+            return e[KeyTextures]?.ToObject<string[]>() ?? new[] { RequireString(e, KeyTexture) };
+        }
+
+        [CanBeNull]
         private static PaintableItem GetPaintableItem([NotNull] JObject e, Func<string, byte[]> extraData) {
-            const string typeColor = "color";
-            const string typeCarPaint = "carpaint";
-            const string typeTintedWindow = "tintedwindow";
-            const string typeLicensePlate = "licenseplate";
-            const string typeSolidColorIfFlagged = "solidcolorifflagged";
-            const string typeTransparentIfFlagged = "transparentifflagged";
-            const string typeReplacedIfFlagged = "replacedifflagged";
-
-            const string keyName = "name";
-            const string keyEnabled = "enabled";
-            const string keyInverse = "inverse";
-            const string keyType = "type";
-            const string keyStyle = "style";
-            const string keyTexture = "texture";
-            const string keyNormalsTexture = "normals";
-            const string keyMapsDefault = "mapsTexture";
-            const string keyMapsDefaultTexture = "mapsDefaultTexture";
-            const string keyMapsAutoLevel = "mapsAutoLevel";
-            const string keyColor = "color";
-            const string keyOpacity = "opacity";
-            const string keyDefaultColor = "defaultColor";
-            const string keyDefaultOpacity = "defaultOpacity";
-            const string keyTintBase = "tintBase";
-
-            Func<JToken, PaintShopSource> getSource = j => {
-                if (j.Type == JTokenType.Boolean) {
-                    var b = (bool)j;
-                    return b ? PaintShopSource.InputSource : null;
-                }
-
-                if (j.Type != JTokenType.String) {
-                    return null;
-                }
-
-                var s = j.ToString();
-                if (s.StartsWith("./") || s.StartsWith(".\\")) {
-                    return new PaintShopSource(extraData(s.Substring(2)));
-                } else {
-                    return new PaintShopSource(s);
-                }
-            };
-
             PaintableItem result;
-
-            var type = GetString(e, keyType, typeColor).ToLowerInvariant();
+            var type = GetString(e, KeyType, TypeColor).ToLowerInvariant();
             switch (type) {
-                case typeCarPaint:
-                    var maps = GetString(e, keyMapsDefault);
+                case TypeCarPaint:
+                    var maps = GetString(e, KeyMapsDefault);
+                    CarPaint carPaint;
                     if (maps != null) {
-                        result = new ComplexCarPaint(RequireString(e, keyTexture), maps, GetColor(e, keyDefaultColor)) {
-                            AutoAdjustLevels = e.GetBoolValueOnly(keyMapsAutoLevel) ?? false,
-                            MapsDefaultTexture = getSource(e[keyMapsDefaultTexture]),
+                        carPaint = new ComplexCarPaint(RequireString(e, KeyTexture), maps, GetColor(e, KeyDefaultColor)) {
+                            AutoAdjustLevels = e.GetBoolValueOnly(KeyMapsAutoLevel) ?? false,
+                            MapsDefaultTexture = GetSource(e[KeyMapsDefaultTexture], extraData),
                         };
                     } else {
-                        result = new CarPaint(RequireString(e, keyTexture), GetColor(e, keyDefaultColor));
+                        carPaint = new CarPaint(RequireString(e, KeyTexture), GetColor(e, KeyDefaultColor));
                     }
+
+                    var patternTexture = e.GetStringValueOnly("patternTexture");
+                    if (patternTexture != null) {
+                        var patternBase = GetSource(e["patternBase"], extraData);
+                        var patternOverlay = GetSource(e["patternOverlay"], extraData);
+                        var patterns = (e["patterns"] as JArray)?.Select(x =>
+                                new CarPaintPattern(
+                                        x.GetStringValueOnly(KeyName),
+                                        GetSource(x["pattern"], extraData),
+                                        GetSource(x["overlay"], extraData),
+                                        x.GetIntValueOnly("colors") ?? 0));
+                        if (patternBase != null && patterns != null) {
+                            carPaint.SetPatterns(patternTexture, patternBase, patternOverlay, patterns);
+                        }
+                    }
+
+                    result = carPaint;
                     break;
-                case typeColor:
-                    result = new ColoredItem(RequireString(e, keyTexture), GetColor(e, keyDefaultColor));
+                case TypeColor:
+                    result = new ColoredItem(GetTintedPairs(e, extraData), GetColor(e, KeyDefaultColor)) {
+                        AutoAdjustLevels = e.GetBoolValueOnly(KeyAutoLevel) ?? false
+                    };
                     break;
-                case typeLicensePlate:
-                    result = new LicensePlate(GetString(e, keyStyle, "Europe"), GetString(e, keyTexture, "Plate_D.dds"),
-                            GetString(e, keyNormalsTexture, "Plate_NM.dds"));
+                case TypeTintedWindow:
+                    result = new TintedWindows(GetTintedPairs(e, extraData),
+                            GetDouble(e, KeyDefaultOpacity, 0.23),
+                            GetColor(e, KeyDefaultColor, Color.FromRgb(41, 52, 55))) {
+                                AutoAdjustLevels = e.GetBoolValueOnly(KeyAutoLevel) ?? false
+                            };
                     break;
-                case typeTintedWindow:
-                    result = new TintedWindows(RequireString(e, keyTexture), GetDouble(e, keyDefaultOpacity, 0.23),
-                            GetColor(e, keyDefaultColor, Color.FromRgb(41, 52, 55)), e.GetBoolValueOnly(keyTintBase) ?? false);
+                case TypeLicensePlate:
+                    result = new LicensePlate(GetString(e, KeyStyle, "Europe"), GetString(e, KeyTexture, "Plate_D.dds"),
+                            GetString(e, KeyNormalsTexture, "Plate_NM.dds"));
                     break;
-                case typeSolidColorIfFlagged:
-                    result = new SolidColorIfFlagged(RequireString(e, keyTexture), e.GetBoolValueOnly(keyInverse) ?? false, 
-                            GetColor(e, keyColor), GetDouble(e, keyOpacity, 0.23));
+                case TypeSolidColorIfFlagged:
+                    result = new SolidColorIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false,
+                            GetColor(e, KeyColor), GetDouble(e, KeyOpacity, 0.23));
                     break;
-                case typeTransparentIfFlagged:
-                    result = new TransparentIfFlagged(RequireString(e, keyTexture), e.GetBoolValueOnly(keyInverse) ?? false);
+                case TypeTransparentIfFlagged:
+                    result = new TransparentIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false);
                     break;
-                case typeReplacedIfFlagged:
-                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(keyInverse) ?? false,
-                            e["pairs"].ToObject<Dictionary<string, JToken>>().Select(x => new {
-                                x.Key,
-                                Source = getSource(x.Value)
-                            }).Where(x => x.Source != null).ToDictionary(
-                                    x => x.Key,
-                                    x => x.Source));
+                case TypeReplacedIfFlagged:
+                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetTextureSourcePairs(e, extraData));
                     break;
                 default:
                     throw new Exception($"Not supported type: {type}");
             }
 
-            var name = GetString(e, keyName);
+            var name = GetString(e, KeyName);
             if (name != null) {
                 result.DisplayName = name;
             }
 
-            var enabled = e.GetBoolValueOnly(keyEnabled);
+            var enabled = e.GetBoolValueOnly(KeyEnabled);
             if (enabled.HasValue) {
                 result.Enabled = enabled.Value;
             }
@@ -233,6 +296,11 @@ namespace AcManager.Controls.CustomShowroom {
                         } else {
                             try {
                                 var i = GetPaintableItem(o, s => {
+                                    var unpackedFilename = Path.Combine(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase), s);
+                                    if (File.Exists(unpackedFilename)) {
+                                        return File.ReadAllBytes(unpackedFilename);
+                                    }
+
                                     if (data[0] == null) {
                                         data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
                                         if (data[0] == null) return null;
@@ -246,7 +314,7 @@ namespace AcManager.Controls.CustomShowroom {
                                     result.Add(i);
                                 }
                             } catch (Exception e) {
-                                Logging.Error(e.Message);
+                                Logging.Error(e);
                             }
                         }
 
@@ -275,7 +343,7 @@ namespace AcManager.Controls.CustomShowroom {
                         return GetPaintableItems(j, kn5, previousIds, candidate);
                     }
                 } catch (Exception e) {
-                    Logging.Error(e.Message);
+                    Logging.Error(e);
                 }
             } else {
                 foreach (var filename in FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.PaintShop).Select(x => x.Filename)) {
@@ -286,7 +354,7 @@ namespace AcManager.Controls.CustomShowroom {
                             return GetPaintableItems(d, kn5, previousIds, filename);
                         }
                     } catch (Exception e) {
-                        Logging.Error(e.Message);
+                        Logging.Error(e);
                     }
                 }
             }

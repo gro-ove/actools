@@ -447,7 +447,7 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
-	public class EffectPpDarkSslr : IEffectWrapper {
+	public class EffectPpDarkSslr : IEffectWrapper, IEffectScreenSizeWrapper {
 		public static readonly int Iterations = 30;
 		private ShaderBytecode _b;
 		public Effect E;
@@ -463,6 +463,7 @@ namespace AcTools.Render.Shaders {
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectOnlyResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
 		public EffectVectorVariable FxEyePosW { get; private set; }
+		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDarkSslr");
@@ -488,6 +489,7 @@ namespace AcTools.Render.Shaders {
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
 			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
+			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
 		}
 
         public void Dispose() {
@@ -1234,20 +1236,24 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechFill, TechFlakes, TechMaps, TechMaximum, TechMaximumApply, TechTint;
+		public EffectReadyTechnique TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechMaps, TechMapsFillGreen, TechMaximum, TechMaximumApply, TechTint;
 
-		public EffectOnlyResourceVariable FxInputMap, FxOverlayMap, FxNoiseMap;
+		public EffectOnlyResourceVariable FxInputMap, FxAoMap, FxOverlayMap, FxNoiseMap;
 		public EffectScalarVariable FxNoiseMultipler, FxFlakes;
 		public EffectVectorVariable FxColor { get; private set; }
 		public EffectVectorVariable FxSize { get; private set; }
+		public EffectVectorVariable FxColors { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
 			E = new Effect(device, _b);
 
 			TechFill = new EffectReadyTechnique(E.GetTechniqueByName("Fill"));
+			TechPattern = new EffectReadyTechnique(E.GetTechniqueByName("Pattern"));
+			TechColorfulPattern = new EffectReadyTechnique(E.GetTechniqueByName("ColorfulPattern"));
 			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
+			TechMapsFillGreen = new EffectReadyTechnique(E.GetTechniqueByName("MapsFillGreen"));
 			TechMaximum = new EffectReadyTechnique(E.GetTechniqueByName("Maximum"));
 			TechMaximumApply = new EffectReadyTechnique(E.GetTechniqueByName("MaximumApply"));
 			TechTint = new EffectReadyTechnique(E.GetTechniqueByName("Tint"));
@@ -1259,12 +1265,14 @@ namespace AcTools.Render.Shaders {
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
 			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
+			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap").AsResource());
 			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap").AsResource());
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
 			FxNoiseMultipler = E.GetVariableByName("gNoiseMultipler").AsScalar();
 			FxFlakes = E.GetVariableByName("gFlakes").AsScalar();
 			FxColor = E.GetVariableByName("gColor").AsVector();
 			FxSize = E.GetVariableByName("gSize").AsVector();
+			FxColors = E.GetVariableByName("gColors").AsVector();
 		}
 
         public void Dispose() {

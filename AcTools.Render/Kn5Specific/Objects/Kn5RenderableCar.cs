@@ -2197,6 +2197,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 return _driver.OriginalFile;
             }
 
+            if (_crewMain != null && _crewMain.GetAllChildren().Contains(obj)) {
+                return _crewMain.OriginalFile;
+            }
+
+            if (_crewTyres != null && _crewTyres.GetAllChildren().Contains(obj)) {
+                return _crewTyres.OriginalFile;
+            }
+
+            if (_crewStuff != null && _crewStuff.GetAllChildren().Contains(obj)) {
+                return _crewStuff.OriginalFile;
+            }
+
             return _currentLodObject.NonDefaultKn5 ?? OriginalFile;
         }
 

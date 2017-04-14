@@ -1120,10 +1120,10 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
                     effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
                 }
 #endif
-                
+
                 _sslrHelper.Draw(DeviceContextHolder, depth, _sslrBufferBaseReflection.View, _gBufferNormals.View, ActualCamera,
                         _sslrBufferResult.TargetView);
-                _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultiplier));
+                // _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultiplier));
                 _sslrHelper.FinalStep(DeviceContextHolder, _sslrBufferScene.View, _sslrBufferResult.View, _sslrBufferBaseReflection.View,
                         _gBufferNormals.View, ActualCamera, InnerBuffer.TargetView);
             } else {

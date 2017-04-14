@@ -63,7 +63,13 @@
                                     Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
                                 <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}"
-                                        SelectedItem="{Binding Weather}" />
+                                        SelectedItem="{Binding Weather}">
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                            <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
                             </mui:SpacingStackPanel>
 
                             <mui:SpacingStackPanel Spacing="4">
