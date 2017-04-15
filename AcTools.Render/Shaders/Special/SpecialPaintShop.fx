@@ -163,6 +163,39 @@
 		}
 	}
 
+	float4 ps_Tint(PS_IN pin) : SV_Target {
+		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return saturate(float4(base.rgb * gColor.rgb, base.a + gColor.a));
+	}
+
+	technique10 Tint {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Tint()));
+		}
+	}
+
+	float4 ps_TintMask(PS_IN pin) : SV_Target {
+		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 mask = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+
+		float4 result = base * ((float4)(1.0 - mask.r) + gColor * mask.r)
+			* ((float4)(1.0 - mask.g) + gColors[0] * mask.g)
+			* ((float4)(1.0 - mask.b) + gColors[1] * mask.b)
+			* ((float4)(1.0 - mask.a) + gColors[2] * mask.a);
+		return saturate(float4(result.rgb, base.a + gColor.a));
+	}
+
+	technique10 TintMask {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_TintMask()));
+		}
+	}
+
+// preparation
 	float4 ps_Maximum(PS_IN pin) : SV_Target {
 		float4 result = 0;
 		[unroll]
@@ -196,15 +229,15 @@
 		}
 	}
 
-	float4 ps_Tint(PS_IN pin) : SV_Target {
-		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return saturate(float4(base.r * gColor.r, base.g * gColor.g, base.b * gColor.b, base.a + gColor.a));
+	float4 ps_Desaturate(PS_IN pin) : SV_Target {
+		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return float4((float3)Luminance(input.rgb), input.a);
 	}
 
-	technique10 Tint {
+	technique10 Desaturate {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_Tint()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Desaturate()));
 		}
 	}

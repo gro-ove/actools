@@ -6,6 +6,8 @@ using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -28,6 +30,17 @@ namespace AcManager.Pages.Dialogs {
                 SelectTrackDialog result;
                 return _instance.TryGetTarget(out result) ? result : null;
             }
+        }
+
+        public static Uri FavouritesUri() {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter=fav+&Title={0}",
+                    "Favourites");
+        }
+
+        public static Uri RatingUri(double rating) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter={0}&Title={1}",
+                    $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
+                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), "{0} Star"));
         }
 
         public static Uri TagUri(string tag) {

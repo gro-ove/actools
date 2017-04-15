@@ -108,7 +108,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry[] CameraModes { get; } = {
             new SettingEntry("DEFAULT", ToolsStrings.AcSettings_CameraMode_SingleScreen),
             new SettingEntry("TRIPLE", ToolsStrings.AcSettings_CameraMode_TripleScreen),
-            new SettingEntry("OCULUS", ToolsStrings.AcSettings_CameraMode_OculusRift)
+            new SettingEntry("OCULUS", ToolsStrings.AcSettings_CameraMode_OculusRift),
+            new SettingEntry("OPENVR", "OpenVR (early support)"),
         };
 
         public SettingEntry[] AnisotropicLevels { get; } = {

@@ -20,10 +20,10 @@ namespace AcManager.Controls.CustomShowroom {
                 Europe, Japan
             }
 
-            public LicensePlate(LicenseFormat format, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
+            public LicensePlate(LicenseFormat format, [CanBeNull] string diffuseTexture = "Plate_D.dds", [CanBeNull] string normalsTexture = "Plate_NM.dds")
                     : this(format.ToString(), diffuseTexture, normalsTexture) {}
 
-            public LicensePlate(string suggestedStyle, string diffuseTexture = "Plate_D.dds", string normalsTexture = "Plate_NM.dds")
+            public LicensePlate(string suggestedStyle, [CanBeNull] string diffuseTexture = "Plate_D.dds", [CanBeNull] string normalsTexture = "Plate_NM.dds")
                     : base(true) {
                 SuggestedStyleName = suggestedStyle;
                 DiffuseTexture = diffuseTexture;
@@ -32,8 +32,10 @@ namespace AcManager.Controls.CustomShowroom {
 
             public string SuggestedStyleName { get; }
 
+            [CanBeNull]
             public string DiffuseTexture { get; }
 
+            [CanBeNull]
             public string NormalsTexture { get; }
 
             public override string DisplayName { get; set; } = "License plate";
@@ -98,13 +100,15 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private bool _previewMode = true;
+            private static readonly string KeyPreviewMode = @"__PaintShop.LicensePlate.PreviewMode";
+            private bool _previewMode = ValuesStorage.GetBool(KeyPreviewMode, true);
 
             public bool PreviewMode {
                 get { return _previewMode; }
                 set {
                     if (Equals(value, _previewMode)) return;
                     _previewMode = value;
+                    ValuesStorage.Set(KeyPreviewMode, value);
                     _onlyPreviewModeChanged = true;
                     OnPropertyChanged();
                 }
@@ -135,36 +139,44 @@ namespace AcManager.Controls.CustomShowroom {
 
             private void ApplyQuick() {
                 var applyId = ++_applyId;
-                
-                var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
-                if (_applyId != applyId) return;
+                //if (DiffuseTexture != null) {
+                    var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
+                    if (_applyId != applyId) return;
 
-                if (!_flatNormals) {
-                    _flatNormals = true;
-                    _renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor(), 1d);
-                }
+                    _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
+                    if (_applyId != applyId) return;
+                //}
+
+                //if (NormalsTexture != null) {
+                    if (!_flatNormals) {
+                        _flatNormals = true;
+                        _renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor(), 1d);
+                    }
+                //}
             }
 
             private void ApplySlowDiffuse() {
                 var applyId = ++_applyId;
 
-                var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
+                //if (DiffuseTexture != null) {
+                    var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
+                    if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
+                    _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
+                //}
             }
 
             private void ApplySlowNormals() {
                 var applyId = ++_applyId;
 
-                var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
-                if (_applyId != applyId) return;
+                //if (NormalsTexture != null) {
+                    var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
+                    if (_applyId != applyId) return;
 
-                _renderer?.OverrideTexture(NormalsTexture, normals == null ? null : new PaintShopSource(normals));
-                _flatNormals = false;
+                    _renderer?.OverrideTexture(NormalsTexture, normals == null ? null : new PaintShopSource(normals));
+                    _flatNormals = false;
+                //}
             }
 
             private void EnsureThreadCreated() {
@@ -230,8 +242,14 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             protected override void ResetOverride(IPaintShopRenderer renderer) {
-                renderer.OverrideTexture(DiffuseTexture, null);
-                renderer.OverrideTexture(NormalsTexture, null);
+                if (DiffuseTexture != null) {
+                    renderer.OverrideTexture(DiffuseTexture, null);
+                }
+
+                if (NormalsTexture != null) {
+                    renderer.OverrideTexture(NormalsTexture, null);
+                }
+
                 _onlyPreviewModeChanged = false;
                 _flatNormals = false;
             }
@@ -239,8 +257,13 @@ namespace AcManager.Controls.CustomShowroom {
             protected override Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 if (SelectedStyle == null) return Task.Delay(0);
                 return Task.Run(() => {
-                    SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
-                    SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
+                    if (DiffuseTexture != null) {
+                        SelectedStyle?.CreateDiffuseMap(false, Path.Combine(location, DiffuseTexture));
+                    }
+
+                    if (NormalsTexture != null) {
+                        SelectedStyle?.CreateNormalsMap(false, Path.Combine(location, NormalsTexture));
+                    }
                 });
             }
 
@@ -265,7 +288,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (SelectedStyleEntry == null || SelectedStyle == null) return null;
 
                 var obj = new JObject { ["style"] = SelectedStyleEntry.Name };
-                foreach (var p in SelectedStyle.InputParams) {
+                foreach (var p in SelectedStyle.InputParams.Where(x => x.Value != null)) {
                     obj[@"param" + NameToId(p.Name, true)] = p.Value;
                 }
 
@@ -293,8 +316,11 @@ namespace AcManager.Controls.CustomShowroom {
                         var p = SelectedStyle.InputParams.FirstOrDefault(x => NameToId(x.Name, true) == pair.Key.Substring(5));
                         if (p == null) {
                             Logging.Warning($"Parameter not found: {pair.Key.Substring(6)}");
-                        } else {
-                            p.Value = pair.Value?.ToString();
+                        } else if (pair.Value.Type == JTokenType.String) {
+                            var s = (string)pair.Value;
+                            if (s != null) {
+                                p.Value = s;
+                            }
                         }
                     }
                 }

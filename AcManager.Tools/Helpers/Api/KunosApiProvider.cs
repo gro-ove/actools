@@ -82,7 +82,7 @@ namespace AcManager.Tools.Helpers.Api {
                     [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
                 }
             }, timeout)) {
-                return await order.Victim.DownloadStringTaskAsync(uri);
+                return await order.Victim.DownloadStringTaskAsync(uri).ConfigureAwait(false);
             }
         }
 
@@ -117,7 +117,7 @@ namespace AcManager.Tools.Helpers.Api {
                 request.Timeout = (int)timeout.TotalMilliseconds;
 
                 string result;
-                using (var response = (HttpWebResponse)await request.GetResponseAsync()) {
+                using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false)) {
                     if (response.StatusCode != HttpStatusCode.OK) throw new Exception($@"StatusCode = {response.StatusCode}");
 
                     using (var stream = response.GetResponseStream()) {
@@ -126,12 +126,12 @@ namespace AcManager.Tools.Helpers.Api {
                         if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
                             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
                                 using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
-                                    result = await reader.ReadToEndAsync();
+                                    result = await reader.ReadToEndAsync().ConfigureAwait(false);
                                 }
                             }
                         } else {
                             using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-                                result = await reader.ReadToEndAsync();
+                                result = await reader.ReadToEndAsync().ConfigureAwait(false);
                             }
                         }
                     }
@@ -380,14 +380,21 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemNotNull]
         public static async Task<ServerInformationComplete> GetInformationDirectAsync(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
-            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(await LoadAsync(requestUri, OptionDirectRequestTimeout)), ip);
+            var loaded = await LoadAsync(requestUri, OptionDirectRequestTimeout).ConfigureAwait(false);
+            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(loaded), ip);
         }
 
         [ItemNotNull]
         public static async Task<ServerCarsInformation> GetCarsInformationAsync(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
-            return JsonConvert.DeserializeObject<ServerCarsInformation>(await LoadAsync(requestUri, OptionDirectRequestTimeout));
+            var loaded = await LoadAsync(requestUri, OptionDirectRequestTimeout).ConfigureAwait(false);
+            try {
+                return JsonConvert.DeserializeObject<ServerCarsInformation>(loaded);
+            } catch (Exception) {
+                Logging.Warning(loaded);
+                throw;
+            }
         }
 
         [CanBeNull]

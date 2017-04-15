@@ -4,7 +4,8 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="OnLoaded"
         Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance di:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960"
-        MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS" WindowStartupLocation="Manual">
+        MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS" WindowStartupLocation="Manual"
+        ShowTopBlob="False">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -125,26 +126,32 @@
             </StackPanel>
         </c:CarBlock>
 
-        <mui:ModernTab Layout="TabWithTitle" Margin="20 -44 0 0" x:Name="Tabs" Width="320" Grid.Column="1"
-                mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml" FrameNavigated="Tabs_OnFrameNavigated" mui:ModernFrame.KeepContentAlive="True"
-                SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
-            <mui:ModernTab.LinksListBoxTemplate>
-                <ControlTemplate>
-                    <DockPanel>
-                        <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
-                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
-                    </DockPanel>
-                </ControlTemplate>
-            </mui:ModernTab.LinksListBoxTemplate>
-            <mui:ModernTab.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories_New.xaml" />
-                <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/CarDlcs.xaml" />
-                <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
-                <!-- ReSharper disable once Xaml.PathError -->
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
+        <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 -42 20 0" />
+
+        <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
+            <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
+                    FrameNavigated="Tabs_OnFrameNavigated" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible"
+                    LinksHorizontalAlignment="Stretch">
+                <mui:ModernTab.LinksListBoxTemplate>
+                    <ControlTemplate>
+                        <DockPanel>
+                            <!--<mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center" />-->
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+                        </DockPanel>
+                    </ControlTemplate>
+                </mui:ModernTab.LinksListBoxTemplate>
+                <mui:ModernTab.Links>
+                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
+                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/CarCountries.xaml" />
+                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/CarCategories_New.xaml" />
+                    <mui:Link DisplayName="DLCs" Source="/Pages/SelectionLists/CarDlcs.xaml" />
+                    <mui:Link DisplayName="Tags" Source="/Pages/SelectionLists/CarTags.xaml" />
+                    <mui:Link DisplayName="Ratings &amp; Favourites" Source="/Pages/SelectionLists/CarRatings.xaml" />
+                    <!-- ReSharper disable once Xaml.PathError -->
+                    <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}"
+                            Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
+                </mui:ModernTab.Links>
+            </mui:ModernTab>
+        </AdornerDecorator>
     </Grid>
 </mui:ModernDialog>

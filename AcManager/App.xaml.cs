@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Converters;
@@ -312,6 +313,15 @@ namespace AcManager {
             // TODO: rearrange code!
             CmPreviewsSettings.SelectCarDialog = SelectCarDialog.Show;
             CmPreviewsTools.MissingShowroomHelper = new CarUpdatePreviewsDialog.MissingShowroomHelper();
+
+            // paint shop+livery generator?
+            LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
+        }
+
+        private class LiveryGenerator : ILiveryGenerator {
+            public Task CreateLiveryAsync(CarSkinObject skin, Color[] colors, string preferredStyle) {
+                return LiveryIconEditor.GenerateAsync(skin, colors, preferredStyle);
+            }
         }
 
         private class DataSyntaxErrorCatcher : ISyntaxErrorsCatcher {

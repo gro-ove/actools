@@ -11,7 +11,8 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_abarth_595ss_s2\abarth_595ss.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_alfa_romeo_155_v6\Alfa_Romeo_155_V6.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\ferrari_250gt_lusso\ferrari_250gt_lusso.kn5";
-            kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_audi_r8_plus\audi_r8_plus.kn5";
+            //kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_audi_r8_plus\audi_r8_plus.kn5";
+            kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\lotus_2_eleven\lotus_2_eleven.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\ruf_yellowbird\ruf_yellowbird.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\abarth500\abarth500.kn5";
 
@@ -78,7 +79,8 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\big_shop\big_shop.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
-            showroomKn5File = null;
+            //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
+            //showroomKn5File = null;
 
             return showroomKn5File;
         }

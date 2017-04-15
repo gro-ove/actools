@@ -14,10 +14,13 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using StringBasedFilter;
 
@@ -149,6 +152,17 @@ namespace AcManager.Pages.Dialogs {
                 ShowInTaskbar = false
             }.ShowDialogWithoutBlocking();
         }));
+
+        public static Uri FavouritesUri() {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter=fav+&Title={0}",
+                    "Favourites");
+        }
+
+        public static Uri RatingUri(double rating) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"rating≥{Filter.Encode(rating.FloorToInt().ToInvariantString())} & rating<{Filter.Encode((rating.FloorToInt() + 1).ToInvariantString())}",
+                    PluralizingConverter.PluralizeExt(rating.FloorToInt(), "{0} Star"));
+        }
 
         public static Uri BrandUri(string brand) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="clr-namespace:AcManager.Controls.Helpers" mc:Ignorable="d">
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
@@ -72,7 +72,7 @@
                                 <mui:Switch x:Name="PART_Switch" Value="{Binding Entries.Count, RelativeSource={RelativeSource TemplatedParent}}"
                                         DockPanel.Dock="Right" Width="80" Margin="8 0 0 0">
                                     <ProgressBar mui:Switch.When="-1" Height="2" IsIndeterminate="True" VerticalAlignment="Center" />
-                                    <TextBlock mui:Switch.When="0" FontStyle="Italic" Opacity="0.5">
+                                    <TextBlock mui:Switch.When="0" FontStyle="Italic" Opacity="0.5" TextAlignment="Right">
                                         <TextBlock.Text>None</TextBlock.Text>
                                     </TextBlock>
                                     <mui:Cell DataContext="{Binding Entries[0], RelativeSource={RelativeSource TemplatedParent}}"

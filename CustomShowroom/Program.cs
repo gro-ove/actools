@@ -187,7 +187,15 @@ namespace CustomShowroom {
                     renderer.UseSslr = true;
                     renderer.AoDebug = true;
                     renderer.AoType = AoType.SsaoAlt;*/
-                    
+
+                    // SSLR debug:
+                    renderer.UseSslr = true;
+                    renderer.AmbientBrightness = 2f;
+                    renderer.AmbientUp = Color.AliceBlue;
+                    renderer.BackgroundBrightness = 2f;
+                    //renderer.LightBrightness = 0f;
+                    //renderer.EnableShadows = false;
+
                     renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomWrapper(renderer) {
                         ReplaceableShowroom = true

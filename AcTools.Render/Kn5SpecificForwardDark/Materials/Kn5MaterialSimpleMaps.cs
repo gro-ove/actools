@@ -40,7 +40,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 Flags |= EffectDarkMaterial.HasDetailsMap;
             }
 
-            if (Kn5Material.ShaderName.Contains("_AT")) {
+            if (Kn5Material.ShaderName.Contains("_AT") || Kn5Material.ShaderName == "ksSkinnedMesh") {
                 Flags |= EffectDarkMaterial.UseNormalAlphaAsAlpha;
             }
 

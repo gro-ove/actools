@@ -956,11 +956,18 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
 
         public SslrAdjustMode SslrAdjustCurrentMode;
         private bool _sslrParamsChanged = true;
-        private float _sslrStartFrom = 0.02f;
+
+        /*private float _sslrStartFrom = 0.02f;
         private float _sslrFixMultiplier = 0.7f;
         private float _sslrOffset = 0.048f;
         private float _sslrGrowFix = 0.15f;
-        private float _sslrDistanceThreshold = 0.092f;
+        private float _sslrDistanceThreshold = 0.092f;*/
+
+        private float _sslrStartFrom = 0.02f;
+        private float _sslrFixMultiplier = 0.5f;
+        private float _sslrOffset = 0.05f;
+        private float _sslrGrowFix = 0.1f;
+        private float _sslrDistanceThreshold = 0.01f;
 
         public void SslrAdjust(float delta) {
             switch (SslrAdjustCurrentMode) {
@@ -1024,10 +1031,6 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
 
             if (_blurHelper == null) {
                 _blurHelper = DeviceContextHolder.GetHelper<BlurHelper>();
-                /* 
-            DeviceContext.Rasterizer.State = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
-                IsMultisampleEnabled = false
-            }); */
             }
 
             // Draw scene to G-buffer to get normals, depth and base reflection
@@ -1120,10 +1123,10 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
                     effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
                 }
 #endif
-
+                
                 _sslrHelper.Draw(DeviceContextHolder, depth, _sslrBufferBaseReflection.View, _gBufferNormals.View, ActualCamera,
                         _sslrBufferResult.TargetView);
-                // _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(2f * ResolutionMultiplier));
+                _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(4f * ResolutionMultiplier));
                 _sslrHelper.FinalStep(DeviceContextHolder, _sslrBufferScene.View, _sslrBufferResult.View, _sslrBufferBaseReflection.View,
                         _gBufferNormals.View, ActualCamera, InnerBuffer.TargetView);
             } else {

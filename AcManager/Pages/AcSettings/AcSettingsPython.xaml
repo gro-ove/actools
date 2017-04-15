@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -54,9 +55,16 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="o:PythonAppObject">
-                        <StackPanel IsEnabled="{Binding Enabled}">
+                        <DockPanel IsEnabled="{Binding Enabled}">
+                            <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+                                    Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
                             <TextBlock Text="{Binding DisplayName}" />
-                        </StackPanel>
+                        </DockPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -73,6 +81,11 @@
                     <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             TickFrequency="20" TickPlacement="BottomRight" />
                 </DockPanel>
+                <c:MessageBlock CloseKey="only-ac-apps" Margin="0 8 0 0">
+                    <TextBlock>
+                        <TextBlock.Text>Sadly, scaling works only for Kunos apps. At least for now.</TextBlock.Text>
+                    </TextBlock>
+                </c:MessageBlock>
             </mui:SpacingStackPanel>
 
             <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" DockPanel.Dock="Top" />

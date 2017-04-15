@@ -213,22 +213,26 @@ namespace AcManager.Pages.Dialogs {
 
         public FrameworkElement StyleObject { get; private set; }
 
-        public LiveryIconEditor(CarSkinObject skin) : this(skin, false, false) { }
+        public LiveryIconEditor(CarSkinObject skin) : this(skin, false, false, null, null) { }
 
         private readonly bool _quickMode;
 
-        private LiveryIconEditor(CarSkinObject skin, bool quickMode, bool randomMode) {
+        private LiveryIconEditor(CarSkinObject skin, bool quickMode, bool randomMode, [CanBeNull] Color[] colors, [CanBeNull] string preferredStyle) {
             _quickMode = quickMode;
             Skin = skin;
 
             DataContext = this;
             InitializeComponent();
 
-            if (randomMode) {
+            if (preferredStyle != null) {
+                SelectedShape = Shapes.GetByIdOrDefault(preferredStyle) ?? Shapes.FirstOrDefault(x => x.DisplayName == preferredStyle) ??
+                        Shapes.RandomElement();
+            } else if (randomMode) {
                 SelectedShape = Shapes.RandomElement();
             } else {
                 SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
             }
+
             SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
             SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == @"0"
                     ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
@@ -237,12 +241,19 @@ namespace AcManager.Pages.Dialogs {
             Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? @"0" : skin.SkinNumber;
             Model.TextColorValue = Colors.White;
 
+            if (colors != null) {
+                Model.ColorValue = colors.Length > 0 ? colors[0] : Colors.White;
+                Model.SecondaryColorValue = colors.Length > 1 ? colors[1] : Colors.Black;
+                Model.TertiaryColorValue = colors.Length > 2 ? colors[2] : Colors.Black;
+                return;
+            }
+
             try {
                 using (var bitmap = Image.FromFile(skin.PreviewImage)) {
-                    var colors = ImageUtils.GetBaseColors((Bitmap)bitmap);
-                    Model.ColorValue = colors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
-                    Model.SecondaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
-                    Model.TertiaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
+                    var baseColors = ImageUtils.GetBaseColors((Bitmap)bitmap);
+                    Model.ColorValue = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
+                    Model.SecondaryColorValue = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
+                    Model.TertiaryColorValue = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
                 }
             } catch (Exception e) {
                 Logging.Warning("Can’t find base colors: " + e);
@@ -445,13 +456,17 @@ namespace AcManager.Pages.Dialogs {
                 NonfatalError.Notify(AppStrings.LiveryIcon_CannotChange, e);
             }
         }
-
-        public static async Task GenerateAsync(CarSkinObject target) {
-            await new LiveryIconEditor(target, true, false).CreateNewIcon();
+        
+        public static Task GenerateAsync(CarSkinObject target, Color[] colors, string preferredStyle) {
+            return new LiveryIconEditor(target, true, false, colors, preferredStyle).CreateNewIcon();
         }
 
-        public static async Task GenerateRandomAsync(CarSkinObject target) {
-            await new LiveryIconEditor(target, true, true).CreateNewIcon();
+        public static Task GenerateAsync(CarSkinObject target) {
+            return new LiveryIconEditor(target, true, false, null, null).CreateNewIcon();
+        }
+
+        public static Task GenerateRandomAsync(CarSkinObject target) {
+            return new LiveryIconEditor(target, true, true, null, null).CreateNewIcon();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

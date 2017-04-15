@@ -85,8 +85,6 @@ namespace AcTools.Windows.Input {
                 var id = Kernel32.GetModuleHandle(Process.GetCurrentProcess().MainModule.ModuleName);
                 var result = User32.SetWindowsHookEx(User32.WH_KEYBOARD_LL, _hookProc, id, 0);
                 _hookHandle = result;
-
-                AcToolsLogging.Write("Subscribed: " + result);
                 if (result == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
@@ -96,8 +94,6 @@ namespace AcTools.Windows.Input {
                 var result = User32.UnhookWindowsHookEx(_hookHandle);
                 _hookHandle = 0;
                 _hookProc = null;
-
-                AcToolsLogging.Write("Unsubscribed: " + result);
                 if (result == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }

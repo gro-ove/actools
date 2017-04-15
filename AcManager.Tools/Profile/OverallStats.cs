@@ -369,8 +369,9 @@ namespace AcManager.Tools.Profile {
                 UpdateMaxDistancePerTrack(session);
 
                 /* max speed per car */
-                var maxSpeed = Storage.GetDouble(KeyMaxSpeedPerCarPrefix + session.CarId) + session.MaxSpeed;
-                Storage.Set(KeyMaxSpeedPerCarPrefix + session.CarId, maxSpeed);
+                if (session.MaxSpeed > Storage.GetDouble(KeyMaxSpeedPerCarPrefix + session.CarId)) {
+                    Storage.Set(KeyMaxSpeedPerCarPrefix + session.CarId, session.MaxSpeed);
+                }
 
                 /* extremums */
                 if (session.MaxSpeed > MaxSpeed) {

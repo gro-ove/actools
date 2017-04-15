@@ -6,9 +6,8 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
-    <Brush x:Key="FavouriteBrush">IndianRed</Brush>
 
     <Style TargetType="{x:Type ac:FavouriteButton}">
         <Setter Property="Background" Value="Transparent" />
@@ -16,16 +15,16 @@
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Data" Value="{StaticResource HeartIconData}" />
+        <Setter Property="Data" Value="{StaticResource BookmarkIconData}" />
         <Setter Property="ActiveBrush" Value="{StaticResource FavouriteBrush}" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ac:FavouriteButton}">
-                    <mui:Cell Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Background="{TemplateBinding Background}">
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
                         <Path x:Name="Path" Data="{TemplateBinding Data}" Stretch="Uniform">
                             <Path.Fill>
-                                <VisualBrush Stretch="UniformToFill">
+                                <VisualBrush Stretch="UniformToFill" ViewboxUnits="Absolute" Viewbox="0,0,10,10">
                                     <VisualBrush.Visual>
                                         <mui:Cell Width="10" Height="10" Background="{TemplateBinding Foreground}">
                                             <Ellipse x:Name="Ellipse" Margin="-3" Fill="{TemplateBinding ActiveBrush}">
@@ -38,7 +37,7 @@
                                 </VisualBrush>
                             </Path.Fill>
                         </Path>
-                    </mui:Cell>
+                    </Border>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -48,7 +47,7 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard FillBehavior="HoldEnd" TargetName="Ellipse">
-                                        <DoubleAnimation Duration="0:0:0.12" To="1" 
+                                        <DoubleAnimation Duration="0:0:0.12" To="1"
                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" />
                                         <DoubleAnimation Duration="0:0:0.12" To="1"
                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" />
@@ -58,13 +57,59 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard FillBehavior="HoldEnd" TargetName="Ellipse">
-                                        <DoubleAnimation Duration="0:0:0.12" To="0" 
+                                        <DoubleAnimation Duration="0:0:0.12" To="0"
                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" />
                                         <DoubleAnimation Duration="0:0:0.12" To="0"
                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ac:RatingBar}">
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonBackground}" />
+        <Setter Property="Width" Value="92" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Data" Value="{StaticResource RatingGeometry}" />
+        <Setter Property="ActiveBrush" Value="{StaticResource RatingBrush}" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ac:RatingBar}">
+                    <mui:Cell Background="{TemplateBinding Background}">
+                        <Path Data="{TemplateBinding Data}" Stretch="Uniform" Margin="{TemplateBinding Padding}">
+                            <Path.Fill>
+                                <VisualBrush Stretch="Fill">
+                                    <VisualBrush.Visual>
+                                        <ProgressBar Minimum="0" Maximum="5"
+                                                Value="{Binding Rating, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Height="16" Width="92"
+                                                Foreground="{Binding ActiveBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Background="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Path.Fill>
+                        </Path>
+                        <Slider x:Name="Slider" Minimum="0" Maximum="5" TickFrequency="0.5" TickPlacement="None" IsSnapToTickEnabled="True" IsTabStop="True"
+                                Focusable="True" Value="{Binding Rating, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Opacity="0"
+                                IsHitTestVisible="False" TabIndex="0" />
+                    </mui:Cell>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonBackgroundHover}" />
+                        </Trigger>
+                        <Trigger Property="IsReadOnly" Value="True">
+                            <Setter TargetName="Slider" Property="IsEnabled" Value="False" />
+                            <Setter TargetName="Slider" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

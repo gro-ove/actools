@@ -5,11 +5,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
@@ -55,16 +57,24 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             if (carPaint != null) {
-                yield return mapsMap == null ? new CarPaint(carPaint) : new ComplexCarPaint(carPaint, mapsMap) {
-                    AutoAdjustLevels = true
-                };
+                yield return mapsMap == null ?
+                        new CarPaint(carPaint) :
+                        new ComplexCarPaint(carPaint, 256, mapsMap, new PaintShopSource {
+                            NormalizeMax = true
+                        });
             }
 
-            var rims = new[] { "car_paint_rims.dds" }
+            var rims = new[] { "car_paint_rims.dds", "metal_detail_rim.dds", "Metal_detail_rim.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
                     .Select(x => new ColoredItem(x, Colors.AliceBlue) { DisplayName = "Rims", Enabled = false })
                     .FirstOrDefault();
             if (rims != null) yield return rims;
+            
+            var calipers = new[] { "caliper_colour.dds", "metal_detail_caliper.dds", "Metal_detail_caliper.dds" }
+                    .Where(x => kn5.Textures.ContainsKey(x))
+                    .Select(x => new ColoredItem(x, Colors.DarkRed) { DisplayName = "Calipers", Enabled = false })
+                    .FirstOrDefault();
+            if (calipers != null) yield return calipers;
 
             var rollCage = new[] { "car_paint_roll_cage.dds" }
                     .Where(x => kn5.Textures.ContainsKey(x))
@@ -100,23 +110,45 @@ namespace AcManager.Controls.CustomShowroom {
             return s;
         }
         
-        private static Color GetColor(JObject j, string key, Color? defaultColor = null) {
-            var s = j.GetStringValueOnly(key);
-            return (s == null ? defaultColor : s.ToColor() ?? defaultColor) ?? Colors.White;
+        private static Color GetColor([CanBeNull] JToken j, Color? defaultColor = null) {
+            return (j?.ToString().ToColor() ?? defaultColor) ?? Colors.White;
         }
-        
+
+        private static Color GetColor([CanBeNull] JObject j, string key, Color? defaultColor = null) {
+            return GetColor(j?[key], defaultColor);
+        }
+
         private static double GetDouble(JObject j, string key, double defaultValue = 0d) {
             var s = j.GetStringValueOnly(key);
             return s == null ? defaultValue : FlexibleParser.TryParseDouble(s) ?? defaultValue;
         }
 
+        private static PaintShopSourceParams GetSourceParams(JObject jObj) {
+            return new PaintShopSourceParams {
+                NormalizeMax = jObj.GetBoolValueOnly(KeyAutoLevel) ?? false,
+                Desaturate = jObj.GetBoolValueOnly(KeyDesaturate) ?? false
+            };
+        }
+
+        private static PaintShopSourceParams GetMapsSourceParams(JObject jObj) {
+            return new PaintShopSourceParams {
+                NormalizeMax = jObj.GetBoolValueOnly(KeyMapsAutoLevel) ?? false,
+                Desaturate = jObj.GetBoolValueOnly(KeyMapsDesaturate) ?? false
+            };
+        }
+
         [CanBeNull]
-        private static PaintShopSource GetSource(JToken j, Func<string, byte[]> extraData) {
+        private static PaintShopSource GetSource([CanBeNull] JToken j, Func<string, byte[]> extraData, [CanBeNull] PaintShopSourceParams baseParams) {
             if (j == null) return null;
+
+            if (j.Type == JTokenType.Object) {
+                var o = (JObject)j;
+                return GetSource(o["path"], extraData, GetSourceParams(o));
+            }
 
             if (j.Type == JTokenType.Boolean) {
                 var b = (bool)j;
-                return b ? PaintShopSource.InputSource : null;
+                return b ? PaintShopSource.InputSource.CopyFrom(baseParams) : null;
             }
 
             if (j.Type != JTokenType.String) {
@@ -125,18 +157,21 @@ namespace AcManager.Controls.CustomShowroom {
 
             var s = j.ToString();
             if (s == "@self" || s == "#self") {
-                return PaintShopSource.InputSource;
+                return PaintShopSource.InputSource.CopyFrom(baseParams);
             }
 
             if (s.StartsWith("#")) {
-                return new PaintShopSource(s.ToColor()?.ToColor() ?? System.Drawing.Color.White);
+                return new PaintShopSource(s.ToColor()?.ToColor() ?? System.Drawing.Color.White)
+                        .SetFrom(baseParams);
             }
 
             if (s.StartsWith("./") || s.StartsWith(".\\")) {
-                return new PaintShopSource(extraData(s.Substring(2)));
+                return new PaintShopSource(extraData(s.Substring(2)))
+                        .SetFrom(baseParams);
             }
 
-            return new PaintShopSource(s);
+            return new PaintShopSource(s)
+                    .SetFrom(baseParams);
         }
 
         private const string TypeColor = "color";
@@ -146,6 +181,7 @@ namespace AcManager.Controls.CustomShowroom {
         private const string TypeSolidColorIfFlagged = "solidcolorifflagged";
         private const string TypeTransparentIfFlagged = "transparentifflagged";
         private const string TypeReplacedIfFlagged = "replacedifflagged";
+        private const string TypeReplacement = "replacement";
 
         private const string KeyName = "name";
         private const string KeyEnabled = "enabled";
@@ -157,93 +193,182 @@ namespace AcManager.Controls.CustomShowroom {
         private const string KeyNormalsTexture = "normals";
         private const string KeyMapsDefault = "mapsTexture";
         private const string KeyMapsDefaultTexture = "mapsDefaultTexture";
-        private const string KeyMapsAutoLevel = "mapsAutoLevel";
         private const string KeyColor = "color";
+        private const string KeyColors = "colors";
         private const string KeyOpacity = "opacity";
         private const string KeyDefaultColor = "defaultColor";
+        private const string KeyDefaultColors = "defaultColors";
         private const string KeyDefaultOpacity = "defaultOpacity";
+        private const string KeyFixedColor = "fixedColor";
         private const string KeyTintBase = "tintBase";
-        private const string KeyAutoLevel = "autoLevel";
         private const string KeyPairs = "pairs";
+        private const string KeyPattern = "pattern";
+        private const string KeyPatternBase = "patternBase";
+        private const string KeyPatternOverlay = "patternOverlay";
+        private const string KeyPatternTexture = "patternTexture";
+        private const string KeyOverlay = "overlay";
+        private const string KeyPatterns = "patterns";
+        private const string KeySource = "source";
+        private const string KeyMask = "mask";
+        private const string KeyAutoLevel = "autoLevel";
+        private const string KeyDesaturate = "desaturate";
+        private const string KeyMapsAutoLevel = "mapsAutoLevel";
+        private const string KeyMapsDesaturate = "mapsDesaturate";
+        private const string KeyAllowed = "allowed";
+        private const string KeyAllowedColors = "allowedColors";
+        private const string KeyFlakesSize = "flakesSize";
+        private const string KeyCandidates = "candidates";
+        private const string KeyLiveryStyle = "liveryStyle";
 
         /// <summary>
-        /// Load entries from pairs table: KN5’s texture → replacement.
+        /// Load entries from pairs table: name (or KN5’s texture) → replacement.
         /// </summary>
-        [CanBeNull]
-        private static Dictionary<string, PaintShopSource> GetTextureSourcePairs(JObject e, Func<string, byte[]> extraData) {
-            return e[KeyPairs]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+        [NotNull]
+        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
+            var sourceParams = GetSourceParams(e);
+            return e[key]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
-                Source = GetSource(x.Value, extraData)
+                Source = GetSource(x.Value, extraData, sourceParams)
             }).Where(x => x.Source != null).ToDictionary(
                     x => x.Key,
-                    x => x.Source);
+                    x => x.Source) ?? new Dictionary<string, PaintShopSource>();
+        }
+
+        public class TintedEntry {
+            public TintedEntry([NotNull] PaintShopSource source, [CanBeNull] PaintShopSource mask = null) {
+                Source = source;
+                Mask = mask;
+            }
+
+            [NotNull]
+            public PaintShopSource Source { get; }
+
+            [CanBeNull]
+            public PaintShopSource Mask { get; }
         }
 
         /// <summary>
-        /// Similar to GetTextureSourcePairs, but with a fallback.
+        /// Similar to GetTextureSourcePairs, but also loads masks and have a fallback.
         /// </summary>
         [CanBeNull]
-        private static Dictionary<string, PaintShopSource> GetTintedPairs(JObject e, Func<string, byte[]> extraData) {
-            return GetTextureSourcePairs(e, extraData) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, PaintShopSource> {
-                [RequireString(e, KeyTexture)] = PaintShopSource.InputSource
-            } : new Dictionary<string, PaintShopSource> {
-                [RequireString(e, KeyTexture)] = PaintShopSource.White
-            });
+        private static Dictionary<string, TintedEntry> GetTintedPairs(JObject e, Func<string, byte[]> extraData) {
+            var sourceParams = GetSourceParams(e);
+            return e[KeyPairs]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+                x.Key,
+                Source = GetSource((x.Value as JObject)?[KeySource] ?? x.Value, extraData, sourceParams),
+                Mask = GetSource((x.Value as JObject)?[KeyMask], extraData, null),
+            }).Where(x => x.Source != null).ToDictionary(
+                    x => x.Key,
+                    x => new TintedEntry(x.Source, x.Mask)) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, TintedEntry> {
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.InputSource.CopyFrom(sourceParams))
+                    } : new Dictionary<string, TintedEntry> {
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.Transparent.CopyFrom(sourceParams))
+                    });
         }
 
         /// <summary>
         /// Returns either texture or textures.
         /// </summary>
-        [CanBeNull]
+        [NotNull]
         private static string[] GetTextures(JObject e) {
             return e[KeyTextures]?.ToObject<string[]>() ?? new[] { RequireString(e, KeyTexture) };
         }
 
+        private static Dictionary<string, Color> GetAllowedColors(JObject e, string key) {
+            var s = e[key]?.ToObject<Dictionary<string, string>>();
+            if (s == null) return null;
+
+            var dictionary = new Dictionary<string, Color>();
+            foreach (var pair in s) {
+                var color = pair.Value?.ToColor();
+                if (color.HasValue) {
+                    dictionary.Add(pair.Key, color.Value);
+                }
+            }
+
+            return dictionary;
+        }
+
+        private static CarPaintColors GetColors([NotNull] JObject parent, Color? defaultColor = null) {
+            var allowedColors = GetAllowedColors(parent, KeyAllowedColors);
+
+            var actualDefaultColor = parent[KeyDefaultColor]?.ToString().ToColor() ?? defaultColor ?? Colors.White;
+            var colors = parent[KeyDefaultColors] as JArray;
+            if (colors != null) {
+                var list = new List<CarPaintColor>(colors.Count);
+                for (var i = 0; i < colors.Count; i++) {
+                    var defaultName = $"Color #{i + 1}";
+                    var entry = colors[i];
+                    if (entry.Type == JTokenType.Object) {
+                        var jEntry = (JObject)entry;
+                        var localAllowedColors = GetAllowedColors(jEntry, KeyAllowed) ?? allowedColors;
+                        list.Add(new CarPaintColor(jEntry.GetStringValueOnly(KeyName) ?? defaultName, GetColor(jEntry, KeyColor, actualDefaultColor),
+                                localAllowedColors));
+                    } else {
+                        list.Add(new CarPaintColor(defaultName, GetColor(entry, actualDefaultColor), allowedColors));
+                    }
+                }
+
+                return new CarPaintColors(list.ToArray());
+            }
+
+            var colorsCount = parent.GetIntValueOnly(KeyColors);
+            return new CarPaintColors(colorsCount.HasValue ?
+                    Enumerable.Range(1, colorsCount.Value).Select(x => new CarPaintColor($"Color #{x}", actualDefaultColor, allowedColors)).ToArray() :
+                    new[] { new CarPaintColor("Color", actualDefaultColor, allowedColors) });
+        }
+
         [CanBeNull]
-        private static PaintableItem GetPaintableItem([NotNull] JObject e, Func<string, byte[]> extraData) {
+        private static CarPaintPattern GetPattern(JObject obj, Func<string, byte[]> extractData) {
+            var sourceParams = GetSourceParams(obj);
+            var name = obj.GetStringValueOnly(KeyName);
+            var pattern = GetSource(obj[KeyPattern], extractData, sourceParams);
+            var overlay = GetSource(obj[KeyOverlay], extractData, sourceParams);
+            return pattern == null ? null : new CarPaintPattern(name, pattern, overlay, GetColors(obj));
+        }
+
+        [CanBeNull]
+        private static PaintableItem GetPaintableItem([NotNull] JObject e, Func<string, byte[]> extractData) {
             PaintableItem result;
             var type = GetString(e, KeyType, TypeColor).ToLowerInvariant();
             switch (type) {
                 case TypeCarPaint:
+                    var detailsName = RequireString(e, KeyTexture);
+                    var flakesSize = e.GetIntValueOnly(KeyFlakesSize) ?? 256;
+                    var defaultColor = GetColor(e, KeyDefaultColor);
                     var maps = GetString(e, KeyMapsDefault);
                     CarPaint carPaint;
                     if (maps != null) {
-                        carPaint = new ComplexCarPaint(RequireString(e, KeyTexture), maps, GetColor(e, KeyDefaultColor)) {
-                            AutoAdjustLevels = e.GetBoolValueOnly(KeyMapsAutoLevel) ?? false,
-                            MapsDefaultTexture = GetSource(e[KeyMapsDefaultTexture], extraData),
-                        };
+                        var mapsSourceParams = GetMapsSourceParams(e);
+                        var mapsSource = GetSource(e[KeyMapsDefaultTexture], extractData, mapsSourceParams) ??
+                                PaintShopSource.InputSource.CopyFrom(mapsSourceParams);
+                        carPaint = new ComplexCarPaint(detailsName, flakesSize, maps, mapsSource, defaultColor);
                     } else {
-                        carPaint = new CarPaint(RequireString(e, KeyTexture), GetColor(e, KeyDefaultColor));
+                        carPaint = new CarPaint(detailsName, flakesSize, defaultColor);
                     }
 
-                    var patternTexture = e.GetStringValueOnly("patternTexture");
+                    var patternTexture = e.GetStringValueOnly(KeyPatternTexture);
                     if (patternTexture != null) {
-                        var patternBase = GetSource(e["patternBase"], extraData);
-                        var patternOverlay = GetSource(e["patternOverlay"], extraData);
-                        var patterns = (e["patterns"] as JArray)?.Select(x =>
-                                new CarPaintPattern(
-                                        x.GetStringValueOnly(KeyName),
-                                        GetSource(x["pattern"], extraData),
-                                        GetSource(x["overlay"], extraData),
-                                        x.GetIntValueOnly("colors") ?? 0));
+                        var patternBase = GetSource(e[KeyPatternBase], extractData, GetSourceParams(e));
+                        var patternOverlay = GetSource(e[KeyPatternOverlay], extractData, null);
+                        var patterns = (e[KeyPatterns] as JArray)?.OfType<JObject>().Select(x => GetPattern(x, extractData)).NonNull();
                         if (patternBase != null && patterns != null) {
                             carPaint.SetPatterns(patternTexture, patternBase, patternOverlay, patterns);
                         }
                     }
 
+                    carPaint.LiveryStyle = e.GetStringValueOnly(KeyLiveryStyle);
+
                     result = carPaint;
                     break;
                 case TypeColor:
-                    result = new ColoredItem(GetTintedPairs(e, extraData), GetColor(e, KeyDefaultColor)) {
-                        AutoAdjustLevels = e.GetBoolValueOnly(KeyAutoLevel) ?? false
-                    };
+                    result = new ColoredItem(GetTintedPairs(e, extractData), GetColors(e));
                     break;
                 case TypeTintedWindow:
-                    result = new TintedWindows(GetTintedPairs(e, extraData),
+                    result = new TintedWindows(GetTintedPairs(e, extractData),
+                            GetColors(e, Color.FromRgb(41, 52, 55)),
                             GetDouble(e, KeyDefaultOpacity, 0.23),
-                            GetColor(e, KeyDefaultColor, Color.FromRgb(41, 52, 55))) {
-                                AutoAdjustLevels = e.GetBoolValueOnly(KeyAutoLevel) ?? false
-                            };
+                            e.GetBoolValueOnly(KeyFixedColor) ?? false);
                     break;
                 case TypeLicensePlate:
                     result = new LicensePlate(GetString(e, KeyStyle, "Europe"), GetString(e, KeyTexture, "Plate_D.dds"),
@@ -257,7 +382,10 @@ namespace AcManager.Controls.CustomShowroom {
                     result = new TransparentIfFlagged(GetTextures(e), e.GetBoolValueOnly(KeyInverse) ?? false);
                     break;
                 case TypeReplacedIfFlagged:
-                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetTextureSourcePairs(e, extraData));
+                    result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetNameSourcePairs(e, KeyPairs, extractData));
+                    break;
+                case TypeReplacement:
+                    result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, extractData));
                     break;
                 default:
                     throw new Exception($"Not supported type: {type}");

@@ -110,7 +110,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static readonly object NullValue = new object();
+        private class NullValueClass {
+            public override string ToString() {
+                return @"null";
+            }
+        }
+
+        public static readonly object NullValue = new NullValueClass();
 
         private class NullPrefixedCollection : BetterObservableCollection<object> {
             private readonly IEnumerable _collection;

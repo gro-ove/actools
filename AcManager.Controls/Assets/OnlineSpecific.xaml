@@ -5,7 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
@@ -32,7 +32,7 @@
     </Border>
 
     <Border x:Key="FavouriteIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Favourite server" x:Shared="False">
-        <Path Data="{StaticResource HeartIconData}" Fill="{StaticResource FavouriteBrush}" Width="10" Height="10" Stretch="Uniform" />
+        <Path Data="{StaticResource BookmarkIconData}" Fill="{StaticResource FavouriteBrush}" Width="10" Height="10" Stretch="Uniform" />
     </Border>
 
     <Border x:Key="HiddenIcon" Padding="4" Background="{DynamicResource ButtonBackground}" ToolTip="Hidden server" x:Shared="False">

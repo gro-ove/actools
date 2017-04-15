@@ -301,8 +301,8 @@
                 </ListBox.ItemsSource>
             </ListBox>
 
-            <mui:SpacingStackPanel mui:Switch.When="{x:Static mui:BetterComboBox.NullValue}" Spacing="4" Margin="0 20 0 0"
-                    Visibility="{Binding Showroom, Converter={StaticResource NullToVisibilityConverter}}">
+            <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
+                    Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='null'}">
                 <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
                     <Label Content="Mirror" />
                 </CheckBox>
@@ -320,7 +320,8 @@
                 </DockPanel>
             </mui:SpacingStackPanel>
 
-            <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0" Visibility="{Binding Showroom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
+                    Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠null'}">
                 <DockPanel DataContext="{Binding Renderer}">
                     <mui:ValueLabel Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from showroom" Postfix="%" />
@@ -369,7 +370,7 @@
             <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
                 <Label Content="FXAA" />
             </CheckBox>
-            
+
             <c:MessageBlock>
                 <TextBlock>MSAA is not compatible with FXAA or SSLR yet. Please, don’t use them together (FXAA+SSLR is fine though).</TextBlock>
             </c:MessageBlock>

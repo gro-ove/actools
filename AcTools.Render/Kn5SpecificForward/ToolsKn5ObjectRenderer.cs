@@ -7,7 +7,6 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;

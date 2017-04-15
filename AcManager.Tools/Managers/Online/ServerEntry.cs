@@ -45,6 +45,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private string _actualName;
 
+        [CanBeNull]
         public string ActualName {
             get { return _actualName; }
             set {

@@ -421,11 +421,11 @@ namespace AcManager.Pages.Dialogs {
         public CarUpdatePreviewsDialog(CarObject carObject, [CanBeNull] string[] skinIds, UpdatePreviewMode mode, string loadPreset = null)
                 : this(new [] { new ToUpdatePreview(carObject, skinIds) }, mode, loadPreset) {}
 
-        public CarUpdatePreviewsDialog([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, UpdatePreviewMode mode, string loadPreset = null, bool applyImmediately = false) {
+        public CarUpdatePreviewsDialog([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, UpdatePreviewMode mode, string loadPreset = null, bool? applyImmediately = null) {
             if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
             if (toUpdate.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(toUpdate));
 
-            ApplyImmediately = applyImmediately;
+            ApplyImmediately = applyImmediately ?? toUpdate.Select(x => x.Car.Id).Distinct().Count() > 1;
 
             _toUpdate = toUpdate;
             _mode = mode;
@@ -534,7 +534,7 @@ namespace AcManager.Pages.Dialogs {
         public new bool ShowDialog() {
             if (_cancelled) return false;
             base.ShowDialog();
-            return CurrentPhase == Phase.Result;
+            return CurrentPhase == Phase.Result || CurrentPhase == Phase.ResultSummary;
         }
 
         public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;

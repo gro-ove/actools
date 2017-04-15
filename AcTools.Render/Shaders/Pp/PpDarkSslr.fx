@@ -6,13 +6,17 @@
     Texture2D gNoiseMap;
 	Texture2D gFirstStepMap;
 
+// ext version?
+	Texture2D gDepthMapDown;
+	Texture2D gDepthMapDownMore;
+
 	SamplerState samLinear {
 		Filter = MIN_MAG_MIP_LINEAR;
 		AddressU = CLAMP;
 		AddressV = CLAMP;
 	};
 
-	SamplerState samRandom {
+	SamplerState samPoint {
 		Filter = MIN_MAG_MIP_POINT;
 		AddressU = Wrap;
 		AddressV = Wrap;
@@ -27,18 +31,18 @@
         matrix gWorldViewProj;
         float3 gEyePosW;
 
-		float4 gScreenSize;
+		float4 gSize;
 
 		// bool gTemporary;
     }
 
-    /*cbuffer cbSettings {
+    cbuffer cbSettings {
 		float gStartFrom;
 		float gFixMultiplier;
 		float gOffset;
 		float gGlowFix;
 		float gDistanceThreshold;
-    }*/
+    }
 
 // fn structs
     struct VS_IN {
@@ -61,6 +65,10 @@
         return gDepthMap.SampleLevel(s, uv, 0).x;
     }
 
+    float GetDepth(float2 uv, SamplerState s, Texture2D tex){
+        return tex.SampleLevel(s, uv, 0).x;
+    }
+
     float3 GetUv(float3 position){
         float4 pVP = mul(float4(position, 1.0f), gWorldViewProj);
         pVP.xy = float2(0.5f, 0.5f) + float2(0.5f, -0.5f) * pVP.xy / pVP.w;
@@ -75,6 +83,29 @@
         return vout;
     }
 
+// downscale depth 4x times
+	float ps_Downscale4(PS_IN pin) : SV_Target {
+		float result = 1.0;
+		[unroll]
+		for (float x = -0.375; x <= 0.376; x += 0.25) {
+			[unroll]
+			for (float y = -0.375; y <= 0.376; y += 0.25) {
+				result = min(gDepthMap.SampleLevel(samPoint, pin.Tex + gSize.zw * float2(x, y), 0).x, result);
+			}
+		}
+
+		return result;
+	}
+
+	technique10 Downscale4 {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Downscale4()));
+		}
+	}
+
+// actual SSLR
 	float3 DecodeNm(float2 enc){
 		float2 fenc = enc * 4 - 2;
 		float f = dot(fenc, fenc);
@@ -89,53 +120,58 @@
 		return gNormalMap.Sample(s, coords).xyz;
 	}
 
+	#define ITERATIONS 30
+
 // hard-coded consts
 	#define gStartFrom 0.02
-	#define gFixMultiplier 0.7
-	#define gOffset 0.048
-	#define gGlowFix 0.15
-	#define gDistanceThreshold 0.092
+	#define gFixMultiplier 0.5
+	#define gOffset 0.05
+	#define gGlowFix 0.1
+	#define gDistanceThreshold 0.02
 
 // new
-    #define ITERATIONS 30
-
 	float4 GetReflection(float2 coords, float3 normal, SamplerState s) {
 		float depth = GetDepth(coords, s);
 		float3 position = GetPosition(coords, depth);
 		float3 viewDir = normalize(position - gEyePosW);
 		float3 reflectDir = normalize(reflect(viewDir, normal));
 
-		//depth = pow(depth, 20);
-		//return float4(depth, depth, depth, 1.0);
-
 		float3 newUv = 0;
 		float L = gStartFrom;
 
 		float3 calculatedPosition, newPosition;
+
+		float actualL;
 		float newL;
-
-		/*[unroll]
-		for (int i = 0; i < 35; i++) {
-			calculatedPosition = position + reflectDir * L;
-
-			newUv = GetUv(calculatedPosition);
-			newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
-
-			float newL = length(position - newPosition);
-			L = L + 0.01 * saturate(abs(newL - L) * 50 - 0.2);
-		}*/
 
 		[unroll]
 		for (int j = 0; j < ITERATIONS; j++) {
 			calculatedPosition = position + reflectDir * L;
 
 			newUv = GetUv(calculatedPosition);
-			newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
 
-			float newL = length(position - newPosition);
-			newL = L + min(newL - L, gOffset + L * gGlowFix);
+			float newDepth = GetDepth(newUv.xy, s);
+			newPosition = GetPosition(newUv.xy, newDepth);
 
+			actualL = length(position - newPosition);
+			newL = L + min(actualL - L, gOffset + L * gGlowFix + (newDepth < depth ? 1.0 : 0.0));
 			L = L * (1 - gFixMultiplier) + newL * gFixMultiplier;
+		}
+
+		[branch]
+		if (abs(actualL - L) > 0.1) {
+			[unroll]
+			for (int j = 0; j < 10; j++) {
+				calculatedPosition = position + reflectDir * L;
+
+				newUv = GetUv(calculatedPosition);
+
+				float newDepth = GetDepth(newUv.xy, s);
+				newPosition = GetPosition(newUv.xy, newDepth);
+
+				newL = length(position - newPosition);
+				L = L * 0.5 + newL * 0.5;
+			}
 		}
 
 		calculatedPosition = position + reflectDir * L;
@@ -197,10 +233,10 @@
 
 	float4 GetReflection(float2 baseUv, float2 uv, float blur) {
 		float4 reflection = (float4)0;
-		float2 random = normalize(gNoiseMap.SampleLevel(samRandom, uv * 1000.0, 0).xy);
+		float2 random = normalize(gNoiseMap.SampleLevel(samPoint, uv * 1000.0, 0).xy);
 
 		for (float i = 0; i < 25; i++) {
-			float2 uvOffset = reflect(poissonDisk[i], random) * blur;// *gScreenSize.zw;
+			float2 uvOffset = reflect(poissonDisk[i], random) * blur;// *gSize.zw;
 
 			float3 reflectedColor = min(gDiffuseMap.SampleLevel(samLinear, uv + uvOffset, 0).rgb, 2.0);
 			float reflectedQuality = gFirstStepMap.SampleLevel(samLinear, baseUv + uvOffset, 0).a;
@@ -219,14 +255,13 @@
 	float4 FinalStepFn(float2 coords, SamplerState s) {
 		float4 firstStep = gFirstStepMap.SampleLevel(s, coords, 0);
 		float2 reflectedUv = coords + firstStep.xy;
+		// return firstStep.r;
 
 		float3 diffuseColor = gDiffuseMap.SampleLevel(s, coords, 0).rgb;
 		float specularExp = gNormalMap.Sample(s, coords).a;
 
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
 		float blur = saturate(firstStep.b / specularExp - 0.1) * 0.1;
-
-		// return gDiffuseMap.SampleLevel(s, reflectedUv, 0) * gFirstStepMap.SampleLevel(s, coords, 0).a;
 
 		float4 reflection;
 		[branch]
@@ -235,8 +270,6 @@
 		} else {
 			reflection = GetReflection(coords, reflectedUv, blur);
 		}
-
-		// baseReflection.a = 1.0; // BUG
 
 		float a = reflection.a * baseReflection.a;
 		return float4(diffuseColor + (reflection.rgb - baseReflection.rgb) * a, 1.0);

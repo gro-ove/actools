@@ -3,6 +3,7 @@ using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -18,6 +19,10 @@ namespace AcManager.Tools.AcObjectsNew {
         protected AcCommonObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             FileAcManager = manager;
+
+            var typeName = GetType().Name;
+            _isFavouriteKey = $"{typeName}:{id}:favourite";
+            _ratingKey = $"{typeName}:{id}:rating";
         }
 
         [NotNull]
@@ -162,6 +167,59 @@ namespace AcManager.Tools.AcObjectsNew {
                 }
             }
         }
+
+        #region Rating
+        private static Storage _ratingsStorage;
+
+        private static Storage RatingsStorage
+            => _ratingsStorage ?? (_ratingsStorage = new Storage(FilesStorage.Instance.GetFilename("Progress", "Ratings.data")));
+
+        private readonly string _isFavouriteKey;
+        private bool? _isFavourite;
+
+        public bool IsFavourite {
+            get { return _isFavourite ?? (_isFavourite = RatingsStorage.GetBool(_isFavouriteKey)).Value; }
+            set {
+                if (Equals(value, _isFavourite)) return;
+                _isFavourite = value;
+
+                if (value) {
+                    RatingsStorage.Set(_isFavouriteKey, true);
+                } else {
+                    RatingsStorage.Remove(_isFavouriteKey);
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly string _ratingKey;
+        private bool _ratingLoaded;
+        private double? _rating;
+
+        public double? Rating {
+            get {
+                if (!_ratingLoaded) {
+                    _ratingLoaded = true;
+                    _rating = RatingsStorage.GetDoubleNullable(_ratingKey);
+                }
+                return _rating;
+            }
+            set {
+                if (Equals(value, _rating)) return;
+                _rating = value;
+                _ratingLoaded = true;
+
+                if (value.HasValue) {
+                    RatingsStorage.Set(_ratingKey, value.Value);
+                } else {
+                    RatingsStorage.Remove(_ratingKey);
+                }
+
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         public abstract void Save();
 

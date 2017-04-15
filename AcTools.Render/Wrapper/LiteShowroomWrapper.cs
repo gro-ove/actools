@@ -369,15 +369,6 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     break;
                 }
 
-                /*case Keys.T:
-                    if (!args.Control && !args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.TemporaryFlag = !d.TemporaryFlag;
-                        }
-                    }
-                    break;*/
-
                 case Keys.Space:
                     if (!args.Control && args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;

@@ -8,21 +8,68 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
-using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+using BooleanToVisibilityConverter = System.Windows.Controls.BooleanToVisibilityConverter;
 
 namespace AcManager.Pages.SelectionLists {
+    internal class NothingFoundAdorner : Adorner {
+        private readonly FrameworkElement _contentPresenter;
+
+        public NothingFoundAdorner(UIElement adornedElement) : base(adornedElement) {
+            IsHitTestVisible = true;
+
+            _contentPresenter = new TextBlock {
+                Style = (Style)FindResource("Title"),
+                Text = "Nothing found",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            
+            _contentPresenter.SetResourceReference(TextBlock.ForegroundProperty, "WindowText");
+
+            /*SetBinding(VisibilityProperty, new Binding(@"IsVisible") {
+                Source = adornedElement,
+                Converter = new BooleanToVisibilityConverter()
+            });*/
+
+            SetBinding(VisibilityProperty, new Binding(@"ItemsSource.Count") {
+                Source = adornedElement,
+                Converter = new EnumToVisibilityConverter(),
+                ConverterParameter = "0"
+            });
+        }
+
+        protected override int VisualChildrenCount => 1;
+
+        protected override Visual GetVisualChild(int index) {
+            return _contentPresenter;
+        }
+
+        protected override Size MeasureOverride(Size constraint) {
+            _contentPresenter?.Measure(AdornedElement.RenderSize);
+            return AdornedElement.RenderSize;
+        }
+
+        protected override Size ArrangeOverride(Size finalSize) {
+            _contentPresenter?.Arrange(new Rect(finalSize));
+            return finalSize;
+        }
+    }
+
     public abstract class SelectionList<TObject, TItem> : ListBox, ISelectedItemPage<AcObjectNew>, IEqualityComparer<TItem>, IComparer<TItem>
             where TObject : AcObjectNew
             where TItem : SelectCategoryBase {
@@ -255,6 +302,8 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         private bool _loaded;
+        private AdornerLayer _adornerLayer;
+        private NothingFoundAdorner _nothingFound;
 
         protected virtual void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
@@ -269,6 +318,13 @@ namespace AcManager.Pages.SelectionLists {
             _baseCollection.WrappedValueChanged += WrappersList_WrappedValueChanged;
             _baseCollection.CollectionChanged += WrappersList_CollectionChanged;
             _baseCollection.ItemPropertyChanged += WrappersList_ItemPropertyChanged;
+
+            if (_nothingFound == null) {
+                _nothingFound = new NothingFoundAdorner(this);
+                _adornerLayer = AdornedControl.GetAdornerLayer(this);
+            }
+
+            _adornerLayer.Add(_nothingFound);
         }
 
         protected virtual void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -278,6 +334,10 @@ namespace AcManager.Pages.SelectionLists {
             _baseCollection.WrappedValueChanged -= WrappersList_WrappedValueChanged;
             _baseCollection.CollectionChanged -= WrappersList_CollectionChanged;
             _baseCollection.ItemPropertyChanged -= WrappersList_ItemPropertyChanged;
+
+            if (_nothingFound != null) {
+                _adornerLayer.Remove(_nothingFound);
+            }
         }
         
         protected abstract bool OnObjectPropertyChanged([NotNull] TObject obj, [NotNull] PropertyChangedEventArgs e);

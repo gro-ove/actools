@@ -447,7 +447,7 @@ namespace AcTools.Render.Shaders {
         }
 	}
 
-	public class EffectPpDarkSslr : IEffectWrapper, IEffectScreenSizeWrapper {
+	public class EffectPpDarkSslr : IEffectWrapper {
 		public static readonly int Iterations = 30;
 		private ShaderBytecode _b;
 		public Effect E;
@@ -455,27 +455,29 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechSslr, TechFinalStep;
+		public EffectReadyTechnique TechDownscale4, TechSslr, TechFinalStep;
 
 		public EffectOnlyMatrixVariable FxCameraProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxCameraProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectOnlyResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
+		public EffectOnlyResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap, FxDepthMapDown, FxDepthMapDownMore;
+		public EffectScalarVariable FxStartFrom, FxFixMultiplier, FxOffset, FxGlowFix, FxDistanceThreshold;
 		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxSize { get; private set; }
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDarkSslr");
 			E = new Effect(device, _b);
 
+			TechDownscale4 = new EffectReadyTechnique(E.GetTechniqueByName("Downscale4"));
 			TechSslr = new EffectReadyTechnique(E.GetTechniqueByName("Sslr"));
 			TechFinalStep = new EffectReadyTechnique(E.GetTechniqueByName("FinalStep"));
 
-			for (var i = 0; i < TechSslr.Description.PassCount && InputSignaturePT == null; i++) {
-				InputSignaturePT = TechSslr.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechDownscale4.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechDownscale4.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePT == null) throw new System.Exception("input signature (PpDarkSslr, PT, Sslr) == null");
+			if (InputSignaturePT == null) throw new System.Exception("input signature (PpDarkSslr, PT, Downscale4) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
 			FxCameraProjInv = new EffectOnlyMatrixVariable(E.GetVariableByName("gCameraProjInv").AsMatrix());
@@ -488,8 +490,15 @@ namespace AcTools.Render.Shaders {
 			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
 			FxFirstStepMap = new EffectOnlyResourceVariable(E.GetVariableByName("gFirstStepMap").AsResource());
+			FxDepthMapDown = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMapDown").AsResource());
+			FxDepthMapDownMore = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMapDownMore").AsResource());
+			FxStartFrom = E.GetVariableByName("gStartFrom").AsScalar();
+			FxFixMultiplier = E.GetVariableByName("gFixMultiplier").AsScalar();
+			FxOffset = E.GetVariableByName("gOffset").AsScalar();
+			FxGlowFix = E.GetVariableByName("gGlowFix").AsScalar();
+			FxDistanceThreshold = E.GetVariableByName("gDistanceThreshold").AsScalar();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
-			FxScreenSize = E.GetVariableByName("gScreenSize").AsVector();
+			FxSize = E.GetVariableByName("gSize").AsVector();
 		}
 
         public void Dispose() {
@@ -1236,7 +1245,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectReadyTechnique TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechMaps, TechMapsFillGreen, TechMaximum, TechMaximumApply, TechTint;
+		public EffectReadyTechnique TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechMaps, TechMapsFillGreen, TechTint, TechTintMask, TechMaximum, TechMaximumApply, TechDesaturate;
 
 		public EffectOnlyResourceVariable FxInputMap, FxAoMap, FxOverlayMap, FxNoiseMap;
 		public EffectScalarVariable FxNoiseMultipler, FxFlakes;
@@ -1254,9 +1263,11 @@ namespace AcTools.Render.Shaders {
 			TechFlakes = new EffectReadyTechnique(E.GetTechniqueByName("Flakes"));
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
 			TechMapsFillGreen = new EffectReadyTechnique(E.GetTechniqueByName("MapsFillGreen"));
+			TechTint = new EffectReadyTechnique(E.GetTechniqueByName("Tint"));
+			TechTintMask = new EffectReadyTechnique(E.GetTechniqueByName("TintMask"));
 			TechMaximum = new EffectReadyTechnique(E.GetTechniqueByName("Maximum"));
 			TechMaximumApply = new EffectReadyTechnique(E.GetTechniqueByName("MaximumApply"));
-			TechTint = new EffectReadyTechnique(E.GetTechniqueByName("Tint"));
+			TechDesaturate = new EffectReadyTechnique(E.GetTechniqueByName("Desaturate"));
 
 			for (var i = 0; i < TechFill.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechFill.GetPassByIndex(i).Description.Signature;

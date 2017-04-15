@@ -13,10 +13,18 @@
     </UserControl.Resources>
 
     <DockPanel x:Name="InnerTrackBlockPanel">
+        <Grid VerticalAlignment="Center" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Top">
+            <mui:Cell Height="200" Width="355" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.PreviewImage}" Width="355" Height="200" Stretch="UniformToFill" />
+                <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.OutlineImage}" Width="365" Height="192" Stretch="Uniform" Margin="-5 4" />
+            </mui:Cell>
+            <ContentPresenter Content="{Binding PreviewContent}" />
+        </Grid>
+        
         <!-- data section -->
         <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Track}" Margin="0 8 -8 0"
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Bottom" mui:FancyScrollHelper.Outsize="True"
-                Padding="0 0 8 0" MaxHeight="180">
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outsize="True"
+                Padding="0 0 8 0">
             <DockPanel>
                 <!-- tags -->
                 <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
@@ -24,6 +32,7 @@
                 <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                     <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+                        <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding MainTrackObject.Rating}" HorizontalAlignment="Left" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                                 Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
                     </c:PropertiesGrid>
@@ -89,13 +98,5 @@
                 </StackPanel>
             </DockPanel>
         </ScrollViewer>
-
-        <Grid VerticalAlignment="Center" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <mui:Cell Height="200" Width="355" VerticalAlignment="Top" HorizontalAlignment="Center">
-                <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.PreviewImage}" Width="355" Height="200" Stretch="UniformToFill" />
-                <mui:BetterImage StretchDirection="Both" Filename="{Binding Track.OutlineImage}" Width="365" Height="192" Stretch="Uniform" Margin="-5 4" />
-            </mui:Cell>
-            <ContentPresenter Content="{Binding PreviewContent}" />
-        </Grid>
     </DockPanel>
 </UserControl>

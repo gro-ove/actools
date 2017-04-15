@@ -87,10 +87,10 @@ namespace AcManager.Pages.Drive {
             DetailedPlus
         }
 
-        private ListMode _simpleListMode;
+        private ListMode? _simpleListMode;
 
         public ListMode SimpleListMode {
-            get { return _simpleListMode; }
+            get { return _simpleListMode ?? ListMode.Simple; }
             set {
                 if (Equals(value, _simpleListMode)) return;
 
@@ -120,10 +120,10 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private bool _wideInformationMode;
+        private bool? _wideInformationMode;
 
         public bool WideInformationMode {
-            get { return _wideInformationMode; }
+            get { return _wideInformationMode ?? false; }
             set {
                 if (Equals(value, _wideInformationMode)) return;
                 _wideInformationMode = value;
@@ -131,10 +131,10 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private bool _showFilteringComboBox;
+        private bool? _showFilteringComboBox;
 
         public bool ShowFilteringComboBox {
-            get { return _showFilteringComboBox; }
+            get { return _showFilteringComboBox ?? false; }
             set {
                 if (Equals(value, _showFilteringComboBox)) return;
                 _showFilteringComboBox = value;
@@ -142,10 +142,10 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private bool _showFriendsFilteringButton;
+        private bool? _showFriendsFilteringButton;
 
         public bool ShowFriendsFilteringButton {
-            get { return _showFriendsFilteringButton; }
+            get { return _showFriendsFilteringButton ?? false; }
             set {
                 if (Equals(value, _showFriendsFilteringButton)) return;
                 _showFriendsFilteringButton = value;

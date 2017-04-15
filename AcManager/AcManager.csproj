@@ -338,11 +338,18 @@
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\TrackRatings.xaml.cs">
+      <DependentUpon>TrackRatings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SelectionLists\CarRatings.xaml.cs">
+      <DependentUpon>CarRatings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SelectionLists\CarDlcs.xaml.cs">
       <DependentUpon>CarDlcs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SelectionLists\SelectDlc.cs" />
     <Compile Include="Pages\SelectionLists\SelectionTagsList.cs" />
+    <Compile Include="Pages\SelectionLists\SelectRating.cs" />
     <Compile Include="Pages\SelectionLists\TrackTags.xaml.cs">
       <DependentUpon>TrackTags.xaml</DependentUpon>
     </Compile>
@@ -867,6 +874,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedUserChampionship.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\TrackRatings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SelectionLists\CarRatings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

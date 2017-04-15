@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AcTools.Render.Base.TargetTextures;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -6,11 +7,13 @@ using SlimDX.DXGI;
 namespace AcTools.Render.Kn5SpecificForward {
     // some common texture transformations for PaintShop
     public partial class ToolsKn5ObjectRenderer {
-        private ShaderResourceView NormalizeMax(ShaderResourceView view, int width = 512, int height = 512) {
+        private ShaderResourceView NormalizeMax(ShaderResourceView view, Size size) {
             var originalView = view;
 
-            var max = Math.Max(width, height);
+            var max = Math.Max(size.Width, size.Height);
             for (var i = max / 4; i > 1 || ReferenceEquals(view, originalView); i /= 4) {
+                if (i < 1) i = 1;
+
                 using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
                     temporary.Resize(DeviceContextHolder, i, i, null);
                     UseEffect(e => {
@@ -28,7 +31,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                temporary.Resize(DeviceContextHolder, width, height, null);
+                temporary.Resize(DeviceContextHolder, size.Width, size.Height, null);
 
                 UseEffect(e => {
                     e.FxInputMap.SetResource(originalView);
@@ -38,6 +41,18 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 view.Dispose();
 
+                temporary.KeepView = true;
+                return temporary.View;
+            }
+        }
+
+        private ShaderResourceView Desaturate(ShaderResourceView view, Size size) {
+            using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                temporary.Resize(DeviceContextHolder, size.Width, size.Height, null);
+                UseEffect(e => {
+                    e.FxInputMap.SetResource(view);
+                    e.TechDesaturate.DrawAllPasses(DeviceContext, 6);
+                }, temporary);
                 temporary.KeepView = true;
                 return temporary.View;
             }

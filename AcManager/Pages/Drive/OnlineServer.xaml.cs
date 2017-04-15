@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -283,12 +285,20 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
 
                     FancyBackgroundManager.Instance.ChangeBackground(value.Track?.PreviewImage);
+
+                    if (value.ActualName != null) {
+                        _tsServer = TsRegex.Match(value.ActualName).Groups.OfType<Group>().ElementAtOrDefault(1)?.Value;
+                        _joinTsCommand?.RaiseCanExecuteChanged();
+                    }
                 }
             }
 
             public void ChangeEntry([NotNull] ServerEntry entry) {
                 Entry = entry;
             }
+
+            private static readonly Regex TsRegex = new Regex(@"\s+(?:teamspeak|ts):?\s*((?:(?:[12]?\d{1,2})\.){3}(?:[12]?\d{1,2})(?::\d+)?)",
+                    RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             public ViewModel([NotNull] ServerEntry entry) {
                 Entry = entry;
@@ -331,6 +341,23 @@ namespace AcManager.Pages.Drive {
 
                 SharingUiHelper.ShowShared("Inviting link", link);
             }));
+
+            private string _tsServer;
+            private DelegateCommand _joinTsCommand;
+
+            public DelegateCommand JoinTsCommand => _joinTsCommand ?? (_joinTsCommand = new DelegateCommand(() => {
+                try {
+                    var index = _tsServer.IndexOf(':');
+                    var query = index == -1 ?
+                            $"ts3server://{_tsServer}?port=9987" :
+                            $"ts3server://{_tsServer.Substring(0, index)}?port={_tsServer.Substring(index + 1)}";
+                    if (Process.Start(query) == null) {
+                        throw new InformativeException("Can’t start TeamSpeak", "Make sure it’s installed and handles its links (“ts3server://…”) properly.");
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t start TeamSpeak", e);
+                }
+            }, () => _tsServer != null));
         }
 
         /// <summary>

@@ -5,10 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
@@ -34,7 +37,13 @@ using SlimDX;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
+    public interface ILiveryGenerator {
+        Task CreateLiveryAsync(CarSkinObject skinDirectory, Color[] colors, string preferredStyle);
+    }
+
     public partial class LiteShowroomTools {
+        public static ILiveryGenerator LiveryGenerator { get; set; }
+
         public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) {
             DataContext = new ViewModel(renderer, car, skinId);
             InputBindings.AddRange(new[] {
@@ -65,18 +74,20 @@ namespace AcManager.Controls.CustomShowroom {
             Camera,
         }
 
-        public bool CanSelectNodes => Model.Mode == Mode.Main || Model.Mode == Mode.Selected;
+        public bool CanSelectNodes => Model.CanSelectNodes();
 
         public class ViewModel : NotifyPropertyChanged, IDisposable {
             private Mode _mode = Mode.Main;
+            private bool _ignoreModeChange;
 
             public Mode Mode {
                 get { return _mode; }
                 set {
-                    if (Equals(value, _mode)) return;
+                    if (Equals(value, _mode) || _ignoreModeChange) return;
 
-                    if (_mode == Mode.AmbientShadows && Renderer != null) {
-                        Renderer.AmbientShadowHighlight = false;
+                    var renderer = Renderer;
+                    if (_mode == Mode.AmbientShadows && renderer != null) {
+                        renderer.AmbientShadowHighlight = false;
                     }
 
                     if (value != Mode.Skin) {
@@ -93,9 +104,21 @@ namespace AcManager.Controls.CustomShowroom {
                     }
 
                     _mode = value;
+
+                    if (renderer?.SelectedObject != null && Mode != Mode.Selected) {
+                        try {
+                            _ignoreModeChange = true;
+                            renderer.SelectedObject = null;
+                        } finally {
+                            _ignoreModeChange = false;
+                        }
+                    }
+
                     OnPropertyChanged();
                 }
             }
+
+            public bool CanSelectNodes() => Mode == Mode.Main || Mode == Mode.Selected;
 
             private DelegateCommand<Mode> _selectModeCommand;
 
@@ -401,6 +424,17 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            private int _selectedObjectTrianglesCount;
+
+            public int SelectedObjectTrianglesCount {
+                get { return _selectedObjectTrianglesCount; }
+                set {
+                    if (Equals(value, _selectedObjectTrianglesCount)) return;
+                    _selectedObjectTrianglesCount = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(Renderer.MagickOverride):
@@ -422,6 +456,7 @@ namespace AcManager.Controls.CustomShowroom {
                     case nameof(Renderer.SelectedObject):
                         ActionExtension.InvokeInMainThread(() => {
                             Mode = Renderer?.SelectedObject != null ? Mode.Selected : Mode.Main;
+                            SelectedObjectTrianglesCount = Renderer?.SelectedObject?.TrianglesCount ?? 0;
                             _viewObjectCommand?.RaiseCanExecuteChanged();
                         });
                         break;
@@ -484,6 +519,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     if (_skinItems != null) {
                         foreach (var item in _skinItems) {
+                            item.PropertyChanged -= OnSkinItemPropertyChanged;
                             item.Dispose();
                             item.SetRenderer(null);
                         }
@@ -492,11 +528,26 @@ namespace AcManager.Controls.CustomShowroom {
                     _skinItems = value;
                     OnPropertyChanged();
                     _skinSaveChangesCommand?.RaiseCanExecuteChanged();
+                    _skinSaveAsNewCommand?.RaiseCanExecuteChanged();
 
                     if (_skinItems != null) {
                         foreach (var item in _skinItems) {
                             item.SetRenderer(Renderer);
+                            item.PropertyChanged += OnSkinItemPropertyChanged;
                         }
+                    }
+                }
+            }
+
+            private void OnSkinItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName != nameof(PaintShop.PaintableItem.Enabled)) return;
+
+                var item = (PaintShop.PaintableItem)sender;
+                if (!item.Enabled) return;
+
+                foreach (var next in _skinItems) {
+                    if (!ReferenceEquals(next, item) && next.Enabled && item.AffectedTextures.Any(next.AffectedTextures.Contains)) {
+                        next.Enabled = false;
                     }
                 }
             }
@@ -507,26 +558,92 @@ namespace AcManager.Controls.CustomShowroom {
                 Mode = Mode == Mode.Skin ? Mode.Main : Mode.Skin;
             }));
 
+            private async Task SkinSave([NotNull] CarSkinObject skin, bool showWaitingDialog = true) {
+                try {
+                    var skinsItems = SkinItems;
+                    if (Renderer == null || skinsItems == null) return;
+
+                    if (Directory.GetFiles(skin.Location, "*.dds").Any() &&
+                            ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
+                                    MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+
+                    using (showWaitingDialog ? WaitingDialog.Create("Saving…") : null) {
+                        var jObj = new JObject();
+                        foreach (var item in skinsItems.ToList()) {
+                            try {
+                                jObj[PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
+                                await item.SaveAsync(skin.Location);
+                            } catch (NotImplementedException) {}
+                        }
+
+                        var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.LiveryStyle != null);
+                        if (carPaint != null && LiveryGenerator != null) {
+                            await LiveryGenerator.CreateLiveryAsync(skin,
+                                    (carPaint.CurrentPattern?.ActualColors ?? new Color[0]).Prepend(carPaint.Color).ToArray(), carPaint.LiveryStyle);
+                        }
+
+                        File.WriteAllText(Path.Combine(skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t save skin", e);
+                }
+            }
+
             private AsyncCommand _skinSaveChangesCommand;
 
-            public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand = new AsyncCommand(async () => {
-                var skinsItems = SkinItems;
-                if (Renderer == null || skinsItems == null) return;
+            public AsyncCommand SkinSaveChangesCommand => _skinSaveChangesCommand ?? (_skinSaveChangesCommand =
+                    new AsyncCommand(() => SkinSave(Skin), () => SkinItems?.Any() == true));
 
-                if (Directory.GetFiles(Skin.Location, "*.dds").Any() &&
-                        ModernDialog.ShowMessage("Original files if exist will be moved to the Recycle Bin. Are you sure?", "Save Changes",
-                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+            private AsyncCommand _skinSaveAsNewCommand;
 
-                using (WaitingDialog.Create("Saving…")) {
-                    var jObj = new JObject();
-                    foreach (var item in skinsItems.ToList()) {
-                        try {
-                            jObj[PaintShop.NameToId(item.DisplayName, false)] = item.Serialize();
-                            await item.SaveAsync(Skin.Location);
-                        } catch (NotImplementedException) {}
+            public AsyncCommand SkinSaveAsNewCommand => _skinSaveAsNewCommand ?? (_skinSaveAsNewCommand = new AsyncCommand(async () => {
+                var newId = "generated";
+                var location = Car.SkinsDirectory;
+                var i = 100;
+                for (; i > 0; i--) {
+                    var defaultId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(location, newId)));
+                    newId = Prompt.Show("Please, enter an ID for a new skin:", "Save As New Skin", defaultId, "?", required: true, maxLength: 120);
+
+                    if (newId == null) return;
+                    if (Regex.IsMatch(newId, @"[^\.\w-]")) {
+                        ModernDialog.ShowMessage(
+                                "ID shouldn’t contain spaces and other weird symbols. I mean, it might, but then original launcher, for example, won’t work with it.",
+                                "Invalid ID", MessageBoxButton.OK);
+                        continue;
                     }
 
-                    File.WriteAllText(Path.Combine(Skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
+                    if (FileUtils.Exists(Path.Combine(location, newId))) {
+                        ModernDialog.ShowMessage(
+                                "Skin with this ID already exists.",
+                                "Place Is Taken", MessageBoxButton.OK);
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (i == 0) return;
+
+                using (var waiting = WaitingDialog.Create("Saving…")) {
+                    Directory.CreateDirectory(Path.Combine(location, newId));
+
+                    CarSkinObject skin = null;
+                    for (var j = 0; j < 5; j++) {
+                        await Task.Delay(500);
+                        skin = Car.GetSkinById(newId);
+                        if (skin != null) {
+                            break;
+                        }
+                    }
+                    
+                    if (skin == null) {
+                        waiting.Dispose();
+                        NonfatalError.Notify("Can’t save skin", "Skin can’t be created?");
+                        return;
+                    }
+
+                    await SkinSave(skin, false);
+                    Skin = skin;
                 }
             }, () => SkinItems?.Any() == true));
 

@@ -3,7 +3,7 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
     public class AcCommonObjectTester : ITester<AcCommonObject> {
-        public static AcCommonObjectTester Instance = new AcCommonObjectTester();
+        public static readonly AcCommonObjectTester Instance = new AcCommonObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
@@ -23,6 +23,18 @@ namespace AcManager.Tools.Filters {
                 case "errors":
                 case "haserrors":
                     return nameof(AcCommonObject.HasErrors);
+                    
+                case "rate":
+                case "rated":
+                case "rating":
+                    return nameof(AcCommonObject.Rating);
+
+                case "fav":
+                case "favorite":
+                case "favourite":
+                case "favorited":
+                case "favourited":
+                    return nameof(AcCommonObject.IsFavourite);
 
                 case "changed":
                     return nameof(AcCommonObject.Changed);
@@ -57,6 +69,18 @@ namespace AcManager.Tools.Filters {
                 case "errors":
                 case "haserrors":
                     return value.Test(obj.HasErrors);
+
+                case "rate":
+                case "rated":
+                case "rating":
+                    return value.Test(obj.Rating ?? 0d);
+
+                case "fav":
+                case "favorite":
+                case "favourite":
+                case "favorited":
+                case "favourited":
+                    return value.Test(obj.IsFavourite);
 
                 case "changed":
                     return value.Test(obj.Changed);

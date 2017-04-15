@@ -44,6 +44,7 @@
                 <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                     <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
+                        <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding Rating}" HorizontalAlignment="Left" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                                 Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"

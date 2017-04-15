@@ -1,14 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
-using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum AdornerPlacement {

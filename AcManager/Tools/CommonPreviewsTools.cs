@@ -56,7 +56,7 @@ namespace AcManager.Tools {
                 }
             }
 
-            var dialog = new CarUpdatePreviewsDialog(list, actualMode);
+            var dialog = new CarUpdatePreviewsDialog(list, actualMode, presetFilename);
             return Task.FromResult<IReadOnlyList<UpdatePreviewError>>(dialog.ShowDialog() ? dialog.Errors.ToList() : null);
         }
 

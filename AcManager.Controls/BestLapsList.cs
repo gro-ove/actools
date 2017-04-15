@@ -162,7 +162,7 @@ namespace AcManager.Controls {
             } finally {
                 _dirty = false;
                 _busy = false;
-                SetValue(LoadingPropertyKey, false);
+                ActionExtension.InvokeInMainThread(() => SetValue(LoadingPropertyKey, false));
             }
         }
 

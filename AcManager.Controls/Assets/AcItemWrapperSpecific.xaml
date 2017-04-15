@@ -1,11 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
-                    xmlns:userControls="clr-namespace:AcManager.Controls.UserControls">
+        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls">
     <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />-->
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/FavouritesSpecific.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="AcItemWrapperSpecific.ComboBoxItemTemplate" DataType="{x:Type t:AcItemWrapper}">
@@ -31,6 +32,8 @@
                     <DockPanel HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
+                        <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
                         <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
                                 IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 DockPanel.Dock="Right" />
@@ -48,8 +51,16 @@
                             <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
                             <Setter Property="Visibility" Value="Visible" TargetName="ErrorIcon" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Changed}" Value="True">
                             <Setter Property="FontStyle" Value="Italic" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Value="True"
+                                Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="FavouriteIcon" />
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="ErrorIcon" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -60,6 +71,8 @@
                         <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="4 0 4 0" Filename="{Binding LiveryImage}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
+                        <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
                         <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
                                 IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 DockPanel.Dock="Right" />
@@ -77,8 +90,16 @@
                             <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
                             <Setter Property="Visibility" Value="Visible" TargetName="ErrorIcon" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Changed}" Value="True">
                             <Setter Property="FontStyle" Value="Italic" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Value="True"
+                                Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="FavouriteIcon" />
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="ErrorIcon" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

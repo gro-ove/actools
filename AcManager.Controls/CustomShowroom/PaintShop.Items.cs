@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using AcManager.Tools;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -64,7 +66,11 @@ namespace AcManager.Controls.CustomShowroom {
 
                 try {
                     _updating = true;
-                    await Task.Delay(10);
+
+                    if (IsActive()) {
+                        await Task.Delay(10);
+                    }
+
                     if (_updating && !_disposed) {
                         UpdateOverride();
                     }
@@ -73,7 +79,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            protected override void OnPropertyChanged(string propertyName = null) {
+            protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
                 base.OnPropertyChanged(propertyName);
                 Update();
             }
@@ -92,6 +98,8 @@ namespace AcManager.Controls.CustomShowroom {
                     ResetOverride(renderer);
                 }
             }
+
+            public List<string> AffectedTextures { get; } = new List<string>(5);
 
             protected abstract void ApplyOverride([NotNull] IPaintShopRenderer renderer);
 
@@ -123,17 +131,32 @@ namespace AcManager.Controls.CustomShowroom {
                 return JObject.FromObject(this);
             }
 
+            [CanBeNull]
+            protected JArray SerializeColors([CanBeNull] CarPaintColors target) {
+                return target == null ? null : JArray.FromObject(target.ActualColors.Select(x => x.ToHexString()));
+            }
+
             public virtual void Deserialize([CanBeNull] JObject data) {
                 data?.Populate(this);
+            }
+
+            protected void DeserializeColors([NotNull] CarPaintColors target, JObject data, string key) {
+                var colors = (data?[key] as JArray)?.ToObject<string[]>();
+                if (colors != null) {
+                    for (var i = 0; i < colors.Length && i < target.Colors.Length; i++) {
+                        target.Colors[i].Value = colors[i].ToColor() ?? Colors.White;
+                    }
+                }
             }
         }
 
         public class SolidColorIfFlagged : PaintableItem {
-            public SolidColorIfFlagged(string[] textures, bool inverse, Color color, double opacity = 1d) : base(false) {
+            public SolidColorIfFlagged([NotNull] string[] textures, bool inverse, Color color, double opacity = 1d) : base(false) {
                 _textures = textures;
                 _inverse = inverse;
                 _color = color;
                 _opacity = opacity;
+                AffectedTextures.AddRange(textures);
             }
 
             private readonly string[] _textures;
@@ -167,15 +190,16 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public class TransparentIfFlagged : SolidColorIfFlagged {
-            public TransparentIfFlagged(string[] textures, bool inverse) : base(textures, inverse, Colors.Black, 0d) { }
+            public TransparentIfFlagged([NotNull] string[] textures, bool inverse) : base(textures, inverse, Colors.Black, 0d) { }
 
             public override string DisplayName { get; set; } = "Transparent If Enabled";
         }
 
         public class ReplacedIfFlagged : PaintableItem {
-            public ReplacedIfFlagged(bool inverse, Dictionary<string, PaintShopSource> replacements) : base(false) {
+            public ReplacedIfFlagged(bool inverse, [NotNull] Dictionary<string, PaintShopSource> replacements) : base(false) {
                 _inverse = inverse;
                 _replacements = replacements;
+                AffectedTextures.AddRange(_replacements.Keys);
             }
 
             public override string DisplayName { get; set; } = "Replaced If Enabled";
@@ -210,43 +234,105 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        public class ColoredItem : PaintableItem {
-            protected readonly Dictionary<string, PaintShopSource> Replacements;
+        public class Replacement : PaintableItem {
+            [NotNull]
+            private readonly string[] _textures;
 
-            public ColoredItem([Localizable(false)] string diffuseTexture, Color defaultColor) : base(false) {
-                Replacements = new Dictionary<string, PaintShopSource> {
-                    [diffuseTexture] = PaintShopSource.White
-                };
+            public Dictionary<string, PaintShopSource> Replacements { get; }
 
-                DefaultColor = defaultColor;
-            }
-
-            public ColoredItem(Dictionary<string, PaintShopSource> replacements, Color defaultColor) : base(false) {
+            public Replacement([NotNull] string[] textures, [NotNull] Dictionary<string, PaintShopSource> replacements) : base(false) {
+                _textures = textures;
                 Replacements = replacements;
-                DefaultColor = defaultColor;
+                Value = Replacements.FirstOrDefault();
+                AffectedTextures.AddRange(_textures);
             }
 
-            public bool AutoAdjustLevels { get; internal set; }
+            private KeyValuePair<string, PaintShopSource> _value;
 
-            public Color DefaultColor { get; }
-
-            public override string DisplayName { get; set; } = "Colored item";
-
-            private Color? _color;
-
-            [JsonProperty("color")]
-            public Color Color {
-                get { return _color ?? DefaultColor; }
+            public KeyValuePair<string, PaintShopSource> Value {
+                get { return _value; }
                 set {
-                    if (Equals(value, _color)) return;
-                    _color = value;
+                    if (Equals(value, _value)) return;
+                    _value = value;
                     OnPropertyChanged();
                 }
             }
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
+                var value = Value.Value;
+                if (value == null) return;
+                foreach (var tex in _textures) {
+                    renderer.OverrideTexture(tex, value);
+                }
+            }
+
+            protected override void ResetOverride(IPaintShopRenderer renderer) {
+                foreach (var tex in _textures) {
+                    renderer.OverrideTexture(tex, null);
+                }
+            }
+
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+                var value = Value.Value;
+                if (value == null) return;
+                foreach (var tex in _textures) {
+                    await renderer.SaveTextureAsync(Path.Combine(location, tex), value);
+                }
+            }
+
+            public override JObject Serialize() {
+                var result = base.Serialize();
+                if (result != null) {
+                    result["value"] = NameToId(Value.Key, false);
+                }
+
+                return result;
+            }
+
+            public override void Deserialize(JObject data) {
+                base.Deserialize(data);
+                if (data != null) {
+                    var loaded = data["value"]?.ToString();
+                    var value = Replacements.FirstOrDefault(x => NameToId(x.Key, false) == loaded);
+                    if (value.Value != null) {
+                        Value = value;
+                    }
+                }
+            }
+        }
+
+        public class ColoredItem : PaintableItem {
+            protected readonly Dictionary<string, TintedEntry> Replacements;
+
+            public ColoredItem([Localizable(false)] string diffuseTexture, Color defaultColor)
+                    : this(diffuseTexture, new CarPaintColors(defaultColor)) {}
+
+            public ColoredItem([Localizable(false)] string diffuseTexture, CarPaintColors colors)
+                    : this(new Dictionary<string, TintedEntry> {
+                        [diffuseTexture] = new TintedEntry(PaintShopSource.White)
+                    }, colors) {}
+
+            public ColoredItem(Dictionary<string, TintedEntry> replacements, CarPaintColors colors) : base(false) {
+                Replacements = replacements;
+                Colors = colors;
+                Colors.PropertyChanged += OnColorsChanged;
+                AffectedTextures.AddRange(Replacements.Keys);
+            }
+
+            public override string DisplayName { get; set; } = "Colored item";
+
+            public CarPaintColors Colors { get; }
+
+            public Color[] ActualColors => Colors.ActualColors;
+
+            private void OnColorsChanged(object sender, PropertyChangedEventArgs e) {
+                OnPropertyChanged(nameof(ActualColors));
+            }
+
+            protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
-                    renderer.OverrideTextureTint(replacement.Key, Color.ToColor(), AutoAdjustLevels, 0d, replacement.Value);
+                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 0d,
+                            replacement.Value.Source, replacement.Value.Mask);
                 }
             }
 
@@ -258,7 +344,24 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
-                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Color.ToColor(), AutoAdjustLevels, 0d, replacement.Value);
+                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 0d,
+                            replacement.Value.Source, replacement.Value.Mask);
+                }
+            }
+
+            public override JObject Serialize() {
+                var result = base.Serialize();
+                if (result != null) {
+                    result["colors"] = SerializeColors(Colors);
+                }
+
+                return result;
+            }
+
+            public override void Deserialize(JObject data) {
+                base.Deserialize(data);
+                if (data != null) {
+                    DeserializeColors(Colors, data, "colors");
                 }
             }
         }
@@ -266,14 +369,24 @@ namespace AcManager.Controls.CustomShowroom {
         public class TintedWindows : ColoredItem { 
             public double DefaultAlpha { get; set; }
 
-            public TintedWindows([Localizable(false)] string diffuseTexture, double defaultAlpha = 0.23, Color? defaultColor = null)
+            public bool FixedColor { get; set; }
+
+            public TintedWindows([Localizable(false)] string diffuseTexture, Color? defaultColor = null, double defaultAlpha = 0.23, bool fixedColor = false)
                     : base(diffuseTexture, defaultColor ?? Color.FromRgb(41, 52, 55)) {
                 DefaultAlpha = defaultAlpha;
+                FixedColor = fixedColor;
             }
 
-            public TintedWindows(Dictionary<string, PaintShopSource> replacements, double defaultAlpha = 0.23, Color? defaultColor = null)
-                    : base(replacements, defaultColor ?? Color.FromRgb(41, 52, 55)) {
+            public TintedWindows([Localizable(false)] string diffuseTexture, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false)
+                    : base(diffuseTexture, colors) {
                 DefaultAlpha = defaultAlpha;
+                FixedColor = fixedColor;
+            }
+
+            public TintedWindows(Dictionary<string, TintedEntry> replacements, CarPaintColors colors, double defaultAlpha = 0.23, bool fixedColor = false) 
+                    : base(replacements, colors) {
+                DefaultAlpha = defaultAlpha;
+                FixedColor = fixedColor;
             }
 
             public override string DisplayName { get; set; } = "Windows";
@@ -298,20 +411,22 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
-                    renderer.OverrideTextureTint(replacement.Key, Color.ToColor(), AutoAdjustLevels, Alpha, replacement.Value);
+                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, Alpha,
+                            replacement.Value.Source, replacement.Value.Mask);
                 }
             }
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
-                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Color.ToColor(), AutoAdjustLevels, Alpha,
-                            replacement.Value);
+                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, Alpha,
+                            replacement.Value.Source, replacement.Value.Mask);
                 }
             }
         }
 
-        public sealed class CarPaintPatternColor : Displayable {
-            public CarPaintPatternColor(string name, Color defaultValue) {
+        public sealed class CarPaintColor : Displayable {
+            public CarPaintColor(string name, Color defaultValue, [CanBeNull] Dictionary<string, Color> allowedValues) {
+                AllowedValues = allowedValues?.Count == 0 ? null : allowedValues;
                 DisplayName = name;
                 Value = defaultValue;
             }
@@ -321,47 +436,53 @@ namespace AcManager.Controls.CustomShowroom {
             public Color Value {
                 get { return _value; }
                 set {
+                    if (AllowedValues != null && !AllowedValues.ContainsValue(value)) {
+                        value = AllowedValues.First().Value;
+                    }
+
                     if (Equals(value, _value)) return;
                     _value = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ValuePair));
                 }
             }
+
+            public KeyValuePair<string, Color> ValuePair {
+                get {
+                    return AllowedValues?.FirstOrDefault(x => x.Value == _value) ?? new KeyValuePair<string, Color>(ToolsStrings.Common_None, Colors.Transparent);
+                }
+                set { Value = value.Value; }
+            }
+
+            [CanBeNull]
+            public Dictionary<string, Color> AllowedValues { get; }
         }
 
-        public sealed class CarPaintPattern : Displayable {
-            public CarPaintPattern(string name, PaintShopSource source, [CanBeNull] PaintShopSource overlay, CarPaintPatternColor[] colors) {
-                DisplayName = name;
-                Source = source;
-                Overlay = overlay;
+        public class CarPaintColors : NotifyPropertyChanged {
+            public CarPaintColors(CarPaintColor[] colors) {
                 Colors = colors;
+                
+                ActualColors = new Color[Colors.Length];
+                DrawingColors = new System.Drawing.Color[Colors.Length];
+                UpdateActualColors();
 
                 foreach (var color in Colors) {
                     color.PropertyChanged += OnColorChanged;
                 }
-
-                ActualColors = new Color[Colors.Length];
-                DrawingColors = new System.Drawing.Color[Colors.Length];
-                UpdateActualColors();
             }
 
-            public CarPaintPattern(string name, PaintShopSource source, [CanBeNull] PaintShopSource overlay, Color[] colors)
-                    : this(name, source, overlay,  colors.Select((x, i) => new CarPaintPatternColor($"Color #{i + 1}", x)).ToArray()) { }
+            public CarPaintColors() : this(new CarPaintColor[0]) { }
 
-            public CarPaintPattern(string name, PaintShopSource source, [CanBeNull] PaintShopSource overlay, int colors)
-                    : this(name, source, overlay,
-                            Enumerable.Range(1, colors).Select(x => new CarPaintPatternColor($"Color #{x}", System.Windows.Media.Colors.White)).ToArray()) {}
+            public CarPaintColors(Color defaultColor) : this(new[] {
+                new CarPaintColor("Color", defaultColor, null),
+            }) {}
+
+            public CarPaintColor[] Colors { get; }
 
             private void OnColorChanged(object sender, PropertyChangedEventArgs e) {
                 OnPropertyChanged(nameof(Colors));
                 UpdateActualColors();
             }
-
-            public PaintShopSource Source { get; }
-
-            [CanBeNull]
-            public PaintShopSource Overlay { get; }
-
-            public CarPaintPatternColor[] Colors { get; }
 
             private void UpdateActualColors() {
                 for (var i = 0; i < Colors.Length; i++) {
@@ -374,19 +495,49 @@ namespace AcManager.Controls.CustomShowroom {
             public readonly System.Drawing.Color[] DrawingColors;
         }
 
+        public sealed class CarPaintPattern : Displayable {
+            public CarPaintPattern(string name, [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource overlay, CarPaintColors colors) {
+                DisplayName = name;
+                Source = source;
+                Overlay = overlay;
+                Colors = colors;
+                colors.PropertyChanged += OnColorsChanged;
+            }
+
+            public Color[] ActualColors => Colors.ActualColors;
+
+            private void OnColorsChanged(object sender, PropertyChangedEventArgs e) {
+                OnPropertyChanged(nameof(ActualColors));
+            }
+
+            [NotNull]
+            public PaintShopSource Source { get; }
+
+            [CanBeNull]
+            public PaintShopSource Overlay { get; }
+
+            [NotNull]
+            public CarPaintColors Colors { get; }
+        }
+
         public class CarPaint : PaintableItem {
             public string DetailsTexture { get; }
 
             public Color DefaultColor { get; }
 
-            public CarPaint(string detailsTexture, Color? defaultColor = null) : base(true) {
+            public CarPaint(string detailsTexture, int flakesSize = 256, Color? defaultColor = null) : base(true) {
+                FlakesSize = flakesSize;
+                SupportsFlakes = flakesSize > 0;
                 DetailsTexture = detailsTexture;
                 DefaultColor = defaultColor ?? Color.FromRgb(255, 255, 255);
                 Patterns = new ChangeableObservableCollection<CarPaintPattern>();
                 Patterns.ItemPropertyChanged += OnPatternChanged;
+                AffectedTextures.Add(detailsTexture);
             }
 
-            public bool SupportsFlakes { get; internal set; } = true;
+            public bool SupportsFlakes { get; }
+
+            public int FlakesSize { get; }
 
             public override string DisplayName { get; set; } = "Car paint";
 
@@ -434,16 +585,15 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ChangeableObservableCollection<CarPaintPattern> Patterns { get; }
 
-            public bool AoAutoAdjustLevels { get; internal set; }
-
             public void SetPatterns(string patternTexture, PaintShopSource patternBase, [CanBeNull] PaintShopSource patternOverlay,
                     IEnumerable<CarPaintPattern> patterns) {
                 PatternTexture = patternTexture;
                 PatternBase = patternBase;
                 PatternOverlay = patternOverlay;
-                Patterns.ReplaceEverythingBy(patterns.Prepend(new CarPaintPattern("Nothing", PaintShopSource.White, null, 0)));
+                Patterns.ReplaceEverythingBy(patterns.Prepend(new CarPaintPattern("Nothing", PaintShopSource.Transparent, null, new CarPaintColors())));
                 CurrentPattern = Patterns[0];
                 _patternChanged = true;
+                AffectedTextures.Add(patternTexture);
             }
 
             private void OnPatternChanged(object sender, PropertyChangedEventArgs e) {
@@ -452,7 +602,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private bool _patternEnabled = true;
-
+            
             public bool PatternEnabled {
                 get { return _patternEnabled; }
                 set {
@@ -462,6 +612,8 @@ namespace AcManager.Controls.CustomShowroom {
                     _patternChanged = true;
                 }
             }
+
+            public string LiveryStyle { get; internal set; }
 
             private Color? _previousColor;
             private double? _previousFlakes;
@@ -477,7 +629,7 @@ namespace AcManager.Controls.CustomShowroom {
                     _previousFlakes = Flakes;
 
                     if (SupportsFlakes && Flakes > 0d) {
-                        renderer.OverrideTextureFlakes(DetailsTexture, Color.ToColor(), Flakes);
+                        renderer.OverrideTextureFlakes(DetailsTexture, Color.ToColor(), FlakesSize, Flakes);
                     } else {
                         renderer.OverrideTexture(DetailsTexture, Color.ToColor(), 1d);
                     }
@@ -489,8 +641,8 @@ namespace AcManager.Controls.CustomShowroom {
                 _patternChanged = false;
 
                 if (PatternEnabled && CurrentPattern != null) {
-                    renderer.OverrideTexturePattern(PatternTexture, PatternBase ?? PaintShopSource.InputSource, AoAutoAdjustLevels,
-                            CurrentPattern.Source, CurrentPattern.Overlay ?? PatternOverlay, CurrentPattern.DrawingColors);
+                    renderer.OverrideTexturePattern(PatternTexture, PatternBase ?? PaintShopSource.InputSource, CurrentPattern.Source,
+                            CurrentPattern.Overlay ?? PatternOverlay, CurrentPattern.Colors.DrawingColors);
                 } else {
                     renderer.OverrideTexture(PatternTexture, null);
                 }
@@ -503,15 +655,14 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected Task SaveColorAsync(IPaintShopRenderer renderer, string location) {
                 return SupportsFlakes && Flakes > 0d
-                        ? renderer.SaveTextureFlakesAsync(Path.Combine(location, DetailsTexture), Color.ToColor(), Flakes)
+                        ? renderer.SaveTextureFlakesAsync(Path.Combine(location, DetailsTexture), Color.ToColor(), FlakesSize, Flakes)
                         : renderer.SaveTextureAsync(Path.Combine(location, DetailsTexture), Color.ToColor(), 1d);
             }
 
             protected Task SavePatternAsync(IPaintShopRenderer renderer, string location) {
                 return PatternEnabled && PatternTexture != null && CurrentPattern != null
                         ? renderer.SaveTexturePatternAsync(Path.Combine(location, PatternTexture), PatternBase ?? PaintShopSource.InputSource,
-                                AoAutoAdjustLevels, CurrentPattern.Source, CurrentPattern.Overlay ?? PatternOverlay,
-                                CurrentPattern.DrawingColors)
+                                CurrentPattern.Source, CurrentPattern.Overlay ?? PatternOverlay, CurrentPattern.Colors.DrawingColors)
                         : Task.Delay(0);
             }
 
@@ -534,8 +685,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (PatternTexture != null) {
                     result["patternEnabled"] = PatternEnabled;
                     result["patternSelected"] = CurrentPattern?.DisplayName;
-                    result["patternColors"] = CurrentPattern == null ? null :
-                            JArray.FromObject(CurrentPattern.ActualColors.Select(x => x.ToHexString()));
+                    result["patternColors"] = SerializeColors(CurrentPattern?.Colors);
                 }
 
                 return result;
@@ -549,12 +699,7 @@ namespace AcManager.Controls.CustomShowroom {
                     var current = data.GetStringValueOnly("patternSelected");
                     CurrentPattern = Patterns.FirstOrDefault(x => string.Equals(x.DisplayName, current, StringComparison.OrdinalIgnoreCase)) ?? CurrentPattern;
                     if (CurrentPattern != null) {
-                        var colors = (data["patternColors"] as JArray)?.ToObject<string[]>();
-                        if (colors != null) {
-                            for (var i = 0; i < colors.Length && i < CurrentPattern.Colors.Length; i++) {
-                                CurrentPattern.Colors[i].Value = colors[i].ToColor() ?? Colors.White;
-                            }
-                        }
+                        DeserializeColors(CurrentPattern.Colors, data, "patternColors");
                     }
                 }
             }
@@ -563,16 +708,16 @@ namespace AcManager.Controls.CustomShowroom {
         public class ComplexCarPaint : CarPaint {
             public string MapsTexture { get; }
 
-            [CanBeNull, Localizable(false)]
-            public PaintShopSource MapsDefaultTexture { get; internal set; }
-
-            public bool AutoAdjustLevels { get; internal set; }
+            [NotNull]
+            public PaintShopSource MapsDefaultTexture { get; }
 
             public bool FixGloss { get; internal set; }
 
-            public ComplexCarPaint([Localizable(false)] string detailsTexture, [Localizable(false)] string mapsTexture, Color? defaultColor = null)
-                    : base(detailsTexture, defaultColor) {
+            public ComplexCarPaint([Localizable(false)] string detailsTexture, int flakesSize, [Localizable(false)] string mapsTexture,
+                    [NotNull] PaintShopSource mapsSource, Color? defaultColor = null) : base(detailsTexture, flakesSize, defaultColor) {
                 MapsTexture = mapsTexture;
+                MapsDefaultTexture = mapsSource;
+                AffectedTextures.Add(mapsTexture);
             }
 
             private bool _complexMode;
@@ -637,8 +782,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (_previousComplexMode != _complexMode || Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
                     if (ComplexMode) {
-                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, AutoAdjustLevels, FixGloss,
-                                MapsDefaultTexture ?? PaintShopSource.InputSource);
+                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture);
                     } else {
                         renderer.OverrideTexture(MapsTexture, null);
                     }
@@ -654,12 +798,11 @@ namespace AcManager.Controls.CustomShowroom {
                 base.ResetOverride(renderer);
                 renderer.OverrideTexture(MapsTexture, null);
             }
-
+            
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 await base.SaveOverrideAsync(renderer, location);
                 if (ComplexMode) {
-                    await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, AutoAdjustLevels, FixGloss,
-                            MapsDefaultTexture ?? new PaintShopSource(MapsTexture));
+                    await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture);
                 }
             }
         }

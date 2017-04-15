@@ -101,6 +101,8 @@
                     <MenuItem Header="{x:Static mui:UiStrings.Toolbar_Invite_IncludePasswordHeader}" IsChecked="{Binding CopyPasswordToInviteLink}"
                             IsCheckable="True" IsEnabled="{Binding Entry.PasswordRequired}" StaysOpenOnClick="True" />
                 </mui:ButtonWithComboBox>
+                <Button Content="Join TS Server" Command="{Binding JoinTsCommand}"
+                        Visibility="{Binding JoinTsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Separator />
 
                 <ToggleButton x:Name="AssistsButton" Content="{x:Static t:ToolsStrings.Assists_Title}"
