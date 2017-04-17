@@ -65,6 +65,49 @@
                     </DataTemplate.Triggers>
                 </DataTemplate>
 
+                <!-- serverpreset -->
+                <DataTemplate DataType="{x:Type t:ServerPresetObject}">
+                    <DockPanel HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
+                        <Path Data="{StaticResource PlayIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource Go}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="RunningIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+                        <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{StaticResource FavouriteBrush}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+                        <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
+                                IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                DockPanel.Dock="Right" />
+                        <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                                HorizontalAlignment="Stretch" x:Name="DisplayNameText" ToolTip="{Binding Location}" />
+                    </DockPanel>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Enabled}" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding NeedsMargin}" Value="True">
+                            <Setter Property="Padding" Value="20 0 0 0" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="ErrorIcon" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="RunningIcon" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Changed}" Value="True">
+                            <Setter Property="FontStyle" Value="Italic" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Value="True"
+                                Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="FavouriteIcon" />
+                            <Setter Property="Fill" Value="{DynamicResource ItemTextSelected}" TargetName="ErrorIcon" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+
                 <!-- carskinobject -->
                 <DataTemplate DataType="{x:Type t:CarSkinObject}">
                     <DockPanel HorizontalAlignment="Stretch">

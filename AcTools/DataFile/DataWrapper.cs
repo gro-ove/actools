@@ -45,6 +45,8 @@ namespace AcTools.DataFile {
 
         private Acd _acd;
 
+        public string ParentDirectory => _carDirectory ?? _acd?.ParentDirectory;
+
         private DataWrapper(string carDirectory) {
             _carDirectory = carDirectory;
             _cache = new Dictionary<string, AbstractDataFile>();

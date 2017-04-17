@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace StringBasedFilter.TestEntries {
     internal class BooleanTestEntry : ITestEntry {

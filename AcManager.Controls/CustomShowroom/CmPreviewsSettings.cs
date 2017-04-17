@@ -142,8 +142,15 @@ namespace AcManager.Controls.CustomShowroom {
             base.Load(o);
         }
 
+        [NotNull]
         public static DarkPreviewsOptions GetSavedOptions(string presetFilename = null) {
             if (presetFilename != null && !File.Exists(presetFilename)) {
+                var builtIn = PresetsManager.Instance.GetBuiltInPreset(DefaultPresetableKeyValue, presetFilename);
+                if (builtIn != null) {
+                    return (SaveHelper<SaveableData>.LoadSerialized(builtIn.ReadData()) ?? new SaveableData())
+                            .ToPreviewsOptions(true);
+                }
+
                 NonfatalError.NotifyBackground("Can’t load preset", $"File “{presetFilename}” not found.");
             } else {
                 try {
@@ -220,6 +227,7 @@ namespace AcManager.Controls.CustomShowroom {
             /// <param name="keepChecksum">Set to True if you’re loading existing preset and want checksum to be 
             /// independent from any future format changes; otherwise, for actual checksum, set to False.</param>
             /// <returns>Instance of DarkPreviewsOptions.</returns>
+            [NotNull]
             public DarkPreviewsOptions ToPreviewsOptions(bool keepChecksum) {
                 var light = GetLightDirection(Lightθ, Lightφ);
                 return new DarkPreviewsOptions {

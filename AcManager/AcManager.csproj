@@ -425,6 +425,9 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ServerPreset\RunningLog.xaml.cs">
+      <DependentUpon>RunningLog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ServerPreset\EntryList.xaml.cs">
       <DependentUpon>EntryList.xaml</DependentUpon>
     </Compile>
@@ -1097,6 +1100,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\ServerPreset\RunningLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\ServerPreset\EntryList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1406,6 +1413,7 @@
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
     <None Include="Assets\Data\AssistsIntermediate.cmpreset" />
     <None Include="Assets\Data\AT-Previews Special %281.6%29.ini" />
+    <None Include="Assets\Data\GT5-like.cmpreset" />
     <None Include="Assets\Data\Kunos %281.6, Custom%29.cmpreset" />
     <None Include="Assets\Data\Kunos %281.6%29.cmpreset" />
     <None Include="Assets\Data\AssistsPro.cmpreset" />

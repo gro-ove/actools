@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -25,7 +24,6 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using SlimDX.DXGI;
@@ -46,10 +44,17 @@ namespace AcManager.Controls.CustomShowroom {
         private readonly string _textureName;
         private readonly ISaveHelper _saveable;
 
-        public BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName) {
+        public Size? Size { private get; set; }
+
+        [CanBeNull]
+        private readonly CarObject _car;
+
+        public BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName,
+                [CanBeNull] CarObject car) {
             _renderer = renderer;
             _kn5 = kn5;
             _textureName = textureName;
+            _car = car;
             _saveable = new SaveHelper<SaveableData>("_carTextureDialog", () => new SaveableData {
                 From = From,
                 To = To,
@@ -153,12 +158,12 @@ namespace AcManager.Controls.CustomShowroom {
         #region Generating
         private const string KeyDimensions = "__BakedShadowsRendererViewModel.Dimensions";
 
-        public async Task<bool> CalculateAo(int? size, string filename) {
+        public async Task<bool> CalculateAo(int? size, string filename, [CanBeNull] CarObject car) {
             int width, height;
             switch (size) {
                 case null:
                     var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
-                            ValuesStorage.GetString(KeyDimensions, ""), @"2048x2048");
+                            ValuesStorage.GetString(KeyDimensions, Size.HasValue ? $"{Size?.Width}x{Size?.Height}" : ""), @"2048x2048");
                     if (string.IsNullOrWhiteSpace(result)) return false;
 
                     ValuesStorage.Set(KeyDimensions, result);
@@ -179,6 +184,11 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                     break;
 
+                case -1:
+                    width = (int)(Size?.Width ?? 1024);
+                    height = (int)(Size?.Height ?? 1024);
+                    break;
+
                 default:
                     width = height = size.Value;
                     break;
@@ -189,15 +199,16 @@ namespace AcManager.Controls.CustomShowroom {
                 var progress = (IProgress<double>)waiting;
 
                 await Task.Run(() => {
-                    using (var renderer = new BakedShadowsRenderer(_kn5) {
+                    using (var renderer = new BakedShadowsRenderer(_kn5, car?.AcdData) {
                         ΘFrom = (float)From,
                         ΘTo = (float)To,
                         Iterations = Iterations,
                         SkyBrightnessLevel = (float)Brightness / 100f,
                         Gamma = (float)Gamma / 100f,
                         Ambient = (float)Ambient / 100f,
-                        ShadowBias = (float)ShadowBias / 100f,
+                        ShadowBias = (float)ShadowBias / 100f
                     }) {
+                        renderer.CopyStateFrom(_renderer as ToolsKn5ObjectRenderer);
                         renderer.Width = width;
                         renderer.Height = height;
                         renderer.Shot(filename, _textureName, progress, cancellation);
@@ -225,43 +236,36 @@ namespace AcManager.Controls.CustomShowroom {
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
             var filename = FilesStorage.Instance.GetTemporaryFilename(
                     $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} AO.png");
-            if (!await CalculateAo(FlexibleParser.TryParseInt(o), filename)) return;
+            if (!await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car)) return;
 
             var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
             var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
                     $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} Original ({uniquePostfix}).tmp");
-            Logging.Debug($"Postfix: {uniquePostfix}");
-
             if (File.Exists(originalTexture)) {
-                var sw = Stopwatch.StartNew();
-                var image = BetterImage.LoadBitmapSource(originalTexture);
-
-                if (image.BitmapSource != null) {
-                    Logging.Debug($"Cached texture loaded: {sw.Elapsed.TotalMilliseconds:F1} ms");
-                    new ImageViewer(new object[] { filename, image.BitmapSource }) {
-                        Model = {
-                            Saveable = true,
-                            SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                            SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
-                        }
-                    }.ShowDialog();
-                    return;
-                }
+                new ImageViewer(new object[] { filename, originalTexture }) {
+                    Model = {
+                        Saveable = true,
+                        SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
+                        SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                        MaxImageWidth = Size?.Width ?? double.MaxValue,
+                        MaxImageHeight = Size?.Height ?? double.MaxValue,
+                    }
+                }.ShowDialog();
+                return;
             }
 
             byte[] data;
             if (_renderer != null && _kn5.TexturesData.TryGetValue(_textureName, out data)) {
-                var sw = Stopwatch.StartNew();
                 var image = CarTextureDialog.LoadImageUsingDirectX(_renderer, data);
-
                 if (image != null) {
                     image.Image.SaveAsPng(originalTexture);
-                    Logging.Debug($"Cached texture saved: {sw.Elapsed.TotalMilliseconds:F1} ms");
-                    new ImageViewer(new object[] { filename, image.Image }) {
+                    new ImageViewer(new object[] { filename, originalTexture }) {
                         Model = {
                             Saveable = true,
                             SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                            SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
+                            SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                            MaxImageWidth = Size?.Width ?? double.MaxValue,
+                            MaxImageHeight = Size?.Height ?? double.MaxValue,
                         }
                     }.ShowDialog();
                     return;
@@ -312,8 +316,9 @@ namespace AcManager.Controls.CustomShowroom {
     public partial class CarTextureDialog {
         private ViewModel Model => (ViewModel)DataContext;
 
-        public CarTextureDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName, uint materialId) {
-            DataContext = new ViewModel(renderer, activeSkin, kn5, textureName, materialId) { Close = () => Close() };
+        public CarTextureDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5,
+                [NotNull] string textureName, uint materialId) {
+            DataContext = new ViewModel(renderer, car, activeSkin, kn5, textureName, materialId) { Close = () => Close() };
             InitializeComponent();
 
             Buttons = new[] { CloseButton };
@@ -409,7 +414,8 @@ namespace AcManager.Controls.CustomShowroom {
 
             public bool IsChangeAvailable { get; }
 
-            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName, uint materialId) {
+            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, 
+                    [NotNull] string textureName, uint materialId) {
                 _renderer = renderer;
                 _activeSkin = activeSkin;
                 _kn5 = kn5;
@@ -424,7 +430,7 @@ namespace AcManager.Controls.CustomShowroom {
                 byte[] data;
                 Data = kn5.TexturesData.TryGetValue(textureName, out data) ? data : null;
 
-                BakedShadows = new BakedShadowsRendererViewModel(renderer, _kn5, TextureName);
+                BakedShadows = new BakedShadowsRendererViewModel(renderer, _kn5, TextureName, car);
 
                 var usedFor = (from material in kn5.Materials.Values
                                let slots = (from slot in material.TextureMappings
@@ -445,6 +451,7 @@ namespace AcManager.Controls.CustomShowroom {
                 PreviewImage = loaded?.Image;
                 TextureFormatDescription = loaded?.FormatDescription;
                 TextureDimensions = PreviewImage == null ? null : $"{PreviewImage.PixelWidth}×{PreviewImage.PixelHeight}";
+                BakedShadows.Size = PreviewImage == null ? (Size?)null : new Size(PreviewImage.PixelWidth, PreviewImage.PixelHeight);
                 Loading = false;
             }
 

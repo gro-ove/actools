@@ -131,25 +131,40 @@ technique10 Result {
 }
 
 // Simplest shader for rendering meshes without any lighting
+SamplerState samAnisotropic {
+	Filter = ANISOTROPIC;
+	MaxAnisotropy = 8;
+
+	AddressU = WRAP;
+	AddressV = WRAP;
+};
+
+Texture2D gAlphaMap;
+
 cbuffer cbPerObject : register(b0) {
 	matrix gWorldViewProj;
+	float gAlphaRef;
 }
 
 struct simplest_VS_IN {
 	float3 PosL : POSITION;
+	float2 Tex : TEXCOORD;
 };
 
 struct simplest_PS_IN {
 	float4 PosH : SV_POSITION;
+	float2 Tex : TEXCOORD;
 };
 
 simplest_PS_IN vs_simplest(simplest_VS_IN vin) {
 	simplest_PS_IN vout;
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+	vout.Tex = vin.Tex;
 	return vout;
 }
 
 float4 ps_simplest(simplest_PS_IN pin) : SV_Target{
+	clip(gAlphaMap.Sample(samAnisotropic, pin.Tex).a - gAlphaRef);
 	return float4(1.0, 1.0, 1.0, 1.0);
 }
 
@@ -217,14 +232,6 @@ SamplerComparisonState samShadow {
 float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 N, float3 T, float3 B) {
 	return mul(2.0 * normalMapSample - 1.0, float3x3(T, B, N));
 }
-
-SamplerState samAnisotropic {
-	Filter = ANISOTROPIC;
-	MaxAnisotropy = 8;
-
-	AddressU = WRAP;
-	AddressV = WRAP;
-};
 
 float4 ps_Ao(ao_PS_IN pin) : SV_Target {
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);

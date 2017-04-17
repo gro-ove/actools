@@ -1,8 +1,10 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.Basic" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:t="http://acstuff.ru/app/tools"
+        mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -88,14 +90,14 @@
                 </TextBlock>
                 <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
                     <Label Content="Password:" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" />
+                    <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
                 </DockPanel>
                 <DockPanel>
                     <DockPanel.ToolTip>
                         <mui:BbCodeBlock>Use it while joining the server or enter it later with “/admin [i]password[/i]”; use “/help” to see the list of commands</mui:BbCodeBlock>
                     </DockPanel.ToolTip>
                     <Label Content="Admin password:" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.AdminPassword}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" />
+                    <mui:BetterTextBox Text="{Binding SelectedObject.AdminPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
                 </DockPanel>
                 <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
                         ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
@@ -103,24 +105,24 @@
                 </CheckBox>
                 <DockPanel Margin="0 20 0 8">
                     <Label Content="Welcome message:" />
-                    <mui:BetterTextBox Placeholder="{x:Static Tools:ToolsStrings.Common_None}" IsEnabled="False" />
+                    <mui:BetterTextBox Placeholder="{x:Static t:ToolsStrings.Common_None}" IsEnabled="False" />
                 </DockPanel>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="UDP port:" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.UdpPort}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" Mode="Integer"
+                    <mui:BetterTextBox Text="{Binding SelectedObject.UdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer"
                             Minimum="1" Maximum="65535" />
                 </DockPanel>
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="TCP port:" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.TcpPort}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" Mode="Integer"
+                    <mui:BetterTextBox Text="{Binding SelectedObject.TcpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer"
                             Minimum="1" Maximum="65535" />
                 </DockPanel>
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="HTTP port:" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.HttpPort}" Placeholder="{x:Static Tools:ToolsStrings.Common_None}" Mode="Integer"
+                    <mui:BetterTextBox Text="{Binding SelectedObject.HttpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer"
                             Minimum="1" Maximum="65535" />
                 </DockPanel>
                 <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">

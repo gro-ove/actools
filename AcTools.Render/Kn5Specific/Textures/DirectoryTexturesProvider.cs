@@ -137,7 +137,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
             while (i-- > 0) {
                 try {
                     await Task.Delay(200);
-                    bytes = await FileUtils.ReadAllBytesAsync(filename);
+                    if (File.Exists(filename)) {
+                        bytes = await FileUtils.ReadAllBytesAsync(filename);
+                    }
                     break;
                 } catch (Exception e) {
                     Logging.Warning("UpdateOverrideLater(): " + e.Message);
@@ -197,7 +199,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
             if (_directory == null) return null;
             var filename = Path.Combine(_directory, key);
-            
+
             var result = new RenderableTexture { Resource = null };
 
             if (File.Exists(filename)) {

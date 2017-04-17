@@ -1,4 +1,5 @@
 ﻿using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
@@ -38,6 +39,7 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
+        [NotNull]
         public static TargetResourceTextureArray Create(Format format, int arraySize, int mipLevels = 1) {
             return new TargetResourceTextureArray(new Texture2DDescription {
                 MipLevels = mipLevels,
@@ -75,6 +77,7 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
+        [NotNull]
         public static TargetResourceTexture Create(Format format, int mipLevels = 1) {
             return new TargetResourceTexture(new Texture2DDescription {
                 MipLevels = mipLevels,
@@ -134,6 +137,7 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
+        [NotNull]
         public static TargetResourceSpecialTexture Create() {
             return new TargetResourceSpecialTexture(new Texture2DDescription {
                 MipLevels = 1,

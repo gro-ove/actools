@@ -470,6 +470,7 @@ namespace AcManager {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsKunos, @"Custom Previews", @"Kunos");
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetCmPreviewsGt5Like, @"Custom Previews", @"GT5-like");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", ControlsStrings.AssistsPreset_Gamer);
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", ControlsStrings.AssistsPreset_Intermediate);
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", ControlsStrings.AssistsPreset_Pro);

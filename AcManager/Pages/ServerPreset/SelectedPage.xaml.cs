@@ -240,6 +240,10 @@ different.";
 
             SetModel();
             InitializeComponent();
+
+            this.OnActualUnload(() => {
+                _object?.UnsubscribeWeak(OnServerPropertyChanged);
+            });
         }
 
         public bool ImmediateChange(Uri uri) {
@@ -253,6 +257,7 @@ different.";
             var cars = obj.CarIds.Select(x => CarsManager.Instance.GetById(x)).ToArray();
 
             _id = id;
+            _object?.UnsubscribeWeak(OnServerPropertyChanged);
             _object = obj;
             _track = track;
             _cars = cars;
@@ -263,6 +268,8 @@ different.";
 
         private void SetModel() {
             _model?.Unload();
+            _object.SubscribeWeak(OnServerPropertyChanged);
+            RunningLogLink.IsShown = _object.RunningLog != null;
             InitializeAcObjectPage(_model = new ViewModel(_object, _track, _cars));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
@@ -270,14 +277,16 @@ different.";
             });
         }
 
-        private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            _object.PropertyChanged -= SelectedObject_PropertyChanged;
+        private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(ServerPresetObject.RunningLog):
+                    RunningLogLink.IsShown = _object.RunningLog != null;
+                    break;
+            }
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
+            IsRunningMessage.Visibility = Tabs.SelectedSource == TryFindResource(@"RunningLogUri") as Uri ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

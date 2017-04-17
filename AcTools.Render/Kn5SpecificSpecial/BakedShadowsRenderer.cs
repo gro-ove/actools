@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
-using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
@@ -24,17 +24,8 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public class BakedShadowsRenderer : BaseRenderer {
-        private readonly Kn5 _kn5;
-        private readonly RenderableList _scene;
-        private RenderableList _carNode;
-
-        protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
-
-        public BakedShadowsRenderer(Kn5 kn5) {
-            _kn5 = kn5;
-            _scene = new RenderableList();
-
+    public class BakedShadowsRenderer : ShadowsRendererBase {
+        public BakedShadowsRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             ResolutionMultiplier = 2d;
         }
         
@@ -43,23 +34,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public float ΘTo = 50.0f;
         public float Gamma = 0.5f;
         public float Ambient = 0.3f;
-        public float UpDelta = 0.0f;
         public float ShadowBias = 0.0f;
         public int Iterations = 500;
         public bool DebugMode = false;
-
-        protected override void ResizeInner() { }
-
-        private void LoadAndAdjustKn5() {
-            DeviceContextHolder.Set<IMaterialsFactory>(new DepthMaterialsFactory());
-
-            _carNode = (RenderableList)Kn5RenderableDepthOnlyObject.Convert(_kn5.RootNode);
-            _scene.Add(_carNode);
-
-            _carNode.UpdateBoundingBox();
-            _carNode.LocalMatrix = Matrix.Translation(0, UpDelta - (_carNode.BoundingBox?.Minimum.Y ?? 0f), 0) * _carNode.LocalMatrix;
-            _scene.UpdateBoundingBox();
-        }
 
         private RasterizerState _rasterizerState;
 
@@ -102,13 +79,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 DepthBiasClamp = 0.0f,
                 SlopeScaledDepthBias = ShadowBias
             });
-
-            DeviceContextHolder.Set<INormalTexturesProvider>(new NormalTexturesProvider(_kn5));
         }
 
         protected override void InitializeInner() {
-            LoadAndAdjustKn5();
+            base.InitializeInner();
             InitializeBuffers();
+            DeviceContextHolder.Set<INormalsNormalTexturesProvider>(new NormalsNormalsTexturesProvider(Kn5));
         }
 
         private void PrepareBuffers(int shadowResolution) {
@@ -133,18 +109,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
         private Kn5RenderableDepthOnlyObject[] _filteredNodes;
 
-        [NotNull]
-        private static IEnumerable<Kn5RenderableDepthOnlyObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
-            return root
-                    .SelectManyRecursive(x => {
-                        var list = x as Kn5RenderableList;
-                        if (list == null || !list.IsEnabled) return null;
-                        return filter?.Invoke(list) == false ? null : list;
-                    })
-                    .OfType<Kn5RenderableDepthOnlyObject>()
-                    .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
-        }
-
         private void DrawShadow(Vector3 from, Vector3? up = null) {
             from.Normalize();
             _effect.FxLightDir.Set(from);
@@ -161,7 +125,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowCamera.UpdateViewMatrix();
 
             if (_flattenNodes == null) {
-                _flattenNodes = Flatten(_scene).ToArray();
+                _flattenNodes = Flatten(Scene, x => (x as Kn5RenderableDepthOnlyObject)?.OriginalNode.CastShadows != false &&
+                        IsVisible(x)).ToArray();
             }
 
             for (var i = 0; i < _flattenNodes.Length; i++) {
@@ -284,7 +249,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void SetBodyShadowCamera() {
-            var size = _carNode.BoundingBox?.GetSize().Length() ?? 4f;
+            var size = CarNode.BoundingBox?.GetSize().Length() ?? 4f;
             _shadowCamera = new CameraOrtho {
                 Width = size,
                 Height = size,
@@ -302,12 +267,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Initialize();
                 if (cancellation.IsCancellationRequested) return;
             }
-            
-            _filteredNodes = Flatten(_scene, x => {
+
+            _filteredNodes = Flatten(Scene, x => {
                 var kn5 = x as Kn5RenderableDepthOnlyObject;
                 if (kn5 == null) return true;
 
-                var material = _kn5.GetMaterial(kn5.OriginalNode.MaterialId);
+                var material = Kn5.GetMaterial(kn5.OriginalNode.MaterialId);
                 return material != null && material.TextureMappings.Any(m => m.Texture == textureName);
             }).ToArray();
             
@@ -323,19 +288,19 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected override void OnTick(float dt) { }
 
-        private class NormalTexturesProvider : INormalTexturesProvider {
+        private class NormalsNormalsTexturesProvider : INormalsNormalTexturesProvider {
             private readonly Kn5 _kn5;
 
-            public NormalTexturesProvider(Kn5 kn5) {
+            public NormalsNormalsTexturesProvider(Kn5 kn5) {
                 _kn5 = kn5;
             }
 
             private Kn5TexturesProvider _texturesProvider;
-            private readonly Dictionary<uint, Tuple<IRenderableTexture, float>[]> _nmTextures = new Dictionary<uint, Tuple<IRenderableTexture, float>[]>();
+            private readonly Dictionary<uint, Tuple<IRenderableTexture, float>[]> _cache = new Dictionary<uint, Tuple<IRenderableTexture, float>[]>();
 
-            Tuple<IRenderableTexture, float> INormalTexturesProvider.GetTexture(IDeviceContextHolder contextHolder, uint materialId) {
+            Tuple<IRenderableTexture, float> INormalsNormalTexturesProvider.GetTexture(IDeviceContextHolder contextHolder, uint materialId) {
                 Tuple<IRenderableTexture, float>[] result;
-                if (!_nmTextures.TryGetValue(materialId, out result)) {
+                if (!_cache.TryGetValue(materialId, out result)) {
                     if (_texturesProvider == null) {
                         _texturesProvider = new Kn5TexturesProvider(_kn5, false);
                     }
@@ -349,7 +314,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                         result = new Tuple<IRenderableTexture, float>[] { null };
                     }
 
-                    _nmTextures[materialId] = result;
+                    _cache[materialId] = result;
                 }
 
                 return result[0];
@@ -357,7 +322,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             public void Dispose() {
                 DisposeHelper.Dispose(ref _texturesProvider);
-                _nmTextures.Clear();
+                _cache.Clear();
             }
         }
 
@@ -369,8 +334,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _tempBuffer2);
             DisposeHelper.Dispose(ref _shadowBuffer);
             DisposeHelper.Dispose(ref _rasterizerState);
-            _carNode.Dispose();
-            _scene.Dispose();
+            CarNode.Dispose();
+            Scene.Dispose();
             base.DisposeOverride();
         }
     }

@@ -99,8 +99,7 @@
                                     </DockPanel>
                                 </StackPanel>
 
-                                <ItemsControl ItemsSource="{Binding SelectedStyle.InputParams}"
-                                        ItemTemplate="{StaticResource PaintShopLicensePlateItemTemplate}" />
+                                <ItemsControl ItemsSource="{Binding InputParams}" ItemTemplate="{StaticResource PaintShopLicensePlateItemTemplate}" />
                             </StackPanel>
                         </DataTemplate>
 
@@ -137,6 +136,19 @@
                         </DataTemplate>
 
                         <DataTemplate DataType="{x:Type cs:PaintShop+Replacement}">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Enabled}">
+                                    <Label Content="{Binding DisplayName}" />
+                                </CheckBox>
+
+                                <StackPanel Margin="8 4 0 0" IsEnabled="{Binding Enabled}">
+                                    <mui:BetterComboBox SelectedItem="{Binding Value}" ItemsSource="{Binding Replacements}" DisplayMemberPath="Key"
+                                            IsEditable="False" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <DataTemplate DataType="{x:Type cs:PaintShop+MultiReplacement}">
                             <StackPanel>
                                 <CheckBox IsChecked="{Binding Enabled}">
                                     <Label Content="{Binding DisplayName}" />
@@ -717,6 +729,18 @@
                                     Postfix="°" />
                             <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="BottomRight" />
                         </DockPanel>
+                        <ItemsControl ItemsSource="{Binding DarkRenderer.CarNode.SuspensionsPack}"
+                                Visibility="{Binding DarkRenderer.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12">
+                                        <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                        <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
+                                        <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
+                                    </mui:SpacingStackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </mui:SpacingStackPanel>
 
                     <StackPanel x:Key="AmbientShadows">

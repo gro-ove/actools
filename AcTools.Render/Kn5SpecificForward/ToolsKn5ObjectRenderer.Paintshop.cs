@@ -89,8 +89,10 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         // get things from PaintShopSource
-        [CanBeNull]
-        private byte[] GetBytes(PaintShopSource source) {
+        [CanBeNull, ContractAnnotation("source: null => null")]
+        private byte[] GetBytes([CanBeNull] PaintShopSource source) {
+            if (source == null) return null;
+
             if (!source.UseInput) {
                 if (source.Data != null) {
                     return source.Data;
@@ -184,13 +186,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         // override using PaintShopSource
         public bool OverrideTexture(string textureName, PaintShopSource source) {
-            if (CarNode == null) return true;
-
-            if (source == null || source.UseInput) {
-                return CarNode.OverrideTexture(DeviceContextHolder, textureName, null);
-            }
-
-            return CarNode.OverrideTexture(DeviceContextHolder, textureName, GetBytes(source));
+            return CarNode == null || CarNode.OverrideTexture(DeviceContextHolder, textureName, GetBytes(source));
         }
 
         public Task SaveTextureAsync(string filename, PaintShopSource source) {
@@ -317,13 +313,14 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         // tint texture
-        private Action<EffectSpecialPaintShop> TintAction(ShaderResourceView original, Color[] colors, double alphaAdd, [CanBeNull] ShaderResourceView mask)
-                => e => {
+        private Action<EffectSpecialPaintShop> TintAction(ShaderResourceView original, Color[] colors, double alphaAdd, [CanBeNull] ShaderResourceView mask,
+                [CanBeNull] ShaderResourceView overlay) => e => {
                     e.FxInputMap.SetResource(original);
+                    e.FxOverlayMap.SetResource(overlay);
                     e.FxColor.Set(new Vector4(colors[0].R / 255f, colors[0].G / 255f, colors[0].B / 255f, (float)alphaAdd));
 
                     if (mask != null) {
-                        e.FxOverlayMap.SetResource(mask);
+                        e.FxMaskMap.SetResource(mask);
 
                         var vColors = new Vector4[3];
                         var i = 0;
@@ -343,23 +340,27 @@ namespace AcTools.Render.Kn5SpecificForward {
                 };
 
         [CanBeNull]
-        private Dictionary<int, ShaderResourceView> _tintBase, _tintMaskBase;
+        private Dictionary<int, ShaderResourceView> _tintBase, _tintMask, _tintOverlay;
 
-        public bool OverrideTextureTint(string textureName, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource) {
+        public bool OverrideTextureTint(string textureName, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource,
+                PaintShopSource overlaySource) {
             if (source.UseInput) source = new PaintShopSource(textureName);
             var original = GetOriginal(ref _tintBase, source, OptionMaxTintSize);
-            var mask = maskSource == null ? null : GetOriginal(ref _tintMaskBase, maskSource, OptionMaxTintSize);
+            var mask = maskSource == null ? null : GetOriginal(ref _tintMask, maskSource, OptionMaxTintSize);
+            var overlay = overlaySource == null ? null : GetOriginal(ref _tintOverlay, overlaySource, OptionMaxTintSize);
             return original != null && OverrideTexture(textureName,
-                    TintAction(original, colors, alphaAdd, mask),
+                    TintAction(original, colors, alphaAdd, mask, overlay),
                     OptionMaxTintSize);
         }
 
-        public Task SaveTextureTintAsync(string filename, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource) {
+        public Task SaveTextureTintAsync(string filename, Color[] colors, double alphaAdd, PaintShopSource source, PaintShopSource maskSource,
+                PaintShopSource overlaySource) {
             if (source.UseInput) source = new PaintShopSource(Path.GetFileName(filename) ?? "");
             var original = GetOriginal(ref _tintBase, source, int.MaxValue);
-            var mask = maskSource == null ? null : GetOriginal(ref _tintMaskBase, maskSource, OptionMaxTintSize);
+            var mask = maskSource == null ? null : GetOriginal(ref _tintMask, maskSource, int.MaxValue);
+            var overlay = overlaySource == null ? null : GetOriginal(ref _tintOverlay, overlaySource, int.MaxValue);
             return original == null ? Task.Delay(0) : SaveTextureAsync(filename,
-                    TintAction(original, colors, alphaAdd, mask),
+                    TintAction(original, colors, alphaAdd, mask, overlay),
                     GetSize(source) ?? new Size(OptionMaxTintSize, OptionMaxTintSize));
         }
 
@@ -371,7 +372,8 @@ namespace AcTools.Render.Kn5SpecificForward {
             _overlayBase?.DisposeEverything();
             _mapsBase?.DisposeEverything();
             _tintBase?.DisposeEverything();
-            _tintMaskBase?.DisposeEverything();
+            _tintMask?.DisposeEverything();
+            _tintOverlay?.DisposeEverything();
         }
     }
 }

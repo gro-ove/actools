@@ -6,13 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Kn5File;
-using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
-using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -23,27 +20,18 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
-    public class AmbientShadowRenderer : BaseRenderer {
-        private readonly Kn5 _kn5;
-        private readonly RenderableList _scene;
-        private readonly CarData _carData;
-        private RenderableList _carNode;
+    public class AmbientShadowRenderer : ShadowsRendererBase {
+        public AmbientShadowRenderer([NotNull] string mainKn5Filename, [CanBeNull] string carLocation)
+                : this(Kn5.FromFile(mainKn5Filename), DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
 
-        protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
-
-        public AmbientShadowRenderer(string mainKn5Filename, string carLocation = null) : this(Kn5.FromFile(mainKn5Filename), carLocation) { }
-
-        public AmbientShadowRenderer(Kn5 kn5, string carLocation = null) {
-            _kn5 = kn5;
-            _carData = new CarData(DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(kn5.OriginalFilename) ?? ""));
-            _scene = new RenderableList();
+        public AmbientShadowRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
+            UpDelta = 0.1f;
         }
 
         public float DiffusionLevel = 0.35f;
         public float SkyBrightnessLevel = 4.0f;
         public float BodyMultipler = 0.8f;
         public float WheelMultipler = 0.69f;
-        public float UpDelta = 0.1f;
         public int Iterations = 2000;
         public bool HideWheels = true;
         public bool Fade = true;
@@ -55,21 +43,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public const int WheelSize = 64;
         public const int WheelPadding = 32;
 
-        protected override void ResizeInner() { }
-
-        private void LoadAndAdjustKn5() {
-            DeviceContextHolder.Set<IMaterialsFactory>(new DepthMaterialsFactory());
-
-            _carNode = (RenderableList)Kn5RenderableDepthOnlyObject.Convert(_kn5.RootNode);
-            _scene.Add(_carNode);
-
-            _carNode.UpdateBoundingBox();
-            _carNode.LocalMatrix = Matrix.Translation(0, UpDelta - (_carNode.BoundingBox?.Minimum.Y ?? 0f), 0) * _carNode.LocalMatrix;
-            _scene.UpdateBoundingBox();
-        }
-
         private void LoadAmbientShadowSize() {
-            _ambientBodyShadowSize = _carData.GetBodyShadowSize();
+            _ambientBodyShadowSize = CarData?.GetBodyShadowSize() ?? new Vector3(1f, 0f, 1f);
         }
 
         private void InitializeBuffers() {
@@ -92,7 +67,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected override void InitializeInner() {
-            LoadAndAdjustKn5();
+            base.InitializeInner();
             LoadAmbientShadowSize();
             InitializeBuffers();
         }
@@ -122,18 +97,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
 
-        [NotNull]
-        private static IEnumerable<Kn5RenderableDepthOnlyObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
-            return root
-                    .SelectManyRecursive(x => {
-                        var list = x as Kn5RenderableList;
-                        if (list == null || !list.IsEnabled) return null;
-                        return filter?.Invoke(list) == false ? null : list;
-                    })
-                    .OfType<Kn5RenderableDepthOnlyObject>()
-                    .Where(x => x.IsEnabled && filter?.Invoke(x) != false);
-        }
-
         private void DrawShadow(Vector3 from, Vector3? up = null) {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
@@ -162,7 +125,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     };
                 }
 
-                _flattenNodes = Flatten(_scene, x => !ignored.Contains((x as Kn5RenderableList)?.Name)).ToArray();
+                _flattenNodes = Flatten(Scene, x =>
+                        (x as Kn5RenderableDepthOnlyObject)?.OriginalNode.CastShadows != false &&
+                                !ignored.Contains((x as Kn5RenderableList)?.Name) && IsVisible(x))
+                        .ToArray();
             }
 
             for (var i = 0; i < _flattenNodes.Length; i++) {
@@ -308,7 +274,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void SetWheelShadowCamera() {
-            _shadowSize = _carData.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize);
+            _shadowSize = CarData?.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize) ?? new Vector3(1f, 0f, 1f);
             var size = Math.Max(_shadowSize.X, _shadowSize.Z) * 2f;
             _shadowCamera = new CameraOrtho {
                 Width = size,
@@ -367,17 +333,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _wheelMode = true;
 
             var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
-            foreach (var entry in nodes.Select(x => _carNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
+            foreach (var entry in nodes.Select(x => CarNode.GetDummyByName(x)).NonNull().Select((x, i) => new {
                 Node = x,
-                Matrix = Matrix.Translation(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f),
+                Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
+                        new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
                 Filename = $"tyre_{i}_shadow.png"
             })) {
-                _scene.Clear();
+                Scene.Clear();
                 _flattenNodes = null;
 
-                _scene.Add(entry.Node);
+                Scene.Add(entry.Node);
                 entry.Node.LocalMatrix = entry.Matrix;
-                _scene.UpdateBoundingBox();
+                Scene.UpdateBoundingBox();
 
                 Draw(WheelMultipler, WheelSize, WheelPadding, 1f);
                 SaveResultAs(outputDirectory, entry.Filename, WheelSize, WheelPadding);
@@ -385,7 +352,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public void Shot() {
-            Shot(Path.GetDirectoryName(_kn5.OriginalFilename));
+            Shot(Path.GetDirectoryName(Kn5.OriginalFilename));
         }
 
         protected override void OnTick(float dt) { }
@@ -395,8 +362,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _summBuffer);
             DisposeHelper.Dispose(ref _tempBuffer);
             DisposeHelper.Dispose(ref _shadowBuffer);
-            _carNode.Dispose();
-            _scene.Dispose();
+            CarNode.Dispose();
+            Scene.Dispose();
             base.DisposeOverride();
         }
     }

@@ -101,7 +101,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         /// Several colors — for mask, in provided.
         /// </summary>
         bool OverrideTextureTint(string textureName, [NotNull] Color[] colors, double alphaAdd, [NotNull] PaintShopSource source,
-                [CanBeNull] PaintShopSource maskSource);
+                [CanBeNull] PaintShopSource maskSource, [CanBeNull] PaintShopSource overlay);
 
         Task SaveTextureAsync(string filename, [NotNull] PaintShopSource source);
 
@@ -119,6 +119,6 @@ namespace AcTools.Render.Kn5SpecificForward {
         /// Several colors — for mask, in provided.
         /// </summary>
         Task SaveTextureTintAsync(string filename, [NotNull] Color[] colors, double alphaAdd, [NotNull] PaintShopSource source,
-                [CanBeNull] PaintShopSource maskSource);
+                [CanBeNull] PaintShopSource maskSource, [CanBeNull] PaintShopSource overlay);
     }
 }

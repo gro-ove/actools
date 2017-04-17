@@ -48,7 +48,7 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "dlc":
                     var dlc = obj.Dlc;
-                    return dlc != null && (value.Test(dlc.Id) || value.Test(dlc.ShortName) || value.Test(dlc.DisplayName));
+                    return value.Test(dlc?.Id ?? 0) || value.Test(dlc?.ShortName) || value.Test(dlc?.DisplayName);
 
                 case "desc":
                 case "description":

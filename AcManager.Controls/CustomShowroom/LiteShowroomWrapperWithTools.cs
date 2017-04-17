@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Wrapper;
@@ -162,6 +161,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     try {
                         await Task.Run(() => {
+                            // ReSharper disable once AccessToDisposedClosure
                             action(waiting, cancellation);
                         });
                     } finally {
@@ -246,7 +246,16 @@ namespace AcManager.Controls.CustomShowroom {
 
             switch (args.KeyCode) {
                 case Keys.H:
-                    if (args.Control && !args.Alt && !args.Shift) {
+                    if (args.Alt) {
+                        var tools = Renderer as ToolsKn5ObjectRenderer;
+                        if (tools != null) {
+                            if (!args.Control && !args.Shift) {
+                                tools.ToggleSelected();
+                            } else if (!args.Control && args.Shift) {
+                                tools.UnhideAll();
+                            }
+                        }
+                    } else if (args.Control && !args.Shift) {
                         _helper.Visible = !_helper.Visible;
                         args.Handled = true;
                     }

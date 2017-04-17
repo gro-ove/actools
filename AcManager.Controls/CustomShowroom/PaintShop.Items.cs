@@ -60,6 +60,7 @@ namespace AcManager.Controls.CustomShowroom {
             protected virtual void OnEnabledChanged() {}
 
             private bool _updating;
+            protected int UpdateDelay = 10;
 
             protected async void Update() {
                 if (_updating) return;
@@ -68,7 +69,7 @@ namespace AcManager.Controls.CustomShowroom {
                     _updating = true;
 
                     if (IsActive()) {
-                        await Task.Delay(10);
+                        await Task.Delay(UpdateDelay);
                     }
 
                     if (_updating && !_disposed) {
@@ -301,6 +302,69 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
+        public class MultiReplacement : PaintableItem {
+            public Dictionary<string, Dictionary<string, PaintShopSource>> Replacements { get; }
+
+            public MultiReplacement(Dictionary<string, Dictionary<string, PaintShopSource>> replacements) : base(false) {
+                Replacements = replacements;
+                Value = Replacements.FirstOrDefault();
+                AffectedTextures.AddRange(Replacements.Values.SelectMany(x => x.Keys));
+            }
+
+            private KeyValuePair<string, Dictionary<string, PaintShopSource>> _value;
+
+            public KeyValuePair<string, Dictionary<string, PaintShopSource>> Value {
+                get { return _value; }
+                set {
+                    if (Equals(value, _value)) return;
+                    _value = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            protected override void ApplyOverride(IPaintShopRenderer renderer) {
+                var value = Value.Value;
+                if (value == null) return;
+                foreach (var pair in value) {
+                    renderer.OverrideTexture(pair.Key, pair.Value);
+                }
+            }
+
+            protected override void ResetOverride(IPaintShopRenderer renderer) {
+                foreach (var tex in AffectedTextures) {
+                    renderer.OverrideTexture(tex, null);
+                }
+            }
+
+            protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
+                var value = Value.Value;
+                if (value == null) return;
+                foreach (var pair in value) {
+                    await renderer.SaveTextureAsync(Path.Combine(location, pair.Key), pair.Value);
+                }
+            }
+
+            public override JObject Serialize() {
+                var result = base.Serialize();
+                if (result != null) {
+                    result["value"] = NameToId(Value.Key, false);
+                }
+
+                return result;
+            }
+
+            public override void Deserialize(JObject data) {
+                base.Deserialize(data);
+                if (data != null) {
+                    var loaded = data["value"]?.ToString();
+                    var value = Replacements.FirstOrDefault(x => NameToId(x.Key, false) == loaded);
+                    if (value.Value != null) {
+                        Value = value;
+                    }
+                }
+            }
+        }
+
         public class ColoredItem : PaintableItem {
             protected readonly Dictionary<string, TintedEntry> Replacements;
 
@@ -309,7 +373,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ColoredItem([Localizable(false)] string diffuseTexture, CarPaintColors colors)
                     : this(new Dictionary<string, TintedEntry> {
-                        [diffuseTexture] = new TintedEntry(PaintShopSource.White)
+                        [diffuseTexture] = new TintedEntry(PaintShopSource.White, null, null)
                     }, colors) {}
 
             public ColoredItem(Dictionary<string, TintedEntry> replacements, CarPaintColors colors) : base(false) {
@@ -332,7 +396,7 @@ namespace AcManager.Controls.CustomShowroom {
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
                     renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 0d,
-                            replacement.Value.Source, replacement.Value.Mask);
+                            replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
 
@@ -345,7 +409,7 @@ namespace AcManager.Controls.CustomShowroom {
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
                     await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 0d,
-                            replacement.Value.Source, replacement.Value.Mask);
+                            replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
 
@@ -412,14 +476,14 @@ namespace AcManager.Controls.CustomShowroom {
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
                     renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, Alpha,
-                            replacement.Value.Source, replacement.Value.Mask);
+                            replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
                     await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, Alpha,
-                            replacement.Value.Source, replacement.Value.Mask);
+                            replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
         }

@@ -22,8 +22,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         public static PresetsManager Instance { get; private set; }
 
-        private PresetsManager(string path = null)
-            : base(path) {
+        private PresetsManager(string path = null) : base(path) {
             Debug.Assert(path != null);
             _builtInPresets = new Dictionary<string, List<BuiltInPresetEntry>>(2);
         }
@@ -37,6 +36,10 @@ namespace AcManager.Tools.Managers.Presets {
 
         public bool HasBuiltInPreset(string category, string filename) {
             return _builtInPresets.GetValueOrDefault(category)?.Any(x => FileUtils.ArePathsEqual(x.Filename, filename)) == true;
+        }
+
+        public ISavedPresetEntry GetBuiltInPreset(string category, string filename) {
+            return _builtInPresets.GetValueOrDefault(category)?.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
         }
 
         public void RegisterBuiltInPreset(byte[] data, string category, params string[] localFilename) {

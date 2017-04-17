@@ -28,12 +28,6 @@
                 </Grid.RowDefinitions>
 
                 <!--first column, showroom & filter-->
-                <StackPanel Margin="0 0 0 8" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                    <TextBlock Margin="0 0 0 4" Text="Mode:" Style="{StaticResource Label.Padding}" />
-                    <mui:BetterComboBox IsEditable="False" Margin="4 0 4 0" SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}" />
-                </StackPanel>
-
-                <!--first column, showroom & filter-->
                 <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource Label.Padding}" />
                     <mui:BetterComboBox IsEditable="False" Margin="4 0 4 0" SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}">

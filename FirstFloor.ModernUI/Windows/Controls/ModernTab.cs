@@ -138,8 +138,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Frame.Source = ValuesStorage.GetUri(SaveKey) ?? Links.FirstOrDefault()?.Source;
             } else {
                 var saved = skipLoading || SaveKey == null ? null : ValuesStorage.GetString(SaveKey);
-                _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.Source.OriginalString == saved))
-                        ?? Links.FirstOrDefault(l => l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
+                _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved))
+                        ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
             }
         }
 

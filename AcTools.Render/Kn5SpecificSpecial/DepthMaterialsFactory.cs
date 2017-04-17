@@ -36,7 +36,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
+            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
             return true;
         }
 
@@ -54,6 +54,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.FxNormalUvMult.Set(uvRepeat);
         }
 
+        public void PrepareShadow(ShaderResourceView txNormal, float uvRepeat) {
+            _effect.FxAlphaMap.SetResource(txNormal);
+            _effect.FxAlphaRef.Set(uvRepeat);
+        }
+
         public void SetMatricesAo(Matrix objectTransform) {
             _effect.FxWorld.SetMatrix(objectTransform);
             _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
@@ -68,12 +73,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public void Dispose() { }
     }
 
-    public interface INormalTexturesProvider : IDisposable {
+    public interface IAlphaTexturesProvider : IDisposable {
         [CanBeNull]
         Tuple<IRenderableTexture, float> GetTexture(IDeviceContextHolder contextHolder, uint materialId);
     }
 
-    public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticeP>, IKn5RenderableObject {
+    public interface INormalsNormalTexturesProvider : IDisposable {
+        [CanBeNull]
+        Tuple<IRenderableTexture, float> GetTexture(IDeviceContextHolder contextHolder, uint materialId);
+    }
+
+    public sealed class Kn5RenderableDepthOnlyObject : TrianglesRenderableObject<InputLayouts.VerticePT>, IKn5RenderableObject {
         public Kn5Node OriginalNode { get; }
 
         public Matrix ModelMatrixInverted { get; set; }
@@ -95,48 +105,57 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public Kn5RenderableDepthOnlyObject(Kn5Node node, bool forceVisible = false)
-                : base(node.Name, InputLayouts.VerticeP.Convert(node.Vertices), Convert(node.Indices)) {
+                : base(node.Name, InputLayouts.VerticePT.Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             if (IsEnabled && (!node.Active || !forceVisible && (!node.IsVisible || !node.IsRenderable))) {
                 IsEnabled = false;
             }
         }
 
-        private IRenderableMaterial _material;
-        private Kn5MaterialDepth _materialDepth;
+        private Kn5MaterialDepth _material;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            _material = contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
+            _material = (Kn5MaterialDepth)contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
             _material.Initialize(contextHolder);
         }
 
-        private Tuple<IRenderableTexture, float> _txNormal;
-        private ShaderResourceView _txNormalView;
+        private Tuple<IRenderableTexture, float> _txNormal, _txAlpha;
+        private ShaderResourceView _txNormalView, _txAlphaView;
+        private bool _txAlphaSet;
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (mode == SpecialRenderMode.Shadow) {
                 if (_pntgObject == null) {
-                    _materialDepth = _material as Kn5MaterialDepth;
-
                     _pntgObject = new TrianglesRenderableObject<InputLayouts.VerticePNTG>("",
                             InputLayouts.VerticePNTG.Convert(OriginalNode.Vertices), Indices);
                     _pntgObject.Draw(contextHolder, camera, SpecialRenderMode.InitializeOnly);
                     
-                    _txNormal = contextHolder.Get<INormalTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
+                    _txNormal = contextHolder.Get<INormalsNormalTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
                     _txNormalView = _txNormal?.Item1.Resource ?? contextHolder.GetFlatNmTexture();
                 }
 
-                if (_materialDepth == null) return;
-
-                _materialDepth.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
+                if (_material == null) return;
+                _material.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
                 _pntgObject.SetBuffers(contextHolder);
-                _materialDepth.SetMatricesAo(ParentMatrix);
-                _materialDepth.DrawAo(contextHolder, Indices.Length);
+                _material.SetMatricesAo(ParentMatrix);
+                _material.DrawAo(contextHolder, Indices.Length);
             } else {
                 if (mode != SpecialRenderMode.Simple) return;
                 if (!_material.Prepare(contextHolder, mode)) return;
+
+                if (!_txAlphaSet) {
+                    _txAlphaSet = true;
+                    _txAlpha = contextHolder.Get<IAlphaTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
+                    _txAlphaView = _txAlpha?.Item1.Resource;
+                }
+
+                if (_txAlpha != null) {
+                    _material.PrepareShadow(_txAlphaView, _txAlphaView == null ? -1f : _txAlpha.Item2);
+                } else {
+                    _material.PrepareShadow(null, -1f);
+                }
 
                 base.DrawOverride(contextHolder, camera, mode);
 

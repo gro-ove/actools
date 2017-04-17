@@ -17,20 +17,17 @@ using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.ContentRepairUi;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.AcdFile;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
 using MenuItem = System.Windows.Controls.MenuItem;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent, IImmediateContent {

@@ -17,6 +17,9 @@ namespace AcTools.AcdFile {
 
         public bool IsPacked => _packedFile != null;
 
+        [NotNull]
+        public string ParentDirectory => _unpackedDirectory ?? Path.GetDirectoryName(_packedFile) ?? "";
+
         private Acd([CanBeNull] string packedFile, [CanBeNull] string unpackedDirectory) {
             _packedBytes = packedFile == null ? null : File.ReadAllBytes(packedFile);
             _packedFile = packedFile;

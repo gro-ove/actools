@@ -1,6 +1,7 @@
 // textures
 	Texture2D gInputMap;
 	Texture2D gAoMap;
+	Texture2D gMaskMap;
 	Texture2D gOverlayMap;
 	Texture2D gNoiseMap;
 
@@ -31,6 +32,14 @@
 // common functions
 	float Luminance(float3 color) {
 		return saturate(dot(color, float3(0.299f, 0.587f, 0.114f)));
+	}
+
+	float4 ProperBlending(float4 background, float4 foreground) {
+		float a = foreground.a + background.a * (1 - foreground.a);
+		if (a < 0.00001) return 0.0;
+		return saturate(float4(
+			(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
+			a));
 	}
 	
 // input resources
@@ -165,7 +174,7 @@
 
 	float4 ps_Tint(PS_IN pin) : SV_Target {
 		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return saturate(float4(base.rgb * gColor.rgb, base.a + gColor.a));
+		return ProperBlending(float4(base.rgb * gColor.rgb, base.a + gColor.a), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
 	}
 
 	technique10 Tint {
@@ -178,13 +187,13 @@
 
 	float4 ps_TintMask(PS_IN pin) : SV_Target {
 		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 mask = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 mask = gMaskMap.SampleLevel(samLinear, pin.Tex, 0);
 
 		float4 result = base * ((float4)(1.0 - mask.r) + gColor * mask.r)
 			* ((float4)(1.0 - mask.g) + gColors[0] * mask.g)
 			* ((float4)(1.0 - mask.b) + gColors[1] * mask.b)
 			* ((float4)(1.0 - mask.a) + gColors[2] * mask.a);
-		return saturate(float4(result.rgb, base.a + gColor.a));
+		return ProperBlending(float4(result.rgb, base.a + gColor.a), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
 	}
 
 	technique10 TintMask {

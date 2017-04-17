@@ -3,23 +3,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}" Unloaded="OnUnloaded">
+        xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" xmlns:system="clr-namespace:System;assembly=System"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/RunningLog.xaml</system:Uri>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False" Scrollable="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open preset's folder (Ctrl+F)"
-                        Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}">
+                    <Button.ToolTip>Open preset’s folder (Ctrl+F)</Button.ToolTip>
+                </Button>
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
@@ -51,8 +54,10 @@
 
         <mui:Cell>
             <mui:ModernTab Layout="TabWithTitle" Margin="0" LinksMargin="0 0 0 0" FrameMargin="0 8 0 0" x:Name="Tabs" SaveKey="__serpr.st"
-                    mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml">
+                    mui:ModernFrame.TopSource="/Pages/ServerPreset/Basic.xaml" FrameNavigated="OnFrameNavigated" SelectedSource="/Pages/ServerPreset/Basic.xaml"
+                    SavePolicy="Strict">
                 <mui:ModernTab.Links>
+                    <mui:Link x:Name="RunningLogLink" DisplayName="Log" Source="{StaticResource RunningLogUri}" />
                     <mui:Link DisplayName="Main" Source="/Pages/ServerPreset/Basic.xaml" />
                     <mui:Link DisplayName="Entry List" Source="/Pages/ServerPreset/EntryList.xaml" />
                     <mui:Link DisplayName="Rules, Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
@@ -61,26 +66,17 @@
                 </mui:ModernTab.Links>
             </mui:ModernTab>
 
-            <mui:Cell Background="DarkCyan" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="200" Width="300" Margin="0 4"
-                    Visibility="{Binding SelectedObject.RunningLog, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <ListBox ItemsSource="{Binding SelectedObject.RunningLog}" Style="{StaticResource VirtualizingListBox}" TextBlock.FontSize="10">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <mui:SelectableBbCodeBlock BbCode="{Binding Mode=OneWay}" FontWeight="Normal" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </mui:Cell>
-
-            <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20" MaxWidth="320">
-                <DockPanel>
-                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                            Margin="0 0 8 0" VerticalAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
-                        <TextBlock.Text>Server is running!</TextBlock.Text>
-                    </TextBlock>
-                </DockPanel>
+            <Border x:Name="IsRunningMessage">
+                <Border Background="#99333333" TextBlock.Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="20" MaxWidth="320"
+                        Visibility="{Binding SelectedObject.IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <DockPanel>
+                        <Path Data="{StaticResource PlayIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
+                                Margin="0 0 8 0" VerticalAlignment="Center" />
+                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                            <TextBlock.Text>Server is running</TextBlock.Text>
+                        </TextBlock>
+                    </DockPanel>
+                </Border>
             </Border>
         </mui:Cell>
     </ac:AcObjectBase>

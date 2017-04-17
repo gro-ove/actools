@@ -5,6 +5,7 @@
     <c:BooleanToTextConverter x:Key="BooleanToTextConverter" />
     <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <c:ChainConverter x:Key="ChainConverter" />
+    <c:DifferentToVisibilityConverter x:Key="DifferentToVisibilityConverter" />
     <c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
     <c:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     <c:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />

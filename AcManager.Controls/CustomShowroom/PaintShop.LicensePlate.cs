@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcTools.Render.Kn5SpecificForward;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using LicensePlates;
@@ -28,6 +29,12 @@ namespace AcManager.Controls.CustomShowroom {
                 SuggestedStyleName = suggestedStyle;
                 DiffuseTexture = diffuseTexture;
                 NormalsTexture = normalsTexture;
+                UpdateDelay = 50;
+                InputParams.ItemPropertyChanged += OnInputParamChanged;
+            }
+
+            private void OnInputParamChanged(object sender, PropertyChangedEventArgs e) {
+                Update();
             }
 
             public string SuggestedStyleName { get; }
@@ -74,31 +81,33 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private LicensePlatesStyle _selectedStyle;
+            private object _selectedStyleSync = new object();
 
             [CanBeNull]
-            public LicensePlatesStyle SelectedStyle {
+            protected LicensePlatesStyle SelectedStyle {
                 get { return _selectedStyle; }
                 private set {
                     if (Equals(value, _selectedStyle)) return;
 
-                    if (_selectedStyle != null) {
-                        foreach (var inputParam in _selectedStyle.InputParams) {
-                            inputParam.PropertyChanged -= OnStyleValueChanged;
-                        }
-                    }
+                    lock (_selectedStyleSync) {
+                        _selectedStyle?.Dispose();
+                        _selectedStyle = value;
+                        _onlyPreviewModeChanged = false;
+                        OnPropertyChanged();
 
-                    _selectedStyle?.Dispose();
-                    _selectedStyle = value;
-                    _onlyPreviewModeChanged = false;
-                    OnPropertyChanged();
-
-                    if (value != null) {
-                        foreach (var inputParam in value.InputParams) {
-                            inputParam.PropertyChanged += OnStyleValueChanged;
+                        lock (InputParams) {
+                            if (value != null) {
+                                InputParams.ReplaceEverythingBy(value.InputParams.Select(x => x.Clone()));
+                            } else {
+                                InputParams.Clear();
+                            }
                         }
                     }
                 }
             }
+
+            public ChangeableObservableCollection<PlateValueBase> InputParams { get; }
+                = new ChangeableObservableCollection<PlateValueBase>();
 
             private static readonly string KeyPreviewMode = @"__PaintShop.LicensePlate.PreviewMode";
             private bool _previewMode = ValuesStorage.GetBool(KeyPreviewMode, true);
@@ -114,78 +123,96 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private bool _updating;
-
-            private async void OnStyleValueChanged(object sender, PropertyChangedEventArgs e) {
+            private void OnStyleValueChanged(object sender, PropertyChangedEventArgs e) {
                 _onlyPreviewModeChanged = false;
-                if (_updating) return;
-
-                try {
-                    _updating = true;
-                    await Task.Delay(50);
-                    Update();
-                } finally {
-                    _updating = false;
-                }
+                Update();
             }
 
             private int _applyId;
             private bool _keepGoing, _dirty;
             private Thread _thread;
-            private readonly object _threadObj = new object();
 
             private bool _flatNormals, _onlyPreviewModeChanged;
             private IPaintShopRenderer _renderer;
 
+            private LicensePlatesStyle GetSelectedStyle() {
+                lock (_selectedStyleSync) {
+                    return _selectedStyle;
+                }
+            }
+
+            private void ApplyTexture(Action<IPaintShopRenderer> action) {
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    var renderer = _renderer;
+                    if (renderer != null) {
+                        action(_renderer);
+                    }
+                });
+            }
+
             private void ApplyQuick() {
                 var applyId = ++_applyId;
+                var diffuseTexture = DiffuseTexture;
+                var normalsTexture = NormalsTexture;
 
-                //if (DiffuseTexture != null) {
-                    var diffuse = SelectedStyle?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
+                if (diffuseTexture != null) {
+                    var diffuse = GetSelectedStyle()?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
                     if (_applyId != applyId) return;
+                    ApplyTexture(r => r.OverrideTexture(diffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse)));
+                }
 
-                    _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
-                    if (_applyId != applyId) return;
-                //}
-
-                //if (NormalsTexture != null) {
-                    if (!_flatNormals) {
-                        _flatNormals = true;
-                        _renderer?.OverrideTexture(NormalsTexture, Color.FromRgb(127, 127, 255).ToColor(), 1d);
-                    }
-                //}
+                if (normalsTexture != null && !_flatNormals) {
+                    _flatNormals = true;
+                    ApplyTexture(r => { r.OverrideTexture(normalsTexture, Color.FromRgb(127, 127, 255).ToColor(), 1d); });
+                }
             }
 
             private void ApplySlowDiffuse() {
                 var applyId = ++_applyId;
+                var diffuseTexture = DiffuseTexture;
+                if (diffuseTexture == null) return;
 
-                //if (DiffuseTexture != null) {
-                    var diffuse = SelectedStyle?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
-                    if (_applyId != applyId) return;
+                var diffuse = GetSelectedStyle()?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
+                if (_applyId != applyId) return;
 
-                    _renderer?.OverrideTexture(DiffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse));
-                //}
+                ApplyTexture(r => r.OverrideTexture(diffuseTexture, diffuse == null ? null : new PaintShopSource(diffuse)));
             }
 
             private void ApplySlowNormals() {
                 var applyId = ++_applyId;
+                var normalsTexture = NormalsTexture;
+                if (normalsTexture == null) return;
 
-                //if (NormalsTexture != null) {
-                    var normals = SelectedStyle?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
-                    if (_applyId != applyId) return;
+                var normals = GetSelectedStyle()?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
+                if (_applyId != applyId) return;
 
-                    _renderer?.OverrideTexture(NormalsTexture, normals == null ? null : new PaintShopSource(normals));
-                    _flatNormals = false;
-                //}
+                ApplyTexture(r => r.OverrideTexture(normalsTexture, normals == null ? null : new PaintShopSource(normals)));
+                _flatNormals = false;
             }
+
+            private void SyncValues() {
+                Logging.Debug("Start");
+                List<string> input;
+                lock (InputParams) {
+                    input = InputParams.Select(x => x.Value).ToList();
+                }
+
+                var style = GetSelectedStyle();
+                for (var i = 0; i < style.InputParams.Count; i++) {
+                    style.InputParams[i].Value = input.ElementAtOrDefault(i);
+                }
+                Logging.Debug("End");
+            }
+
+            private readonly object _threadObj = new object();
 
             private void EnsureThreadCreated() {
                 if (_thread != null) return;
 
                 _thread = new Thread(() => {
                     try {
-                        while (_keepGoing) {
-                            lock (_threadObj) {
+                        lock (_threadObj) {
+                            while (_keepGoing) {
                                 if (_dirty) {
                                     try {
                                         if (_onlyPreviewModeChanged) {
@@ -193,6 +220,7 @@ namespace AcManager.Controls.CustomShowroom {
                                             ApplySlowNormals();
                                         } else {
                                             Update:
+                                            SyncValues();
                                             ApplyQuick();
                                             _dirty = false;
 

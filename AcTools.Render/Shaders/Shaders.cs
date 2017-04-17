@@ -1247,7 +1247,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechFill, TechPattern, TechColorfulPattern, TechFlakes, TechMaps, TechMapsFillGreen, TechTint, TechTintMask, TechMaximum, TechMaximumApply, TechDesaturate;
 
-		public EffectOnlyResourceVariable FxInputMap, FxAoMap, FxOverlayMap, FxNoiseMap;
+		public EffectOnlyResourceVariable FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap, FxNoiseMap;
 		public EffectScalarVariable FxNoiseMultipler, FxFlakes;
 		public EffectVectorVariable FxColor { get; private set; }
 		public EffectVectorVariable FxSize { get; private set; }
@@ -1277,6 +1277,7 @@ namespace AcTools.Render.Shaders {
 
 			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
 			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap").AsResource());
+			FxMaskMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMaskMap").AsResource());
 			FxOverlayMap = new EffectOnlyResourceVariable(E.GetVariableByName("gOverlayMap").AsResource());
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap").AsResource());
 			FxNoiseMultipler = E.GetVariableByName("gNoiseMultipler").AsScalar();
@@ -1333,8 +1334,8 @@ namespace AcTools.Render.Shaders {
 		private ShaderBytecode _b;
 		public Effect E;
 
-        public ShaderSignature InputSignaturePT, InputSignatureP, InputSignaturePNTG;
-        public InputLayout LayoutPT, LayoutP, LayoutPNTG;
+        public ShaderSignature InputSignaturePT, InputSignaturePNTG;
+        public InputLayout LayoutPT, LayoutPNTG;
 
 		public EffectReadyTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest, TechAo, TechAoResult, TechAoGrow;
 
@@ -1342,8 +1343,8 @@ namespace AcTools.Render.Shaders {
 		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
 		public EffectOnlyMatrixVariable FxWorld { get; private set; }
 		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
-		public EffectOnlyResourceVariable FxInputMap, FxDepthMap, FxNormalMap;
-		public EffectScalarVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxNormalUvMult;
+		public EffectOnlyResourceVariable FxInputMap, FxDepthMap, FxAlphaMap, FxNormalMap;
+		public EffectScalarVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxAlphaRef, FxNormalUvMult;
 		public EffectVectorVariable FxSize { get; private set; }
 		public EffectVectorVariable FxShadowSize { get; private set; }
 		public EffectVectorVariable FxLightDir { get; private set; }
@@ -1366,11 +1367,6 @@ namespace AcTools.Render.Shaders {
 			}
 			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialShadow, PT, HorizontalShadowBlur) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
-			for (var i = 0; i < TechSimplest.Description.PassCount && InputSignatureP == null; i++) {
-				InputSignatureP = TechSimplest.GetPassByIndex(i).Description.Signature;
-			}
-			if (InputSignatureP == null) throw new System.Exception("input signature (SpecialShadow, P, Simplest) == null");
-			LayoutP = new InputLayout(device, InputSignatureP, InputLayouts.VerticeP.InputElementsValue);
 			for (var i = 0; i < TechAo.Description.PassCount && InputSignaturePNTG == null; i++) {
 				InputSignaturePNTG = TechAo.GetPassByIndex(i).Description.Signature;
 			}
@@ -1383,6 +1379,7 @@ namespace AcTools.Render.Shaders {
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
 			FxInputMap = new EffectOnlyResourceVariable(E.GetVariableByName("gInputMap").AsResource());
 			FxDepthMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDepthMap").AsResource());
+			FxAlphaMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAlphaMap").AsResource());
 			FxNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalMap").AsResource());
 			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
 			FxGamma = E.GetVariableByName("gGamma").AsScalar();
@@ -1390,6 +1387,7 @@ namespace AcTools.Render.Shaders {
 			FxAmbient = E.GetVariableByName("gAmbient").AsScalar();
 			FxPadding = E.GetVariableByName("gPadding").AsScalar();
 			FxFade = E.GetVariableByName("gFade").AsScalar();
+			FxAlphaRef = E.GetVariableByName("gAlphaRef").AsScalar();
 			FxNormalUvMult = E.GetVariableByName("gNormalUvMult").AsScalar();
 			FxSize = E.GetVariableByName("gSize").AsVector();
 			FxShadowSize = E.GetVariableByName("gShadowSize").AsVector();
@@ -1400,8 +1398,6 @@ namespace AcTools.Render.Shaders {
 			if (E == null) return;
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
-			InputSignatureP.Dispose();
-            LayoutP.Dispose();
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
             E.Dispose();

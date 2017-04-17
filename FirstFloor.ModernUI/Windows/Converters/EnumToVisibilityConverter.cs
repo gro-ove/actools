@@ -25,4 +25,17 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             throw new NotSupportedException();
         }
     }
+
+    [ValueConversion(typeof(object), typeof(Visibility))]
+    public class DifferentToVisibilityConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return parameter == null
+                    ? (value == null ? Visibility.Visible : Visibility.Collapsed)
+                    : (ReferenceEquals(value, parameter) || value?.ToString() == parameter.ToString() ? Visibility.Collapsed : Visibility.Visible);
+        }
+        
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotSupportedException();
+        }
+    }
 }

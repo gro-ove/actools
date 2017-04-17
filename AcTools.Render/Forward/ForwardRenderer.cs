@@ -10,6 +10,7 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -58,9 +59,10 @@ namespace AcTools.Render.Forward {
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
         // F: full size, A: actual size, H: half size
-        private TargetResourceTexture _bufferF, _bufferFSsaaFxaa;
-        private TargetResourceTexture _bufferA, _bufferAColorGrading;
-        private TargetResourceTexture _bufferH1, _bufferH2;
+        [CanBeNull]
+        private TargetResourceTexture _bufferF, _bufferFSsaaFxaa,
+                _bufferA, _bufferAColorGrading,
+                _bufferH1, _bufferH2;
 
         protected override void InitializeInner() {
             _bufferF = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
@@ -221,7 +223,7 @@ namespace AcTools.Render.Forward {
         }
 
         private void ResizeBuffers() {
-            _bufferF.Resize(DeviceContextHolder, Width, Height, SampleDescription);
+            _bufferF?.Resize(DeviceContextHolder, Width, Height, SampleDescription);
             _bufferFSsaaFxaa?.Resize(DeviceContextHolder, Width, Height, null);
 
             _bufferA?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
@@ -377,6 +379,8 @@ namespace AcTools.Render.Forward {
         }
 
         protected bool HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
+            if (_bufferH1 == null || _bufferH2 == null) return false;
+
             if (UseLensFlares) {
                 // prepare effects
                 if (_lensFlares == null) {
@@ -390,7 +394,7 @@ namespace AcTools.Render.Forward {
                 if (_blur == null) {
                     _blur = DeviceContextHolder.GetHelper<BlurHelper>();
                 }
-
+                
                 // filter bright areas by high threshold to downscaled buffer #1
                 DeviceContext.Rasterizer.SetViewports(_bufferH1.Viewport);
                 DeviceContext.OutputMerger.SetTargets(_bufferH1.TargetView);
@@ -528,7 +532,7 @@ namespace AcTools.Render.Forward {
             }
 
             if (UseSsaa) {
-                if (UseFxaa) {
+                if (UseFxaa && _bufferFSsaaFxaa != null) {
                     DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, _bufferFSsaaFxaa.TargetView, new Vector2(Width, Height));
                     input = _bufferFSsaaFxaa.View;
                 }
@@ -547,10 +551,15 @@ namespace AcTools.Render.Forward {
         }
 
         private void AaThenBloom() {
-            var aaView = AaPass(_bufferF.View, _bufferA.TargetView) ? _bufferA.View : _bufferF.View;
+            var bufferA = _bufferA;
+            var bufferF = _bufferF;
+            if (bufferF == null || bufferA == null) return;
 
-            if (UseColorGrading) {
-                var hdrView = HdrPass(aaView, _bufferAColorGrading.TargetView, _bufferAColorGrading.Viewport) ? _bufferAColorGrading.View : aaView;
+            var aaView = AaPass(bufferF.View, bufferA.TargetView) ? bufferA.View : bufferF.View;
+
+            var bufferAColorGrading = _bufferAColorGrading;
+            if (UseColorGrading && bufferAColorGrading != null) {
+                var hdrView = HdrPass(aaView, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ? bufferAColorGrading.View : aaView;
                 if (!ColorGradingPass(hdrView, RenderTargetView, OutputViewport)) {
                     // nothing happened in color grading stage
                     DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, hdrView, RenderTargetView);
@@ -564,7 +573,11 @@ namespace AcTools.Render.Forward {
         }
 
         private void BloomThenAa() {
-            var bloomView = HdrPass(_bufferF.View, _bufferA.TargetView, OutputViewport) ? _bufferA.View : _bufferF.View;
+            var bufferA = _bufferA;
+            var bufferF = _bufferF;
+            if (bufferF == null || bufferA == null) return;
+
+            var bloomView = HdrPass(bufferF.View, bufferA.TargetView, OutputViewport) ? bufferA.View : bufferF.View;
             var aa = AaPass(bloomView, RenderTargetView);
 
             if (!aa) {

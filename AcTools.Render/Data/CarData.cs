@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using AcTools.DataFile;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
@@ -22,12 +25,17 @@ namespace AcTools.Render.Data {
         [NotNull]
         private readonly DataWrapper _data;
 
+        [NotNull]
+        public string CarDirectory { get; }
+
         public CarData([NotNull] string carDirectory) {
             _data = DataWrapper.FromDirectory(carDirectory);
+            CarDirectory = carDirectory;
         }
 
         public CarData([NotNull] DataWrapper data) {
             _data = data;
+            CarDirectory = data.ParentDirectory;
         }
 
         public bool IsEmpty => _data.IsEmpty;
@@ -46,6 +54,16 @@ namespace AcTools.Render.Data {
 
         public Vector3 GetWheelShadowSize() {
             return new Vector3(0.3f, 1.0f, 0.3f);
+        }
+        #endregion
+
+        #region Doors
+        public AnimationBase GetLeftDoorAnimation() {
+            return new AnimationBase("car_door_L.ksanim", 1f);
+        }
+
+        public AnimationBase GetRightDoorAnimation() {
+            return new AnimationBase("car_door_R.ksanim", 1f);
         }
         #endregion
 
@@ -129,6 +147,7 @@ namespace AcTools.Render.Data {
             }
         }
 
+        [NotNull]
         public IEnumerable<LightAnimation> GetLightsAnimations() {
             return IsEmpty ? new LightAnimation[0] :
                     _data.GetIniFile("lights.ini")
@@ -229,11 +248,16 @@ namespace AcTools.Render.Data {
             return GetGraphicOffset() + Vector3.UnitZ * (cgLocation - 0.5f) * wheelbase;
         }
 
+        public Vector3 GetWheelGraphicOffset(string nodeName) {
+            var suspensions = _data.GetIniFile("suspensions.ini");
+            return new Vector3(-suspensions["GRAPHICS_OFFSETS"].GetFloat(nodeName, 0f), 0f, 0f);
+        }
+
         public SuspensionsPack GetSuspensionsPack() {
             return SuspensionsPack.Create(_data);
         }
 
-        public class SuspensionsPack {
+        public class SuspensionsPack : IEnumerable<SuspensionsGroupBase> {
             private SuspensionsPack(SuspensionsGroupBase front, SuspensionsGroupBase rear, Matrix graphicOffset) {
                 Front = front;
                 Rear = rear;
@@ -270,15 +294,16 @@ namespace AcTools.Render.Data {
                     SuspensionsGroupBase.Create(suspensions, false, tyres["REAR"].GetFloat("RADIUS", 0f)), graphicOffset);
             }
 
-            /*#region Debug lines
-            public IReadOnlyList<DebugLine> DebugLines => _debugLines ?? (_debugLines = new [] {
-                Front, Rear
-            }.NonNull().SelectMany(x => x.DebugLines).ToArray());
-            private DebugLine[] _debugLines;
-            #endregion*/
+            IEnumerator IEnumerable.GetEnumerator() {
+                return GetEnumerator();
+            }
+
+            public IEnumerator<SuspensionsGroupBase> GetEnumerator() {
+                return new[] { Front, Rear }.OfType<SuspensionsGroupBase>().GetEnumerator();
+            }
         }
 
-        public abstract class SuspensionsGroupBase {
+        public abstract class SuspensionsGroupBase : INotifyPropertyChanged {
             public static SuspensionsGroupBase Create(IniFile ini, bool front, float wheelRadius) {
                 var basic = ini["BASIC"];
                 var section = ini[front ? "FRONT" : "REAR"];
@@ -303,6 +328,17 @@ namespace AcTools.Render.Data {
                         return null;
                 }
             }
+
+            public abstract string Name { get; }
+
+            public abstract string Kpi { get; }
+
+            public abstract string Caster { get; }
+
+            public event PropertyChangedEventHandler PropertyChanged {
+                add { }
+                remove { }
+            }
         }
 
         public class IndependentSuspensionsGroup : SuspensionsGroupBase {
@@ -316,6 +352,14 @@ namespace AcTools.Render.Data {
 
             [NotNull]
             public SuspensionBase Right { get; }
+
+            public override string Name => Left.DisplayType;
+
+            public override string Kpi => Math.Abs(Left.Kpi - Right.Kpi) < 0.002 ? Left.Kpi.ToString("F3") :
+                    $"{Left.Kpi:F3}/{Right.Kpi:F3}";
+
+            public override string Caster => Math.Abs(Left.Caster - Right.Caster) < 0.002 ? Left.Caster.ToString("F3") :
+                    $"{Left.Caster:F3}/{Right.Caster:F3}";
         }
 
         public class DependentSuspensionGroup : SuspensionsGroupBase {
@@ -325,6 +369,12 @@ namespace AcTools.Render.Data {
 
             [NotNull]
             public SuspensionBase Both { get; }
+
+            public override string Name => Both.DisplayType;
+
+            public override string Kpi => Both.Kpi.ToString("F3");
+
+            public override string Caster => Both.Caster.ToString("F3");
         }
 
         public class DebugLine {
@@ -433,7 +483,7 @@ namespace AcTools.Render.Data {
         public abstract class EightPointsSuspensionBase : SuspensionBase {
             public Vector3[] Points { get; } = new Vector3[8];
 
-            protected override float KpiOverride => ((this.Points[4].X - this.Points[5].X) / (this.Points[4].Y - this.Points[5].Y)).Atan() * 57.2957795f;
+            protected override float KpiOverride => ((Points[4].X - Points[5].X) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
 
             public EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) {}
         }

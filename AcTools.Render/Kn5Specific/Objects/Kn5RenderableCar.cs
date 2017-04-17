@@ -107,7 +107,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
     }
 
-    public class Kn5RenderableCar : Kn5RenderableFile, INotifyPropertyChanged {
+    public partial class Kn5RenderableCar : Kn5RenderableFile, INotifyPropertyChanged {
         /// <summary>
         /// Fix messed up KNH file by loading steering animation immediately.
         /// </summary>
@@ -413,7 +413,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!_isDriverVisible) return;
             InitializeDriver();
             _driver?.Draw(contextHolder, camera, mode);
-
             _up?.Draw(contextHolder, camera, mode);
         }
 
@@ -967,22 +966,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             set {
                 if (Equals(value, _cockpitLrActive)) return;
                 _cockpitLrActive = value;
-
-                foreach (var child in _currentLodObject.Renderable.GetAllChildren().OfType<Kn5RenderableList>()) {
-                    switch (child.OriginalNode.Name) {
-                        case "COCKPIT_LR":
-                        case "STEER_LR":
-                        case "SHIFT_LD":
-                            child.IsEnabled = value;
-                            break;
-                        case "COCKPIT_HR":
-                        case "STEER_HR":
-                        case "SHIFT_HD":
-                            child.IsEnabled = !value;
-                            break;
-                    }
-                }
-
+                SetCockpitLrActive(_currentLodObject.Renderable, value);
                 _currentLodObject.Renderable.UpdateBoundingBox();
                 InvalidateCount();
                 _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1001,17 +985,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             set {
                 if (Equals(value, _seatbeltOnActive)) return;
                 _seatbeltOnActive = value;
-
-                var onNode = _currentLodObject.Renderable.GetDummyByName("CINTURE_ON");
-                if (onNode != null) {
-                    onNode.IsEnabled = value;
-                }
-
-                var offNode = _currentLodObject.Renderable.GetDummyByName("CINTURE_OFF");
-                if (offNode != null) {
-                    offNode.IsEnabled = !value;
-                }
-
+                SetSeatbeltActive(_currentLodObject.Renderable, value);
                 _currentLodObject.Renderable.UpdateBoundingBox();
                 InvalidateCount();
                 _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1028,19 +1002,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             set {
                 if (Equals(value, _blurredNodesActive)) return;
                 _blurredNodesActive = value;
-
-                foreach (var blurredObject in BlurredObjects) {
-                    var staticNode = _currentLodObject.Renderable.GetDummyByName(blurredObject.StaticName);
-                    if (staticNode != null) {
-                        staticNode.IsEnabled = !value;
-                    }
-
-                    var blurredNode = _currentLodObject.Renderable.GetDummyByName(blurredObject.BlurredName);
-                    if (blurredNode != null) {
-                        blurredNode.IsEnabled = value;
-                    }
-                }
-
+                SetBlurredObjects(_currentLodObject.Renderable, BlurredObjects, value);
                 _currentLodObject.Renderable.UpdateBoundingBox();
                 InvalidateCount();
                 _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1379,8 +1341,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void InitializeDoors() {
             if (_doorLeftAnimator != null) return;
 
-            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, "car_door_L.ksanim"));
-            _doorRightAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, "car_door_R.ksanim"));
+            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _carData.GetLeftDoorAnimation()));
+            _doorRightAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _carData.GetRightDoorAnimation()));
         }
 
         private void ReenableDoors() {
@@ -1577,30 +1539,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return LoadLights<CarLight>();
         }
 
-        [CanBeNull]
-        private static KsAnimAnimator CreateAnimator([NotNull] string rootDirectory, [NotNull] string animName, float duration = 1f,
-                bool clampEnabled = true) {
-            return CreateAnimator(Path.Combine(rootDirectory, "animations", animName), duration, clampEnabled);
-        }
-
-        [CanBeNull]
-        private static KsAnimAnimator CreateAnimator([NotNull] string filename, float duration = 1f, bool clampEnabled = true) {
-            if (!File.Exists(filename)) return null;
-
-            try {
-                return new KsAnimAnimator(filename, duration) {
-                    ClampPosition = clampEnabled
-                };
-            } catch (Exception e) {
-                AcToolsLogging.Write(e);
-                return null;
-            }
-        }
-
         [ItemNotNull]
         private IEnumerable<KsAnimAnimator> LoadLightsAnimators() {
             return _carData.GetLightsAnimations()
-                           .Select(x => CreateAnimator(_rootDirectory, x.KsAnimName, x.Duration))
+                           .Select(x => CreateAnimator(_rootDirectory, x))
                            .NonNull();
         }
 
@@ -1738,7 +1680,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private Matrix GetWheelAmbientShadowMatrix([NotNull] RenderableList wheel) {
-            var m = wheel.Matrix.GetTranslationVector() - LocalMatrix.GetTranslationVector();
+            var offset = _carData.GetWheelGraphicOffset(wheel.Name);
+            var m = offset + wheel.Matrix.GetTranslationVector() - LocalMatrix.GetTranslationVector();
             m.Y = _shadowsHeight;
             return Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI - _steerDeg * MathF.PI / 180f) * Matrix.Translation(m);
         }

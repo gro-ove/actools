@@ -124,8 +124,8 @@
                 </mui:ButtonWithComboBox.MenuItems>
             </mui:ButtonWithComboBox>
 
-            <mui:ButtonWithComboBox Content="Calculate AO" Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024">
-                <mui:ButtonWithComboBox.ButtonToolTip>Generate 1024×1024 AO map — it won’t be perfect, but still better than nothing</mui:ButtonWithComboBox.ButtonToolTip>
+            <mui:ButtonWithComboBox Content="Calculate AO" Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="-1">
+                <mui:ButtonWithComboBox.ButtonToolTip>Generate AO map — it won’t be perfect, but still better than nothing</mui:ButtonWithComboBox.ButtonToolTip>
                 <mui:ButtonWithComboBox.MenuItems>
                     <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="512" Header="Calculate 512×512 Map" />
                     <MenuItem Command="{Binding BakedShadows.CalculateAoCommand}" CommandParameter="1024" Header="Calculate 1024×1024 Map" />

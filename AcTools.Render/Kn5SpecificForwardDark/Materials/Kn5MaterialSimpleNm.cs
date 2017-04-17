@@ -1,11 +1,9 @@
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using JetBrains.Annotations;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class Kn5MaterialSimpleNm : Kn5MaterialSimpleReflective {

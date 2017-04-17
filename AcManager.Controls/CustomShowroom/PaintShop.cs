@@ -5,13 +5,11 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils.Helpers;
@@ -101,11 +99,19 @@ namespace AcManager.Controls.CustomShowroom {
             return j.GetStringValueOnly(key) ?? defaultValue;
         }
 
+        private class MissingValueException : Exception {
+            public string Key { get; }
+
+            public MissingValueException(string key, string message = null) : base(message ?? $"Value required: “{key}”") {
+                Key = key;
+            }
+        }
+
         [NotNull]
         private static string RequireString(JObject j, string key) {
             var s = j.GetStringValueOnly(key);
             if (s == null) {
-                throw new Exception($"Value required: “{key}”");
+                throw new MissingValueException(key);
             }
             return s;
         }
@@ -220,13 +226,9 @@ namespace AcManager.Controls.CustomShowroom {
         private const string KeyCandidates = "candidates";
         private const string KeyLiveryStyle = "liveryStyle";
 
-        /// <summary>
-        /// Load entries from pairs table: name (or KN5’s texture) → replacement.
-        /// </summary>
         [NotNull]
-        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
-            var sourceParams = GetSourceParams(e);
-            return e[key]?.ToObject<Dictionary<string, JToken>>().Select(x => new {
+        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JToken t, Func<string, byte[]> extraData, PaintShopSourceParams sourceParams) {
+            return t?.ToObject<Dictionary<string, JToken>>().Select(x => new {
                 x.Key,
                 Source = GetSource(x.Value, extraData, sourceParams)
             }).Where(x => x.Source != null).ToDictionary(
@@ -234,10 +236,29 @@ namespace AcManager.Controls.CustomShowroom {
                     x => x.Source) ?? new Dictionary<string, PaintShopSource>();
         }
 
+        /// <summary>
+        /// Load entries from pairs table: name (or KN5’s texture) → replacement.
+        /// </summary>
+        [NotNull]
+        private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
+            return GetNameSourcePairs(e[key], extraData, GetSourceParams(e));
+        }
+
+        /// <summary>
+        /// Load entries from pairs table: name (or KN5’s texture) → KN5’s texture → replacement.
+        /// </summary>
+        [NotNull]
+        private static Dictionary<string, Dictionary<string, PaintShopSource>> GetNameNameSourcePairs(JObject e, string key, Func<string, byte[]> extraData) {
+            var sourceParams = GetSourceParams(e);
+            return e[key]?.ToObject<Dictionary<string, JToken>>().ToDictionary(x => x.Key, x => GetNameSourcePairs(x.Value, extraData, sourceParams))
+                    ?? new Dictionary<string, Dictionary<string, PaintShopSource>>();
+        }
+
         public class TintedEntry {
-            public TintedEntry([NotNull] PaintShopSource source, [CanBeNull] PaintShopSource mask = null) {
+            public TintedEntry([NotNull] PaintShopSource source, [CanBeNull] PaintShopSource mask, [CanBeNull] PaintShopSource overlay) {
                 Source = source;
                 Mask = mask;
+                Overlay = overlay;
             }
 
             [NotNull]
@@ -245,6 +266,9 @@ namespace AcManager.Controls.CustomShowroom {
 
             [CanBeNull]
             public PaintShopSource Mask { get; }
+
+            [CanBeNull]
+            public PaintShopSource Overlay { get; }
         }
 
         /// <summary>
@@ -257,12 +281,13 @@ namespace AcManager.Controls.CustomShowroom {
                 x.Key,
                 Source = GetSource((x.Value as JObject)?[KeySource] ?? x.Value, extraData, sourceParams),
                 Mask = GetSource((x.Value as JObject)?[KeyMask], extraData, null),
+                Overlay = GetSource((x.Value as JObject)?[KeyOverlay], extraData, null),
             }).Where(x => x.Source != null).ToDictionary(
                     x => x.Key,
-                    x => new TintedEntry(x.Source, x.Mask)) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, TintedEntry> {
-                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.InputSource.CopyFrom(sourceParams))
+                    x => new TintedEntry(x.Source, x.Mask, x.Overlay)) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, TintedEntry> {
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.InputSource.CopyFrom(sourceParams), null, null)
                     } : new Dictionary<string, TintedEntry> {
-                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.Transparent.CopyFrom(sourceParams))
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.Transparent.CopyFrom(sourceParams), null, null)
                     });
         }
 
@@ -385,7 +410,11 @@ namespace AcManager.Controls.CustomShowroom {
                     result = new ReplacedIfFlagged(e.GetBoolValueOnly(KeyInverse) ?? false, GetNameSourcePairs(e, KeyPairs, extractData));
                     break;
                 case TypeReplacement:
-                    result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, extractData));
+                    try {
+                        result = new Replacement(GetTextures(e), GetNameSourcePairs(e, KeyCandidates, extractData));
+                    } catch (MissingValueException ex) when (ex.Key == KeyTexture) {
+                        result = new MultiReplacement(GetNameNameSourcePairs(e, KeyCandidates, extractData));
+                    }
                     break;
                 default:
                     throw new Exception($"Not supported type: {type}");

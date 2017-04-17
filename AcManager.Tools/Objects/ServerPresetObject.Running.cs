@@ -149,6 +149,18 @@ namespace AcManager.Tools.Objects {
             _restartServerCommand?.RaiseCanExecuteChanged();
         }
 
+        public override void Reload() {
+            if (IsRunning) {
+                try {
+                    _running.Kill();
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            }
+
+            base.Reload();
+        }
+
         public bool IsRunning => _running != null;
 
         private BetterObservableCollection<string> _runningLog;

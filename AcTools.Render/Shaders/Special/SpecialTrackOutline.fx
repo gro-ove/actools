@@ -181,19 +181,18 @@ technique10 Combine {
 }
 
 // proper version
+float4 ProperBlending(float4 background, float4 foreground) {
+	float a = foreground.a + background.a * (1 - foreground.a);
+	if (a < 0.00001) return 0.0;
+	return saturate(float4(
+		(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
+		a));
+}
+
 float4 ps_Blend(PS_IN pin) : SV_Target {
-	float srcA = gInputMap.SampleLevel(samLinear, pin.Tex, 0.0).r * gBlendColor.a;
-	float3 srcRGB = gBlendColor.rgb;
-	float4 dst = gBgMap.SampleLevel(samLinear, pin.Tex, 0.0);
-
-	float outA = srcA + dst.a * (1 - srcA);
-	float3 outRGB = (srcRGB * srcA + dst.rgb * dst.a * (1 - srcA)) / outA;
-	if (outA < 0.00001) {
-		outA = 0.0;
-		outRGB = 0.0;
-	}
-
-	return saturate(float4(outRGB, outA));
+	float alpha = gInputMap.SampleLevel(samLinear, pin.Tex, 0.0).r * gBlendColor.a;
+	float4 background = gBgMap.SampleLevel(samLinear, pin.Tex, 0.0);
+	return ProperBlending(background, float4(gBlendColor.rgb, alpha));
 }
 
 technique10 Blend {

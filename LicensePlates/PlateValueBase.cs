@@ -24,6 +24,8 @@ namespace LicensePlates {
             RandomFunc = defaultValue as Func<string>;
         }
 
+        public abstract PlateValueBase Clone();
+
         protected abstract string GetRandom();
 
         private string _value;
@@ -79,6 +81,12 @@ namespace LicensePlates {
                        .Substring(0, Math.Min(32, LengthMode == InputLength.Fixed ? Length : Random.Next(Math.Min(Length / 2, 2), Length + 1)))
                        .ToUpperInvariant();
         }
+
+        public override PlateValueBase Clone() {
+            return new InputTextValue(Name, DefaultValue, Length, LengthMode) {
+                Value = Value
+            };
+        }
     }
 
     public class InputNumberValue : PlateValueBase {
@@ -120,6 +128,12 @@ namespace LicensePlates {
         protected override string GetRandom() {
             return ((int)(Random.NextDouble() * (1 + To - From) + From)).ToString("D" + Length);
         }
+
+        public override PlateValueBase Clone() {
+            return new InputNumberValue(Name, DefaultValue, Length, From, To) {
+                Value = Value
+            };
+        }
     }
 
     public class InputSelectValue : PlateValueBase {
@@ -139,6 +153,12 @@ namespace LicensePlates {
 
         protected override string GetRandom() {
             return _values[Random.Next(Values.Count)].Key;
+        }
+
+        public override PlateValueBase Clone() {
+            return new InputSelectValue(Name, DefaultValue, _values) {
+                Value = Value
+            };
         }
     }
 }

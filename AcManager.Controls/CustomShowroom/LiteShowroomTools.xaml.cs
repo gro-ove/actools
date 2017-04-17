@@ -761,14 +761,15 @@ namespace AcManager.Controls.CustomShowroom {
                         waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Updating);
 
                         await Task.Run(() => {
-                            if (Renderer == null) return;
-                            using (var renderer = new AmbientShadowRenderer(Renderer.Kn5, Car.Location)) {
-                                renderer.DiffusionLevel = (float)AmbientShadowDiffusion / 100f;
-                                renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
-                                renderer.Iterations = AmbientShadowIterations;
-                                renderer.HideWheels = AmbientShadowHideWheels;
-                                renderer.Fade = AmbientShadowFade;
-
+                            if (Renderer?.Kn5 == null) return;
+                            using (var renderer = new AmbientShadowRenderer(Renderer.Kn5, Car.AcdData) {
+                                DiffusionLevel = (float)AmbientShadowDiffusion / 100f,
+                                SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f,
+                                Iterations = AmbientShadowIterations,
+                                HideWheels = AmbientShadowHideWheels,
+                                Fade = AmbientShadowFade,
+                            }) {
+                                renderer.CopyStateFrom(_renderer);
                                 renderer.Initialize();
                                 renderer.Shot();
                             }
@@ -953,7 +954,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer?.Kn5 == null) return;
-                new CarTextureDialog(Renderer, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
+                new CarTextureDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
                         Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue) {
                     Owner = null
                 }.ShowDialog();

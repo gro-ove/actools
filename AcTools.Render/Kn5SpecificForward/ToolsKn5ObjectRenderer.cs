@@ -246,6 +246,38 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private readonly List<IRenderableObject> _hidden = new List<IRenderableObject>(10);
+
+        public void ToggleSelected() {
+            var selected = SelectedObject;
+            if (selected == null) return;
+
+            selected.IsEnabled = !selected.IsEnabled;
+            if (selected.IsEnabled) {
+                _hidden.Remove(selected);
+            } else {
+                _hidden.Add(selected);
+            }
+
+            SetShadowsDirty();
+            SetReflectionCubemapDirty();
+        }
+
+        public void UnhideAll() {
+            if (_hidden.Count == 0) return;
+            foreach (var o in _hidden) {
+                o.IsEnabled = true;
+            }
+            _hidden.Clear();
+
+            SetShadowsDirty();
+            SetReflectionCubemapDirty();
+        }
+
+        public IEnumerable<string> GetHiddenNodesNames() {
+            return _hidden.Select(x => x.Name);
+        }
+
         private Kn5Material _selectedMaterial;
 
         public Kn5Material SelectedMaterial {

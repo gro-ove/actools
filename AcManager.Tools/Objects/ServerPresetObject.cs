@@ -922,7 +922,7 @@ namespace AcManager.Tools.Objects {
             }
 
             section.Set("KICK_QUORUM", KickVoteQuorum);
-            section.Set("VOTING_QUORUM", 80);
+            section.Set("VOTING_QUORUM", SessionVoteQuorum);
             section.Set("VOTE_DURATION", VoteDuration.TotalSeconds.RoundToInt());
             section.Set("BLACKLIST_MODE", BlacklistMode);
             section.Set("MAX_CONTACTS_PER_KM", MaxCollisionsPerKm);
