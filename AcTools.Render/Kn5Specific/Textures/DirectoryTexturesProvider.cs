@@ -13,6 +13,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
     public class DirectoryTexturesProvider : TexturesProviderBase {
         private readonly bool _asyncLoading;
         private readonly bool _asyncOverride;
+        private readonly bool _keepOldIfMissing;
 
         [CanBeNull]
         private string _directory;
@@ -20,9 +21,10 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private IDeviceContextHolder _holder;
         private FileSystemWatcher _watcher;
 
-        public DirectoryTexturesProvider(bool asyncLoading, bool asyncOverride) {
+        public DirectoryTexturesProvider(bool asyncLoading, bool asyncOverride, bool keepOldIfMissing) {
             _asyncLoading = asyncLoading;
             _asyncOverride = asyncOverride;
+            _keepOldIfMissing = keepOldIfMissing;
         }
 
         public void ClearDirectory() {
@@ -139,6 +141,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
                     await Task.Delay(200);
                     if (File.Exists(filename)) {
                         bytes = await FileUtils.ReadAllBytesAsync(filename);
+                    } else if (_keepOldIfMissing) {
+                        return;
                     }
                     break;
                 } catch (Exception e) {

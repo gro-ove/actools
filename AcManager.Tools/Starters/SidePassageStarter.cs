@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
-    public class SidePassageStarter : BaseStarter {
+    public class SidePassageStarter : StarterBase {
         private static readonly string Version = @"1.0.3.64";
 
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);

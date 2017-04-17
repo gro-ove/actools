@@ -43,7 +43,7 @@
                                         Content="{x:Static g:AppStrings.Drive_Time}" />
                                 <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
                                         Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
-                                        Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
+                                        Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" SmallChange="900" LargeChange="1800" />
                             </mui:SpacingStackPanel>
 
                             <mui:SpacingStackPanel Spacing="4"

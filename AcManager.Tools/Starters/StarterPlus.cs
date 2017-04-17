@@ -9,7 +9,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Starters {
-    public class StarterPlus : BaseStarter, IAcsPrepareableStarter, IPluginWrapper {
+    public class StarterPlus : StarterBase, IAcsPrepareableStarter, IPluginWrapper {
         public const string AddonId = "StarterPlus";
 
         public string Id => AddonId;

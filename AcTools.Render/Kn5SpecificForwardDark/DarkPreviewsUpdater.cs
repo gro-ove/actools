@@ -341,6 +341,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 car.RightDoorOpen = options.RightDoorOpen;
                 car.IsDriverVisible = options.ShowDriver;
                 car.OnTick(float.MaxValue);
+                car.BlurredNodesActive = false;
+                car.CockpitLrActive = false;
+                car.SeatbeltOnActive = false;
             }
         }
 

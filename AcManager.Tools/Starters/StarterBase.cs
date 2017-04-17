@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
-    public abstract class BaseStarter : IAcsPlatformSpecificStarter {
+    public abstract class StarterBase : IAcsPlatformSpecificStarter {
         public bool Use32Version { get; set; }
 
         protected Process LauncherProcess, GameProcess;
@@ -24,7 +24,7 @@ namespace AcManager.Tools.Starters {
         
         public abstract void Run();
 
-        protected BaseStarter() {
+        protected StarterBase() {
             PrepareEnvironment();
         }
 
@@ -84,29 +84,35 @@ namespace AcManager.Tools.Starters {
                     Process.GetProcessesByName("AssettoCorsa.exe").Any();
         }
 
-        public async Task WaitUntilGameAsync(CancellationToken cancellation) {
-            if (GameProcess != null) return;
-
-            Logging.Warning("WaitUntilGameAsync(): first stage");
-
-            var nothing = 0;
-            for (var i = 0; i < 999; i++) {
-                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if (GameProcess != null) break;
-                
-                if (IsAny()) {
-                    nothing = 0;
-                } else if (++nothing > 50) {
-                    Logging.Warning("WaitUntilGameAsync(): looks like the game is dead");
-                    break;
-                }
-
-                await Task.Delay(1000, cancellation);
-                if (cancellation.IsCancellationRequested) {
-                    Logging.Warning("WaitUntilGameAsync(): cancelled");
-                    return;
-                }
+        public async Task<Process> WaitUntilGameAsync(CancellationToken cancellation) {
+            if (GameProcess != null) {
+                Logging.Debug("game is already here!");
+                return GameProcess;
             }
+
+            Logging.Debug("waiting for game…");
+
+            try {
+                var nothing = 0;
+                for (var i = 0; i < 9999; i++) {
+                    GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (GameProcess != null) break;
+
+                    if (IsAny()) {
+                        nothing = 0;
+                    } else if (++nothing > 500) {
+                        break;
+                    }
+
+                    await Task.Delay(100, cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
+                }
+            } catch (TaskCanceledException) {
+                return null;
+            }
+
+            Logging.Debug("here it is!");
+            return GameProcess;
         }
 
         protected void PrepareEnvironment() {

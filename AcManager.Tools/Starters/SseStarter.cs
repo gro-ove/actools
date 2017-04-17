@@ -11,7 +11,7 @@ using AcTools.DataFile;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Starters {
-    public class SseStarter : BaseStarter {
+    public class SseStarter : StarterBase {
         public static string OptionStartName = null;
         public static bool OptionLogging = false;
 

@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:tb="http://www.hardcodet.net/taskbar" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d"
-        Width="800" Height="360" MinWidth="800" MinHeight="360" SizeToContent="Manual" Title="{Binding Title}"
-        d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}" ResizeMode="CanResize" LocationAndSizeKey="GameDialog_LS" Closed="OnClosed" x:Name="This">
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Width="800" Height="360" MinWidth="800"
+        MinHeight="360" SizeToContent="Manual" Title="{Binding Title}" ShowActivated="False" d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}"
+        ResizeMode="CanResize" LocationAndSizeKey="GameDialog_LS" Closed="OnClosed" x:Name="This">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -201,70 +201,70 @@
                 </DataTemplate>
 
                 <!--drag session-->
-                <DataTemplate DataType="{x:Type di:GameDialog+DragFinishedData}">
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading1}" FontSize="24" Padding="20 0 20 20" TextAlignment="Center">
+                            <DataTemplate DataType="{x:Type di:GameDialog+DragFinishedData}">
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading1}" FontSize="24" Padding="20 0 20 20" TextAlignment="Center">
                             <Run Text="{Binding Wins, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} win'}" />
                             <Run Text="out of" />
                             <Run Text="{Binding Runs, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} run'}" /><Run
                                                 Text="," />
                             <Run Text="{Binding BestReactionTime.TotalMilliseconds, Mode=OneWay,StringFormat='{}best reaction time: {0:F0} ms'}" />
-                        </TextBlock>
-                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource SessionTemplate}" />
-                    </DockPanel>
-                </DataTemplate>
+                                    </TextBlock>
+                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource SessionTemplate}" />
+                                </DockPanel>
+                            </DataTemplate>
 
-                <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData}">
-                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource SessionTemplate}" />
-                </DataTemplate>
+                            <DataTemplate DataType="{x:Type di:GameDialog+SessionFinishedData}">
+                                <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource SessionTemplate}" />
+                            </DataTemplate>
 
-                <Style x:Key="ModernTabLinkItem" TargetType="ListBoxItem">
-                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                    <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
-                    <Setter Property="FontSize" Value="15" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                    <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-                    <Setter Property="Margin" Value="12 0 0 0" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                <ContentPresenter x:Name="Presenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource MenuTextHover}" />
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
+                            <Style x:Key="ModernTabLinkItem" TargetType="ListBoxItem">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+                                <Setter Property="FontSize" Value="15" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                                <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
+                                <Setter Property="Margin" Value="12 0 0 0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <ContentPresenter x:Name="Presenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource MenuTextHover}" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
 
-                <ItemsPanelTemplate x:Key="ModernTabLinkItemPanelTemplate">
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
+                            <ItemsPanelTemplate x:Key="ModernTabLinkItemPanelTemplate">
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
 
-                <DataTemplate x:Key="ModernTabLinkItemPanelDataTemplate">
-                    <TextBlock Text="{Binding Title, Converter={StaticResource ToUpperConverter}}" />
-                </DataTemplate>
+                            <DataTemplate x:Key="ModernTabLinkItemPanelDataTemplate">
+                                <TextBlock Text="{Binding Title, Converter={StaticResource ToUpperConverter}}" />
+                            </DataTemplate>
 
-                <!-- racing sessions -->
-                <DataTemplate DataType="{x:Type di:GameDialog+SessionsFinishedData}">
-                    <mui:Cell>
-                        <ContentControl ContentTemplate="{StaticResource SessionTemplate}" Content="{Binding SelectedSession}" />
-                        <ListBox ItemsSource="{Binding Sessions}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False"
-                                ScrollViewer.PanningMode="Both" ItemContainerStyle="{StaticResource ModernTabLinkItem}"
-                                ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
-                                ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}" HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom" Margin="0 0 0 -40" SelectedItem="{Binding SelectedSession, Mode=TwoWay}" />
-                    </mui:Cell>
-                </DataTemplate>
+                            <!-- racing sessions -->
+                            <DataTemplate DataType="{x:Type di:GameDialog+SessionsFinishedData}">
+                                <mui:Cell>
+                                    <ContentControl ContentTemplate="{StaticResource SessionTemplate}" Content="{Binding SelectedSession}" />
+                                    <ListBox ItemsSource="{Binding Sessions}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                            ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False"
+                                            ScrollViewer.PanningMode="Both" ItemContainerStyle="{StaticResource ModernTabLinkItem}"
+                                            ItemsPanel="{StaticResource ModernTabLinkItemPanelTemplate}"
+                                            ItemTemplate="{StaticResource ModernTabLinkItemPanelDataTemplate}" HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom" Margin="0 0 0 -40" SelectedItem="{Binding SelectedSession, Mode=TwoWay}" />
+                                </mui:Cell>
+                            </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </mui:Switch>

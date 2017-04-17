@@ -146,6 +146,7 @@
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\LazySwitch.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
+    <Compile Include="Windows\Controls\ModernMenu.Helpers.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
@@ -256,7 +257,6 @@
     <Compile Include="Windows\Controls\DpiInformation.cs" />
     <Compile Include="Windows\Attached\LimitedService.cs" />
     <Compile Include="Windows\Attached\LimitedMarkAdorner.cs" />
-    <Compile Include="Windows\Controls\ModernMenu_Helpers.cs" />
     <Compile Include="Windows\Controls\ModernToggleButton.cs" />
     <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
     <Compile Include="Windows\Controls\ProperPasswordBox.cs" />

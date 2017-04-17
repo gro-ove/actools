@@ -463,6 +463,21 @@ namespace AcTools.Utils.Helpers {
             return result;
         }
 
+        [Pure]
+        public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>([NotNull] this IEnumerable<T> source, Func<T, int, TKey> keySelector,
+                Func<T, int, TValue> valueSelector) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            var result = new Dictionary<TKey, TValue>();
+            var index = 0;
+            foreach (var item in source) {
+                result[keySelector(item, index)] = valueSelector(item, index);
+                index++;
+            }
+
+            return result;
+        }
+
         [ItemNotNull, Pure]
         public static IEnumerable<T> NonNull<T>([ItemCanBeNull, NotNull] this IEnumerable<T> source) where T : class {
             if (source == null) throw new ArgumentNullException(nameof(source));

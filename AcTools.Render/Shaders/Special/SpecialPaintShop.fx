@@ -133,9 +133,15 @@
 		}
 	}
 
+	#define _FLAKES_SPLIT 0.57
+	#define _FLAKES_SPLIT_LEFT (1 - _FLAKES_SPLIT)
+
 	float4 ps_Flakes(PS_IN pin) : SV_Target {
-		float random = gNoiseMap.SampleLevel(samPointWrap, pin.Tex * gNoiseMultipler, 0).x;
-		return float4(gColor.rgb, saturate(1.0 - random * gFlakes));
+		float4 random4 = gNoiseMap.SampleLevel(samPointWrap, pin.Tex * gNoiseMultipler, 0);
+		float random = Luminance(random4.rgb);
+		random = 1.0 - saturate(random * 3);
+		random = random < _FLAKES_SPLIT ? pow(random / _FLAKES_SPLIT, 1.2) : 1.0;
+		return float4(gColor.rgb, saturate(1.0 - gFlakes + saturate(random + (random4.a - 0.5) * 0.02) * gFlakes));
 	}
 
 	technique10 Flakes {
@@ -174,7 +180,7 @@
 
 	float4 ps_Tint(PS_IN pin) : SV_Target {
 		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return ProperBlending(float4(base.rgb * gColor.rgb, base.a + gColor.a), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
+		return ProperBlending(float4(base.rgb * gColor.rgb, saturate(base.a + gColor.a)), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
 	}
 
 	technique10 Tint {

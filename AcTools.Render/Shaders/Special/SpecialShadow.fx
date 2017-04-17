@@ -92,7 +92,7 @@ pts_PS_IN vs_pts_main(VS_IN vin) {
 }
 
 float4 ps_AmbientShadow(pts_PS_IN pin) : SV_Target{
-	return texd(pin.ShadowPosH.xy / pin.ShadowPosH.w) > 0.99;
+	return texd(pin.ShadowPosH.xy / pin.ShadowPosH.w) > 0.99 ? gMultipler : 0.0;
 }
 
 technique10 AmbientShadow {

@@ -64,7 +64,7 @@ namespace AcTools.Processes {
 
             _launcherProcess = Process.Start(new ProcessStartInfo {
                 WorkingDirectory = AcRoot,
-                FileName = Path.GetFileName(_acLauncher) ?? "",
+                FileName = Path.GetFileName(_acLauncher),
                 Arguments = $"--first-stage {AcsName}"
             });
         }
@@ -128,21 +128,28 @@ namespace AcTools.Processes {
             await Task.Run(() => Run(), cancellation);
         }
 
-        public async Task WaitUntilGameAsync(CancellationToken cancellation) {
+        public async Task<Process> WaitUntilGameAsync(CancellationToken cancellation) {
             if (_launcherProcess != null) {
                 await _launcherProcess.WaitForExitAsync(cancellation);
                 _launcherProcess.Dispose();
                 _launcherProcess = null;
             }
 
-            for (var i = 0; i < 10; i++) {
-                _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if (_gameProcess != null) break;
-                await Task.Delay(2500, cancellation);
+            try {
+                for (var i = 0; i < 500; i++) {
+                    _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (_gameProcess != null) break;
+                    await Task.Delay(50, cancellation);
+                    if (cancellation.IsCancellationRequested) return null;
+                }
+            } catch (TaskCanceledException) {
+                return null;
             }
 
+            // we have to wait again — first process might be “fake”
             await Task.Delay(2500, cancellation);
             _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return _gameProcess;
         }
 
         public async Task WaitGameAsync(CancellationToken cancellation) {

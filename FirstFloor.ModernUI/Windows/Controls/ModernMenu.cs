@@ -268,18 +268,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            var newIndex = destination.GetMouseItemIndex();
-            if (newIndex == -1) {
-                newIndex = group.Links.Count - 1;
-            } else {
-                var minIndex = group.FixedLinksCount;
-                if (newIndex < minIndex) {
-                    newIndex = minIndex;
-                }
-            }
-
-            group.Links.Remove(widget);
-            group.Links.Insert(newIndex, widget);
+            e.Effects = DragDropEffects.Move;
+            group.OnDrop(widget, destination.GetMouseItemIndex());
         }
 
         private bool SelectUriIfLinkExists(Uri uri) {

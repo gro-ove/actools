@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
@@ -10,7 +11,7 @@ namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {
         private bool _cancelled;
 
-        public override IDisposable Set() {
+        public override IDisposable Set(Process process) {
             if (SettingsHolder.Drive.WatchForSharedMemory) {
                 return SetSharedListener();
             }

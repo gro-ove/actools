@@ -83,7 +83,7 @@
                                             Content="{x:Static t:ToolsStrings.Common_Time}" />
                                     <Slider Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
                                             IsSnapToTickEnabled="False" Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
-                                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
+                                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" SmallChange="900" LargeChange="1800" />
                                 </StackPanel>
                                 <StackPanel Width="120">
                                     <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}"

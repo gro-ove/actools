@@ -46,12 +46,12 @@ namespace FirstFloor.ModernUI.Presentation {
                                  select new LinkInput(_source, x)) {
                 Links.Add(link);
                 link.PropertyChanged += Link_PropertyChanged;
-                link.Close += Link_Close;
+                link.Close += OnLinkClose;
             }
 
             var rightLink = new LinkInputEmpty(Source);
             Links.Add(rightLink);
-            rightLink.NewLink += Link_NewLink;
+            rightLink.NewLink += OnNewLink;
 
             RecentlyClosedQueue.AddRange(ValuesStorage.GetStringList(KeyRecentlyClosed));
             LoadSelected();
@@ -86,6 +86,21 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private void SaveLinks() {
             ValuesStorage.Set(KeyGroup, from x in Links where x is LinkInput select x.DisplayName);
+        }
+
+        public void OnDrop(LinkInput widget, int newIndex) {
+            if (newIndex == -1) {
+                newIndex = Links.Count - 1;
+            } else {
+                var minIndex = FixedLinksCount;
+                if (newIndex < minIndex) {
+                    newIndex = minIndex;
+                }
+            }
+
+            Links.Remove(widget);
+            Links.Insert(newIndex, widget);
+            SaveLinks();
         }
 
         private void SaveRecentlyClosed() {
@@ -134,7 +149,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
             var link = new LinkInput(_source, value);
             link.PropertyChanged += Link_PropertyChanged;
-            link.Close += Link_Close;
+            link.Close += OnLinkClose;
 
             Links.Insert(Links.Count - 1, link);
             SelectedLink = link;
@@ -146,7 +161,7 @@ namespace FirstFloor.ModernUI.Presentation {
             PreviousSelectedQueue.Remove(link);
 
             link.PropertyChanged -= Link_PropertyChanged;
-            link.Close -= Link_Close;
+            link.Close -= OnLinkClose;
 
             if (SelectedLink == link) {
                 SelectedLink = PreviousSelectedQueue.DequeueOrDefault() ?? Links[Links.IndexOf(link) - 1];
@@ -160,11 +175,11 @@ namespace FirstFloor.ModernUI.Presentation {
             SaveLinks();
         }
 
-        private void Link_NewLink(object sender, NewLinkEventArgs e) {
+        private void OnNewLink(object sender, NewLinkEventArgs e) {
             AddAndSelect(e.InputValue);
         }
 
-        private void Link_Close(object sender, EventArgs e) {
+        private void OnLinkClose(object sender, EventArgs e) {
             var link = sender as LinkInput;
             if (link == null) return;
 

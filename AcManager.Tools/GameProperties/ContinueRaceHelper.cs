@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
@@ -36,7 +37,7 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
-        public override IDisposable Set() {
+        public override IDisposable Set(Process process) {
             return new MemoryListener();
         }
     }

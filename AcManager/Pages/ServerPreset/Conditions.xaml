@@ -62,7 +62,8 @@
         <mui:SpacingStackPanel Spacing="4">
             <mui:ValueLabel Value="{Binding SelectedObject.DisplayTime}" mui:BetterTextBox.Mode="Time" Content="{x:Static g:AppStrings.Drive_Time}" />
             <Slider Value="{Binding SelectedObject.Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
-                    Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
+                    Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}"
+                    SmallChange="900" LargeChange="1800" />
         </mui:SpacingStackPanel>
 
         <StackPanel DataContext="{Binding SelectedObject}" Style="{StaticResource SettingsPanel}">

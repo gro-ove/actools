@@ -37,6 +37,7 @@ namespace AcManager.Pages.Lists {
             protected override string LoadCurrentId() {
                 if (_selectNextCar != null) {
                     var value = _selectNextCar;
+                    SaveCurrentKey(value);
                     _selectNextCar = null;
                     return value;
                 }

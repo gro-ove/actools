@@ -185,7 +185,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private IDeviceContextHolder _ambientShadowsHolder;
 
         private void InitializeAmbientShadows(IDeviceContextHolder contextHolder) {
-            _ambientShadowsTextures = new DirectoryTexturesProvider(AsyncTexturesLoading, _asyncOverrideTexturesLoading);
+            _ambientShadowsTextures = new DirectoryTexturesProvider(AsyncTexturesLoading, _asyncOverrideTexturesLoading, true);
             _ambientShadowsTextures.SetDirectory(contextHolder, _rootDirectory);
             _ambientShadowsMaterials = new SharedMaterials(contextHolder.Get<IMaterialsFactory>());
             _ambientShadowsHolder = new Kn5LocalDeviceContextHolder(contextHolder, _ambientShadowsMaterials, _ambientShadowsTextures, this);
@@ -959,17 +959,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public bool HasCockpitHr { get; private set; }
 
-        private bool _cockpitLrActive;
+        private bool? _cockpitLrActive;
 
         public bool CockpitLrActive {
-            get { return _cockpitLrActive; }
+            get { return _cockpitLrActive ?? false; }
             set {
                 if (Equals(value, _cockpitLrActive)) return;
                 _cockpitLrActive = value;
-                SetCockpitLrActive(_currentLodObject.Renderable, value);
-                _currentLodObject.Renderable.UpdateBoundingBox();
-                InvalidateCount();
-                _skinsWatcherHolder?.RaiseSceneUpdated();
+
+                if (SetCockpitLrActive(_currentLodObject.Renderable, value)) {
+                    _currentLodObject.Renderable.UpdateBoundingBox();
+                    InvalidateCount();
+                    _skinsWatcherHolder?.RaiseSceneUpdated();
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -978,34 +981,40 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public bool HasSeatbeltOff { get; private set; }
 
-        private bool _seatbeltOnActive;
+        private bool? _seatbeltOnActive;
 
         public bool SeatbeltOnActive {
-            get { return _seatbeltOnActive; }
+            get { return _seatbeltOnActive ?? false; }
             set {
                 if (Equals(value, _seatbeltOnActive)) return;
                 _seatbeltOnActive = value;
-                SetSeatbeltActive(_currentLodObject.Renderable, value);
-                _currentLodObject.Renderable.UpdateBoundingBox();
-                InvalidateCount();
-                _skinsWatcherHolder?.RaiseSceneUpdated();
+
+                if (SetSeatbeltActive(_currentLodObject.Renderable, value)) {
+                    _currentLodObject.Renderable.UpdateBoundingBox();
+                    InvalidateCount();
+                    _skinsWatcherHolder?.RaiseSceneUpdated();
+                }
+
                 OnPropertyChanged();
             }
         }
 
         public bool HasBlurredNodes { get; private set; }
 
-        private bool _blurredNodesActive;
+        private bool? _blurredNodesActive;
 
         public bool BlurredNodesActive {
-            get { return _blurredNodesActive; }
+            get { return _blurredNodesActive ?? false; }
             set {
                 if (Equals(value, _blurredNodesActive)) return;
                 _blurredNodesActive = value;
-                SetBlurredObjects(_currentLodObject.Renderable, BlurredObjects, value);
-                _currentLodObject.Renderable.UpdateBoundingBox();
-                InvalidateCount();
-                _skinsWatcherHolder?.RaiseSceneUpdated();
+
+                if (SetBlurredObjects(_currentLodObject.Renderable, BlurredObjects, value)) {
+                    _currentLodObject.Renderable.UpdateBoundingBox();
+                    InvalidateCount();
+                    _skinsWatcherHolder?.RaiseSceneUpdated();
+                }
+
                 OnPropertyChanged();
             }
         }

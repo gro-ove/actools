@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
@@ -8,6 +9,7 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
@@ -105,11 +107,17 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new DriverName());
         }
 
-        private class FocusHelper : Game.GameHandler {
-            public override IDisposable Set() {
-                throw new NotImplementedException();
+        /*private class FocusHelper : Game.GameHandler {
+            public override IDisposable Set(Process process) {
+                try {
+                    User32.BringProcessWindowToFront(process);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+
+                return null;
             }
-        }
+        }*/
 
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
             AcSettingsHolder.Graphics.FixShadowMapBias();
@@ -141,7 +149,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
-            properties.SetAdditional(new FocusHelper());
+            // properties.SetAdditional(new FocusHelper());
 
             if (raceMode) {
                 if (properties.AssistsProperties == null) {

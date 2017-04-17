@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
+using System.Threading;
 using System.Windows.Forms;
 using AcTools;
 using AcTools.Render.Deferred;
@@ -26,7 +27,7 @@ namespace CustomShowroom {
                 HideWheels = false
             }) {
                 var dir = Path.GetDirectoryName(kn5);
-                renderer.Shot(dir);
+                renderer.Shot(dir, null, default(CancellationToken));
                 // Process.Start(Path.Combine(dir, "tyre_0_shadow.png"));
             }
         }

@@ -17,7 +17,7 @@ using JetBrains.Annotations;
 using Steamworks;
 
 namespace AcManager.Tools.Starters {
-    public class SteamStarter : BaseStarter {
+    public class SteamStarter : StarterBase {
         private static string _acRoot;
         private static string _dllsPath;
 
@@ -175,7 +175,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
-            Process.Start(new ProcessStartInfo {
+            GameProcess = Process.Start(new ProcessStartInfo {
                 FileName = AcsFilename,
                 WorkingDirectory = _acRoot
             });

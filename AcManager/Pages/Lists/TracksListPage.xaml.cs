@@ -37,6 +37,7 @@ namespace AcManager.Pages.Lists {
             protected override string LoadCurrentId() {
                 if (_selectNextTrack != null) {
                     var value = _selectNextTrack;
+                    SaveCurrentKey(value);
                     _selectNextTrack = null;
                     return value;
                 }

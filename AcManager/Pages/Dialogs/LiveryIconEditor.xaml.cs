@@ -40,6 +40,7 @@ namespace AcManager.Pages.Dialogs {
         public SettingEntry[] Shapes { get; } = {
             new SettingEntry("Flat", AppStrings.LiveryIcon_Shape_Flat),
             new SettingEntry("Diagonal", AppStrings.LiveryIcon_Shape_Diagonal),
+            new SettingEntry("CornerTriangle", "Corner Triangle"),
             new SettingEntry("Stripes", AppStrings.LiveryIcon_Shape_Stripes),
             new SettingEntry("StripesSide", AppStrings.LiveryIcon_Shape_SideStripes),
             new SettingEntry("DoubleStripes", AppStrings.LiveryIcon_Shape_DoubleStripes),

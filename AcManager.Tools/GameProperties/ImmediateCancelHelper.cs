@@ -1,18 +1,33 @@
-using System;
+ï»¿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
+using AcTools.Render.Temporary;
 using AcTools.Utils.Helpers;
 using AcTools.Windows.Input;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateCancelHelper : Game.GameHandler, IDisposable {
         private CancellationTokenSource _cancellationTokenSource;
 
-        public override IDisposable Set() {
+        public ImmediateCancelHelper() {
+            WeakEventManager<AcSharedMemory, EventArgs>.AddHandler(AcSharedMemory.Instance, nameof(AcSharedMemory.Start), OnStart);
+        }
+
+        private bool _started;
+
+        private void OnStart(object sender, EventArgs e) {
+            _started = true;
+        }
+
+        public override IDisposable Set(Process process) {
             return SettingsHolder.Drive.WatchForSharedMemory ? SetSharedListener() : null;
         }
 
@@ -52,7 +67,7 @@ namespace AcManager.Tools.GameProperties {
             private void OnKeyUp(object sender, KeyEventArgs e) {
                 try {
                     if (e.KeyCode == Keys.Escape && !e.Control && !e.Shift && !e.Alt) {
-                        Logging.Write("Escape was pressed, terminating loading…");
+                        Logging.Write("Escape was pressed, terminating loadingâ€¦");
                         _sharedCancellationTokenSource?.Cancel();
                     }
                 } catch (Exception ex) {
@@ -61,7 +76,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             public void Dispose() {
-                // do not dispose _sharedCancellationTokenSource cause it’s shared
+                // do not dispose _sharedCancellationTokenSource cause itâ€™s shared
 
                 DisposeHelper.Dispose(ref _keyboard);
                 AcSharedMemory.Instance.Start -= OnStart;
@@ -69,6 +84,10 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private IDisposable SetSharedListener() {
+            if (_started) {
+                return null;
+            }
+
             if (_cancellationTokenSource == null) {
                 _cancellationTokenSource = new CancellationTokenSource();
             }

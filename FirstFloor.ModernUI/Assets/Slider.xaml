@@ -57,6 +57,8 @@
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="Focusable" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">

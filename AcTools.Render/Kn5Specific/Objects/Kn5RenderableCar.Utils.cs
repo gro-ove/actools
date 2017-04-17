@@ -36,47 +36,76 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public static void SetCockpitLrActive([NotNull] RenderableList parent, bool value) {
+        public static bool SetCockpitLrActive([NotNull] RenderableList parent, bool value) {
+            var changed = false;
             foreach (var child in parent.GetAllChildren().OfType<Kn5RenderableList>()) {
                 switch (child.OriginalNode.Name) {
                     case "COCKPIT_LR":
                     case "STEER_LR":
                     case "SHIFT_LD":
-                        child.IsEnabled = value;
+                        if (child.IsEnabled != value) {
+                            child.IsEnabled = value;
+                            changed = true;
+                        }
                         break;
                     case "COCKPIT_HR":
                     case "STEER_HR":
                     case "SHIFT_HD":
-                        child.IsEnabled = !value;
+                        if (child.IsEnabled != !value) {
+                            child.IsEnabled = !value;
+                            changed = true;
+                        }
                         break;
                 }
             }
+
+            return changed;
         }
 
-        public static void SetSeatbeltActive([NotNull] RenderableList parent, bool value) {
+        public static bool SetSeatbeltActive([NotNull] RenderableList parent, bool value) {
+            var changed = false;
+
             var onNode = parent.GetDummyByName("CINTURE_ON");
             if (onNode != null) {
-                onNode.IsEnabled = value;
+                if (onNode.IsEnabled != value) {
+                    onNode.IsEnabled = value;
+                    changed = true;
+                }
             }
 
             var offNode = parent.GetDummyByName("CINTURE_OFF");
             if (offNode != null) {
-                offNode.IsEnabled = !value;
+                if (offNode.IsEnabled != !value) {
+                    offNode.IsEnabled = !value;
+                    changed = true;
+                }
             }
+
+            return changed;
         }
 
-        public static void SetBlurredObjects([NotNull] RenderableList parent, IEnumerable<CarData.BlurredObject> blurredObjects, bool value) {
+        public static bool SetBlurredObjects([NotNull] RenderableList parent, IEnumerable<CarData.BlurredObject> blurredObjects, bool value) {
+            var changed = false;
+
             foreach (var blurredObject in blurredObjects) {
                 var staticNode = parent.GetDummyByName(blurredObject.StaticName);
                 if (staticNode != null) {
-                    staticNode.IsEnabled = !value;
+                    if (staticNode.IsEnabled != !value) {
+                        staticNode.IsEnabled = !value;
+                        changed = true;
+                    }
                 }
 
                 var blurredNode = parent.GetDummyByName(blurredObject.BlurredName);
                 if (blurredNode != null) {
-                    blurredNode.IsEnabled = value;
+                    if (blurredNode.IsEnabled != value) {
+                        blurredNode.IsEnabled = value;
+                        changed = true;
+                    }
                 }
             }
+
+            return changed;
         }
     }
 }

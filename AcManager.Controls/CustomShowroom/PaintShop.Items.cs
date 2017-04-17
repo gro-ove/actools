@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -32,6 +32,11 @@ namespace AcManager.Controls.CustomShowroom {
             public void SetRenderer(IPaintShopRenderer renderer) {
                 _renderer = renderer;
             }
+
+            [NotNull]
+            public virtual Dictionary<int, Color> LiveryColors => new Dictionary<int, Color>(0);
+
+            public int LiveryPriority { get; set; } = 0;
 
             private bool _enabled;
 
@@ -383,6 +388,16 @@ namespace AcManager.Controls.CustomShowroom {
                 AffectedTextures.AddRange(Replacements.Keys);
             }
 
+            // which color is in which slot, −1 if there is no color in given slot
+            [CanBeNull]
+            public int[] LiveryColorIds { get; set; }
+
+            [NotNull]
+            public override Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
+                Slot = i,
+                Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
+            }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? base.LiveryColors;
+
             public override string DisplayName { get; set; } = "Colored item";
 
             public CarPaintColors Colors { get; }
@@ -395,7 +410,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
-                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 0d,
+                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 1d,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
@@ -408,7 +423,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
-                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 0d,
+                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 1d,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
@@ -568,6 +583,8 @@ namespace AcManager.Controls.CustomShowroom {
                 colors.PropertyChanged += OnColorsChanged;
             }
 
+            public string LiveryStyle { get; set; }
+
             public Color[] ActualColors => Colors.ActualColors;
 
             private void OnColorsChanged(object sender, PropertyChangedEventArgs e) {
@@ -582,6 +599,16 @@ namespace AcManager.Controls.CustomShowroom {
 
             [NotNull]
             public CarPaintColors Colors { get; }
+
+            // which color is in which slot, −1 if there is no color in given slot
+            [CanBeNull]
+            public int[] LiveryColorIds { get; set; }
+
+            [NotNull]
+            public Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
+                Slot = i,
+                Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
+            }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? ActualColors.ToDictionary((x, i) => i, (x, i) => x);
         }
 
         public class CarPaint : PaintableItem {
@@ -590,6 +617,7 @@ namespace AcManager.Controls.CustomShowroom {
             public Color DefaultColor { get; }
 
             public CarPaint(string detailsTexture, int flakesSize = 256, Color? defaultColor = null) : base(true) {
+                LiveryPriority = 1;
                 FlakesSize = flakesSize;
                 SupportsFlakes = flakesSize > 0;
                 DetailsTexture = detailsTexture;
@@ -602,6 +630,12 @@ namespace AcManager.Controls.CustomShowroom {
             public bool SupportsFlakes { get; }
 
             public int FlakesSize { get; }
+
+            public int? LiveryColorId { get; set; } = 0;
+
+            public override Dictionary<int, Color> LiveryColors => LiveryColorId.HasValue ? new Dictionary<int, Color> {
+                [LiveryColorId.Value] = Color
+            } : base.LiveryColors;
 
             public override string DisplayName { get; set; } = "Car paint";
 
@@ -617,7 +651,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private double _flakes = 0.3d;
+            private double _flakes = 0.777;
 
             [JsonProperty("flakes")]
             public double Flakes {

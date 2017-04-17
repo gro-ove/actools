@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Starters {
-    public class OfficialStarter : BaseStarter {
+    public class OfficialStarter : StarterBase {
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
         private void CheckVersion() {

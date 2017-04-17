@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public partial class ToolsKn5ObjectRenderer : IPaintShopRenderer {
-        public static int OptionPaintShopRandomSize = 256;
+        public static int OptionPaintShopRandomSize = 512;
         public static int OptionColorSize = 16;
         public static int OptionMaxTintSize = 1024;
         public static int OptionMaxMapSize = 1024;
@@ -32,7 +33,10 @@ namespace AcTools.Render.Kn5SpecificForward {
         private void UseEffect(Action<EffectSpecialPaintShop> fn, TargetResourceTexture tex) {
             if (_paintShopEffect == null) {
                 _paintShopEffect = DeviceContextHolder.GetEffect<EffectSpecialPaintShop>();
+
+                var s = Stopwatch.StartNew();
                 _paintShopEffect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(OptionPaintShopRandomSize, OptionPaintShopRandomSize));
+                AcToolsLogging.Write($"Random texture: {s.Elapsed.TotalMilliseconds:F1} ms");
             }
 
             DeviceContextHolder.PrepareQuad(_paintShopEffect.LayoutPT);

@@ -12,6 +12,7 @@ using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -57,7 +58,7 @@ namespace AcManager.Controls.CustomShowroom {
             if (carPaint != null) {
                 yield return mapsMap == null ?
                         new CarPaint(carPaint) :
-                        new ComplexCarPaint(carPaint, 256, mapsMap, new PaintShopSource {
+                        new ComplexCarPaint(carPaint, 512, mapsMap, new PaintShopSource {
                             NormalizeMax = true
                         });
             }
@@ -225,6 +226,9 @@ namespace AcManager.Controls.CustomShowroom {
         private const string KeyFlakesSize = "flakesSize";
         private const string KeyCandidates = "candidates";
         private const string KeyLiveryStyle = "liveryStyle";
+        private const string KeyLiveryPriority = "liveryPriority";
+        private const string KeyLiveryColor = "liveryColor";
+        private const string KeyLiveryColors = "liveryColors";
 
         [NotNull]
         private static Dictionary<string, PaintShopSource> GetNameSourcePairs(JToken t, Func<string, byte[]> extraData, PaintShopSourceParams sourceParams) {
@@ -344,12 +348,37 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         [CanBeNull]
+        private static int[] GetLiveryColorIds(JObject obj) {
+            var liveryColor = obj.GetIntValueOnly(KeyLiveryColor);
+            if (liveryColor.HasValue) {
+                var liveryColorValue = liveryColor.Value.Clamp(0, 10);
+                var result = new int[liveryColorValue + 1];
+                for (var j = 0; j < result.Length; j++) {
+                    result[j] = -1;
+                }
+                result[liveryColorValue] = 0;
+                return result;
+            }
+
+            try {
+                return obj[KeyLiveryColors]?.ToObject<int[]>();
+            } catch (Exception e) {
+                Logging.Warning(e.Message);
+            }
+
+            return null;
+        }
+
+        [CanBeNull]
         private static CarPaintPattern GetPattern(JObject obj, Func<string, byte[]> extractData) {
             var sourceParams = GetSourceParams(obj);
             var name = obj.GetStringValueOnly(KeyName);
             var pattern = GetSource(obj[KeyPattern], extractData, sourceParams);
             var overlay = GetSource(obj[KeyOverlay], extractData, sourceParams);
-            return pattern == null ? null : new CarPaintPattern(name, pattern, overlay, GetColors(obj));
+            return pattern == null ? null : new CarPaintPattern(name, pattern, overlay, GetColors(obj)) {
+                LiveryStyle = obj.GetStringValueOnly(KeyLiveryStyle),
+                LiveryColorIds = GetLiveryColorIds(obj)
+            };
         }
 
         [CanBeNull]
@@ -359,7 +388,7 @@ namespace AcManager.Controls.CustomShowroom {
             switch (type) {
                 case TypeCarPaint:
                     var detailsName = RequireString(e, KeyTexture);
-                    var flakesSize = e.GetIntValueOnly(KeyFlakesSize) ?? 256;
+                    var flakesSize = e.GetIntValueOnly(KeyFlakesSize) ?? 512;
                     var defaultColor = GetColor(e, KeyDefaultColor);
                     var maps = GetString(e, KeyMapsDefault);
                     CarPaint carPaint;
@@ -382,18 +411,21 @@ namespace AcManager.Controls.CustomShowroom {
                         }
                     }
 
-                    carPaint.LiveryStyle = e.GetStringValueOnly(KeyLiveryStyle);
-
+                    carPaint.LiveryStyle = e.GetStringValueOnly(KeyLiveryStyle) ?? "Flat";
                     result = carPaint;
                     break;
                 case TypeColor:
-                    result = new ColoredItem(GetTintedPairs(e, extractData), GetColors(e));
+                    result = new ColoredItem(GetTintedPairs(e, extractData), GetColors(e)) {
+                        LiveryColorIds = GetLiveryColorIds(e)
+                    };
                     break;
                 case TypeTintedWindow:
                     result = new TintedWindows(GetTintedPairs(e, extractData),
                             GetColors(e, Color.FromRgb(41, 52, 55)),
                             GetDouble(e, KeyDefaultOpacity, 0.23),
-                            e.GetBoolValueOnly(KeyFixedColor) ?? false);
+                            e.GetBoolValueOnly(KeyFixedColor) ?? false) {
+                        LiveryColorIds = GetLiveryColorIds(e)
+                    };
                     break;
                 case TypeLicensePlate:
                     result = new LicensePlate(GetString(e, KeyStyle, "Europe"), GetString(e, KeyTexture, "Plate_D.dds"),
@@ -430,6 +462,11 @@ namespace AcManager.Controls.CustomShowroom {
                 result.Enabled = enabled.Value;
             }
 
+            var liveryPriority = e.GetIntValueOnly(KeyLiveryPriority);
+            if (liveryPriority.HasValue) {
+                result.LiveryPriority = liveryPriority.Value;
+            }
+
             return result;
         }
 
@@ -459,7 +496,12 @@ namespace AcManager.Controls.CustomShowroom {
                                     }
 
                                     if (data[0] == null) {
-                                        data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
+                                        try {
+                                            data[0] = ZipFile.OpenRead(filename.ApartFromLast(@".json", StringComparison.OrdinalIgnoreCase) + @".zip");
+                                        } catch (Exception e) {
+                                            Logging.Warning(e.Message);
+                                        }
+
                                         if (data[0] == null) return null;
                                     }
 

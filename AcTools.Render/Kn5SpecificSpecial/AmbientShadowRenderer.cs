@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Kn5File;
@@ -36,7 +36,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public bool HideWheels = true;
         public bool Fade = true;
         public bool BlurResult = false;
-        public bool DebugMode = false;
+        public bool CorrectLighting = true;
 
         public const int BodySize = 512;
         public const int BodyPadding = 64;
@@ -136,7 +136,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private void AddShadow() {
+        private void AddShadow(Vector3 lightDirection, ref float summaryBrightness) {
             DeviceContext.OutputMerger.BlendState = _blendState;
             DeviceContext.Rasterizer.State = null;
             DeviceContext.Rasterizer.SetViewports(Viewport);
@@ -153,58 +153,56 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 M42 = 0.5f,
                 M44 = 1.0f
             });
+
+            var brightness = CorrectLighting ? lightDirection.Y.Abs() : 1f;
+            summaryBrightness += brightness;
+
+            _effect.FxMultipler.Set(brightness);
             _effect.TechAmbientShadow.DrawAllPasses(DeviceContext, 6);
         }
 
-        private void Draw(float multipler, int size, int padding, float fadeRadius) {
+        private void Draw(float multipler, int size, int padding, float fadeRadius, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
-
-            /*var h = (int)Math.Round(Math.Pow(Iterations, 0.46));
-            var v = (int)Math.Round(Math.Pow(Iterations, 0.54));
-            var t = h * v;*/
-
+            
             var t = Iterations;
 
             // draw
             var iter = 0f;
+            var progressReport = 0;
             for (var k = 0; k < t; k++) {
-                if (DebugMode) {
-                    DrawShadow(Vector3.UnitY, Vector3.UnitZ);
-                } else {
-                    /* arranged symmetric version */
-                    /* var diff = DiffusionLevel.Saturate();
+                if (++progressReport > 10) {
+                    progressReport = 0;
+                    progress?.Report((double)k / t);
+                    if (cancellation.IsCancellationRequested) return;
+                }
+                
+                /* random distribution */
+                Vector3 v3;
+                while (true) {
+                    var x = MathF.Random(-1f, 1f);
+                    var y = MathF.Random(0.1f, 1f);
+                    var z = MathF.Random(-1f, 1f);
+                    if (x.Abs() < 0.005 && z.Abs() < 0.005) continue;
 
-                     var φdeg = 360f * (k % h) / h;
-                     var θdeg = 2f + 70f * ((float)Math.Floor((double)k / h) / (v - 1));
-                     θdeg = (θdeg * diff + (1f - diff) * 89.9f).Clamp(5f, 89.9f);
+                    v3 = new Vector3(x, y, z);
+                    if (v3.LengthSquared() > 1f) continue;
 
-                     var θ = (90f - θdeg).ToRadians();
-                     var φ = φdeg.ToRadians();
+                    v3.Normalize();
+                    if (v3.Y < 0.9f - DiffusionLevel * 0.9) continue;
 
-                     var sinθ = θ.Sin();
-                     var cosθ = θ.Cos();
-                     var sinφ = φ.Sin();
-                     var cosφ = φ.Cos();
-
-                     DrawShadow(new Vector3(sinθ * cosφ, cosθ, sinθ * sinφ));*/
-
-                    /* random distribution */
-
-                    var v3 = default(Vector3);
-                    do {
-                        var x = MathF.Random(-1f, 1f);
-                        var y = MathF.Random(0.1f, 1f) / DiffusionLevel.Clamp(0.001f, 1.0f);
-                        var z = MathF.Random(-1f, 1f);
-                        if (x.Abs() < 0.01 && z.Abs() < 0.01) continue;
-
-                        v3 = new Vector3(x, y, z);
-                    } while (v3.LengthSquared() > 1f);
-
-                    DrawShadow(v3);
+                    break;
                 }
 
-                AddShadow();
-                iter++;
+                DrawShadow(v3);
+                AddShadow(-v3, ref iter);
+
+                // to make it symmetrical
+                if (v3.X.Abs() > 0.05f && k + 1 < t) {
+                    v3.X *= -1f;
+                    DrawShadow(v3);
+                    AddShadow(-v3, ref iter);
+                    k++;
+                }
             }
 
             DeviceContextHolder.PrepareQuad(_effect.LayoutPT);
@@ -243,7 +241,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.TechResult.DrawAllPasses(DeviceContext, 6);
         }
 
-        private void SaveResultAs(string outputDirectory, string name, int size, int padding) {
+        private void SaveResultAs(string filename, int size, int padding) {
             using (var stream = new MemoryStream()) {
                 Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
                 stream.Position = 0;
@@ -254,7 +252,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     var cropRect = new Rectangle(padding, padding, size, size);
                     g.DrawImage(image, new Rectangle(0, 0, target.Width, target.Height),
                             cropRect, GraphicsUnit.Pixel);
-                    target.Save(Path.Combine(outputDirectory, name));
+                    target.Save(filename);
                 }
             }
         }
@@ -287,45 +285,36 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
-        private void BackupAndRecycle(string outputDirectory) {
-            var original = new[] {
-                "body", "tyre_0", "tyre_1", "tyre_2", "tyre_3"
-            }.Select(x => Path.Combine(outputDirectory, x + "_shadow.png")).Select(x => new {
-                Original = x,
-                Backup = x.ApartFromLast(".png") + "~bak.png"
-            }).ToList();
+        private class Progress : IProgress<double> {
+            private readonly IProgress<double> _baseProgress;
+            private readonly double _from;
+            private readonly double _range;
 
-            try {
-                foreach (var p in original) {
-                    if (File.Exists(p.Original)) {
-                        File.Move(p.Original, p.Backup);
-                    }
-                }
-            } catch (Exception e) {
-                throw new Exception("Cannot remove original files", e);
+            public Progress(IProgress<double> baseProgress, double from, double to) {
+                _baseProgress = baseProgress;
+                _from = from;
+                _range = to - from;
             }
 
-            Task.Run(() => {
-                foreach (var p in original) {
-                    FileUtils.Recycle(p.Backup);
-                }
-            });
+            public void Report(double value) {
+                _baseProgress?.Report(_from + value * _range);
+            }
         }
 
-        public void Shot(string outputDirectory) {
+        public void Shot(string outputDirectory, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             if (!Initialized) {
                 Initialize();
             }
 
-            BackupAndRecycle(outputDirectory);
-
-            // body shadow
-            PrepareBuffers(BodySize + BodyPadding * 2, 1024);
-            SetBodyShadowCamera();
-            Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f);
-
-            // return;
-            SaveResultAs(outputDirectory, "body_shadow.png", BodySize, BodyPadding);
+            using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, "body_shadow.png"))) {
+                // body shadow
+                PrepareBuffers(BodySize + BodyPadding * 2, 1024);
+                SetBodyShadowCamera();
+                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, new Progress(progress, 0.01, 0.6), cancellation);
+                if (cancellation.IsCancellationRequested) return;
+                
+                SaveResultAs(replacement.Filename, BodySize, BodyPadding);
+            }
 
             // wheels shadows
             PrepareBuffers(WheelSize + WheelPadding * 2, 128);
@@ -337,22 +326,27 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Node = x,
                 Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
                         new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
-                Filename = $"tyre_{i}_shadow.png"
+                FileName = $"tyre_{i}_shadow.png",
+                Progress = new Progress(progress, 0.6 + i * 0.1, 0.699 + i * 0.1)
             })) {
-                Scene.Clear();
-                _flattenNodes = null;
+                using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
+                    Scene.Clear();
+                    _flattenNodes = null;
 
-                Scene.Add(entry.Node);
-                entry.Node.LocalMatrix = entry.Matrix;
-                Scene.UpdateBoundingBox();
+                    Scene.Add(entry.Node);
+                    entry.Node.LocalMatrix = entry.Matrix;
+                    Scene.UpdateBoundingBox();
 
-                Draw(WheelMultipler, WheelSize, WheelPadding, 1f);
-                SaveResultAs(outputDirectory, entry.Filename, WheelSize, WheelPadding);
+                    Draw(WheelMultipler, WheelSize, WheelPadding, 1f, entry.Progress, cancellation);
+                    if (cancellation.IsCancellationRequested) return;
+
+                    SaveResultAs(replacement.Filename, WheelSize, WheelPadding);
+                }
             }
         }
 
-        public void Shot() {
-            Shot(Path.GetDirectoryName(Kn5.OriginalFilename));
+        public void Shot([CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+            Shot(Path.GetDirectoryName(Kn5.OriginalFilename), progress, cancellation);
         }
 
         protected override void OnTick(float dt) { }

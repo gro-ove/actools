@@ -479,7 +479,7 @@
     <Compile Include="Managers\CarsManager.cs" />
     <Compile Include="Managers\TracksManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Starters\BaseStarter.cs" />
+    <Compile Include="Starters\StarterBase.cs" />
     <Compile Include="Starters\IAcsPlatformSpecificStarter.cs" />
     <Compile Include="Starters\IAcsPrepareableStarter.cs" />
     <Compile Include="Starters\NaiveStarter.cs" />

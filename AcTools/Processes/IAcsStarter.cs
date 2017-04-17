@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -11,7 +12,8 @@ namespace AcTools.Processes {
 
         void WaitUntilGame();
 
-        Task WaitUntilGameAsync(CancellationToken cancellation);
+        [ItemCanBeNull]
+        Task<Process> WaitUntilGameAsync(CancellationToken cancellation);
 
         void WaitGame();
 

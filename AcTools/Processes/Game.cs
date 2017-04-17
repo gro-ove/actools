@@ -1,6 +1,7 @@
 ﻿using AcTools.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -125,8 +126,8 @@ namespace AcTools.Processes {
                 await starter.RunAsync(cancellation);
                 if (cancellation.IsCancellationRequested) return null;
 
-                await starter.WaitUntilGameAsync(cancellation);
-                await Task.Run(() => properties.SetGame(), cancellation);
+                var process = await starter.WaitUntilGameAsync(cancellation);
+                await Task.Run(() => properties.SetGame(process), cancellation);
                 if (cancellation.IsCancellationRequested) return null;
 
                 progress?.Report(ProgressState.Waiting);
@@ -164,7 +165,7 @@ namespace AcTools.Processes {
             /// </summary>
             /// <returns>Something disposable what will revert back all changes (optionally)</returns>
             [CanBeNull]
-            public abstract IDisposable Set();
+            public abstract IDisposable Set([CanBeNull] Process process);
         }
 
         public abstract class RaceIniProperties {
@@ -303,8 +304,15 @@ namespace AcTools.Processes {
                 StartTime = DateTime.Now;
             }
 
-            internal void SetGame() {
-                _disposeLater.AddRange(AdditionalPropertieses.OfType<GameHandler>().Select(x => x.Set()).NonNull());
+            internal void SetGame([CanBeNull] Process process) {
+                _disposeLater.AddRange(AdditionalPropertieses.OfType<GameHandler>().Select(x => {
+                    try {
+                        return x.Set(process);
+                    } catch (Exception e) {
+                        AcToolsLogging.Write(e);
+                        return null;
+                    }
+                }).NonNull());
             }
 
             internal void RevertChanges() {

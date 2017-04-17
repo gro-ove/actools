@@ -15,7 +15,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Starters {
-    public class ModuleStarter : BaseStarter {
+    public class ModuleStarter : StarterBase {
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
         private static string BackdoorFilename => Path.Combine(FileUtils.GetDocumentsDirectory(), @"launcherdata", @"filestore", @"cmhelper.ini");

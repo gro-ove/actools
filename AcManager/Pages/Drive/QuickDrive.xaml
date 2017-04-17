@@ -99,7 +99,7 @@
                     </mui:Cell>
                     <Slider Value="{Binding Time}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
                             Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
-                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" />
+                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" SmallChange="900" LargeChange="1800" />
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">

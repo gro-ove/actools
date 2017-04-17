@@ -49,9 +49,7 @@ namespace AcManager.Controls.CustomShowroom {
             InitializeComponent();
             Buttons = new Button[0];
 
-            this.OnActualUnload(() => {
-                Model.Dispose();
-            });
+            this.OnActualUnload(() => Model.Dispose());
         }
 
         private DispatcherTimer _timer;
@@ -167,14 +165,18 @@ namespace AcManager.Controls.CustomShowroom {
                     _carNode.PropertyChanged -= OnCarNodePropertyChanged;
                 }
 
-                _carNode = Renderer.CarNode;
+                var carNode = Renderer.CarNode;
+                _carNode = carNode;
 
                 var carId = Renderer.CarNode?.CarId;
                 Car = carId == null ? null : CarsManager.Instance.GetById(carId);
                 Skin = Car?.GetSkinById(Renderer.CarNode?.CurrentSkin ?? "");
 
-                if (_carNode != null) {
+                if (_carNode != null && carNode != null) {
                     _carNode.PropertyChanged += OnCarNodePropertyChanged;
+                    carNode.BlurredNodesActive = false;
+                    carNode.SeatbeltOnActive = false;
+                    carNode.CockpitLrActive = false;
                 }
             }
 

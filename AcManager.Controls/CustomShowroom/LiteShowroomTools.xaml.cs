@@ -189,6 +189,8 @@ namespace AcManager.Controls.CustomShowroom {
                 public int AmbientShadowIterations = 3200;
                 public bool AmbientShadowHideWheels;
                 public bool AmbientShadowFade = true;
+                [JsonProperty("asa")]
+                public bool AmbientShadowAccurate = true;
                 public bool LiveReload;
 
                 [JsonProperty("cp")]
@@ -237,6 +239,7 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowIterations = AmbientShadowIterations,
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
                     AmbientShadowFade = AmbientShadowFade,
+                    AmbientShadowAccurate = AmbientShadowAccurate,
                     LiveReload = renderer.MagickOverride,
 
                     CameraPosition = CameraPosition.ToArray(),
@@ -378,6 +381,7 @@ namespace AcManager.Controls.CustomShowroom {
                 AmbientShadowIterations = o.AmbientShadowIterations;
                 AmbientShadowHideWheels = o.AmbientShadowHideWheels;
                 AmbientShadowFade = o.AmbientShadowFade;
+                AmbientShadowAccurate = o.AmbientShadowAccurate;
 
                 if (Renderer != null) {
                     Renderer.MagickOverride = o.LiveReload;
@@ -576,10 +580,34 @@ namespace AcManager.Controls.CustomShowroom {
                             } catch (NotImplementedException) {}
                         }
 
-                        var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.LiveryStyle != null);
+                        var carPaint = skinsItems.OfType<PaintShop.CarPaint>().FirstOrDefault(x => x.Enabled);
                         if (carPaint != null && LiveryGenerator != null) {
-                            await LiveryGenerator.CreateLiveryAsync(skin,
-                                    (carPaint.CurrentPattern?.ActualColors ?? new Color[0]).Prepend(carPaint.Color).ToArray(), carPaint.LiveryStyle);
+                            var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
+                            if (liveryStyle != null) {
+                                var colors = new Dictionary<int, Color>(3);
+
+                                foreach (var item in skinsItems.Where(x => x.Enabled)) {
+                                    foreach (var pair in item.LiveryColors) {
+                                        colors[pair.Key] = pair.Value;
+                                    }
+                                }
+
+                                if (carPaint.LiveryColorId.HasValue) {
+                                    colors[carPaint.LiveryColorId.Value] = carPaint.Color;
+                                }
+
+                                var patternColors = carPaint.CurrentPattern?.LiveryColors;
+                                if (patternColors != null) {
+                                    foreach (var pair in patternColors) {
+                                        colors[pair.Key] = pair.Value;
+                                    }
+                                }
+
+                                Logging.Debug("Livery colors: " + colors.Select(x => $"[{x.Key}={x.Value.ToHexString()}]").JoinToReadableString());
+
+                                var colorsArray = Enumerable.Range(0, 3).Select(x => colors.GetValueOr(x, Colors.White)).ToArray();
+                                await LiveryGenerator.CreateLiveryAsync(skin, colorsArray, liveryStyle);
+                            }
                         }
 
                         File.WriteAllText(Path.Combine(skin.Location, "cm_skin.json"), jObj.ToString(Formatting.Indented));
@@ -715,7 +743,7 @@ namespace AcManager.Controls.CustomShowroom {
             public int AmbientShadowIterations {
                 get { return _ambientShadowIterations; }
                 set {
-                    value = value.Round(100).Clamp(400, 8000);
+                    value = value.Round(100).Clamp(400, 24000);
                     if (Equals(value, _ambientShadowIterations)) return;
                     _ambientShadowIterations = value;
                     OnPropertyChanged();
@@ -747,6 +775,18 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            private bool _ambientShadowAccurate;
+
+            public bool AmbientShadowAccurate {
+                get { return _ambientShadowAccurate; }
+                set {
+                    if (Equals(value, _ambientShadowAccurate)) return;
+                    _ambientShadowAccurate = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
             private CommandBase _updateAmbientShadowCommand;
 
             public ICommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async () => {
@@ -757,8 +797,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
 
                 try {
-                    using (var waiting = new WaitingDialog()) {
-                        waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Updating);
+                    using (var waiting = WaitingDialog.Create(ControlsStrings.CustomShowroom_AmbientShadows_Updating)) {
+                        var cancellation = waiting.CancellationToken;
+                        var progress = (IProgress<double>)waiting;
 
                         await Task.Run(() => {
                             if (Renderer?.Kn5 == null) return;
@@ -768,10 +809,11 @@ namespace AcManager.Controls.CustomShowroom {
                                 Iterations = AmbientShadowIterations,
                                 HideWheels = AmbientShadowHideWheels,
                                 Fade = AmbientShadowFade,
+                                CorrectLighting = AmbientShadowAccurate,
                             }) {
                                 renderer.CopyStateFrom(_renderer);
                                 renderer.Initialize();
-                                renderer.Shot();
+                                renderer.Shot(progress, cancellation);
                             }
                         });
 

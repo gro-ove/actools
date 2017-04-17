@@ -13,7 +13,6 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
-using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -42,9 +41,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void InitializeBuffers() {
             _shadowBuffer = TargetResourceDepthTexture.Create();
-            _summBuffer = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
-            _tempBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-            _tempBuffer2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            _bufferFSumm = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
+            _bufferF1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            _bufferF2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            _bufferA = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
 
             _summBlendState = Device.CreateBlendState(new RenderTargetBlendDescription {
                 BlendEnable = true,
@@ -93,16 +93,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowBuffer.Resize(DeviceContextHolder, shadowResolution, shadowResolution, null);
             _shadowViewport = new Viewport(0, 0, _shadowBuffer.Width, _shadowBuffer.Height, 0, 1.0f);
 
-            _summBuffer.Resize(DeviceContextHolder, Width, Height, null);
-            _tempBuffer.Resize(DeviceContextHolder, Width, Height, null);
-            _tempBuffer2.Resize(DeviceContextHolder, Width, Height, null);
-            DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, new Color4(0f, 0f, 0f, 0f));
+            _bufferFSumm.Resize(DeviceContextHolder, Width, Height, null);
+            _bufferF1.Resize(DeviceContextHolder, Width, Height, null);
+            _bufferF2.Resize(DeviceContextHolder, Width, Height, null);
+            _bufferA.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+            DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, new Color4(0f, 0f, 0f, 0f));
         }
         
         private Viewport _shadowViewport;
         private TargetResourceDepthTexture _shadowBuffer;
         private CameraOrtho _shadowCamera;
-        private TargetResourceTexture _summBuffer, _tempBuffer, _tempBuffer2;
+        private TargetResourceTexture _bufferFSumm, _bufferF1, _bufferF2, _bufferA;
         private BlendState _summBlendState, _bakedBlendState;
         private EffectSpecialShadow _effect;
 
@@ -140,8 +141,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.Rasterizer.SetViewports(Viewport);
 
-            DeviceContext.OutputMerger.SetTargets(_tempBuffer.TargetView);
-            DeviceContext.ClearRenderTargetView(_tempBuffer.TargetView, new Color4(0f, 0f, 0f, 0f));
+            DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
+            DeviceContext.ClearRenderTargetView(_bufferF1.TargetView, new Color4(0f, 0f, 0f, 0f));
             _effect.FxDepthMap.SetResource(_shadowBuffer.View);
             _effect.FxShadowViewProj.SetMatrix(_shadowCamera.ViewProj * new Matrix {
                 M11 = 0.5f,
@@ -158,16 +159,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             // copy to summary buffer
             DeviceContext.OutputMerger.BlendState = _summBlendState;
-            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _tempBuffer.View, _summBuffer.TargetView);
+            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferFSumm.TargetView);
         }
 
         private void Draw(float multipler, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             _effect.FxAmbient.Set(Ambient);
-            DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
-
-            /*var h = (int)Math.Round(Math.Pow(Iterations, 0.46));
-            var v = (int)Math.Round(Math.Pow(Iterations, 0.54));
-            var t = h * v;*/
+            DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, Color.Transparent);
+            DeviceContext.ClearRenderTargetView(_bufferA.TargetView, Color.Transparent);
 
             var t = Iterations;
 
@@ -220,32 +218,41 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.Rasterizer.SetViewports(Viewport);
             _effect.FxSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
-            DeviceContext.ClearRenderTargetView(_tempBuffer.TargetView, Color.Transparent);
-            DeviceContext.OutputMerger.SetTargets(_tempBuffer.TargetView);
-            _effect.FxInputMap.SetResource(_summBuffer.View);
+            DeviceContext.ClearRenderTargetView(_bufferF1.TargetView, Color.Transparent);
+            DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
+            _effect.FxInputMap.SetResource(_bufferFSumm.View);
             _effect.FxCount.Set(iter / SkyBrightnessLevel);
             _effect.FxMultipler.Set(multipler);
             _effect.FxGamma.Set(Gamma);
             _effect.TechAoResult.DrawAllPasses(DeviceContext, 6);
 
             for (var i = 0; i < 2; i++) {
-                DeviceContext.ClearRenderTargetView(_tempBuffer2.TargetView, Color.Transparent);
-                DeviceContext.OutputMerger.SetTargets(_tempBuffer2.TargetView);
-                _effect.FxInputMap.SetResource(_tempBuffer.View);
+                DeviceContext.ClearRenderTargetView(_bufferF2.TargetView, Color.Transparent);
+                DeviceContext.OutputMerger.SetTargets(_bufferF2.TargetView);
+                _effect.FxInputMap.SetResource(_bufferF1.View);
                 _effect.TechAoGrow.DrawAllPasses(DeviceContext, 6);
 
-                DeviceContext.ClearRenderTargetView(_tempBuffer.TargetView, Color.Transparent);
-                DeviceContext.OutputMerger.SetTargets(_tempBuffer.TargetView);
-                _effect.FxInputMap.SetResource(_tempBuffer2.View);
+                DeviceContext.ClearRenderTargetView(_bufferF1.TargetView, Color.Transparent);
+                DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
+                _effect.FxInputMap.SetResource(_bufferF2.View);
                 _effect.TechAoGrow.DrawAllPasses(DeviceContext, 6);
             }
             
-            PrepareForFinalPass();
             if (UseFxaa) {
-                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _tempBuffer.View, RenderTargetView);
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferF2.TargetView);
+
+                PrepareForFinalPass();
+                DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, _bufferF2, _bufferA);
             } else {
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _tempBuffer.View, RenderTargetView);
+                PrepareForFinalPass();
+                DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, _bufferF1, _bufferA);
             }
+
+            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferA.View, RenderTargetView);
+
+            /*DeviceContext.OutputMerger.SetTargets(RenderTargetView);
+            _effect.FxInputMap.SetResource(_bufferA.View);
+            _effect.TechAoFinalCopy.DrawAllPasses(DeviceContext, 6);*/
         }
 
         private void SetBodyShadowCamera() {
@@ -260,7 +267,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowCamera.SetLens(1f);
         }
         
-        public bool UseFxaa = true;
+        public bool UseFxaa = false;
 
         public void Shot(string outputFile, string textureName, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             if (!Initialized) {
@@ -329,9 +336,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _summBlendState);
             DisposeHelper.Dispose(ref _bakedBlendState);
-            DisposeHelper.Dispose(ref _summBuffer);
-            DisposeHelper.Dispose(ref _tempBuffer);
-            DisposeHelper.Dispose(ref _tempBuffer2);
+            DisposeHelper.Dispose(ref _bufferFSumm);
+            DisposeHelper.Dispose(ref _bufferF1);
+            DisposeHelper.Dispose(ref _bufferF2);
+            DisposeHelper.Dispose(ref _bufferA);
             DisposeHelper.Dispose(ref _shadowBuffer);
             DisposeHelper.Dispose(ref _rasterizerState);
             CarNode.Dispose();

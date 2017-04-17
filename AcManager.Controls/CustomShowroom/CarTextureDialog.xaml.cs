@@ -158,13 +158,13 @@ namespace AcManager.Controls.CustomShowroom {
         #region Generating
         private const string KeyDimensions = "__BakedShadowsRendererViewModel.Dimensions";
 
-        public async Task<bool> CalculateAo(int? size, string filename, [CanBeNull] CarObject car) {
+        public async Task<Size?> CalculateAo(int? size, string filename, [CanBeNull] CarObject car) {
             int width, height;
             switch (size) {
                 case null:
                     var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
                             ValuesStorage.GetString(KeyDimensions, Size.HasValue ? $"{Size?.Width}x{Size?.Height}" : ""), @"2048x2048");
-                    if (string.IsNullOrWhiteSpace(result)) return false;
+                    if (string.IsNullOrWhiteSpace(result)) return null;
 
                     ValuesStorage.Set(KeyDimensions, result);
 
@@ -179,7 +179,7 @@ namespace AcManager.Controls.CustomShowroom {
                         } else {
                             NonfatalError.Notify(ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed,
                                     ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed_Commentary);
-                            return false;
+                            return null;
                         }
                     }
                     break;
@@ -215,10 +215,10 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                 });
 
-                if (cancellation.IsCancellationRequested) return false;
+                if (cancellation.IsCancellationRequested) return null;
             }
 
-            return true;
+            return new Size(width, height);
         }
 
         private static string GetShortChecksum(string s) {
@@ -236,8 +236,10 @@ namespace AcManager.Controls.CustomShowroom {
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
             var filename = FilesStorage.Instance.GetTemporaryFilename(
                     $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} AO.png");
-            if (!await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car)) return;
+            var resultSizeN = await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car);
+            if (!resultSizeN.HasValue) return;
 
+            var resultSize = resultSizeN.Value;
             var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
             var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
                     $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(_textureName))} Original ({uniquePostfix}).tmp");
@@ -247,8 +249,8 @@ namespace AcManager.Controls.CustomShowroom {
                         Saveable = true,
                         SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                         SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                        MaxImageWidth = Size?.Width ?? double.MaxValue,
-                        MaxImageHeight = Size?.Height ?? double.MaxValue,
+                        MaxImageWidth = resultSize.Width,
+                        MaxImageHeight = resultSize.Height,
                     }
                 }.ShowDialog();
                 return;
@@ -264,8 +266,8 @@ namespace AcManager.Controls.CustomShowroom {
                             Saveable = true,
                             SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                             SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                            MaxImageWidth = Size?.Width ?? double.MaxValue,
-                            MaxImageHeight = Size?.Height ?? double.MaxValue,
+                            MaxImageWidth = resultSize.Width,
+                            MaxImageHeight = resultSize.Height,
                         }
                     }.ShowDialog();
                     return;
