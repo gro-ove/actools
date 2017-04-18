@@ -9,16 +9,27 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     
 - ### [AcTools.LapTimes](https://github.com/gro-ove/actools/tree/master/AcTools.LapTimes)
     Thing for reading best lap times from different sources. Uses LevelDb for reading from the original launcher (which saves times using Chromium’s IndexedDB).
+    
+- ### [AcTools.LapTimes.LevelDb](https://github.com/gro-ove/actools/tree/master/AcTools.LapTimes.LevelDb)
+    Small “spin-off” which loads times from old AC database. It was made using IndexedDB in Chromium, which uses LevelDB underneath. Quite a mess if you want to read it.
 
 - ### [AcTools.Render](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
-    A replacement for AcTools.Kn5Render. Has a much more thoughtful architecture and thereby contains two different renderers: Lite (simple skins-editing DX10-compatible version) and Deferred (deferred rendering & lighting, SSLR, HDR, dynamic shadows).
-
-    Lite renderer supports a lot of different Kunos materials with a lot of properties, so it should be pretty close.
+    A replacement for AcTools.Kn5Render. Has a much more thoughtful architecture and thereby contains two different renderers: Lite (very simple skins-editing DX10-compatible version) and Dark (extended variation of Lite, with lighting, skinning and a lot of effects such as SSLR, SSAO, PCSS). Both use forward rendering. There was also deferred renderer, but it was quite poor and got moved away.
+    
+    Apart from simple rendering, has a bunch of special modes, allowing to update ambient shadows, AO maps, recalculate tracks’ maps and outlines.
     
     [![Lite Showroom](http://i.imgur.com/neffgq2.png)](http://i.imgur.com/neffgq2.png)
+    
+    [![Dark Showroom](https://trello-attachments.s3.amazonaws.com/5717b937f2d3e46d53187719/58a61e2fd6f33aff36eaf9c6/660a9bbe933e4e5c0784411943a80955/__custom_showroom_1488803900.jpg)](https://trello-attachments.s3.amazonaws.com/5717b937f2d3e46d53187719/58a61e2fd6f33aff36eaf9c6/660a9bbe933e4e5c0784411943a80955/__custom_showroom_1488803900.jpg)
+    
+- ### [AcTools.Render.Deferred](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
+    Deferred rendering with dynamic lighting, dynamic shadows, HDR, tricky SSLR… Sadly, I couldn’t find a way to move all materials here correctly, so I decided to switch to forward rendering instead. Also, with forward, I can vary options on-fly, getting either very high-performance simple renderer (≈900 FPS) or pretty good looking one (≈60 FPS, without MSAA or higher pixel density).
 
     [![Custom Showroom](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)
-
+    
+- ### [LicensePlates](https://github.com/gro-ove/actools/tree/master/LicensePlates)
+    Fully independent from AcTools.\* library which generates number plates using Lua to interpret style files and Magick.NET to create and save textures. [In action](http://i.imgur.com/T7SVlLF.gifv).
+    
 - ### [StringBasedFilter](https://github.com/gro-ove/actools/tree/master/StringBasedFilter)
     Small library for filtering objects by queries like `*ca & !(country:c* | year<1990)`.
 
@@ -30,6 +41,9 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 - ### [AcManager.LargeFilesSharing](https://github.com/gro-ove/actools/tree/master/AcManager.LargeFilesSharing)
     Small sub-library for uploading big files into clouds (only Google Drive for now). Could weight more than 2 MB with official Google library, but self-written takes only about 35 KB.
 
+- ### [AcManager.ContentRepair](https://github.com/gro-ove/actools/tree/master/AcManager.ContentRepair)
+    Contains a bunch of diagnostics and repairs for common custom cars’ issues in AC.
+    
 - ### [AcManager.Controls](https://github.com/gro-ove/actools/tree/master/AcManager.Controls)
     Library with common UI components (like AcListPage).
 
@@ -43,6 +57,17 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
     [![Content Manager](http://i.imgur.com/WsovqYV.png)](http://i.imgur.com/WsovqYV.png)
     [![Content Manager](http://i.imgur.com/wvM1SMY.png)](http://i.imgur.com/wvM1SMY.png)
+    
+## Other apps
+    
+- ### [CustomPreviewUpdater](https://github.com/gro-ove/actools/tree/master/CustomPreviewUpdater)
+    Generates previews using AcTools.Render.
+    
+- ### [CustomShowroom](https://github.com/gro-ove/actools/tree/master/CustomShowroom)
+    Small wrapper for AcTools.Render library, for standalone use without Content Manager.
+    
+- ### [LicensePlatesGenerator](https://github.com/gro-ove/actools/tree/master/LicensePlatesGenerator)
+    Small console wrapper for LicensePlates library.
 
 # Build notes
 
