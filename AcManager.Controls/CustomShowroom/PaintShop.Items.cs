@@ -410,7 +410,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override void ApplyOverride(IPaintShopRenderer renderer) {
                 foreach (var replacement in Replacements) {
-                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 1d,
+                    renderer.OverrideTextureTint(replacement.Key, Colors.DrawingColors, 0d,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }
@@ -423,7 +423,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 foreach (var replacement in Replacements) {
-                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 1d,
+                    await renderer.SaveTextureTintAsync(Path.Combine(location, replacement.Key), Colors.DrawingColors, 0d,
                             replacement.Value.Source, replacement.Value.Mask, replacement.Value.Overlay);
                 }
             }

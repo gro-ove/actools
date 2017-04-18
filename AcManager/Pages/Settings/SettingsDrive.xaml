@@ -28,7 +28,7 @@
             </DockPanel>
 
             <c:MessageBlock Margin="0 0 0 8">
-                <TextBlock Text="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
+                <mui:BbCodeBlock BbCode="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
             </c:MessageBlock>
 
             <CheckBox IsChecked="{Binding Drive.StarterFallbackIfNotAvailable}"
@@ -39,6 +39,11 @@
             <CheckBox IsChecked="{Binding Drive.AcServiceStopAtExit}"
                     Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='AC Service'}">
                 <Label Content="Stop service on CM exit" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.TryToLoadReplays}"
+                    Visibility="{Binding Drive.SelectedStarterType.RequiresSteam, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label Content="Try to start Steam if not running" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
@@ -155,7 +160,7 @@
                 <Button Content="Browse" Command="{Binding SelectRhmLocationCommand}" />
                 <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
             </DockPanel>
-            
+
             <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
                 <Label Content="Keep alive for:" />
                 <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"

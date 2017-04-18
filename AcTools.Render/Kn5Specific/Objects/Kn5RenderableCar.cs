@@ -3,10 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcTools.DataFile;
@@ -16,6 +16,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Sprites;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
@@ -28,6 +29,9 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
+using SlimDX.DirectWrite;
+using FontStyle = SlimDX.DirectWrite.FontStyle;
+using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class CarDescription {
@@ -277,17 +281,29 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     ReloadSteeringWheelLock();
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
                     ExtraCamerasChanged?.Invoke(this, EventArgs.Empty);
-                    DisposeHelper.Dispose(ref _collidersLines);
                     ResetExtras();
                     ResetLights();
                     LoadMirrors(holder);
                     ReloadSuspension();
                     ResetWings();
+
+                    // driver
+                    _driverSet = false;
+                    _driverSteerAnimator = null;
+                    DisposeHelper.Dispose(ref _driver);
+
+                    // debug lines
+                    DisposeHelper.Dispose(ref _fuelTank);
+                    DisposeHelper.DisposeSecond(ref _collidersLines);
+                    DisposeHelper.DisposeSecond(ref _flamesLines);
                     break;
+
                 case "ambient_shadows.ini":
                     ResetAmbientShadowSize();
                     break;
                 case "car.ini":
+                    DisposeHelper.Dispose(ref _fuelTank);
+                    DisposeHelper.DisposeSecond(ref _collidersLines); // because they are affected by offset
                     ReloadSteeringWheelLock();
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
                     break;
@@ -295,13 +311,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     ExtraCamerasChanged?.Invoke(this, EventArgs.Empty);
                     break;
                 case "colliders.ini":
-                    DisposeHelper.Dispose(ref _collidersLines);
+                    DisposeHelper.DisposeSecond(ref _collidersLines);
                     break;
                 case "dash_cam.ini":
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
                     break;
+                case "driver3d.ini":
+                    _driverSet = false;
+                    DisposeHelper.Dispose(ref _driver);
+                    _driverSteerAnimator = null;
+                    break;
                 case "extra_animations.ini":
                     ResetExtras();
+                    break;
+                case "flames.ini":
+                    DisposeHelper.DisposeSecond(ref _flamesLines);
                     break;
                 case "lights.ini":
                     ResetLights();
@@ -375,11 +399,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-#if DEBUG
-        private bool _useUp = false;
-#else
         private bool _useUp;
-#endif
 
         public bool UseUp {
             get { return _useUp; }
@@ -417,12 +437,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         internal string DebugString => _up?.DebugString;
-
-#if DEBUG
-        private bool _isDriverVisible = false;
-#else
+        
         private bool _isDriverVisible;
-#endif
 
         public bool IsDriverVisible {
             get { return _isDriverVisible; }
@@ -1942,6 +1958,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Suspension debug
+        private bool _suspensionDebug;
+
+        public bool SuspensionDebug {
+            get { return _suspensionDebug; }
+            set {
+                if (Equals(value, _suspensionDebug)) return;
+                _suspensionDebug = value;
+                _skinsWatcherHolder?.RaiseUpdateRequired();
+                OnPropertyChanged();
+            }
+        }
+
         public CarData.SuspensionsPack SuspensionsPack => _suspensionsPack ?? (_suspensionsPack = _carData.GetSuspensionsPack());
         private CarData.SuspensionsPack _suspensionsPack;
 
@@ -2033,33 +2061,185 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Colliders from colliders.ini
-        private IRenderableObject _collidersLines;
+        [NotNull]
+        private static DebugLinesObject GetLinesBox(Matrix matrix, Vector3 size, Color4 color) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
 
-        private static DebugLinesObject GetCollidersVertices(Matrix matrix, IEnumerable<CarData.ColliderDescription> pack) {
-            var vertices = new List<InputLayouts.VerticePC>(72);
-            var indices = new List<ushort>(108);
-
-            foreach (var description in pack) {
-                var box = GeometryGenerator.CreateLinesBox(description.Size);
-
-                for (var i = 0; i < box.Vertices.Count; i++) {
-                    vertices.Add(new InputLayouts.VerticePC(box.Vertices[i].Position + description.Center, new Color4(1f, 1f, 0f, 0f)));
-                }
-
-                indices.AddRange(box.Indices);
+            var box = GeometryGenerator.CreateLinesBox(size);
+            for (var i = 0; i < box.Vertices.Count; i++) {
+                vertices.Add(new InputLayouts.VerticePC(box.Vertices[i].Position, color));
             }
 
+            indices.AddRange(box.Indices);
             return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
         }
 
-        public void DrawCollidersDebugStuff(DeviceContextHolder holder, ICamera camera) {
-            if (_collidersLines == null) {
-                _collidersLines = GetCollidersVertices(Matrix.Translation(-_carData.GetGraphicOffset()), _carData.GetColliders());
+        [NotNull]
+        private static DebugLinesObject GetLinesArrow(Matrix matrix, Vector3 direction, Color4 color) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            vertices.Add(new InputLayouts.VerticePC(new Vector3(0f), color));
+            vertices.Add(new InputLayouts.VerticePC(direction, color));
+            indices.AddRange(new ushort[] { 0, 1 });
+
+            Vector3 left, up;
+            if (direction == Vector3.UnitY) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
             }
 
-            _collidersLines.ParentMatrix = RootObject.Matrix;
-            _collidersLines.Draw(holder, camera, SpecialRenderMode.Simple);
+            vertices.Add(new InputLayouts.VerticePC(direction + (left + up - direction) * 0.2f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (-left + up - direction) * 0.2f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (-left - up - direction) * 0.2f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (left - up - direction) * 0.2f, color));
+            indices.AddRange(new ushort[] { 1, 2, 1, 3, 1, 4, 1, 5 });
+            indices.AddRange(new ushort[] { 2, 3, 3, 4, 4, 5, 5, 2 });
+
+            return new DebugLinesObject(Matrix.Scaling(new Vector3(0.2f)) * matrix, vertices.ToArray(), indices.ToArray());
         }
+
+        [CanBeNull]
+        private Tuple<string, DebugLinesObject>[] _collidersLines;
+
+        public void DrawCollidersDebugStuff(DeviceContextHolder holder, ICamera camera) {
+            if (_collidersLines == null) {
+                var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
+                _collidersLines = _carData.GetColliders().Select(x => Tuple.Create(x.Name, GetLinesBox(
+                        Matrix.Translation(x.Center) * graphicMatrix,
+                        x.Size, new Color4(1f, 1f, 0f, 0f)))).ToArray();
+            }
+
+            for (var i = 0; i < _collidersLines.Length; i++) {
+                var line = _collidersLines[i];
+                line.Item2.ParentMatrix = RootObject.Matrix;
+                line.Item2.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+        }
+        #endregion
+
+        #region Fuel tank position
+        private bool _isFuelTankVisible;
+
+        public bool IsFuelTankVisible {
+            get { return _isFuelTankVisible; }
+            set {
+                if (Equals(value, _isFuelTankVisible)) return;
+                _isFuelTankVisible = value;
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+                OnPropertyChanged();
+            }
+        }
+
+        [CanBeNull]
+        private DebugLinesObject _fuelTank;
+
+        public void DrawFuelTank(DeviceContextHolder holder, ICamera camera) {
+            if (_fuelTank == null) {
+                var volume = _carData.GetFuelTankVolume();
+                var side = volume.Pow(1f / 3f);
+                var proportions = new Vector3(2f, 0.5f, 1f);
+                _fuelTank = GetLinesBox(Matrix.Translation(_carData.GetFuelTankPosition()) * Matrix.Invert(_carData.GetGraphicMatrix()),
+                        proportions * side, new Color4(1f, 0.5f, 1f, 0f));
+            }
+
+            _fuelTank.ParentMatrix = RootObject.Matrix;
+            _fuelTank.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+        #endregion
+
+        #region Flames position
+        private bool _areFlamesVisible;
+
+        public bool AreFlamesVisible {
+            get { return _areFlamesVisible; }
+            set {
+                if (Equals(value, _areFlamesVisible)) return;
+                _areFlamesVisible = value;
+                _skinsWatcherHolder?.RaiseSceneUpdated();
+                OnPropertyChanged();
+            }
+        }
+
+        [CanBeNull]
+        private Tuple<string, DebugLinesObject>[] _flamesLines;
+
+        public void DrawFlames(DeviceContextHolder holder, ICamera camera) {
+            if (_flamesLines == null) {
+                _flamesLines = _carData.GetFlames().Select(x => Tuple.Create(x.Name,
+                        GetLinesArrow(Matrix.Translation(x.Position), x.Direction, new Color4(1f, 1f, 0f, 0f)))).ToArray();
+            }
+
+            for (var i = 0; i < _flamesLines.Length; i++) {
+                var line = _flamesLines[i];
+                line.Item2.ParentMatrix = RootObject.Matrix;
+                line.Item2.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+        }
+        #endregion
+
+        #region Draw debug stuff
+        public void DrawDebug(DeviceContextHolder holder, ICamera camera) {
+            if (SuspensionDebug) {
+                DrawSuspensionDebugStuff(holder, camera);
+            }
+
+            if (IsColliderVisible) {
+                DrawCollidersDebugStuff(holder, camera);
+            }
+
+            if (IsFuelTankVisible) {
+                DrawFuelTank(holder, camera);
+            }
+
+            if (AreFlamesVisible) {
+                DrawFlames(holder, camera);
+            }
+        }
+        
+        private void DrawText(string text, Matrix objectTransform, ICamera camera, Vector2 screenSize, Color4 color) {
+            var onScreenPosition = Vector3.TransformCoordinate(Vector3.Zero, objectTransform * camera.ViewProj) * 0.5f +
+                    new Vector3(0.5f);
+            onScreenPosition.Y = 1f - onScreenPosition.Y;
+            _debugText.DrawString(text,
+                    new RectangleF(onScreenPosition.X * screenSize.X - 100f, onScreenPosition.Y * screenSize.Y - 70f, 200f, 200f),
+                    TextAlignment.HorizontalCenter | TextAlignment.VerticalCenter, 12f, color,
+                    CoordinateType.Absolute);
+        }
+
+        public void DrawSprites(SpriteRenderer sprite, ICamera camera, Vector2 screenSize) {
+            if (_debugText == null) {
+                _debugText = new TextBlockRenderer(sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16f);
+            }
+
+            if (IsFuelTankVisible && _fuelTank != null) {
+                DrawText("Fuel tank", _fuelTank.ParentMatrix * _fuelTank.Transform, camera, screenSize, new Color4(1f, 0.5f, 1f, 0f));
+            }
+
+            var collidersLines = _collidersLines;
+            if (IsColliderVisible && collidersLines != null) {
+                for (var i = 0; i < collidersLines.Length; i++) {
+                    var line = collidersLines[i];
+                    DrawText(line.Item1, line.Item2.ParentMatrix * line.Item2.Transform, camera, screenSize, new Color4(1f, 1f, 0f, 0f));
+                }
+            }
+
+            var flamesLines = _flamesLines;
+            if (IsColliderVisible && flamesLines != null) {
+                for (var i = 0; i < flamesLines.Length; i++) {
+                    var line = flamesLines[i];
+                    DrawText(line.Item1, line.Item2.ParentMatrix * line.Item2.Transform, camera, screenSize, new Color4(1f, 1f, 0f, 0f));
+                }
+            }
+        }
+
+        private TextBlockRenderer _debugText;
         #endregion
 
         #region Cameras
@@ -2124,9 +2304,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref _driver);
             DisposeHelper.Dispose(ref _crewMain);
             DisposeHelper.Dispose(ref _crewTyres);
-            DisposeHelper.Dispose(ref _collidersLines);
+            DisposeHelper.DisposeSecond(ref _collidersLines);
+            DisposeHelper.DisposeSecond(ref _flamesLines);
             DisposeHelper.Dispose(ref _collider);
             DisposeHelper.Dispose(ref _debugNode);
+            DisposeHelper.Dispose(ref _fuelTank);
+            DisposeHelper.Dispose(ref _debugText);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

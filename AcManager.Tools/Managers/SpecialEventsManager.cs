@@ -105,9 +105,10 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public async Task UpdateProgressViaSidePassage(IProgress<string> progress, CancellationToken cancellation) {
+        private async Task UpdateProgressViaSteamStatisticsReader(Func<CancellationToken, Task<string>> provider, IProgress<string> progress,
+                CancellationToken cancellation) {
             progress.Report("Getting data…");
-            var data = await SidePassageStarter.GetAchievementsAsync(cancellation);
+            var data = await provider(cancellation);
             if (data == null || cancellation.IsCancellationRequested) return;
 
             foreach (var pair in JObject.Parse(data)["achievements"].ToObject<Dictionary<string, string>[]>()) {
@@ -118,17 +119,16 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public async Task UpdateProgressViaSteamStarter(IProgress<string> progress, CancellationToken cancellation) {
-            progress.Report("Getting data…");
-            var data = await Task.Run(() => SteamStarter.GetAchievements());
-            if (data == null || cancellation.IsCancellationRequested) return;
+        public Task UpdateProgressViaSidePassage(IProgress<string> progress, CancellationToken cancellation) {
+            return UpdateProgressViaSteamStatisticsReader(SidePassageStarter.GetAchievementsAsync, progress, cancellation);
+        }
 
-            foreach (var pair in JObject.Parse(data)["achievements"].ToObject<Dictionary<string, string>[]>()) {
-                var eventObject = GetById(pair.GetValueOrDefault("name") ?? "");
-                if (eventObject == null) continue;
-                eventObject.TakenPlace = Math.Min(eventObject.TakenPlace,
-                        (eventObject.ConditionType == null ? 4 : 3) - pair.GetValueOrDefault("maxTier").AsInt(-1));
-            }
+        public Task UpdateProgressViaSteamStarter(IProgress<string> progress, CancellationToken cancellation) {
+            return UpdateProgressViaSteamStatisticsReader(c => Task.Run(() => SteamStarter.GetAchievements()), progress, cancellation);
+        }
+
+        public Task UpdateProgressViaAppIdStarter(IProgress<string> progress, CancellationToken cancellation) {
+            return UpdateProgressViaSteamStatisticsReader(c => Task.Run(() => AppIdStarter.GetAchievements()), progress, cancellation);
         }
 
         private static readonly string[] WatchedFiles = {

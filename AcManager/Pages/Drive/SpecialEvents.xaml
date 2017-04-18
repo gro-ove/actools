@@ -88,9 +88,11 @@
 
             <DockPanel Grid.ColumnSpan="3"
                     Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=540}">
-                <mui:Switch DockPanel.Dock="Right" Margin="4 0 0 0" Value="{Binding SyncronizeProgressUsingSteamStarterCommand.IsAbleToExecute}">
-                    <Button mui:Switch.When="True" Command="{Binding SyncronizeProgressUsingSteamStarterCommand}" ToolTip="Always works (at least should)"
+                <mui:Switch Value="{Binding SelectedStarterType.Id, Source={x:Static t:SettingsHolder.Drive}}" DockPanel.Dock="Right" Margin="4 0 0 0">
+                    <Button mui:Switch.When="Steam" Command="{Binding SyncronizeProgressUsingSteamStarterCommand}" ToolTip="Always works (at least should)"
                             Content="Sync via Steam" />
+                    <Button mui:Switch.When="AppID" Command="{Binding SyncronizeProgressUsingAppIdStarterCommand}" ToolTip="Always works (at least should)"
+                            Content="Sync via AppID starter" />
                     <mui:SpacingStackPanel Spacing="4" Orientation="Horizontal">
                         <Button Command="{Binding SyncronizeProgressUsingModuleCommand}"
                                 ToolTip="Works with private Steam profiles, but UI module should be installed and AC launcher should be running"

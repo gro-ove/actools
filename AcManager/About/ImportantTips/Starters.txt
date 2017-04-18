@@ -16,16 +16,24 @@ Created after Kunos added official support for custom launchers.
   − Unreliable: sometimes just stops working;
   − Incompatible: can’t be used when original launcher is running.
 
- • [b]AC Service [i](new)[/i][/b]
+ • [b]AppID Starter [i](new)[/i][/b]
+Funny thing: after all those attempts to find the best way to run the race, it turned out all I have to do is to put “steam_appid.txt” with AC’s Steam ID to AC folder. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.
+  + Steam-friendly: Steam overlay & archievments will work without any problems;
+  + Fastest: launches race immediately (but takes some time to run Steam if it’s not running);
+  + Safe: doesn’t mess with [i]AssettoCorsa.exe[/i] or other game files;
+  + Compatible: can be used when original launcher is running;
+  + Laconic: minimizes amount of extra entries;
+  + Functional: allows to get Special Challenges progress when Steam profile is private.
+
+ • [b]AC Service[/b]
 Replaces original launcher with a small service. Service runs in background (with icon in system tray), consumes about 10 MB of memory and can immediately start race or original launcher (via context menu or special protocol). In my opinion, this is the best way, but it needs testing.
   + Most Steam-friendly: Steam overlay & achievements will work without any problems, usage time counts as usual;
   + Fastest: if service is already running, launches race immediately;
   + Safe: even though it replaces [i]AssettoCorsa.exe[/i] (and renames it to [i]AssettoCorsa_original.exe[/i]), original launcher still can be easily started via icon in tray — and also, default behavior of that service is to run [i]AssettoCorsa_original.exe[/i], so, it’s likely you won’t even notice that replacement;
   + Compatible: can be used when original launcher is running;
-  + Functional: allows to get Special Challenges progress when Steam profile is private;
-  − Non-finished: apparently, at some point it breaks (you would have to restart Steam or go to Task Manager and kill “AC Service Passage”), and I haven’t yet figured out why.
+  + Functional: allows to get Special Challenges progress when Steam profile is private.
 
- • [b]Replacement [i](new)[/i][/b]
+ • [b]Replacement[/b]
 Replaces original launcher with CM itself. To enable it, just open AC root folder, rename [i]AssettoCorsa.exe[/i] to [i]AssettoCorsa_original.exe[/i] and then put there CM named as [i]AssettoCorsa.exe[/i].
   + Most Steam-friendly: Steam overlay & achievements will work without any problems, usage time counts as usual;
   + Fastest: launches race immediately;

@@ -8,7 +8,6 @@ using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -129,5 +128,7 @@ namespace AcManager.Tools.Starters {
         public virtual async Task CleanUpAsync(CancellationToken cancellation) {
             await Task.Run(() => CleanUp(), cancellation);
         }
+
+        public bool RunSteamIfNeeded { get; set; }
     }
 }

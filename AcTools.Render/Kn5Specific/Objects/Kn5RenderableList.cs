@@ -15,16 +15,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private readonly string _dirNode;
         private bool _dirTargetSet;
         private RenderableList _dirTarget;
-        
-        public bool HighlightDummy { get; set; }
-        private readonly DebugLinesObject _lines = new DebugLinesObject(Matrix.Identity, new[] {
-            new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(0, 1, 0)),
-            new InputLayouts.VerticePC(new Vector3(0f, 0.02f, 0f), new Color4(0, 1, 0)),
-            new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(1, 0, 0)),
-            new InputLayouts.VerticePC(new Vector3(0.02f, 0f, 0f), new Color4(1, 0, 0)),
-            new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(0, 0, 1)),
-            new InputLayouts.VerticePC(new Vector3(0f, 0f, 0.02f), new Color4(0, 0, 1)),
-        });
 
         public Kn5RenderableList(Kn5Node node, Func<Kn5Node, IRenderableObject> convert)
                 : base(node.Name, node.Transform.ToMatrix(), node.Children.Count == 0 ? new IRenderableObject[0] : node.Children.Select(convert)) {
@@ -50,11 +40,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             base.Draw(contextHolder, camera, mode, filter);
-            
-            if (HighlightDummy && mode == SpecialRenderMode.SimpleTransparent) {
-                _lines.ParentMatrix = Matrix;
-                _lines.Draw(contextHolder, camera, SpecialRenderMode.Simple);
-            }
         }
 
         public Matrix ModelMatrixInverted { get; internal set; }

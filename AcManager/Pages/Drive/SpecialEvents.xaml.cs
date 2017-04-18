@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.ViewModels;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -150,6 +148,19 @@ namespace AcManager.Pages.Drive {
                             NonfatalError.Notify("Can’t get challenges progress", e);
                         }
                     }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.SteamStarterType));
+
+            private AsyncCommand _syncronizeProgressUsingAppIdStarterCommand;
+
+            public AsyncCommand SyncronizeProgressUsingAppIdStarterCommand => _syncronizeProgressUsingAppIdStarterCommand ??
+                    (_syncronizeProgressUsingAppIdStarterCommand = new AsyncCommand(async () => {
+                        try {
+                            using (var waiting = new WaitingDialog()) {
+                                await SpecialEventsManager.Instance.UpdateProgressViaAppIdStarter(waiting, waiting.CancellationToken);
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get challenges progress", e);
+                        }
+                    }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.AppIdStarterType));
         }
 
         private ScrollViewer _scroll;
@@ -183,10 +194,6 @@ namespace AcManager.Pages.Drive {
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
             Model.Unload();
-        }
-
-        private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            new AssistsDialog(AssistsViewModel.Instance).ShowDialog();
         }
 
         private double _scale;

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base.Cameras;

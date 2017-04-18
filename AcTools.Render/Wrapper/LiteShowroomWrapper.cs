@@ -414,6 +414,14 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.FansEnabled = !_renderer.CarNode.FansEnabled;
                         }
+                    } else if (args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.AreFlamesVisible = !_renderer.CarNode.AreFlamesVisible;
+                        }
+                    } else if (args.Control && args.Alt && args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.IsFuelTankVisible = !_renderer.CarNode.IsFuelTankVisible;
+                        }
                     } else {
                         _renderer.UseFxaa = !_renderer.UseFxaa;
                     }
@@ -616,9 +624,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             d.MeshDebug = !d.MeshDebug;
                         }
                     } else if (!args.Control && !args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.SuspensionDebug = !d.SuspensionDebug;
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.SuspensionDebug = !_renderer.CarNode.SuspensionDebug;
                         }
                     } else if (args.Shift && args.Control && !args.Alt) {
                         if (_renderer.CarNode != null) {

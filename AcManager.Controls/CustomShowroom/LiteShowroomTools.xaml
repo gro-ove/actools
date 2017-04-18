@@ -724,12 +724,17 @@
 
                         <TextBlock Text="Physics" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
                         <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
-                            <CheckBox IsChecked="{Binding DarkRenderer.SuspensionDebug}"
-                                    IsEnabled="{Binding DarkRenderer, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
+                            <CheckBox IsChecked="{Binding DarkRenderer.CarNode.SuspensionDebug}">
                                 <Label Content="Suspension" />
                             </CheckBox>
                             <CheckBox IsChecked="{Binding Renderer.CarNode.IsColliderVisible}">
                                 <Label Content="Collider" />
+                            </CheckBox>
+                            <CheckBox IsChecked="{Binding Renderer.CarNode.IsFuelTankVisible}">
+                                <Label Content="Fuel tank" />
+                            </CheckBox>
+                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
+                                <Label Content="Flames" />
                             </CheckBox>
                         </mui:SpacingUniformGrid>
                         <DockPanel>
@@ -738,7 +743,7 @@
                             <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="BottomRight" />
                         </DockPanel>
                         <ItemsControl ItemsSource="{Binding DarkRenderer.CarNode.SuspensionsPack}"
-                                Visibility="{Binding DarkRenderer.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                Visibility="{Binding DarkRenderer.CarNode.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12">

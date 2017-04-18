@@ -16,6 +16,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;

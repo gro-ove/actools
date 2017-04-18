@@ -60,6 +60,7 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
             new IniFile(FileUtils.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = true,

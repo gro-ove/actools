@@ -42,10 +42,7 @@ namespace AcTools.Processes {
         }
 
         public void Run() {
-            if (!Process.GetProcessesByName("steam").Any()) {
-                TryToRunSteam();
-                throw new Exception("Running Steam is required");
-            }
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
 
             _acLauncher = FileUtils.GetAcLauncherFilename(AcRoot);
             _acLauncherBackup = _acLauncher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";
@@ -196,5 +193,7 @@ namespace AcTools.Processes {
                 throw new Exception("Cannot restore original AssettoCorsa.exe");
             }
         }
+
+        public bool RunSteamIfNeeded { get; set; }
     }
 }

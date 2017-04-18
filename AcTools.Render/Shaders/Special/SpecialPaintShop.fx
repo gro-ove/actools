@@ -36,7 +36,7 @@
 
 	float4 ProperBlending(float4 background, float4 foreground) {
 		float a = foreground.a + background.a * (1 - foreground.a);
-		if (a < 0.00001) return 0.0;
+		if (a < 0.00001) return background;
 		return saturate(float4(
 			(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
 			a));

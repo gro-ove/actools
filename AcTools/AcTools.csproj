@@ -206,6 +206,7 @@
     <Compile Include="Utils\Helpers\ProcessExtension.cs" />
     <Compile Include="Utils\Physics\TurboControllerDescription.cs" />
     <Compile Include="Utils\Physics\TurboDescription.cs" />
+    <Compile Include="Utils\SteamRunningHelper.cs" />
     <Compile Include="Windows\Input\IInputDeviceStateAdaptor.cs" />
     <Compile Include="Windows\Input\IInputMessageDispatcher.cs" />
     <Compile Include="Windows\Input\IInputSimulator.cs" />

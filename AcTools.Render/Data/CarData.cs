@@ -208,29 +208,70 @@ namespace AcTools.Render.Data {
 
         #region Colliders
         public class ColliderDescription {
+            public string Name { get; }
+
             public Vector3 Center { get; }
 
             public Vector3 Size { get; }
 
             public bool GroundEnable { get; }
 
-            internal ColliderDescription(IniFileSection fileSection, Vector3 offset) {
-                Center = fileSection.GetSlimVector3("CENTRE") + offset;
+            internal ColliderDescription(string name, IniFileSection fileSection) {
+                Name = name;
+                Center = fileSection.GetSlimVector3("CENTRE");
                 Size = fileSection.GetSlimVector3("SIZE");
                 GroundEnable = fileSection.GetBool("GROUND_ENABLE", true);
             }
         }
 
         public IEnumerable<ColliderDescription> GetColliders() {
-            var carOffset = Vector3.Zero;
-            return IsEmpty ? new ColliderDescription[0] :
-                    _data.GetIniFile("colliders.ini").GetSections("COLLIDER").Select(x => new ColliderDescription(x, carOffset));
+            if (IsEmpty) {
+                return new ColliderDescription[0];
+            }
+
+            var flames = _data.GetIniFile("colliders.ini");
+            return flames.GetExistingSectionNames("COLLIDER").Select(x => new ColliderDescription(x, flames[x]));
+        }
+        #endregion
+
+        #region Flames
+        public class FlameDescription {
+            public string Name { get; }
+
+            public Vector3 Position { get; }
+
+            public Vector3 Direction { get; }
+
+            public int Group { get; }
+
+            internal FlameDescription(string name, IniFileSection fileSection, Matrix graphicMatrix) {
+                Name = name;
+                Position = fileSection.GetSlimVector3("POSITION");
+                Direction = fileSection.GetSlimVector3("DIRECTION");
+                Group = fileSection.GetInt("GROUP", 0);
+            }
+        }
+
+        public IEnumerable<FlameDescription> GetFlames() {
+            if (IsEmpty) {
+                return new FlameDescription[0];
+            }
+
+            var flames = _data.GetIniFile("flames.ini");
+            var matrix = GetGraphicMatrix();
+            return flames.GetExistingSectionNames("FLAME").Select(x => new FlameDescription(x, flames[x], matrix));
         }
         #endregion
 
         #region From car.ini: graphic offset, steer lock
         public Vector3 GetGraphicOffset() {
             return _data.GetIniFile("car.ini")["BASIC"].GetSlimVector3("GRAPHICS_OFFSET");
+        }
+
+        public Matrix GetGraphicMatrix() {
+            var basic = _data.GetIniFile("car.ini")["BASIC"];
+            return Matrix.Translation(basic.GetSlimVector3("GRAPHICS_OFFSET")) *
+                    Matrix.RotationX(basic.GetFloat("GRAPHICS_PITCH_ROTATION", 0f).ToRadians());
         }
 
         public float GetSteerLock() {
@@ -733,6 +774,19 @@ namespace AcTools.Render.Data {
             var steer = driver["STEER_ANIMATION"];
             return new DriverDescription(modelName, model.GetSlimVector3("POSITION"),
                     steer.GetNonEmpty("NAME", "steer.ksanim"), steer.GetFloat("LOCK", 360f));
+        }
+        #endregion
+
+        #region Fuel
+        public Vector3 GetFuelTankPosition() {
+            return _data.GetIniFile("car.ini")["FUELTANK"].GetSlimVector3("POSITION");
+        }
+
+        /// <summary>
+        /// In m³.
+        /// </summary>
+        public float GetFuelTankVolume() {
+            return _data.GetIniFile("car.ini")["FUEL"].GetFloat("MAX_FUEL", 40f) * 0.001f;
         }
         #endregion
     }

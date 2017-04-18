@@ -190,7 +190,7 @@ document.addEventListener('mousedown', function(e){
         }
 
         private void OnTick(object sender, EventArgs e) {
-            Logging.Debug(Execute(@"!window.__cm_loaded"));
+            // Logging.Debug(Execute(@"!window.__cm_loaded"));
             // Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
         }
 

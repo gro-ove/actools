@@ -15,9 +15,7 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public partial class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer {
-        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) {
-            UseSprite = false;
-        }
+        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) {}
 
         protected override void ClearBeforeChangingCar() {
             SelectedObject = null;
@@ -149,6 +147,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             effect.FxScreenSize.Set(new Vector4(ActualWidth, ActualHeight, 1f / ActualWidth, 1f / ActualHeight));
             DeviceContextHolder.PrepareQuad(effect.LayoutPT);
             effect.TechOutline.DrawAllPasses(DeviceContext, 6);
+        }
+
+        protected override void DrawSpritesInner() {
+            CarNode?.DrawSprites(Sprite, Camera, new Vector2(ActualWidth, ActualHeight));
+            base.DrawSpritesInner();
         }
 
         protected override void DrawAfter() {

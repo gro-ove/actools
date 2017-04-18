@@ -6,6 +6,8 @@ using JetBrains.Annotations;
 
 namespace AcTools.Processes {
     public interface IAcsStarter {
+        bool RunSteamIfNeeded { get; set; }
+
         void Run();
 
         Task RunAsync(CancellationToken cancellation);

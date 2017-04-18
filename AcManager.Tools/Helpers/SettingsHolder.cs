@@ -520,6 +520,8 @@ namespace AcManager.Tools.Helpers {
 
                 public string Description { get; }
 
+                public bool RequiresSteam { get; }
+
                 public bool IsAvailable => RequiredAddonId == null || PluginsManager.Instance.IsPluginEnabled(RequiredAddonId);
 
                 private readonly bool _nonSelectable;
@@ -527,10 +529,11 @@ namespace AcManager.Tools.Helpers {
                 public bool IsSelectable => !_nonSelectable && IsAvailable;
 
                 internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null, 
-                        bool nonSelectable = false) {
+                        bool nonSelectable = false, bool requiresSteam = true) {
                     Id = id;
                     DisplayName = displayName;
                     Description = description;
+                    RequiresSteam = requiresSteam;
 
                     RequiredAddonId = requiredAddonId;
                     _nonSelectable = nonSelectable;
@@ -542,6 +545,11 @@ namespace AcManager.Tools.Helpers {
                     string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
                     ToolsStrings.Settings_Starter_Official_Description);
 
+            public static readonly StarterType AppIdStarterType = new StarterType(
+                    "AppID",
+                    "AppID",
+                    "Adds “steam_appid.txt” with AC’s Steam ID to AC root folder thus allowing to run “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
+
             public static readonly StarterType SidePassageStarterType = new StarterType(
                     "AC Service",
                     "AC Service",
@@ -551,7 +559,7 @@ namespace AcManager.Tools.Helpers {
                     "Steam",
                     "Replacement",
                     "For this starter, you have to replace the original “AssettoCorsa.exe” with “Content Manager.exe”. This way, CM will get an access to Steam as if it is the original launcher.",
-                    nonSelectable: true);
+                    nonSelectable: true, requiresSteam: false /* because it is Steam! sort of */);
 
             public static readonly StarterType TrickyStarterType = new StarterType(
                     "Tricky",
@@ -573,12 +581,12 @@ namespace AcManager.Tools.Helpers {
                     "SSE",
                     ToolsStrings.Settings_Starter_Sse,
                     ToolsStrings.Settings_Starter_Sse_Description,
-                    SseStarter.AddonId);
+                    SseStarter.AddonId, requiresSteam: false);
 
             public static readonly StarterType NaiveStarterType = new StarterType(
                     "Naive",
                     ToolsStrings.Settings_Starter_Naive,
-                    ToolsStrings.Settings_Starter_Naive_Description);
+                    ToolsStrings.Settings_Starter_Naive_Description, requiresSteam: false);
 
             private StarterType _selectedStarterType;
 
@@ -638,6 +646,7 @@ namespace AcManager.Tools.Helpers {
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {
                 OfficialStarterType,
+                AppIdStarterType,
                 SidePassageStarterType,
                 SteamStarterType,
                 TrickyStarterType,
@@ -932,6 +941,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _use32BitVersion)) return;
                     _use32BitVersion = value;
                     ValuesStorage.Set("Settings.DriveSettings.Use32BitVersion", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _runSteamIfNeeded;
+
+            public bool RunSteamIfNeeded {
+                get { return _runSteamIfNeeded ?? (_runSteamIfNeeded = ValuesStorage.GetBool("Settings.DriveSettings.RunSteamIfNeeded", true)).Value; }
+                set {
+                    if (Equals(value, _runSteamIfNeeded)) return;
+                    _runSteamIfNeeded = value;
+                    ValuesStorage.Set("Settings.DriveSettings.RunSteamIfNeeded", value);
                     OnPropertyChanged();
                 }
             }

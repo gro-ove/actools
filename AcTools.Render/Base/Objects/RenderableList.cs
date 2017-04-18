@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -180,7 +181,7 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public virtual void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        private void DrawChildren(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (!IsEnabled || filter?.Invoke(this) == false) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
             if (camera != null && BoundingBox != null && !camera.Visible(BoundingBox.Value)) return;
@@ -193,6 +194,25 @@ namespace AcTools.Render.Base.Objects {
                 if (child.IsEnabled) {
                     child.Draw(contextHolder, camera, mode, filter);
                 }
+            }
+        }
+
+        public virtual void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            DrawChildren(contextHolder, camera, mode, filter);
+            if (HighlightDummy && mode == SpecialRenderMode.SimpleTransparent) {
+                if (_lines == null) {
+                    _lines = new DebugLinesObject(Matrix.Identity, new[] {
+                        new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(0, 1, 0)),
+                        new InputLayouts.VerticePC(new Vector3(0f, 0.02f, 0f), new Color4(0, 1, 0)),
+                        new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(1, 0, 0)),
+                        new InputLayouts.VerticePC(new Vector3(0.02f, 0f, 0f), new Color4(1, 0, 0)),
+                        new InputLayouts.VerticePC(new Vector3(0f, 0f, 0f), new Color4(0, 0, 1)),
+                        new InputLayouts.VerticePC(new Vector3(0f, 0f, 0.02f), new Color4(0, 0, 1)),
+                    });
+                }
+
+                _lines.ParentMatrix = Matrix;
+                _lines.Draw(contextHolder, camera, SpecialRenderMode.Simple);
             }
         }
 
@@ -217,7 +237,11 @@ namespace AcTools.Render.Base.Objects {
             return Clone();
         }
 
+        public bool HighlightDummy { get; set; }
+        private DebugLinesObject _lines;
+
         public virtual void Dispose() {
+            DisposeHelper.Dispose(ref _lines);
             this.DisposeEverything();
         }
     }

@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -122,6 +121,8 @@ namespace AcManager.Tools.Starters {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetAchievementsInner() {
+            SteamRunningHelper.EnsureSteamIsRunning(SettingsHolder.Drive.RunSteamIfNeeded);
+
             var reader = Path.Combine(_acRoot, "SteamStatisticsReader.exe");
             var output = new StringBuilder();
             using (var process = new Process {

@@ -381,6 +381,7 @@
     <Compile Include="SharedMemory\AcSharedPhysics.cs" />
     <Compile Include="SharedMemory\AcSharedEventArgs.cs" />
     <Compile Include="SharedMemory\AcSharedStaticInfo.cs" />
+    <Compile Include="Starters\AppIdStarter.cs" />
     <Compile Include="Starters\ModuleStarter.cs" />
     <Compile Include="Starters\SteamStarter.cs" />
     <Compile Include="Starters\SidePassageStarter.cs" />

@@ -191,7 +191,6 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private void SyncValues() {
-                Logging.Debug("Start");
                 List<string> input;
                 lock (InputParams) {
                     input = InputParams.Select(x => x.Value).ToList();
@@ -201,7 +200,6 @@ namespace AcManager.Controls.CustomShowroom {
                 for (var i = 0; i < style.InputParams.Count; i++) {
                     style.InputParams[i].Value = input.ElementAtOrDefault(i);
                 }
-                Logging.Debug("End");
             }
 
             private readonly object _threadObj = new object();

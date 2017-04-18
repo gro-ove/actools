@@ -389,8 +389,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public DarkKn5ObjectRenderer(CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
             // UseMsaa = true;
-            VisibleUi = false;
-            UseSprite = false;
             AllowSkinnedObjects = true;
 
             if (showroomKn5 != null) {
@@ -763,18 +761,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private bool _suspensionDebug;
-
-        public bool SuspensionDebug {
-            get { return _suspensionDebug; }
-            set {
-                if (Equals(value, _suspensionDebug)) return;
-                _suspensionDebug = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _meshDebug;
 
         public bool MeshDebug {
@@ -897,13 +883,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
 
             // debug stuff
-            if (SuspensionDebug) {
-                carNode.DrawSuspensionDebugStuff(DeviceContextHolder, ActualCamera);
-            }
-
-            if (carNode.IsColliderVisible) {
-                carNode.DrawCollidersDebugStuff(DeviceContextHolder, ActualCamera);
-            }
+            carNode.DrawDebug(DeviceContextHolder, ActualCamera);
         }
 
         protected override string GetInformationString() {

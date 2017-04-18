@@ -283,7 +283,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // Switches
             renderer.ShowWireframe = options.WireframeMode;
             renderer.MeshDebug = options.MeshDebugMode;
-            renderer.SuspensionDebug = options.SuspensionDebugMode;
 
             // Flat mirror
             renderer.FlatMirror = options.FlatMirror;
@@ -344,6 +343,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 car.BlurredNodesActive = false;
                 car.CockpitLrActive = false;
                 car.SeatbeltOnActive = false;
+
+                if (options.SuspensionDebugMode) {
+                    car.SuspensionDebug = true;
+                }
             }
         }
 

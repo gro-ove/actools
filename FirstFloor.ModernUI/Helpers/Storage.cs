@@ -575,7 +575,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             OnPropertyChanged(nameof(Count));
-            Logging.Write($"Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
+            Logging.Write($"{Path.GetFileName(_filename)}: {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
         private const int ActualVersion = 2;

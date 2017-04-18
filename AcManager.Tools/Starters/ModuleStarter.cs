@@ -115,6 +115,7 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
             SetAcX86Param();
 
             if (!IsAssettoCorsaRunning) {

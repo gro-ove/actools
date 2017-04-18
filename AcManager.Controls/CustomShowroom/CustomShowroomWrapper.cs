@@ -68,16 +68,11 @@ namespace AcManager.Controls.CustomShowroom {
 
                         var toolsRenderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
                                 new ToolsKn5ObjectRenderer(description) {
-                                    VisibleUi = false,
-                                    UseSprite = false,
                                     UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa,
                                     UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa,
                                     UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
                                 } :
-                                new DarkKn5ObjectRenderer(description) {
-                                    VisibleUi = false,
-                                    UseSprite = false
-                                });
+                                new DarkKn5ObjectRenderer(description));
                         wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId);
                         renderer = toolsRenderer;
                     } else {

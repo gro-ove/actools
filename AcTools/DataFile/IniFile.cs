@@ -637,7 +637,7 @@ namespace AcTools.DataFile {
             Kernel32.WritePrivateProfileString(section, key, value.Value ? "1" : "0", path);
         }
 
-        public static IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
+        public static IEnumerable<string> GetSectionNames(string prefixName, int startFrom = 0) {
             return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
                                 .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}");
         }
@@ -647,7 +647,7 @@ namespace AcTools.DataFile {
         /// </summary>
         /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
-        public IEnumerable<string> GetExistingSectionNames(string prefixName, int startFrom) {
+        public IEnumerable<string> GetExistingSectionNames(string prefixName, int startFrom = 0) {
             return GetSectionNames(prefixName, startFrom).TakeWhile(ContainsKey);
         }
 

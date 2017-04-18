@@ -43,6 +43,10 @@ namespace AcManager.Tools.Starters {
                 return new SteamStarter();
             }
 
+            if (type == SettingsHolder.DriveSettings.AppIdStarterType) {
+                return new AppIdStarter();
+            }
+
             if (type == SettingsHolder.DriveSettings.TrickyStarterType) {
                 return new TrickyStarter(AcRootDirectory.Instance.Value) {
                     Use32Version = SettingsHolder.Drive.Use32BitVersion
@@ -69,6 +73,11 @@ namespace AcManager.Tools.Starters {
         public static IAcsStarter Create() {
             var result = CreateFromSettings();
             result.SetPlatform();
+
+            if (SettingsHolder.Drive.RunSteamIfNeeded) {
+                result.RunSteamIfNeeded = true;
+            }
+
             Logging.Debug($"Starter created: {result.GetType().Name}");
             
             var preparable = result as IAcsPrepareableStarter;

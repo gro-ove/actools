@@ -204,6 +204,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
+            SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded);
             InstallSidePassage();
 
             var passage = EstablishConnection();
@@ -216,6 +217,8 @@ namespace AcManager.Tools.Starters {
         }
 
         public override async Task RunAsync(CancellationToken cancellation) {
+            await Task.Run(() => SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded));
+
             new IniFile(FileUtils.GetRaceIniFilename()) {
                 ["AUTOSPAWN"] = {
                     ["ACTIVE"] = true,
