@@ -1,7 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.OnlineListsManager" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
+                  xmlns:c="http://acstuff.ru/app/controls"
+                  mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="Online Servers Lists" d:DataContext="{d:DesignInstance di:OnlineListsManager+ViewModel}" SizeToContent="Manual" ResizeMode="CanResize"
         Width="800" Height="480" MinWidth="600" MinHeight="320" LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="99999" MaxHeight="99999">
     <mui:ModernDialog.Resources>
@@ -57,7 +59,7 @@
     <DataGrid ItemsSource="{Binding Entries}" Style="{StaticResource DataGrid.Lite}">
         <DataGrid.Columns>
             <DataGridTemplateColumn Width="90" Header="Built-In" SortMemberPath="IsBuiltIn" CellTemplate="{StaticResource DataGridCell.IsBuiltIn}" />
-            <DataGridTemplateColumn Width="1*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName"
+            <DataGridTemplateColumn Width="1*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName"
                     CellTemplate="{StaticResource DataGridCell.Name}" />
             <DataGridTemplateColumn Width="0.6*" MinWidth="100" Header="Label" SortMemberPath="Information.Label"
                     CellTemplate="{StaticResource DataGridCell.Label}" />

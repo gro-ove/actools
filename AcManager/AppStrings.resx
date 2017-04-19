@@ -1851,15 +1851,6 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Series goal: </value>
     <comment>Don’t forget about space at the end</comment>
   </data>
-  <data name="TableHeader_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="TableHeader_Car" xml:space="preserve">
-    <value>Car</value>
-  </data>
-  <data name="TableHeader_Track" xml:space="preserve">
-    <value>Track</value>
-  </data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
     <value>Time:</value>
   </data>
@@ -2551,12 +2542,6 @@ Accepted values are from -1 to 1.</value>
     <value>Best lap: </value>
     <comment>Don’t forget about “: ” at the end!</comment>
   </data>
-  <data name="TableHeader_BestLap" xml:space="preserve">
-    <value>Best Lap</value>
-  </data>
-  <data name="TableHeader_Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
   <data name="RaceResult_TryAgain" xml:space="preserve">
     <value>Try again</value>
   </data>
@@ -3026,18 +3011,6 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
   <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
     <value>Forms:</value>
   </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  <comment>@Invariant</comment></data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  <comment>@Invariant</comment></data>
-  <data name="TableHeader_Visible" xml:space="preserve">
-    <value>Visible</value>
-  </data>
-  <data name="TableHeader_Locked" xml:space="preserve">
-    <value>Locked</value>
-  </data>
   <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
     <value>Simulation value</value>
   </data>
@@ -3429,15 +3402,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="RaceGrid_ClassFormat" xml:space="preserve">
     <value>Class: {0}</value>
-  </data>
-  <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Skin</value>
-  </data>
-  <data name="TableHeader_Nationality" xml:space="preserve">
-    <value>Nationality</value>
-  </data>
-  <data name="TableHeader_Ai" xml:space="preserve">
-    <value>AI</value>
   </data>
   <data name="RaceGrid_CandidatePriority" xml:space="preserve">
     <value>Candidate priority</value>

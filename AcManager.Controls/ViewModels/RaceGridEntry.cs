@@ -1,13 +1,15 @@
 using System;
+using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls.UserControls;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
@@ -67,6 +69,37 @@ namespace AcManager.Controls.ViewModels {
 
         public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
             CarSkin = null;
+        }));
+
+        private DelegateCommand _skinDialogCommand;
+
+        public DelegateCommand SkinDialogCommand => _skinDialogCommand ?? (_skinDialogCommand = new DelegateCommand(() => {
+            var control = new CarBlock {
+                Car = Car,
+                SelectedSkin = CarSkin ?? Car.SelectedSkin,
+                SelectSkin = true,
+                OpenShowroom = true
+            };
+
+            var dialog = new ModernDialog {
+                Content = control,
+                Width = 640,
+                Height = 720,
+                MaxWidth = 640,
+                MaxHeight = 720,
+                SizeToContent = SizeToContent.Manual,
+                Title = Car.DisplayName
+            };
+
+            dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
+            dialog.ShowDialog();
+            if (!dialog.IsResultOk) return;
+
+            if (SpecialEntry) {
+                Car.SelectedSkin = control.SelectedSkin;
+            } else {
+                CarSkin = control.SelectedSkin;
+            }
         }));
 
         private string _name;

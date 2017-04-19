@@ -954,4 +954,40 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Theme_Black" xml:space="preserve">
     <value>Black</value>
   </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Car</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Track</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Best Lap</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  <comment>@Invariant</comment></data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  <comment>@Invariant</comment></data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Visible</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
 </root>

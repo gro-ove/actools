@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Managers;
@@ -35,8 +34,8 @@ namespace AcManager.UserControls {
                                 model.DeleteEntry(entry);
                             }
                         }
-                    } else if (DetailsPopup.IsOpen) {
-                        var dataGrid = (DetailsPopup.Content as FrameworkElement)?.FindVisualChild<DataGrid>();
+                    } else if (_dialog?.IsVisible == true) {
+                        var dataGrid = (_dialog.Content as FrameworkElement)?.FindVisualChild<DataGrid>();
                         if (dataGrid == null) return;
 
                         foreach (var entry in dataGrid.SelectedItems.OfType<RaceGridEntry>().ToList()) {
@@ -50,13 +49,12 @@ namespace AcManager.UserControls {
                 }), new KeyGesture(Key.Delete)),
                 new InputBinding(new DelegateCommand(() => {
                     if (SelectCarPopup.IsOpen) {
-                        AddOpponentCarCommand.Execute(null);
+                        AddOpponentCommand.Execute(null);
                     }
                 }), new KeyGesture(Key.Enter)),
             });
             InitializeComponent();
             SelectCarPopup.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
-            DetailsPopup.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
         }
 
         private const string KeySelectedCar = ".RaceGridEditor:SelectedCar";
@@ -115,7 +113,7 @@ namespace AcManager.UserControls {
 
         private CommandBase _addOpponentCarCommand;
 
-        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ??
+        public ICommand AddOpponentCommand => _addOpponentCarCommand ??
                 (_addOpponentCarCommand = new DelegateCommand(AddSelected, () => SelectedCar != null));
 
         private void AddSelected() {
@@ -136,7 +134,7 @@ namespace AcManager.UserControls {
 
         public ICommand ClosePopupsCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new DelegateCommand(() => {
             SelectCarPopup.IsOpen = false;
-            DetailsPopup.IsOpen = false;
+            CloseDetailsPopup();
         }));
 
         private CarObject _selectedCar;
@@ -192,48 +190,39 @@ namespace AcManager.UserControls {
             }
         }
 
-        private void OpponentSkin_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
-            if (entry?.SpecialEntry != false) return;
+        private ModernDialog _dialog;
 
-            var dataGrid = (DetailsPopup.Content as FrameworkElement)?.FindVisualChild<DataGrid>();
-            if (dataGrid != null) {
-                dataGrid.SelectedItem = entry;
+        private bool CloseDetailsPopup() {
+            if (_dialog != null && _dialog.IsVisible) {
+                _dialog.Close();
+                _dialog = null;
+                return true;
             }
 
-            DetailsPopup.StaysOpen = true;
-
-            var control = new CarBlock {
-                Car = entry.Car,
-                SelectedSkin = entry.CarSkin ?? entry.Car.SelectedSkin,
-                SelectSkin = true,
-                OpenShowroom = true
-            };
-
-            var dialog = new ModernDialog {
-                Content = control,
-                Width = 640,
-                Height = 720,
-                MaxWidth = 640,
-                MaxHeight = 720,
-                SizeToContent = SizeToContent.Manual,
-                Title = entry.Car.DisplayName
-            };
-
-            dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
-            dialog.ShowDialog();
-
-            if (dialog.IsResultOk) {
-                entry.CarSkin = control.SelectedSkin;
-            }
-
-            DetailsPopup.StaysOpen = false;
+            return false;
         }
 
-        private void OpponentSkinCell_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            if (e.ClickCount == 2) {
-                OpponentSkin_OnMouseLeftButtonDown(sender, e);
+        private void OnDetailsButtonClick(object sender, RoutedEventArgs e) {
+            if (!CloseDetailsPopup()) {
+                (_dialog = new ModernDialog {
+                    WindowStartupLocation = WindowStartupLocation.Manual,
+                    LocationAndSizeKey = ".raceGridEditor",
+                    Content = new Controls.RaceGridEditorTable {
+                        Model = Model,
+                        AddOpponentCommand = AddOpponentCommand,
+                        CloseCommand = ClosePopupsCommand,
+                        Margin = new Thickness(-16, -8, -16, -36),
+                    },
+                    ShowTopBlob = true,
+                    ShowTitle = false,
+                    ShowInTaskbar = false,
+                    Buttons = new Control[0]
+                }).Show();
             }
+        }
+
+        private void OnUnload(object sender, RoutedEventArgs e) {
+            CloseDetailsPopup();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

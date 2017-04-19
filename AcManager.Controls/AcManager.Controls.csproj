@@ -139,6 +139,7 @@
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
     <Compile Include="CustomShowroom\PaintShop.Items.cs" />
+    <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
@@ -429,6 +430,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\MessageBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\RaceGridEditorTable.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

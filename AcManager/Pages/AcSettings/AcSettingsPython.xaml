@@ -93,14 +93,14 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False"
                     EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible" VirtualizingStackPanel.CacheLength="1,1">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="3*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="DisplayName">
+                    <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding DisplayName}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_X}" SortMemberPath="PosX"
+                    <DataGridTemplateColumn Width="60" Header="{x:Static c:ControlsStrings.TableHeader_X}" SortMemberPath="PosX"
                             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -109,7 +109,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Y}" SortMemberPath="PosY"
+                    <DataGridTemplateColumn Width="60" Header="{x:Static c:ControlsStrings.TableHeader_Y}" SortMemberPath="PosY"
                             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -129,7 +129,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Visible}" SortMemberPath="IsVisible"
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static c:ControlsStrings.TableHeader_Visible}" SortMemberPath="IsVisible"
                             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -137,7 +137,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static g:AppStrings.TableHeader_Locked}" SortMemberPath="IsBlocked"
+                    <DataGridTemplateColumn Width="1*" MaxWidth="80" Header="{x:Static c:ControlsStrings.TableHeader_Locked}" SortMemberPath="IsBlocked"
                             HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

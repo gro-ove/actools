@@ -11,6 +11,7 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/BestLapsList.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/MessageBlock.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/FavouriteButton.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/RaceGridEditorTable.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/TemperatureValueLabel.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
     </ResourceDictionary.MergedDictionaries>

@@ -128,6 +128,7 @@
     <Compile Include="ActualUnloadedHelper.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
+    <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\Attached\FancyScrollHelper.cs" />
     <Compile Include="Windows\Attached\SaveScroll.cs" />

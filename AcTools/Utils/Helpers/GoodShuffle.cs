@@ -172,11 +172,14 @@ namespace AcTools.Utils.Helpers {
         private int[] _buffer;
         private int _bufferPosition;
 
+        public int Size { get; private set; }
+
         public int Limit { get; private set; }
 
         internal BaseShuffle(IList<T> list) {
             _list = list;
             Limit = _list.Count * 1000;
+            Size = _list.Count;
         }
 
         private bool _ignoreItem;

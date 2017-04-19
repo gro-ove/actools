@@ -160,11 +160,11 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width="40" Header="" Binding="{Binding TakenPlace}" CellStyle="{StaticResource NumberCellStyle}"
                                         HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
-                                <DataGridTemplateColumn Width="1.5*" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
+                                <DataGridTemplateColumn Width="1.5*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="Name"
                                         CellTemplate="{StaticResource DataGridCell.DriverName}" />
-                                <DataGridTemplateColumn Width="2*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
+                                <DataGridTemplateColumn Width="2*" Header="{x:Static c:ControlsStrings.TableHeader_Car}" SortMemberPath="Car.DisplayName"
                                         CellTemplate="{StaticResource DataGridCell.Car}" />
-                                <DataGridTextColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_BestLap}" SortMemberPath="BestLapTime"
+                                <DataGridTextColumn Width="120" Header="{x:Static c:ControlsStrings.TableHeader_BestLap}" SortMemberPath="BestLapTime"
                                         Binding="{Binding BestLapTime, Converter={StaticResource MillisecondsTimeSpanConverter}, TargetNullValue={x:Static t:ToolsStrings.Common_NA}}"
                                         CellStyle="{StaticResource NumberCellStyle}" HeaderStyle="{StaticResource DataGridColumnHeader.RightAlignment}" />
                                 <DataGridTemplateColumn Width="120" Header="Delta" SortMemberPath="DeltaToSessionBest"

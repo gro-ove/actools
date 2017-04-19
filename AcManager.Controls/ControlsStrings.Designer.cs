@@ -2377,6 +2377,114 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AI.
+        /// </summary>
+        public static string TableHeader_Ai {
+            get {
+                return ResourceManager.GetString("TableHeader_Ai", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best Lap.
+        /// </summary>
+        public static string TableHeader_BestLap {
+            get {
+                return ResourceManager.GetString("TableHeader_BestLap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car.
+        /// </summary>
+        public static string TableHeader_Car {
+            get {
+                return ResourceManager.GetString("TableHeader_Car", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin.
+        /// </summary>
+        public static string TableHeader_CarSkin {
+            get {
+                return ResourceManager.GetString("TableHeader_CarSkin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string TableHeader_Date {
+            get {
+                return ResourceManager.GetString("TableHeader_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked.
+        /// </summary>
+        public static string TableHeader_Locked {
+            get {
+                return ResourceManager.GetString("TableHeader_Locked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string TableHeader_Name {
+            get {
+                return ResourceManager.GetString("TableHeader_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nationality.
+        /// </summary>
+        public static string TableHeader_Nationality {
+            get {
+                return ResourceManager.GetString("TableHeader_Nationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track.
+        /// </summary>
+        public static string TableHeader_Track {
+            get {
+                return ResourceManager.GetString("TableHeader_Track", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visible.
+        /// </summary>
+        public static string TableHeader_Visible {
+            get {
+                return ResourceManager.GetString("TableHeader_Visible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X.
+        /// </summary>
+        public static string TableHeader_X {
+            get {
+                return ResourceManager.GetString("TableHeader_X", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y.
+        /// </summary>
+        public static string TableHeader_Y {
+            get {
+                return ResourceManager.GetString("TableHeader_Y", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Black.
         /// </summary>
         public static string Theme_Black {

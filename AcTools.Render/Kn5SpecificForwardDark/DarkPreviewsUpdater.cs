@@ -271,6 +271,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.AutoAdjustTarget = false;
             renderer.AsyncTexturesLoading = false;
 
+            // UI should be off!
+            renderer.VisibleUi = false;
+
             // Size-related options
             renderer.Width = (int)(options.PreviewWidth * options.SsaaMultiplier);
             renderer.Height = (int)(options.PreviewHeight * options.SsaaMultiplier);

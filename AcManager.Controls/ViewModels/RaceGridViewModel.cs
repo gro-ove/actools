@@ -29,6 +29,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
+using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
     /* TODO, THE BIG ISSUE:
@@ -69,6 +70,7 @@ namespace AcManager.Controls.ViewModels {
         public class SaveableData : IJsonSerializable {
             public string ModeId;
             public string FilterValue;
+            public string RandomSkinsFilter;
 
             [CanBeNull]
             public string[] CarIds;
@@ -85,7 +87,7 @@ namespace AcManager.Controls.ViewModels {
             public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse, ShuffleCandidates;
             public double? AiLevelArrangeRandom;
             public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
-
+            
             string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
                 var w = new JsonTextWriter(s);
@@ -93,6 +95,9 @@ namespace AcManager.Controls.ViewModels {
                 w.WriteStartObject();
                 w.Write("ModeId", ModeId);
                 w.Write("FilterValue", FilterValue);
+                if (!string.IsNullOrEmpty(RandomSkinsFilter)) {
+                    w.Write("RandomSkinsFilter", RandomSkinsFilter);
+                }
 
                 w.Write("CarIds", CarIds);
                 w.Write("CandidatePriorities", CandidatePriorities);
@@ -135,6 +140,7 @@ namespace AcManager.Controls.ViewModels {
                 var data = new SaveableData {
                     ModeId = Mode.Id,
                     FilterValue = FilterValue,
+                    RandomSkinsFilter = RandomSkinsFilter,
                     ShuffleCandidates = ShuffleCandidates,
                     AiLevelFixed = AiLevelFixed,
                     AiLevelArrangeRandom = AiLevelArrangeRandom,
@@ -704,6 +710,18 @@ namespace AcManager.Controls.ViewModels {
         public int Compare(object x, object y) {
             return (x as RaceGridEntry)?.Car.CompareTo((y as RaceGridEntry)?.Car) ?? 0;
         }
+
+        private string _randomSkinsFilter;
+
+        public string RandomSkinsFilter {
+            get { return _randomSkinsFilter; }
+            set {
+                if (Equals(value, _randomSkinsFilter)) return;
+                _randomSkinsFilter = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
         #endregion
 
         #region Car and track
@@ -1060,12 +1078,17 @@ namespace AcManager.Controls.ViewModels {
                 return new Game.AiCar[0];
             }
 
+            var skinsFilter = string.IsNullOrWhiteSpace(RandomSkinsFilter) ? null : Filter.Create(CarSkinObjectTester.Instance, RandomSkinsFilter);
             var skins = new Dictionary<string, GoodShuffle<CarSkinObject>>();
             foreach (var car in FilteredView.OfType<RaceGridEntry>().Where(x => x.CarSkin == null).Select(x => x.Car).Distinct()) {
                 await car.SkinsManager.EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) return null;
 
-                skins[car.Id] = GoodShuffle.Get(car.EnabledOnlySkins);
+                skins[car.Id] = GoodShuffle.Get(skinsFilter == null ? car.EnabledOnlySkins : car.EnabledOnlySkins.Where(skinsFilter.Test));
+                if (skins[car.Id].Size == 0) {
+                    throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
+                    // BUG: PROPER HANDLING!
+                }
             }
 
             NameNationality[] nameNationalities;
@@ -1140,7 +1163,6 @@ namespace AcManager.Controls.ViewModels {
             }
 
             var takenNames = new List<string>(opponentsNumber);
-
             return final.Take(opponentsNumber).Select((entry, i) => {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
 
