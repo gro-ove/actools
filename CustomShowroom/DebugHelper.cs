@@ -66,6 +66,7 @@ namespace CustomShowroom {
             //kn5file = @"D:\Games\Assetto Corsa\content\cars\acc_orion_mk7_ng\acc_orion_mk7_ng.kn5";
             //kn5file = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\__balls\sphere.kn5";
             //kn5file = @"D:\Games\Assetto Corsa\content\tracks\topgear\topgear.kn5";
+            kn5file = @"D:\Games\Assetto Corsa\content\cars\ks_toyota_supra_mkiv_tuned\toyota_supra_drift2.kn5";
             return kn5file;
         }
 
@@ -80,7 +81,7 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
-            //showroomKn5File = null;
+            showroomKn5File = null;
 
             return showroomKn5File;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -58,80 +59,173 @@ namespace AcManager.Tools.AcManagersNew {
             return Filter(LocationToId(filename), filename);
         }
 
-        protected override IEnumerable<AcPlaceholderNew> ScanInner() {
+        protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
             return Directories.GetSubDirectories().Select(dir => {
                 var id = LocationToId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
             }).NonNull();
         }
 
-        protected virtual void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
-            FileUtils.Move(oldLocation, newLocation);
-            
-            var obj = CreateAndLoadAcObject(newId, newEnabled);
-            obj.PreviousId = id;
-            ReplaceInList(id, new AcItemWrapper(this, obj));
+        /// <summary>
+        /// Returns comment — why ID is invalid.
+        /// </summary>
+        [Pure]
+        protected virtual string CheckIfIdValid(string id) {
+            return null;
         }
 
-        protected virtual void DeleteInner(string id, string location) {
-            FileUtils.RecycleVisible(location);
+        protected virtual void AssertId(string id) {
+            var message = CheckIfIdValid(id);
+            if (message != null) {
+                throw new InformativeException("Invalid ID: " + id, message);
+            }
+        }
+
+        protected virtual async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation, 
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
+            AssertId(newId);
+
+            await Task.Run(() => {
+                FileUtils.Move(oldLocation, newLocation);
+                foreach (var tuple in attachedOldNew.Where(x => FileUtils.Exists(x.Item1))) {
+                    FileUtils.Move(tuple.Item1, tuple.Item2);
+                }
+            });
+
+            var obj = CreateAndLoadAcObject(newId, newEnabled);
+            obj.PreviousId = oldId;
+            ReplaceInList(oldId, new AcItemWrapper(this, obj));
+        }
+
+        protected virtual async Task CloneOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
+            AssertId(newId);
+
+            await Task.Run(() => {
+                FileUtils.Copy(oldLocation, newLocation);
+                foreach (var tuple in attachedOldNew.Where(x => FileUtils.Exists(x.Item1))) {
+                    FileUtils.Copy(tuple.Item1, tuple.Item2);
+                }
+            });
+
+            AddInList(new AcItemWrapper(this, CreateAndLoadAcObject(newId, newEnabled)));
+        }
+
+        protected virtual async Task DeleteOverrideAsync(string id, string location, IEnumerable<string> attached) {
+            await Task.Run(() => FileUtils.RecycleVisible(attached.Prepend(location).ToArray()));
             if (!FileUtils.Exists(location)) {
                 RemoveFromList(id);
             }
         }
 
-        public virtual void Rename(string id, string newId, bool newEnabled) {
+        protected virtual async Task CleanSpaceOverrideAsync(string id, string location) {
+            AssertId(id);
+            await Task.Run(() => FileUtils.RecycleVisible(GetAttachedFiles(location).Prepend(location).ToArray()));
+            if (!FileUtils.Exists(location)) {
+                RemoveFromList(id);
+            }
+        }
+
+        [ItemCanBeNull, NotNull]
+        public virtual IEnumerable<string> GetAttachedFiles(string location) {
+            return new string[0];
+        }
+
+        public async Task RenameAsync([NotNull] string oldId, [NotNull] string newId, bool newEnabled) {
             if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
+            if (oldId == null) throw new ArgumentNullException(nameof(oldId));
 
-            var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
+            // find object which is being renamed
+            var wrapper = GetWrapperById(oldId);
+            var obj = wrapper?.Value as T;
+            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(oldId));
 
-            var currentLocation = ((AcCommonObject)wrapper.Value).Location;
-            var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
+            // new location for it…
+            var newDirectory = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
+            if (newDirectory == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
 
-            var newLocation = Path.Combine(path, newId);
+            // files to move
+            var currentLocation = obj.Location;
+            var newLocation = Path.Combine(newDirectory, newId);
             if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
+            var currentAttached = GetAttachedFiles(currentLocation).NonNull().ToList();
+            var newAttached = GetAttachedFiles(newLocation).NonNull().ToList();
+            if (newAttached.Any(FileUtils.Exists)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
+
+            // let’s move!
             try {
-                MoveInner(id, newId, currentLocation, newLocation, newEnabled);
+                await MoveOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
+            } catch (InformativeException) {
+                throw;
             } catch (Exception e) {
                 throw new ToggleException(e.Message);
             }
         }
 
-        public void Toggle(string id) {
+        public async Task CloneAsync(string oldId, string newId, bool newEnabled) {
             if (!Directories.Actual) return;
+            if (oldId == null) throw new ArgumentNullException(nameof(oldId));
+
+            // find object which is being renamed
+            var wrapper = GetWrapperById(oldId);
+            var obj = wrapper?.Value as T;
+            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(oldId));
+
+            // new location for it…
+            var newDirectory = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
+            if (newDirectory == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
+
+            // files to move
+            var currentLocation = obj.Location;
+            var newLocation = Path.Combine(newDirectory, newId);
+            if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
+
+            var currentAttached = GetAttachedFiles(currentLocation).NonNull().ToList();
+            var newAttached = GetAttachedFiles(newLocation).NonNull().ToList();
+            if (newAttached.Any(FileUtils.Exists)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
+
+            // let’s move!
+            try {
+                await CloneOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
+            } catch (InformativeException) {
+                throw;
+            } catch (Exception e) {
+                throw new ToggleException(e.Message);
+            }
+        }
+
+        public Task ToggleAsync(string id) {
+            if (!Directories.Actual) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
             if (wrapper == null) {
+                Logging.Warning($"Not found: {id}");
                 throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             }
 
-            Rename(id, id, !wrapper.Value.Enabled);
+            return RenameAsync(id, id, !wrapper.Value.Enabled);
         }
 
-        public virtual void Delete([NotNull]string id) {
-            if (!Directories.Actual) return;
+        public Task DeleteAsync([NotNull]string id) {
+            if (!Directories.Actual) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
             if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             
-            DeleteInner(id, obj.Location);
+            return DeleteOverrideAsync(id, obj.Location, GetAttachedFiles(obj.Location).NonNull());
         }
 
-        public virtual string PrepareForAdditionalContent([NotNull] string id, bool removeExisting) {
+        public async Task<string> PrepareForAdditionalContentAsync([NotNull] string id, bool removeExisting) {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var existing = GetById(id);
             var location = existing?.Location ?? Directories.GetLocation(id, true);
 
             if (removeExisting && FileUtils.Exists(location)) {
-                FileUtils.RecycleVisible(location);
-
+                await CleanSpaceOverrideAsync(id, location);
                 if (FileUtils.Exists(location)) {
                     throw new OperationCanceledException(ToolsStrings.AcObject_CannotRemove);
                 }

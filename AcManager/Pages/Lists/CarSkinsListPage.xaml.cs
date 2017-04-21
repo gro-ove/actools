@@ -6,14 +6,18 @@ using System.Windows;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Dialogs;
+using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
@@ -98,6 +102,34 @@ namespace AcManager.Pages.Lists {
                     }
                 }
             }));
+        }
+
+        public static void Open(CarObject car) {
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
+
+            if (mainWindow == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+                CarSkinsDialog.Show(car);
+                return;
+            }
+
+            var uri = UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", car.Id);
+            var setupsLinks = mainWindow.MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == "skins").ToList();
+            var existing = setupsLinks.FirstOrDefault(x => x.Source == uri);
+            if (existing == null) {
+                existing = new LinkGroupFilterable {
+                    DisplayName = $"Skins for {car.DisplayName}",
+                    GroupKey = "skins",
+                    Source = uri
+                };
+
+                if (setupsLinks.Count >= 2) {
+                    mainWindow.MenuLinkGroups.Remove(setupsLinks[0]);
+                }
+
+                mainWindow.MenuLinkGroups.Add(existing);
+            }
+
+            mainWindow.NavigateTo(uri);
         }
     }
 }

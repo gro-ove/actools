@@ -286,14 +286,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(SourceProperty, value); }
         }
 
+        private static bool _skipNext;
+
         private static void OnSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            var potentialFilename = e.NewValue as string;
-            if (potentialFilename != null) {
-                ((BetterImage)o).Filename = potentialFilename;
-            } else if (e.NewValue is BitmapEntry) {
-                ((BetterImage)o).SetBitmapEntryDirectly((BitmapEntry)e.NewValue);
-            } else {
-                ((BetterImage)o).OnSourceChanged((ImageSource)e.NewValue);
+            if (_skipNext) return;
+            try {
+                _skipNext = true;
+                var b = (BetterImage)o;
+                var potentialFilename = e.NewValue as string;
+                if (potentialFilename != null) {
+                    b.ImageSource = null;
+                    b.Filename = potentialFilename;
+                } else if (e.NewValue is BitmapEntry) {
+                    b.ImageSource = null;
+                    b.Filename = null;
+                    b.SetBitmapEntryDirectly((BitmapEntry)e.NewValue);
+                } else {
+                    var source = (ImageSource)e.NewValue;
+                    b.ImageSource = source;
+                    b.Filename = null;
+                    b.OnSourceChanged(source);
+                }
+            } finally {
+                _skipNext = false;
             }
         }
 
@@ -306,6 +321,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnImageSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            if (_skipNext) return;
             ((BetterImage)o).Source = e.NewValue;
         }
 
@@ -540,6 +556,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
+                    Logging.Debug($"{filename}: {stream}");
                     if (stream != null) {
                         using (stream) {
                             var result = new byte[stream.Length];
@@ -585,6 +602,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
+                    Logging.Debug($"{filename}: {stream}");
                     if (stream != null) {
                         using (stream) {
                             var result = new byte[stream.Length];
@@ -874,7 +892,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return false;
             }
 
-            if (OptionCacheTotalSize > 0) {
+            if (OptionCacheTotalSize > 0 && Filename.Length > 0 && Filename[0] != '/') {
                 var cached = GetCached(Filename);
                 var innerDecodeWidth = InnerDecodeWidth;
                 if (cached.BitmapSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {

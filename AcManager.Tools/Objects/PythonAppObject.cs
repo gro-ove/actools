@@ -35,10 +35,10 @@ namespace AcManager.Tools.Objects {
             }
 
             if (Name != Id) {
-                FileAcManager.Rename(Id, Name, Enabled);
+                FileAcManager.RenameAsync(Id, Name, Enabled);
+            } else {
+                UpdateChanged();
             }
-
-            UpdateChanged();
         }
 
         private PythonAppConfigs _configs;

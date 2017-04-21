@@ -17,15 +17,33 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5MaterialBlendMode ReadBlendMode() {
-            return (Kn5MaterialBlendMode)ReadByte();
+            var value = ReadByte();
+            if (value.IsValidBlendMode()) {
+                return (Kn5MaterialBlendMode)value;
+            }
+
+            AcToolsLogging.Write("Unknown blend mode: " + value);
+            return Kn5MaterialBlendMode.Opaque;
         }
 
         public Kn5MaterialDepthMode ReadDepthMode() {
-            return (Kn5MaterialDepthMode)ReadInt32();
+            var value = ReadInt32();
+            if (value.IsValidDepthMode()) {
+                return (Kn5MaterialDepthMode)value;
+            }
+
+            AcToolsLogging.Write("Unknown depth mode: " + value);
+            return Kn5MaterialDepthMode.DepthOff;
         }
 
         public Kn5NodeClass ReadNodeClass() {
-            return (Kn5NodeClass)ReadInt32();
+            var value = ReadInt32();
+            if (value.IsValidNodeClass()) {
+                return (Kn5NodeClass)value;
+            }
+
+            AcToolsLogging.Write("Unknown node class: " + value);
+            return Kn5NodeClass.Base;
         }
 
         public Kn5Header ReadHeader() {

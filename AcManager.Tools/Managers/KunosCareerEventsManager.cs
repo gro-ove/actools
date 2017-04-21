@@ -45,8 +45,8 @@ namespace AcManager.Tools.Managers {
             return GetById("event" + (number + 1));
         }
 
-        protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            if (OptionIgnoreSkippedEvents) return base.ScanInner();
+        protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
+            if (OptionIgnoreSkippedEvents) return base.ScanOverride();
 
             var entries = Directories.GetSubDirectories().Select(x => new {
                 Name = Path.GetFileName(x)?.ToLowerInvariant(),

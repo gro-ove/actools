@@ -52,7 +52,7 @@ namespace AcManager.Tools {
                                 "Why would you need it anyway? Just open Custom Previews settings, locate camera the way you want and update one or all previews.");
                         return Task.FromResult<IReadOnlyList<UpdatePreviewError>>(null);
                     default:
-                        return CmPreviewsTools.UpdatePreview(list, presetFilename);
+                        return CmPreviewsTools.UpdatePreviewAsync(list, presetFilename);
                 }
             }
 

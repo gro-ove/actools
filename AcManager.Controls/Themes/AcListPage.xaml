@@ -50,7 +50,7 @@
                         <!-- seperator -->
                         <mui:ModernTabSplitter Grid.Column="1" SaveKey="AcListPage" />
                         <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0"
-                                TransitionName="Normal" />
+                                TransitionName="Normal" TopSource="{x:Null}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

@@ -264,7 +264,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected virtual void ClearBeforeChangingCar() {}
 
-        private void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
+        protected virtual void CopyValues([NotNull] Kn5RenderableCar newCar, [CanBeNull] Kn5RenderableCar oldCar) {
             newCar.HeadlightsEnabled = oldCar?.HeadlightsEnabled ?? CarLightsEnabled;
             newCar.BrakeLightsEnabled = oldCar?.BrakeLightsEnabled ?? CarBrakeLightsEnabled;
             newCar.LeftDoorOpen = oldCar?.LeftDoorOpen ?? false;

@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown" Icon="{Binding SelectedObject.BrandBadge}">
+    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.BrandBadge}">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
@@ -27,7 +27,7 @@
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
-                        Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="ToolbarButtonShowroom_OnPreviewMouseDown">
+                        Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="OnShowroomButtonMouseDown">
                     <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
                             InputGestureText="Ctrl+Shift+H" Command="{Binding OpenInShowroomOptionsCommand}" />
                     <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
@@ -38,9 +38,11 @@
                         </MenuItem.ItemsSource>
                     </MenuItem>
                 </mui:ButtonWithComboBox>
-                <Button Content="CM Showroom" ToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}" />
+                <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)"
+                        Command="{Binding OpenInCustomShowroomCommand}" PreviewMouseDown="OnCustomShowroomButtonMouseDown"
+                        MenuItems="{Binding CustomShowroomPresets}" />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
-                        Command="{Binding DriveCommand}" PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown"
+                        Command="{Binding DriveCommand}" PreviewMouseDown="OnQuickDriveButtonMouseDown"
                         Style="{StaticResource Go.ToolBarButtonWithComboBox}">
                     <mui:ButtonWithComboBox.MenuItems>
                         <CompositeCollection>
@@ -71,7 +73,7 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreviews}" Command="{Binding UpdatePreviewsCommand}"
-                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="OnUpdatePreviewsButtonMouseDown">
                     <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}"
                             ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}" InputGestureText="Ctrl+Alt+P"
                             Command="{Binding UpdatePreviewsManuallyCommand}"

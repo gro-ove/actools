@@ -424,6 +424,8 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone championship (Ctrl+Shift+D)" />
+                <Separator />
                 <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share championship (Ctrl+Page Up)" />
                 <!--<Button Content="{x:Static g:AppStrings.Toolbar_Test}" Command="{Binding TestCommand}" ToolTip="Test filter in showroom (Ctrl+G)" />-->
             </ToolBar>

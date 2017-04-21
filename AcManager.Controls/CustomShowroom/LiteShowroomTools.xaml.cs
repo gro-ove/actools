@@ -44,7 +44,11 @@ namespace AcManager.Controls.CustomShowroom {
     public partial class LiteShowroomTools {
         public static ILiveryGenerator LiveryGenerator { get; set; }
 
-        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) {
+        private readonly string _loadPreset;
+
+        public LiteShowroomTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, [CanBeNull] string loadPreset) {
+            _loadPreset = loadPreset;
+
             DataContext = new ViewModel(renderer, car, skinId);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
@@ -60,6 +64,30 @@ namespace AcManager.Controls.CustomShowroom {
                 Model.Renderer = null;
                 Model.Dispose();
             });
+        }
+
+        private bool _loaded;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
+
+            var saveable = Model.Settings;
+            if (saveable == null) return;
+
+            if (_loadPreset == null) {
+                if (saveable.HasSavedData || UserPresetsControl.CurrentUserPreset != null) {
+                    saveable.Initialize(false);
+                } else {
+                    saveable.Initialize(true);
+                    UserPresetsControl.CurrentUserPreset =
+                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == @"Kunos");
+                }
+            } else {
+                saveable.Initialize(true);
+                UserPresetsControl.CurrentUserPreset =
+                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
+            }
         }
 
         public ViewModel Model => (ViewModel)DataContext;
@@ -586,7 +614,7 @@ namespace AcManager.Controls.CustomShowroom {
                             if (liveryStyle != null) {
                                 var colors = new Dictionary<int, Color>(3);
 
-                                foreach (var item in skinsItems.Where(x => x.Enabled)) {
+                                foreach (var item in skinsItems.Where(x => x.Enabled).OrderBy(x => x.LiveryPriority)) {
                                     foreach (var pair in item.LiveryColors) {
                                         colors[pair.Key] = pair.Value;
                                     }

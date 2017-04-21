@@ -15,7 +15,7 @@ namespace AcManager.Tools.AcManagersNew {
                 SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
                 .IsMatch(id);
 
-        protected override IEnumerable<AcPlaceholderNew> ScanInner() {
+        protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
             return Directories.GetSubFiles(SearchPattern).Select(dir => {
                 var id = LocationToId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)) : null;

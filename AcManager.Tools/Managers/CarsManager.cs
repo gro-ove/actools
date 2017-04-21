@@ -61,7 +61,7 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (inner.StartsWith(@"data\") && (inner.EndsWith(@".ini") || inner.EndsWith(@".lut")) ||
+            if (inner.StartsWith(@"data\") && (inner.EndsWith(@".ini") || inner.EndsWith(@".lut") || inner.EndsWith(@".rto")) ||
                 inner.StartsWith(@"sfx\") && inner.EndsWith(@".bank")) return false;
 
             if (!inner.StartsWith(@"skins\") || // texture\…

@@ -2,6 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" MinWidth="300" Width="800" Height="720"
-        MaxWidth="1600" MaxHeight="99999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized"
+        MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized"
         Closed="OnClosed" LocationAndSizeKey="CarSkinsDialog.LS" d:DataContext="{d:DesignInstance di:CarSkinsDialog+ViewModel}"
         Title="{Binding SelectedCar.DisplayName, StringFormat={x:Static g:AppStrings.Dialog_CarSkinsFormat}}" />

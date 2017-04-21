@@ -245,6 +245,9 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Clone_WeatherTooltip}" />
+                <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_EditMode}" Command="{Binding ToggleEditModeCommand, ElementName=This}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_EditMode_Tooltip}"
                         Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -275,9 +278,6 @@
                         ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_WeatherTooltip}" />
-                <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Clone_WeatherTooltip}" />
                 <Separator />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
                         ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_WeatherTooltip}">

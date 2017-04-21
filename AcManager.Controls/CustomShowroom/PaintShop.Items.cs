@@ -391,8 +391,7 @@ namespace AcManager.Controls.CustomShowroom {
             // which color is in which slot, −1 if there is no color in given slot
             [CanBeNull]
             public int[] LiveryColorIds { get; set; }
-
-            [NotNull]
+            
             public override Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
                 Slot = i,
                 Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
@@ -712,6 +711,8 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             public string LiveryStyle { get; internal set; }
+
+            public bool GuessColorsFromPreviews { get; internal set; }
 
             private Color? _previousColor;
             private double? _previousFlakes;

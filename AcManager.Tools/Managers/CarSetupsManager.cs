@@ -30,6 +30,18 @@ namespace AcManager.Tools.Managers {
             return name;
         }
 
+        protected override string CheckIfIdValid(string id) {
+            if (!id.EndsWith(CarSetupObject.FileExtension, StringComparison.OrdinalIgnoreCase)) {
+                return $"ID should end with “{CarSetupObject.FileExtension}”.";
+            }
+
+            if (id.IndexOf(Path.DirectorySeparatorChar) == -1) {
+                return "ID should be in “track”\\“name” form.";
+            }
+
+            return base.CheckIfIdValid(id);
+        }
+
         protected override string GetObjectLocation(string filename, out bool inner) {
             inner = false;
             return filename.StartsWith(Directories.EnabledDirectory + Path.DirectorySeparatorChar) ? filename : null;
@@ -43,7 +55,7 @@ namespace AcManager.Tools.Managers {
                 SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
                 .IsMatch(id);
 
-        protected override IEnumerable<AcPlaceholderNew> ScanInner() {
+        protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
             return Directories.GetSubFiles(SearchPattern).Select(dir => {
                 var id = LocationToId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;

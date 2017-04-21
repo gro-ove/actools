@@ -57,7 +57,8 @@ namespace AcTools.Utils {
         private static extern int SHFileOperation(ref SHFILEOPSTRUCT FileOp);
 
         private static bool DeleteFile(string[] path, FileOperationFlags flags) {
-            if (path == null || path.All(x => x == null)) return false;
+            path = path?.Where(Exists).ToArray();
+            if (path == null || path.Length == 0 || path.All(x => x == null)) return false;
             try {
                 var fs = new SHFILEOPSTRUCT {
                     wFunc = FileOperationType.FO_DELETE,
@@ -255,6 +256,22 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
+        /// Copy directory or file
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        public static void Copy(string from, string to) {
+            if (string.Equals(from, to, StringComparison.Ordinal)) return;
+
+            EnsureFileDirectoryExists(to);
+            if (File.GetAttributes(from).HasFlag(FileAttributes.Directory)) {
+                CopyRecursive(from, to);
+            } else {
+                File.Copy(from, to, true);
+            }
+        }
+
+        /// <summary>
         /// Helps to find original casing.
         /// </summary>
         /// <param name="filename"></param>
@@ -262,7 +279,7 @@ namespace AcTools.Utils {
         public static string GetOriginalFilename(string filename) {
             var directory = Path.GetDirectoryName(filename);
             var name = Path.GetFileName(filename);
-            if (directory == null || name == null) return filename;
+            if (directory == null) return filename;
             return Directory.GetFiles(directory, name).FirstOrDefault() ??
                     Directory.GetDirectories(directory, name).FirstOrDefault() ?? filename;
         }

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -45,19 +49,13 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string Extension => ".ini";
+        public static readonly string FileExtension = ".ini";
+
+        public override string Extension => FileExtension;
 
         public CarSetupObject(string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
-
-            foreach (var tyrePressure in TyresPressure) {
-                tyrePressure.PropertyChanged += (sender, args) => {
-                    if (args.PropertyName == nameof(tyrePressure.Value)) {
-                        Changed = true;
-                    }
-                };
-            }
         }
 
         public override int CompareTo(AcPlaceholderNew o) {
@@ -90,78 +88,46 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _fuel;
-
-        public int Fuel {
-            get { return _fuel; }
-            set {
-                value = Math.Max(value, 0);
-                if (Equals(value, _fuel)) return;
-                _fuel = value;
-                OnPropertyChanged();
-                Changed = true;
-            }
-        }
-
-        private int _fuelMaximum = int.MaxValue;
         private TrackObject _track;
-
-        public int FuelMaximum {
-            get { return _fuelMaximum; }
-            set {
-                value = Math.Max(value, 0);
-                if (Equals(value, _fuelMaximum)) return;
-                _fuelMaximum = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public sealed class TyrePressure : Displayable, IWithId<string> {
-            public string Id { get; }
-
-            public TyrePressure(string id, string name) {
-                Id = id;
-                DisplayName = name;
-            }
-
-            private int? _value;
-
-            public int? Value {
-                get { return _value; }
-                set {
-                    value = value?.Clamp(0, 200);
-                    if (Equals(value, _value)) return;
-                    _value = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public TyrePressure[] TyresPressure { get; } = {
-            new TyrePressure("LF", ToolsStrings.CarSetupObject_TyresPressure_LeftFront),
-            new TyrePressure("RF", ToolsStrings.CarSetupObject_TyresPressure_RightFront),
-            new TyrePressure("LR", ToolsStrings.CarSetupObject_TyresPressure_LeftRear),
-            new TyrePressure("RR", ToolsStrings.CarSetupObject_TyresPressure_RightRear)
-        };
 
         private string _oldName;
         private string _oldTrackId;
 
+        private IniFile _iniFile;
+
+        public IEnumerable<KeyValuePair<string, double?>> Values =>
+                _iniFile.Select(x => new KeyValuePair<string, double?>(x.Key, x.Value.GetDoubleNullable("VALUE")));
+
+        public double? GetValue(string key) {
+            if (!_iniFile.ContainsKey(key)) {
+                Logging.Warning($"Key not found: {key}");
+            }
+            return _iniFile[key].GetDoubleNullable("VALUE");
+        }
+
+        public void SetValue(string key, double value) {
+            var rounded = value.RoundToInt();
+            if (GetValue(key) == rounded) return;
+            _iniFile[key].Set("VALUE", value.RoundToInt());
+            OnPropertyChanged(nameof(Values));
+            Changed = true;
+        }
+
         private void LoadData() {
             try {
-                var ini = new IniFile(Location);
-                Tyres = ini["TYRES"].GetInt("VALUE", 0);
-                Fuel = ini["FUEL"].GetInt("VALUE", 0);
+                _iniFile = new IniFile(Location);
+                Tyres = _iniFile["TYRES"].GetInt("VALUE", 0);
+                RemoveError(AcErrorType.Data_IniIsDamaged);
                 SetHasData(true);
-
-                foreach (var entry in TyresPressure) {
-                    entry.Value = ini["PRESSURE_" + entry.Id].GetIntNullable("VALUE");
-                }
             } catch (Exception e) {
+                _iniFile = new IniFile();
                 Logging.Warning("Can’t read file: " + e);
                 AddError(AcErrorType.Data_IniIsDamaged, Id);
                 SetHasData(false);
             }
+
+            Changed = false;
+            OnPropertyChanged(nameof(Values));
         }
 
         protected override void LoadOrThrow() {
@@ -184,39 +150,44 @@ namespace AcManager.Tools.Objects {
 
         public override bool HandleChangedFile(string filename) {
             if (string.Equals(filename, Location, StringComparison.OrdinalIgnoreCase)) {
-                LoadData();
+                for (var i = 0; i < 4; i++) {
+                    try {
+                        LoadData();
+                        break;
+                    } catch (IOException e) {
+                        Logging.Warning(e);
+                        Thread.Sleep(100);
+                    }
+                }
             }
 
             return true;
         }
 
-        protected override void Rename() {
-            Rename(Path.Combine(Track?.Id ?? GenericDirectory, Name + Extension));
+        protected override Task RenameAsync() {
+            return RenameAsync(Path.Combine(Track?.Id ?? GenericDirectory, Name + Extension));
         }
 
         public override void Save() {
             try {
-                var ini = new IniFile(Location);
-                ini["TYRES"].Set("VALUE", Tyres);
-                ini["FUEL"].Set("VALUE", Fuel);
-
-                foreach (var entry in TyresPressure) {
-                    ini["PRESSURE_" + entry.Id].Set("VALUE", entry.Value);
+                if (_iniFile == null) {
+                    _iniFile = new IniFile(Location);
                 }
 
-                ini.Save(Location);
+                _iniFile["TYRES"].Set("VALUE", Tyres);
+                _iniFile.Save(Location);
             } catch (Exception e) {
                 Logging.Warning("Can’t save file: " + e);
             }
 
             if (_oldName != Name || _oldTrackId != TrackId) {
-                Rename();
+                RenameAsync();
             }
 
             Changed = false;
         }
 
-        public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.DisplayName ?? TrackId})";
+        public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.MainTrackObject.NameEditable ?? TrackId})";
 
         private bool _hasData;
         private string _trackId;

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -231,16 +234,54 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        protected virtual void Toggle() {
-            FileAcManager.Toggle(Id);
+        protected virtual Task ToggleOverrideAsync() {
+            return FileAcManager.ToggleAsync(Id);
         }
 
-        protected virtual void Rename(string newId) {
-            FileAcManager.Rename(Id, newId, Enabled);
+        protected virtual Task DeleteOverrideAsync() {
+            return FileAcManager.DeleteAsync(Id);
         }
 
-        public virtual void Delete() {
-            FileAcManager.Delete(Id);
+        public async Task ToggleAsync() {
+            try {
+                await ToggleOverrideAsync();
+            } catch (ToggleException ex) {
+                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+            }
+        }
+
+        public async Task RenameAsync(string newId) {
+            try {
+                newId = newId?.Trim();
+                if (string.IsNullOrWhiteSpace(newId)) return;
+                await FileAcManager.RenameAsync(Id, newId, Enabled);
+            } catch (ToggleException ex) {
+                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotChangeIdExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotChangeId, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+            }
+        }
+
+        public async Task CloneAsync(string newId) {
+            try {
+                await FileAcManager.CloneAsync(Id, newId, Enabled);
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotClone, ToolsStrings.AcObject_CannotClone_Commentary, ex);
+            }
+        }
+
+        public async Task DeleteAsync() {
+            try {
+                if (!SettingsHolder.Content.DeleteConfirmation ||
+                        ModernDialog.ShowMessage(string.Format("Are you sure you want to move {0} to the Recycle Bin?", DisplayName), "Are You Sure?",
+                                MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    await DeleteOverrideAsync();
+                }
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+            }
         }
 
         public virtual bool HandleChangedFile(string filename) => false;

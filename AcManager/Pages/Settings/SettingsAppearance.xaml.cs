@@ -21,6 +21,8 @@ namespace AcManager.Pages.Settings {
 
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
 
+            public SettingsHolder.InterfaceSettings Interface => SettingsHolder.Interface;
+
             internal ViewModel() {
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
                 TextFormatting = AppAppearanceManager.IdealFormattingMode ? TextFormattings[1] : TextFormattings[0];

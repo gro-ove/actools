@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -364,7 +365,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
 
             if (CurrentDirectory != null) {
-                if (AsyncLoading) {
+                if (_asyncOverride) {
                     LoadOverrideAsync(contextHolder, result, key).Forget();
                 } else {
                     LoadOverride(contextHolder, result, key);

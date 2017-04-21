@@ -145,8 +145,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
                 Car.SkinsManager.EnsureLoadedAsync().Forget();
 
-                Saveable = new SaveHelper<SaveableData>("__CmPreviewsTools", () => new SaveableData(), o => {
-                }, () => {
+                Saveable = new SaveHelper<SaveableData>("__CmPreviewsTools", () => new SaveableData(), o => {}, () => {
                     Reset(false);
                 });
             }
@@ -314,7 +313,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (car == null || skin == null) throw new Exception("Car or skin are not defined");
 
                 PrepareUpdater();
-                _errors = await UpdatePreview(new[] {
+                _errors = await UpdatePreviewAsync(new[] {
                     new ToUpdatePreview(car, skin)
                 }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
             }));
@@ -326,7 +325,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (car == null) return;
 
                 PrepareUpdater();
-                _errors = await UpdatePreview(ToUpdate ?? new[] {
+                _errors = await UpdatePreviewAsync(ToUpdate ?? new[] {
                     new ToUpdatePreview(car)
                 }, Settings.ToPreviewsOptions(), GetPresetName(), _previewsUpdater);
             }));
@@ -358,7 +357,8 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         [ItemCanBeNull]
-        private static async Task<IReadOnlyList<UpdatePreviewError>> UpdatePreview(IReadOnlyList<ToUpdatePreview> entries, DarkPreviewsOptions options, string presetName = null,
+        private static async Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync(IReadOnlyList<ToUpdatePreview> entries, DarkPreviewsOptions options,
+                string presetName = null,
                 DarkPreviewsUpdater updater = null) {
             var localUpdater = updater == null;
             if (localUpdater) {
@@ -433,7 +433,8 @@ namespace AcManager.Controls.CustomShowroom {
                         // ReSharper disable once AccessToModifiedClosure
                         var speed = shotSkins / started.Elapsed.TotalMinutes;
                         var remainingTime = speed < 0.0001 ? "Unknown" : $"About {TimeSpan.FromMinutes(left / speed).ToReadableTime()}";
-                        var remainingItems = $"About {left} {PluralizingConverter.Pluralize(left, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}";
+                        var remainingItems =
+                                $"About {left} {PluralizingConverter.Pluralize(left, ControlsStrings.CustomShowroom_SkinHeader).ToSentenceMember()}";
 
                         return new[] {
                             $"Car: {car?.DisplayName}",
@@ -480,7 +481,8 @@ namespace AcManager.Controls.CustomShowroom {
                                     recyclingWarning = true;
                                 }
 
-                                waiting.Report(new AsyncProgressEntry($"Recycling current preview for {skin.DisplayName}…" + postfix, verySingleMode ? 0d : subprogress));
+                                waiting.Report(new AsyncProgressEntry($"Recycling current preview for {skin.DisplayName}…" + postfix,
+                                        verySingleMode ? 0d : subprogress));
                                 await Task.Run(() => FileUtils.Recycle(skin.PreviewImage));
                             }
 
@@ -502,6 +504,7 @@ namespace AcManager.Controls.CustomShowroom {
                                 shotSkins++;
                             } catch (Exception e) {
                                 if (errors.All(x => x.ToUpdate != entry)) {
+                                    Logging.Warning(e);
                                     errors.Add(new UpdatePreviewError(entry, e.Message, null));
                                 }
                             }
@@ -541,8 +544,8 @@ namespace AcManager.Controls.CustomShowroom {
         /// Last used settings will be used.
         /// </summary>
         [ItemCanBeNull]
-        public static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreview(IReadOnlyList<ToUpdatePreview> entries, string presetFilename = null) {
-            return UpdatePreview(entries, CmPreviewsSettings.GetSavedOptions(presetFilename), GetPresetName());
+        public static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync(IReadOnlyList<ToUpdatePreview> entries, string presetFilename = null) {
+            return UpdatePreviewAsync(entries, CmPreviewsSettings.GetSavedOptions(presetFilename), GetPresetName());
         }
 
         /// <summary>

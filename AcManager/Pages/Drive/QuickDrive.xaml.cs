@@ -12,7 +12,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
@@ -75,6 +78,16 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
+
+                new InputBinding(new DelegateCommand(() => {
+                    CustomShowroomWrapper.StartAsync(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+                }), new KeyGesture(Key.H, ModifierKeys.Alt)),
+                new InputBinding(new DelegateCommand(() => {
+                    CarOpenInShowroomDialog.Run(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                }), new KeyGesture(Key.H, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => {
+                    new CarOpenInShowroomDialog(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id).ShowDialog();
+                }), new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
 
 #if DEBUG
                 new InputBinding(new AsyncCommand(() => {
@@ -495,6 +508,24 @@ namespace AcManager.Pages.Drive {
                 SelectedTrack = SelectTrackDialog.Show(SelectedTrack);
             }));
 
+            private DelegateCommand _manageCarSetupsCommand;
+
+            public DelegateCommand ManageCarSetupsCommand => _manageCarSetupsCommand ?? (_manageCarSetupsCommand = new DelegateCommand(() => {
+                CarSetupsListPage.Open(SelectedCar);
+            }));
+
+            private DelegateCommand _manageCarCommand;
+
+            public DelegateCommand ManageCarCommand => _manageCarCommand ?? (_manageCarCommand = new DelegateCommand(() => {
+                CarsListPage.Show(SelectedCar);
+            }));
+
+            private DelegateCommand _manageTrackCommand;
+
+            public DelegateCommand ManageTrackCommand => _manageTrackCommand ?? (_manageTrackCommand = new DelegateCommand(() => {
+                TracksListPage.Show(SelectedTrack);
+            }));
+
             private QuickDriveModeViewModel _selectedModeViewModel;
 
             private CommandBase _goCommand;
@@ -735,25 +766,45 @@ namespace AcManager.Pages.Drive {
             e.Handled = true;
         }
 
-        private void SelectedCarContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
-            e.Menu = new ContextMenu()
+        private void OnCarContextMenu(object sender, ContextMenuButtonEventArgs e) {
+
+            var menu = new ContextMenu()
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
                     .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
-                    .AddItem("Open car in Content tab", () => {
-                        CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
-                    });
+                    .AddItem("Manage setups", () => {
+                        CarSetupsListPage.Open(Model.SelectedCar);
+                    })
+                    .AddItem("Manage skins", () => {
+                        CarSkinsListPage.Open(Model.SelectedCar);
+                    })
+                    .AddSeparator();
+
+            CarBlock.OnShowroomContextMenu(menu, Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+
+            menu.AddSeparator()
+                .AddItem("Open car in Content tab", () => {
+                    CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
+                })
+                .AddItem(AppStrings.Toolbar_Folder, () => {
+                    Model.SelectedCar.ViewInExplorer();
+                });
+
+            e.Menu = menu;
         }
 
-        private void SelectedTrackContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+        private void OnTrackContextMenu(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
                     .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()
                     .AddItem("Open track in Content tab", () => {
                         TracksListPage.Show(Model.SelectedTrack);
-                    }, isEnabled: AppKeyHolder.IsAllRight);
+                    }, isEnabled: AppKeyHolder.IsAllRight)
+                    .AddItem(AppStrings.Toolbar_Folder, () => {
+                        Model.SelectedCar.ViewInExplorer();
+                    });
         }
 
         private void OnCarBlockClick(object sender, RoutedEventArgs e) {
@@ -783,6 +834,14 @@ namespace AcManager.Pages.Drive {
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             LeftPanel.Width = 180 + ((ActualWidth - 800) / 2d).Clamp(0, 60);
+        }
+
+        private void OnShowroomButtonClick(object sender, RoutedEventArgs e) {
+            CarBlock.OnShowroomButtonClick(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
+        }
+
+        private void OnShowroomContextMenu(object sender, MouseButtonEventArgs e) {
+            CarBlock.OnShowroomContextMenu(Model.SelectedCar, Model.SelectedCar.SelectedSkin);
         }
     }
 }

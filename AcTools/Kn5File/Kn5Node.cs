@@ -95,4 +95,10 @@ namespace AcTools.Kn5File {
         [Description("Skinned Mesh")]
         SkinnedMesh = 3
     }
+
+    internal static class Kn5NodeExtension {
+        public static bool IsValidNodeClass(this int v) {
+            return v >= 1 && v <= 3;
+        }
+    }
 }

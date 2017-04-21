@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -162,6 +163,14 @@ namespace AcManager.Tools.Managers {
 
         public override string SearchPattern => @"*.champ";
 
+        protected override string CheckIfIdValid(string id) {
+            if (!id.EndsWith(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase)) {
+                return $"ID should end with “{UserChampionshipObject.FileExtension}”.";
+            }
+
+            return base.CheckIfIdValid(id);
+        }
+
         public override IAcDirectories Directories => AcRootDirectory.Instance.UserChampionshipsDirectories;
 
         protected override UserChampionshipObject CreateAcObject(string id, bool enabled) {
@@ -197,82 +206,11 @@ namespace AcManager.Tools.Managers {
             return null;
         }
 
-        protected override void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
-            throw new NotSupportedException();
-        }
-
-        protected override void DeleteInner(string id, string location) {
-            throw new NotSupportedException();
-        }
-
-        public override void Rename(string id, string newFileName, bool newEnabled) {
-            if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
-
-            var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
-
-            var currentLocation = ((AcCommonObject)wrapper.Value).Location;
-            var currentExtended = ((UserChampionshipObject)wrapper.Value).ExtendedFilename;
-            var currentPreview = ((UserChampionshipObject)wrapper.Value).PreviewImage;
-
-            var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new ToggleException(ToolsStrings.AcObject_CannotBeMoved);
-
-            if (!File.Exists(currentExtended)) {
-                currentExtended = null;
-            }
-
-            if (!File.Exists(currentPreview)) {
-                currentPreview = null;
-            }
-
-            var newLocation = Path.Combine(path, newFileName);
-            var newBasePart = Path.GetFileName(newLocation).ApartFromLast(UserChampionshipObject.FileExtension);
-            var newExtended = currentExtended == null ? null : Path.Combine(path, newBasePart + UserChampionshipObject.FileDataExtension);
-            var newPreview = currentPreview == null ? null : Path.Combine(path, newBasePart + UserChampionshipObject.FilePreviewExtension);
-            if (FileUtils.Exists(newLocation) ||
-                    currentExtended != null && File.Exists(newExtended) ||
-                    currentPreview != null && File.Exists(newPreview)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
-
-            try {
-                using (IgnoreChanges()) {
-                    FileUtils.Move(currentLocation, newLocation);
-
-                    if (currentExtended != null) {
-                        FileUtils.Move(currentExtended, newExtended);
-                    }
-
-                    if (currentPreview != null) {
-                        FileUtils.Move(currentPreview, newPreview);
-                    }
-
-                    var obj = CreateAndLoadAcObject(newFileName, Directories.CheckIfEnabled(newLocation));
-                    obj.PreviousId = id;
-                    ReplaceInList(id, new AcItemWrapper(this, obj));
-
-                    UpdateList();
-                }
-            } catch (Exception e) {
-                throw new ToggleException(e.Message);
-            }
-        }
-
-        public override void Delete(string id) {
-            if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
-
-            var obj = GetById(id);
-            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
-
-            using (IgnoreChanges()) {
-                FileUtils.Recycle(obj.Location,
-                        File.Exists(obj.ExtendedFilename) ? obj.ExtendedFilename : null,
-                        File.Exists(obj.PreviewImage) ? obj.PreviewImage : null);
-                if (!FileUtils.Exists(obj.Location)) {
-                    RemoveFromList(id);
-                }
-            }
+        public override IEnumerable<string> GetAttachedFiles(string location) {
+            yield return location.ApartFromLast(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase) +
+                    UserChampionshipObject.FileDataExtension;
+            yield return location.ApartFromLast(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase) +
+                    UserChampionshipObject.FilePreviewExtension;
         }
 
         public IAcObjectNew AddNew(string id = null) {

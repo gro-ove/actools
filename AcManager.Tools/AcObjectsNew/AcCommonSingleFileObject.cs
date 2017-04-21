@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcTools.Utils.Helpers;
 
@@ -16,13 +17,13 @@ namespace AcManager.Tools.AcObjectsNew {
             Name = _oldName;
         }
 
-        protected virtual void Rename() {
-            Rename(Name + Extension);
+        protected virtual Task RenameAsync() {
+            return RenameAsync(Name + Extension);
         }
 
         public override void Save() {
             if (_oldName != Name) {
-                Rename();
+                RenameAsync();
             }
         }
 

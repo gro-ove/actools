@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -6,6 +7,7 @@ using System.Windows.Markup;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 
@@ -70,54 +72,83 @@ namespace AcManager.Controls.UserControls {
             set { SetValue(PreviewContentProperty, value); }
         }
 
-        private void PreviewImage_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {
             var list = Car.SkinsManager.EnabledOnly.Select(x => x.PreviewImage).ToList();
             var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage))
                     .ShowDialogInSelectMode();
             SelectedSkin = Car.EnabledOnlySkins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
         }
 
-        private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left) {
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    e.Handled = true;
-                    CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
-                    return;
-                }
-
-                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                        !CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id)) {
-                    e.Handled = true;
-                    new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
-                }
-            } else if (e.ChangedButton == MouseButton.Right) {
-                e.Handled = true;
-                var contextMenu = new ContextMenu();
-
-                var item = new MenuItem { Header = ControlsStrings.Car_OpenInShowroom };
-                item.Click += (s, args) => CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id);
-                contextMenu.Items.Add(item);
-
-                item = new MenuItem { Header = ControlsStrings.Common_Presets };
-                foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue, p => {
-                    CarOpenInShowroomDialog.RunPreset(p.Filename, Car, SelectedSkin?.Id);
-                })) {
-                    item.Items.Add(menuItem);
-                }
-                contextMenu.Items.Add(item);
-
-                item = new MenuItem { Header = ControlsStrings.Common_Settings, InputGestureText = UiStrings.KeyShift };
-                item.Click += (s, args) => new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
-                contextMenu.Items.Add(item);
-
-                // TODO: Presets!
-
-                item = new MenuItem { Header = ControlsStrings.Car_OpenInCustomShowroom, InputGestureText = UiStrings.KeyAlt };
-                item.Click += (s, args) => CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
-                contextMenu.Items.Add(item);
-
-                contextMenu.IsOpen = true;
+        public static void OnShowroomButtonClick(CarObject car, CarSkinObject skin = null) {
+            var custom = !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) &&
+                    Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ^ SettingsHolder.CustomShowroom.CustomShowroomInstead;
+            if (custom) {
+                CustomShowroomWrapper.StartAsync(car, skin);
+            } else if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                    !CarOpenInShowroomDialog.Run(car, skin?.Id)) {
+                new CarOpenInShowroomDialog(car, skin?.Id).ShowDialog();
             }
+        }
+
+        private static void ShowroomMenu(ContextMenu contextMenu, CarObject car, CarSkinObject skin) {
+            var item = new MenuItem {
+                Header = ControlsStrings.Car_OpenInShowroom,
+                InputGestureText = SettingsHolder.CustomShowroom.CustomShowroomInstead ? UiStrings.KeyAlt : null
+            };
+            item.Click += (s, args) => CarOpenInShowroomDialog.Run(car, skin?.Id);
+            contextMenu.Items.Add(item);
+
+            // presets
+            item = new MenuItem { Header = "Showroom Presets" };
+            foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue,
+                    p => CarOpenInShowroomDialog.RunPreset(p.Filename, car, skin?.Id))) {
+                item.Items.Add(menuItem);
+            }
+            contextMenu.Items.Add(item);
+
+            // settings
+            item = new MenuItem { Header = ControlsStrings.Common_Settings, InputGestureText = UiStrings.KeyShift };
+            item.Click += (s, args) => new CarOpenInShowroomDialog(car, skin?.Id).ShowDialog();
+            contextMenu.Items.Add(item);
+        }
+
+        private static void ShowroomMenuCustom(ContextMenu contextMenu, CarObject car, CarSkinObject skin) {
+            var item = new MenuItem {
+                Header = ControlsStrings.Car_OpenInCustomShowroom,
+                InputGestureText = SettingsHolder.CustomShowroom.CustomShowroomInstead ? null : UiStrings.KeyAlt
+            };
+
+            item.Click += (s, args) => CustomShowroomWrapper.StartAsync(car, skin);
+            contextMenu.Items.Add(item);
+
+            // presets
+            item = new MenuItem { Header = "Custom Showroom Presets" };
+            foreach (var menuItem in PresetsMenuHelper.GroupPresets(DarkRendererSettings.DefaultPresetableKeyValue,
+                    p => CustomShowroomWrapper.StartAsync(car, skin, p.Filename))) {
+                item.Items.Add(menuItem);
+            }
+            contextMenu.Items.Add(item);
+        }
+
+        public static void OnShowroomContextMenu(ContextMenu contextMenu, CarObject car, CarSkinObject skin = null) {
+            ShowroomMenu(contextMenu, car, skin);
+            contextMenu.Items.Add(new Separator());
+            ShowroomMenuCustom(contextMenu, car, skin);
+        }
+
+        public static void OnShowroomContextMenu(CarObject car, CarSkinObject skin = null) {
+            var contextMenu = new ContextMenu();
+            OnShowroomContextMenu(contextMenu, car, skin);
+            contextMenu.IsOpen = true;
+        }
+
+        private void OnShowroomContextMenu(object sender, RoutedEventArgs e) {
+            e.Handled = true;
+            OnShowroomContextMenu(Car, SelectedSkin);
+        }
+
+        private void OnShowroomButtonClick(object sender, EventArgs e) {
+            OnShowroomButtonClick(Car, SelectedSkin);
         }
     }
 }

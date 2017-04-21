@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
@@ -19,6 +20,14 @@ namespace AcManager.Tools.Managers {
         public string DefaultFilename => Path.Combine(Directories.EnabledDirectory, "default.ini");
 
         public override string SearchPattern => @"*.ini";
+
+        protected override string CheckIfIdValid(string id) {
+            if (!id.EndsWith(PpFilterObject.FileExtension, StringComparison.OrdinalIgnoreCase)) {
+                return $"ID should end with “{PpFilterObject.FileExtension}”.";
+            }
+
+            return base.CheckIfIdValid(id);
+        }
 
         public override PpFilterObject GetDefault() {
             var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"default"));

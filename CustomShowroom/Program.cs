@@ -47,7 +47,9 @@ namespace CustomShowroom {
                 SetUnhandledExceptionHandler();
             }
 
-            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_CustomShowroom", "References", null).Handler;
+            var packedHelper = new PackedHelper("AcTools_CustomShowroom", "References", null);
+            packedHelper.PrepareUnmanaged("Magick.NET-Q8-x86.Native");
+            AppDomain.CurrentDomain.AssemblyResolve += packedHelper.Handler;
             return MainInner(a);
         }
 
@@ -65,6 +67,11 @@ namespace CustomShowroom {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static int MainInner(string[] args) {
+            var argsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Arguments.txt");
+            if (File.Exists(argsFile)) {
+                args = File.ReadAllLines(argsFile).Concat(args).ToArray();
+            }
+
             var options = new Options();
             if (!Parser.Default.ParseArguments(args, options) || options.Help) {
                 Application.EnableVisualStyles();
@@ -120,6 +127,7 @@ namespace CustomShowroom {
             var inputItems = options.Items;
 #if DEBUG
             inputItems = inputItems.Any() ? inputItems : new[] { DebugHelper.GetCarKn5(), DebugHelper.GetShowroomKn5() };
+            options.MagickOverride = true;
 #endif
 
             if (inputItems.Count == 0) {
@@ -176,6 +184,7 @@ namespace CustomShowroom {
                 }
             } else if (options.Mode == Mode.Dark) {
                 using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File), showroomKn5File)) {
+                    // UI
                     renderer.UseSprite = true;
                     renderer.VisibleUi = true;
 
@@ -183,20 +192,7 @@ namespace CustomShowroom {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
-
-                    /*renderer.UseAo = true;
-                    renderer.UseSslr = true;
-                    renderer.AoDebug = true;
-                    renderer.AoType = AoType.SsaoAlt;*/
-
-                    // SSLR debug:
-                    renderer.UseSslr = true;
-                    renderer.AmbientBrightness = 2f;
-                    renderer.AmbientUp = Color.AliceBlue;
-                    renderer.BackgroundBrightness = 2f;
-                    //renderer.LightBrightness = 0f;
-                    //renderer.EnableShadows = false;
-
+                    
                     renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomWrapper(renderer) {
                         ReplaceableShowroom = true

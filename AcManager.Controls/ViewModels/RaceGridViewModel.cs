@@ -701,7 +701,7 @@ namespace AcManager.Controls.ViewModels {
                 if (string.IsNullOrEmpty(FilterValue) || Mode == BuiltInGridMode.SameCar || Mode == BuiltInGridMode.Custom) {
                     FilteredView.Filter = null;
                 } else {
-                    var filter = StringBasedFilter.Filter.Create(CarObjectTester.Instance, FilterValue);
+                    var filter = Filter.Create(CarObjectTester.Instance, FilterValue);
                     FilteredView.Filter = o => filter.Test(((RaceGridEntry)o).Car);
                 }
             }
@@ -1087,7 +1087,6 @@ namespace AcManager.Controls.ViewModels {
                 skins[car.Id] = GoodShuffle.Get(skinsFilter == null ? car.EnabledOnlySkins : car.EnabledOnlySkins.Where(skinsFilter.Test));
                 if (skins[car.Id].Size == 0) {
                     throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
-                    // BUG: PROPER HANDLING!
                 }
             }
 

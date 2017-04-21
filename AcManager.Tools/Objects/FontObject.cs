@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -79,27 +80,18 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ICommand _toggleCommand;
-
-        public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new DelegateCommand(() => {
+        protected override Task ToggleOverrideAsync() {
             if (Enabled && UsingsCarsIds.Length > 0 &&
                 ModernDialog.ShowMessage(ToolsStrings.FontObject_Disabling_SomeCarsNeedThisFont, ToolsStrings.FontObject_DisableFont,
-                        MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                        MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
+            return base.ToggleOverrideAsync();
+        }
 
-            try {
-                Toggle();
-            } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-            }
-        }));
-
-        public override void Delete() {
+        protected override Task DeleteOverrideAsync() {
             if (Enabled && UsingsCarsIds.Length > 0 &&
                 ModernDialog.ShowMessage(ToolsStrings.FontObject_Deleting_SomeCarsNeedThisFont, ToolsStrings.FontObject_DeleteFont,
-                        MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-            base.Delete();
+                        MessageBoxButton.YesNo) != MessageBoxResult.Yes) return Task.Delay(0);
+            return base.DeleteOverrideAsync();
         }
 
         private void UpdateFontBitmap() {

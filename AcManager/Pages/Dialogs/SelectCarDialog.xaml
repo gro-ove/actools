@@ -72,7 +72,7 @@
                                     <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
                                 </Trigger>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+                                    <!--<Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />-->
                                     <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
                                 </Trigger>
                                 <Trigger Property="IsFocused" Value="True">
@@ -94,10 +94,46 @@
             </Style>
 
             <DataTemplate x:Key="TunableVersions.ItemTemplate" DataType="{x:Type t:CarObject}">
-                <mui:BetterImage Width="64" Height="64" ToolTip="{Binding DisplayName}" x:Name="UpgradeIconImage" ImageSource="/Assets/Img/UpgradeStd.png" />
+                <!--<Button x:Name="PART_Button" Style="{StaticResource BaseButtonStyle.Nothing}">-->
+                <mui:Cell>
+                    <Ellipse Width="54" Height="54" StrokeThickness="2" Fill="Transparent" x:Name="PART_Ellipse" Stroke="{DynamicResource ModernButtonBorder}" />
+                    <mui:BetterImage Width="64" Height="64" Margin="-6 -5 -4 -5" ToolTip="{Binding DisplayName}" x:Name="UpgradeIconImage"
+                            Filename="/Assets/Img/UpgradeStd.png">
+                        <mui:BetterImage.OpacityMask>
+                            <VisualBrush Stretch="None">
+                                <VisualBrush.Visual>
+                                    <Ellipse Width="38" Height="38" Fill="Black" Margin="27" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </mui:BetterImage.OpacityMask>
+                    </mui:BetterImage>
+                </mui:Cell>
+                <!--</Button>-->
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsChild}" Value="True">
-                        <Setter TargetName="UpgradeIconImage" Property="Source" Value="{Binding UpgradeIcon}" />
+                        <Setter TargetName="UpgradeIconImage" Property="Filename" Value="{Binding UpgradeIcon}" />
+                    </DataTrigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource ModernButtonBorderHover}" />
+                    </Trigger>
+                    <DataTrigger Value="True"
+                            Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}}">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource ModernButtonBorderHover}" />
+                    </DataTrigger>
+                    <DataTrigger Value="True"
+                            Binding="{Binding Path=IsHighlighted, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBoxItem}}}">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource ModernButtonBorderPressed}" />
+                        <Setter TargetName="PART_Ellipse" Property="Fill" Value="{DynamicResource ModernButtonIconBackgroundPressed}" />
+                    </DataTrigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource ModernButtonBorderDisabled}" />
+                    </Trigger>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource Accent}" />
+                    </Trigger>
+                    <DataTrigger Value="True"
+                            Binding="{Binding Path=IsFocused, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ComboBox}}}">
+                        <Setter TargetName="PART_Ellipse" Property="Stroke" Value="{DynamicResource Accent}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
@@ -114,16 +150,18 @@
 
         <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True"
                 Margin="0 0 0 -42">
-            <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <ComboBox Width="64" Height="64" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
-                        Style="{StaticResource TunableVersions.ComboBox}"
+            <mui:SpacingStackPanel Orientation="Horizontal" Margin="12" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" d:DataContext="{d:DesignInstance di:SelectCarDialog}">
+                <ComboBox Width="54" Height="54" ItemsSource="{Binding TunableVersions}" Style="{StaticResource TunableVersions.ComboBox}"
                         Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}"
                         SelectedItem="{Binding SelectedTunableVersion}" ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
-                <Button Margin="8 0 0 0" Command="{Binding ManageSetupsCommand}" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
+                <!--<Button Margin="8 0 0 0" Command="{Binding ManageSetupsCommand}" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
                         Style="{StaticResource CarBlockButton}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}">
                     <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" Source="/Assets/Img/CarSetups.png" />
-                </Button>
-            </StackPanel>
+                </Button>-->
+                <mui:ModernButton IconData="{StaticResource CarSetupIconData}" EllipseDiameter="52" EllipseStrokeThickness="2" IconWidth="28" IconHeight="28"
+                        Command="{Binding ManageSetupsCommand}" ToolTip="{x:Static g:AppStrings.Select_ManageSetups_Tooltip}" />
+            </mui:SpacingStackPanel>
         </c:CarBlock>
 
         <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 -42 20 0" />

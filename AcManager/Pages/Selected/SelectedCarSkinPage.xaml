@@ -10,12 +10,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
+            <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
+            <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
             <mui:BindingProxy x:Key="Model" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
-            Icon="{Binding SelectedObject.LiveryImage}">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="OnIconClick" Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
@@ -23,7 +25,32 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}"
+                        ToolTip="Clone skin (Ctrl+Shift+D)" />
+                <Separator />
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+                        Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="OnShowroomButtonMouseDown">
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                            InputGestureText="Ctrl+Shift+H" Command="{Binding OpenInShowroomOptionsCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
+                        <MenuItem.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource ShowroomPresetsItems}}" />
+                            </CompositeCollection>
+                        </MenuItem.ItemsSource>
+                    </MenuItem>
+                </mui:ButtonWithComboBox>
+                <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)"
+                        Command="{Binding OpenInCustomShowroomCommand}" PreviewMouseDown="OnCustomShowroomButtonMouseDown"
+                        MenuItems="{Binding CustomShowroomPresets}" />
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
+                        Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+                    <mui:ButtonWithComboBox.MenuItems>
+                        <CompositeCollection>
+                            <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
+                        </CompositeCollection>
+                    </mui:ButtonWithComboBox.MenuItems>
+                </mui:ButtonWithComboBox>
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -46,8 +73,23 @@
                         ToolTip="{x:Static ac:ControlsStrings.Toolbar_CreateJson_Tooltip}"
                         Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Separator />
-                <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_SkinTooltip}" />
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_SkinTooltip}" PreviewMouseDown="OnUpdatePreviewsButtonMouseDown">
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}"
+                            ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}" InputGestureText="Ctrl+Alt+P"
+                            Command="{Binding UpdatePreviewManuallyCommand}"
+                            Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsOptions_Tooltip}"
+                            InputGestureText="Ctrl+Shift+P" Command="{Binding UpdatePreviewOptionsCommand}" />
+                    <Separator />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
+                        <MenuItem.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource UpdatePreviewsPresetsItems}}" />
+                            </CompositeCollection>
+                        </MenuItem.ItemsSource>
+                    </MenuItem>
+                </mui:ButtonWithComboBox>
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_ChangeLivery}" Command="{Binding ChangeLiveryCommand}"
                         ButtonToolTip="{x:Static g:AppStrings.Toolbar_ChangeLivery_Tooltip}">
                     <MenuItem Header="{x:Static g:AppStrings.Toolbar_GenerateLivery}" ToolTip="{x:Static g:AppStrings.Toolbar_GenerateLivery_Tooltip}"
@@ -81,8 +123,9 @@
                 <DockPanel Grid.Row="0" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="country" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding FilterCommand}" CommandParameter="country"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static ac:ControlsStrings.AcObject_ContryLabel}" />
@@ -94,8 +137,9 @@
                 <DockPanel Grid.Row="1" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTeam}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="team" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTeam}" Command="{Binding FilterCommand}" CommandParameter="team"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_TeamLabel}" />
@@ -106,8 +150,9 @@
                 <DockPanel Grid.Row="1" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="driver" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverLabel}" />
@@ -119,8 +164,9 @@
                 <DockPanel Grid.Row="2" Grid.Column="0">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByNumber}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="number" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByNumber}" Command="{Binding FilterCommand}" CommandParameter="number"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_NumberLabel}" />
@@ -130,8 +176,9 @@
                 <DockPanel Grid.Row="2" Grid.Column="1">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPriority}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="priority" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPriority}" Command="{Binding FilterCommand}" CommandParameter="priority"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />

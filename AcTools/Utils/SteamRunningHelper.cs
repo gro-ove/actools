@@ -25,10 +25,12 @@ namespace AcTools.Utils {
 
             if (tryToRun) {
                 TryToRunSteam();
-                if (Process.GetProcessesByName("steam").Length > 0) return;
+                if (Process.GetProcessesByName("steam").Length == 0) {
+                    throw new Exception("Couldn’t run Steam");
+                }
             }
 
-            throw new Exception("Running Steam is required");
+            // throw new Exception("Running Steam is required");
         }
     }
 }

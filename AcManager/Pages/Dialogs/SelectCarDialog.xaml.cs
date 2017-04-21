@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -148,9 +149,7 @@ namespace AcManager.Pages.Dialogs {
 
         public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
             if (_selectedCar.Value == null) return;
-            new CarSetupsDialog(_selectedCar.Value) {
-                ShowInTaskbar = false
-            }.ShowDialogWithoutBlocking();
+            CarSetupsListPage.Open(_selectedCar.Value);
         }));
 
         public static Uri FavouritesUri() {

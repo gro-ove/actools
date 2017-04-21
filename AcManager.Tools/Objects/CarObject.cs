@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -210,20 +211,20 @@ namespace AcManager.Tools.Objects {
 
         private bool _skipRelativesToggling;
 
-        protected override void Toggle() {
+        protected override async Task ToggleOverrideAsync() {
             if (_skipRelativesToggling) {
-                base.Toggle();
+                await base.ToggleOverrideAsync();
                 return;
             }
 
             var enabled = Enabled;
             var parent = Parent;
             if (parent == null) {
-                base.Toggle();
+                await base.ToggleOverrideAsync();
                 foreach (var car in Children.Where(x => x.Enabled == enabled).ToList()) {
                     try {
                         car._skipRelativesToggling = true;
-                        car.Toggle();
+                        await car.ToggleOverrideAsync();
                     } finally {
                         car._skipRelativesToggling = false;
                     }
@@ -231,13 +232,13 @@ namespace AcManager.Tools.Objects {
             } else if (!enabled && !parent.Enabled) {
                 try {
                     parent._skipRelativesToggling = true;
-                    parent.Toggle();
+                    await parent.ToggleOverrideAsync();
                 } finally {
                     parent._skipRelativesToggling = false;
                 }
-                base.Toggle();
+                await base.ToggleOverrideAsync();
             } else {
-                base.Toggle();
+                await base.ToggleOverrideAsync();
             }
         }
 

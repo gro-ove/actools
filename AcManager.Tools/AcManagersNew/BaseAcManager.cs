@@ -146,7 +146,7 @@ namespace AcManager.Tools.AcManagersNew {
                     obj.Outdate();
                 }
 
-                InnerWrappersList.ReplaceEverythingBy(ScanInner().Select(x => new AcItemWrapper(this, x)));
+                InnerWrappersList.ReplaceEverythingBy(ScanOverride().Select(x => new AcItemWrapper(this, x)));
             } catch(Exception e) {
                 Logging.Error($"[{GetType().Name}] Scanning error: {e}");
                 InnerWrappersList.Clear();
@@ -162,7 +162,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [ItemNotNull]
-        protected abstract IEnumerable<AcPlaceholderNew> ScanInner();
+        protected abstract IEnumerable<AcPlaceholderNew> ScanOverride();
 
         public void EnsureLoaded() {
             EnsureScanned();
@@ -303,6 +303,12 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Replace(wrapper, newItem);
+            UpdateList();
+            ResetLoading();
+        }
+
+        protected void AddInList(AcItemWrapper newItem) {
+            InnerWrappersList.Add(newItem);
             UpdateList();
             ResetLoading();
         }

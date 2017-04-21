@@ -15,9 +15,10 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     public class CarSkinObject : AcJsonObjectNew {
+        [NotNull]
         public string CarId { get; }
 
-        public CarSkinObject(string carId, IFileAcManager manager, string id, bool enabled)
+        public CarSkinObject([NotNull] string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
         }

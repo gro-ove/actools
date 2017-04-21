@@ -717,13 +717,17 @@ namespace AcManager.Pages.Windows {
         private void OnDriveTitleLinkDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+            var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObject;
 
-            if (raceGridEntry == null && carObject == null) {
+            if (raceGridEntry != null || carObject != null) {
+                QuickDrive.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
+            } else if (trackObject != null) {
+                QuickDrive.Show(track: trackObject);
+            } else {
                 e.Effects = DragDropEffects.None;
                 return;
             }
 
-            QuickDrive.Show(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin?.Id);
             e.Effects = DragDropEffects.Copy;
         }
 

@@ -1,15 +1,18 @@
+using System.Threading.Tasks;
 using AcManager.Tools.Managers.Directories;
 
 namespace AcManager.Tools.AcManagersNew {
     public interface IFileAcManager : IAcManagerNew {
         IAcDirectories Directories { get; }
 
-        void Toggle(string id);
+        Task ToggleAsync(string id);
 
-        void Rename(string id, string newFileName, bool newEnabledState);
+        Task RenameAsync(string oldId, string newId, bool newEnabledState);
 
-        void Delete(string id);
+        Task DeleteAsync(string id);
 
-        string PrepareForAdditionalContent(string id, bool removeExisting);
+        Task CloneAsync(string id, string newId, bool newEnabled);
+
+        Task<string> PrepareForAdditionalContentAsync(string id, bool removeExisting);
     }
 }

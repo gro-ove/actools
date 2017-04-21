@@ -267,7 +267,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
         }
 
         private void Shot() {
-            var splitMode = ImageUtils.IsMagickAsseblyLoaded && Renderer is DarkKn5ObjectRenderer;
+            var splitMode = ImageUtils.IsMagickSupported && Renderer is DarkKn5ObjectRenderer;
 
             // hold shift to disable downsampling
             // hold ctrl to render scene in 6x resolution

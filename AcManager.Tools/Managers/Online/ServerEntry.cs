@@ -254,7 +254,9 @@ namespace AcManager.Tools.Managers.Online {
                     informationUpdated = true;
                 }
 
-                if (mode != UpdateMode.Lite) {
+                if (mode != UpdateMode.Lite ||
+                        !(Sessions?.Count > 0) // if there are no sessions (!), maybe information is damaged, let’s re-download
+                        ) {
                     UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.2);
 
                     ServerInformationComplete loaded;

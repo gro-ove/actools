@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
@@ -63,16 +64,30 @@ namespace AcManager.Tools.AcManagersNew {
             return null;
         }
 
-        protected override void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
+        protected override async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
             using (IgnoreChanges()) {
-                base.MoveInner(id, newId, oldLocation, newLocation, newEnabled);
+                await base.MoveOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled);
             }
         }
 
-        protected override void DeleteInner(string id, string location) {
+        protected override async Task CloneOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
+                IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
             using (IgnoreChanges()) {
-                base.DeleteInner(id, location);
+                await base.CloneOverrideAsync(oldId, newId, oldLocation, newLocation, attachedOldNew, newEnabled);
             }
+        }
+
+        protected override async Task DeleteOverrideAsync(string id, string location, IEnumerable<string> attached) {
+            using (IgnoreChanges()) {
+                await base.DeleteOverrideAsync(id, location, attached);
+            }
+        }
+
+        protected override async Task CleanSpaceOverrideAsync(string id, string location) {
+            // using (IgnoreChanges()) { // TODO?
+                await base.CleanSpaceOverrideAsync(id, location);
+            // }
         }
 
         private readonly Dictionary<string, WatchingTask> _watchingTasks = new Dictionary<string, WatchingTask>();

@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Dialogs;
+using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.Filters;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Navigation;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
@@ -71,6 +77,34 @@ namespace AcManager.Pages.Lists {
             protected override string GetStatus() {
                 return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Setups);
             }
+        }
+
+        public static void Open(CarObject car) {
+            var mainWindow = Application.Current?.MainWindow as MainWindow;
+
+            if (mainWindow == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+                CarSetupsDialog.Show(car);
+                return;
+            }
+
+            var uri = UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", car.Id);
+            var setupsLinks = mainWindow.MenuLinkGroups.OfType<LinkGroupFilterable>().Where(x => x.GroupKey == "setups").ToList();
+            var existing = setupsLinks.FirstOrDefault(x => x.Source == uri);
+            if (existing == null) {
+                existing = new LinkGroupFilterable {
+                    DisplayName = $"Setups for {car.DisplayName}",
+                    GroupKey = "setups",
+                    Source = uri
+                };
+
+                if (setupsLinks.Count >= 2) {
+                    mainWindow.MenuLinkGroups.Remove(setupsLinks[0]);
+                }
+
+                mainWindow.MenuLinkGroups.Add(existing);
+            }
+
+            mainWindow.NavigateTo(uri);
         }
     }
 }

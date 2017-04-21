@@ -20,7 +20,7 @@ namespace AcManager.Pages.Dialogs {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public CarSetupsDialog([NotNull] CarObject car) {
+        private CarSetupsDialog([NotNull] CarObject car) {
             if (car == null) throw new ArgumentNullException(nameof(car));
 
             DataContext = new ViewModel(car);
@@ -32,6 +32,12 @@ namespace AcManager.Pages.Dialogs {
             });
 
             InitializeComponent();
+        }
+
+        public static void Show([NotNull] CarObject car) {
+            new CarSetupsDialog(car) {
+                ShowInTaskbar = false
+            }.ShowDialogWithoutBlocking();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

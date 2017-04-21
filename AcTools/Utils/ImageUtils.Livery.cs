@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using ImageMagick;
 
 namespace AcTools.Utils {
     public static partial class ImageUtils {
@@ -202,6 +205,41 @@ namespace AcTools.Utils {
 
             var result = colors.OrderBy(x => -x.Weight).ToList();
             return result.Where(x => x.Weight > result.ElementAt(0).Weight * 0.1).Select(x => x.Tune()).ToArray();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Color GetTextureColor(string textureFilename) {
+            return GetTextureColor(File.ReadAllBytes(textureFilename));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static Color GetTextureColor(byte[] bytes) {
+            var average = new int[3];
+            var count = 0;
+
+            using (var img = new MagickImage(bytes)) {
+                var imgWidth = img.Width;
+                var imgHeight = img.Height;
+                var dx = Math.Max(imgWidth / 40, 2);
+                var dy = Math.Max(imgHeight / 40, 2);
+
+                using (var pc = img.GetPixels()) {
+                    for (var y = 0; y < imgHeight; y += dy)
+                        for (var x = 0; x < imgWidth; x += dx) {
+                            var pixel = pc[x, y];
+                            var color = pixel.ToColor();
+                            average[0] += color.R;
+                            average[1] += color.G;
+                            average[2] += color.B;
+                            count++;
+                        }
+                }
+            }
+
+            return Color.FromArgb(
+                    (average[0] / count).ClampToByte(),
+                    (average[1] / count).ClampToByte(),
+                    (average[2] / count).ClampToByte());
         }
 
         [Obsolete]

@@ -363,7 +363,7 @@ namespace AcManager.Controls.CustomShowroom {
         /// <summary>
         /// Don’t forget to call it in overrided versions.
         /// </summary>
-        protected void Initialize(bool reset) {
+        public void Initialize(bool reset) {
             // ReSharper disable once VirtualMemberCallInConstructor
             _saveable = CreateSaveable();
             if (reset) {

@@ -36,60 +36,23 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private CommandBase _changeIdCommand;
 
-        public virtual ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new DelegateCommand<string>(o => {
-            try {
-                var newId = o?.Trim();
-                if (string.IsNullOrWhiteSpace(newId)) return;
-                Rename(newId);
-            } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotChangeIdExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotChangeId, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-            }
-        }, o => !string.IsNullOrWhiteSpace(o)));
-
-        public async Task CloneAsync(string id) {
-            try {
-                id = id?.Trim();
-                if (string.IsNullOrWhiteSpace(id)) return;
-
-                await Task.Run(() => {
-                    FileUtils.CopyRecursive(Location, FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(Location) ?? "", id)));
-                });
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotClone, ToolsStrings.AcObject_CannotClone_Commentary, ex);
-            }
-        }
+        public virtual ICommand ChangeIdCommand => _changeIdCommand ??
+                (_changeIdCommand = new AsyncCommand<string>(RenameAsync, o => !string.IsNullOrWhiteSpace(o)));
 
         private ICommand _cloneCommand;
 
-        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand<string>(CloneAsync, o => !string.IsNullOrWhiteSpace(o)));
+        public ICommand CloneCommand => _cloneCommand ??
+                (_cloneCommand = new AsyncCommand<string>(CloneAsync, o => !string.IsNullOrWhiteSpace(o)));
 
         private CommandBase _toggleCommand;
 
-        public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new DelegateCommand(() => {
-            try {
-                Toggle();
-            } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-            }
-        }));
+        public virtual ICommand ToggleCommand => _toggleCommand ??
+                (_toggleCommand = new AsyncCommand(ToggleAsync));
 
         private CommandBase _deleteCommand;
 
-        public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            try {
-                if (!SettingsHolder.Content.DeleteConfirmation ||
-                        ModernDialog.ShowMessage(string.Format("Are you sure you want to move {0} to the Recycle Bin?", DisplayName), "Are You Sure?",
-                                MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                    Delete();
-                }
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-            }
-        }));
+        public virtual ICommand DeleteCommand => _deleteCommand ??
+                (_deleteCommand = new AsyncCommand(DeleteAsync));
 
         private CommandBase _reloadCommand;
 

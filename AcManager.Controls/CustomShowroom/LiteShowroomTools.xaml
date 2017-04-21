@@ -4,7 +4,7 @@
         xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
-        Topmost="True" ShowTitle="False" Width="250" SizeToContent="Height" MaxHeight="800">
+        Topmost="True" ShowTitle="False" Width="250" SizeToContent="Height" MaxHeight="800" Loaded="OnLoaded">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -334,7 +334,8 @@
     </mui:ModernDialog.Resources>
 
     <DockPanel Margin="-4 -8 -4 -20">
-        <c:UserPresetsControl DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}" Style="{StaticResource CompactUserPresetsControl}" Margin="0 20 0 0" />
+        <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
+                Style="{StaticResource CompactUserPresetsControl}" Margin="0 20 0 0" />
 
         <mui:LazySwitch Value="{Binding Mode}">
             <FrameworkElement.Resources>

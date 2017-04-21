@@ -17,6 +17,8 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone PP filter (Ctrl+Shift+D)" />
+                <Separator />
                 <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Share_FilterTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Common_Test}" Command="{Binding TestCommand}"

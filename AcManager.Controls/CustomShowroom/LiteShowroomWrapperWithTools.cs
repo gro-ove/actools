@@ -16,6 +16,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
@@ -26,8 +27,9 @@ namespace AcManager.Controls.CustomShowroom {
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
-        public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) : base(renderer, car.DisplayName) {
-            _helper = new AttachedHelper(this, _tools = new LiteShowroomTools(renderer, car, skinId));
+        public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
+                : base(renderer, car.DisplayName) {
+            _helper = new AttachedHelper(this, _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename));
             GoToNormalMode();
 
             renderer.VisibleUi = false;

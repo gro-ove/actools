@@ -2231,7 +2231,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             var flamesLines = _flamesLines;
-            if (IsColliderVisible && flamesLines != null) {
+            if (AreFlamesVisible && flamesLines != null) {
                 for (var i = 0; i < flamesLines.Length; i++) {
                     var line = flamesLines[i];
                     DrawText(line.Item1, line.Item2.ParentMatrix * line.Item2.Transform, camera, screenSize, new Color4(1f, 1f, 0f, 0f));

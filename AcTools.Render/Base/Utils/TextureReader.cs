@@ -1,12 +1,53 @@
 ﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Shaders;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Utils {
-    public static class TextureReader {
+    public class TextureReader : BaseRenderer {
+        public TextureReader() {
+            Initialize();
+        }
+
+        protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
+
+        protected override void InitializeInner() {}
+
+        protected override void ResizeInner() {}
+
+        protected override void OnTick(float dt) { }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public byte[] ToPngNoFormat(byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
+            return ToPng(bytes, ignoreAlpha, downsize);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public byte[] ToPng(byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
+            Format format;
+            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, downsize, out format);
+        }
+
+        public byte[] ToPng(byte[] bytes, bool ignoreAlpha, out Format format) {
+            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, null, out format);
+        }
+
+        public byte[] ToPng(byte[] bytes, bool ignoreAlpha, Size? downsize, out Format format) {
+            return ToPng(DeviceContextHolder, bytes, ignoreAlpha, downsize, out format);
+        }
+
+        public static byte[] ToPng(DeviceContextHolder holder, byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {
+            Format format;
+            return ToPng(holder, bytes, ignoreAlpha, downsize, out format);
+        }
+
         public static byte[] ToPng(DeviceContextHolder holder, byte[] bytes, bool ignoreAlpha, out Format format) {
+            return ToPng(holder, bytes, ignoreAlpha, null, out format);
+        }
+
+        public static byte[] ToPng(DeviceContextHolder holder, byte[] bytes, bool ignoreAlpha, Size? downsize, out Format format) {
             Viewport[] viewports = null;
 
             try {
@@ -19,7 +60,7 @@ namespace AcTools.Render.Base.Utils {
                     effect.Initialize(holder.Device);
 
                     format = loaded.Format;
-                    output.Resize(holder, loaded.Width, loaded.Height, null);
+                    output.Resize(holder, downsize?.Width ?? loaded.Width, downsize?.Height ?? loaded.Height, null);
 
                     holder.DeviceContext.ClearRenderTargetView(output.TargetView, Color.Transparent);
                     holder.DeviceContext.OutputMerger.SetTargets(output.TargetView);

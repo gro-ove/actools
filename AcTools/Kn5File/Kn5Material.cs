@@ -61,7 +61,7 @@ namespace AcTools.Kn5File {
         [Description("Alpha To Coverage")]
         AlphaToCoverage = 2
     }
-
+    
     public enum Kn5MaterialDepthMode {
         [Description("Normal")]
         DepthNormal = 0,
@@ -71,5 +71,15 @@ namespace AcTools.Kn5File {
 
         [Description("Off")]
         DepthOff = 2
+    }
+
+    internal static class Kn5MaterialExtension {
+        public static bool IsValidDepthMode(this int v) {
+            return v >= 0 && v <= 2;
+        }
+
+        public static bool IsValidBlendMode(this byte v) {
+            return v <= 2;
+        }
     }
 }

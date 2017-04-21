@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -77,10 +78,31 @@ namespace AcManager.Pages.Selected {
             SelectedObject.ChangeIdCommand.Execute(newId);
         }));
 
+        protected virtual string PrepareIdForInput(string id) {
+            if (string.IsNullOrWhiteSpace(id)) return null;
+            var singleFile = SelectedAcObject as AcCommonSingleFileObject;
+            return singleFile == null ? id : id.ApartFromLast(singleFile.Extension, StringComparison.OrdinalIgnoreCase);
+        }
+
+        protected virtual string FixIdFromInput(string id) {
+            if (string.IsNullOrWhiteSpace(id)) return null;
+            var singleFile = SelectedAcObject as AcCommonSingleFileObject;
+            return singleFile == null ? id : id + singleFile.Extension;
+        }
+
         private ICommand _cloneCommand;
 
         public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async () => {
-            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_Clone, SelectedObject.Id, @"?");
+            string defaultId;
+            if (SelectedObject.Location.EndsWith(SelectedObject.Id, StringComparison.OrdinalIgnoreCase)) {
+                var unique = FileUtils.EnsureUnique(SelectedObject.Location);
+                defaultId = unique.Substring(SelectedObject.Location.Length - SelectedObject.Id.Length);
+            } else {
+                defaultId = SelectedObject.Id + @"-copy";
+            }
+
+            var newId = FixIdFromInput(Prompt.Show(AppStrings.AcObject_EnterNewId,
+                    AppStrings.Toolbar_Clone, PrepareIdForInput(defaultId), @"?"));
             if (string.IsNullOrWhiteSpace(newId)) return;
 
             using (var waiting = new WaitingDialog()) {
@@ -196,16 +218,16 @@ namespace AcManager.Pages.Selected {
         }
 
         [NotNull]
-        protected virtual string GetFormat(string key) {
+        private string GetFormat(string key) {
             return _specs.FirstOrDefault(x => x.Item1 == key)?.Item2 ?? @"…";
         }
 
         [CanBeNull]
-        protected virtual string GetSpecsValue(string key) {
+        private string GetSpecsValue(string key) {
             return _specs.FirstOrDefault(x => x.Item1 == key)?.Item3.Invoke() ?? null;
         }
 
-        protected virtual void SetSpecsValue(string key, string value) {
+        private void SetSpecsValue(string key, string value) {
             var spec = _specs.FirstOrDefault(x => x.Item1 == key);
             spec?.Item4.Invoke(value);
 
@@ -214,7 +236,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        protected virtual IEnumerable<string> GetSpecsKeys() {
+        private IEnumerable<string> GetSpecsKeys() {
             return _specs.Select(x => x.Item1);
         }
 

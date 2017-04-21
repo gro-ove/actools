@@ -41,7 +41,7 @@ namespace AcTools.Utils {
 
         private static string _imageMagickAssemblyFilename;
 
-        public static bool IsMagickAsseblyLoaded => _imageMagickAssemblyFilename != null;
+        private static bool IsMagickAsseblyLoaded => _imageMagickAssemblyFilename != null;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string TestImageMagick() {

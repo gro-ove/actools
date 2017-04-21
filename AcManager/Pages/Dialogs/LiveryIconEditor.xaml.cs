@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,9 +11,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Kn5File;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -242,25 +247,150 @@ namespace AcManager.Pages.Dialogs {
             Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? @"0" : skin.SkinNumber;
             Model.TextColorValue = Colors.White;
 
-            if (colors != null) {
-                Model.ColorValue = colors.Length > 0 ? colors[0] : Colors.White;
-                Model.SecondaryColorValue = colors.Length > 1 ? colors[1] : Colors.Black;
-                Model.TertiaryColorValue = colors.Length > 2 ? colors[2] : Colors.Black;
-                return;
+            colors = colors ?? GuessColors(skin);
+            Model.ColorValue = colors.Length > 0 ? colors[0] : Colors.White;
+            Model.SecondaryColorValue = colors.Length > 1 ? colors[1] : Colors.Black;
+            Model.TertiaryColorValue = colors.Length > 2 ? colors[2] : Colors.Black;
+        }
+
+        private static readonly WeakList<Tuple<string, Kn5>> Kn5MaterialsCache = new WeakList<Tuple<string, Kn5>>(10);
+        private static readonly WeakList<Tuple<string, Kn5>> Kn5TexturesCache = new WeakList<Tuple<string, Kn5>>(10);
+
+        [CanBeNull]
+        private static Color[] GuessColorsFromTextures(CarSkinObject skin) {
+            if (!ImageUtils.IsMagickSupported) {
+                Logging.Debug("ImageMagick is missing");
+                return null;
+            }
+
+            var car = CarsManager.Instance.GetById(skin.CarId);
+            if (car == null) {
+                Logging.Debug("Car not found");
+                return null;
+            }
+
+            Kn5MaterialsCache.Purge();
+            Kn5TexturesCache.Purge();
+
+            string kn5Filename = null;
+            Func<string> getKn5Filename = () => kn5Filename ??
+                    (kn5Filename = FileUtils.GetMainCarFilename(car.Location, car.AcdData));
+
+            var materialsKn5 = Kn5MaterialsCache.FirstOrDefault(x => x?.Item1 == car.Id)?.Item2;
+            if (materialsKn5 == null) {
+                if (!File.Exists(getKn5Filename())) {
+                    Logging.Debug("KN5 not found");
+                    return null;
+                }
+
+                materialsKn5 = Kn5.FromFile(getKn5Filename(), SkippingTextureLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
+                Kn5MaterialsCache.Add(Tuple.Create(car.Id, materialsKn5));
+            }
+
+            var paintable = PaintShop.GetPaintableItems(skin.CarId, materialsKn5).ToList();
+
+            var carPaint = paintable.OfType<PaintShop.CarPaint>().FirstOrDefault();
+            if (carPaint?.GuessColorsFromPreviews != false) {
+                return null;
+            }
+
+            var texture = carPaint.DetailsTexture;
+            if (texture == null) {
+                Logging.Debug("Details texture not found");
+                return null;
+            }
+
+            if (!File.Exists(Path.Combine(skin.Location, texture))) {
+                Logging.Debug("Details texture not overridden, could be a fully custom skin");
+                return null;
+            }
+
+            TextureReader reader = null;
+            var s = Stopwatch.StartNew();
+            try {
+                Kn5 texturesKn5 = null;
+                Func<string, Color> getColor = textureName => {
+                    if (textureName == null) return Colors.White;
+
+                    var filename = Path.Combine(skin.Location, textureName);
+                    if (!File.Exists(filename)) {
+                        if (texturesKn5 == null) {
+                            texturesKn5 = Kn5TexturesCache.FirstOrDefault(x => x?.Item1 == car.Id)?.Item2;
+                            if (texturesKn5 == null) {
+                                if (!File.Exists(getKn5Filename())) return Colors.White;
+                                texturesKn5 = Kn5.FromFile(kn5Filename, materialLoader: SkippingMaterialLoader.Instance, nodeLoader: SkippingNodeLoader.Instance);
+                                Kn5TexturesCache.Add(Tuple.Create(car.Id, texturesKn5));
+                            }
+                        }
+
+                        var bytes = texturesKn5.TexturesData.GetValueOrDefault(textureName);
+                        if (bytes == null) return Colors.White;
+
+                        if (reader == null) {
+                            reader = new TextureReader();
+                        }
+
+                        return ImageUtils.GetTextureColor(
+                                reader.ToPngNoFormat(bytes, true, new System.Drawing.Size(32, 32))).ToColor();
+                    }
+
+                    if (reader == null) {
+                        reader = new TextureReader();
+                    }
+
+                    return ImageUtils.GetTextureColor(
+                            reader.ToPngNoFormat(File.ReadAllBytes(filename), true, new System.Drawing.Size(32, 32))).ToColor();
+                };
+
+                var result = new[] {
+                    getColor(texture),
+                    Colors.Black,
+                    Colors.Black
+                };
+
+                Logging.Debug($"Main color: {texture} ({result[0].ToHexString()})");
+
+                foreach (var item in paintable.OfType<PaintShop.ColoredItem>().Where(x => x.LiveryColorIds?.Length > 0).OrderBy(x => x.LiveryPriority)) {
+                    if (item.LiveryColorIds == null) continue;
+                    for (var i = 0; i < item.LiveryColorIds.Length; i++) {
+                        var slotId = i;
+                        var slotTexture = item.AffectedTextures.ElementAtOrDefault(item.LiveryColorIds[i]);
+                        Logging.Debug($"Extra: {slotId} = {slotTexture} (priority: {item.LiveryPriority})");
+
+                        if (slotId < 0 || slotId > 2 || slotTexture == null) continue;
+                        result[slotId] = getColor(slotTexture);
+                    }
+                }
+
+                Logging.Debug($"Colors guessed: {s.Elapsed.TotalMilliseconds:F1} ms");
+                return result;
+            } finally {
+                DisposeHelper.Dispose(ref reader);
+            }
+        }
+
+        [NotNull]
+        private static Color[] GuessColors(CarSkinObject skin) {
+            try {
+                var result = GuessColorsFromTextures(skin);
+                if (result != null) {
+                    return result;
+                }
+            } catch (Exception e) {
+                Logging.Warning("Can’t guess colors with Paint Shop: " + e);
             }
 
             try {
                 using (var bitmap = Image.FromFile(skin.PreviewImage)) {
                     var baseColors = ImageUtils.GetBaseColors((Bitmap)bitmap);
-                    Model.ColorValue = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
-                    Model.SecondaryColorValue = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
-                    Model.TertiaryColorValue = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
+                    var a = baseColors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
+                    var b = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
+                    var c = baseColors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
+                    return new[] { a, b, c };
                 }
             } catch (Exception e) {
-                Logging.Warning("Can’t find base colors: " + e);
-                Model.ColorValue = Colors.White;
-                Model.SecondaryColorValue = Colors.Black;
-                Model.TertiaryColorValue = Colors.Black;
+                Logging.Warning("Can’t guess colors: " + e);
+                return new[] { Colors.White, Colors.Black, Colors.Black };
             }
         }
 

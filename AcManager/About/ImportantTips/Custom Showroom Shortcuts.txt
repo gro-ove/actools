@@ -51,7 +51,9 @@ Here is a small list of shortcuts available for Custom Showroom in 0.8.808:
  • [b]Num 4–Num 6[/b]: change animation speed;
  • [b]Num 7–Num 9[/b]: toggle extra animations;
  • [b]Alt+F[/b]: toggle rotating fans;
- • [b]Alt+W[/b]: toggle wipers.
+ • [b]Alt+W[/b]: toggle wipers;
+ • [b]Ctrl+Alt+F[/b]: toggle flames dummies;
+ • [b]Ctrl+Alt+Shift+F[/b]: toggle fuel tank.
 [b]People:[/b]
  • [b]Ctrl+Shift+D[/b]: toggle driver;
  • [b]Ctrl+Shift+C[/b]: toggle crew.
@@ -65,6 +67,7 @@ Here is a small list of shortcuts available for Custom Showroom in 0.8.808:
  • [b]F11[/b]: fullscreen.
 [b]Small bonus:[/b]
 If you want to use this showroom without Content Manager (for example, if you don’t have AC installed), here it is:
+ • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOV1ZqS1BOZUMzbWc"]v1.1.50 (same as in CM v0.8.981)[/url];
  • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOTWx2cnB3NVNzc0U"]v1.1.38 (same as in CM v0.8.947)[/url];
  • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pOcGF2RTBkT3JrQTg"]v1.1.33 (same as in CM v0.8.862)[/url];
  • [url="https://drive.google.com/uc?export=download&id=0B6GfX1zRa8pObnpJSmVFaDJPWlE"]v1.1.29 (same as in CM v0.8.813)[/url];

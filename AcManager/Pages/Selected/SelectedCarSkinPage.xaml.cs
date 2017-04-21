@@ -4,7 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls.CustomShowroom;
+using AcManager.Controls.Dialogs;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -13,6 +16,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
@@ -65,11 +69,6 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private CommandBase _updatePreviewCommand;
-
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ??
-                    (_updatePreviewCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(), () => SelectedObject.Enabled));
-
             private CommandBase _changeLiveryCommand;
 
             public ICommand ChangeLiveryCommand => _changeLiveryCommand ??
@@ -84,6 +83,142 @@ namespace AcManager.Pages.Selected {
 
             public ICommand GenerateRandomLiveryCommand => _generateRandomLiveryCommand ??
                     (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
+
+
+            #region Auto-Update Previews
+            private CommandBase _updatePreviewCommand;
+
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ??
+                    (_updatePreviewCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(), () => SelectedObject.Enabled));
+
+            private ICommand _updatePreviewsManuallyCommand;
+
+            public ICommand UpdatePreviewManuallyCommand => _updatePreviewsManuallyCommand ??
+                    (_updatePreviewsManuallyCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(UpdatePreviewMode.StartManual),
+                            () => SelectedObject.Enabled));
+
+            private ICommand _updatePreviewsOptionsCommand;
+
+            public ICommand UpdatePreviewOptionsCommand => _updatePreviewsOptionsCommand ??
+                    (_updatePreviewsOptionsCommand = new AsyncCommand(() => new ToUpdatePreview(Car, SelectedObject).Run(UpdatePreviewMode.Options),
+                            () => SelectedObject.Enabled));
+            #endregion
+
+            #region Presets
+            public HierarchicalItemsView ShowroomPresets {
+                get { return _showroomPresets; }
+                set {
+                    if (Equals(value, _showroomPresets)) return;
+                    _showroomPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public HierarchicalItemsView CustomShowroomPresets {
+                get { return _customShowroomPresets; }
+                set {
+                    if (Equals(value, _customShowroomPresets)) return;
+                    _customShowroomPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public HierarchicalItemsView UpdatePreviewsPresets {
+                get { return _updatePreviewsPresets; }
+                set {
+                    if (Equals(value, _updatePreviewsPresets)) return;
+                    _updatePreviewsPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public HierarchicalItemsView QuickDrivePresets {
+                get { return _quickDrivePresets; }
+                set {
+                    if (Equals(value, _quickDrivePresets)) return;
+                    _quickDrivePresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private HierarchicalItemsView _showroomPresets, _customShowroomPresets, _updatePreviewsPresets, _quickDrivePresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public void InitializeShowroomPresets() {
+                if (ShowroomPresets == null) {
+                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
+                        CarOpenInShowroomDialog.RunPreset(p.Filename, Car, SelectedObject.Id);
+                    });
+                }
+            }
+
+            public void InitializeCustomShowroomPresets() {
+                if (CustomShowroomPresets == null) {
+                    CustomShowroomPresets = _helper.Create(DarkRendererSettings.DefaultPresetableKeyValue, p => {
+                        CustomShowroomWrapper.StartAsync(Car, SelectedObject, p.Filename);
+                    });
+                }
+            }
+
+            public void InitializeQuickDrivePresets() {
+                if (QuickDrivePresets == null) {
+                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
+                        QuickDrive.RunPreset(p.Filename, Car, SelectedObject.Id);
+                    });
+                }
+            }
+
+            public void InitializeUpdatePreviewsPresets() {
+                if (UpdatePreviewsPresets == null) {
+                    UpdatePreviewsPresets = _helper.Create(
+                            SettingsHolder.CustomShowroom.CustomShowroomPreviews
+                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue,
+                            p => new ToUpdatePreview(Car, SelectedObject).Run(p.Filename));
+                }
+            }
+            #endregion
+
+            #region Open In Showroom
+            private CommandBase _openInShowroomCommand;
+
+            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    OpenInCustomShowroomCommand.Execute(o);
+                    return;
+                }
+
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !CarOpenInShowroomDialog.Run(Car, SelectedObject.Id)) {
+                    OpenInShowroomOptionsCommand.Execute(null);
+                }
+            }, o => SelectedObject.Enabled));
+
+            private CommandBase _openInShowroomOptionsCommand;
+
+            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
+                new CarOpenInShowroomDialog(Car, SelectedObject.Id).ShowDialog();
+            }, () => SelectedObject.Enabled));
+
+            private CommandBase _openInCustomShowroomCommand;
+
+            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+                    (_openInCustomShowroomCommand = new AsyncCommand(() => CustomShowroomWrapper.StartAsync(Car, SelectedObject)));
+
+            private CommandBase _driveCommand;
+
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !QuickDrive.Run(Car, SelectedObject.Id)) {
+                    DriveOptionsCommand.Execute(null);
+                }
+            }, () => SelectedObject.Enabled));
+
+            private CommandBase _driveOptionsCommand;
+
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
+                QuickDrive.Show(Car, SelectedObject.Id);
+            }, () => SelectedObject.Enabled));
+            #endregion
         }
 
         private string _carId, _id;
@@ -140,10 +275,28 @@ namespace AcManager.Pages.Selected {
 
         private ViewModel _model;
 
-        private void AcObjectBase_OnIconMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnIconClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 _model.ChangeLiveryCommand.Execute(null);
             }
         }
+
+        #region Presets (Dynamic Loading)
+        private void OnShowroomButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeShowroomPresets();
+        }
+
+        private void OnCustomShowroomButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeCustomShowroomPresets();
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeQuickDrivePresets();
+        }
+
+        private void OnUpdatePreviewsButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeUpdatePreviewsPresets();
+        }
+        #endregion
     }
 }

@@ -6,12 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -35,6 +33,14 @@ namespace AcManager.Tools.Managers {
         }
 
         public override string SearchPattern => @"*.txt";
+
+        protected override string CheckIfIdValid(string id) {
+            if (!id.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase)) {
+                return $"ID should end with “{FontObject.FontExtension}”.";
+            }
+
+            return base.CheckIfIdValid(id);
+        }
 
         public override FontObject GetDefault() {
             var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"arial"));
@@ -76,63 +82,9 @@ namespace AcManager.Tools.Managers {
             return null;
         }
 
-        protected override void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
-            throw new NotSupportedException();
-        }
-
-        protected override void DeleteInner(string id, string location) {
-            throw new NotSupportedException();
-        }
-
-        public override void Rename(string id, string newFileName, bool newEnabled) {
-            if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
-
-            var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
-
-            var currentLocation = ((AcCommonObject)wrapper.Value).Location;
-            var currentBitmapLocation = ((FontObject)wrapper.Value).FontBitmap;
-            var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new ToggleException(ToolsStrings.AcObject_CannotBeMoved);
-
-            var newLocation = Path.Combine(path, newFileName);
-            var newBitmapLocation = currentBitmapLocation == null
-                    ? null : Path.Combine(path, Path.GetFileNameWithoutExtension(newLocation) + Path.GetExtension(currentBitmapLocation));
-            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
-
-            try {
-                using (IgnoreChanges()) {
-                    FileUtils.Move(currentLocation, newLocation);
-
-                    if (currentBitmapLocation != null) {
-                        FileUtils.Move(currentBitmapLocation, newBitmapLocation);
-                    }
-
-                    var obj = CreateAndLoadAcObject(newFileName, Directories.CheckIfEnabled(newLocation));
-                    obj.PreviousId = id;
-                    ReplaceInList(id, new AcItemWrapper(this, obj));
-
-                    UpdateList();
-                }
-            } catch (Exception e) {
-                throw new ToggleException(e.Message);
-            }
-        }
-
-        public override void Delete(string id) {
-            if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
-
-            var obj = GetById(id);
-            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
-
-            using (IgnoreChanges()) {
-                FileUtils.Recycle(obj.Location, obj.FontBitmap);
-                if (!FileUtils.Exists(obj.Location)) {
-                    RemoveFromList(id);
-                }
-            }
+        public override IEnumerable<string> GetAttachedFiles(string location) {
+            return FontObject.BitmapExtensions.Select(ext =>
+                    location.ApartFromLast(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase) + ext);
         }
 
         public DateTime? LastUsingsRescan {

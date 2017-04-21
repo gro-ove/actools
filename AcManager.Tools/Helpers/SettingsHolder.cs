@@ -1974,5 +1974,40 @@ namespace AcManager.Tools.Helpers {
         private static LocaleSettings _locale;
 
         public static LocaleSettings Locale => _locale ?? (_locale = new LocaleSettings());
+
+        public class InterfaceSettings : NotifyPropertyChanged {
+            internal InterfaceSettings() {}
+
+            private bool? _quickDriveFastAccessButtons;
+
+            public bool QuickDriveFastAccessButtons {
+                get {
+                    return _quickDriveFastAccessButtons ??
+                            (_quickDriveFastAccessButtons = ValuesStorage.GetBool("Settings.InterfaceSettings.QuickDriveFastAccessButtons", true)).Value;
+                }
+                set {
+                    if (Equals(value, _quickDriveFastAccessButtons)) return;
+                    _quickDriveFastAccessButtons = value;
+                    ValuesStorage.Set("Settings.InterfaceSettings.QuickDriveFastAccessButtons", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _skinsSetupsNewWindow;
+
+            public bool SkinsSetupsNewWindow {
+                get { return _skinsSetupsNewWindow ?? (_skinsSetupsNewWindow = ValuesStorage.GetBool("Settings.InterfaceSettings.SkinsSetupsNewWindow", false)).Value; }
+                set {
+                    if (Equals(value, _skinsSetupsNewWindow)) return;
+                    _skinsSetupsNewWindow = value;
+                    ValuesStorage.Set("Settings.InterfaceSettings.SkinsSetupsNewWindow", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static InterfaceSettings _interface;
+
+        public static InterfaceSettings Interface => _interface ?? (_interface = new InterfaceSettings());
     }
 }

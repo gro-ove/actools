@@ -926,7 +926,8 @@ Triangles: {CarNode?.TrianglesCount:D}
 AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
 Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
 Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
-Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}".Trim();
+Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
+Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
 #if SSLR_PARAMETRIZED

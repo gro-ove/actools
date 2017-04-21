@@ -57,10 +57,14 @@ namespace AcManager.Controls.CustomShowroom {
 
             if (carPaint != null) {
                 yield return mapsMap == null ?
-                        new CarPaint(carPaint) :
+                        new CarPaint(carPaint) {
+                            LiveryStyle = "Flat"
+                        } :
                         new ComplexCarPaint(carPaint, 512, mapsMap, new PaintShopSource {
                             NormalizeMax = true
-                        });
+                        }) {
+                            LiveryStyle = "Flat"
+                        };
             }
 
             var rims = new[] { "car_paint_rims.dds", "metal_detail_rim.dds", "Metal_detail_rim.dds" }
@@ -412,6 +416,7 @@ namespace AcManager.Controls.CustomShowroom {
                     }
 
                     carPaint.LiveryStyle = e.GetStringValueOnly(KeyLiveryStyle) ?? "Flat";
+                    carPaint.GuessColorsFromPreviews = e.GetBoolValueOnly("guessColorsFromPreviews") ?? false;
                     result = carPaint;
                     break;
                 case TypeColor:
@@ -578,6 +583,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
+        [NotNull]
         public static IEnumerable<PaintableItem> GetPaintableItems(string carId, [CanBeNull] Kn5 kn5) {
             if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) return new PaintableItem[0];
 

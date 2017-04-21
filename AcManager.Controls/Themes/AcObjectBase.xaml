@@ -57,7 +57,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectBase">
                             <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="Outdated!">
-                                <TextBlock.ToolTip>You weren’t supposed to see this, something’s gone terribly wrong</TextBlock.ToolTip>
+                                <TextBlock.ToolTip>You weren’t supposed to see this, something’ve gone terribly wrong</TextBlock.ToolTip>
                             </TextBlock>
                         </ControlTemplate>
                     </Setter.Value>

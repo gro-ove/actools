@@ -58,21 +58,130 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <mui:Cell DataContext="{Binding SelectedCar}" Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
-                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
-                <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
-                        Foreground="White" TextTrimming="CharacterEllipsis" />
-                <mui:ContextMenuButton Click="SelectedCarContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+            <mui:Cell Grid.Column="0" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True"
+                    Drop="OnCarBlockDrop" MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
+                <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                        Text="{Binding SelectedCar.DisplayName}" Foreground="White" TextTrimming="CharacterEllipsis" />
+
+                <Border Opacity="0" Background="Transparent" Cursor="Hand"
+                        Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <mui:Cell Background="#33000000">
+                        <mui:Cell.Effect>
+                            <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
+                        </mui:Cell.Effect>
+
+                        <mui:Cell Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64" ToolTip="Change car">
+                            <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                            <Path Data="{StaticResource GarageIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
+                                    Width="32" Stretch="Uniform" />
+                        </mui:Cell>
+
+                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="80 0 20 72" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Width="32" Height="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
+                                PreviewMouseRightButtonDown="OnShowroomContextMenu">
+                            <mui:Cell>
+                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                                <Path Data="{StaticResource CarShowroomIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Height="22" Width="22" Stretch="Uniform" />
+                            </mui:Cell>
+                        </Button>
+
+                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Width="32" Height="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}">
+                            <mui:Cell>
+                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                                <Path Data="{StaticResource CarSetupIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="20"
+                                        Width="20" Stretch="Uniform" />
+                            </mui:Cell>
+                        </Button>
+
+                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="80 72 20 0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Width="32" Height="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}">
+                            <mui:Cell>
+                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                                <Path Data="{StaticResource ToolsIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="14"
+                                        Width="14" Stretch="Uniform" />
+                            </mui:Cell>
+                        </Button>
+                    </mui:Cell>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Grid.MouseEnter">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Grid.MouseLeave">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard BeginTime="0:0:0.3">
+                                        <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+
+                <mui:ContextMenuButton Click="OnCarContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
             </mui:Cell>
 
-            <mui:Cell DataContext="{Binding SelectedTrack}" Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0"
-                    mui:Draggable.Data="{Binding}" AllowDrop="True" Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
-                <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-                <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
-                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
-                        Foreground="White" TextTrimming="CharacterEllipsis" />
-                <mui:ContextMenuButton Click="SelectedTrackContextMenuButton_OnClick" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
+            <mui:Cell Grid.Column="1" Width="160" Height="120" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True"
+                    Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
+                <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
+                <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+                <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                        Text="{Binding SelectedTrack.Name}" Foreground="White" TextTrimming="CharacterEllipsis" />
+
+                <Border Opacity="0" Background="Transparent" Cursor="Hand"
+                        Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <mui:Cell Background="#33000000">
+                        <mui:Cell.Effect>
+                            <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
+                        </mui:Cell.Effect>
+
+                        <mui:Cell Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64" ToolTip="Change track">
+                            <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                            <Path Data="{StaticResource ListSelectIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
+                                    Width="32" Stretch="Uniform" />
+                        </mui:Cell>
+
+                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Width="32" Height="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}">
+                            <mui:Cell>
+                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
+                                <Path Data="{StaticResource ToolsIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="14"
+                                        Width="14" Stretch="Uniform" />
+                            </mui:Cell>
+                        </Button>
+                    </mui:Cell>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Grid.MouseEnter">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="Grid.MouseLeave">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard BeginTime="0:0:0.3">
+                                        <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+
+                <mui:ContextMenuButton Click="OnTrackContextMenu" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="6 8" />
             </mui:Cell>
 
             <Grid Grid.Column="2">

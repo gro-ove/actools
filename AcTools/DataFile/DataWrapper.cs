@@ -12,6 +12,8 @@ namespace AcTools.DataFile {
 
         LutDataFile GetLutFile(string name);
 
+        RtoDataFile GetRtoFile(string name);
+
         RawDataFile GetRawFile(string name);
     }
 
@@ -32,6 +34,10 @@ namespace AcTools.DataFile {
 
         public LutDataFile GetLutFile(string name) {
             return new LutDataFile(Path.Combine(_directory, name));
+        }
+
+        public RtoDataFile GetRtoFile(string name) {
+            return new RtoDataFile(Path.Combine(_directory, name));
         }
 
         public RawDataFile GetRawFile(string name) {
@@ -145,6 +151,19 @@ namespace AcTools.DataFile {
                 }
 
                 var result = new LutDataFile(_carDirectory, name, _acd);
+                _cache[name] = result;
+                return result;
+            }
+        }
+
+        public RtoDataFile GetRtoFile(string name) {
+            lock (_cache) {
+                AbstractDataFile cached;
+                if (_cache.TryGetValue(name, out cached) && cached is RtoDataFile) {
+                    return (RtoDataFile)cached;
+                }
+
+                var result = new RtoDataFile(_carDirectory, name, _acd);
                 _cache[name] = result;
                 return result;
             }

@@ -190,7 +190,7 @@ namespace AcManager.Pages.Dialogs {
                         var manager = wrapper.Entry.Type.GetManager();
                         if (manager == null) continue;
 
-                        var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id,
+                        var directory = await manager.PrepareForAdditionalContentAsync(wrapper.Entry.Id,
                                 wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
                         await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
                     } catch (Exception e) {

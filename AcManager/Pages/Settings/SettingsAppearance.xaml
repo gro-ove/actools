@@ -78,6 +78,17 @@
                 <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
+
+            <!--interface-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
+
+            <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
+                <Label Content="Fast-access buttons over car and track in Quick Drive" />
+            </CheckBox>
+            
+            <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}">
+                <Label Content="Open skins and setups lists in new window" />
+            </CheckBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

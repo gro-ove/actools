@@ -78,7 +78,7 @@
             <StackPanel Margin="0 0 0 12" Height="240" Orientation="Horizontal" HorizontalAlignment="Center" x:Name="LayoutsPanel">
                 <ListBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                         ItemsSource="{Binding SelectedObject.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="180"
-                        SelectedItem="{Binding SelectedTrackConfiguration}" Margin="4 -2 0 -2" ScrollViewer.CanContentScroll="True">
+                        SelectedItem="{Binding SelectedTrackConfiguration}" Margin="4 -2 0 -2" ScrollViewer.CanContentScroll="True" mui:Draggable.Enabled="True">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <mui:VirtualizingTilePanel Orientation="Horizontal" ItemWidth="84" ItemHeight="64" VirtualizationMode="Recycling"

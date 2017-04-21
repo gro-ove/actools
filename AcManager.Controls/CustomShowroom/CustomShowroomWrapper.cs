@@ -39,7 +39,7 @@ namespace AcManager.Controls.CustomShowroom {
             wrapper.InvertMouseButtons = SettingsHolder.CustomShowroom.AlternativeControlScheme;
         }
 
-        public static async Task StartLiteAsync(string kn5, string skinId = null) {
+        public static async Task StartAsync(string kn5, string skinId = null, string presetFilename = null) {
             if (_starting) return;
             _starting = true;
 
@@ -73,7 +73,7 @@ namespace AcManager.Controls.CustomShowroom {
                                     UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
                                 } :
                                 new DarkKn5ObjectRenderer(description));
-                        wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId);
+                        wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename);
                         renderer = toolsRenderer;
                     } else {
                         Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
@@ -97,7 +97,7 @@ namespace AcManager.Controls.CustomShowroom {
                             renderer.SelectSkin(skinId);
                         }
                     }
-                    
+
                     SetProperties(wrapper, renderer);
                     wrapper.Form.Icon = AppIconService.GetAppIcon();
                 }
@@ -116,12 +116,8 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        public static Task StartAsync(string kn5, string skinId = null) {
-            return StartLiteAsync(kn5, skinId);
-        }
-
-        public static Task StartAsync(CarObject car, CarSkinObject skin = null) {
-            return StartAsync(FileUtils.GetMainCarFilename(car.Location, car.AcdData), skin?.Id);
+        public static Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null) {
+            return StartAsync(FileUtils.GetMainCarFilename(car.Location, car.AcdData), skin?.Id, presetFilename);
         }
     }
 }

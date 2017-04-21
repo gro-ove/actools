@@ -2,18 +2,9 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="clr-namespace:AcManager.Controls.ViewModels"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls" xmlns:controls="clr-namespace:AcManager.Controls">
     <ResourceDictionary.MergedDictionaries>
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type c:RaceGridEntry}">

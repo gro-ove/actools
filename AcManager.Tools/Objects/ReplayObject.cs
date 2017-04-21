@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -101,8 +102,8 @@ namespace AcManager.Tools.Objects {
         public ReplayObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
 
-        protected override void Rename() {
-            Rename(SettingsHolder.Drive.AutoAddReplaysExtension ? Name + Extension : Name);
+        protected override Task RenameAsync() {
+            return RenameAsync(SettingsHolder.Drive.AutoAddReplaysExtension ? Name + Extension : Name);
         }
 
         public override bool HandleChangedFile(string filename) {

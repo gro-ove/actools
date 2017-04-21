@@ -14,7 +14,7 @@
 
     <DockPanel x:Name="InnerCarBlockPanel">
         <mui:Cell DockPanel.Dock="Top" MaxWidth="1022" Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="PreviewImage_OnMouseDown" MaxWidth="1022"
+            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="OnPreviewImageClick" MaxWidth="1022"
                     Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
             <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                     Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76"
@@ -28,10 +28,9 @@
                 </ListBox.ItemsPanel>
             </ListBox>
             <ContentPresenter Content="{Binding PreviewContent}" />
-            <Button Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" PreviewMouseDown="ShowroomButton_OnMouseDown"
-                    Style="{StaticResource CarBlockButton}">
-                <Image Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
-            </Button>
+            <mui:ModernButton IconData="{StaticResource CarShowroomIconData}" EllipseDiameter="52" EllipseStrokeThickness="2" IconWidth="32" IconHeight="32"
+                    Click="OnShowroomButtonClick" PreviewMouseRightButtonDown="OnShowroomContextMenu" Margin="12" HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom" />
         </mui:Cell>
 
         <!-- data section -->

@@ -31,12 +31,27 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private bool? _magickOverideLater;
+
         public bool MagickOverride {
-            get { return CarNode?.MagickOverride ?? false; }
+            get { return _magickOverideLater ?? CarNode?.MagickOverride ?? false; }
             set {
-                if (CarNode == null || Equals(value, CarNode.MagickOverride)) return;
+                if (CarNode == null) {
+                    OnPropertyChanged();
+                    _magickOverideLater = value;
+                    return;
+                }
+                if (Equals(value, CarNode.MagickOverride)) return;
                 CarNode.MagickOverride = value;
                 OnPropertyChanged();
+            }
+        }
+
+        protected override void CopyValues(Kn5RenderableCar newCar, Kn5RenderableCar oldCar) {
+            base.CopyValues(newCar, oldCar);
+            if (_magickOverideLater.HasValue) {
+                newCar.MagickOverride = _magickOverideLater.Value;
+                _magickOverideLater = null;
             }
         }
 

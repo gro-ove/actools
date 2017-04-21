@@ -306,6 +306,9 @@ namespace AcManager.Pages.Drive {
                     }
                 } catch (TaskCanceledException) {
                     return;
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create race grid", e);
+                    return;
                 }
 
                 await StartAsync(new Game.StartProperties {

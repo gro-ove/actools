@@ -241,34 +241,37 @@ namespace AcManager.Pages.Drive {
                 AcObject.ChampionshipResetCommand.Execute();
                 if (AcObject.SerializedRaceGridData == null) return;
 
+                try {
+                    using (var waiting = new WaitingDialog()) {
+                        waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Rebuilding race grid…"));
+                        var cancellation = waiting.CancellationToken;
 
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Rebuilding race grid…"));
-                    var cancellation = waiting.CancellationToken;
+                        await Task.Delay(50);
+                        if (cancellation.IsCancellationRequested) return;
+                        var model = new RaceGridViewModel(true, null);
+                        model.ImportFromPresetData(AcObject.SerializedRaceGridData);
+                        model.TrackPitsNumber = AcObject.MaxCars;
+                        model.PlayerCar = AcObject.PlayerCar;
 
-                    await Task.Delay(50);
-                    if (cancellation.IsCancellationRequested) return;
-                    var model = new RaceGridViewModel(true, null);
-                    model.ImportFromPresetData(AcObject.SerializedRaceGridData);
-                    model.TrackPitsNumber = AcObject.MaxCars;
-                    model.PlayerCar = AcObject.PlayerCar;
+                        var generated = await model.GenerateGameEntries(cancellation);
+                        if (generated == null) {
+                            // Only happens when task was cancelled.
+                            return;
+                        }
 
-                    var generated = await model.GenerateGameEntries(cancellation);
-                    if (generated == null) {
-                        // Only happens when task was cancelled.
-                        return;
+                        var saveLater = !AcObject.Changed;
+                        AcObject.Drivers = generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
+                            AiLevel = x.AiLevel,
+                            Nationality = x.Nationality
+                        }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, AcObject.PlayerCarId,
+                                AcObject.PlayerCarSkinId)).ToArray();
+
+                        if (saveLater) {
+                            AcObject.Save();
+                        }
                     }
-
-                    var saveLater = !AcObject.Changed;
-                    AcObject.Drivers = generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
-                        AiLevel = x.AiLevel,
-                        Nationality = x.Nationality
-                    }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, AcObject.PlayerCarId,
-                            AcObject.PlayerCarSkinId)).ToArray();
-
-                    if (saveLater) {
-                        AcObject.Save();
-                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create race grid", e);
                 }
             }));
 

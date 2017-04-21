@@ -316,6 +316,8 @@ namespace AcManager.Pages.Selected {
                         }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, SelectedObject.PlayerCarId,
                                 SelectedObject.PlayerCarSkinId)).ToArray());
                     }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create race grid", e);
                 } finally {
                     if (ReferenceEquals(tokenSource, _updatingSerializedRaceGridDataTokenSource)) {
                         _updatingSerializedRaceGridDataTokenSource = null;

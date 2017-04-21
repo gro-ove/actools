@@ -16,6 +16,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Lists;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -209,6 +210,15 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
+            public HierarchicalItemsView CustomShowroomPresets {
+                get { return _customShowroomPresets; }
+                set {
+                    if (Equals(value, _customShowroomPresets)) return;
+                    _customShowroomPresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
             public HierarchicalItemsView UpdatePreviewsPresets {
                 get { return _updatePreviewsPresets; }
                 set {
@@ -227,13 +237,21 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private HierarchicalItemsView _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
+            private HierarchicalItemsView _showroomPresets, _customShowroomPresets, _updatePreviewsPresets, _quickDrivePresets;
             private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
                     ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
                         CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                    });
+                }
+            }
+
+            public void InitializeCustomShowroomPresets() {
+                if (CustomShowroomPresets == null) {
+                    CustomShowroomPresets = _helper.Create(DarkRendererSettings.DefaultPresetableKeyValue, p => {
+                        CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.Filename);
                     });
                 }
             }
@@ -259,17 +277,13 @@ namespace AcManager.Pages.Selected {
             private CommandBase _manageSkinsCommand;
 
             public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
-                new CarSkinsDialog(SelectedObject) {
-                    ShowInTaskbar = false
-                }.ShowDialogWithoutBlocking();
+                CarSkinsListPage.Open(SelectedObject);
             }));
 
             private CommandBase _manageSetupsCommand;
 
             public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
-                new CarSetupsDialog(SelectedObject) {
-                    ShowInTaskbar = false
-                }.ShowDialogWithoutBlocking();
+                CarSetupsListPage.Open(SelectedObject);
             }));
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
@@ -710,21 +724,25 @@ namespace AcManager.Pages.Selected {
         #endregion
 
         #region Presets (Dynamic Loading)
-        private void ToolbarButtonShowroom_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnShowroomButtonMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeShowroomPresets();
         }
 
-        private void ToolbarButtonQuickDrive_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnCustomShowroomButtonMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeCustomShowroomPresets();
+        }
+
+        private void OnDriveButtonMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeQuickDrivePresets();
         }
 
-        private void ToolbarButtonUpdatePreviews_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnUpdatePreviewsButtonMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeUpdatePreviewsPresets();
         }
         #endregion
 
         #region Icons & Specs
-        private void AcObjectBase_IconMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnIconClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 new BrandBadgeEditor((CarObject)SelectedAcObject).ShowDialog();
             }

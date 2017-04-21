@@ -41,9 +41,9 @@
                 <Label Content="Stop service on CM exit" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.TryToLoadReplays}"
+            <CheckBox IsChecked="{Binding Drive.RunSteamIfNeeded}"
                     Visibility="{Binding Drive.SelectedStarterType.RequiresSteam, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label Content="Try to start Steam if not running" />
+                <Label Content="Try to start Steam if not running (recommended)" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
