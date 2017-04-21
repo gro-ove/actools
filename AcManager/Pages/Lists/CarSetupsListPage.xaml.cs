@@ -79,10 +79,9 @@ namespace AcManager.Pages.Lists {
             }
         }
 
-        public static void Open(CarObject car) {
+        public static void Open(CarObject car, bool forceNewWindow = false) {
             var mainWindow = Application.Current?.MainWindow as MainWindow;
-
-            if (mainWindow == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
+            if (forceNewWindow || mainWindow == null || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car);
                 return;
             }

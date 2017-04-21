@@ -76,7 +76,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ViewModel(AcJsonObjectNew selectedObject) {
                 SelectedObject = selectedObject;
-                StartPage = GetMapAddress(SelectedObject);
+                StartPage = GetSearchAddress(SelectedObject);
             }
 
             private void UpdateSaveLabel() {
@@ -125,8 +125,8 @@ namespace AcManager.Pages.Dialogs {
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(SelectedText)));
         }
         
-        private static string GetMapAddress(AcCommonObject obj) {
-            return SettingsHolder.Content.SearchEngine?.GetUri(obj.Name ?? obj.Id) ??
+        private static string GetSearchAddress(AcCommonObject obj) {
+            return SettingsHolder.Content.SearchEngine?.GetUri(obj.Name ?? obj.Id, true) ??
                     $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.Name ?? obj.Id)}&ia=web";
         }
 

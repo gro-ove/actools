@@ -270,7 +270,11 @@ namespace AcManager.Tools.AcErrors {
                                 AppStrings.Solution_FindTrack,
                                 AppStrings.Solution_FindTrack_Details,
                                 e => {
-                                    Process.Start($@"http://assetto-db.com/track/{((CarSetupObject)e.Target).TrackId}");
+                                    var trackId = ((CarSetupObject)e.Target).TrackId;
+                                    if (trackId != null) {
+                                        WindowsHelper.ViewInBrowser(
+                                                SettingsHolder.Content.MissingContentSearch.GetUri(trackId, SettingsHolder.MissingContentType.Track));
+                                    }
                                 }),
                         new MultiSolution(
                                 AppStrings.Solution_MakeGeneric,

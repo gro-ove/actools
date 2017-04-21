@@ -120,6 +120,19 @@
                 </Grid.RowDefinitions>
 
                 <!-- first row -->
+                <DockPanel Grid.Row="0" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver"
+                                    DataContext="{Binding Data, Source={StaticResource Model}}"
+                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverLabel}" />
+                    <mui:BetterComboBox Text="{Binding SelectedObject.DriverName, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{x:Static t:SuggestionLists.CarSkinDriverNamesListView}" />
+                </DockPanel>
+                
                 <DockPanel Grid.Row="0" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
@@ -129,7 +142,7 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static ac:ControlsStrings.AcObject_ContryLabel}" />
-                    <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
+                    <mui:BetterComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" />
                 </DockPanel>
 
@@ -143,21 +156,20 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_TeamLabel}" />
-                    <ComboBox Text="{Binding SelectedObject.Team, UpdateSourceTrigger=LostFocus}"
+                    <mui:BetterComboBox Text="{Binding SelectedObject.Team, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static t:SuggestionLists.CarSkinTeamsListView}" />
                 </DockPanel>
 
-                <DockPanel Grid.Row="1" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                <DockPanel Grid.Row="1" Grid.Column="1">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver"
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPriority}" Command="{Binding FilterCommand}" CommandParameter="priority"
                                     DataContext="{Binding Data, Source={StaticResource Model}}"
                                     d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverLabel}" />
-                    <ComboBox Text="{Binding SelectedObject.DriverName, UpdateSourceTrigger=LostFocus}"
-                            ItemsSource="{x:Static t:SuggestionLists.CarSkinDriverNamesListView}" />
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />
+                    <mui:BetterTextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" Mode="Integer" />
                 </DockPanel>
 
                 <!-- third row -->
@@ -171,18 +183,6 @@
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_NumberLabel}" />
                     <mui:BetterTextBox Text="{Binding SelectedObject.SkinNumber}" Mode="Integer" />
-                </DockPanel>
-
-                <DockPanel Grid.Row="2" Grid.Column="1">
-                    <DockPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPriority}" Command="{Binding FilterCommand}" CommandParameter="priority"
-                                    DataContext="{Binding Data, Source={StaticResource Model}}"
-                                    d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}" />
-                        </ContextMenu>
-                    </DockPanel.ContextMenu>
-                    <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />
-                    <mui:BetterTextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" Mode="Integer" />
                 </DockPanel>
             </Grid>
         </StackPanel>

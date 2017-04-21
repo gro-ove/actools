@@ -34,12 +34,11 @@
             <!--power and torque curves-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Power and torque curves:" />
 
-            <CheckBox IsChecked="{Binding Holder.CurversInDrive}" ToolTip="Might be enabled by default soon" mui:NewMarkService.New="True">
+            <CheckBox IsChecked="{Binding Holder.CurversInDrive}" ToolTip="Might be enabled by default soon">
                 <Label Content="Show curves in Drive section" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.SmoothCurves}" ToolTip="Might be less accurate since I have no idea what interpolation algorithm AC uses"
-                    mui:NewMarkService.New="True">
+            <CheckBox IsChecked="{Binding Holder.SmoothCurves}" ToolTip="Might be less accurate since I have no idea what interpolation algorithm AC uses">
                 <Label Content="Smooth curves" />
             </CheckBox>
 
@@ -48,12 +47,22 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Content_SearchEngine}" />
-                <ComboBox ItemsSource="{Binding Holder.SearchEngines}" SelectedItem="{Binding Holder.SearchEngine}" DisplayMemberPath="DisplayName" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.SearchEngines}" SelectedItem="{Binding Holder.SearchEngine}"
+                        DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.SearchWithWikipedia}" ToolTip="{x:Static g:AppStrings.Settings_Content_LookAtWikipedia_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Content_LookAtWikipedia}" />
             </CheckBox>
+
+            <!--missing content-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Missing content:" />
+            
+            <DockPanel>
+                <Label Content="Search via:" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}" SelectedItem="{Binding Holder.MissingContentSearch}"
+                        DisplayMemberPath="DisplayName" />
+            </DockPanel>
 
             <!--cars specific-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_CarsHeader}" />
@@ -75,8 +84,11 @@
                 <Label Content="Inverse P/W ratio to horsepowers per kilogram" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}" ToolTip="I hope AC won’t brake because of it with some future update">
-                <Label Content="Remove skin’s priority field on saving" />
+            <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}">
+                <CheckBox.ToolTip>I hope AC won’t break because of it with some future update</CheckBox.ToolTip>
+                <Label>
+                    <Label.Content>Remove skin's priority field on saving</Label.Content>
+                </Label>
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.NewLayout}" ToolTip="New layout for Content/Cars page" mui:NewMarkService.New="True">

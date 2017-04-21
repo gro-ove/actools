@@ -35,6 +35,7 @@ namespace AcManager.Controls.CustomShowroom {
             CameraPosition.PropertyChanged += OnCameraCoordinatePropertyChanged;
             CameraLookAt.PropertyChanged += OnCameraCoordinatePropertyChanged;
             Renderer.CameraMoved += OnCameraMoved;
+            renderer.VisibleUi = false;
 
             if (LockCamera) {
                 Renderer.LockCamera = true;

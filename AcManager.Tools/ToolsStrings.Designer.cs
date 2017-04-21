@@ -3276,24 +3276,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to “[url=&quot;http://assetto-db.com/car/{0}&quot;]{0}[/url]”.
-        /// </summary>
-        public static string Online_Server_MissingCarBbCode {
-            get {
-                return ResourceManager.GetString("Online_Server_MissingCarBbCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to “[url=&quot;http://assetto-db.com/track/{0}&quot;]{0}[/url]”.
-        /// </summary>
-        public static string Online_Server_MissingTrackBbCode {
-            get {
-                return ResourceManager.GetString("Online_Server_MissingTrackBbCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Not implemented.
         ///.
         /// </summary>

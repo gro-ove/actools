@@ -62,17 +62,43 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public class SearchEngineEntry {
-            public string DisplayName { get; internal set; }
+        public sealed class SearchEngineEntry : Displayable {
+            public string Value { get; }
 
-            public string Value { get; internal set; }
+            public SearchEngineEntry(string name, string value) {
+                DisplayName = name;
+                Value = value;
+            }
 
-            public string GetUri(string s) {
-                if (Content.SearchWithWikipedia) {
+            public string GetUri(string s, bool allowWikipedia) {
+                if (Content.SearchWithWikipedia && allowWikipedia) {
                     s = @"site:wikipedia.org " + s;
                 }
 
-                return string.Format(Value, Uri.EscapeDataString(s).Replace(@"%20", @"+"));
+                return string.Format(Value, s.UriEscape(true));
+            }
+        }
+
+        public enum MissingContentType {
+            Car, Track
+        }
+
+        public delegate string MissingContentUrlFunc(MissingContentType type, [NotNull] string id);
+
+        public sealed class MissingContentSearchEntry : Displayable {
+            public MissingContentUrlFunc Func { get; }
+
+            public MissingContentSearchEntry(string name, MissingContentUrlFunc func, bool viaSearchEngine) {
+                DisplayName = name;
+                Func = func;
+                ViaSearchEngine = viaSearchEngine;
+            }
+
+            public bool ViaSearchEngine { get; }
+
+            public string GetUri([NotNull] string id, MissingContentType type) {
+                var value = Func(type, id);
+                return ViaSearchEngine ? Content.SearchEngine.GetUri(value, false) : value;
             }
         }
 
@@ -175,6 +201,21 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _rememberPasswords)) return;
                     _rememberPasswords = value;
                     ValuesStorage.Set("Settings.OnlineSettings.RememberPasswords", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _loadServersWithMissingContent;
+
+            public bool LoadServersWithMissingContent {
+                get {
+                    return _loadServersWithMissingContent ??
+                            (_loadServersWithMissingContent = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServersWithMissingContent", true)).Value;
+                }
+                set {
+                    if (Equals(value, _loadServersWithMissingContent)) return;
+                    _loadServersWithMissingContent = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.LoadServersWithMissingContent", value);
                     OnPropertyChanged();
                 }
             }
@@ -1494,11 +1535,11 @@ namespace AcManager.Tools.Helpers {
             private SearchEngineEntry[] _searchEngines;
 
             public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
-                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_DuckDuckGo, Value = @"https://duckduckgo.com/?q={0}&ia=web" },
-                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Bing, Value = @"http://www.bing.com/search?q={0}" },
-                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Google, Value = @"https://www.google.com/search?q={0}&ie=UTF-8" },
-                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Yandex, Value = @"https://yandex.ru/search/?text={0}" },
-                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Baidu, Value = @"http://www.baidu.com/s?ie=utf-8&wd={0}" }
+                new SearchEngineEntry(ToolsStrings.SearchEngine_DuckDuckGo, @"https://duckduckgo.com/?q={0}&ia=web"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Bing, @"http://www.bing.com/search?q={0}"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Google, @"https://www.google.com/search?q={0}&ie=UTF-8"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Yandex, @"https://yandex.ru/search/?text={0}"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Baidu, @"http://www.baidu.com/s?ie=utf-8&wd={0}")
             });
 
             private SearchEngineEntry _searchEngine;
@@ -1525,6 +1566,42 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _searchWithWikipedia)) return;
                     _searchWithWikipedia = value;
                     ValuesStorage.Set("Settings.ContentSettings.SearchWithWikipedia", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private MissingContentSearchEntry[] _missingContentSearchEntries;
+
+            public MissingContentSearchEntry[] MissingContentSearchEntries => _missingContentSearchEntries ?? (_missingContentSearchEntries = new[] {
+                new MissingContentSearchEntry("Assetto-DB.com (by ID, strict)", (type, id) => {
+                    switch (type) {
+                        case MissingContentType.Car:
+                            return $"http://assetto-db.com/car/{id}";
+                        case MissingContentType.Track:
+                            if (!id.Contains(@"/")) id = $@"{id}/{id}";
+                            return $"http://assetto-db.com/track/{id}";
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                    }
+                }, false),
+                new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
+                new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
+                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id}", true),
+                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\"", true)
+            });
+
+            private MissingContentSearchEntry _missingContentSearch;
+
+            public MissingContentSearchEntry MissingContentSearch {
+                get {
+                    return _missingContentSearch ?? (_missingContentSearch = MissingContentSearchEntries.FirstOrDefault(x =>
+                            x.DisplayName == ValuesStorage.GetString("Settings.ContentSettings.MissingContentSearch")) ??
+                            MissingContentSearchEntries.First());
+                }
+                set {
+                    if (Equals(value, _missingContentSearch)) return;
+                    _missingContentSearch = value;
+                    ValuesStorage.Set("Settings.ContentSettings.MissingContentSearch", value.DisplayName);
                     OnPropertyChanged();
                 }
             }

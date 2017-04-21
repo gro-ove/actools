@@ -329,6 +329,28 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private bool _allCarsAvailable = true;
+
+        public bool AllCarsAvailable {
+            get { return _allCarsAvailable; }
+            set {
+                if (Equals(value, _allCarsAvailable)) return;
+                _allCarsAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _allContentAvailable = true;
+
+        public bool AllContentAvailable {
+            get { return _allContentAvailable; }
+            set {
+                if (Equals(value, _allContentAvailable)) return;
+                _allContentAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _connectedDrivers;
 
         public int ConnectedDrivers {
@@ -421,7 +443,7 @@ namespace AcManager.Tools.Managers.Online {
                 _addToRecentCommand?.RaiseCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {
-                    HasErrors = value == ServerStatus.Error || value == ServerStatus.Unloaded;
+                    HasErrors = value == ServerStatus.Error || value == ServerStatus.Unloaded || value == ServerStatus.MissingContent;
                 }
             }
         }

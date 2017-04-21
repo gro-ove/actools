@@ -28,6 +28,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static string UriEscape([CanBeNull] this string a, bool plusForSpace = false) {
+            return a == null ? null : plusForSpace ? Uri.EscapeDataString(a).Replace(@"%20", @"+") : Uri.EscapeDataString(a);
+        }
+
+        [Pure]
         public static bool IsVersionNewerThan([CanBeNull] this string currentVersion, [CanBeNull] string checkableVersion) {
             return currentVersion.CompareAsVersionTo(checkableVersion) > 0;
         }

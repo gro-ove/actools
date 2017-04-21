@@ -149,7 +149,7 @@ namespace AcManager.Pages.Dialogs {
 
         public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
             if (_selectedCar.Value == null) return;
-            CarSetupsListPage.Open(_selectedCar.Value);
+            CarSetupsListPage.Open(_selectedCar.Value, true);
         }));
 
         public static Uri FavouritesUri() {

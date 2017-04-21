@@ -49,6 +49,7 @@ using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
@@ -252,6 +253,12 @@ namespace AcManager {
             BbCodeBlock.OptionEmojiProvider = InternalUtils.GetEmojiProvider();
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/car"), new DelegateCommand<string>(id => {
+                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car));
+            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/track"), new DelegateCommand<string>(id => {
+                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
+            }));
             
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);

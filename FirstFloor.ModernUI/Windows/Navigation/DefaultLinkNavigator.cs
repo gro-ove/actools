@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
     /// <summary>
@@ -47,13 +48,33 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
             }
 
             // first check if uri refers to a command
-            ICommand command;
-            if (Commands != null && Commands.TryGetValue(uri, out command)) {
-                // note: not executed within BbCodeBlock context, Hyperlink instance has Command and CommandParameter set
-                if (command.CanExecute(parameter)) {
-                    command.Execute(parameter);
+            if (Commands != null) {
+                ICommand command;
+                if (Commands.TryGetValue(uri, out command)) {
+                    // note: not executed within BbCodeBlock context, Hyperlink instance has Command and CommandParameter set
+                    if (command.CanExecute(parameter)) {
+                        command.Execute(parameter);
+                    }
+                    return;
                 }
-            } else if (uri.IsAbsoluteUri && ExternalSchemes != null && ExternalSchemes.Any(s => uri.Scheme.Equals(s, StringComparison.OrdinalIgnoreCase))) {
+
+                if (uri.IsAbsoluteUri) {
+                    var original = uri.AbsoluteUri;
+                    var index = original.IndexOf('?');
+                    if (index != -1) {
+                        var subUri = new Uri(original.Substring(0, index), UriKind.Absolute);
+                        if (Commands.TryGetValue(subUri, out command)) {
+                            parameter = uri.GetQueryParam("param");
+                            if (command.CanExecute(parameter)) {
+                                command.Execute(parameter);
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (uri.IsAbsoluteUri && ExternalSchemes != null && ExternalSchemes.Any(s => uri.Scheme.Equals(s, StringComparison.OrdinalIgnoreCase))) {
                 // uri is external, load in default browser
                 Process.Start(uri.AbsoluteUri);
             } else {

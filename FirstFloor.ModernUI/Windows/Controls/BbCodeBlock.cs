@@ -6,6 +6,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using FirstFloor.ModernUI.Helpers;
@@ -51,6 +52,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         internal static readonly ILinkNavigator DefaultLinkNavigator = new DefaultLinkNavigator();
+
+        public static void AddLinkCommand(Uri key, ICommand value) {
+            DefaultLinkNavigator.Commands.Add(key, value);
+        }
 
         public static readonly DependencyProperty LinkNavigatorProperty = DependencyProperty.Register(nameof(LinkNavigator), typeof(ILinkNavigator),
                 typeof(BbCodeBlock), new PropertyMetadata(DefaultLinkNavigator, OnLinkNavigatorChanged));
@@ -277,7 +282,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
-                Document.Blocks.Add(new Paragraph(BbCodeBlock.Parse(bbCode, this, LinkNavigator)));
+                Document.Blocks.Add(new Paragraph(BbCodeBlock.Parse(bbCode, this, LinkNavigator)) {
+                    TextAlignment = TextAlignment.Left
+                });
             }
 
             _dirty = false;

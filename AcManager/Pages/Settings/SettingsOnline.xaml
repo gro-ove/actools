@@ -69,9 +69,13 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="Ping servers only once and while pressing Refresh button, like in original launcher"
-                    mui:NewMarkService.New="True">
+            <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="Ping servers only once and while pressing Refresh button, like in original launcher">
                 <Label Content="Ping servers once" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Online.LoadServersWithMissingContent}" mui:NewMarkService.New="True">
+                <CheckBox.ToolTip>If you’re sure you won’t need any information about servers with missing content, disable this option to reduce pinging time (reload lists after changing)</CheckBox.ToolTip>
+                <Label Content="Show extended information if content is missing" />
             </CheckBox>
 
             <!--pinging-->

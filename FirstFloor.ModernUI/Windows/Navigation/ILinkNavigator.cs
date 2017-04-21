@@ -10,6 +10,7 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// Gets or sets the navigable commands.
         /// </summary>
         CommandDictionary Commands { get; set; }
+
         /// <summary>
         /// Performs navigation to specified link.
         /// </summary>

@@ -15,6 +15,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -30,7 +31,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var errors = new List<string>(3);
             var status = UpdateValues(information, errors, true);
-            Status = status ?? ServerStatus.Unloaded;
+            Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
             Errors = errors;
         }
 
@@ -117,18 +118,24 @@ namespace AcManager.Tools.Managers.Online {
                 Track = TrackId == null ? null : GetTrack(TrackId);
             }
             
-            bool error;
+            bool missingContent;
             if (IsFullyLoaded) {
-                error = SetMissingCarErrorIfNeeded(errors);
-                error |= SetMissingTrackErrorIfNeeded(errors);
+                var missingCar = SetMissingCarErrorIfNeeded(errors);
+                var missingTrack = SetMissingTrackErrorIfNeeded(errors);
+                missingContent = missingCar || missingTrack;
+
+                AllCarsAvailable = !missingCar;
+                AllContentAvailable = !missingContent;
             } else {
-                error = false;
+                missingContent = false;
+                AllCarsAvailable = true;
+                AllContentAvailable = true;
                 errors.Add("Information’s missing");
             }
 
             ServerStatus? result;
-            if (error) {
-                result = ServerStatus.Error;
+            if (missingContent) {
+                result = SettingsHolder.Online.LoadServersWithMissingContent ? ServerStatus.MissingContent : ServerStatus.Error;
             } else if (Status == ServerStatus.Error) {
                 result = ServerStatus.Unloaded;
             } else {
@@ -158,11 +165,13 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private static string IdToBb(string id, bool car = true) {
-            if (car) return string.Format(ToolsStrings.Online_Server_MissingCarBbCode, id);
+            if (!car) {
+                id = Regex.Replace(id, @"-([^-]+)$", "/$1");
+            }
 
-            id = Regex.Replace(id, @"-([^-]+)$", "/$1");
-            if (!id.Contains(@"/")) id = $@"{id}/{id}";
-            return string.Format(ToolsStrings.Online_Server_MissingTrackBbCode, id);
+            // var url = SettingsHolder.Content.MissingContentSearch.GetUri(id, car ? SettingsHolder.MissingContentType.Car : SettingsHolder.MissingContentType.Track);
+            var url = $"cmd://findmissing/{(car ? "car" : "track")}?param={id}";
+            return string.Format("“{0}”", $@"[url={BbCodeBlock.EncodeAttribute(url)}]{id}[/url]");
         }
 
         private bool SetMissingCarErrorIfNeeded([NotNull] ICollection<string> errorMessage) {
@@ -224,6 +233,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var errors = new List<string>(3);
             var driversCount = -1;
+            var resultStatus = ServerStatus.Ready;
 
             try {
                 if (!background) {
@@ -241,13 +251,18 @@ namespace AcManager.Tools.Managers.Online {
                         loaded = await GetInformationDirectly();
                     } catch (WebException e) {
                         errors.Add($"Can’t load any information: {GetFailedReason(e)}.");
+                        resultStatus = ServerStatus.Error;
                         return;
                     }
 
-                    if (UpdateValues(loaded, errors, false) != null) {
-                        // Loaded data isn’t for this server (port by which it was loaded differs).
-                        // Won’t even set drivers count in this case, whole data is obsviously wrong.
-                        return;
+                    var update = UpdateValues(loaded, errors, false);
+                    if (update != null) {
+                        resultStatus = update.Value;
+                        if (update != ServerStatus.MissingContent) {
+                            // Loaded data isn’t for this server (port by which it was loaded differs).
+                            // Won’t even set drivers count in this case, whole data is obsviously wrong.
+                            return;
+                        }
                     }
 
                     driversCount = loaded.Clients;
@@ -264,6 +279,7 @@ namespace AcManager.Tools.Managers.Online {
                         loaded = await GetInformation(informationUpdated);
                     } catch (WebException e) {
                         errors.Add($"Can’t load information: {GetFailedReason(e)}.");
+                        resultStatus = ServerStatus.Error;
                         return;
                     }
 
@@ -272,7 +288,11 @@ namespace AcManager.Tools.Managers.Online {
                             // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
                             // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
                             // loaded just before that and loaded information wasn’t loaded from it.
-                            if (UpdateValues(loaded, errors, false) != null) return;
+                            var update = UpdateValues(loaded, errors, false);
+                            if (update != null) {
+                                resultStatus = update.Value;
+                                if (update != ServerStatus.MissingContent) return;
+                            }
                             driversCount = loaded.Clients;
                         } else {
                             ServerInformation directlyLoaded;
@@ -280,10 +300,15 @@ namespace AcManager.Tools.Managers.Online {
                                 directlyLoaded = await GetInformationDirectly();
                             } catch (WebException e) {
                                 errors.Add($"Can’t load new information: {GetFailedReason(e)}.");
+                                resultStatus = ServerStatus.Error;
                                 return;
                             }
-
-                            if (UpdateValues(directlyLoaded, errors, false) != null) return;
+                            
+                            var update = UpdateValues(directlyLoaded, errors, false);
+                            if (update != null) {
+                                resultStatus = update.Value;
+                                if (update != ServerStatus.MissingContent) return;
+                            }
                             driversCount = loaded.Clients;
                         }
                     }
@@ -299,6 +324,7 @@ namespace AcManager.Tools.Managers.Online {
                     } else {
                         Ping = null;
                         errors.Add(ToolsStrings.Online_Server_CannotPing);
+                        resultStatus = ServerStatus.Error;
                         return;
                     }
                 }
@@ -310,6 +336,7 @@ namespace AcManager.Tools.Managers.Online {
                     information = await KunosApiProvider.GetCarsInformationAsync(Ip, PortHttp);
                 } catch (WebException e) {
                     errors.Add($"Can’t load drivers information: {GetFailedReason(e)}.");
+                    resultStatus = ServerStatus.Error;
                     return;
                 }
 
@@ -345,6 +372,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Cars == null) {
                     Logging.Unexpected();
                     errors.Add("Data is still missing");
+                    resultStatus = ServerStatus.Error;
                     return;
                 }
 
@@ -409,8 +437,10 @@ namespace AcManager.Tools.Managers.Online {
                 }
             } catch (InformativeException e) {
                 errors.Add($@"{e.Message}.");
+                resultStatus = ServerStatus.Error;
             } catch (Exception e) {
                 errors.Add(string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message));
+                resultStatus = ServerStatus.Error;
                 Logging.Error(e);
             } finally {
                 if (driversCount != -1) {
@@ -419,7 +449,8 @@ namespace AcManager.Tools.Managers.Online {
 
                 UpdateProgress = AsyncProgressEntry.Ready;
                 Errors = errors;
-                Status = errors.Any() ? ServerStatus.Error : ServerStatus.Ready;
+                Status = !SettingsHolder.Online.LoadServersWithMissingContent && resultStatus == ServerStatus.MissingContent ?
+                        ServerStatus.Error : resultStatus;
                 AvailableUpdate();
                 _updating = false;
             }

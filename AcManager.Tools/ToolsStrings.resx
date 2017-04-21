@@ -406,14 +406,6 @@
     <value>ended</value>
     <comment>Keep it short if you can</comment>
   </data>
-  <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
-    <value>“[url="http://assetto-db.com/car/{0}"]{0}[/url]”</value>
-    <comment>Replace quotes if needed</comment>
-  </data>
-  <data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
-    <value>“[url="http://assetto-db.com/track/{0}"]{0}[/url]”</value>
-    <comment>Replace quotes if needed</comment>
-  </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
     <value>Can’t refresh server information.
 </value>
