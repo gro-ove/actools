@@ -1334,6 +1334,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _rateCars;
+
+            public bool RateCars {
+                get { return _rateCars ?? (_rateCars = ValuesStorage.GetBool("Settings.ContentSettings.RateCars", false)).Value; }
+                set {
+                    if (Equals(value, _rateCars)) return;
+                    _rateCars = value;
+                    ValuesStorage.Set("Settings.ContentSettings.RateCars", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private int? _loadingConcurrency;
 
             public int LoadingConcurrency {

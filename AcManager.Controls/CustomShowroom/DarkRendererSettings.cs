@@ -91,7 +91,7 @@ namespace AcManager.Controls.CustomShowroom {
             public virtual bool UseSmaa { get; set; }
             public virtual bool UseAo { get; set; }
             public virtual bool UseSslr { get; set; }
-            public virtual bool ReflectionCubemapAtCamera { get; set; }
+            public virtual bool ReflectionCubemapAtCamera { get; set; } = true;
             public virtual bool ReflectionsWithShadows { get; set; }
 
             public virtual float AmbientBrightness { get; set; } = 2f;
@@ -108,6 +108,13 @@ namespace AcManager.Controls.CustomShowroom {
             public virtual float PcssLightScale { get; set; } = 2f;
             public virtual float BloomRadiusMultiplier { get; set; } = 1f;
             public virtual float SsaoOpacity { get; set; } = 0.3f;
+
+            public virtual bool UseDof { get; set; } = false;
+            public virtual float DofFocusPlane { get; set; } = 1.6f;
+            public virtual float DofScale { get; set; } = 1f;
+            public virtual bool UseAccumulationDof { get; set; } = false;
+            public virtual int AccumulationDofIterations { get; set; } = 100;
+            public virtual float AccumulationDofApertureSize { get; set; } = 0.01f;
 
             [CanBeNull]
             private static byte[] Compress(byte[] data) {
@@ -253,6 +260,13 @@ namespace AcManager.Controls.CustomShowroom {
             obj.PcssSceneScale = Renderer.PcssSceneScale;
             obj.PcssLightScale = Renderer.PcssLightScale;
             obj.SsaoOpacity = Renderer.AoOpacity;
+
+            obj.UseDof = Renderer.UseDof;
+            obj.DofFocusPlane = Renderer.DofFocusPlane;
+            obj.DofScale = Renderer.DofScale;
+            obj.UseAccumulationDof = Renderer.UseAccumulationDof;
+            obj.AccumulationDofIterations = Renderer.AccumulationDofIterations;
+            obj.AccumulationDofApertureSize = Renderer.AccumulationDofApertureSize;
             return obj;
         }
 
@@ -334,6 +348,13 @@ namespace AcManager.Controls.CustomShowroom {
             Renderer.PcssSceneScale = o.PcssSceneScale;
             Renderer.PcssLightScale = o.PcssLightScale;
             Renderer.AoOpacity = o.SsaoOpacity;
+
+            Renderer.UseDof = o.UseDof;
+            Renderer.DofFocusPlane = o.DofFocusPlane;
+            Renderer.DofScale = o.DofScale;
+            Renderer.UseAccumulationDof = o.UseAccumulationDof;
+            Renderer.AccumulationDofIterations = o.AccumulationDofIterations;
+            Renderer.AccumulationDofApertureSize = o.AccumulationDofApertureSize;
         }
 
         protected void Load(SaveableData o) {
@@ -418,6 +439,12 @@ namespace AcManager.Controls.CustomShowroom {
                 case nameof(Renderer.PcssLightScale):
                 case nameof(Renderer.PcssSceneScale):
                 case nameof(Renderer.AoOpacity):
+                case nameof(Renderer.UseDof):
+                case nameof(Renderer.DofFocusPlane):
+                case nameof(Renderer.DofScale):
+                case nameof(Renderer.UseAccumulationDof):
+                case nameof(Renderer.AccumulationDofApertureSize):
+                case nameof(Renderer.AccumulationDofIterations):
                     ActionExtension.InvokeInMainThread(SaveLater);
                     break;
 

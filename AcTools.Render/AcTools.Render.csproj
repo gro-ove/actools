@@ -105,8 +105,9 @@
     <Compile Include="Forward\ToneMappingFn.cs" />
     <Compile Include="Base\PostEffects\AO\AssaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkDof.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
-    <Compile Include="Kn5SpecificForwardDark\DarkSslrHelper.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkSslr.cs" />
     <Compile Include="Base\Reflections\IReflectionDraw.cs" />
     <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
     <Compile Include="Base\SceneRenderer.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
+    <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.Movement.cs" />
     <Compile Include="Kn5SpecificForward\IPaintShopRenderer.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.Textures.cs" />
     <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.PaintShop.cs" />
@@ -231,6 +233,11 @@
     <Compile Include="Kn5Specific\Textures\Kn5OverrideableTexturesProvider.cs" />
     <Compile Include="Kn5Specific\Utils\CarLight.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableFile.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Shaders\Shaders.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -247,7 +254,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
     <Compile Include="Wrapper\BaseFormWrapper.cs" />
-    <Compile Include="Wrapper\LiteShowroomWrapper.cs" />
+    <Compile Include="Wrapper\LiteShowroomFormWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
@@ -261,6 +268,7 @@
     <None Include="packages.config" />
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
+    <Content Include="Resources\Bokeh.dds" />
     <Content Include="Shaders\Includes\DarkMaterial.GPass.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Base.fx" />
     <Content Include="Shaders\Includes\ASSAO.fx" />
@@ -271,6 +279,7 @@
     <Content Include="Shaders\Includes\Shadows.PCSS.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
     <Content Include="Shaders\PpAo\PpAoBlur.fx" />
+    <Content Include="Shaders\Pp\PpDof.fx" />
     <Content Include="Shaders\Pp\PpDarkSslr.fx" />
     <Content Include="Shaders\Pp\PpDownsample.fx" />
     <Content Include="Shaders\PpAo\PpAssao.fx" />
@@ -286,6 +295,7 @@
     <Content Include="Shaders\Pp\PpBasic.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
+    <Content Include="Shaders\PpAo\PpAmbientShadows.fx" />
     <Content Include="Shaders\Special\SpecialPaintShop.fx" />
     <Content Include="Shaders\Special\SpecialRandom.fx" />
     <Content Include="Shaders\Special\SpecialShadow.fx" />
@@ -308,6 +318,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shaders.resources" />
     <None Include="SmaaResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

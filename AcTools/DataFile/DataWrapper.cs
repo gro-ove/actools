@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using AcTools.AcdFile;
+using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
@@ -183,12 +184,17 @@ namespace AcTools.DataFile {
         }
 
         [NotNull]
-        public static DataWrapper FromDirectory([NotNull] string carDirectory) {
+        public static DataWrapper FromCarDirectory([NotNull] string carDirectory) {
             if (!Directory.Exists(carDirectory)) {
                 throw new DirectoryNotFoundException(carDirectory);
             }
 
             return new DataWrapper(carDirectory);
+        }
+
+        [NotNull]
+        public static DataWrapper FromCarDirectory([NotNull] string acRoot, [NotNull] string carId) {
+            return FromCarDirectory(FileUtils.GetCarDirectory(acRoot, carId));
         }
 
         public event EventHandler<DataChangedEventArgs> DataChanged;

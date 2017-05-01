@@ -144,8 +144,8 @@ namespace AcTools.Render.Wrapper {
         protected virtual void OnRender() {
             if (_closed) return;
 
-            // Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (Paused && !Renderer.IsDirty) {
+            Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+            if (!Renderer.IsDirty && !Renderer.AccumulationMode) {
                 Thread.Sleep(20);
                 return;
             }

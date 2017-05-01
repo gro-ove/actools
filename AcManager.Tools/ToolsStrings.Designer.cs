@@ -4683,6 +4683,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mods.
+        /// </summary>
+        public static string Weather_Mods {
+            get {
+                return ResourceManager.GetString("Weather_Mods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original.
+        /// </summary>
+        public static string Weather_Original {
+            get {
+                return ResourceManager.GetString("Weather_Original", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overcast clouds.
         /// </summary>
         public static string Weather_OvercastClouds {
@@ -4697,6 +4715,15 @@ namespace AcManager.Tools {
         public static string Weather_Rain {
             get {
                 return ResourceManager.GetString("Weather_Rain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string Weather_Random {
+            get {
+                return ResourceManager.GetString("Weather_Random", resourceCulture);
             }
         }
         

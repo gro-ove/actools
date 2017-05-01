@@ -807,14 +807,19 @@ namespace AcManager.Controls.CustomShowroom {
         public class ComplexCarPaint : CarPaint {
             public string MapsTexture { get; }
 
+            [CanBeNull]
+            public PaintShopSource MapsMask { get; }
+
             [NotNull]
             public PaintShopSource MapsDefaultTexture { get; }
 
             public bool FixGloss { get; internal set; }
 
             public ComplexCarPaint([Localizable(false)] string detailsTexture, int flakesSize, [Localizable(false)] string mapsTexture,
-                    [NotNull] PaintShopSource mapsSource, Color? defaultColor = null) : base(detailsTexture, flakesSize, defaultColor) {
+                    [NotNull] PaintShopSource mapsSource, [CanBeNull] PaintShopSource mapsMask, Color? defaultColor = null)
+                    : base(detailsTexture, flakesSize, defaultColor) {
                 MapsTexture = mapsTexture;
+                MapsMask = mapsMask;
                 MapsDefaultTexture = mapsSource;
                 AffectedTextures.Add(mapsTexture);
             }
@@ -881,7 +886,8 @@ namespace AcManager.Controls.CustomShowroom {
                 if (_previousComplexMode != _complexMode || Math.Abs(_previousReflection - Reflection) > 0.001 || Math.Abs(_previousGloss - Gloss) > 0.001 ||
                         Math.Abs(_previousSpecular - Specular) > 0.001) {
                     if (ComplexMode) {
-                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture);
+                        renderer.OverrideTextureMaps(MapsTexture, Reflection, Gloss, Specular, FixGloss, 
+                                MapsDefaultTexture, MapsMask);
                     } else {
                         renderer.OverrideTexture(MapsTexture, null);
                     }
@@ -901,7 +907,8 @@ namespace AcManager.Controls.CustomShowroom {
             protected override async Task SaveOverrideAsync(IPaintShopRenderer renderer, string location) {
                 await base.SaveOverrideAsync(renderer, location);
                 if (ComplexMode) {
-                    await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, FixGloss, MapsDefaultTexture);
+                    await renderer.SaveTextureMapsAsync(Path.Combine(location, MapsTexture), Reflection, Gloss, Specular, FixGloss,
+                            MapsDefaultTexture, MapsMask);
                 }
             }
         }

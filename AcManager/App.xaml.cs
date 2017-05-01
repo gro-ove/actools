@@ -18,6 +18,7 @@ using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
+using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Windows;
@@ -388,7 +389,16 @@ namespace AcManager {
 
         private static async void BackgroundInitialization() {
             try {
-                await Task.Delay(1000);
+                await Task.Delay(500);
+                AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
+
+                string additional = null;
+                AppArguments.Set(AppFlag.SimilarAdditionalSourceIds, ref additional);
+                if (!string.IsNullOrWhiteSpace(additional)) {
+                    CarAnalyzer.OptionSimilarAdditionalSourceIds = additional.Split(';', ',').Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+                }
+                
+                await Task.Delay(500);
                 if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
                     NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");
                 }

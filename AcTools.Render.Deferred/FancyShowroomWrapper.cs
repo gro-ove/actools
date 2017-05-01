@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Base.PostEffects;
@@ -99,9 +100,8 @@ namespace AcTools.Render.Deferred {
                             multipler = 2d;
                         }
                     }
-
-                    _renderer.KeepFxaaWhileShooting = !downscale;
-                    var image = _renderer.Shot(multipler, 1d, true);
+                    
+                    var image = _renderer.Shot(multipler, 1d, 1d, true, null, default(CancellationToken));
                     var directory = FileUtils.GetDocumentsScreensDirectory();
                     FileUtils.EnsureDirectoryExists(directory);
                     var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");

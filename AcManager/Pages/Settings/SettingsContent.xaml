@@ -57,11 +57,11 @@
 
             <!--missing content-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Missing content:" />
-            
+
             <DockPanel>
                 <Label Content="Search via:" />
-                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}" SelectedItem="{Binding Holder.MissingContentSearch}"
-                        DisplayMemberPath="DisplayName" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}"
+                        SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <!--cars specific-->
@@ -87,11 +87,18 @@
             <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}">
                 <CheckBox.ToolTip>I hope AC won’t break because of it with some future update</CheckBox.ToolTip>
                 <Label>
-                    <Label.Content>Remove skin's priority field on saving</Label.Content>
+                    <Label.Content>Remove skin’s priority field on saving</Label.Content>
                 </Label>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.NewLayout}" ToolTip="New layout for Content/Cars page" mui:NewMarkService.New="True">
+            <CheckBox IsChecked="{Binding Holder.RateCars}" mui:LimitedService.Limited="True" mui:NewMarkService.New="True">
+                <CheckBox.ToolTip>Might help to check quality of modded cars</CheckBox.ToolTip>
+                <Label>
+                    <Label.Content>While analyzing, check some extra cars’ details</Label.Content>
+                </Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.NewLayout}" ToolTip="New layout for Content/Cars page">
                 <Label Content="New layout" />
             </CheckBox>
 

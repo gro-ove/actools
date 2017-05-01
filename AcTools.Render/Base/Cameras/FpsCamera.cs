@@ -15,14 +15,19 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override BaseCamera Clone() {
-            throw new System.NotImplementedException();
+            return new FpsCamera(FovY) {
+                Position = Position,
+                Look = Look,
+                Right = Right,
+                Up = Up
+            };
         }
 
         public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
             Position = pos;
             Look = Vector3.Normalize(target - pos);
             Right = Vector3.Normalize(Vector3.Cross(up, Look));
-            Up = Vector3.Cross(Look, Right);
+            Up = Vector3.Normalize(Vector3.Cross(Look, Right));
         }
 
         public override void Strafe(float d) {
@@ -54,7 +59,6 @@ namespace AcTools.Render.Base.Cameras {
         public override void UpdateViewMatrix() {
             SetView(RhMode ? Matrix.LookAtRH(Position, Position + Look, Up) :
                     Matrix.LookAtLH(Position, Position + Look, Up));
-
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();
         }

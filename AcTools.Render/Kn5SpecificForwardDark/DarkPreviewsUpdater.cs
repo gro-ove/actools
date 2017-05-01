@@ -97,6 +97,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public bool DelayedConvertation = true;
 
+        public bool UseDof = false;
+        public double DofFocusPlane = 1.6;
+        public double DofScale = 1d;
+        public bool UseAccumulationDof = false;
+        public int AccumulationDofIterations = 300;
+        public double AccumulationDofApertureSize = 0.01;
+
         #region Checksum
         private static int GetHashCode(double[] array) {
             if (array == null) return 0;
@@ -281,7 +288,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.UseSmaa = options.UseSmaa;
             renderer.UseMsaa = options.UseMsaa;
             renderer.MsaaSampleCount = options.MsaaSampleCount;
-            renderer.KeepFxaaWhileShooting = true;
 
             // Switches
             renderer.ShowWireframe = options.WireframeMode;
@@ -331,6 +337,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.PcssLightScale = (float)options.PcssLightScale;
             renderer.PcssSceneScale = (float)options.PcssSceneScale;
             renderer.AoOpacity = (float)options.SsaoOpacity;
+
+            // DOF
+            renderer.UseDof = options.UseDof;
+            renderer.DofFocusPlane = (float)options.DofFocusPlane;
+            renderer.DofScale = (float)options.DofScale;
+            renderer.UseAccumulationDof = options.UseAccumulationDof;
+            renderer.AccumulationDofIterations = options.AccumulationDofIterations;
+            renderer.AccumulationDofApertureSize = (float)options.AccumulationDofApertureSize;
         }
 
         private static void SetRendererCarOptions(DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {
@@ -395,7 +409,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             var shotStream = new MemoryStream(_approximateSize ?? 100000);
 
-            _renderer.Shot(1d, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, shotStream, true);
+            _renderer.Shot(1d, _options.SoftwareDownsize ? 1d : 1d / _options.SsaaMultiplier, 1d, shotStream, true, null, default(CancellationToken));
             if (!_approximateSize.HasValue || _approximateSize < shotStream.Position) {
                 _approximateSize = (int)(shotStream.Position * 1.2);
             }

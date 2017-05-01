@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base.Cameras;
+﻿using System.Linq;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
@@ -18,6 +19,11 @@ namespace AcTools.Render.Base.Objects {
         public Matrix Transform;
         private IRenderableMaterial _material;
 
+        public override void UpdateBoundingBox() {
+            var matrix = Transform * ParentMatrix;
+            BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, matrix)).ToBoundingBox();
+        }
+
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
@@ -31,6 +37,13 @@ namespace AcTools.Render.Base.Objects {
 
             _material.SetMatrices(Transform * ParentMatrix, camera);
             _material.Draw(contextHolder, Indices.Length, mode);
+        }
+
+        public bool DrawHighlighted(Ray pickingRay, IDeviceContextHolder contextHolder, ICamera camera) {
+            float distance;
+            var intersects = Ray.Intersects(pickingRay, BoundingBox ?? default(BoundingBox), out distance);
+            Draw(contextHolder, camera, intersects ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);
+            return intersects;
         }
 
         public override void Dispose() {

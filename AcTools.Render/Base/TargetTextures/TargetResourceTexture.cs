@@ -11,8 +11,8 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public TargetResourceTextureArray(Texture2DDescription description) : base(description) {}
         
-        public override void Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
-            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return;
+        public override bool Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
+            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return false;
             base.Resize(holder, width, height, sample);
 
             TargetViews = new RenderTargetView[Description.ArraySize];
@@ -28,6 +28,7 @@ namespace AcTools.Render.Base.TargetTextures {
             }
 
             View = new ShaderResourceView(holder.Device, Texture);
+            return true;
         }
 
         public override void Dispose() {
@@ -60,12 +61,13 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public TargetResourceTexture(Texture2DDescription description) : base(description) {}
         
-        public override void Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
-            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return;
+        public override bool Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
+            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return false;
             base.Resize(holder, width, height, sample);
 
             TargetView = new RenderTargetView(holder.Device, Texture);
             View = new ShaderResourceView(holder.Device, Texture);
+            return true;
         }
 
         public override void Dispose() {
@@ -98,8 +100,8 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public TargetResourceSpecialTexture(Texture2DDescription description) : base(description) { }
 
-        public override void Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
-            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return;
+        public override bool Resize(DeviceContextHolder holder, int width, int height, SampleDescription? sample) {
+            if (width == Width && height == Height && (!sample.HasValue || Description.SampleDescription == sample.Value)) return false;
             base.Resize(holder, width, height, sample);
 
             StencilView = new DepthStencilView(holder.Device, Texture, new DepthStencilViewDescription {
@@ -121,6 +123,8 @@ namespace AcTools.Render.Base.TargetTextures {
                 MipLevels = 1,
                 MostDetailedMip = 0
             });
+
+            return true;
         }
 
         public override void Dispose() {

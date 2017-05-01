@@ -54,10 +54,9 @@
                                     Transition="{TemplateBinding TransitionName}" />
 
                             <!-- display progress bar while content is being loaded -->
-                            <c:Switch Value="{TemplateBinding IsLoadingContent}">
-                                <ProgressBar c:Switch.When="True" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4"
-                                        Margin="20 0 20 0" />
-                            </c:Switch>
+                            <c:BooleanSwitch Value="{TemplateBinding IsLoadingContent}">
+                                <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0" />
+                            </c:BooleanSwitch>
                         </c:Cell>
                     </Border>
                 </ControlTemplate>

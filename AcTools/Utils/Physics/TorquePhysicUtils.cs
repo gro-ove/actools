@@ -171,7 +171,7 @@ namespace AcTools.Utils.Physics {
 
         [Obsolete]
         public static Lut LoadCarTorque(string carDir) {
-            return LoadCarTorque(DataWrapper.FromDirectory(carDir));
+            return LoadCarTorque(DataWrapper.FromCarDirectory(carDir));
         }
     }
 }

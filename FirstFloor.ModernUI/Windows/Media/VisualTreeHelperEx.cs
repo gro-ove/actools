@@ -219,7 +219,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             }
         }
 
-        public static void ResetElementNameBindings(this DependencyObject obj) {
+        public static void ResetElementNameBindings([NotNull] this DependencyObject obj) {
             var boundProperties = obj.GetDataBoundProperties();
             foreach (DependencyProperty dp in boundProperties) {
                 var binding = BindingOperations.GetBinding(obj, dp);

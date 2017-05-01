@@ -67,14 +67,17 @@ namespace AcTools.Render.Base {
 
         public int Height { get; private set; }
 
+        public SampleDescription SampleDescription { get; private set; }
+
         public DeviceContextHolder(Device device) {
             Device = device;
             DeviceContext = device.ImmediateContext;
         }
 
-        public void OnResize(int width, int height) {
+        public void OnResize(int width, int height, SampleDescription sampleDescription) {
             Width = width;
             Height = height;
+            SampleDescription = sampleDescription;
 
             foreach (var helper in _helpers.Values) {
                 helper.OnResize(this);
@@ -174,6 +177,7 @@ namespace AcTools.Render.Base {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [NotNull]
         public T GetHelper<T>() where T : IRenderHelper, new() {
             IRenderHelper result;
             var type = typeof(T);
@@ -223,6 +227,7 @@ namespace AcTools.Render.Base {
         private CommonStates _states;
 
         public CommonStates States => _states ?? (_states = new CommonStates(Device));
+
 
         private readonly Dictionary<Tuple<int, int>, ShaderResourceView> _randomTextures =
                 new Dictionary<Tuple<int, int>, ShaderResourceView>();

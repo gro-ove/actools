@@ -51,6 +51,7 @@ namespace AcTools.Render.Base.Utils {
             var prc = (1.0f - LookupCos(angle)) * 0.5f;
             return v1 * (1.0f - prc) + v2 * prc;
         }
+
         public static float PerlinNoise2D(int seed, float persistence, int octave, float x, float y) {
             var freq = (float)Math.Pow(2.0f, octave);
             var amp = (float)Math.Pow(persistence, octave);

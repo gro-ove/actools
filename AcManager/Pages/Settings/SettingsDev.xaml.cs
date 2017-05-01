@@ -58,15 +58,20 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _decryptHelperCommand;
 
-            public ICommand DecryptHelperCommand => _decryptHelperCommand ?? (_decryptHelperCommand = new DelegateCommand(() => {
-                var m = Prompt.Show("DH:", "DH", watermark: "<key>=<value>");
-                if (m == null) return;
+            public ICommand DecryptHelperCommand {
+                get {
+                    Logging.Here();
+                    return _decryptHelperCommand ?? (_decryptHelperCommand = new DelegateCommand(() => {
+                        var m = Prompt.Show("DH:", "DH", watermark: "<key>=<value>");
+                        if (m == null) return;
 
-                var s = m.Split(new[] { '=' }, 2);
-                if (s.Length == 2) {
-                    ModernDialog.ShowMessage("d: " + ValuesStorage.Storage.Decrypt(s[0], s[1]));
+                        var s = m.Split(new[] { '=' }, 2);
+                        if (s.Length == 2) {
+                            ModernDialog.ShowMessage("d: " + ValuesStorage.Storage.Decrypt(s[0], s[1]));
+                        }
+                    }));
                 }
-            }));
+            }
 
             private AsyncCommand _updateSidekickDatabaseCommand;
 

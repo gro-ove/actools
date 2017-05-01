@@ -1,10 +1,13 @@
-﻿using AcTools.Render.Base;
+﻿using System.Linq;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using SlimDX;
+using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class AmbientShadow : TrianglesRenderableObject<InputLayouts.VerticePT> {
@@ -25,6 +28,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Matrix Transform;
 
+        public override void UpdateBoundingBox() {
+            var matrix = Transform * ParentMatrix;
+            BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, matrix)).ToBoundingBox();
+        }
+
         private readonly string _filename;
         private IRenderableMaterial _material;
 
@@ -38,6 +46,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _material.Initialize(contextHolder);
 
             base.Initialize(contextHolder);
+        }
+
+        public ShaderResourceView GetView(IDeviceContextHolder contextHolder) {
+            if (!IsInitialized) {
+                Draw(contextHolder, null, SpecialRenderMode.InitializeOnly);
+            }
+
+            return (_material as IAmbientShadowMaterial)?.GetView(contextHolder);
         }
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {

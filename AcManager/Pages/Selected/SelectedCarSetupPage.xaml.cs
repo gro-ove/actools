@@ -64,100 +64,7 @@ namespace AcManager.Pages.Selected {
             }
             return b.JoinToString(' ');
         }
-
-        public class AcLocaleProvider {
-            public const string CategoryTag = "tag";
-
-            private readonly string _directory;
-            private readonly bool _exists;
-
-            public AcLocaleProvider(string section = null) {
-                _directory = Path.Combine(AcRootDirectory.Instance.RequireValue, "system", "locales");
-                if (section != null) {
-                    _directory = Path.Combine(_directory, section);
-                }
-
-                _exists = Directory.Exists(_directory);
-            }
-
-            [NotNull]
-            private static string GetSupported(string directory, string extension) {
-                var locale = SettingsHolder.Locale.LocaleName;
-                var filename = Path.Combine(directory, $"{locale}.{extension}");
-                if (File.Exists(filename) || locale == "en") return filename;
-
-                var index = locale.IndexOf('-');
-                if (index != -1) {
-                    filename = Path.Combine(directory, $"{locale.Substring(0, index)}.{extension}");
-                    if (File.Exists(filename)) return filename;
-                }
-
-                return Path.Combine(directory, $"en.{extension}");
-            }
-
-            [NotNull]
-            private static Dictionary<string, string> ReadTag(string filename) {
-                try {
-                    var result = new Dictionary<string, string>(10);
-                    var text = File.ReadAllText(filename);
-                    var startIndex = -1;
-                    var startKey = -1;
-                    string currentKey = null;
-                    for (var i = 0; i < text.Length; i++) {
-                        switch (text[i]) {
-                            case '[':
-                                startKey = i + 1;
-                                break;
-                            case '\n':
-                                startKey = -1;
-                                break;
-                            case ']':
-                                if (startKey != -1) {
-                                    if (startIndex != -1 && currentKey != null) {
-                                        result[currentKey] = text.Substring(startIndex, startKey - startIndex - 1).Trim();
-                                    }
-
-                                    currentKey = text.Substring(startKey, i - startKey);
-                                    startIndex = i + 1;
-                                    startKey = -1;
-                                }
-                                break;
-                        }
-                    }
-
-                    if (startIndex != -1 && currentKey != null && startKey != -1) {
-                        result[currentKey] = text.Substring(startIndex, text.Length - startKey);
-                    }
-
-                    return result;
-                } catch(Exception e) {
-                    Logging.Warning(e);
-                    return new Dictionary<string, string>(0);
-                }
-            }
-
-            private Dictionary<string, string> _tag;
-            private IniFile _ini;
-
-            [CanBeNull]
-            public string GetString(string category, string key) {
-                if (!_exists) return null;
-                if (category == CategoryTag) {
-                    if (_tag == null) {
-                        _tag = ReadTag(GetSupported(_directory, @"tag"));
-                    }
-
-                    return _tag.GetValueOrDefault(key);
-                }
-
-                if (_ini == null) {
-                    _ini = new IniFile(GetSupported(_directory, @"ini"));
-                }
-
-                return _ini[category].GetNonEmpty(key);
-            }
-        }
-
+        
         public enum StepsMode {
             ActualValue = 0, StepsNormalized = 1, Steps = 2
         }
@@ -407,7 +314,7 @@ namespace AcManager.Pages.Selected {
                     Entries = new ChangeableObservableCollection<SetupEntry>(previous.Entries);
                     Tabs = previous.Tabs;
                 } else {
-                    var localeProvider = new AcLocaleProvider("setup");
+                    var localeProvider = new AcLocaleProvider(AcRootDirectory.Instance.RequireValue, SettingsHolder.Locale.LocaleName, "setup");
                     Entries = new ChangeableObservableCollection<SetupEntry>(car
                             .AcdData?.GetIniFile("setup.ini")
                             .Where(x => x.Value.ContainsKey("TAB") || x.Value.ContainsKey("RATIOS"))

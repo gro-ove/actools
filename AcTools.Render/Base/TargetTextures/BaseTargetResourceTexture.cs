@@ -27,9 +27,9 @@ namespace AcTools.Render.Base.TargetTextures {
 
         public ShaderResourceView View { get; protected set; }
 
-        public virtual void Resize([NotNull] DeviceContextHolder holder, int width, int height, [CanBeNull] SampleDescription? sample) {
+        public virtual bool Resize([NotNull] DeviceContextHolder holder, int width, int height, [CanBeNull] SampleDescription? sample) {
             if (holder == null) throw new ArgumentNullException(nameof(holder));
-            if (width == Width && height == Height && (!sample.HasValue || sample == Description.SampleDescription)) return;
+            if (width == Width && height == Height && (!sample.HasValue || sample == Description.SampleDescription)) return false;
             Dispose();
             
             Description.Width = width;
@@ -37,6 +37,7 @@ namespace AcTools.Render.Base.TargetTextures {
             Description.SampleDescription = sample ?? DefaultSampleDescription;
 
             Texture = new Texture2D(holder.Device, Description);
+            return true;
         }
 
         public bool KeepView { get; set; }

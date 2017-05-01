@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using AcTools.Utils;
 using ImageMagick;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
@@ -14,8 +15,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private delegate void SplitCallback(Action<Stream> stream, int x, int y, int width, int height);
 
-        private void SplitShot(double multiplier, double downscale, SplitCallback callback) {
-            var original = new { Width, Height, ResolutionMultiplier, TimeFactor, CutScreenshot };
+        private void SplitShot(double multiplier, double downscale, SplitCallback callback, [CanBeNull] IProgress<double> progress,
+                CancellationToken cancellation) {
+            var original = new { Width, Height, ResolutionMultiplier, TimeFactor };
             ResolutionMultiplier = 1d;
             AutoAdjustTarget = false;
             AutoRotate = false;
@@ -36,6 +38,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 var halfMultiplier = multiplier / cuts;
 
                 for (var i = 0; i < cuts * cuts; i++) {
+                    progress?.Report(0.05 + 0.9 * i / (cuts * cuts));
+                    if (cancellation.IsCancellationRequested) return;
+
                     var x = i % cuts;
                     var y = i / cuts;
 
@@ -46,8 +51,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     Camera.SetLens(Camera.Aspect);
 
                     callback(s => {
-                        CutScreenshot = OptionHwCrop && expand ? OptionGBufferExtra : 1d;
-                        Shot(halfMultiplier, downscale, s, true);
+                        Shot(halfMultiplier, downscale, OptionHwCrop && expand ? OptionGBufferExtra : 1d, s, true);
                     }, x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
 
                 }
@@ -59,10 +63,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 Height = original.Height;
                 ResolutionMultiplier = original.ResolutionMultiplier;
                 TimeFactor = original.TimeFactor;
-                CutScreenshot = original.CutScreenshot;
             }
         }
-        
+
         public MagickImage SplitShot(double multiplier, double downscale, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height };
@@ -72,13 +75,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     (original.Width * cuts * downscale).RoundToInt(),
                     (original.Height * cuts * downscale).RoundToInt());
 
-            var total = cuts * cuts;
-            var index = 0;
-
             SplitShot(multiplier, downscale, (c, x, y, width, height) => {
-                progress?.Report(0.1 + 0.8 * index++ / total);
-                if (cancellation.IsCancellationRequested) return;
-
                 using (var stream = new MemoryStream()) {
                     c(stream);
                     if (cancellation.IsCancellationRequested) return;
@@ -92,8 +89,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         result.Composite(piece, x * width, y * height);
                     }
                 }
-            });
-
+            }, progress, cancellation);
             return result;
         }
 
@@ -111,14 +107,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var extension = magickMode ? "jpg" : "png";
 
             Directory.CreateDirectory(destination);
-
-            var total = cuts * cuts;
-            var index = 0;
-
             SplitShot(multiplier, downscale, (c, x, y, width, height) => {
-                progress?.Report(0.1 + 0.8 * index++ / total);
-                if (cancellation.IsCancellationRequested) return;
-
                 var filename = Path.Combine(destination, $"{y}-{x}.{extension}");
                 if (magickMode) {
                     using (var stream = new MemoryStream()) {
@@ -140,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         c(stream);
                     }
                 }
-            });
+            }, progress, cancellation);
 
             return new SplitShotInformation {
                 Cuts = cuts,

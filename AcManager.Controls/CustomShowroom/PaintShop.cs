@@ -62,7 +62,7 @@ namespace AcManager.Controls.CustomShowroom {
                         } :
                         new ComplexCarPaint(carPaint, 512, mapsMap, new PaintShopSource {
                             NormalizeMax = true
-                        }) {
+                        }, null) {
                             LiveryStyle = "Flat"
                         };
             }
@@ -154,12 +154,22 @@ namespace AcManager.Controls.CustomShowroom {
 
             if (j.Type == JTokenType.Object) {
                 var o = (JObject)j;
-                return GetSource(o["path"], extraData, GetSourceParams(o));
+                baseParams = GetSourceParams(o);
+                
+                if (o["red"] != null) {
+                    return new PaintShopSource(
+                            GetSource(o["red"], extraData, baseParams),
+                            GetSource(o["green"], extraData, baseParams),
+                            GetSource(o["blue"], extraData, baseParams),
+                            GetSource(o["alpha"], extraData, baseParams)).SetFrom(baseParams);
+                }
+
+                return GetSource(o["path"], extraData, baseParams);
             }
 
             if (j.Type == JTokenType.Boolean) {
                 var b = (bool)j;
-                return b ? PaintShopSource.InputSource.CopyFrom(baseParams) : null;
+                return b ? PaintShopSource.InputSource.SetFrom(baseParams) : null;
             }
 
             if (j.Type != JTokenType.String) {
@@ -167,22 +177,30 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             var s = j.ToString();
+            string c = null;
+
+            var index = s.IndexOf(':');
+            if (index > 1) {
+                c = s.Substring(index + 1);
+                s = s.Substring(0, index);
+            }
+
             if (s == "@self" || s == "#self") {
-                return PaintShopSource.InputSource.CopyFrom(baseParams);
+                return PaintShopSource.InputSource.SetFrom(baseParams).MapChannels(c);
             }
 
             if (s.StartsWith("#")) {
                 return new PaintShopSource(s.ToColor()?.ToColor() ?? System.Drawing.Color.White)
-                        .SetFrom(baseParams);
+                        .SetFrom(baseParams).MapChannels(c);
             }
 
             if (s.StartsWith("./") || s.StartsWith(".\\")) {
                 return new PaintShopSource(extraData(s.Substring(2)))
-                        .SetFrom(baseParams);
+                        .SetFrom(baseParams).MapChannels(c);
             }
 
             return new PaintShopSource(s)
-                    .SetFrom(baseParams);
+                    .SetFrom(baseParams).MapChannels(c);
         }
 
         private const string TypeColor = "color";
@@ -203,6 +221,7 @@ namespace AcManager.Controls.CustomShowroom {
         private const string KeyTextures = "textures";
         private const string KeyNormalsTexture = "normals";
         private const string KeyMapsDefault = "mapsTexture";
+        private const string KeyMapsMaskTexture = "mapsMask";
         private const string KeyMapsDefaultTexture = "mapsDefaultTexture";
         private const string KeyColor = "color";
         private const string KeyColors = "colors";
@@ -292,10 +311,11 @@ namespace AcManager.Controls.CustomShowroom {
                 Overlay = GetSource((x.Value as JObject)?[KeyOverlay], extraData, null),
             }).Where(x => x.Source != null).ToDictionary(
                     x => x.Key,
-                    x => new TintedEntry(x.Source, x.Mask, x.Overlay)) ?? (e.GetBoolValueOnly(KeyTintBase) == true ? new Dictionary<string, TintedEntry> {
-                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.InputSource.CopyFrom(sourceParams), null, null)
+                    x => new TintedEntry(x.Source, x.Mask, x.Overlay)) ??
+                    (e.GetBoolValueOnly(KeyTintBase) == true || sourceParams.RequiresPreparation ? new Dictionary<string, TintedEntry> {
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.InputSource.SetFrom(sourceParams), null, null)
                     } : new Dictionary<string, TintedEntry> {
-                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.Transparent.CopyFrom(sourceParams), null, null)
+                        [RequireString(e, KeyTexture)] = new TintedEntry(PaintShopSource.Transparent.SetFrom(sourceParams), null, null)
                     });
         }
 
@@ -399,8 +419,9 @@ namespace AcManager.Controls.CustomShowroom {
                     if (maps != null) {
                         var mapsSourceParams = GetMapsSourceParams(e);
                         var mapsSource = GetSource(e[KeyMapsDefaultTexture], extractData, mapsSourceParams) ??
-                                PaintShopSource.InputSource.CopyFrom(mapsSourceParams);
-                        carPaint = new ComplexCarPaint(detailsName, flakesSize, maps, mapsSource, defaultColor);
+                                PaintShopSource.InputSource.SetFrom(mapsSourceParams);
+                        var mapsMask = GetSource(e[KeyMapsMaskTexture], extractData, null);
+                        carPaint = new ComplexCarPaint(detailsName, flakesSize, maps, mapsSource, mapsMask, defaultColor);
                     } else {
                         carPaint = new CarPaint(detailsName, flakesSize, defaultColor);
                     }

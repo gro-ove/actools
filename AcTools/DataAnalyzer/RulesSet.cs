@@ -1,122 +1,170 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.DataAnalyzer {
     public partial class RulesSet {
         public enum RuleType {
-            Number, String, Vector2, Vector3, Vector4, File
-        }
-
-        public static RuleType RuleTypeFromString(string s) {
-            switch (s.ToLower()) {
-                case "file":
-                    return RuleType.File;
-                    
-                case "string":
-                    return RuleType.String;
-
-                case "number":
-                    return RuleType.Number;
-                    
-                case "vector":
-                case "vector3":
-                    return RuleType.Vector3;
-
-                case "vector2":
-                    return RuleType.Vector2;
-
-                case "vector4":
-                    return RuleType.Vector4;
-
-                default:
-                    throw new InvalidDataException();
-            }
+            Number,
+            String,
+            Vector2,
+            Vector3,
+            Vector4,
+            Lut
         }
 
         public class Rule {
             public RuleType Type;
-            public string Filename, Section, Property;
+            public string FileName, Section, Property;
             public string[] Params;
+            public double?[] DoubleParams;
+            public Func<double, bool>[] Tests;
+            public double Weight;
 
             public double GetDoubleParam(int index, double defaultValue) {
-                return index < Params.Length ? double.Parse(Params[index], CultureInfo.InvariantCulture) : defaultValue;
+                if (DoubleParams == null) {
+                    DoubleParams = Params.Select(x => FlexibleParser.TryParseDouble(x)).ToArray();
+                }
+
+                return index < Params.Length ? DoubleParams[index] ?? defaultValue : defaultValue;
             }
 
             public override string ToString() {
-                return Filename + "/" + Section + "/" + Property;
+                return FileName + "/" + Section + "/" + Property;
             }
 
-            /* internal Rule(RuleType type, string filename, string section, string[] arguments) {
-                
-             }*/
+            protected bool Equals(Rule other) {
+                return Type == other.Type && string.Equals(FileName, other.FileName) && string.Equals(Section, other.Section) &&
+                        string.Equals(Property, other.Property) && Equals(Params, other.Params);
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((Rule)obj);
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = (int)Type;
+                    hashCode = (hashCode * 397) ^ (FileName?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (Section?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (Property?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (Params?.GetEnumerableHashCode() ?? 0);
+                    return hashCode;
+                }
+            }
         }
 
         private readonly Rule[] _rules;
 
-        public readonly string Id;
+        public int Size => _rules.Length;
 
-        private RulesSet(string id, Rule[] rules) {
-            Id = id;
+        public override int GetHashCode() {
+            return _rules.GetEnumerableHashCode();
+        }
+
+        private RulesSet(Rule[] rules) {
             _rules = rules;
         }
 
-        public static RulesSet FromLines(string[] strings) {
-            var id = strings[0].Trim();
-            if (!Regex.IsMatch(id, @"^\w+$")) {
-                throw new InvalidDataException();
+        private static readonly Regex FileNameRegex = new Regex(@"^[\w-]+\.[\w]{2,4}$", RegexOptions.Compiled);
+        private static readonly Regex SpacesRegex = new Regex(@"\t|\s{2,}", RegexOptions.Compiled);
+
+        private static RuleType RuleTypeFromString([NotNull] string s) {
+            return (RuleType)Enum.Parse(typeof(RuleType), s, true);
+        }
+
+        [CanBeNull]
+        private static Func<double, bool> GetTest([NotNull] string extra) {
+            if (extra.Length < 1) return null;
+            var v = FlexibleParser.TryParseDouble(extra.Substring(1)) ?? 0d;
+            switch (extra[0]) {
+                case '=': return c => c == v;
+                case '≠': return c => c != v;
+                case '<': return c => c < v;
+                case '>': return c => c > v;
+                case '≤': return c => c <= v;
+                case '≥': return c => c >= v;
             }
+            return null;
+        }
 
-            var regex = new Regex(@"\s{2,}", RegexOptions.Compiled);
+        [NotNull]
+        private static RulesSet FromLines([NotNull] string[] strings) {
             var list = new List<Rule>(strings.Length);
-
-            string filename = null, section = null;
-            foreach (var raw in strings.Skip(1)) {
-                var splitted = regex.Split(raw.Trim());
+            string fileName = null, section = null;
+            foreach (var raw in strings) {
+                var splitted = SpacesRegex.Split(raw.Trim());
                 if (splitted.Length == 0 || splitted[0].Length == 0) continue;
 
                 var path = splitted[0].Split(new [] { '/' }, 3);
-                var type = RuleTypeFromString(splitted.Length == 1 ? "number" : splitted[1]);
 
-                if (type == RuleType.File) {
-                    throw new NotImplementedException();
+                string property = null;
+                if (FileNameRegex.IsMatch(path[0])) {
+                    fileName = path[0];
+                    section = path.Length >= 2 ? path[1] : null;
+
+                    if (path.Length >= 3) {
+                        property = path[2];
+                    } else if (splitted.Length == 1) {
+                        continue;
+                    }
                 } else {
-                    var property = path[path.Length - 1];
-
+                    property = path[path.Length - 1];
                     if (path.Length > 1) {
                         section = path[path.Length - 2];
                     }
-
                     if (path.Length > 2) {
-                        filename = path[path.Length - 3];
+                        fileName = path[path.Length - 3];
                     }
+                }
+                
+                var type = RuleTypeFromString(splitted.Length == 1 ? "number" : splitted[1]);
 
-                    if (filename == null || section == null) {
-                        Console.Error.WriteLine("invalid field '{0}/{1}/{2}'", filename, section, property);
+                if (type != RuleType.Lut) {
+                    if (fileName == null || section == null) {
+                        Console.Error.WriteLine("Invalid field '{0}/{1}/{2}'", fileName, section, property);
                         continue;
                     }
-
-                    list.Add(new Rule {
-                        Type = type,
-                        Filename = filename,
-                        Section = section,
-                        Property = property,
-                        Params = splitted.Skip(2).ToArray()
-                    });
                 }
+
+                var additionalParams = splitted.Skip(2).ToList();
+                var extra = additionalParams.Where(x => x.StartsWith("×") ||
+                        x.StartsWith("=") || x.StartsWith("≠") ||
+                        x.StartsWith("<") || x.StartsWith(">") ||
+                        x.StartsWith("≤") || x.StartsWith("≥")).ToList();
+                var actualParams = additionalParams.ApartFrom(extra).ToArray();
+
+                var weight = FlexibleParser.TryParseDouble(extra.FirstOrDefault(x => x.StartsWith("×"))?.Substring(1)) ?? 1d;
+                var tests = extra.Select(GetTest).NonNull().ToArray();
+
+                list.Add(new Rule {
+                    Type = type,
+                    FileName = fileName,
+                    Section = section,
+                    Property = property,
+                    Params = actualParams,
+                    Tests = tests,
+                    Weight = weight
+                });
             }
 
-            return new RulesSet(id, list.ToArray());
+            return new RulesSet(list.ToArray());
         }
 
-        public static RulesSet FromText(string text) {
+        [NotNull]
+        public static RulesSet FromText([NotNull] string text) {
             return FromLines(text.Split('\n'));
         }
 
-        public static RulesSet FromFile(string filename) {
+        [NotNull]
+        public static RulesSet FromFile([NotNull] string filename) {
             return FromLines(File.ReadAllLines(filename));
         }
     }

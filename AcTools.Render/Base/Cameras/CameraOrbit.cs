@@ -53,9 +53,6 @@ namespace AcTools.Render.Base.Cameras {
 
             Alpha = MathF.AngleFromXY(-Look.X, -Look.Z);
             Beta = (-Look.Y).Asin();
-
-            Right = Vector3.Normalize(Vector3.Cross(up, Look));
-            Up = Vector3.Cross(Look, Right);
         }
 
         public override void Strafe(float d) {
@@ -102,7 +99,10 @@ namespace AcTools.Render.Base.Cameras {
             Right = new Vector3(View.M11, View.M21, View.M31);
             Right.Normalize();
 
-            Look = new Vector3(View.M13, View.M23, View.M33);
+            Up = new Vector3(View.M12, View.M22, View.M32);
+            Up.Normalize();
+
+            Look = -new Vector3(View.M13, View.M23, View.M33);
             Look.Normalize();
         }
     }

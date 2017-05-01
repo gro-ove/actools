@@ -13,6 +13,8 @@
 	cbuffer cbPerObject : register(b0) {
 		float4 gScreenSize;
 		float gSizeMultipler;
+		float gMultipler;
+		float2 gBokenMultipler;
 	}
 
 // fn structs
@@ -58,73 +60,6 @@
 		}
 	}
 
-	SamplerState samInputImageHq {
-		Filter = ANISOTROPIC;
-		MaxAnisotropy = 8;
-
-		AddressU = WRAP;
-		AddressV = WRAP;
-	};
-
-	float4 SampleBicubic(Texture2D tex, sampler texSampler, float2 uv){
-		//--------------------------------------------------------------------------------------
-		// Calculate the center of the texel to avoid any filtering
-
-		float2 textureDimensions = gScreenSize.xy;
-		float2 invTextureDimensions = gScreenSize.zw;
-
-		uv *= textureDimensions;
-
-		float2 texelCenter = floor(uv - 0.5f) + 0.5f;
-		float2 fracOffset = uv - texelCenter;
-		float2 fracOffset_x2 = fracOffset * fracOffset;
-		float2 fracOffset_x3 = fracOffset * fracOffset_x2;
-
-		//--------------------------------------------------------------------------------------
-		// Calculate the filter weights (B-Spline Weighting Function)
-
-		float2 weight0 = fracOffset_x2 - 0.5f * (fracOffset_x3 + fracOffset);
-		float2 weight1 = 1.5f * fracOffset_x3 - 2.5f * fracOffset_x2 + 1.f;
-		float2 weight3 = 0.5f * (fracOffset_x3 - fracOffset_x2);
-		float2 weight2 = 1.f - weight0 - weight1 - weight3;
-
-		//--------------------------------------------------------------------------------------
-		// Calculate the texture coordinates
-
-		float2 scalingFactor0 = weight0 + weight1;
-		float2 scalingFactor1 = weight2 + weight3;
-
-		float2 f0 = weight1 / (weight0 + weight1);
-		float2 f1 = weight3 / (weight2 + weight3);
-
-		float2 texCoord0 = texelCenter - 1.f + f0;
-		float2 texCoord1 = texelCenter + 1.f + f1;
-
-		texCoord0 *= invTextureDimensions;
-		texCoord1 *= invTextureDimensions;
-
-		//--------------------------------------------------------------------------------------
-		// Sample the texture
-
-		return tex.Sample(texSampler, float2(texCoord0.x, texCoord0.y)) * scalingFactor0.x * scalingFactor0.y +
-			tex.Sample(texSampler, float2(texCoord1.x, texCoord0.y)) * scalingFactor1.x * scalingFactor0.y +
-			tex.Sample(texSampler, float2(texCoord0.x, texCoord1.y)) * scalingFactor0.x * scalingFactor1.y +
-			tex.Sample(texSampler, float2(texCoord1.x, texCoord1.y)) * scalingFactor1.x * scalingFactor1.y;
-	}
-
-	float4 ps_CopyHq(PS_IN pin) : SV_Target {
-		//return SampleBicubic(gInputMap, samInputImage, pin.Tex);
-		return gInputMap.Sample(samInputImageHq, pin.Tex);
-	}
-
-	technique10 CopyHq {
-		pass P0 {
-			SetVertexShader(CompileShader(vs_4_0, vs_main()));
-			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_CopyHq()));
-		}
-	}
-
 	float4 ps_CopyNoAlpha(PS_IN pin) : SV_Target {
 		return float4(gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0).rgb, 1.0);
 	}
@@ -134,6 +69,46 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_CopyNoAlpha()));
+		}
+	}
+
+// accumulation
+	float4 ps_Accumulate(PS_IN pin) : SV_Target {
+		return saturate(gInputMap.Sample(samInputImage, pin.Tex));
+	}
+
+	technique10 Accumulate {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Accumulate()));
+		}
+	}
+
+	float4 ps_AccumulateDivide(PS_IN pin) : SV_Target {
+		return gInputMap.Sample(samInputImage, pin.Tex) * gMultipler;
+	}
+
+	technique10 AccumulateDivide {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_AccumulateDivide()));
+		}
+	}
+
+	float4 ps_AccumulateBokehDivide(PS_IN pin) : SV_Target{
+		float4 b = gInputMap.Sample(samInputImage, pin.Tex);
+		float4 o = gOverlayMap.Sample(samInputImage, pin.Tex);
+		float m = saturate(10.0 * dot(o.rgb, float3(0.299f, 0.587f, 0.114f)) - 0.9) * gBokenMultipler.x;
+		return b * gMultipler * (1.0 - m) + o * m;
+	}
+
+	technique10 AccumulateBokehDivide {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_AccumulateBokehDivide()));
 		}
 	}
 
@@ -149,6 +124,24 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_Overlay()));
+		}
+	}
+
+// depth to linear
+	float4 ps_DepthToLinear(PS_IN pin) : SV_Target {
+		float z = gInputMap.Sample(samInputImage, pin.Tex).r;
+		float n = gScreenSize.x;
+		float f = gScreenSize.y;
+		// float e = zNear * zFar / (zFar + zNear - b * (zFar - zNear));
+		float e = (-1 * f * n / (f - n)) / (z - (f + n) / (f - n)) / gScreenSize.z;
+		return float4((float3)saturate(e), 1.0);
+	}
+
+	technique10 DepthToLinear {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_DepthToLinear()));
 		}
 	}
 

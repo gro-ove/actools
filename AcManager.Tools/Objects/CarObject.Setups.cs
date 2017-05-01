@@ -48,7 +48,7 @@ namespace AcManager.Tools.Objects {
                     if (_acdDataRead) return _acdData;
                     _acdDataRead = true;
 
-                    _acdData = DataWrapper.FromDirectory(Location);
+                    _acdData = DataWrapper.FromCarDirectory(Location);
                     return _acdData;
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t read data", e);

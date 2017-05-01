@@ -180,7 +180,7 @@ namespace CustomShowroom {
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
                     renderer.MagickOverride = options.MagickOverride;
-                    new LiteShowroomWrapper(renderer).Run();
+                    new LiteShowroomFormWrapper(renderer).Run();
                 }
             } else if (options.Mode == Mode.Dark) {
                 using (var renderer = new DarkKn5ObjectRenderer(new CarDescription(kn5File), showroomKn5File)) {
@@ -192,9 +192,18 @@ namespace CustomShowroom {
                     renderer.UseMsaa = options.UseMsaa;
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.UseSsaa = options.UseSsaa;
-                    
+
+#if DEBUG
+                    //renderer.UseDof = true;
+                    //renderer.UseAccumulationDof = true;
+                    //renderer.UseAo = true;
+                    renderer.UseCorrectAmbientShadows = true;
+                    renderer.BlurCorrectAmbientShadows = true;
+                    renderer.AoOpacity = 0.8f;
+#endif
+
                     renderer.MagickOverride = options.MagickOverride;
-                    new LiteShowroomWrapper(renderer) {
+                    new LiteShowroomFormWrapper(renderer) {
                         ReplaceableShowroom = true
                     }.Run();
                 }

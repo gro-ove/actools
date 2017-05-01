@@ -49,6 +49,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _displayName = displayName;
         }
 
+        public IValueConverter HeaderConverter { get; set; }
+
         private string _displayName;
 
         public string DisplayName {
@@ -146,6 +148,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public object PreviewValue => GetValue(PreviewValueProperty);
     }
 
+    public delegate void ItemChosenCallback(object item, [CanBeNull] HierarchicalGroup parentGroup);
+
     public class HierarchicalItemsView : BetterObservableCollection<UIElement>, IDisposable, ICommand {
         [CanBeNull]
         public HierarchicalComboBox Parent { get; }
@@ -162,7 +166,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         [NotNull]
-        public Action<object> Handler { get; }
+        public ItemChosenCallback Handler { get; }
 
         [CanBeNull]
         private IList _source;
@@ -172,7 +176,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private readonly bool _lazy;
 
-        public HierarchicalItemsView([NotNull] Action<object> handler, [CanBeNull] IList source, bool lazy = true) {
+        public HierarchicalItemsView([NotNull] ItemChosenCallback handler, [CanBeNull] IList source, bool lazy = true) {
             Handler = handler;
 
             _source = source;
@@ -260,7 +264,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return baseValue ?? NullSubstitute;
         }
 
-        private UIElement Wrap([CanBeNull] object value) {
+        private UIElement Wrap([CanBeNull] object value, [CanBeNull] IValueConverter headerConverter) {
             var direct = value as UIElement;
             if (direct != null) {
                 var menuItem = value as MenuItem;
@@ -285,12 +289,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
                     Source = shortDisplayable,
                     Path = new PropertyPath(nameof(IShortDisplayable.ShortDisplayName)),
+                    Converter = headerConverter,
                     Mode = BindingMode.OneWay
                 });
             } else {
                 result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
                     Source = view?._source ?? value,
                     Path = new PropertyPath(nameof(Displayable.DisplayName)),
+                    Converter = headerConverter,
                     Mode = BindingMode.OneWay
                 });
             }
@@ -326,7 +332,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public void Rebuild() {
             _obsolete = false;
-            ReplaceEverythingBy(_source?.OfType<object>().Select(Wrap) ?? new HierarchicalItem[0]);
+
+            var converter = (_source as HierarchicalGroup)?.HeaderConverter;
+            ReplaceEverythingBy(_source?.OfType<object>().Select(x => Wrap(x, converter)) ?? new HierarchicalItem[0]);
         }
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -348,12 +356,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
 
                     if (e.NewItems != null) {
+                        var converter = (_source as HierarchicalGroup)?.HeaderConverter;
                         foreach (var n in e.NewItems) {
                             var index = source.IndexOf(n);
                             if (index < 0 || index >= source.Count - 1) {
-                                Add(Wrap(n));
+                                Add(Wrap(n, converter));
                             } else {
-                                Insert(index, Wrap(n));
+                                Insert(index, Wrap(n, converter));
                             }
                         }
                     }
@@ -374,7 +383,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void Execute(object parameter) {
-            Handler.Invoke(parameter);
+            Handler.Invoke(parameter, _source as HierarchicalGroup);
         }
 
         public event EventHandler CanExecuteChanged;
@@ -419,7 +428,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }*/
         }
 
-        public static readonly DependencyPropertyKey InnerItemsPropertyKey = DependencyProperty.RegisterReadOnly(nameof(InnerItems), typeof(HierarchicalItemsView),
+        public static readonly DependencyPropertyKey InnerItemsPropertyKey = DependencyProperty.RegisterReadOnly(nameof(InnerItems),
+                typeof(HierarchicalItemsView),
                 typeof(HierarchicalComboBox), new PropertyMetadata(null));
 
         public static readonly DependencyProperty InnerItemsProperty = InnerItemsPropertyKey.DependencyProperty;
@@ -438,7 +448,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((HierarchicalComboBox)o).OnItemsSourceChanged((IList)e.NewValue);
         }
 
-        private IEnumerable<object> Flatten([NotNull] IList list) {
+        private static IEnumerable<object> Flatten([NotNull] IList list) {
             foreach (var o in list) {
                 var g = o as HierarchicalGroup;
                 if (g != null) {
@@ -451,6 +461,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        private static bool GetGroup([NotNull] IList list, object item, out HierarchicalGroup group) {
+            foreach (var o in list) {
+                var g = o as HierarchicalGroup;
+                if (g == null) {
+                    if (o == item) {
+                        group = list as HierarchicalGroup;
+                        return true;
+                    }
+                } else if (GetGroup(g, item, out @group)) {
+                    return true;
+                }
+            }
+
+            group = null;
+            return false;
+        }
+
+        private static HierarchicalGroup GetGroup([NotNull] IList list, object item) {
+            HierarchicalGroup g;
+            return GetGroup(list, item, out g) ? g : null;
+        }
+
         private void OnItemsSourceChanged([CanBeNull] IList newValue) {
             InnerItems?.Dispose();
             SetValue(InnerItemsPropertyKey, new HierarchicalItemsView(this, newValue));
@@ -460,7 +492,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     SelectedItem = null;
                 } else if (!Flatten(newValue).Contains(SelectedItem)) {
                     SelectedItem = Flatten(newValue).FirstOrDefault();
+                    SetValue(SelectedItemHeaderConverterPropertyKey, GetGroup(newValue, SelectedItem)?.HeaderConverter);
+                    return;
                 }
+            }
+
+            if (newValue != null) {
+                SetValue(SelectedItemHeaderConverterPropertyKey, GetGroup(newValue, SelectedItem)?.HeaderConverter);
             }
         }
 
@@ -484,13 +522,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSelectedItemChanged(object oldValue, object newValue) {
             SelectionChanged?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, newValue));
+            SetValue(SelectedItemHeaderConverterPropertyKey, GetGroup(ItemsSource, SelectedItem)?.HeaderConverter);
         }
 
-        internal void ItemChosen(object item) {
+        internal void ItemChosen(object item, HierarchicalGroup parentGroup) {
+            SetValue(SelectedItemHeaderConverterPropertyKey, parentGroup?.HeaderConverter);
+
             var oldValue = SelectedItem;
             SelectedItem = item;
             ItemSelected?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, item));
         }
+
+        public static readonly DependencyPropertyKey SelectedItemHeaderConverterPropertyKey =
+                DependencyProperty.RegisterReadOnly(nameof(SelectedItemHeaderConverter), typeof(IValueConverter),
+                        typeof(HierarchicalComboBox), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty SelectedItemHeaderConverterProperty = SelectedItemHeaderConverterPropertyKey.DependencyProperty;
+
+        public IValueConverter SelectedItemHeaderConverter => (IValueConverter)GetValue(SelectedItemHeaderConverterProperty);
 
         public object SelectedItem {
             get { return GetValue(SelectedItemProperty); }

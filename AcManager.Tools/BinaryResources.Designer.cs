@@ -71,6 +71,31 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [suspension_front_geometry:v0]
+        ///suspensions.ini
+        ///    FRONT/TYPE              string
+        ///        STRUT_CAR           vector3  0.00001
+        ///        STRUT_TYRE          vector3  0.00001
+        ///
+        ///        WBCAR_TOP_FRONT     vector3  0.00001
+        ///        WBCAR_TOP_REAR      vector3  0.00001
+        ///
+        ///        WBCAR_BOTTOM_FRONT  vector3  0.001
+        ///        WBCAR_BOTTOM_REAR   vector3  0.001
+        ///        WBTYRE_BOTTOM       vector3  0.001
+        ///        WBCAR_STEER         vector3  0.001
+        ///        WBTYRE_STEER        vector3  0.001
+        ///
+        ///[suspension_rear_geometry:v0]
+        ///su [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Rules {
+            get {
+                return ResourceManager.GetString("Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] SidePassage {

@@ -446,23 +446,6 @@ namespace AcTools.Render.Deferred {
             _ppBasic.TechOverlay.DrawAllPasses(DeviceContext, 6);
         }
 
-        public bool KeepFxaaWhileShooting;
-        
-        public override void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
-            if (KeepFxaaWhileShooting || Equals(multiplier, 1d) && Equals(downscale, 1d)) {
-                base.Shot(multiplier, downscale, outputStream, lossless);
-            } else {
-                var useFxaa = UseFxaa;
-                UseFxaa = false;
-
-                try {
-                    base.Shot(multiplier, downscale, outputStream, lossless);
-                } finally {
-                    UseFxaa = useFxaa;
-                }
-            }
-        }
-
         protected override void DisposeOverride() {
             Lights.DisposeEverything();
 

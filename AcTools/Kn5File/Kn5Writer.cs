@@ -3,8 +3,9 @@ using System.IO;
 using System.Text;
 
 namespace AcTools.Kn5File {
-    internal sealed class Kn5Writer : BinaryWriter {
-        public Kn5Writer(string filename) : this(File.Open(filename, FileMode.CreateNew)) {
+    internal sealed class Kn5Writer : ExtendedBinaryWriter {
+        public Kn5Writer(string filename) : base(filename) {
+            Write("sc6969".ToCharArray());
         }
 
         public Kn5Writer(Stream output) : base(output) {
@@ -36,7 +37,6 @@ namespace AcTools.Kn5File {
 
         public void Write(Kn5Header header) {
             Write(header.Version);
-
             if (header.Version > 5) {
                 Write(header.Extra);
             }
@@ -151,10 +151,6 @@ namespace AcTools.Kn5File {
                     Write(node.MisteryBytes ?? new byte[8]);
                     break;
             }
-        }
-
-        public void Insert(string filename) {
-            Write(File.ReadAllBytes(filename));
         }
     }
 }

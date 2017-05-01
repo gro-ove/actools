@@ -1721,4 +1721,13 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Tag “{0}” is missing</value>
   </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
 </root>

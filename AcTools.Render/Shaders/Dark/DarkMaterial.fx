@@ -1,4 +1,6 @@
 #include "DarkMaterial.Base.fx"
+#include "DarkMaterial.Reflection.fx"
+#include "DarkMaterial.Lighting.fx"
 
 //// Standart
 

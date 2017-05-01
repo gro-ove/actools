@@ -64,6 +64,43 @@
                     </TextBlock>
                 </DockPanel>
 
+                <mui:BooleanSwitch Value="{Binding RatingMode}">
+                    <mui:SpacingStackPanel Spacing="4" MinHeight="200" MaxHeight="320">
+                        <TextBlock Text="More details:" Style="{StaticResource Label.Padding}" />
+                        <mui:ReferenceSwitch Value="{Binding Ratings}">
+                            <mui:ReferenceSwitch.Null>
+                                <ProgressBar IsIndeterminate="True" />
+                            </mui:ReferenceSwitch.Null>
+                        </mui:ReferenceSwitch>
+                        <mui:BooleanSwitch Value="{Binding RatingLoading}">
+                            <mui:BooleanSwitch.False>
+                                <ItemsControl ItemsSource="{Binding Ratings}" Style="{StaticResource VirtualizingItemsControl}"
+                                        mui:FancyScrollHelper.Outsize="True">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Height="32" Margin="0 0 8 4">
+                                                <TextBlock Style="{StaticResource Label}" Foreground="Black" DockPanel.Dock="Left" Padding="0 8 0 9"
+                                                        Text="{Binding Rate, Converter={x:Static tools:CarAnalyzer.RatingToTextConverter}}"
+                                                        Background="{Binding Rate, Converter={x:Static tools:CarAnalyzer.RatingToColorConverter}}"
+                                                        Margin="0 0 8 0" Width="32" TextAlignment="Center">
+                                                    <TextBlock.ToolTip>
+                                                        <ToolTip Content="{Binding Rate}" ContentStringFormat="{}{0:F1}/5.0"
+                                                                Visibility="{Binding Rate, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                                                    </TextBlock.ToolTip>
+                                                </TextBlock>
+                                                <Button DockPanel.Dock="Right" Content="More…" Command="{Binding ShowInformationCommand}" Margin="8 0 0 0"
+                                                        Visibility="{Binding ShowInformationCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                <TextBlock Text="{Binding Message}" DockPanel.Dock="Top" Margin="0 -1 0 0" />
+                                                <TextBlock Text="{Binding Details}" Style="{StaticResource Small}" Margin="0 1 0 0" />
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
+                    </mui:SpacingStackPanel>
+                </mui:BooleanSwitch>
+
                 <TextBlock Text="{Binding LeftUnsolved, StringFormat='{}{0} unsolved issues:'}" Style="{StaticResource Label.Padding}" />
 
                 <mui:Switch Value="{Binding Aspects.Count}">

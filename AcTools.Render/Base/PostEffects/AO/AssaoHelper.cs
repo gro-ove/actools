@@ -81,8 +81,12 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _finalResults.Resize(holder, holder.Width / 2, holder.Height / 2, null);
         }
 
-        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target) {
-            base.Draw(holder, depth, normals, camera, target);
+        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
+                float aoPower) {
+            base.Draw(holder, depth, normals, camera, target, aoPower);
+
+            // TODO: ao power!
+
             holder.PrepareQuad(_effect.LayoutPT);
 
             holder.DeviceContext.ClearRenderTargetView(_depths[0].TargetView, default(Color4));

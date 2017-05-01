@@ -1,14 +1,19 @@
 using System;
 using System.Collections;
-using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public abstract class BaseSwitch : FrameworkElement {
+    public abstract class BaseSwitch : Control {
+        static BaseSwitch() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(BaseSwitch), new FrameworkPropertyMetadata(typeof(BaseSwitch)));
+        }
+
         public static readonly DependencyProperty ResetElementNameBindingsProperty = DependencyProperty.Register(nameof(ResetElementNameBindings), typeof(bool),
                 typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
 
@@ -17,35 +22,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(ResetElementNameBindingsProperty, value); }
         }
 
+        public static readonly DependencyPropertyKey ContentPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Content), typeof(object),
+                typeof(BaseSwitch), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty ContentProperty = ContentPropertyKey.DependencyProperty;
+
+        public object Content => GetValue(ContentProperty);
+
         [CanBeNull]
         protected abstract UIElement GetChild();
-
 
         private UIElement _child;
 
         private void SetActiveChild(UIElement child) {
             if (ReferenceEquals(_child, child)) return;
+            
+            _child = child;
+            SetValue(ContentPropertyKey, child);
 
-            try {
-                RemoveVisualChild(_child);
-                RemoveLogicalChild(_child);
-
-                _child = child;
-
-                AddLogicalChild(_child);
-                AddVisualChild(_child);
-
-                if (ResetElementNameBindings) {
-                    child.ResetElementNameBindings();
-                }
-            } catch (ArgumentException e) {
-                Logging.Error(e);
-                Logging.Error(this.GetParents().Select(x => $"{x.GetType().Name} (name={(x as FrameworkElement)?.Name ?? @"?"})").JoinToReadableString());
+            if (ResetElementNameBindings) {
+                child.ResetElementNameBindings();
             }
         }
-
-        protected override IEnumerator LogicalChildren => _child == null ? EmptyEnumerator.Instance :
-                new SingleChildEnumerator(_child);
 
         protected void UpdateActiveChild() {
             SetActiveChild(GetChild());
@@ -54,33 +52,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
             var b = sender as BaseSwitch;
             if (b == null) return;
-
+            
             b.UpdateActiveChild();
             b.InvalidateMeasure();
             b.InvalidateVisual();
         }
 
+        public override void OnApplyTemplate() {
+            base.OnApplyTemplate();
+            UpdateActiveChild();
+        }
+
         protected override Size MeasureOverride(Size constraint) {
             UpdateActiveChild();
-
-            var e = _child;
-            if (e == null) return Size.Empty;
-
-            e.Measure(constraint);
-            return e.DesiredSize;
-        }
-
-        protected override Size ArrangeOverride(Size arrangeBounds) {
-            _child?.Arrange(new Rect(arrangeBounds));
-            return arrangeBounds;
-        }
-
-        protected override int VisualChildrenCount => _child != null ? 1 : 0;
-
-        protected override Visual GetVisualChild(int index) {
-            var child = _child;
-            if (child == null || index != 0) throw new ArgumentOutOfRangeException(nameof(index));
-            return child;
+            return base.MeasureOverride(constraint);
         }
         
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {

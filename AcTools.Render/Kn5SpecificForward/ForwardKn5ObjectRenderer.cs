@@ -27,7 +27,7 @@ using FontStyle = SlimDX.DirectWrite.FontStyle;
 using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    public class ForwardKn5ObjectRenderer : ForwardRenderer, IKn5ObjectRenderer {
+    public partial class ForwardKn5ObjectRenderer : ForwardRenderer, IKn5ObjectRenderer {
         public CameraOrbit CameraOrbit => Camera as CameraOrbit;
 
         public FpsCamera FpsCamera => Camera as FpsCamera;
@@ -467,13 +467,17 @@ namespace AcTools.Render.Kn5SpecificForward {
             private set {
                 if (Equals(value, _showroomNode)) return;
                 _showroomNode = value;
-                CubemapReflection = value != null;
-                IsDirty = true;
-                _sceneDirty = true;
-                SetReflectionCubemapDirty();
-                SetShadowsDirty();
                 OnPropertyChanged();
+                OnShowroomChanged();
             }
+        }
+
+        protected virtual void OnShowroomChanged() {
+            _sceneDirty = true;
+            CubemapReflection = ShowroomNode != null;
+            IsDirty = true;
+            SetReflectionCubemapDirty();
+            SetShadowsDirty();
         }
 
         [ContractAnnotation("showroomKn5:null => null; showroomKn5:notnull => notnull")]
@@ -689,7 +693,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private bool _reflectionCubemapAtCamera;
+        private bool _reflectionCubemapAtCamera = true;
 
         public bool ReflectionCubemapAtCamera {
             get { return _reflectionCubemapAtCamera; }
@@ -819,7 +823,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         protected override void DrawSpritesInner() {
-            if (!VisibleUi) return;
+            if (!VisibleUi || ShotInProcess) return;
 
             if (_textBlock == null) {
                 _textBlock = new TextBlockRenderer(Sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
@@ -1100,7 +1104,11 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
 
             if (AutoAdjustTarget && CameraOrbit != null) {
                 var t = AutoAdjustedTarget;
-                CameraOrbit.Target += (t - CameraOrbit.Target) / 3f;
+                var d = t - CameraOrbit.Target;
+                if (d.LengthSquared() > 0.001) {
+                    CameraOrbit.Target += (t - CameraOrbit.Target) / 3f;
+                    IsDirty = true;
+                }
             }
         }
 

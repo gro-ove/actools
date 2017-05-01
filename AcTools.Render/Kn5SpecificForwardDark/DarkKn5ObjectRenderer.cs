@@ -1,9 +1,8 @@
-﻿// #define SSLR_PARAMETRIZED
-
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -117,7 +116,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _temporaryBuffer;
+        private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _mirrorTemporaryBuffer;
         private TargetResourceDepthTexture _mirrorDepthBuffer;
 
         private void UpdateBlurredFlatMirror() {
@@ -127,7 +126,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (use) {
                 _mirrorBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                 _mirrorBlurBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                _temporaryBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+                _mirrorTemporaryBuffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
                 _mirrorDepthBuffer = TargetResourceDepthTexture.Create();
 
                 if (!InitiallyResized) return;
@@ -135,7 +134,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             } else {
                 DisposeHelper.Dispose(ref _mirrorBuffer);
                 DisposeHelper.Dispose(ref _mirrorBlurBuffer);
-                DisposeHelper.Dispose(ref _temporaryBuffer);
+                DisposeHelper.Dispose(ref _mirrorTemporaryBuffer);
                 DisposeHelper.Dispose(ref _mirrorDepthBuffer);
             }
         }
@@ -144,14 +143,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _mirrorBuffer?.Resize(DeviceContextHolder, Width, Height, null);
             _mirrorDepthBuffer?.Resize(DeviceContextHolder, Width, Height, null);
             _mirrorBlurBuffer?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
-            _temporaryBuffer?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+            _mirrorTemporaryBuffer?.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
         }
 
         protected override void ResizeInner() {
             base.ResizeInner();
             ResizeMirrorBuffers();
-            ResizeSslrBuffers();
-            ResizeSsaoBuffers();
+            ResizeAoBuffer();
             ResizeGBuffers();
         }
 
@@ -203,11 +201,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        public bool GBufferMsaa { get; set; } = true;
+        private bool _gBufferMsaa = true;
 
-        private TargetResourceTexture _sslrBufferScene, _sslrBufferResult, _sslrBufferBaseReflection;
+        public bool GBufferMsaa {
+            get { return _gBufferMsaa; }
+            set {
+                if (value == _gBufferMsaa) return;
+                _gBufferMsaa = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _useSslr;
+        private DarkSslr _sslr;
 
         public bool UseSslr {
             get { return _useSslr; }
@@ -217,30 +223,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsDirty = true;
                 OnPropertyChanged();
 
-                if (value) {
-                    _sslrBufferScene = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                    _sslrBufferResult = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                    _sslrBufferBaseReflection = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
-                    //_sslrDepthBuffer = TargetResourceDepthTexture.Create();
-                    if (InitiallyResized) {
-                        ResizeSslrBuffers();
-                    }
-                } else {
-                    DisposeHelper.Dispose(ref _sslrBufferScene);
-                    DisposeHelper.Dispose(ref _sslrBufferResult);
-                    DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
-                    //DisposeHelper.Dispose(ref _sslrDepthBuffer);
+                if (!value) {
+                    DisposeHelper.Dispose(ref _sslr);
+                } else if (_sslr == null) {
+                    _sslr = new DarkSslr();
                 }
 
                 UpdateGBuffers();
             }
-        }
-
-        private void ResizeSslrBuffers() {
-            var sample = GBufferMsaa ? SampleDescription : (SampleDescription?)null;
-            _sslrBufferScene?.Resize(DeviceContextHolder, Width, Height, sample);
-            _sslrBufferResult?.Resize(DeviceContextHolder, Width, Height, sample);
-            _sslrBufferBaseReflection?.Resize(DeviceContextHolder, Width, Height, sample);
         }
 
         private TargetResourceTexture _aoBuffer;
@@ -270,12 +260,45 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsDirty = true;
                 OnPropertyChanged();
 
-                if (!value) {
-                    Effect.FxAoPower.Set(0f);
-                }
+                RecreateAoBuffer();
+                UpdateGBuffers();
+            }
+        }
+
+        private bool _useCorrectAmbientShadows;
+
+        public bool UseCorrectAmbientShadows {
+            get { return _useCorrectAmbientShadows && ShowroomNode != null; }
+            set {
+                if (Equals(value, _useCorrectAmbientShadows)) return;
+                _useCorrectAmbientShadows = value;
+                IsDirty = true;
+                OnPropertyChanged();
 
                 RecreateAoBuffer();
                 UpdateGBuffers();
+            }
+        }
+
+        protected override void OnShowroomChanged() {
+            base.OnShowroomChanged();
+
+            if (UseCorrectAmbientShadows) {
+                RecreateAoBuffer();
+                UpdateGBuffers();
+                OnPropertyChanged(nameof(UseCorrectAmbientShadows));
+            }
+        }
+
+        private bool _blurCorrectAmbientShadows;
+
+        public bool BlurCorrectAmbientShadows {
+            get { return _blurCorrectAmbientShadows; }
+            set {
+                if (Equals(value, _blurCorrectAmbientShadows)) return;
+                _blurCorrectAmbientShadows = value;
+                OnPropertyChanged();
+                IsDirty = true;
             }
         }
 
@@ -309,8 +332,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void RecreateAoBuffer() {
-            if (!UseAo) {
+            if (!UseAo && !UseCorrectAmbientShadows) {
                 DisposeHelper.Dispose(ref _aoBuffer);
+                _effect?.FxUseAo.Set(false);
                 return;
             }
 
@@ -332,7 +356,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             if (InitiallyResized) {
-                ResizeSsaoBuffers();
+                ResizeAoBuffer();
             }
         }
 
@@ -352,15 +376,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private void ResizeSsaoBuffers() {
+        private void ResizeAoBuffer() {
             _aoBuffer?.Resize(DeviceContextHolder, Width, Height, null);
         }
 
         private TargetResourceTexture _gBufferNormals, _gBufferDepthAlt;
         private TargetResourceDepthTexture _gBufferDepthD;
 
+        protected virtual bool GMode() {
+            return UseSslr || UseAo || UseDof || UseCorrectAmbientShadows;
+        }
+
         private void UpdateGBuffers() {
-            var value = UseSslr || UseAo;
+            var value = GMode();
             if (_gBufferNormals != null == value) return;
 
             if (value) {
@@ -663,8 +691,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var showroomNode = ShowroomNode;
             if (showroomNode == null) return;
 
-            if (UseAo) {
-                Effect.FxAoPower.Set(0f);
+            if (UseAo || UseCorrectAmbientShadows) {
+                Effect.FxUseAo.Set(false);
             }
 
             DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null);
@@ -815,16 +843,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     if (UseFxaa) {
                         DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _mirrorBuffer.View, _mirrorBlurBuffer.TargetView);
                         DeviceContextHolder.GetHelper<BlurHelper>()
-                                           .BlurFlatMirror(DeviceContextHolder, _mirrorBlurBuffer, _temporaryBuffer, ActualCamera.ViewProjInvert,
+                                           .BlurFlatMirror(DeviceContextHolder, _mirrorBlurBuffer, _mirrorTemporaryBuffer, ActualCamera.ViewProjInvert,
                                                    _mirrorDepthBuffer.View, 60f);
                     } else {
                         DeviceContextHolder.GetHelper<BlurHelper>()
-                                           .BlurFlatMirror(DeviceContextHolder, _mirrorBuffer, _temporaryBuffer, ActualCamera.ViewProjInvert,
+                                           .BlurFlatMirror(DeviceContextHolder, _mirrorBuffer, _mirrorTemporaryBuffer, ActualCamera.ViewProjInvert,
                                                    _mirrorDepthBuffer.View, 60f, target: _mirrorBlurBuffer);
                     }
 
                     DeviceContextHolder.GetHelper<BlurHelper>()
-                                       .BlurFlatMirror(DeviceContextHolder, _mirrorBlurBuffer, _temporaryBuffer, ActualCamera.ViewProjInvert,
+                                       .BlurFlatMirror(DeviceContextHolder, _mirrorBlurBuffer, _mirrorTemporaryBuffer, ActualCamera.ViewProjInvert,
                                                _mirrorDepthBuffer.View, 12f);
 
                     DeviceContext.Rasterizer.SetViewports(Viewport);
@@ -873,7 +901,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (carNode == null) return;
 
             // shadows
-            carNode.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
+            if (!UseCorrectAmbientShadows) {
+                carNode.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
+            }
 
             // car itself
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
@@ -884,20 +914,25 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             // debug stuff
             carNode.DrawDebug(DeviceContextHolder, ActualCamera);
+
+            if (ShowMovementArrows) {
+                carNode.DrawMovementArrows(DeviceContextHolder, Camera,
+                        new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight));
+            }
+        }
+
+        private bool _showDepth;
+
+        public bool ShowDepth {
+            get { return _showDepth; }
+            set {
+                if (Equals(value, _showDepth)) return;
+                _showDepth = value;
+                OnPropertyChanged();
+            }
         }
 
         protected override string GetInformationString() {
-#if SSLR_PARAMETRIZED
-            if (SslrAdjustCurrentMode != SslrAdjustMode.None) {
-                return $@"Mode: {SslrAdjustCurrentMode}
-Start from: {_sslrStartFrom}
-Fix multiplier: {_sslrFixMultiplier}
-Offset: {_sslrOffset}
-Grow fix: {_sslrGrowFix}
-Distance threshold: {_sslrDistanceThreshold}";
-            }
-#endif
-
             var aa = new[] {
                 UseMsaa ? MsaaSampleCount + "xMSAA" : null,
                 UseSsaa ? $"{Math.Pow(ResolutionMultiplier, 2d).Round()}xSSAA" : null,
@@ -905,6 +940,7 @@ Distance threshold: {_sslrDistanceThreshold}";
             }.NonNull().JoinToString(", ");
 
             var se = new[] {
+                UseDof ? UseAccumulationDof ? "Acc. DOF" : "DOF" : null,
                 UseSslr ? "SSLR" : null,
                 UseAo ? AoType.GetDescription() : null,
                 UseBloom ? "Bloom" : null,
@@ -930,54 +966,7 @@ Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
 Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
-#if SSLR_PARAMETRIZED
-        public enum SslrAdjustMode {
-            None, StartFrom, FixMultiplier, Offset, GrowFix, DistanceThreshold
-        }
-
-        public SslrAdjustMode SslrAdjustCurrentMode;
-        private bool _sslrParamsChanged = true;
-
-        /*private float _sslrStartFrom = 0.02f;
-        private float _sslrFixMultiplier = 0.7f;
-        private float _sslrOffset = 0.048f;
-        private float _sslrGrowFix = 0.15f;
-        private float _sslrDistanceThreshold = 0.092f;*/
-
-        private float _sslrStartFrom = 0.02f;
-        private float _sslrFixMultiplier = 0.5f;
-        private float _sslrOffset = 0.05f;
-        private float _sslrGrowFix = 0.1f;
-        private float _sslrDistanceThreshold = 0.01f;
-
-        public void SslrAdjust(float delta) {
-            switch (SslrAdjustCurrentMode) {
-                case SslrAdjustMode.None:
-                    return;
-                case SslrAdjustMode.StartFrom:
-                    _sslrStartFrom = (_sslrStartFrom + delta / 10f).Clamp(0.0001f, 0.1f);
-                    break;
-                case SslrAdjustMode.FixMultiplier:
-                    _sslrFixMultiplier += delta;
-                    break;
-                case SslrAdjustMode.Offset:
-                    _sslrOffset += delta;
-                    break;
-                case SslrAdjustMode.GrowFix:
-                    _sslrGrowFix += delta;
-                    break;
-                case SslrAdjustMode.DistanceThreshold:
-                    _sslrDistanceThreshold += delta;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            _sslrParamsChanged = true;
-        }
-#endif
-        
-        private DarkSslrHelper _sslrHelper;
+        [CanBeNull]
         private BlurHelper _blurHelper;
 
         protected void DrawPreparedSceneToBuffer() {
@@ -998,16 +987,67 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             DeviceContext.Rasterizer.State = null;
         }
 
+        private bool _useDof;
+        private DarkDof _dof;
+
+        public bool UseDof {
+            get { return _useDof; }
+            set {
+                if (Equals(value, _useDof)) return;
+                _useDof = value;
+                OnPropertyChanged();
+
+                if (!value) {
+                    DisposeHelper.Dispose(ref _dof);
+                } else if (_dof == null) {
+                    _dof = new DarkDof();
+                }
+
+                IsDirty = true;
+                UpdateGBuffers();
+            }
+        }
+
+        private float _dofFocusPlane = 1.6f;
+
+        public float DofFocusPlane {
+            get { return _dofFocusPlane; }
+            set {
+                if (Equals(value, _dofFocusPlane)) return;
+                _dofFocusPlane = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        private float _dofScale = 1f;
+
+        public float DofScale {
+            get { return _dofScale; }
+            set {
+                if (Equals(value, _dofScale)) return;
+                _dofScale = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        private EffectPpAmbientShadows aoShadowEffect;
+
+        // do not dispose it! it’s just a temporary value from DrawSceneToBuffer() 
+        // to DrawOverride() allowing to apply DOF after AA/HDR/color grading/bloom stages
+        private ShaderResourceView _lastDepthBuffer;
+
         protected override void DrawSceneToBuffer() {
-            if (!UseSslr && !UseAo) {
+            if (!GMode()) {
                 base.DrawSceneToBuffer();
                 return;
             }
 
             DrawPrepare();
 
-            if (_sslrHelper == null) {
-                _sslrHelper = DeviceContextHolder.GetHelper<DarkSslrHelper>();
+            if (UseSslr) {
+                _sslr.Prepare(DeviceContextHolder, GBufferMsaa);
             }
 
             if (_blurHelper == null) {
@@ -1018,27 +1058,21 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             DeviceContext.Rasterizer.SetViewports(Viewport);
 
             var sample = GBufferMsaa ? SampleDescription : (SampleDescription?)null;
-            ShaderResourceView depth;
             if (UseMsaa && GBufferMsaa) {
                 _gBufferDepthAlt.Resize(DeviceContextHolder, Width, Height, sample);
-                DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView,
+                DeviceContext.OutputMerger.SetTargets(DepthStencilView, _sslr?.BufferBaseReflection.TargetView, _gBufferNormals.TargetView,
                         _gBufferDepthAlt.TargetView);
                 DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
                 DeviceContext.ClearRenderTargetView(_gBufferDepthAlt.TargetView, (Color4)new Vector4(1f));
-                depth = _gBufferDepthAlt.View;
+                _lastDepthBuffer = _gBufferDepthAlt.View;
             } else {
                 _gBufferDepthD.Resize(DeviceContextHolder, Width, Height, sample);
-                DeviceContext.OutputMerger.SetTargets(_gBufferDepthD.DepthView, _sslrBufferBaseReflection?.TargetView, _gBufferNormals.TargetView);
+                DeviceContext.OutputMerger.SetTargets(_gBufferDepthD.DepthView, _sslr?.BufferBaseReflection.TargetView, _gBufferNormals.TargetView);
                 DeviceContext.ClearDepthStencilView(_gBufferDepthD.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-                depth = _gBufferDepthD.View;
+                _lastDepthBuffer = _gBufferDepthD.View;
             }
 
             DeviceContext.ClearRenderTargetView(_gBufferNormals.TargetView, (Color4)new Vector4(0.5f));
-
-            if (_sslrBufferBaseReflection != null) {
-                DeviceContext.ClearRenderTargetView(_sslrBufferBaseReflection.TargetView, (Color4)new Vector4(0));
-            }
-
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = null;
@@ -1055,29 +1089,98 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 }
             }
 
-            CarNode?.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            var c = CarNode;
+            c?.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
 
-            // AO?
-            if (UseAo) {
+            if (ShowDepth) {
+                DeviceContextHolder.GetHelper<CopyHelper>().DepthToLinear(DeviceContextHolder, _lastDepthBuffer, InnerBuffer.TargetView,
+                        Camera.NearZValue, Camera.FarZValue, (Camera.Position - CarCenter).Length() * 2);
+                return;
+            }
+            
+            if (UseAo || UseCorrectAmbientShadows) {
                 var aoHelper = _aoHelper;
                 if (aoHelper == null) {
                     aoHelper = _aoHelper = GetAoHelper();
                 }
 
-                if (AoType == AoType.Hbao) {
+                /*if (AoType == AoType.Hbao) {
                     UseSslr = true;
                     SetInnerBuffer(_sslrBufferScene);
                     DrawPreparedSceneToBuffer();
                     (aoHelper as HbaoHelper)?.Prepare(DeviceContextHolder, _sslrBufferScene.View);
                     SetInnerBuffer(null);
+                }*/
+
+                if (UseAo) {
+                    aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView,
+                            AoOpacity);
+                    aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
+                } else {
+                    DeviceContext.ClearRenderTargetView(_aoBuffer.TargetView, new Color4(1f, 1f, 1f, 1f));
                 }
 
-                aoHelper.Draw(DeviceContextHolder, depth, _gBufferNormals.View, ActualCamera, _aoBuffer.TargetView);
-                aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
+                if (UseCorrectAmbientShadows) {
+                    if (aoShadowEffect == null) {
+                        aoShadowEffect = DeviceContextHolder.GetEffect<EffectPpAmbientShadows>();
+                        aoShadowEffect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(4, 4));
+                    }
+
+                    aoShadowEffect.FxDepthMap.SetResource(_lastDepthBuffer);
+
+                    DeviceContext.OutputMerger.SetTargets(_aoBuffer.TargetView);
+                    DeviceContextHolder.PrepareQuad(aoShadowEffect.LayoutPT);
+                    DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MultiplyState;
+
+                    aoShadowEffect.FxViewProj.SetMatrix(Camera.ViewProj);
+                    aoShadowEffect.FxViewProjInv.SetMatrix(Camera.ViewProjInvert);
+
+                    if (BlurCorrectAmbientShadows) {
+                        aoShadowEffect.FxNoiseSize.Set(new Vector2(Width / 4f, Height / 4f));
+                    }
+
+                    if (c != null) {
+                        var s = c.GetAmbientShadows();
+                        for (var i = 0; i < s.Count; i++) {
+                            var o = s[i] as AmbientShadow;
+                            var v = o == null ? null : c.GetAmbientShadowView(DeviceContextHolder, o);
+                            if (v == null) continue;
+
+                            aoShadowEffect.FxShadowMap.SetResource(v);
+
+                            var m = o.Transform * o.ParentMatrix;
+                            if (!o.BoundingBox.HasValue) {
+                                o.UpdateBoundingBox();
+                                if (!o.BoundingBox.HasValue) continue;
+                            }
+                            var b = o.BoundingBox.Value.GetSize();
+
+                            aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
+                            aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
+                            aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
+                                M11 = 0.5f,
+                                M22 = 0.5f,
+                                M33 = 0.5f,
+                                M41 = 0.5f,
+                                M42 = 0.5f,
+                                M43 = 0.5f,
+                                M44 = 1f
+                            });
+
+                            if (BlurCorrectAmbientShadows) {
+                                aoShadowEffect.TechAddShadowBlur.DrawAllPasses(DeviceContext, 6);
+                            } else {
+                                aoShadowEffect.TechAddShadow.DrawAllPasses(DeviceContext, 6);
+                            }
+                        }
+                    }
+
+                    DeviceContext.OutputMerger.BlendState = null;
+                }
 
                 var effect = Effect;
                 effect.FxAoMap.SetResource(_aoBuffer.View);
-                Effect.FxAoPower.Set(AoOpacity);
+                Effect.FxUseAo.Set(true);
                 effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
                 if (AoDebug) {
@@ -1086,34 +1189,260 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 }
             }
 
-            if (UseSslr && _sslrBufferBaseReflection != null) {
+            if (UseSslr && _sslr != null) {
                 // Draw actual scene to _sslrBufferScene
-                SetInnerBuffer(_sslrBufferScene);
+                SetInnerBuffer(_sslr.BufferScene);
                 DrawPreparedSceneToBuffer();
                 SetInnerBuffer(null);
-
-                // Prepare SSLR and combine buffers
-#if SSLR_PARAMETRIZED
-                if (_sslrParamsChanged) {
-                    _sslrParamsChanged = false;
-                    var effect = DeviceContextHolder.GetEffect<EffectPpDarkSslr>();
-                    effect.FxStartFrom.Set(_sslrStartFrom);
-                    effect.FxFixMultiplier.Set(_sslrFixMultiplier);
-                    effect.FxOffset.Set(_sslrOffset);
-                    effect.FxGlowFix.Set(_sslrGrowFix);
-                    effect.FxDistanceThreshold.Set(_sslrDistanceThreshold);
-                }
-#endif
-                
-                _sslrHelper.Draw(DeviceContextHolder, depth, _sslrBufferBaseReflection.View, _gBufferNormals.View, ActualCamera,
-                        _sslrBufferResult.TargetView);
-                _blurHelper.BlurDarkSslr(DeviceContextHolder, _sslrBufferResult, InnerBuffer, (float)(4f * ResolutionMultiplier));
-                _sslrHelper.FinalStep(DeviceContextHolder, _sslrBufferScene.View, _sslrBufferResult.View, _sslrBufferBaseReflection.View,
-                        _gBufferNormals.View, ActualCamera, InnerBuffer.TargetView);
+                _sslr?.Process(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera,
+                        (float)ResolutionMultiplier, InnerBuffer, InnerBuffer.TargetView);
             } else {
                 DrawPreparedSceneToBuffer();
             }
         }
+
+        private bool _realTimeAccumulationMode;
+        private int _realTimeAccumulationSize;
+
+        private TargetResourceTexture _accumulationTexture, _accumulationMaxTexture,
+                _accumulationTemporaryTexture, _accumulationBaseTexture;
+
+        private void DrawRealTimeDofAccumulation() {
+            if (_accumulationTexture == null) {
+                _accumulationTexture = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
+                _accumulationMaxTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                _accumulationBaseTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+                _accumulationTemporaryTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
+            }
+
+            if (_accumulationTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null)) {
+                _accumulationTemporaryTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                _accumulationBaseTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+            }
+
+            var accumulationDofBokeh = AccumulationDofBokeh;
+            if (accumulationDofBokeh) {
+                _accumulationMaxTexture.Resize(DeviceContextHolder, ActualWidth / 2, ActualHeight / 2, null);
+            }
+
+            var firstStep = _realTimeAccumulationSize == 0;
+            _realTimeAccumulationSize++;
+
+            if (firstStep) {
+                DeviceContext.ClearRenderTargetView(_accumulationTexture.TargetView, default(Color4));
+                if (accumulationDofBokeh) {
+                    DeviceContext.ClearRenderTargetView(_accumulationMaxTexture.TargetView, default(Color4));
+                }
+                DrawSceneToBuffer();
+            } else {
+                using (ReplaceCamera(GetDofAccumulationCamera(Camera, (_realTimeAccumulationSize / 50f).Saturate()))) {
+                    DrawSceneToBuffer();
+                }
+            }
+
+            var bufferF = InnerBuffer;
+            if (bufferF == null) return;
+
+            var result = AaThenBloom(bufferF.View, _accumulationTemporaryTexture.TargetView) ?? _accumulationTemporaryTexture.View;
+            var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+
+            if (firstStep) {
+                copy.Draw(DeviceContextHolder, result, _accumulationBaseTexture.TargetView);
+            }
+
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
+            copy.Draw(DeviceContextHolder, result, _accumulationTexture.TargetView);
+
+            if (accumulationDofBokeh) {
+                DeviceContext.Rasterizer.SetViewports(_accumulationMaxTexture.Viewport);
+                DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MaxState;
+                copy.Draw(DeviceContextHolder, result, _accumulationMaxTexture.TargetView);
+                DeviceContext.Rasterizer.SetViewports(OutputViewport);
+            }
+
+            DeviceContext.OutputMerger.BlendState = null;
+
+            if (_realTimeAccumulationSize < 4) {
+                copy.Draw(DeviceContextHolder, _accumulationBaseTexture.View, RenderTargetView);
+            } else if (accumulationDofBokeh) {
+                copy.AccumulateBokehDivide(DeviceContextHolder, _accumulationTexture.View, _accumulationMaxTexture.View, RenderTargetView,
+                        _realTimeAccumulationSize, 0.5f);
+            } else {
+                copy.AccumulateDivide(DeviceContextHolder, _accumulationTexture.View, RenderTargetView, _realTimeAccumulationSize);
+            }
+        }
+
+        private void DrawDof() {
+            DrawSceneToBuffer();
+
+            var bufferF = InnerBuffer;
+            if (bufferF == null) return;
+
+            _dof.FocusPlane = DofFocusPlane;
+            _dof.DofCoCScale = DofScale * (ShotInProcess ? 12f : 6f);
+            _dof.DofCoCLimit = ShotInProcess ? 64f : 24f;
+            _dof.MaxSize = ShotInProcess ? 1920 : 960;
+            _dof.Prepare(DeviceContextHolder, ActualWidth, ActualHeight);
+
+            var result = AaThenBloom(bufferF.View, _dof.BufferScene.TargetView) ?? _dof.BufferScene.View;
+            _dof.Process(DeviceContextHolder, _lastDepthBuffer, result, ActualCamera, RenderTargetView, false);
+        }
+
+        protected override void DrawOverride() {
+           if (!UseDof || _dof == null || _lastDepthBuffer == null) {
+                base.DrawOverride();
+            } else if (_realTimeAccumulationMode) {
+                DrawRealTimeDofAccumulation();
+            } else { 
+                DrawDof();
+            }
+        }
+
+        #region Accumulation DOF
+        private bool _useAccumulationDof;
+
+        public bool UseAccumulationDof {
+            get { return _useAccumulationDof; }
+            set {
+                if (Equals(value, _useAccumulationDof)) return;
+                _useAccumulationDof = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _accumulationDofIterations = 100;
+
+        public int AccumulationDofIterations {
+            get { return _accumulationDofIterations; }
+            set {
+                if (Equals(value, _accumulationDofIterations)) return;
+                _accumulationDofIterations = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _accumulationDofApertureSize = 0.02f;
+
+        public float AccumulationDofApertureSize {
+            get { return _accumulationDofApertureSize; }
+            set {
+                if (Equals(value, _accumulationDofApertureSize)) return;
+                _accumulationDofApertureSize = value;
+                IsDirty = true;
+                OnPropertyChanged();
+                _realTimeAccumulationSize = 0;
+            }
+        }
+
+        private bool _accumulationDofBokeh;
+
+        public bool AccumulationDofBokeh {
+            get { return _accumulationDofBokeh; }
+            set {
+                if (Equals(value, _accumulationDofBokeh)) return;
+                _accumulationDofBokeh = value;
+                OnPropertyChanged();
+                _realTimeAccumulationSize = 0;
+            }
+        }
+
+        protected override bool CanShotWithoutExtraTextures => base.CanShotWithoutExtraTextures && (!UseDof || !UseAccumulationDof);
+
+        private BaseCamera GetDofAccumulationCamera(BaseCamera camera, float apertureMultipler) {
+            Vector2 direction;
+            do {
+                direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
+            } while (direction.LengthSquared() > 1f);
+
+            var bokeh = camera.Right * direction.X + camera.Up * direction.Y;
+            var newCamera = new FpsCamera(camera.FovY);
+            var newPosition = camera.Position + AccumulationDofApertureSize * apertureMultipler * bokeh;
+            var lookAt = camera.Position + camera.Look * DofFocusPlane;
+            newCamera.LookAt(newPosition, lookAt, camera.Up);
+            newCamera.SetLens(AspectRatio);
+            newCamera.UpdateViewMatrix();
+            return newCamera;
+        }
+
+        private IDisposable ReplaceCamera(BaseCamera newCamera) {
+            var camera = Camera;
+            Camera = newCamera;
+            return new ActionAsDisposable(() => {
+                Camera = camera;
+            });
+        }
+
+        protected override void DrawShot(RenderTargetView target, IProgress<double> progress, CancellationToken cancellation) {
+            if (UseDof && UseAccumulationDof && target != null) {
+                var copy = DeviceContextHolder.GetHelper<CopyHelper>();
+                _useDof = false;
+
+                using (var summary = TargetResourceTexture.Create(Format.R32G32B32A32_Float))
+                using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                    summary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+                    temporary.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
+
+                    var iterations = AccumulationDofIterations;
+                    for (var i = 0; i < iterations; i++) {
+                        if (cancellation.IsCancellationRequested) return;
+
+                        Vector2 direction;
+                        do {
+                            direction = new Vector2(MathUtils.Random(-1f, 1f), MathUtils.Random(-1f, 1f));
+                        } while (direction.LengthSquared() > 1f);
+
+                        using (ReplaceCamera(GetDofAccumulationCamera(Camera, 1f))) {
+                            progress?.Report(0.05 + 0.9 * i / iterations);
+                            base.DrawShot(temporary.TargetView, progress, cancellation);
+                        }
+
+                        DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.AddState;
+                        copy.Draw(DeviceContextHolder, temporary.View, summary.TargetView);
+                        DeviceContext.OutputMerger.BlendState = null;
+                    }
+
+                    copy.AccumulateDivide(DeviceContextHolder, summary.View, target, iterations);
+                }
+                
+                _useDof = true;
+                return;
+            }
+
+            base.DrawShot(target, progress, cancellation);
+        }
+
+        public override bool AccumulationMode => UseDof && UseAccumulationDof;
+
+        protected override void OnTick(float dt) {
+            base.OnTick(dt);
+            if (IsDirty) {
+                _realTimeAccumulationSize = 0;
+            }
+        }
+
+        public override void Draw() {
+            if (UseDof && UseAccumulationDof) {
+                _realTimeAccumulationMode = true;
+                if (IsDirty) {
+                    _realTimeAccumulationSize = 0;
+                }
+                
+                base.Draw();
+            } else {
+                if (_realTimeAccumulationMode) {
+                    DisposeHelper.Dispose(ref _accumulationTexture);
+                    DisposeHelper.Dispose(ref _accumulationMaxTexture);
+                    DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
+                    DisposeHelper.Dispose(ref _accumulationBaseTexture);
+                    _realTimeAccumulationSize = 0;
+                    _realTimeAccumulationMode = false;
+                }
+
+                base.Draw();
+            }
+        }
+        #endregion
 
         private bool _setCameraHigher = true;
 
@@ -1130,21 +1459,45 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         protected override Vector3 AutoAdjustedTarget => base.AutoAdjustedTarget + Vector3.UnitY * (SetCameraHigher ? 0f : 0.2f);
 
         protected override void DisposeOverride() {
+            DisposeHelper.Dispose(ref _sslr);
+            DisposeHelper.Dispose(ref _dof);
+
             DisposeHelper.Dispose(ref _mirror);
             DisposeHelper.Dispose(ref _mirrorBuffer);
             DisposeHelper.Dispose(ref _mirrorBlurBuffer);
-            DisposeHelper.Dispose(ref _temporaryBuffer);
+            DisposeHelper.Dispose(ref _mirrorTemporaryBuffer);
             DisposeHelper.Dispose(ref _mirrorDepthBuffer);
 
-            DisposeHelper.Dispose(ref _sslrBufferScene);
-            DisposeHelper.Dispose(ref _sslrBufferResult);
-            DisposeHelper.Dispose(ref _sslrBufferBaseReflection);
             DisposeHelper.Dispose(ref _gBufferNormals);
             DisposeHelper.Dispose(ref _gBufferDepthD);
             DisposeHelper.Dispose(ref _gBufferDepthAlt);
             DisposeHelper.Dispose(ref _aoBuffer);
 
+            DisposeHelper.Dispose(ref _accumulationTexture);
+            DisposeHelper.Dispose(ref _accumulationMaxTexture);
+            DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
+            DisposeHelper.Dispose(ref _accumulationBaseTexture);
+
             base.DisposeOverride();
+        }
+
+        public void AutoFocus(Vector2 mousePosition) {
+            var ray = Camera.GetPickingRay(mousePosition, new Vector2(ActualWidth, ActualHeight));
+            var distance = Scene.SelectManyRecursive(x => x as RenderableList)
+                                .OfType<IKn5RenderableObject>()
+                                .Where(x => x.IsInitialized)
+                                .Select(node => {
+                                    var f = node.CheckIntersection(ray);
+                                    return f.HasValue ? new {
+                                        Node = node,
+                                        Distance = f.Value
+                                    } : null;
+                                })
+                                .Where(x => x != null)
+                                .MinEntry(x => x.Distance)?.Distance;
+            if (distance.HasValue) {
+                DofFocusPlane = distance.Value;
+            }
         }
     }
 }

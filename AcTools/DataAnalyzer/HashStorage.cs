@@ -1,50 +1,113 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.DataAnalyzer {
-    public class HashStorage {
-        private readonly Dictionary<string, Dictionary<string, string>> _dictionary;
+    internal class HashStorageObsoleteException : Exception {
+        public HashStorageObsoleteException(string msg) : base(msg) { }
+    }
 
-        public HashStorage() {
-            _dictionary = new Dictionary<string, Dictionary<string, string>>();
+    public class HashStorage {
+        private static readonly int Version = 1;
+
+        internal int ParamsHashCode;
+
+        private readonly string[] _setsKeys;
+        private readonly Dictionary<string, byte[][]> _dictionary;
+
+        public int Count => _dictionary.Count;
+
+        public HashStorage(string[] keys) {
+            _setsKeys = keys;
+            _dictionary = new Dictionary<string, byte[][]>();
         }
 
-        private HashStorage(params string[] filenames)
-            : this() {
+        private HashStorage([NotNull] string[] keys, [NotNull] string filename) : this(keys) {
+            using (var reader = new ReadAheadBinaryReader(filename)) {
+                if (reader.ReadByte() != 0x8a || reader.ReadByte() != 0x56) {
+                    throw new Exception("Invalid format");
+                }
 
-            foreach (var filename in filenames) {
-                foreach (var line in File.ReadAllLines(filename)) {
-                    var split = line.Split(new []{ ':' }, 2);
-                    var carId = split[0];
-                    var entries = split[1].Split(',');
+                if (reader.ReadInt32() != Version) {
+                    throw new Exception("Invalid version");
+                }
 
-                    foreach (var temp in entries.Select(entry => entry.Split(new[] {'='}, 2))) {
-                        Add(carId, temp[0], temp[1]);
+                ParamsHashCode = reader.ReadInt32();
+
+                var keysAmount = reader.ReadInt32();
+                if (keysAmount != _setsKeys.Length) {
+                    throw new HashStorageObsoleteException("Incompatible keys");
+                }
+
+                var sizePerSet = new int[keysAmount];
+                for (var i = 0; i < keysAmount; i++) {
+                    if (reader.ReadInt32() != _setsKeys[i].GetHashCode()) {
+                        throw new HashStorageObsoleteException("Incompatible keys");
+                    }
+
+                    sizePerSet[i] = reader.ReadInt32();
+                }
+
+                var amount = reader.ReadInt32();
+                for (var i = 0; i < amount; i++) {
+                    var carId = reader.ReadString();
+
+                    var data = new byte[keysAmount][];
+                    for (var j = 0; j < keysAmount; j++) {
+                        data[j] = reader.ReadBytes(sizePerSet[j]);
+                    }
+
+                    _dictionary[carId] = data;
+                }
+            }
+        }
+
+        public void Add(string carId, [NotNull] byte[][] hashValues) {
+            _dictionary[carId] = hashValues;
+        }
+
+        public void SaveTo([NotNull] string filename) {
+            using (var writer = new ExtendedBinaryWriter(filename)) {
+                writer.Write((byte)0x8a);
+                writer.Write((byte)0x56);
+                writer.Write(Version);
+                writer.Write(ParamsHashCode);
+
+                var first = _dictionary.Values.FirstOrDefault();
+                writer.Write(_setsKeys.Length);
+                for (var i = 0; i < _setsKeys.Length; i++) {
+                    writer.Write(_setsKeys[i].GetHashCode());
+                    writer.Write(first?[i].Length ?? 0);
+                }
+
+                writer.Write(_dictionary.Count);
+                foreach (var pair in _dictionary) {
+                    writer.Write(pair.Key);
+                    foreach (var b in pair.Value) {
+                        writer.Write(b);
                     }
                 }
             }
         }
 
-        public void Add(string carId, string rulesSetId, string hashValue) {
-            if (!_dictionary.ContainsKey(rulesSetId)) {
-                _dictionary[rulesSetId] = new Dictionary<string, string>();
+        public IEnumerable<Simular> FindSimular([NotNull] string carId, [NotNull] string setId, [NotNull] byte[] hashValues, double threshold,
+                [NotNull] RulesSet set, bool keepWorkedRules) {
+            var index = _setsKeys.IndexOf(setId);
+            if (index < 0) {
+                throw new Exception($"Set “{setId}” is not defined");
             }
 
-            _dictionary[rulesSetId][carId] = hashValue;
-        }
-
-        public IEnumerable<Simular> FindSimular(string carId, string rulesSetId, string hashValue, double threshold, RulesSet set = null) {
-            RulesSet.Rule[] workedRules = null;
-
-            if (!_dictionary.ContainsKey(rulesSetId)) yield break;
-
-            foreach (var pair in _dictionary[rulesSetId]) {
+            foreach (var pair in _dictionary) {
                 if (pair.Key == carId) continue;
 
-                var value = set == null ? RulesSet.CompareHashes(hashValue, pair.Value) : RulesSet.CompareHashes(hashValue, pair.Value, set, out workedRules);
+                var pairHash = pair.Value[index];
+
+                RulesSet.Rule[] workedRules = null;
+                var value = RulesSet.CompareHashes(hashValues, pairHash, set, keepWorkedRules, out workedRules);
                 if (value > threshold) {
-                    yield return new Simular {CarId = pair.Key, Value = value, WorkedRules = workedRules};
+                    yield return new Simular { CarId = pair.Key, Value = value, WorkedRules = workedRules };
                 }
             }
         }
@@ -55,12 +118,12 @@ namespace AcTools.DataAnalyzer {
             public RulesSet.Rule[] WorkedRules;
         }
 
-        public static HashStorage FromFile(params string[] filenames) {
-            return new HashStorage(filenames);
+        public static HashStorage FromFile([NotNull] string[] setsKeys, [NotNull] string filename) {
+            return new HashStorage(setsKeys, filename);
         }
 
-        public bool HasCar(string carId) {
-            return _dictionary.Values.Any(rules => rules.ContainsKey(carId));
+        public bool HasCar([NotNull] string carId) {
+            return _dictionary.ContainsKey(carId);
         }
     }
 }

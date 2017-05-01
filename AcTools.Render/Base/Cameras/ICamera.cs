@@ -12,6 +12,10 @@ namespace AcTools.Render.Base.Cameras {
 
         Matrix ViewProjInvert { get; }
 
+        float FarZValue { get; }
+
+        float NearZValue { get; }
+
         bool Visible(BoundingBox box);
 
         FrustrumIntersectionType Intersect(BoundingBox box);

@@ -17,7 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Simple) return false;
+            if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPC;
             contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.States.TransparentBlendState;
@@ -32,6 +32,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
         }
 
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            _effect.FxOverrideColor.Set(mode == SpecialRenderMode.Outline);
+            if (mode == SpecialRenderMode.Outline) {
+                _effect.FxCustomColor.Set(new Vector4(1f));
+            }
+
             _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;

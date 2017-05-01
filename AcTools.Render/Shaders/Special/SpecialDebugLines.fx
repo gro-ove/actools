@@ -10,12 +10,14 @@ struct PS_IN {
 
 cbuffer cbPerObject : register(b0) {
 	matrix gWorldViewProj;
+	bool gOverrideColor;
+	float4 gCustomColor;
 }
 
 PS_IN vs_main(VS_IN vin) {
 	PS_IN vout;
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-	vout.Color = vin.Color;
+	vout.Color = gOverrideColor ? gCustomColor : vin.Color;
 	return vout;
 }
 

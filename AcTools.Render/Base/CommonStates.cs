@@ -13,7 +13,7 @@ namespace AcTools.Render.Base {
 
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
-        private BlendState _transparentBlendState, _addBlendState;
+        private BlendState _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
         private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState,
                 _ambientShadowState;
 
@@ -89,6 +89,54 @@ namespace AcTools.Render.Base {
                     RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 }));
 
+        public BlendState AddState => _addState ?? (_addState =
+                _device.CreateBlendState(new RenderTargetBlendDescription {
+                    BlendEnable = true,
+                    SourceBlend = BlendOption.One,
+                    DestinationBlend = BlendOption.One,
+                    BlendOperation = BlendOperation.Add,
+                    SourceBlendAlpha = BlendOption.One,
+                    DestinationBlendAlpha = BlendOption.One,
+                    BlendOperationAlpha = BlendOperation.Add,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                }));
+
+        public BlendState MaxState => _maxState ?? (_maxState =
+                _device.CreateBlendState(new RenderTargetBlendDescription {
+                    BlendEnable = true,
+                    SourceBlend = BlendOption.One,
+                    DestinationBlend = BlendOption.One,
+                    BlendOperation = BlendOperation.Maximum,
+                    SourceBlendAlpha = BlendOption.One,
+                    DestinationBlendAlpha = BlendOption.One,
+                    BlendOperationAlpha = BlendOperation.Maximum,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                }));
+
+        public BlendState MinState => _minState ?? (_minState =
+                _device.CreateBlendState(new RenderTargetBlendDescription {
+                    BlendEnable = true,
+                    SourceBlend = BlendOption.One,
+                    DestinationBlend = BlendOption.One,
+                    BlendOperation = BlendOperation.Minimum,
+                    SourceBlendAlpha = BlendOption.One,
+                    DestinationBlendAlpha = BlendOption.One,
+                    BlendOperationAlpha = BlendOperation.Minimum,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                }));
+
+        public BlendState MultiplyState => _multiplyState ?? (_multiplyState =
+                _device.CreateBlendState(new RenderTargetBlendDescription {
+                    BlendEnable = true,
+                    SourceBlend = BlendOption.Zero,
+                    DestinationBlend = BlendOption.SourceColor,
+                    BlendOperation = BlendOperation.Add,
+                    SourceBlendAlpha = BlendOption.Zero,
+                    DestinationBlendAlpha = BlendOption.SourceAlpha,
+                    BlendOperationAlpha = BlendOperation.Add,
+                    RenderTargetWriteMask = ColorWriteMaskFlags.All,
+                }));
+
         public RasterizerState DoubleSidedSmoothLinesState => _doubleSidedSmoothLinesState ?? (_doubleSidedSmoothLinesState =
                 RasterizerState.FromDescription(_device, new RasterizerStateDescription {
                     IsAntialiasedLineEnabled = true,
@@ -152,6 +200,10 @@ namespace AcTools.Render.Base {
                 DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
                 DisposeHelper.Dispose(ref _transparentBlendState);
                 DisposeHelper.Dispose(ref _addBlendState);
+                DisposeHelper.Dispose(ref _addState);
+                DisposeHelper.Dispose(ref _maxState);
+                DisposeHelper.Dispose(ref _minState);
+                DisposeHelper.Dispose(ref _multiplyState);
                 DisposeHelper.Dispose(ref _doubleSidedState);
                 DisposeHelper.Dispose(ref _doubleSidedSmoothLinesState);
                 DisposeHelper.Dispose(ref _invertedState);

@@ -58,7 +58,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
                 var toolboxMode = IsSameDirectories(carObject?.Location, carDirectory);
 
-                LiteShowroomWrapper wrapper;
+                LiteShowroomFormWrapper formWrapper;
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report(ControlsStrings.CustomShowroom_Loading);
 
@@ -73,7 +73,7 @@ namespace AcManager.Controls.CustomShowroom {
                                     UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom
                                 } :
                                 new DarkKn5ObjectRenderer(description));
-                        wrapper = new LiteShowroomWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename);
+                        formWrapper = new LiteShowroomFormWrapperWithTools(toolsRenderer, carObject, skinId, presetFilename);
                         renderer = toolsRenderer;
                     } else {
                         Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
@@ -91,18 +91,18 @@ namespace AcManager.Controls.CustomShowroom {
                                     UseSprite = true
                                 });
 
-                        wrapper = new LiteShowroomWrapper(renderer);
+                        formWrapper = new LiteShowroomFormWrapper(renderer);
 
                         if (skinId != null) {
                             renderer.SelectSkin(skinId);
                         }
                     }
 
-                    SetProperties(wrapper, renderer);
-                    wrapper.Form.Icon = AppIconService.GetAppIcon();
+                    SetProperties(formWrapper, renderer);
+                    formWrapper.Form.Icon = AppIconService.GetAppIcon();
                 }
 
-                wrapper.Run(() => _starting = false);
+                formWrapper.Run(() => _starting = false);
             } catch (Exception e) {
                 NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotStart, e);
             } finally {

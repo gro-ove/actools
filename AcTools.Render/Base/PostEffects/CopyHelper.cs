@@ -14,19 +14,38 @@ namespace AcTools.Render.Base.PostEffects {
         public void OnResize(DeviceContextHolder holder) {}
 
         public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
-            Draw(holder, view, target, false);
-        }
-
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, bool hq) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxInputMap.SetResource(view);
+            _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
+        }
 
-            if (hq) {
-                _effect.FxScreenSize.Set(new Vector4(holder.Width, holder.Height, 1f / holder.Width, 1f / holder.Height));
-            }
+        public void DepthToLinear(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, float zNear, float zFar,
+                float zFarNormalize) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxScreenSize.Set(new Vector4(zNear, zFar, zFarNormalize, 0));
+            _effect.TechDepthToLinear.DrawAllPasses(holder.DeviceContext, 6);
+        }
 
-            (hq ? _effect.TechCopyHq : _effect.TechCopy).DrawAllPasses(holder.DeviceContext, 6);
+        public void AccumulateDivide(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, int amount) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxMultipler.Set(1f / amount);
+            _effect.TechAccumulateDivide.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        public void AccumulateBokehDivide(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView maxView, RenderTargetView target, int amount,
+                float bokehMultiplier) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxOverlayMap.SetResource(maxView);
+            _effect.FxMultipler.Set(1f / amount);
+            _effect.FxBokenMultipler.Set(new Vector2(bokehMultiplier, 1f - bokehMultiplier));
+            _effect.TechAccumulateBokehDivide.DrawAllPasses(holder.DeviceContext, 6);
         }
 
         public void Cut(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, float cut) {

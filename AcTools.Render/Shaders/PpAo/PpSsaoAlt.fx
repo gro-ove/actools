@@ -31,6 +31,7 @@
         matrix gViewProjInv;
         matrix gViewProj;
 		float2 gNoiseSize;
+		float gAoPower;
     }	
 
 // fn structs
@@ -101,7 +102,7 @@
 			occlusion += saturate((uSampleRadius / rangeDelta) * step(samDepth + 0.00005, depth));
 		}
 
-		return 1.0 - saturate(pow(occlusion / SAMPLE_THRESHOLD, 1.8));
+		return 1.0 - saturate(pow(occlusion / SAMPLE_THRESHOLD, 1.8)) * gAoPower;
 	}
 
     float4 ps_Ssao(PS_IN pin) : SV_Target {

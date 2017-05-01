@@ -70,40 +70,18 @@
                         <mui:Cell.Effect>
                             <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
                         </mui:Cell.Effect>
-
-                        <mui:Cell Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64" ToolTip="Change car">
-                            <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                            <Path Data="{StaticResource GarageIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
-                                    Width="32" Stretch="Uniform" />
-                        </mui:Cell>
-
-                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="80 0 20 72" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="32" Height="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
-                                PreviewMouseRightButtonDown="OnShowroomContextMenu">
-                            <mui:Cell>
-                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                                <Path Data="{StaticResource CarShowroomIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                        Height="22" Width="22" Stretch="Uniform" />
-                            </mui:Cell>
-                        </Button>
-
-                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="32" Height="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}">
-                            <mui:Cell>
-                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                                <Path Data="{StaticResource CarSetupIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="20"
-                                        Width="20" Stretch="Uniform" />
-                            </mui:Cell>
-                        </Button>
-
-                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="80 72 20 0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="32" Height="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}">
-                            <mui:Cell>
-                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                                <Path Data="{StaticResource ToolsIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="14"
-                                        Width="14" Stretch="Uniform" />
-                            </mui:Cell>
-                        </Button>
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32"
+                                Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car"
+                                Click="OnCarBlockClick" />
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22"
+                                Margin="80 0 20 72" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom"
+                                Click="OnShowroomButtonClick" PreviewMouseRightButtonDown="OnShowroomContextMenu" />
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20"
+                                Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups"
+                                Command="{Binding ManageCarSetupsCommand}" />
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14"
+                                Margin="80 72 20 0" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car"
+                                Command="{Binding ManageCarCommand}" />
                     </mui:Cell>
                     <Border.Triggers>
                         <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -143,21 +121,12 @@
                         <mui:Cell.Effect>
                             <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
                         </mui:Cell.Effect>
-
-                        <mui:Cell Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="64" Height="64" ToolTip="Change track">
-                            <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                            <Path Data="{StaticResource ListSelectIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
-                                    Width="32" Stretch="Uniform" />
-                        </mui:Cell>
-
-                        <Button Style="{StaticResource BaseButtonStyle.Nothing}" Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="32" Height="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}">
-                            <mui:Cell>
-                                <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" />
-                                <Path Data="{StaticResource ToolsIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="14"
-                                        Width="14" Stretch="Uniform" />
-                            </mui:Cell>
-                        </Button>
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32"
+                                Margin="20 0 70 0" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track"
+                                Click="OnTrackBlockClick" />
+                        <mui:ModernButton EllipseStrokeThickness="2" IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14"
+                                Margin="100 0 12 0" HorizontalAlignment="Center" VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track"
+                                Command="{Binding ManageTrackCommand}" />
                     </mui:Cell>
                     <Border.Triggers>
                         <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -198,21 +167,47 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}">
-                    <mui:Cell Margin="0 0 0 4">
-                        <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
-                        <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
-                                Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
-                            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
-                        </Border>
-                    </mui:Cell>
+                    <DockPanel>
+                        <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <ContextMenu>
+                                <MenuItem IsCheckable="True" IsChecked="{Binding RandomTime}" Header="Random Time"
+                                        DataContext="{Binding Data, Source={StaticResource Model}}"
+                                        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" />
+                            </ContextMenu>
+                        </mui:ContextMenuButton>
+                        <mui:Cell Margin="0 0 0 4">
+                            <mui:BooleanSwitch Value="{Binding RandomTime}">
+                                <mui:BooleanSwitch.True>
+                                    <TextBlock Background="Transparent" Style="{StaticResource Label}" Padding="8 0 0 0">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{x:Static mui:UiStrings.Colon_Format}">
+                                                <Binding Source="{x:Static g:AppStrings.Drive_Time}" />
+                                                <Binding Source="{x:Static g:AppStrings.Drive_Time_Random}" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </mui:BooleanSwitch.True>
+                                <mui:BooleanSwitch.False>
+                                    <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0"
+                                            Content="{x:Static g:AppStrings.Drive_Time}" />
+                                </mui:BooleanSwitch.False>
+                            </mui:BooleanSwitch>
+                            
+                            <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
+                                    Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
+                                <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
+                            </Border>
+                        </mui:Cell>
+                    </DockPanel>
                     <Slider Value="{Binding Time}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
                             Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}"
-                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" SmallChange="900" LargeChange="1800" />
+                            Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}" SmallChange="900" LargeChange="1800"
+                            IsEnabled="{Binding RandomTime, Converter={StaticResource InvertBooleanConverter}}" />
                 </StackPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
-                    <mui:ContextMenuButton DockPanel.Dock="Right" Padding="8" Click="ConditionsContextMenuButton_OnClick" />
+                    <mui:ContextMenuButton DockPanel.Dock="Right" Padding="8" Click="OnConditionsContextMenu" />
                     <CheckBox IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
                         <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
                     </CheckBox>
@@ -238,26 +233,30 @@
                         </Border>
                         <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
                     </DockPanel>
-                    <mui:BetterComboBox Margin="4 0 4 0" IsEditable="False" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}">
+                    <mui:HierarchicalComboBox ItemsSource="{Binding HierarchicalWeatherList}" SelectedItem="{Binding SelectedWeather}" />
+                    <!--<mui:BetterComboBox Margin="4 0 4 0" IsEditable="False" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}">
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                                 <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
                             </Style>
                         </ComboBox.ItemContainerStyle>
-                    </mui:BetterComboBox>
+                    </mui:BetterComboBox>-->
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <DockPanel>
-                        <!--todo: road temp. slider-->
                         <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
                             <c:ModernPopup Padding="16 12 16 16">
-                                <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}">
-                                    <CheckBox IsChecked="{Binding CustomRoadTemperatureEnabled}" DockPanel.Dock="Top">
+                                <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}"
+                                        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}">
+                                    <CheckBox IsChecked="{Binding RandomTemperature}">
+                                        <Label Content="Random temperature" />
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding CustomRoadTemperature}">
                                         <Label Content="Custom road temperature" />
                                     </CheckBox>
-                                    <c:TemperatureValueLabel IsEnabled="{Binding CustomRoadTemperatureEnabled}"
+                                    <c:TemperatureValueLabel IsEnabled="{Binding CustomRoadTemperature}"
                                             Value="{Binding CustomRoadTemperatureValue, StringFormat='\{0:F1\}'}" Background="Transparent"
                                             Content="Road temperature" Margin="-8 0 0 0">
                                         <mui:ValueLabel.ToolTip>
@@ -265,7 +264,7 @@
                                                     Text="{Binding RoadTemperature}" />
                                         </mui:ValueLabel.ToolTip>
                                     </c:TemperatureValueLabel>
-                                    <Slider IsEnabled="{Binding CustomRoadTemperatureEnabled}" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
+                                    <Slider IsEnabled="{Binding CustomRoadTemperature}" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
                                             Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" Value="{Binding CustomRoadTemperatureValue}"
                                             TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" Margin="-5 0 0 0" />
                                     <c:TemperatureBlock Text="{Binding RecommendedRoadTemperature}" Prefix="Recommended: " Style="{StaticResource Small}" />
@@ -273,12 +272,45 @@
                             </c:ModernPopup>
                         </mui:ContextMenuButton>
 
-                        <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Background="Transparent"
-                                Content="{x:Static g:AppStrings.Drive_Temperature}">
-                            <mui:ValueLabel.ToolTip>
-                                <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1" Text="{Binding RoadTemperature}" />
-                            </mui:ValueLabel.ToolTip>
-                        </c:TemperatureValueLabel>
+                        <mui:BooleanSwitch Value="{Binding RandomTemperature}">
+                            <mui:BooleanSwitch.True>
+                                <TextBlock Background="Transparent" Style="{StaticResource Label}" Margin="0 0 0 4" Padding="8 0 0 0">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{x:Static mui:UiStrings.Colon_Format}">
+                                            <Binding Source="{x:Static g:AppStrings.Drive_Temperature}" />
+                                            <Binding Source="{x:Static g:AppStrings.Drive_Temperature_Random}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                    <TextBlock.ToolTip>
+                                        <mui:BooleanSwitch Value="{Binding CustomRoadTemperature}">
+                                            <mui:BooleanSwitch.True>
+                                                <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1"
+                                                        Text="{Binding RoadTemperature}" />
+                                            </mui:BooleanSwitch.True>
+                                            <mui:BooleanSwitch.False>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0}{1}">
+                                                            <Binding Source="{x:Static g:AppStrings.Common_RoadTemperature}" />
+                                                            <Binding Source="{x:Static g:AppStrings.Drive_Temperature_Random}" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </mui:BooleanSwitch.False>
+                                        </mui:BooleanSwitch>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </mui:BooleanSwitch.True>
+                            <mui:BooleanSwitch.False>
+                                <c:TemperatureValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Background="Transparent"
+                                        Content="{x:Static g:AppStrings.Drive_Temperature}">
+                                    <mui:ValueLabel.ToolTip>
+                                        <c:TemperatureBlock Prefix="{x:Static g:AppStrings.Common_RoadTemperature}" Rounding="0.1"
+                                                Text="{Binding RoadTemperature}" />
+                                    </mui:ValueLabel.ToolTip>
+                                </c:TemperatureValueLabel>
+                            </mui:BooleanSwitch.False>
+                        </mui:BooleanSwitch>
                     </DockPanel>
                     <mui:Cell Margin="0 0 0 4" Background="Transparent">
                         <mui:Cell.ToolTip>
@@ -311,14 +343,12 @@
                                 </Grid>
                             </ToolTip>
                         </mui:Cell.ToolTip>
-
                         <Slider Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}"
-                                Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
-                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
-                                    Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="{x:Static g:AppStrings.Drive_Temperature_Warning}" />
-                        </StackPanel>
+                                Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight"
+                                IsEnabled="{Binding RandomTemperature, Converter={StaticResource InvertBooleanConverter}}" />
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                ToolTip="{x:Static g:AppStrings.Drive_Temperature_Warning}" HorizontalAlignment="Right" Margin="0 0 0 -8" />
                     </mui:Cell>
                 </StackPanel>
 

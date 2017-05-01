@@ -17,7 +17,8 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _blurEffect = holder.GetEffect<EffectPpAoBlur>();
         }
 
-        public virtual void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target) {
+        public virtual void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
+                float aoPower) {
             _blurEffect.FxDepthMap.SetResource(depth);
             _blurEffect.FxNormalMap.SetResource(normals);
         }

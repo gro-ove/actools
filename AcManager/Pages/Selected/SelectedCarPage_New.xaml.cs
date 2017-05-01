@@ -352,7 +352,7 @@ namespace AcManager.Pages.Selected {
                     MaxWidth = 99999,
                     MaxHeight = 99999,
                     Content = new ModernFrame {
-                        Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True", SelectedObject.Id)
+                        Source = UriExtension.Create("/Pages/ContentTools/CarAnalyzer.xaml?Id={0}&Models=True&Rating=True", SelectedObject.Id)
                     }
                 };
                 return dialog.ShowAndWaitAsync();
@@ -634,6 +634,10 @@ namespace AcManager.Pages.Selected {
 
                 new InputBinding(_model.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
+
+                new InputBinding(_model.CarAnalyzerCommand, new KeyGesture(Key.A, ModifierKeys.Alt)),
+                new InputBinding(_model.ReplaceTyresCommand, new KeyGesture(Key.T, ModifierKeys.Alt)),
+                new InputBinding(_model.ReplaceSoundCommand, new KeyGesture(Key.S, ModifierKeys.Alt)),
             });
         }
 

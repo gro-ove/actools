@@ -3866,6 +3866,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string Drive_Temperature_Random {
+            get {
+                return ResourceManager.GetString("Drive_Temperature_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actual temperature is out of range, closest value is used.
         /// </summary>
         public static string Drive_Temperature_Warning {
@@ -3880,6 +3889,15 @@ namespace AcManager {
         public static string Drive_Time {
             get {
                 return ResourceManager.GetString("Drive_Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string Drive_Time_Random {
+            get {
+                return ResourceManager.GetString("Drive_Time_Random", resourceCulture);
             }
         }
         
@@ -9170,7 +9188,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Replace sound by a sound of any other car.
+        ///   Looks up a localized string similar to Replace sound by a sound of any other car (Alt+S).
         /// </summary>
         public static string Toolbar_ReplaceSound_Tooltip {
             get {

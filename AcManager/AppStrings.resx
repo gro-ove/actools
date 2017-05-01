@@ -1300,7 +1300,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>For development purposes only (Alt+J)</value>
   </data>
   <data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
-    <value>Replace sound by a sound of any other car</value>
+    <value>Replace sound by a sound of any other car (Alt+S)</value>
   </data>
   <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
     <value>Disable (Ctrl+D)</value>
@@ -2028,6 +2028,12 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Drive_Temperature" xml:space="preserve">
     <value>Temperature</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Random</value>
   </data>
   <data name="Drive_ActualTemperature" xml:space="preserve">
     <value>Actual temperature:</value>

@@ -16,7 +16,7 @@ using AcTools.Windows;
 using SlimDX;
 
 namespace AcTools.Render.Wrapper {
-    public class LiteShowroomWrapper : BaseKn5FormWrapper {
+    public class LiteShowroomFormWrapper : BaseKn5FormWrapper {
         public bool OptionHwDownscale = true;
 
         private readonly ForwardKn5ObjectRenderer _renderer;
@@ -39,7 +39,7 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900)
+        public LiteShowroomFormWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900)
                 : base(renderer, title, width, height) {
             Form.MouseDoubleClick += OnMouseDoubleClick;
             _renderer = renderer;
@@ -52,6 +52,35 @@ namespace AcTools.Render.Wrapper {
 
         private void OnMouseDoubleClick(object sender, MouseEventArgs e) {
             _renderer.AutoAdjustTarget = true;
+        }
+
+        protected override void OnLostFocus(object sender, EventArgs e) {
+            base.OnLostFocus(sender, e);
+            _renderer.StopMovement();
+        }
+
+        protected override void OnMouseMove(object sender, MouseEventArgs e) {
+            if (!Form.Focused) {
+                _renderer.StopMovement();
+            }
+
+            base.OnMouseMove(sender, e);
+        }
+
+        protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
+            if (_renderer.ShowMovementArrows) {
+                _renderer.MousePosition = new Vector2(MousePosition.X, MousePosition.Y);
+                _renderer.IsDirty = true;
+            }
+
+            if (button != MouseButtons.Left ||
+                    !_renderer.MoveObject(new Vector2(dx, dy) * (User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey) ? 0.2f : 1f))) {
+                base.OnMouseMove(button, dx, dy);
+            }
+
+            if (button != MouseButtons.Left) {
+                _renderer.StopMovement();
+            }
         }
 
         protected virtual void GoToNormalMode() {
@@ -87,6 +116,13 @@ namespace AcTools.Render.Wrapper {
             new Vector2(0, 1f),
             new Vector2(0.7071f, 0.7071f),
         };
+
+        protected override void OnClick() {
+            base.OnClick();
+            if (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey)) {
+                (Renderer as DarkKn5ObjectRenderer)?.AutoFocus(new Vector2(MousePosition.X, MousePosition.Y));
+            }
+        }
 
         protected override void OnTick(object sender, TickEventArgs args) {
             if (!Form.Focused) return;
@@ -188,7 +224,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         private class ProgressWrapper : IProgress<double> {
-            private IProgress<Tuple<string, double?>> _main;
+            private readonly IProgress<Tuple<string, double?>> _main;
             private readonly string _message;
 
             public ProgressWrapper(IProgress<Tuple<string, double?>> main, string message) {
@@ -245,12 +281,13 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
                 progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
-                _renderer.Shot(multipler, OptionHwDownscale && downscale ? 0.5 : 1d, stream, true);
+                _renderer.Shot(multipler, OptionHwDownscale && downscale ? 0.5 : 1d, 1d, stream, true,
+                        progress.ToDouble("Rendering…").Subrange(0.2, 0.6), cancellation);
                 stream.Position = 0;
                 if (cancellation.IsCancellationRequested) return;
 
                 using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                    progress?.Report(Tuple.Create("Saving…", (double?)0.6));
+                    progress?.Report(Tuple.Create("Saving…", (double?)0.9));
                     ImageUtils.Convert(stream, destination, !OptionHwDownscale && downscale
                             ? new Size((_renderer.ActualWidth * multipler / 2).RoundToInt(), (_renderer.ActualHeight * multipler / 2).RoundToInt())
                             : (Size?)null, 95, new ImageUtils.ImageInformation());
@@ -291,8 +328,6 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 multipler = 2d;
             }
 
-            _renderer.KeepFxaaWhileShooting = !downscale;
-
             var directory = FileUtils.GetDocumentsScreensDirectory();
             FileUtils.EnsureDirectoryExists(directory);
             var filename = Path.Combine(directory, $"__custom_showroom_{DateTime.Now.ToUnixTimestamp()}.jpg");
@@ -317,6 +352,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             base.OnKeyUp(sender, args);
             if (args.Handled) return;
 
+            var dark = _renderer as DarkKn5ObjectRenderer;
             switch (args.KeyCode) {
 #if SSLR_PARAMETRIZED
                 case Keys.D1:
@@ -340,34 +376,33 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
 
                 case Keys.R:
                     if (!args.Control && !args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.UseSslr = !d.UseSslr;
+                        if (dark != null) {
+                            dark.UseSslr = !dark.UseSslr;
                         }
                     }
                     break;
 
                 case Keys.T:
-                    if (!args.Control && !args.Alt && !args.Shift) {
+                    if (args.Control && args.Alt && !args.Shift) {
                         _renderer.ToneMapping = _renderer.ToneMapping.NextValue();
+                    } else if (!args.Control && !args.Alt && !args.Shift) {
+                        _renderer.ShowMovementArrows = !_renderer.ShowMovementArrows;
                     }
                     break;
 
-                case Keys.A: {
-                    var d = _renderer as DarkKn5ObjectRenderer;
-                    if (d != null) {
+                case Keys.A: 
+                    if (dark != null) {
                         if (!args.Control && !args.Alt && !args.Shift) {
-                            d.UseAo = !d.UseAo;
+                            dark.UseAo = !dark.UseAo;
                         }
                         if (!args.Control && !args.Alt && args.Shift) {
-                            d.AoDebug = !d.AoDebug;
+                            dark.AoDebug = !dark.AoDebug;
                         }
                         if (args.Control && !args.Alt && args.Shift) {
-                            d.AoType = d.AoType.NextValue();
+                            dark.AoType = dark.AoType.NextValue();
                         }
                     }
                     break;
-                }
 
                 case Keys.Space:
                     if (!args.Control && args.Alt && !args.Shift && !Kn5ObjectRenderer.LockCamera) {
@@ -431,12 +466,11 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     if (args.Control && !args.Alt && !args.Shift) {
                         _renderer.UseSsaa = !_renderer.UseSsaa;
                     } else if (args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
+                        if (dark != null) {
                             if (args.Control) {
-                                d.FlatMirrorBlurred = !d.FlatMirrorBlurred;
+                                dark.FlatMirrorBlurred = !dark.FlatMirrorBlurred;
                             } else {
-                                d.FlatMirror = !d.FlatMirror;
+                                dark.FlatMirror = !dark.FlatMirror;
                             }
                         }
                     } else {
@@ -454,16 +488,24 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     }
                     break;
 
+                case Keys.J:
+                    if (dark != null) {
+                        if (!args.Control && !args.Alt && !args.Shift) {
+                            dark.UseCorrectAmbientShadows = !dark.UseCorrectAmbientShadows;
+                        } else if (!args.Control && args.Alt && !args.Shift) {
+                            dark.BlurCorrectAmbientShadows = !dark.BlurCorrectAmbientShadows;
+                        }
+                    }
+                    break;
+
                 case Keys.E:
                     if (!args.Control &&! args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.CubemapAmbient = d.CubemapAmbient != 0f ? 0f : 0.5f;
+                        if (dark != null) {
+                            dark.CubemapAmbient = dark.CubemapAmbient != 0f ? 0f : 0.5f;
                         }
                     } else if (args.Control &&! args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.ReflectionsWithShadows = !d.ReflectionsWithShadows;
+                        if (dark != null) {
+                            dark.ReflectionsWithShadows = !dark.ReflectionsWithShadows;
                         }
                     }
                     break;
@@ -496,6 +538,25 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             }
                         } else if (args.Control && !args.Alt) {
                             _renderer.CarNode.IsDriverVisible = !_renderer.CarNode.IsDriverVisible;
+                        }
+                    }
+                    break;
+
+                case Keys.P:
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (dark != null) {
+                            dark.ShowDepth = !dark.ShowDepth;
+                        }
+                    }
+                    break;
+
+                case Keys.O:
+                    if (dark != null) {
+                        if (!args.Control && !args.Alt && !args.Shift) {
+                            dark.UseDof = !dark.UseDof;
+                        }
+                        if (!args.Control && args.Alt && !args.Shift) {
+                            dark.UseAccumulationDof = !dark.UseAccumulationDof;
                         }
                     }
                     break;
@@ -580,10 +641,9 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         _renderer.UsePcss = !_renderer.UsePcss;
                     }
                     if (args.Control && args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
+                        if (dark != null) {
                             var sizes = new[] { 1024, 2048, 4096, 8192 };
-                            d.ShadowMapSize = sizes.ElementAtOr(sizes.IndexOf(d.ShadowMapSize) + 1, sizes[0]);
+                            dark.ShadowMapSize = sizes.ElementAtOr(sizes.IndexOf(dark.ShadowMapSize) + 1, sizes[0]);
                         }
                     }
                     if (!args.Control && !args.Alt && !args.Shift) {
@@ -619,9 +679,8 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
 
                 case Keys.U:
                     if (args.Control && !args.Alt && !args.Shift) {
-                        var d = _renderer as DarkKn5ObjectRenderer;
-                        if (d != null) {
-                            d.MeshDebug = !d.MeshDebug;
+                        if (dark != null) {
+                            dark.MeshDebug = !dark.MeshDebug;
                         }
                     } else if (!args.Control && !args.Alt && !args.Shift) {
                         if (_renderer.CarNode != null) {

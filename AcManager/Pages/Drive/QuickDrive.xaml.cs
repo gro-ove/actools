@@ -25,6 +25,7 @@ using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
@@ -108,6 +109,10 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
             _selectNextMode = null;
+
+            this.OnActualUnload(() => {
+                Model.Unload();
+            });
         }
 
         private void OnTrackStateChanged(object sender, PropertyChangedEventArgs e) {
@@ -170,6 +175,12 @@ namespace AcManager.Pages.Drive {
 
             [JsonProperty(@"rcLw")]
             public bool? RealConditionsLocalWeather;
+
+            [JsonProperty(@"rte")]
+            public bool RandomTemperature;
+
+            [JsonProperty(@"rti")]
+            public bool RandomTime;
 
             [JsonProperty(@"crt")]
             public bool CustomRoadTemperature;
@@ -246,7 +257,7 @@ namespace AcManager.Pages.Drive {
                 await Task.Delay(100);
                 RandomTimeCommand.Execute();
                 await Task.Delay(100);
-                RandomWeatherCommand.Execute();
+                SetRandomWeather(false);
                 await Task.Delay(100);
                 RandomTemperatureCommand.Execute();
             }));
@@ -360,7 +371,7 @@ namespace AcManager.Pages.Drive {
 
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
-                    WeatherId = SelectedWeather?.Id,
+                    WeatherId = SelectedWeatherObject?.Id,
                     
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
@@ -370,7 +381,9 @@ namespace AcManager.Pages.Drive {
                     Time = Time,
                     TimeMultipler = TimeMultipler,
 
-                    CustomRoadTemperature = CustomRoadTemperatureEnabled,
+                    RandomTemperature = RandomTemperature,
+                    RandomTime = RandomTime,
+                    CustomRoadTemperature = CustomRoadTemperature,
                     CustomRoadTemperatureValue = _customRoadTemperatureValue
                 }, o => {
                     TimeMultipler = o.TimeMultipler;
@@ -383,7 +396,9 @@ namespace AcManager.Pages.Drive {
                     Temperature = o.Temperature;
                     Time = o.Time;
 
-                    CustomRoadTemperatureEnabled = o.CustomRoadTemperature;
+                    RandomTemperature = o.RandomTemperature;
+                    RandomTime = o.RandomTime;
+                    CustomRoadTemperature = o.CustomRoadTemperature;
                     _customRoadTemperatureValue = o.CustomRoadTemperatureValue;
                     OnPropertyChanged(nameof(CustomRoadTemperatureValue));
 
@@ -405,6 +420,8 @@ namespace AcManager.Pages.Drive {
                         SelectedWeather = WeatherManager.Instance.GetById(_weatherId);
                     } else if (o.WeatherId != null) {
                         SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
+                    } else {
+                        SelectedWeather = RandomWeather;
                     }
 
                     if (o.TrackPropertiesPresetFilename != null && o.TrackPropertiesData != null) {
@@ -435,7 +452,9 @@ namespace AcManager.Pages.Drive {
                     Time = 12 * 60 * 60;
                     TimeMultipler = 1;
 
-                    CustomRoadTemperatureEnabled = false;
+                    RandomTemperature = false;
+                    RandomTime = false;
+                    CustomRoadTemperature = false;
                     _customRoadTemperatureValue = null;
                     OnPropertyChanged(nameof(CustomRoadTemperatureValue));
                 });
@@ -466,6 +485,10 @@ namespace AcManager.Pages.Drive {
                 }
 
                 UpdateConditions();
+
+                UpdateHierarchicalWeatherList().Forget();
+                WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
+                        nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
             }
 
             #region Presets
@@ -592,6 +615,11 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
+                var temperature = RandomTemperature ? GetRandomTemperature() : Temperature;
+                var weather = SelectedWeatherObject ?? GetRandomWeather(temperature);
+                var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue :
+                        Game.ConditionProperties.GetRoadTemperature(Time, Temperature, weather?.TemperatureCoefficient ?? 0.0);
+
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
                         CarId = SelectedCar.Id,
@@ -600,14 +628,14 @@ namespace AcManager.Pages.Drive {
                         TrackId = SelectedTrack.Id,
                         TrackConfigurationId = SelectedTrack.LayoutId
                     }, AssistsViewModel.ToGameProperties(), new Game.ConditionProperties {
-                        AmbientTemperature = Temperature,
-                        RoadTemperature = CustomRoadTemperatureEnabled ? CustomRoadTemperatureValue : RoadTemperature,
+                        AmbientTemperature = temperature,
+                        RoadTemperature = roadTemperature,
 
                         SunAngle = Game.ConditionProperties.GetSunAngle(_forceTime ?? Time),
                         TimeMultipler = TimeMultipler,
                         CloudSpeed = 0.2,
 
-                        WeatherName = SelectedWeather?.Id
+                        WeatherName = weather?.Id
                     }, TrackState.ToProperties());
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
@@ -636,7 +664,7 @@ namespace AcManager.Pages.Drive {
                 set {
                     if (Equals(value, _selectedModeViewModel)) return;
                     if (_selectedModeViewModel != null) {
-                        _selectedModeViewModel.Changed -= SelectedModeViewModel_Changed;
+                        _selectedModeViewModel.Changed -= OnModeModelChanged;
                     }
 
                     _selectedModeViewModel = value;
@@ -644,13 +672,13 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(GoCommand));
 
                     if (_selectedModeViewModel != null) {
-                        _selectedModeViewModel.Changed += SelectedModeViewModel_Changed;
+                        _selectedModeViewModel.Changed += OnModeModelChanged;
                         OnSelectedUpdated();
                     }
                 }
             }
 
-            private void SelectedModeViewModel_Changed(object sender, EventArgs e) {
+            private void OnModeModelChanged(object sender, EventArgs e) {
                 SaveLater();
             }
 
@@ -661,6 +689,11 @@ namespace AcManager.Pages.Drive {
                 }
 
                 return false;
+            }
+
+            public void Unload() {
+                WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.RemoveHandler(WeatherManager.Instance.WrappersList,
+                        nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
             }
         }
 
@@ -767,7 +800,6 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnCarContextMenu(object sender, ContextMenuButtonEventArgs e) {
-
             var menu = new ContextMenu()
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
                     .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
@@ -780,9 +812,7 @@ namespace AcManager.Pages.Drive {
                         CarSkinsListPage.Open(Model.SelectedCar);
                     })
                     .AddSeparator();
-
             CarBlock.OnShowroomContextMenu(menu, Model.SelectedCar, Model.SelectedCar.SelectedSkin);
-
             menu.AddSeparator()
                 .AddItem("Open car in Content tab", () => {
                     CarsListPage.Show(Model.SelectedCar, Model.SelectedCar.SelectedSkin?.Id);
@@ -790,7 +820,6 @@ namespace AcManager.Pages.Drive {
                 .AddItem(AppStrings.Toolbar_Folder, () => {
                     Model.SelectedCar.ViewInExplorer();
                 });
-
             e.Menu = menu;
         }
 
@@ -803,7 +832,7 @@ namespace AcManager.Pages.Drive {
                         TracksListPage.Show(Model.SelectedTrack);
                     }, isEnabled: AppKeyHolder.IsAllRight)
                     .AddItem(AppStrings.Toolbar_Folder, () => {
-                        Model.SelectedCar.ViewInExplorer();
+                        Model.SelectedTrack.ViewInExplorer();
                     });
         }
 
@@ -812,12 +841,12 @@ namespace AcManager.Pages.Drive {
             Model.ChangeCarCommand.Execute(null);
         }
 
-        private void OnTrackBlockClick(object sender, MouseButtonEventArgs e) {
+        private void OnTrackBlockClick(object sender, RoutedEventArgs e) {
             if (e.Handled) return;
             Model.ChangeTrackCommand.Execute(null);
         }
 
-        private void ConditionsContextMenuButton_OnClick(object sender, ContextMenuButtonEventArgs e) {
+        private void OnConditionsContextMenu(object sender, ContextMenuButtonEventArgs e) {
             if (Model.RealConditions) {
                 e.Menu = (TryFindResource(@"RealConditionsContextMenu") as ContextMenu)?
                         .AddSeparator()

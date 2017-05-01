@@ -378,8 +378,11 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        protected bool HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
-            if (_bufferH1 == null || _bufferH2 == null) return false;
+        /// <summary>
+        /// Returns null if result is in output.
+        /// </summary>
+        protected ShaderResourceView HdrPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
+            if (_bufferH1 == null || _bufferH2 == null) return input;
 
             if (UseLensFlares) {
                 // prepare effects
@@ -423,7 +426,7 @@ namespace AcTools.Render.Forward {
                 _hdr.FxBloomMap.SetResource(_bufferH2.View);
                 GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
 
-                return true;
+                return null;
             }
 
             if (UseBloom) {
@@ -456,7 +459,7 @@ namespace AcTools.Render.Forward {
                 _hdr.FxBloomMap.SetResource(_bufferH1.View);
                 GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
 
-                return true;
+                return null;
             }
 
             if (ToneMapping != ToneMappingFn.None) {
@@ -471,10 +474,10 @@ namespace AcTools.Render.Forward {
                 _hdr.FxInputMap.SetResource(input);
                 _hdr.FxBloomMap.SetResource(null);
                 GetHdrTechnique().DrawAllPasses(DeviceContext, 6);
-                return true;
+                return null;
             }
 
-            return false;
+            return input;
         }
 
         private bool _colorGradingSet;
@@ -498,8 +501,11 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        private bool ColorGradingPass(ShaderResourceView input, RenderTargetView output, Viewport viewport) {
-            if (ColorGradingData == null) return false;
+        /// <summary>
+        /// Returns null if result is in output.
+        /// </summary>
+        private ShaderResourceView ColorGradingPass(ShaderResourceView input, RenderTargetView target, Viewport viewport) {
+            if (ColorGradingData == null) return input;
 
             if (!_colorGradingSet) {
                 _colorGradingSet = true;
@@ -511,22 +517,25 @@ namespace AcTools.Render.Forward {
                 }
             }
 
-            if (_colorGradingView == null) return false;
+            if (_colorGradingView == null) return input;
 
             if (_hdr == null) {
                 _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
             }
 
             DeviceContext.Rasterizer.SetViewports(viewport);
-            DeviceContext.OutputMerger.SetTargets(output);
+            DeviceContext.OutputMerger.SetTargets(target);
 
             _hdr.FxInputMap.SetResource(input);
             _hdr.FxColorGradingMap.SetResource(_colorGradingView);
             _hdr.TechColorGrading.DrawAllPasses(DeviceContext, 6);
-            return true;
+            return null;
         }
-        
-        private bool AaPass(ShaderResourceView input, RenderTargetView output) {
+
+        /// <summary>
+        /// If returns null, result is in target.
+        /// </summary>
+        private ShaderResourceView AaPass(ShaderResourceView input, RenderTargetView target) {
             if (IsSmaaAvailable && UseSmaa) {
                 throw new NotImplementedException();
             }
@@ -538,73 +547,57 @@ namespace AcTools.Render.Forward {
                 }
 
                 DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, input, new Vector2(Width, Height),
-                        output, new Vector2(ActualWidth, ActualHeight));
-                return true;
+                        target, new Vector2(ActualWidth, ActualHeight));
+                return null;
             }
 
             if (UseFxaa) {
-                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, output);
-                return true;
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, target);
+                return null;
             }
             
-            return false;
+            return input;
         }
-
-        private void AaThenBloom() {
+        
+        /// <summary>
+        /// Inner _bufferA used as temporary if SSAA enabled. If returns null, result is in target.
+        /// </summary>
+        [CanBeNull]
+        protected ShaderResourceView AaThenBloom(ShaderResourceView view, RenderTargetView target) {
             var bufferA = _bufferA;
-            var bufferF = _bufferF;
-            if (bufferF == null || bufferA == null) return;
+            if (bufferA == null) return view;
 
-            var aaView = AaPass(bufferF.View, bufferA.TargetView) ? bufferA.View : bufferF.View;
+            var aaView = AaPass(view, bufferA.TargetView) ?? bufferA.View;
 
             var bufferAColorGrading = _bufferAColorGrading;
-            if (UseColorGrading && bufferAColorGrading != null) {
-                var hdrView = HdrPass(aaView, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ? bufferAColorGrading.View : aaView;
-                if (!ColorGradingPass(hdrView, RenderTargetView, OutputViewport)) {
-                    // nothing happened in color grading stage
-                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, hdrView, RenderTargetView);
-                }
-            } else {
-                if (!HdrPass(aaView, RenderTargetView, OutputViewport)) {
-                    // HDR stage didn’t move AA buffer to RTV
-                    DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, aaView, RenderTargetView);
-                }
+            if (!UseColorGrading || bufferAColorGrading == null) {
+                return HdrPass(aaView, target, OutputViewport);
             }
+
+            var hdrView = HdrPass(aaView, bufferAColorGrading.TargetView, bufferAColorGrading.Viewport) ?? bufferAColorGrading.View;
+            return ColorGradingPass(hdrView, target, OutputViewport);
         }
 
-        private void BloomThenAa() {
+        /// <summary>
+        /// Doesn’t work! Requires a new temporary buffer for SSAA.
+        /// </summary>
+        protected ShaderResourceView BloomThenAa(ShaderResourceView view, RenderTargetView target) {
             var bufferA = _bufferA;
-            var bufferF = _bufferF;
-            if (bufferF == null || bufferA == null) return;
+            if (bufferA == null) return null;
 
-            var bloomView = HdrPass(bufferF.View, bufferA.TargetView, OutputViewport) ? bufferA.View : bufferF.View;
-            var aa = AaPass(bloomView, RenderTargetView);
-
-            if (!aa) {
-                // AA stage didn’t move bloomed buffer to RTV
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, bloomView, RenderTargetView);
-            }
+            var bloomView = HdrPass(view, bufferA.TargetView, OutputViewport) ?? bufferA.View;
+            return AaPass(bloomView, target);
         }
 
         protected override void DrawOverride() {
             DrawSceneToBuffer();
-            AaThenBloom();
-        }
 
-        public bool KeepFxaaWhileShooting;
+            var bufferF = _bufferF;
+            if (bufferF == null) return;
 
-        public override void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
-            if (KeepFxaaWhileShooting || Equals(multiplier, 1d) && Equals(downscale, 1d)) {
-                base.Shot(multiplier, downscale, outputStream, lossless);
-            } else {
-                var useFxaa = UseFxaa;
-                UseFxaa = false;
-
-                try {
-                    base.Shot(multiplier, downscale, outputStream, lossless);
-                } finally {
-                    UseFxaa = useFxaa;
-                }
+            var result = AaThenBloom(bufferF.View, RenderTargetView);
+            if (result != null) {
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             }
         }
 

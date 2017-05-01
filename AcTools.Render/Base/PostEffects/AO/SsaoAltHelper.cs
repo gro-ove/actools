@@ -30,15 +30,17 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxSamplesKernel.Set(samplesKernel);
         }
 
-        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target) {
-            base.Draw(holder, depth, normals, camera, target);
+        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
+                float aoPower) {
+            base.Draw(holder, depth, normals, camera, target, aoPower);
             _effect.FxNoiseSize.Set(new Vector2(holder.Width / 4f, holder.Height / 4f));
 
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxDepthMap.SetResource(depth);
             _effect.FxNormalMap.SetResource(normals);
-            
+
+            _effect.FxAoPower.Set(aoPower);
             _effect.FxViewProj.SetMatrix(camera.ViewProj);
             _effect.FxViewProjInv.SetMatrix(camera.ViewProjInvert);
 

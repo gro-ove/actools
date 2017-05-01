@@ -598,6 +598,47 @@
                         TickPlacement="BottomRight" />
             </DockPanel>
 
+            <TextBlock Text="DOF:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+
+            <CheckBox IsChecked="{Binding Renderer.UseDof}">
+                <Label Content="Enable" />
+            </CheckBox>
+
+            <mui:SpacingStackPanel IsEnabled="{Binding UseDof}" DataContext="{Binding Renderer}" Spacing="4">
+                <DockPanel>
+                    <mui:ValueLabel Value="{Binding DofFocusPlane, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                            Content="Focus plane" Postfix="m" />
+                    <Slider Minimum="0" Maximum="5" Value="{Binding DofFocusPlane}" TickFrequency="1" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <DockPanel>
+                    <mui:ValueLabel Value="{Binding DofScale, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scale" Postfix="%" />
+                    <Slider Minimum="0" Maximum="200" Value="{Binding DofScale, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                            TickFrequency="20" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <mui:SpacingStackPanel Spacing="4">
+                    <CheckBox IsChecked="{Binding UseAccumulationDof}">
+                        <Label Content="Accumulation DOF (experimental)" />
+                    </CheckBox>
+
+                    <DockPanel IsEnabled="{Binding UseAccumulationDof}">
+                        <mui:ValueLabel Value="{Binding AccumulationDofIterations}" mui:BetterTextBox.Mode="Number"
+                                DockPanel.Dock="Top" Content="Iterations for screenshots" />
+                        <Slider Minimum="50" Maximum="300" Value="{Binding AccumulationDofIterations}" TickFrequency="25" TickPlacement="BottomRight" />
+                    </DockPanel>
+
+                    <DockPanel IsEnabled="{Binding UseAccumulationDof}">
+                        <mui:ValueLabel Value="{Binding AccumulationDofApertureSize, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Aperture size" Postfix=" cm" />
+                        <Slider Minimum="0" Maximum="2"
+                                Value="{Binding AccumulationDofApertureSize, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+                                TickFrequency="0.2" TickPlacement="BottomRight" />
+                    </DockPanel>
+                </mui:SpacingStackPanel>
+            </mui:SpacingStackPanel>
+
             <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetExtraCommand}" />
         </mui:SpacingStackPanel>
     </ScrollViewer>

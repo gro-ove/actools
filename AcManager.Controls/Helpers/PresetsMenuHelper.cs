@@ -18,14 +18,14 @@ namespace AcManager.Controls.Helpers {
 
         public static IEnumerable<object> GroupPresets(string presetsKey, [CanBeNull] Action<ISavedPresetEntry> action) {
             var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
-            var result = new HierarchicalItemsView(o => {
+            var result = new HierarchicalItemsView((o, g) => {
                 action?.Invoke((ISavedPresetEntry)o);
             }, group, false);
             return result;
         }
 
         public HierarchicalItemsView Create(string presetsKey, Action<ISavedPresetEntry> action, string displayName = "") {
-            return new HierarchicalItemsView(o => {
+            return new HierarchicalItemsView((o, g) => {
                 action((ISavedPresetEntry)o);
             }, CreateGroup(presetsKey, displayName), false);
         }

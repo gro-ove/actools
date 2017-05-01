@@ -104,15 +104,68 @@ namespace AcTools.DataFile {
         }
 
         [NotNull, Pure]
+        private double[] GetVector([NotNull, LocalizationRequired(false)] string key, int size) {
+            var result = new double[size];
+            var line = GetNonEmpty(key);
+            if (line == null) return result;
+
+            var s = line.Split(',');
+            if (s.Length != size) return result;
+
+            for (var i = 0; i < result.Length; i++) {
+                FlexibleParser.TryParseDouble(s[i], out result[i]);
+            }
+            
+            return result;
+        }
+
+        [NotNull, Pure]
+        private float[] GetVectorF([NotNull, LocalizationRequired(false)] string key, int size) {
+            var result = new float[size];
+            var line = GetNonEmpty(key);
+            if (line == null) return result;
+
+            var s = line.Split(',');
+            if (s.Length != size) return result;
+
+            for (var i = 0; i < result.Length; i++) {
+                double f;
+                if (FlexibleParser.TryParseDouble(s[i], out f)) {
+                    result[i] = (float)f;
+                }
+            }
+            
+            return result;
+        }
+
+        [NotNull, Pure]
+        public double[] GetVector2([NotNull, LocalizationRequired(false)] string key) {
+            return GetVector(key, 2);
+        }
+
+        [NotNull, Pure]
+        public float[] GetVector2F([NotNull, LocalizationRequired(false)] string key) {
+            return GetVectorF(key, 2);
+        }
+
+        [NotNull, Pure]
         public double[] GetVector3([NotNull, LocalizationRequired(false)] string key) {
-            var result = GetStrings(key).Select(x => FlexibleParser.ParseDouble(x, 0d)).ToArray();
-            return result.Length == 3 ? result : new double[3];
+            return GetVector(key, 3);
         }
 
         [NotNull, Pure]
         public float[] GetVector3F([NotNull, LocalizationRequired(false)] string key) {
-            var result = GetStrings(key).Select(x => (float)FlexibleParser.ParseDouble(x, 0d)).ToArray();
-            return result.Length == 3 ? result : new float[3];
+            return GetVectorF(key, 3);
+        }
+
+        [NotNull, Pure]
+        public double[] GetVector4([NotNull, LocalizationRequired(false)] string key) {
+            return GetVector(key, 4);
+        }
+
+        [NotNull, Pure]
+        public float[] GetVector4F([NotNull, LocalizationRequired(false)] string key) {
+            return GetVectorF(key, 4);
         }
 
         [Pure]

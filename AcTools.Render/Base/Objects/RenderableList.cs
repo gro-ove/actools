@@ -181,6 +181,10 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
+        private void EnsureLinesReady() {
+            
+        }
+
         private void DrawChildren(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (!IsEnabled || filter?.Invoke(this) == false) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
@@ -193,6 +197,24 @@ namespace AcTools.Render.Base.Objects {
                 var child = this[i];
                 if (child.IsEnabled) {
                     child.Draw(contextHolder, camera, mode, filter);
+                }
+            }
+
+            if (HighlightBoundingBoxes && mode == SpecialRenderMode.SimpleTransparent) {
+                if (_box == null) {
+                    var box = GeometryGenerator.CreateLinesBox(new Vector3(1f));
+                    _box = new DebugLinesObject(Matrix.Identity,
+                            box.Vertices.Select(x => new InputLayouts.VerticePC(x.Position, new Color4(1f, 1f, 0.5f, 0f))).ToArray(),
+                            box.Indices.ToArray());
+                }
+
+                for (var i = 0; i < c; i++) {
+                    var child = this[i];
+                    if (child.IsEnabled && child.BoundingBox.HasValue) {
+                        var bb = child.BoundingBox.Value;
+                        _box.ParentMatrix = Matrix.Scaling(bb.GetSize()) * Matrix.Translation(bb.GetCenter());
+                        _box.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+                    }
                 }
             }
         }
@@ -238,10 +260,14 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public bool HighlightDummy { get; set; }
-        private DebugLinesObject _lines;
+
+        public bool HighlightBoundingBoxes { get; set; }
+
+        private static DebugLinesObject _lines, _box;
 
         public virtual void Dispose() {
             DisposeHelper.Dispose(ref _lines);
+            DisposeHelper.Dispose(ref _box);
             this.DisposeEverything();
         }
     }

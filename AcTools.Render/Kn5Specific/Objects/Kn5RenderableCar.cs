@@ -1704,16 +1704,29 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return _carData.GetWheelShadowSize();
         }
 
-        private Matrix GetWheelAmbientShadowMatrix([NotNull] RenderableList wheel) {
+        private Matrix GetWheelAmbientShadowMatrix([NotNull] Kn5RenderableList wheel) {
             var offset = _carData.GetWheelGraphicOffset(wheel.Name);
-            var m = offset + wheel.Matrix.GetTranslationVector() - LocalMatrix.GetTranslationVector();
-            m.Y = _shadowsHeight;
-            return Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI - _steerDeg * MathF.PI / 180f) * Matrix.Translation(m);
+            var wheelMatrix = wheel.ModelMatrixInverted == default(Matrix) ? wheel.Matrix : wheel.Matrix * wheel.ModelMatrixInverted;
+            var translation = offset + wheelMatrix.GetTranslationVector();
+            translation.Y = _shadowsHeight;
+            return Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI - _steerDeg * MathF.PI / 180f) * Matrix.Translation(translation);
         }
 
         private AmbientShadow LoadWheelAmbientShadow(string nodeName, string textureName) {
             var node = GetDummyByName(nodeName);
             return node == null ? null : new AmbientShadow(textureName, GetWheelAmbientShadowMatrix(node));
+        }
+
+        public IReadOnlyList<IRenderableObject> GetAmbientShadows() {
+            return _ambientShadows;
+        }
+
+        public ShaderResourceView GetAmbientShadowView(IDeviceContextHolder holder, AmbientShadow shadow) {
+            if (_ambientShadowsTextures == null) {
+                InitializeAmbientShadows(holder);
+            }
+
+            return shadow.GetView(_ambientShadowsHolder);
         }
 
         private AmbientShadow _wheelLfShadow, _wheelRfShadow;
@@ -1781,7 +1794,107 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
         #endregion
 
-        #region Pseudo-movements
+        #region Movement
+        private DebugLinesObject _arrowX, _arrowY, _arrowZ, _circleY;
+        private Vector3 _arrowHighlighted, _circleHighlighted;
+        private bool _keepHighlight;
+
+        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
+            _keepHighlight = true;
+
+            if (_arrowHighlighted != default(Vector3)) {
+                Vector3 planeNormal;
+                if (_arrowHighlighted.Y == 0f) {
+                    planeNormal = Vector3.UnitY;
+                } else if (_arrowHighlighted.X == 0f) {
+                    if (_arrowHighlighted.Z == 0f) {
+                        planeNormal = camera.Look.X.Abs() < camera.Look.Z.Abs() ? Vector3.UnitZ : Vector3.UnitX;
+                    } else {
+                        planeNormal = Vector3.UnitX;
+                    }
+                } else if (_arrowHighlighted.Z == 0f) {
+                    planeNormal = Vector3.UnitZ;
+                } else {
+                    planeNormal = -camera.Look;
+                }
+
+                var plane = new Plane(Matrix.GetTranslationVector(), planeNormal);
+                var rayFrom = camera.GetPickingRay(relativeFrom, new Vector2(1f, 1f));
+                var rayTo = camera.GetPickingRay(relativeFrom + relativeDelta, new Vector2(1f, 1f));
+
+                float distance;
+
+                if (!Ray.Intersects(rayFrom, plane, out distance)) return false;
+                var pointFrom = rayFrom.Position + rayFrom.Direction * distance;
+
+                if (!Ray.Intersects(rayTo, plane, out distance)) return false;
+                var pointTo = rayTo.Position + rayTo.Direction * distance;
+                var pointDelta = pointTo - pointFrom;
+
+                var resultMovement = new Vector3(
+                        pointDelta.X * _arrowHighlighted.X,
+                        pointDelta.Y * _arrowHighlighted.Y,
+                        pointDelta.Z * _arrowHighlighted.Z);
+                LocalMatrix = LocalMatrix * Matrix.Translation(resultMovement);
+                UpdateBoundingBox();
+                return true;
+            }
+
+            if (_circleHighlighted != default(Vector3)) {
+                LocalMatrix = Matrix.RotationY(relativeDelta.X * 10f) * LocalMatrix;
+                UpdateBoundingBox();
+                return true;
+            }
+
+            return false;
+        }
+
+        public void StopMovement() {
+            _keepHighlight = false;
+        }
+
+        public void DrawMovementArrows(DeviceContextHolder holder, BaseCamera camera, Vector2 relativeMousePosition) {
+            if (_arrowX == null) {
+                _arrowX = GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f));
+                _arrowY = GetLinesArrow(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
+                _arrowZ = GetLinesArrow(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f));
+                _circleY = GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
+            }
+
+            var m = Matrix.Translation(Matrix.GetTranslationVector());
+            if (_arrowX.ParentMatrix != m) {
+                _arrowX.ParentMatrix = m;
+                _arrowY.ParentMatrix = m;
+                _arrowZ.ParentMatrix = m;
+                _circleY.ParentMatrix = m;
+                _arrowX.UpdateBoundingBox();
+                _arrowY.UpdateBoundingBox();
+                _arrowZ.UpdateBoundingBox();
+                _circleY.UpdateBoundingBox();
+            }
+
+            if (_keepHighlight) {
+                _arrowX.Draw(holder, camera, _arrowHighlighted.X == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
+                _arrowY.Draw(holder, camera, _arrowHighlighted.Y == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
+                _arrowZ.Draw(holder, camera, _arrowHighlighted.Z == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
+                _circleY.Draw(holder, camera, _circleHighlighted.Y == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
+            } else {
+                var ray = camera.GetPickingRay(relativeMousePosition, new Vector2(1f, 1f));
+                _arrowHighlighted = new Vector3(
+                        _arrowX.DrawHighlighted(ray, holder, camera) ? 1f : 0f,
+                        _arrowY.DrawHighlighted(ray, holder, camera) ? 1f : 0f,
+                        _arrowZ.DrawHighlighted(ray, holder, camera) ? 1f : 0f);
+                if (_arrowHighlighted == Vector3.Zero) {
+                    _circleHighlighted = new Vector3(0f, _circleY.DrawHighlighted(ray, holder, camera) ? 1f : 0f, 0f);
+                } else {
+                    _circleHighlighted = Vector3.Zero;
+                    _circleY.Draw(holder, camera, SpecialRenderMode.Simple);
+                }
+            }
+        }
+        #endregion
+
+        #region Steering
         private float _steerDeg;
 
         public float SteerDeg {
@@ -2076,7 +2189,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         [NotNull]
-        private static DebugLinesObject GetLinesArrow(Matrix matrix, Vector3 direction, Color4 color) {
+        private static DebugLinesObject GetLinesArrow(Matrix matrix, Vector3 direction, Color4 color, float size = 0.2f) {
             var vertices = new List<InputLayouts.VerticePC>();
             var indices = new List<ushort>();
 
@@ -2102,7 +2215,33 @@ namespace AcTools.Render.Kn5Specific.Objects {
             indices.AddRange(new ushort[] { 1, 2, 1, 3, 1, 4, 1, 5 });
             indices.AddRange(new ushort[] { 2, 3, 3, 4, 4, 5, 5, 2 });
 
-            return new DebugLinesObject(Matrix.Scaling(new Vector3(0.2f)) * matrix, vertices.ToArray(), indices.ToArray());
+            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        [NotNull]
+        private static DebugLinesObject GetLinesCircle(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float size = 0.16f) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (direction == Vector3.UnitY) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+            
+            for (var i = 1; i <= segments; i++) {
+                var a = MathF.PI * 2f * i / segments;
+                vertices.Add(new InputLayouts.VerticePC(left * a.Cos()+ up * a.Sin(), color));
+                indices.Add((ushort)(i - 1));
+                indices.Add((ushort)(i == segments ? 0 : i));
+            }
+
+            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
         }
 
         [CanBeNull]
@@ -2201,6 +2340,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (AreFlamesVisible) {
                 DrawFlames(holder, camera);
             }
+
+            /*using (var right = GetLinesArrow(Matrix.Identity, ((BaseCamera)camera).Right, new Color4(0f, 1f, 1f, 0f))) {
+                right.ParentMatrix = Matrix.Identity;
+                right.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+
+            using (var right = GetLinesArrow(Matrix.Identity, ((BaseCamera)camera).Up, new Color4(0f, 0f, 1f, 0f))) {
+                right.ParentMatrix = Matrix.Identity;
+                right.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+
+            using (var right = GetLinesArrow(Matrix.Identity, ((BaseCamera)camera).Up + ((BaseCamera)camera).Right + ((BaseCamera)camera).Look,
+                    new Color4(0f, 1f, 0f, 0f))) {
+                right.ParentMatrix = Matrix.Identity;
+                right.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+
+            using (var right = GetLinesArrow(Matrix.Identity, ((BaseCamera)camera).Up + ((BaseCamera)camera).Right - ((BaseCamera)camera).Look,
+                    new Color4(0f, 1f, 0f, 1f))) {
+                right.ParentMatrix = Matrix.Identity;
+                right.Draw(holder, camera, SpecialRenderMode.Simple);
+            }*/
         }
         
         private void DrawText(string text, Matrix objectTransform, ICamera camera, Vector2 screenSize, Color4 color) {
@@ -2310,6 +2471,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref _debugNode);
             DisposeHelper.Dispose(ref _fuelTank);
             DisposeHelper.Dispose(ref _debugText);
+
+            DisposeHelper.Dispose(ref _arrowX);
+            DisposeHelper.Dispose(ref _arrowY);
+            DisposeHelper.Dispose(ref _arrowZ);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

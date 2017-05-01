@@ -5,6 +5,20 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Threshold for finding similar data. Default value: 0.95 (95%).
+        /// Example: --similar-threshold=0.9.
+        /// </summary>
+        [FlagDefaultValue("0.95")]
+        SimilarThreshold,
+
+        /// <summary>
+        /// Additional IDs for searching for similar data (by default, only Kunos cars
+        /// are checked as potential sources) separated by comma or semicolon.
+        /// Example: --similar-additional-source-ids=.
+        /// </summary>
+        SimilarAdditionalSourceIds,
+
+        /// <summary>
         /// Period for checking if there is an available slot using Auto-Join mode
         /// in Online section. Will be used only if smaller than auto-update period set
         /// in Settings. Default value: 5 seconds. Not sure if there is any sense for

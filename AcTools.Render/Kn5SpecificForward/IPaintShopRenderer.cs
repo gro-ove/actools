@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForward {
@@ -8,12 +9,23 @@ namespace AcTools.Render.Kn5SpecificForward {
         public bool Desaturate { get; set; }
 
         public bool NormalizeMax { get; set; }
+
+        public bool RequiresPreparation => Desaturate || NormalizeMax;
+    }
+
+    public enum PaintShopSourceChannel {
+        Red = 'r',
+        Green = 'g',
+        Blue = 'b',
+        Alpha = 'a',
+        Zero = '0',
+        One = '1'
     }
 
     public class PaintShopSource : PaintShopSourceParams {
-        public static readonly PaintShopSource InputSource = new PaintShopSource();
-        public static readonly PaintShopSource White = new PaintShopSource(System.Drawing.Color.White);
-        public static readonly PaintShopSource Transparent = new PaintShopSource(System.Drawing.Color.Transparent);
+        public static PaintShopSource InputSource => new PaintShopSource();
+        public static PaintShopSource White => new PaintShopSource(System.Drawing.Color.White);
+        public static PaintShopSource Transparent => new PaintShopSource(System.Drawing.Color.Transparent);
 
         public readonly bool UseInput;
 
@@ -24,9 +36,39 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public readonly byte[] Data;
+        
+        public PaintShopSourceChannel RedFrom { get; private set; } = PaintShopSourceChannel.Red;
+
+        public PaintShopSourceChannel GreenFrom { get; private set; } = PaintShopSourceChannel.Green;
+
+        public PaintShopSourceChannel BlueFrom { get; private set; } = PaintShopSourceChannel.Blue;
+
+        public PaintShopSourceChannel AlphaFrom { get; private set; } = PaintShopSourceChannel.Alpha;
+
+        public bool ByChannels => RedChannelSource != null || BlueChannelSource != null ||
+                GreenChannelSource != null || AlphaChannelSource != null;
+
+        public bool Custom => Desaturate || NormalizeMax ||
+                RedFrom != PaintShopSourceChannel.Red || GreenFrom != PaintShopSourceChannel.Green ||
+                BlueFrom != PaintShopSourceChannel.Blue || AlphaFrom != PaintShopSourceChannel.Alpha ||
+                ByChannels;
 
         public PaintShopSource() {
             UseInput = true;
+        }
+
+        [NotNull]
+        public PaintShopSource MapChannels([CanBeNull] string postfix) {
+            if (!string.IsNullOrWhiteSpace(postfix)) {
+                postfix = postfix.ToLowerInvariant();
+                var last = postfix[postfix.Length - 1];
+                RedFrom = (PaintShopSourceChannel)postfix.ElementAtOr(0, last);
+                GreenFrom = (PaintShopSourceChannel)postfix.ElementAtOr(1, last);
+                BlueFrom = (PaintShopSourceChannel)postfix.ElementAtOr(2, last);
+                AlphaFrom = (PaintShopSourceChannel)postfix.ElementAtOr(3, (char)PaintShopSourceChannel.Alpha);
+            }
+
+            return this;
         }
 
         public PaintShopSource(Color baseColor) {
@@ -41,19 +83,18 @@ namespace AcTools.Render.Kn5SpecificForward {
             Data = data;
         }
 
-        private PaintShopSource(bool useInput, Color? color, string name, byte[] data) {
-            UseInput = useInput;
-            Color = color;
-            Name = name;
-            Data = data;
-        }
+        [CanBeNull]
+        public readonly PaintShopSource RedChannelSource, GreenChannelSource, BlueChannelSource, AlphaChannelSource;
 
-        public PaintShopSource CopyFrom([CanBeNull] PaintShopSourceParams baseParams) {
-            return baseParams == null ? this : new PaintShopSource(UseInput, Color, Name, Data).SetFrom(baseParams);
+        public PaintShopSource(PaintShopSource red, PaintShopSource green, PaintShopSource blue, PaintShopSource alpha) {
+            RedChannelSource = red;
+            GreenChannelSource = green;
+            BlueChannelSource = blue;
+            AlphaChannelSource = alpha;
         }
 
         public PaintShopSource SetFrom([CanBeNull] PaintShopSourceParams baseParams) {
-            if (baseParams == null) return this;
+            if (baseParams == null || !baseParams.RequiresPreparation) return this;
             foreach (var p in typeof(PaintShopSourceParams).GetProperties().Where(p => p.CanWrite)) {
                 p.SetValue(this, p.GetValue(baseParams, null), null);
             }
@@ -65,6 +106,14 @@ namespace AcTools.Render.Kn5SpecificForward {
                 var hashCode = UseInput ? -1 : Color?.GetHashCode() ?? Name?.GetHashCode() ?? Data?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ Desaturate.GetHashCode();
                 hashCode = (hashCode * 397) ^ NormalizeMax.GetHashCode();
+                hashCode = (hashCode * 397) ^ (RedChannelSource?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (GreenChannelSource?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (BlueChannelSource?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (AlphaChannelSource?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ RedFrom.GetHashCode();
+                hashCode = (hashCode * 397) ^ GreenFrom.GetHashCode();
+                hashCode = (hashCode * 397) ^ BlueFrom.GetHashCode();
+                hashCode = (hashCode * 397) ^ AlphaFrom.GetHashCode();
                 return hashCode;
             }
         }
@@ -74,6 +123,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (Color != null) return $"( PaintShopSource: color={Color.Value} )";
             if (Name != null) return $"( PaintShopSource: name={Name} )";
             if (Data != null) return $"( PaintShopSource: {Data} bytes )";
+
+            if (RedChannelSource != null || BlueChannelSource != null || RedChannelSource != null ||
+                    AlphaChannelSource != null) {
+                return $"( PaintShopSource: (R={RedChannelSource}, G={GreenChannelSource}, B={BlueChannelSource}, A={AlphaChannelSource}) )";
+            }
+
             return "( PaintShopSource: nothing )";
         }
     }
@@ -95,7 +150,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors);
 
         bool OverrideTextureMaps(string textureName, double reflection, double gloss, double specular, bool fixGloss,
-                [NotNull] PaintShopSource source);
+                [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource maskSource);
 
         /// <summary>
         /// Several colors — for mask, in provided.
@@ -113,7 +168,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 [CanBeNull] PaintShopSource overlay, [NotNull] Color[] colors);
 
         Task SaveTextureMapsAsync(string filename, double reflection, double gloss, double specular, bool fixloss,
-                [NotNull] PaintShopSource source);
+                [NotNull] PaintShopSource source, [CanBeNull] PaintShopSource maskSource);
 
         /// <summary>
         /// Several colors — for mask, in provided.

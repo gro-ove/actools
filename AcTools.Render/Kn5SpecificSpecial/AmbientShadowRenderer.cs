@@ -21,7 +21,7 @@ using SlimDX.DXGI;
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class AmbientShadowRenderer : ShadowsRendererBase {
         public AmbientShadowRenderer([NotNull] string mainKn5Filename, [CanBeNull] string carLocation)
-                : this(Kn5.FromFile(mainKn5Filename), DataWrapper.FromDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
+                : this(Kn5.FromFile(mainKn5Filename), DataWrapper.FromCarDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
 
         public AmbientShadowRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             UpDelta = 0.1f;
@@ -284,22 +284,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
-        private class Progress : IProgress<double> {
-            private readonly IProgress<double> _baseProgress;
-            private readonly double _from;
-            private readonly double _range;
-
-            public Progress(IProgress<double> baseProgress, double from, double to) {
-                _baseProgress = baseProgress;
-                _from = from;
-                _range = to - from;
-            }
-
-            public void Report(double value) {
-                _baseProgress?.Report(_from + value * _range);
-            }
-        }
-
         public void Shot(string outputDirectory, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             if (!Initialized) {
                 Initialize();
@@ -309,7 +293,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 // body shadow
                 PrepareBuffers(BodySize + BodyPadding * 2, 1024);
                 SetBodyShadowCamera();
-                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, new Progress(progress, 0.01, 0.6), cancellation);
+                Draw(BodyMultipler, BodySize, BodyPadding, Fade ? 0.5f : 0f, progress.Subrange(0.01, 0.59), cancellation);
                 if (cancellation.IsCancellationRequested) return;
                 
                 SaveResultAs(replacement.Filename, BodySize, BodyPadding);
@@ -326,7 +310,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 Matrix = Matrix.Translation(-(CarData?.GetWheelGraphicOffset(x.Name) ?? Vector3.Zero) +
                         new Vector3(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f)),
                 FileName = $"tyre_{i}_shadow.png",
-                Progress = new Progress(progress, 0.6 + i * 0.1, 0.699 + i * 0.1)
+                Progress = progress.Subrange(0.6 + i * 0.1, 0.099)
             })) {
                 using (var replacement = FileUtils.RecycleOriginal(Path.Combine(outputDirectory, entry.FileName))) {
                     Scene.Clear();

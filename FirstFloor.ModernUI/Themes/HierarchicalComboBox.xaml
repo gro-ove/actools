@@ -46,9 +46,9 @@
                                     <ScrollViewer x:Name="DropDownScrollViewer">
                                         <Grid RenderOptions.ClearTypeHint="Enabled">
                                             <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
-                                                        Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
-                                                        Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
+                                                <Rectangle x:Name="OpaqueRect" Height="{Binding ActualHeight, ElementName=DropDownBorder}"
+                                                        Width="{Binding ActualWidth, ElementName=DropDownBorder}"
+                                                        Fill="{Binding Background, ElementName=DropDownBorder}" />
                                             </Canvas>
                                             <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
                                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -190,7 +190,14 @@
         <Setter Property="SelectedContent">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding DisplayName}" />
+                    <TextBlock TextTrimming="CharacterEllipsis">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource BindableConverterConverter}">
+                                <Binding Path="DisplayName" />
+                                <Binding Path="SelectedItemHeaderConverter" RelativeSource="{RelativeSource AncestorType=c:HierarchicalComboBox}" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </DataTemplate>
             </Setter.Value>
         </Setter>

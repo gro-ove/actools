@@ -1,8 +1,4 @@
 // textures
-	Texture2D gInputMap;
-	Texture2D gAoMap;
-	Texture2D gMaskMap;
-	Texture2D gOverlayMap;
 	Texture2D gNoiseMap;
 
 	SamplerState samLinear {
@@ -28,6 +24,38 @@
 		AddressU = WRAP;
 		AddressV = WRAP;
 	};
+	
+// input sources
+	Texture2D gInputMap;
+	Texture2D gAoMap;
+	Texture2D gMaskMap;
+	Texture2D gOverlayMap;
+
+	cbuffer cbInputSources : register(b1) {
+		float4 gInputMapChannels;
+		float4 gAoMapChannels;
+		float4 gMaskMapChannels;
+		float4 gOverlayMapChannels;
+	}
+
+	float4 GetSource(SamplerState sam, Texture2D tex, float4 channels, float2 uv) {
+		float4 value = tex.SampleLevel(sam, uv, 0);
+		return float4(
+			channels[0] < 0 ? channels[0] + 2.0 : value[channels[0]],
+			channels[1] < 0 ? channels[1] + 2.0 : value[channels[1]],
+			channels[2] < 0 ? channels[2] + 2.0 : value[channels[2]],
+			channels[3] < 0 ? channels[3] + 2.0 : value[channels[3]]
+		);
+	}
+
+	float4 GetSource(Texture2D tex, float4 channels, float2 uv) {
+		return GetSource(samLinear, tex, channels, uv);
+	}
+
+	float4 GetInputMap(float2 uv) { return GetSource(samLinear, gInputMap, gInputMapChannels, uv); }
+	float4 GetAoMap(float2 uv) { return GetSource(samLinear, gAoMap, gAoMapChannels, uv); }
+	float4 GetMaskMap(float2 uv) { return GetSource(samLinear, gMaskMap, gMaskMapChannels, uv); }
+	float4 GetOverlayMap(float2 uv) { return GetSource(samLinear, gOverlayMap, gOverlayMapChannels, uv); }
 
 // common functions
 	float Luminance(float3 color) {
@@ -41,6 +69,10 @@
 			(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
 			a));
 	}
+
+	float4 SimpleBlending(float4 background, float4 foreground) {
+		return float4(foreground.rgb * foreground.a + background.rgb * (1 - foreground.a), foreground.a + background.a * (1 - foreground.a));
+	}
 	
 // input resources
 	cbuffer cbPerObject : register(b0) {
@@ -49,6 +81,7 @@
 		float gNoiseMultipler;
 		float gFlakes;
 		float4 gColors[3];
+		bool gUseMask;
 	}
 
 // fn structs
@@ -83,9 +116,9 @@
 	}
 
 	float4 ps_Pattern(PS_IN pin) : SV_Target {
-		float4 pattern = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 ao = gAoMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 overlay = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 pattern = GetInputMap(pin.Tex);
+		float4 ao = GetAoMap(pin.Tex);
+		float4 overlay = GetOverlayMap(pin.Tex);
 
 		float3 resultColor = pattern.rgb;
 		resultColor = resultColor * pattern.a + (float3)(1.0 - pattern.a);
@@ -106,9 +139,9 @@
 	}
 
 	float4 ps_ColorfulPattern(PS_IN pin) : SV_Target {
-		float4 pattern = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 ao = gAoMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 overlay = gOverlayMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 pattern = GetInputMap(pin.Tex);
+		float4 ao = GetAoMap(pin.Tex);
+		float4 overlay = GetOverlayMap(pin.Tex);
 
 		float3 resultColor = gColors[0].rgb * pattern.r;
 		resultColor += gColors[1].rgb * pattern.g;
@@ -152,9 +185,28 @@
 		}
 	}
 
+// replacement
+	float4 ps_Replacement(PS_IN pin) : SV_Target {
+		return GetInputMap(pin.Tex);
+	}
+
+	technique10 Replacement {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_Replacement()));
+		}
+	}
+
+// maps
 	float4 ps_Maps(PS_IN pin) : SV_Target {
-		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return saturate(float4(base.r * gColor.r, base.g * gColor.g, base.b * gColor.b, 1.0));
+		float4 base = GetInputMap(pin.Tex);
+		float4 modified = saturate(float4(base.r * gColor.r, base.g * gColor.g, base.b * gColor.b, 1.0));
+		if (gUseMask) {
+			float mask = GetMaskMap(pin.Tex).r;
+			return base * (1.0 - mask) + modified * mask;
+		}
+		return modified;
 	}
 
 	technique10 Maps {
@@ -166,7 +218,7 @@
 	}
 
 	float4 ps_MapsFillGreen(PS_IN pin) : SV_Target {
-		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 base = GetInputMap(pin.Tex);
 		return saturate(float4(base.r * gColor.r, gColor.g, base.b * gColor.b, 1.0));
 	}
 
@@ -178,9 +230,11 @@
 		}
 	}
 
+// tinting
 	float4 ps_Tint(PS_IN pin) : SV_Target {
-		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		return ProperBlending(float4(base.rgb * gColor.rgb, saturate(base.a + gColor.a)), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
+		float4 base = GetInputMap(pin.Tex);
+		float4 result = float4(base.rgb * gColor.rgb, saturate(base.a + gColor.a));
+		return SimpleBlending(result, GetOverlayMap(pin.Tex));
 	}
 
 	technique10 Tint {
@@ -192,14 +246,14 @@
 	}
 
 	float4 ps_TintMask(PS_IN pin) : SV_Target {
-		float4 base = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
-		float4 mask = gMaskMap.SampleLevel(samLinear, pin.Tex, 0);
+		float4 base = GetInputMap(pin.Tex);
+		float4 mask = GetMaskMap(pin.Tex);
 
 		float4 result = base * ((float4)(1.0 - mask.r) + gColor * mask.r)
 			* ((float4)(1.0 - mask.g) + gColors[0] * mask.g)
 			* ((float4)(1.0 - mask.b) + gColors[1] * mask.b)
 			* ((float4)(1.0 - mask.a) + gColors[2] * mask.a);
-		return ProperBlending(float4(result.rgb, base.a + gColor.a), gOverlayMap.SampleLevel(samLinear, pin.Tex, 0));
+		return SimpleBlending(float4(result.rgb, base.a + gColor.a), GetOverlayMap(pin.Tex));
 	}
 
 	technique10 TintMask {
@@ -207,6 +261,24 @@
 			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
 			SetPixelShader(CompileShader(ps_4_0, ps_TintMask()));
+		}
+	}
+
+// combine channels
+	float4 ps_CombineChannels(PS_IN pin) : SV_Target {
+		// alphabet order
+		float4 red = GetAoMap(pin.Tex);
+		float4 green = GetInputMap(pin.Tex);
+		float4 blue = GetMaskMap(pin.Tex);
+		float4 alpha = GetOverlayMap(pin.Tex);
+		return float4(red.r, green.g, blue.b, alpha.a);
+	}
+
+	technique10 CombineChannels {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CombineChannels()));
 		}
 	}
 
@@ -233,7 +305,9 @@
 	}
 
 	float4 ps_MaximumApply(PS_IN pin) : SV_Target {
-		return gInputMap.SampleLevel(samLinear, pin.Tex, 0) / gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
+		float4 maxValue = gOverlayMap.SampleLevel(samPoint, (float2)0.5, 0);
+		float4 input = gInputMap.SampleLevel(samLinear, pin.Tex, 0);
+		return saturate(float4(input.rgb / max(max(maxValue.r, max(maxValue.b, maxValue.g)), 0.0001), input.a));
 	}
 
 	technique10 MaximumApply {

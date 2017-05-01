@@ -30,6 +30,7 @@
         float3 gEyePosW;
 
 		float2 gNoiseSize;
+		float gAoPower;
     }	
 
 // fn structs
@@ -134,7 +135,7 @@
 				assessOriginal);
 		}
 
-		return pow(1 - (ssao / SAMPLE_COUNT), 2);
+		return 1.0 - (1.0 - pow(1 - (ssao / SAMPLE_COUNT), 2)) * gAoPower;
 	}
 
     float4 ps_Ssao(PS_IN pin) : SV_Target {

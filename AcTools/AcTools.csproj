@@ -102,7 +102,8 @@
     <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
-    <Compile Include="DataAnalyzer\RulesSet_Test.cs" />
+    <Compile Include="DataAnalyzer\RulesSet.Test.cs" />
+    <Compile Include="DataAnalyzer\RulesWrapper.cs" />
     <Compile Include="DataFile\IniFileSection.cs" />
     <Compile Include="DataFile\ISyntaxErrorsCatcher.cs" />
     <Compile Include="DataFile\LutDataFile.cs" />
@@ -112,12 +113,16 @@
     <Compile Include="DataFile\IniFile.cs" />
     <Compile Include="DataFile\RtoDataFile.cs" />
     <Compile Include="GCHelper.cs" />
+    <Compile Include="ExtendedBinaryWriter.cs" />
     <Compile Include="Kn5File\Kn5.CreateEmpty.cs" />
     <Compile Include="Kn5File\Kn5.ExportTextures.cs" />
     <Compile Include="Kn5File\Kn5.Stats.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbx.cs" />
     <Compile Include="Kn5File\Kn5.FromJson.cs" />
+    <Compile Include="Utils\AcKunosContent.cs" />
+    <Compile Include="Utils\AcLocaleProvider.cs" />
+    <Compile Include="Utils\Helpers\ProgressExtension.cs" />
     <Compile Include="Utils\MemoryChunk.cs" />
     <Compile Include="KnhFile\Knh.cs" />
     <Compile Include="KnhFile\Knh.FromFile.cs" />
@@ -208,6 +213,7 @@
     <Compile Include="Utils\Physics\TurboControllerDescription.cs" />
     <Compile Include="Utils\Physics\TurboDescription.cs" />
     <Compile Include="Utils\SteamRunningHelper.cs" />
+    <Compile Include="Utils\TagFile.cs" />
     <Compile Include="Windows\Input\IInputDeviceStateAdaptor.cs" />
     <Compile Include="Windows\Input\IInputMessageDispatcher.cs" />
     <Compile Include="Windows\Input\IInputSimulator.cs" />

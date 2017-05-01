@@ -15,11 +15,11 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void TestPacked() {
-            var file = DataWrapper.FromDirectory(Path.Combine(TestDir, "data", "peugeot_504"));
+            var file = DataWrapper.FromCarDirectory(Path.Combine(TestDir, "data", "peugeot_504"));
             Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
             Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
 
-            file = DataWrapper.FromDirectory(Path.Combine(TestDir, "data", "peugeot_504_unpacked"));
+            file = DataWrapper.FromCarDirectory(Path.Combine(TestDir, "data", "peugeot_504_unpacked"));
             Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
             Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
         }

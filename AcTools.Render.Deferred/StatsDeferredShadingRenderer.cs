@@ -20,7 +20,7 @@ namespace AcTools.Render.Deferred {
         }
 
         protected override void DrawSpritesInner() {
-            if (VisibleUi) {
+            if (VisibleUi && !ShotInProcess) {
                 _textBlock.DrawString($@"
 FPS: {FramesPerSecond:F1}{(SyncInterval ? " (limited)" : "")}
 Mode: {Mode}
@@ -35,17 +35,6 @@ Lights: {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
             }
 
             Kn5MaterialDeferred.Drawed = 0;
-        }
-
-        public override void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
-            var visibleUi = VisibleUi;
-            VisibleUi = false;
-
-            try {
-                base.Shot(multiplier, downscale, outputStream, lossless);
-            } finally {
-                VisibleUi = visibleUi;
-            }
         }
 
         protected override void DisposeOverride() {

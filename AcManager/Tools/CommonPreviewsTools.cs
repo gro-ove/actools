@@ -46,7 +46,7 @@ namespace AcManager.Tools {
             if (SettingsHolder.CustomShowroom.CustomShowroomPreviews) {
                 switch (actualMode) {
                     case UpdatePreviewMode.Options:
-                        return CmPreviewsWrapper.Run(list, presetFilename);
+                        return CmPreviewsFormWrapper.Run(list, presetFilename);
                     case UpdatePreviewMode.StartManual:
                         NonfatalError.Notify("Can’t update previews in Manual Mode with Custom Showroom",
                                 "Why would you need it anyway? Just open Custom Previews settings, locate camera the way you want and update one or all previews.");

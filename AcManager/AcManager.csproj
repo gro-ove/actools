@@ -1665,7 +1665,7 @@
     <Resource Include="Assets\Icons\TrayIconWin8.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="About\ImportantTips\AC Service.txt.off" />
+    <Content Include="About\ImportantTips\Recommended Mods.txt" />
     <None Include="About\ImportantTips\Custom Showroom Big Screenshots.txt" />
     <None Include="About\ImportantTips\Custom Showroom Shortcuts.txt" />
     <Content Include="About\Licenses\ExifLib\ExifLib.txt" />

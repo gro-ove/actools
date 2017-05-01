@@ -66,7 +66,7 @@ namespace AcTools.Render.Tests {
             using (var renderer = new ForwardKn5ObjectRenderer(new CarDescription(path))) {
                 renderer.UseMsaa = false;
                 renderer.UseFxaa = true;
-                new LiteShowroomWrapper(renderer).Run();
+                new LiteShowroomFormWrapper(renderer).Run();
             }
         }
     }

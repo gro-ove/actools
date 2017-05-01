@@ -58,8 +58,11 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxFirstStepMap.SetResource(diffuse);
         }
 
-        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target) {
-            base.Draw(holder, depth, normals, camera, target);
+        public override void Draw(DeviceContextHolder holder, ShaderResourceView depth, ShaderResourceView normals, ICamera camera, RenderTargetView target,
+                float aoPower) {
+            base.Draw(holder, depth, normals, camera, target, aoPower);
+
+            // TODO: ao power!
 
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);

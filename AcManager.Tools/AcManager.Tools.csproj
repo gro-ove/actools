@@ -254,6 +254,7 @@
     <Compile Include="Helpers\Api\Kunos\MinoratingServerInformation.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\Api\SteamWebProvider.cs" />
+    <Compile Include="Helpers\CarDataComparing.cs" />
     <Compile Include="Helpers\ChildProcessTracker.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
@@ -348,7 +349,6 @@
     <Compile Include="Managers\PythonAppsManager.cs" />
     <Compile Include="GameProperties\ReplaysExtensionSetter.cs" />
     <Compile Include="Managers\SpecialEventsManager.cs" />
-    <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\LocalePackageManifest.cs" />
     <Compile Include="Miscellaneous\LocaleUpdater.cs" />
     <Compile Include="Miscellaneous\SharedLocaleReader.cs" />
@@ -537,7 +537,9 @@
       <LastGenOutput>ToolsStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\Rules.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>

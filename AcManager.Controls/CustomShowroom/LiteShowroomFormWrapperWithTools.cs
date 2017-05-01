@@ -13,21 +13,21 @@ using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.Controls.CustomShowroom {
-    public class LiteShowroomWrapperWithTools : LiteShowroomWrapper {
+    public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapper {
         private readonly AttachedHelper _helper;
         private readonly LiteShowroomTools _tools;
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
-        public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
+        public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
                 : base(renderer, car.DisplayName) {
             _helper = new AttachedHelper(this, _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename));
             GoToNormalMode();
@@ -37,9 +37,11 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnClick() {
-            if (_busy || !_tools.CanSelectNodes) return;
+            if (_busy) return;
             base.OnClick();
-            Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
+            if (_tools.CanSelectNodes && !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
+                Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
+            }
         }
 
         protected override void OnMouseWheel(object sender, MouseEventArgs e) {

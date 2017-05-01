@@ -1,10 +1,15 @@
 using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Converters;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -17,6 +22,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -28,6 +34,82 @@ namespace AcManager.Pages.Drive {
         public partial class ViewModel {
             #region Constants and other non-changeable values
             public AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
+
+            private HierarchicalGroup _hierarchicalWeatherList;
+
+            public HierarchicalGroup HierarchicalWeatherList {
+                get { return _hierarchicalWeatherList; }
+                set {
+                    if (Equals(value, _hierarchicalWeatherList)) return;
+                    _hierarchicalWeatherList = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
+
+            private static bool IsKunosWeather(WeatherObject o) {
+                switch (o.Id) {
+                    case "1_heavy_fog":
+                    case "2_light_fog":
+                    case "3_clear":
+                    case "4_mid_clear":
+                    case "5_light_clouds":
+                    case "6_mid_clouds":
+                    case "7_heavy_clouds":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            private static bool IsGbwWeather(WeatherObject o) {
+                return o.Id.Contains("gbW");
+            }
+
+            private static bool IsModWeather(WeatherObject o) {
+                return !IsKunosWeather(o) && !IsGbwWeather(o);
+            }
+
+            private class GbwConverter : IValueConverter {
+                public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                    return value?.ToString().Replace("gbW_", "");
+                }
+
+                public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                    throw new NotSupportedException();
+                }
+            }
+
+            private async Task UpdateHierarchicalWeatherList() {
+                await WeatherManager.Instance.EnsureLoadedAsync();
+
+                var list = new HierarchicalGroup { RandomWeather };
+                if (WeatherList.All(IsKunosWeather)) {
+                    list.Add(new Separator());
+                    list.AddRange(WeatherList);
+                } else {
+                    if (WeatherList.Any(IsKunosWeather)) {
+                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original, WeatherList.Where(IsKunosWeather)));
+                    }
+
+                    if (WeatherList.Any(IsGbwWeather)) {
+                        list.Add(new HierarchicalGroup("GBW", WeatherList.Where(IsGbwWeather)) {
+                            HeaderConverter = new GbwConverter()
+                        });
+                    }
+
+                    if (WeatherList.Any(IsModWeather)) {
+                        list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods, WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x))));
+                    }
+                }
+
+                HierarchicalWeatherList = list;
+            }
+
+            private void OnWeatherListUpdated(object sender, EventArgs e) {
+                UpdateHierarchicalWeatherList().Forget();
+            }
             #endregion
 
             #region User-set variables which define working mode
@@ -113,16 +195,24 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private WeatherObject _selectedWeather;
+            private object _selectedWeather;
 
+            /// <summary>
+            /// Null for random weather.
+            /// </summary>
             [CanBeNull]
-            public WeatherObject SelectedWeather {
+            public object SelectedWeather {
                 get { return _selectedWeather; }
                 set {
                     if (Equals(value, _selectedWeather)) return;
                     _selectedWeather = value;
+
+                    var weatherObject = value as WeatherObject;
+                    SelectedWeatherObject = weatherObject;
+
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
+                    OnPropertyChanged(nameof(SelectedWeatherObject));
 
                     if (!RealConditions) {
                         SaveLater();
@@ -130,11 +220,30 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            [CanBeNull]
+            public WeatherObject SelectedWeatherObject { get; private set; }
+
+            [CanBeNull]
+            private WeatherObject GetRandomWeather([CanBeNull] double? temperatureToConsider) {
+                var weatherObject = SelectedWeatherObject;
+                for (var i = 0; i < 100; i++) {
+                    weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    if (!temperatureToConsider.HasValue || weatherObject.TemperatureDiapason?.DiapasonContains(temperatureToConsider.Value) != false) {
+                        break;
+                    }
+                }
+                return weatherObject;
+            }
+
+            private void SetRandomWeather(bool considerTemperature) {
+                RealConditions = false;
+                SelectedWeather = GetRandomWeather(considerTemperature ? Temperature : (double?)null);
+            }
+
             private DelegateCommand _randomWeatherCommand;
 
             public DelegateCommand RandomWeatherCommand => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => {
-                RealConditions = false;
-                SelectedWeather = GetRandomObject(WeatherManager.Instance, SelectedWeather?.Id);
+                SetRandomWeather(true);
             }));
             #endregion
 
@@ -189,7 +298,7 @@ namespace AcManager.Pages.Drive {
                     var entry = await Task.Run(() => IpGeoProvider.Get());
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
 
-                    var address = Prompt.Show("Where are you?", "Local Address", localAddress);
+                    var address = Prompt.Show("Where are you?", "Local Address", localAddress, @"?", required: true);
                     if (string.IsNullOrWhiteSpace(address)) {
                         if (address != null) {
                             ModernDialog.ShowMessage("Value is required");
@@ -230,25 +339,47 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private bool _randomTemperature;
+
+            public bool RandomTemperature {
+                get { return _randomTemperature; }
+                set {
+                    if (Equals(value, _randomTemperature)) return;
+                    _randomTemperature = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double GetRandomTemperature() {
+                var diapason = SelectedWeatherObject?.TemperatureDiapason;
+                var temperature = Temperature;
+                for (var i = 0; i < 100; i++) {
+                    temperature = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
+                    if (diapason?.DiapasonContains(temperature) != false) break;
+                }
+                return temperature;
+            }
+
             private DelegateCommand _randomTemperatureCommand;
 
             public DelegateCommand RandomTemperatureCommand => _randomTemperatureCommand ?? (_randomTemperatureCommand = new DelegateCommand(() => {
                 RealConditions = false;
-                Temperature = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
+                RandomTemperature = false;
+                Temperature = GetRandomTemperature();
             }));
 
             public double RecommendedRoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
-                            SelectedWeather?.TemperatureCoefficient ?? 0.0);
+                            SelectedWeatherObject?.TemperatureCoefficient ?? 0.0);
 
-            public double RoadTemperature => CustomRoadTemperatureEnabled ? CustomRoadTemperatureValue : RecommendedRoadTemperature;
+            public double RoadTemperature => CustomRoadTemperature ? CustomRoadTemperatureValue : RecommendedRoadTemperature;
 
-            private bool _customRoadTemperatureEnabled;
+            private bool _customRoadTemperature;
 
-            public bool CustomRoadTemperatureEnabled {
-                get { return _customRoadTemperatureEnabled; }
+            public bool CustomRoadTemperature {
+                get { return _customRoadTemperature; }
                 set {
-                    if (Equals(value, _customRoadTemperatureEnabled)) return;
-                    _customRoadTemperatureEnabled = value;
+                    if (Equals(value, _customRoadTemperature)) return;
+                    _customRoadTemperature = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
                     SaveLater();
@@ -291,6 +422,17 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private bool _randomTime;
+
+            public bool RandomTime {
+                get { return _randomTime; }
+                set {
+                    if (Equals(value, _randomTime)) return;
+                    _randomTime = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private DelegateCommand _randomTimeCommand;
 
             public DelegateCommand RandomTimeCommand => _randomTimeCommand ?? (_randomTimeCommand = new DelegateCommand(() => {
@@ -298,6 +440,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsManualTime = true;
                 }
 
+                RandomTime = false;
                 Time = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
             }));
 
@@ -323,6 +466,8 @@ namespace AcManager.Pages.Drive {
                     RealWeather = null;
                     _weatherTypeHelper.Reset();
                 } else {
+                    RandomTime = false;
+                    RandomTemperature = false;
                     ManualTime = RealConditionsManualTime;
 
                     using (var cancellation = new CancellationTokenSource()) {
@@ -366,7 +511,7 @@ namespace AcManager.Pages.Drive {
             private void TryToSetWeather() {
                 _weatherTypeHelper.SetParams(Time, Temperature);
 
-                var weather = SelectedWeather;
+                var weather = SelectedWeatherObject;
                 if (_weatherTypeHelper.TryToGetWeather(SelectedWeatherType, ref weather)) {
                     SelectedWeather = weather;
                 }

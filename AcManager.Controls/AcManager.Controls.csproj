@@ -156,7 +156,7 @@
     <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
       <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomShowroom\CmPreviewsWrapper.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
     <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
     <Compile Include="CustomShowroom\PaintShop.cs" />
@@ -228,7 +228,7 @@
     <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
       <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomShowroom\LiteShowroomWrapperWithTools.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
     <Compile Include="Helpers\PresetsMenuHelper.cs" />

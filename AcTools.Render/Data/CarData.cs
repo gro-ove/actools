@@ -29,7 +29,7 @@ namespace AcTools.Render.Data {
         public string CarDirectory { get; }
 
         public CarData([NotNull] string carDirectory) {
-            _data = DataWrapper.FromDirectory(carDirectory);
+            _data = DataWrapper.FromCarDirectory(carDirectory);
             CarDirectory = carDirectory;
         }
 

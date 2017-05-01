@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
 using AcTools.Windows;
 
 namespace AcManager.Tools.GameProperties {

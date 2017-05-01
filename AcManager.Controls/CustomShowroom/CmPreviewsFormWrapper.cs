@@ -15,13 +15,13 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.CustomShowroom {
-    public class CmPreviewsWrapper : LiteShowroomWrapper {
+    public class CmPreviewsFormWrapper : LiteShowroomFormWrapper {
         private AttachedHelper _helper;
         private readonly CmPreviewsTools _tools;
 
         public new DarkKn5ObjectRenderer Renderer => (DarkKn5ObjectRenderer)base.Renderer;
 
-        private CmPreviewsWrapper(CarObject car, DarkKn5ObjectRenderer renderer, string skinId, string presetFilename)
+        private CmPreviewsFormWrapper(CarObject car, DarkKn5ObjectRenderer renderer, string skinId, string presetFilename)
                 : base(renderer, "Previews Params", CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight) {
             _tools = new CmPreviewsTools(renderer, car, skinId, presetFilename);
             _helper = new AttachedHelper(this, _tools);
@@ -36,7 +36,7 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         protected override void OnRender() {
-            if (!Renderer.IsDirty) return;
+            if (!Renderer.IsDirty && !Renderer.AccumulationMode) return;
             Renderer.Draw();
             InvokeFirstFrameCallback();
         }
@@ -64,7 +64,7 @@ namespace AcManager.Controls.CustomShowroom {
                 AsyncTexturesLoading = true,
                 AsyncOverridesLoading = true
             }) {
-                var wrapper = new CmPreviewsWrapper(car, renderer, skinId, presetFilename);
+                var wrapper = new CmPreviewsFormWrapper(car, renderer, skinId, presetFilename);
 
                 if (toUpdate != null) {
                     wrapper.SetToUpdate(toUpdate);

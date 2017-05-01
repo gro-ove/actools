@@ -71,6 +71,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AiFileTest.cs" />
+    <Compile Include="DataAnalyzerTest.cs" />
     <Compile Include="DataWrapperTest.cs" />
     <Compile Include="ExifCommentTest.cs" />
     <Compile Include="Kn5ReadWriteTest.cs" />

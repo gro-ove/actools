@@ -18,14 +18,14 @@ namespace AcTools.Render.Wrapper {
 
             var c = renderer.CameraOrbit;
             if (c != null) {
-                c.Target += (float)dy * Vector3.Cross(c.Look, c.Right) - (float)dx * c.Right;
+                c.Target -= (float)dy * Vector3.Cross(c.Look, c.Right) + (float)dx * c.Right;
                 renderer.AutoRotate = false;
                 renderer.AutoAdjustTarget = false;
                 ((BaseRenderer)renderer).IsDirty = true;
             } else {
                 var f = renderer.FpsCamera;
                 if (f != null) {
-                    f.Position += (float)dy * Vector3.Cross(f.Look, f.Right) - (float)dx * f.Right;
+                    f.Position -= (float)dy * Vector3.Cross(f.Look, f.Right) + (float)dx * f.Right;
                     ((BaseRenderer)renderer).IsDirty = true;
                 }
             }

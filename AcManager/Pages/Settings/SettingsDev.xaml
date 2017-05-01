@@ -61,12 +61,38 @@
 
                 <DockPanel>
                     <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" />
+                    <mui:LabeledToggleButton x:Name="ToggleButton" LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" />
                 </DockPanel>
+
+                <!--<mui:SpacingStackPanel Spacing="4" Height="80" Background="Black">
+                    <mui:Switch2 Value="{Binding IsChecked, ElementName=ToggleButton}">
+                        <mui:SpacingStackPanel mui:Switch2.When="True">
+                            <TextBlock Text="Checked" />
+                            <mui:DebugControl x:Name="Checked" />
+
+                            <mui:Switch2 Value="{Binding IsChecked, ElementName=SecondaryButton}">
+                                <mui:SpacingStackPanel mui:Switch2.When="True">
+                                    <TextBlock Text="Secondary Checked" />
+                                    <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                                </mui:SpacingStackPanel>
+                                <TextBlock mui:Switch2.When="False" Text="Secondary Unchecked" />
+                            </mui:Switch2>
+                        </mui:SpacingStackPanel>
+                        <TextBlock mui:Switch2.When="False" Text="Unchecked" />
+                    </mui:Switch2>
+                </mui:SpacingStackPanel>-->
+
+                <mui:SpacingStackPanel Spacing="4" Height="80" Background="DarkSlateBlue">
+                    <mui:Switch Value="{Binding IsChecked, ElementName=ToggleButton}">
+                        <TextBlock mui:Switch.When="True" Text="Checked" />
+                        <TextBlock mui:Switch.When="False" Text="Unchecked" />
+                    </mui:Switch>
+                </mui:SpacingStackPanel>
 
                 <DockPanel>
                     <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />
-                    <mui:LabeledToggleButton LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left" HighlightChecked="True" />
+                    <mui:LabeledToggleButton x:Name="SecondaryButton" LabelChecked="State: On" LabelUnchecked="State: Off" HorizontalAlignment="Left"
+                            HighlightChecked="True" />
                 </DockPanel>
 
                 <DockPanel>

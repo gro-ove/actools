@@ -1,0 +1,212 @@
+[suspension_front_geometry:v0]
+suspensions.ini
+    FRONT/TYPE              string
+        STRUT_CAR           vector3  0.00001
+        STRUT_TYRE          vector3  0.00001
+
+        WBCAR_TOP_FRONT     vector3  0.00001
+        WBCAR_TOP_REAR      vector3  0.00001
+
+        WBCAR_BOTTOM_FRONT  vector3  0.001
+        WBCAR_BOTTOM_REAR   vector3  0.001
+        WBTYRE_BOTTOM       vector3  0.001
+        WBCAR_STEER         vector3  0.001
+        WBTYRE_STEER        vector3  0.001
+
+[suspension_rear_geometry:v0]
+suspensions.ini
+    REAR/TYPE               string
+        STRUT_CAR           vector3  0.00001
+        STRUT_TYRE          vector3  0.00001
+
+        WBCAR_TOP_FRONT     vector3  0.00001
+        WBCAR_TOP_REAR      vector3  0.00001
+
+        WBCAR_BOTTOM_FRONT  vector3  0.001
+        WBCAR_BOTTOM_REAR   vector3  0.001
+        WBTYRE_BOTTOM       vector3  0.001
+        WBCAR_STEER         vector3  0.001
+        WBTYRE_STEER        vector3  0.001
+
+    AXLE/LINK_COUNT         number   1      ×2
+        J0_CAR              number   0.001
+        J0_AXLE             number   0.001
+        J1_CAR              number   0.001
+        J1_AXLE             number   0.001
+        J2_CAR              number   0.001
+        J2_AXLE             number   0.001
+        J3_CAR              number   0.001
+        J3_AXLE             number   0.001
+
+[suspension_front:v0]
+suspensions.ini
+    ARB/FRONT               number   100
+    FRONT/TYPE              string
+        STRUT_CAR           vector3  0.00001
+        STRUT_TYRE          vector3  0.00001
+
+        WBCAR_TOP_FRONT     vector3  0.00001
+        WBCAR_TOP_REAR      vector3  0.00001
+
+        WBCAR_BOTTOM_FRONT  vector3  0.001
+        WBCAR_BOTTOM_REAR   vector3  0.001
+        WBTYRE_BOTTOM       vector3  0.001
+        WBCAR_STEER         vector3  0.001
+        WBTYRE_STEER        vector3  0.001
+
+        SPRING_RATE         number   100
+        ROD_LENGTH          number   0.01
+        BUMPSTOP_UP         number   0.001
+        BUMPSTOP_DN         number   0.001
+        PACKER_RANGE        number   0.001
+        DAMP_BUMP           number   100
+        DAMP_FAST_BUMP      number   100
+        DAMP_REBOUND        number   100
+        DAMP_FAST_REBOUND   number   100
+
+[suspension_rear:v0]
+suspensions.ini
+    ARB/REAR                number   100
+    REAR/TYPE               string
+        STRUT_CAR           vector3  0.00001
+        STRUT_TYRE          vector3  0.00001
+
+        WBCAR_TOP_FRONT     vector3  0.00001
+        WBCAR_TOP_REAR      vector3  0.00001
+
+        WBCAR_BOTTOM_FRONT  vector3  0.001
+        WBCAR_BOTTOM_REAR   vector3  0.001
+        WBTYRE_BOTTOM       vector3  0.001
+        WBCAR_STEER         vector3  0.001
+        WBTYRE_STEER        vector3  0.001
+
+        SPRING_RATE         number   100
+        ROD_LENGTH          number   0.01
+        BUMPSTOP_UP         number   0.001
+        BUMPSTOP_DN         number   0.001
+        PACKER_RANGE        number   0.001
+        DAMP_BUMP           number   100
+        DAMP_FAST_BUMP      number   100
+        DAMP_REBOUND        number   100
+        DAMP_FAST_REBOUND   number   100
+
+    AXLE/LINK_COUNT         number   1      ×2
+        J0_CAR              number   0.001
+        J0_AXLE             number   0.001
+        J1_CAR              number   0.001
+        J1_AXLE             number   0.001
+        J2_CAR              number   0.001
+        J2_AXLE             number   0.001
+        J3_CAR              number   0.001
+        J3_AXLE             number   0.001
+
+[engine:v0]
+power.lut                   lut      0.1  ×10
+engine.ini
+    ENGINE_DATA/LIMITER     number   10
+    MINIMUM                 number   10
+    LIMITER_HZ              number   1
+    INERTIA                 number   0.01
+
+[turbo:v0]
+engine.ini
+    TURBO_0/LAG_DN            number   0.0001  ≠0
+        LAG_UP                number   0.0001
+        MAX_BOOST             number   0.01
+        WASTEGATE             number   0.01
+        DISPLAY_MAX_BOOST     number   0.01
+        REFERENCE_RPM         number   10
+        GAMMA                 number   0.01
+    TURBO_1/LAG_DN            number   0.0001
+        LAG_UP                number   0.0001
+        MAX_BOOST             number   0.01
+        WASTEGATE             number   0.01
+        DISPLAY_MAX_BOOST     number   0.01
+        REFERENCE_RPM         number   10
+        GAMMA                 number   0.01
+
+[gearbox:v0]
+drivetrain.ini
+    GEARS/GEAR_R            number   0.01
+        GEAR_1              number   0.01
+        GEAR_2              number   0.01
+        GEAR_3              number   0.01
+        GEAR_4              number   0.01
+        GEAR_5              number   0.01
+        GEAR_6              number   0.01
+        FINAL               number   0.01
+    GEARBOX/INERTIA         number   0.01
+        AUTO_CUTOFF_TIME    number   0.01
+
+        CONTROLS_WINDOW_GAIN    number   0.01
+        VALID_SHIFT_RPM_WINDOW  number   10
+
+[aero:v0]
+aero.ini
+    HEADER/VERSION          number   1
+    WING_0/CHORD            number   0.01
+        SPAN                number   0.01
+        POSITION            vector3  0.01
+        CL_GAIN             vector3  0.01
+        CD_GAIN             vector3  0.01
+        ANGLE               vector3  0.01
+        LUT_AOA_CL          lut      0.01   ×2
+        LUT_AOA_CD          lut      0.01   ×2
+
+[tyres_front:v0]
+tyres.ini
+    HEADER/VERSION          number   1
+    FRONT/ANGULAR_INERTIA   number   0.01
+        DAMP                number   10
+        RATE                number   10
+        DY0                 number   0.01
+        DY1                 number   0.01
+        DX0                 number   0.01
+        DX1                 number   0.01
+        SPEED_SENSITIVITY   number   0.00001
+        RELAXATION_LENGTH   number   0.00001
+        FLEX                number   0.00001
+        CAMBER_GAIN         number   0.001
+        DCAMBER_0           number   0.1
+        DCAMBER_1           number   0.1
+        FZ0                 number   10
+        LS_EXPY             number   0.001
+        LS_EXPX             number   0.001
+        DX_REF              number   0.001
+        DY_REF              number   0.001
+        FLEX_GAIN           number   0.001
+        FALLOFF_LEVEL       number   0.001
+        FALLOFF_SPEED       number   0.001
+
+        ROLLING_RESISTANCE_0        number   0.1
+        ROLLING_RESISTANCE_1        number   0.00001
+        ROLLING_RESISTANCE_SLIP     number   10
+
+[tyres_rear:v0]
+tyres.ini
+    HEADER/VERSION          number   1
+    REAR/ANGULAR_INERTIA    number   0.01
+        DAMP                number   10
+        RATE                number   10
+        DY0                 number   0.01
+        DY1                 number   0.01
+        DX0                 number   0.01
+        DX1                 number   0.01
+        SPEED_SENSITIVITY   number   0.00001
+        RELAXATION_LENGTH   number   0.00001
+        FLEX                number   0.00001
+        CAMBER_GAIN         number   0.001
+        DCAMBER_0           number   0.1
+        DCAMBER_1           number   0.1
+        FZ0                 number   10
+        LS_EXPY             number   0.001
+        LS_EXPX             number   0.001
+        DX_REF              number   0.001
+        DY_REF              number   0.001
+        FLEX_GAIN           number   0.001
+        FALLOFF_LEVEL       number   0.001
+        FALLOFF_SPEED       number   0.001
+
+        ROLLING_RESISTANCE_0        number   0.1
+        ROLLING_RESISTANCE_1        number   0.00001
+        ROLLING_RESISTANCE_SLIP     number   10

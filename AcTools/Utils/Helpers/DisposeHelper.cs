@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -11,9 +12,10 @@ namespace AcTools.Utils.Helpers {
         }
 
         [ContractAnnotation("=> disposable:null")]
-        public static void Dispose<T>([CanBeNull] ref T[] disposable) where T : class, IDisposable {
+        public static void Dispose<T>([CanBeNull] ref IEnumerable<T> disposable) where T : class, IDisposable {
             if (disposable == null) return;
             disposable.DisposeEverything();
+            (disposable as IDisposable)?.Dispose();
             disposable = null;
         }
 
@@ -62,6 +64,24 @@ namespace AcTools.Utils.Helpers {
                 DisposeHelper.Dispose(ref _a);
                 DisposeHelper.Dispose(ref _b);
             }
+        }
+
+        public static IDisposable AsDisposable(this Action action) {
+            return new ActionAsDisposable(action);
+        }
+
+        public static IDisposable Empty => new ActionAsDisposable(() => { });
+    }
+
+    public class ActionAsDisposable : IDisposable {
+        private readonly Action _action;
+
+        public ActionAsDisposable(Action action) {
+            _action = action;
+        }
+
+        public void Dispose() {
+            _action.Invoke();
         }
     }
 }

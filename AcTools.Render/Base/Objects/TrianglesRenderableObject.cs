@@ -112,7 +112,7 @@ namespace AcTools.Render.Base.Objects {
             _parentMatrix = parentMatrix;
 
             if (_positions == null) {
-                Prepare();
+                PrepareSmart();
                 if (_positions == null) return;
             }
 

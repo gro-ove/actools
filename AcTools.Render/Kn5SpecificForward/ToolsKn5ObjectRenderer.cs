@@ -246,6 +246,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (Equals(value, _selectedObject)) return;
                 _selectedObject = value;
                 OnPropertyChanged();
+                IsDirty = true;
 
                 if (value != null) {
                     PrepareOutlineBuffer();

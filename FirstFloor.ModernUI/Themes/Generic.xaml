@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BBCodeBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BaseSwitch.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BbCodeBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ContextMenuButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />

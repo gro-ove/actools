@@ -277,6 +277,13 @@ namespace AcManager.Controls.CustomShowroom {
                     BloomRadiusMultiplier = BloomRadiusMultiplier,
                     SsaoOpacity = SsaoOpacity,
 
+                    UseDof = UseDof,
+                    DofFocusPlane = DofFocusPlane,
+                    DofScale = DofScale,
+                    UseAccumulationDof = UseAccumulationDof,
+                    AccumulationDofIterations = AccumulationDofIterations,
+                    AccumulationDofApertureSize = AccumulationDofApertureSize,
+
                     PreviewWidth = Width,
                     PreviewHeight = Height,
 

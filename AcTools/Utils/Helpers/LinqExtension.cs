@@ -8,6 +8,10 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class LinqExtension {
+        public static int GetEnumerableHashCode<T>([CanBeNull] this IEnumerable<T> items) {
+            return items?.Aggregate(0, (x, o) => (x * 397) ^ o.GetHashCode()) ?? 0;
+        }
+
         public static IEnumerable<T[]> Partition<T>([NotNull] this IEnumerable<T> items, int partitionSize) {
             if (items == null) throw new ArgumentNullException(nameof(items));
 

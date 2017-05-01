@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Forms;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Sprites;
@@ -43,6 +44,8 @@ namespace AcTools.Render.Base {
         public DeviceContextHolder DeviceContextHolder => _deviceContextHolder;
 
         public bool IsDirty { get; set; }
+
+        public virtual bool AccumulationMode => false;
 
         private int _width, _height;
         private bool _resized = true;
@@ -133,7 +136,7 @@ namespace AcTools.Render.Base {
 
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
         private readonly Stopwatch _stopwatch = new Stopwatch();
-
+        
         private float _previousFramesPerSecond;
 
         public float FramesPerSecond {
@@ -215,7 +218,17 @@ namespace AcTools.Render.Base {
 
         protected bool Initialized { get; private set; }
 
-        public SampleDescription SampleDescription { get; private set; } = new SampleDescription(1, 0);
+        private SampleDescription _sampleDescription = new SampleDescription(1, 0);
+
+        public SampleDescription SampleDescription {
+            get { return _sampleDescription; }
+            private set {
+                if (value.Equals(_sampleDescription)) return;
+                _sampleDescription = value;
+                _deviceContextHolder?.OnResize(Width, Height, value);
+                OnPropertyChanged();
+            }
+        }
 
         protected abstract FeatureLevel FeatureLevel { get; }
 
@@ -313,7 +326,6 @@ namespace AcTools.Render.Base {
 
             DisposeSwapChain();
             _swapChain = new SwapChain(Device.Factory, Device, _swapChainDescription);
-
             _resized = true;
         }
 
@@ -391,7 +403,7 @@ namespace AcTools.Render.Base {
                 DeviceContext.OutputMerger.DepthStencilState = null;
 
                 ResizeInner();
-                DeviceContextHolder.OnResize(width, height);
+                _deviceContextHolder?.OnResize(Width, Height, SampleDescription);
 
                 InitiallyResized = true;
             }
@@ -421,8 +433,10 @@ namespace AcTools.Render.Base {
 
         public bool IsPaused { get; set; }
 
-        public bool Draw() {
-            return !IsPaused && DrawInner();
+        public virtual void Draw() {
+            if (!IsPaused) {
+                DrawInner();
+            }
         }
 
         private bool DrawInner() {
@@ -587,12 +601,36 @@ namespace AcTools.Render.Base {
             GCHelper.CleanUp();
         }
 
+        [NotNull]
+        protected IDisposable ReplaceRenderView([CanBeNull] RenderTargetView view) {
+            if (ReferenceEquals(_renderView, view) || view == null) return DisposeHelper.Empty;
+
+            var renderView = _renderView;
+            _renderView = view;
+            return new ActionAsDisposable(() => {
+                _renderView = renderView;
+            });
+        }
+
         private TargetResourceTexture _shotRenderBuffer, _shotMsaaTemporaryTexture, _shotDownsampleTexture, _shotCutTexture;
 
-        // To avoid adding tons of other options to Shot()
-        public double CutScreenshot { get; set; } = 1d;
+        protected bool ShotInProcess { get; private set; }
 
-        public virtual void Shot(double multiplier, double downscale, Stream outputStream, bool lossless) {
+        protected virtual void DrawShot([CanBeNull] RenderTargetView target, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+            try {
+                ShotInProcess = true;
+                using (ReplaceRenderView(target)) {
+                    DrawInner();
+                }
+            } finally {
+                ShotInProcess = false;
+            }
+        }
+
+        protected virtual bool CanShotWithoutExtraTextures => !UseMsaa;
+
+        public virtual void Shot(double multiplier, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height, ResolutionMultiplier };
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
 
@@ -601,9 +639,9 @@ namespace AcTools.Render.Base {
                 Height = (Height * multiplier).RoundToInt();
                 ResolutionMultiplier = 1d;
 
-                if (Equals(downscale, 1d) && !UseMsaa && Equals(CutScreenshot, 1d)) {
+                if (Equals(downscale, 1d) && Equals(crop, 1d) && CanShotWithoutExtraTextures) {
                     // Simplest case: existing buffer will do just great, so let’s use it
-                    DrawInner();
+                    DrawShot(null, progress.Subrange(0.05, 0.9), cancellation);
                     Texture2D.ToStream(DeviceContext, _renderBuffer, format, outputStream);
                 } else {
                     // More complicated situation: we need to temporary replace existing _renderBuffer
@@ -630,16 +668,12 @@ namespace AcTools.Render.Base {
                         DisposeSwapChain();
                     }
 
-                    // Replacing _renderBuffer…
-                    var renderView = _renderView;
-                    _renderView = _shotRenderBuffer.TargetView;
-
                     // Calculating output width and height and, if needed, preparing downscaled buffer…
                     var outputWidth = (Width * downscale).RoundToInt();
                     var outputHeight = (Height * downscale).RoundToInt();
 
                     // Ready to draw!
-                    DrawInner();
+                    DrawShot(_shotRenderBuffer.TargetView, progress.Subrange(0.05, 0.9), cancellation);
 
                     // For MSAA, we need to copy the result into a texture without MSAA enabled to save it later
                     TargetResourceTexture result;
@@ -671,24 +705,21 @@ namespace AcTools.Render.Base {
                     }
 
                     // Optional cut
-                    if (!Equals(CutScreenshot, 1d)) {
+                    if (!Equals(crop, 1d)) {
                         if (_shotCutTexture == null) {
                             _shotCutTexture = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
                         }
 
-                        var width = (outputWidth / CutScreenshot).RoundToInt();
-                        var height = (outputHeight / CutScreenshot).RoundToInt();
+                        var width = (outputWidth / crop).RoundToInt();
+                        var height = (outputHeight / crop).RoundToInt();
                         DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, width, height));
                         _shotCutTexture.Resize(DeviceContextHolder, width, height, null);
                         DeviceContextHolder.GetHelper<CopyHelper>()
-                                           .Cut(DeviceContextHolder, result.View, _shotCutTexture.TargetView, (float)CutScreenshot);
+                                           .Cut(DeviceContextHolder, result.View, _shotCutTexture.TargetView, (float)crop);
                         result = _shotCutTexture;
                     }
 
                     Texture2D.ToStream(DeviceContext, result.Texture, format, outputStream);
-
-                    // Restoring old stuff
-                    _renderView = renderView;
 
                     if (swapChainMode) {
                         RecreateSwapChain();
@@ -701,9 +732,10 @@ namespace AcTools.Render.Base {
             }
         }
 
-        public virtual Image Shot(double multiplier, double downscale, bool lossless) {
+        public virtual Image Shot(double multiplier, double downscale, double crop, bool lossless, IProgress<double> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
-                Shot(multiplier, downscale, stream, lossless);
+                Shot(multiplier, downscale, crop, stream, lossless, progress, cancellation);
                 stream.Position = 0;
                 return Image.FromStream(stream);
             }
