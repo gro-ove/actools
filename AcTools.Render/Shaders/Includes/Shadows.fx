@@ -44,14 +44,22 @@ Texture2D gShadowMaps[MAX_NUM_SPLITS];
 		ComparisonFunc = LESS;
 	};
 
-	float GetShadowSmooth(Texture2D tex, float3 uv) {
+	float GetShadowSmooth(Texture2D tex, float shadowMapSize, float3 uv) {
 		// uv: only float3 is required
 		float shadow = 0.0, x, y;
-		for (y = -1.5; y <= 1.5; y += 1.0)
-			for (x = -1.5; x <= 1.5; x += 1.0)
-				shadow += tex.SampleCmpLevelZero(samShadow, uv.xy + float2(x, y) * SHADOW_MAP_DX, uv.z).r;
+		for (y = -1.5; y <= 1.501; y += 1.0)
+			for (x = -1.5; x <= 1.501; x += 1.0)
+				shadow += tex.SampleCmpLevelZero(samShadow, uv.xy + float2(x, y) * shadowMapSize, uv.z).r;
 		// return shadow / 16.0;
 		return saturate((shadow / 16 - 0.5) * 4 + 0.5);
+	}
+
+	float GetShadowFast(Texture2D tex, float3 uv) {
+		return tex.SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+	}
+
+	float GetShadowSmooth(Texture2D tex, float3 uv) {
+		return GetShadowSmooth(tex, SHADOW_MAP_DX, uv);
 	}
 
 	#if ENABLE_PCSS == 1

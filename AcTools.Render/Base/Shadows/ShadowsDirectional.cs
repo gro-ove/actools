@@ -6,10 +6,9 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
-using Viewport = SlimDX.Direct3D11.Viewport;
 
 namespace AcTools.Render.Base.Shadows {
-    public class ShadowsDirectional : IDisposable {
+    public class ShadowsDirectional : ShadowsBase {
         public sealed class CameraOrthoShadow : CameraOrtho {
             private readonly CameraOrtho _innerCamera;
 
@@ -75,10 +74,11 @@ namespace AcTools.Render.Base.Shadows {
                 Camera.SetLens(1f);
             }
 
-            public void LookAt(Vector3 direction, Vector3 lookAt) {
-                Camera.LookAt(lookAt - ClipDistance * Vector3.Normalize(direction), lookAt, direction.X == 0f && direction.Z == 0f ? Vector3.UnitX : Vector3.UnitY);
+            public bool LookAt(Vector3 direction, Vector3 lookAt) {
+                Camera.LookAt(lookAt - ClipDistance * Vector3.Normalize(direction), lookAt,
+                        direction.X == 0f && direction.Z == 0f ? Vector3.UnitX : Vector3.UnitY);
                 Camera.UpdateViewMatrix();
-                ShadowTransform = Camera.ViewProj * new Matrix {
+                var shadowTransform = Camera.ViewProj * new Matrix {
                     M11 = 0.5f,
                     M22 = -0.5f,
                     M33 = 1.0f,
@@ -86,6 +86,13 @@ namespace AcTools.Render.Base.Shadows {
                     M42 = 0.5f,
                     M44 = 1.0f
                 };
+
+                if (ShadowTransform != shadowTransform) {
+                    ShadowTransform = shadowTransform;
+                    return true;
+                }
+                
+                return false;
             }
 
             public Matrix ShadowTransform { get; private set; }
@@ -99,18 +106,11 @@ namespace AcTools.Render.Base.Shadows {
 
         public Split[] Splits { get; private set; }
 
-        public int MapSize { get; private set; }
-        private Viewport _viewport;
-
-        private RasterizerState _rasterizerState;
-        private DepthStencilState _depthStencilState;
-
-        public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 100f) {
-            MapSize = mapSize;
-            _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
-
+        public ShadowsDirectional(int mapSize, IEnumerable<float> splits, float clipDistance = 100f) : base(mapSize) {
             SetSplits(splits, clipDistance);
         }
+
+        public ShadowsDirectional(int mapSize, float clipDistance = 50f) : this(mapSize, new[] { 15f, 50f, 200f }, clipDistance) { }
 
         private void SetSplits(IEnumerable<float> splits, float clipDistance = 50f) {
             var splitsValues = splits.ToArrayIfItIsNot();
@@ -134,38 +134,10 @@ namespace AcTools.Render.Base.Shadows {
             }
         }
 
-        public void SetMapSize(DeviceContextHolder holder, int value) {
-            if (Equals(value, MapSize)) return;
-            MapSize = value;
-            _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
+        protected override void ResizeBuffers(DeviceContextHolder holder, int size) {
             foreach (var split in Splits) {
-                split.Buffer.Resize(holder, MapSize, MapSize, null);
+                split.Buffer.Resize(holder, size, size, null);
             }
-        }
-
-        public ShadowsDirectional(int mapSize, float clipDistance = 50f) : this(mapSize, new []{ 15f, 50f, 200f }, clipDistance) {}
-
-        public void Initialize(DeviceContextHolder holder) {
-            foreach (var split in Splits) {
-                split.Buffer.Resize(holder, MapSize, MapSize, null);
-            }
-
-            _rasterizerState = RasterizerState.FromDescription(holder.Device, new RasterizerStateDescription {
-                CullMode = CullMode.Front,
-                FillMode = FillMode.Solid,
-                IsAntialiasedLineEnabled = false,
-                IsDepthClipEnabled = true,
-                DepthBias = 100,
-                DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = 1f
-            });
-
-            _depthStencilState = DepthStencilState.FromDescription(holder.Device, new DepthStencilStateDescription {
-                DepthWriteMask = DepthWriteMask.All,
-                DepthComparison = Comparison.Greater,
-                IsDepthEnabled = true,
-                IsStencilEnabled = false
-            });
         }
 
         public void Update(Vector3 direction, BaseCamera camera) {
@@ -174,60 +146,38 @@ namespace AcTools.Render.Base.Shadows {
             }
         }
 
-        public void Update(Vector3 direction, Vector3 target) {
-            foreach (var split in Splits) {
-                split.LookAt(direction, target);
+        private bool _dirty;
+
+        public bool Update(Vector3 direction, Vector3 target) {
+            var result = _dirty;
+            _dirty = false;
+
+            for (var i = Splits.Length - 1; i >= 0; i--) {
+                result |= Splits[i].LookAt(direction, target);
             }
+            return result;
         }
 
-        public void DrawScene(DeviceContextHolder holder, IShadowsDraw draw) {
-            holder.SaveRenderTargetAndViewport();
+        public override void Invalidate() {
+            _dirty = true;
+        }
 
-            holder.DeviceContext.Rasterizer.SetViewports(_viewport);
-            holder.DeviceContext.OutputMerger.DepthStencilState = null;
-            holder.DeviceContext.OutputMerger.BlendState = null;
-            holder.DeviceContext.Rasterizer.State = _rasterizerState;
-
+        protected override void UpdateBuffers(DeviceContextHolder holder, IShadowsDraw draw) {
             foreach (var split in Splits) {
                 holder.DeviceContext.OutputMerger.SetTargets(split.Buffer.DepthView);
-                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth, 1f, 0);
                 draw.DrawSceneForShadows(holder, split.Camera);
-                holder.DeviceContext.GenerateMips(split.Buffer.View);
             }
-
-            holder.DeviceContext.Rasterizer.State = null;
-            holder.DeviceContext.OutputMerger.DepthStencilState = null;
-            holder.RestoreRenderTargetAndViewport();
         }
 
-        public void Clear(DeviceContextHolder holder) {
-            holder.SaveRenderTargetAndViewport();
-
-            holder.DeviceContext.Rasterizer.SetViewports(_viewport);
-            holder.DeviceContext.OutputMerger.DepthStencilState = null;
-            holder.DeviceContext.OutputMerger.BlendState = null;
-            holder.DeviceContext.Rasterizer.State = _rasterizerState;
-
+        protected override void ClearBuffers(DeviceContextHolder holder) {
             foreach (var split in Splits) {
-                holder.DeviceContext.OutputMerger.SetTargets(split.Buffer.DepthView);
-                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
-            }
-
-            holder.DeviceContext.Rasterizer.State = null;
-            holder.DeviceContext.OutputMerger.DepthStencilState = null;
-            holder.RestoreRenderTargetAndViewport();
-        }
-
-        public void FillBlack(DeviceContextHolder holder) {
-            foreach (var split in Splits) {
-                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 0f, 255);
+                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth, 1f, 0);
             }
         }
 
-        public void Dispose() {
+        protected override void DisposeOverride() {
             Splits.DisposeEverything();
-            DisposeHelper.Dispose(ref _rasterizerState);
-            DisposeHelper.Dispose(ref _depthStencilState);
         }
     }
 }

@@ -33,7 +33,7 @@ static const dword HAS_DETAILS_MAP = 4;
 static const dword IS_CARPAINT = 32;
 
 struct MapsMaterial {
-	float DetailsUvMultipler;
+	float DetailsUvMultiplier;
 	float DetailsNormalBlend;
 
 	float SunSpecular;
@@ -51,8 +51,8 @@ struct AlphaMaterial {
 
 // nm uvmult
 struct NmUvMultMaterial {
-	float DiffuseMultipler;
-	float NormalMultipler;
+	float DiffuseMultiplier;
+	float NormalMultiplier;
 };
 
 // input resources
@@ -97,9 +97,6 @@ float4 CalculatePosH(float3 posL) {
 }
 
 // shadows
-#define ENABLE_SHADOWS 1
-#define ENABLE_PCSS 1
-// define NUM_SPLITS 1
 #include "Shadows.fx"
 
 SamplerState samLinear {

@@ -31,12 +31,12 @@ float4 GetReflection(float3 posW, float3 normal, float alpha) {
 	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
 }
 
-float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specularExpMultipler, float reflectionMultipler) {
+float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specularExpMultiplier, float reflectionMultiplier) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normal);
-	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
 
-	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultipler;
+	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultiplier;
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		alpha = alpha + val * (1 - alpha);
 	}
@@ -45,12 +45,12 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
 }
 
-float4 GetReflection_Maps_NoAlpha(float3 posW, float3 normal, float alpha, float specularExpMultipler, float reflectionMultipler) {
+float4 GetReflection_Maps_NoAlpha(float3 posW, float3 normal, float alpha, float specularExpMultiplier, float reflectionMultiplier) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normal);
-	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
 
-	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultipler;
+	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultiplier;
 
 	GPassAlphaTest(alpha);
 	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
@@ -75,18 +75,18 @@ PS_OUT GetResult(float depth, float3 posW, float3 normal, float alpha) {
 			normal, depth, gMaterial.SpecularExp);
 }
 
-PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultipler, float txMapsSpecularExpMultipler,
-	float txMapsReflectionMultipler) {
+PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultiplier, float txMapsSpecularExpMultiplier,
+	float txMapsReflectionMultiplier) {
 	return PackResult(
-			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultipler, txMapsReflectionMultipler),
-			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultipler);
+			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
+			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultiplier);
 }
 
-PS_OUT GetResult_Maps_NoAlpha(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultipler, float txMapsSpecularExpMultipler,
-	float txMapsReflectionMultipler) {
+PS_OUT GetResult_Maps_NoAlpha(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultiplier, float txMapsSpecularExpMultiplier,
+	float txMapsReflectionMultiplier) {
 	return PackResult(
-			GetReflection_Maps_NoAlpha(posW, normal, alpha, txMapsSpecularExpMultipler, txMapsReflectionMultipler),
-			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultipler);
+			GetReflection_Maps_NoAlpha(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
+			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultiplier);
 }
 
 float GetDepth(float4 posH) {
@@ -153,8 +153,8 @@ technique10 GPass_Nm {
 //// NM UV Mult
 
 PS_OUT ps_GPass_NmUvMult(PS_IN pin) {
-	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
-	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
+	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
+	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	return GetResult(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a);
 }
@@ -193,7 +193,7 @@ PS_OUT ps_GPass_Maps(PS_IN pin) {
 
 		float blend = gMapsMaterial.DetailsNormalBlend;
 		if (blend > 0.0) {
-			float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultipler);
+			float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
 			normalValue += (detailsNormalValue - 0.5) * blend * (1.0 - mask);
 		}
 
@@ -223,8 +223,8 @@ technique10 GPass_SkinnedMaps {
 }
 
 PS_OUT ps_GPass_DiffMaps(PS_IN pin) {
-	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
-	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
+	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
+	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	return GetResult_Maps_NoAlpha(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a);
 }

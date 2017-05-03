@@ -20,6 +20,22 @@ namespace AcTools.Utils.Helpers {
         }
 
         [ContractAnnotation("=> disposable:null")]
+        public static void Dispose<T>([CanBeNull] ref List<T> disposable) where T : class, IDisposable {
+            if (disposable == null) return;
+            disposable.DisposeEverything();
+            (disposable as IDisposable)?.Dispose();
+            disposable = null;
+        }
+
+        [ContractAnnotation("=> disposable:null")]
+        public static void Dispose<T>([CanBeNull] ref T[] disposable) where T : class, IDisposable {
+            if (disposable == null) return;
+            disposable.DisposeEverything();
+            (disposable as IDisposable)?.Dispose();
+            disposable = null;
+        }
+
+        [ContractAnnotation("=> disposable:null")]
         public static void DisposeFirst<T, TOther>([CanBeNull] ref Tuple<T, TOther>[] disposable) where T : class, IDisposable {
             if (disposable == null) return;
             foreach (var tuple in disposable) {

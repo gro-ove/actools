@@ -9,6 +9,14 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
+    public class MoveableHelper : RenderableList {
+        private readonly bool _rotateInAllAxes;
+
+        public MoveableHelper(bool rotateInAllAxes) {
+            _rotateInAllAxes = rotateInAllAxes;
+        }
+    }
+
     public class RenderableList : List<IRenderableObject>, IRenderableObject {
         public string Name { get; }
 

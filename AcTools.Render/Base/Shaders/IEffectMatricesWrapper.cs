@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 
@@ -11,58 +12,70 @@ namespace AcTools.Render.Base.Shaders {
 
     // To make it more type-strict (and avoid losing tons of hours because of accidental “Set()” instead of “SetMatrix()” in the future! Arghh…)
     public class EffectOnlyMatrixVariable {
+        [CanBeNull]
         private readonly EffectMatrixVariable _v;
 
         public EffectOnlyMatrixVariable(EffectMatrixVariable v) {
             _v = v;
         }
 
+        public bool IsValid => _v != null;
+
         public void SetMatrix(Matrix m) {
-            _v.SetMatrix(m);
+            _v?.SetMatrix(m);
         }
     }
 
     public class EffectOnlyMatrixArrayVariable {
+        [CanBeNull]
         private readonly EffectMatrixVariable _v;
 
         public EffectOnlyMatrixArrayVariable(EffectMatrixVariable v) {
             _v = v;
         }
 
+        public bool IsValid => _v != null;
+
         public void SetMatrixArray(Matrix[] m) {
-            _v.SetMatrixArray(m);
+            _v?.SetMatrixArray(m);
         }
 
         public void SetMatrixArray(Matrix[] m, int offset, int count) {
-            _v.SetMatrixArray(m, offset, count);
+            _v?.SetMatrixArray(m, offset, count);
         }
     }
 
     public class EffectOnlyResourceVariable {
+        [CanBeNull]
         private readonly EffectResourceVariable _v;
 
         public EffectOnlyResourceVariable(EffectResourceVariable v) {
             _v = v;
         }
 
+        public bool IsValid => _v != null;
+
         public void SetResource(ShaderResourceView m) {
-            _v.SetResource(m);
+            _v?.SetResource(m);
         }
     }
 
     public class EffectOnlyResourceArrayVariable {
+        [CanBeNull]
         private readonly EffectResourceVariable _v;
 
         public EffectOnlyResourceArrayVariable(EffectResourceVariable v) {
             _v = v;
         }
 
+        public bool IsValid => _v != null;
+
         public void SetResourceArray(ShaderResourceView[] m) {
-            _v.SetResourceArray(m);
+            _v?.SetResourceArray(m);
         }
 
         public void SetResourceArray(ShaderResourceView[] m, int offset, int count) {
-            _v.SetResourceArray(m, offset, count);
+            _v?.SetResourceArray(m, offset, count);
         }
     }
 

@@ -153,33 +153,19 @@ namespace AcTools.Utils {
 
         [ThreadStatic]
         private static Random _random;
-
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
-
         public static int Random(int maxValueExclusive) => RandomInstance.Next(maxValueExclusive);
-
         public static int Random(int minValueInclusive, int maxValueExclusive) => RandomInstance.Next(minValueInclusive, maxValueExclusive);
-
         public static double Random() => RandomInstance.NextDouble();
-
         public static double Random(double maxValue) => RandomInstance.NextDouble() * maxValue;
-
         public static double Random(double minValue, double maxValue) => Random(maxValue - minValue) + minValue;
-
         public static float Random(float maxValue) => (float)(RandomInstance.NextDouble() * maxValue);
-
         public static float Random(float minValue, float maxValue) => Random(maxValue - minValue) + minValue;
 
-        public static TimeSpan Max(this TimeSpan a, TimeSpan b) {
-            return a > b ? a : b;
-        }
+        public static TimeSpan Max(this TimeSpan a, TimeSpan b) => a > b ? a : b;
+        public static TimeSpan Min(this TimeSpan a, TimeSpan b) => a < b ? a : b;
 
-        public static TimeSpan Min(this TimeSpan a, TimeSpan b) {
-            return a < b ? a : b;
-        }
-
-        public static float Lerp(float v0, float v1, float t) {
-            return (1 - t) * v0 + t * v1;
-        }
+        public static float Lerp(this float v0, float v1, float t) => (1f - t) * v0 + t * v1;
+        public static double Lerp(this double v0, double v1, double t) => (1d - t) * v0 + t * v1;
     }
 }

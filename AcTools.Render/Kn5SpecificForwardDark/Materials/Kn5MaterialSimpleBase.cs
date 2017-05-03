@@ -42,13 +42,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public virtual void Initialize(IDeviceContextHolder contextHolder) {
             Effect = contextHolder.GetEffect<EffectDarkMaterial>();
-            InputLayout = Effect.LayoutPNTG;
         }
 
-        protected InputLayout InputLayout { get; set; }
+        protected virtual void SetInputLayout(IDeviceContextHolder contextHolder) {
+            contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
+        }
 
         protected void PrepareStates(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            contextHolder.DeviceContext.InputAssembler.InputLayout = InputLayout;
+            SetInputLayout(contextHolder);
 
             if (mode == SpecialRenderMode.GBuffer) return;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.States.TransparentBlendState : null;

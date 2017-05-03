@@ -119,19 +119,19 @@ namespace AcTools.Render.Base.Reflections {
         }
 
         public void DrawScene(DeviceContextHolder holder, IReflectionDraw draw) {
-            holder.SaveRenderTargetAndViewport();
-            holder.DeviceContext.Rasterizer.SetViewports(_viewport);
-            for (var i = 0; i < 6; i++) {
-                holder.DeviceContext.ClearRenderTargetView(_targetView[i], BackgroundColor);
-                holder.DeviceContext.ClearDepthStencilView(_depthTargetView,
-                                                           DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil,
-                                                           1.0f, 0);
-                holder.DeviceContext.OutputMerger.SetTargets(_depthTargetView, _targetView[i]);
-                draw.DrawSceneForReflection(holder, _cameras[i]);
-            }
+            using (holder.SaveRenderTargetAndViewport()) {
+                holder.DeviceContext.Rasterizer.SetViewports(_viewport);
+                for (var i = 0; i < 6; i++) {
+                    holder.DeviceContext.ClearRenderTargetView(_targetView[i], BackgroundColor);
+                    holder.DeviceContext.ClearDepthStencilView(_depthTargetView,
+                            DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil,
+                            1.0f, 0);
+                    holder.DeviceContext.OutputMerger.SetTargets(_depthTargetView, _targetView[i]);
+                    draw.DrawSceneForReflection(holder, _cameras[i]);
+                }
 
-            holder.DeviceContext.GenerateMips(_view);
-            holder.RestoreRenderTargetAndViewport();
+                holder.DeviceContext.GenerateMips(_view);
+            }
         }
 
         public void Dispose() {

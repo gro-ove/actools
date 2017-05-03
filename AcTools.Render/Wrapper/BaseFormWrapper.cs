@@ -141,11 +141,13 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
+        protected virtual bool SleepMode => !Renderer.IsDirty && !Renderer.AccumulationMode;
+
         protected virtual void OnRender() {
             if (_closed) return;
 
             Form.Text = $@"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (!Renderer.IsDirty && !Renderer.AccumulationMode) {
+            if (SleepMode) {
                 Thread.Sleep(20);
                 return;
             }

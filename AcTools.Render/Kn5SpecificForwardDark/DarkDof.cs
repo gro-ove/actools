@@ -129,25 +129,25 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             holder.PrepareQuad(_effect.LayoutPT);
 
             // prepare downsamplecolor buffer
-            holder.SaveRenderTargetAndViewport();
-            holder.DeviceContext.OutputMerger.SetTargets(BufferDownsampleColor.TargetView);
-            holder.DeviceContext.Rasterizer.SetViewports(BufferDownsampleColor.Viewport);
-            _effect.TechDownsampleColorCoC.DrawAllPasses(holder.DeviceContext, 6);
-            holder.RestoreRenderTargetAndViewport();
+            using (holder.SaveRenderTargetAndViewport()) {
+                holder.DeviceContext.OutputMerger.SetTargets(BufferDownsampleColor.TargetView);
+                holder.DeviceContext.Rasterizer.SetViewports(BufferDownsampleColor.Viewport);
+                _effect.TechDownsampleColorCoC.DrawAllPasses(holder.DeviceContext, 6);
+            }
 
             // wut
             _effect.FxInputTextureDownscaledColor.SetResource(BufferDownsampleColor.View);
             _effect.FxInputTextureBokenBase.SetResource(_bokehBaseView);
 
-            holder.SaveRenderTargetAndViewport();
-            holder.DeviceContext.OutputMerger.SetTargets(BufferScatterBokeh.TargetView);
-            holder.DeviceContext.Rasterizer.SetViewports(BufferScatterBokeh.Viewport);
-            holder.DeviceContext.OutputMerger.BlendState = holder.States.AddState;
+            using (holder.SaveRenderTargetAndViewport()) {
+                holder.DeviceContext.OutputMerger.SetTargets(BufferScatterBokeh.TargetView);
+                holder.DeviceContext.Rasterizer.SetViewports(BufferScatterBokeh.Viewport);
+                holder.DeviceContext.OutputMerger.BlendState = holder.States.AddState;
 
-            _effect.TechBokehSprite.GetPassByIndex(0).Apply(holder.DeviceContext);
-            RenderFullscreenGrid(holder.DeviceContext, BufferDownsampleColor.Width * BufferDownsampleColor.Height);
+                _effect.TechBokehSprite.GetPassByIndex(0).Apply(holder.DeviceContext);
+                RenderFullscreenGrid(holder.DeviceContext, BufferDownsampleColor.Width * BufferDownsampleColor.Height);
+            }
 
-            holder.RestoreRenderTargetAndViewport();
             holder.DeviceContext.OutputMerger.BlendState = null;
 
             // set new buffer as input

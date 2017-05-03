@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
@@ -256,6 +257,8 @@ namespace <#= resultNamespace #> {
 		return PrependIncludes_Inner(data, new List<string>());
 	};
 
+	var alternatives = new Dictionary<string, string>();
+
 	foreach (var file in Directory.GetFiles(dataFolder).Union(Directory.GetDirectories(dataFolder).SelectMany(Directory.GetFiles))){
 		if (!file.EndsWith(".fx") || Path.GetDirectoryName(file).EndsWith("\\Includes")){
 			continue;
@@ -263,8 +266,26 @@ namespace <#= resultNamespace #> {
 
 		var name = Path.GetFileNameWithoutExtension(file);
 		var data = File.ReadAllText(file);
+		var alternative = Regex.Match(data, @"// Alternative for (\w+)");
+		if (alternative.Success){
+			alternatives[file] = alternative.Groups[1].Value.Trim();
+		}
+	}
 
-		var dataLiteral = ConvertStringToLiteral(ClearHlslCode(data));
+	foreach (var file in Directory.GetFiles(dataFolder).Union(Directory.GetDirectories(dataFolder).SelectMany(Directory.GetFiles))){
+		if (!file.EndsWith(".fx") || Path.GetDirectoryName(file).EndsWith("\\Includes")){
+			continue;
+		}
+
+		var name = Path.GetFileNameWithoutExtension(file);
+		var data = File.ReadAllText(file);
+		
+		var alternative = Regex.Match(data, @"// Alternative for (\w+)");
+		if (alternative.Success){
+			continue;
+		}
+
+		var extraModes = alternatives.Where(x => x.Value == name).Select(x => x.Key).ToList();
 
 	/* ADD INCLUDED STUFF */
 		var baseData = data;
@@ -335,9 +356,13 @@ namespace <#= resultNamespace #> {
 			Type = x.Groups[1].Value,
 			Name = x.Groups[2].Value
 		});
+		var vsArr = Regex.Matches(cbs, @"\n\s+((?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().Select(x => new {
+			Type = x.Groups[1].Value,
+			Name = x.Groups[2].Value
+		});
 		
 	/* CONSTS */
-		var justReadonly = true;
+		var justReadonly = false;
 		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
 			var typeName = MapShaderType(x.Groups[1].Value);
 			var isConst = !justReadonly && !typeName.StartsWith("Vector");
@@ -382,7 +407,7 @@ namespace <#= resultNamespace #> {
 			public static readonly int Stride = Marshal.SizeOf(typeof({0}));
         }}
 
-        public class EffectStruct{0}Variable {{
+		" + (vs.Any(y => y.Type ==  x.Groups[1].Value) ? @"public class EffectStruct{0}Variable {{
 			private readonly EffectVariable _v;
 
 			public EffectStruct{0}Variable(EffectVariable v) {{
@@ -393,8 +418,20 @@ namespace <#= resultNamespace #> {
 				 SlimDxExtension.SetObject(_v, value, {0}.Stride);
 			}}
         }}
+		
+		" : "") + (vsArr.Any(y => y.Type ==  x.Groups[1].Value) ? @"public class EffectStruct{0}ArrayVariable {{
+			private readonly EffectVariable _v;
 
-		", x.Groups[1].Value, 
+			public EffectStruct{0}ArrayVariable(EffectVariable v) {{
+				_v = v;
+			}}
+
+			public void SetArray({0}[] value){{
+				 SlimDxExtension.SetArray(_v, value, {0}.Stride);
+			}}
+        }}
+		
+		" : ""), x.Groups[1].Value, 
 			string.Join("\n",
 				x.Groups[2].Value.Split('\n').Select(y => Regex.Replace(y, @"//.+", "").Trim().Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries)).Where(y => y.Length == 2)
 					.Select(y => {
@@ -411,6 +448,17 @@ namespace <#= resultNamespace #> {
 		var vsStructs = vs.Where(x => structsNames.Contains(x.Type)).ToList();
 		vs = vs.Where(x => !structsNames.Contains(x.Type)).ToList();
 
+		var vsArrStructs = vsArr.Where(x => structsNames.Contains(x.Type)).ToList();
+		vsArr = vsArr.Where(x => !structsNames.Contains(x.Type)).ToList();
+
+	/* EXTRA MODES */
+		var extraModesEnum = "";
+		if (extraModes.Count > 0){
+			extraModesEnum = $@"public enum Mode {{ Main, {string.Join(", ", extraModes.Select(x => Path.GetFileNameWithoutExtension(x).Split('.').Last()))} }}
+			
+		";
+		}
+
 	/* IF SHADER CONTAINS ALL OBJECTS MATRICES */
 		var matricesNames = vms.Select(x => x.Groups[1].Value.Substring(1)).ToList();
 		var matricesMode = matricesNames.Contains("World") && matricesNames.Contains("WorldInvTranspose") && matricesNames.Contains("WorldViewProj");
@@ -421,7 +469,7 @@ namespace <#= resultNamespace #> {
 			matricesMode ? "IEffectMatricesWrapper" : null,
 			screenSizeMode ? "IEffectScreenSizeWrapper" : null,
 	}.Where(x => x != null)) #> {
-		<#= string.Join("", structs) #><#= string.Join("", consts) #>private ShaderBytecode _b;
+		<#= extraModesEnum #><#= string.Join("", structs) #><#= string.Join("", consts) #>private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
@@ -429,11 +477,11 @@ namespace <#= resultNamespace #> {
 
 		public EffectReadyTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
-<# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
-		public EffectOnlyMatrixVariable <#= matriceFieldName #> { get; private set; }
+<# if (vms.Any()){ #>
+		public EffectOnlyMatrixVariable <#= string.Join(", ", vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
-<# foreach (var matriceFieldName in vmsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
-		public EffectOnlyMatrixArrayVariable <#= matriceFieldName #> { get; private set; }
+<# if (vmsArr.Any()){ #>
+		public EffectOnlyMatrixArrayVariable <#= string.Join(", ", vmsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vrs.Any()){ #>
 		public EffectOnlyResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
@@ -444,18 +492,55 @@ namespace <#= resultNamespace #> {
 <# if (vss.Any()){ #>
 		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
-<# foreach (var vectorFieldName in vvs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()){ #>
-		public EffectVectorVariable <#= vectorFieldName #> { get; private set; }
+<# if (vvs.Any()){ #>
+		public EffectVectorVariable <#= string.Join(", ", vvs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# foreach (var vsStruct in vsStructs){ #>
-		public EffectStruct<#= vsStruct.Type #>Variable <#= ConvertFxName(vsStruct.Name) #> { get; private set; }
+		public EffectStruct<#= vsStruct.Type #>Variable <#= ConvertFxName(vsStruct.Name) #>;
+<# } #>
+<# foreach (var vsStruct in vsArrStructs){ #>
+		public EffectStruct<#= vsStruct.Type #>ArrayVariable <#= ConvertFxName(vsStruct.Name) #>;
 <# } #>
 <# if (vs.Any()){ #>
 		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Name)).Distinct()) #>;
 <# } #>
+<# if (screenSizeMode){ #>
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
+<# } #>
+<# if (matricesMode){ #>
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
+<# } #>
+<# if (extraModes.Count > 0){ #>
+		
+		private Mode _mode = Mode.Main;
+
+		public Mode GetMode(){
+			return _mode;
+		}
+
+		public void SetMode(Mode mode, Device device){
+			if (mode == _mode) return;
+			_mode = mode;
+			if (_b != null) {
+				Dispose();
+				_b = null;
+				Initialize(device);
+			}
+		}
+		
+		public void Initialize(Device device) {
+			if (_b != null) return;
+
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, _mode == Mode.Main ? "<#= name #>" : "<#= name #>." + _mode);
+<# } else { #>
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "<#= name #>");
+<# } #>
 			E = new Effect(device, _b);
 
 <# foreach (var x in ts.Distinct()){ #>
@@ -491,6 +576,9 @@ namespace <#= resultNamespace #> {
 <# foreach (var x in vsStructs.Distinct()){ #>
 			<#= ConvertFxName(x.Name) #> = new EffectStruct<#= x.Type #>Variable(E.GetVariableByName("<#= x.Name #>"));
 <# } #>
+<# foreach (var x in vsArrStructs.Distinct()){ #>
+			<#= ConvertFxName(x.Name) #> = new EffectStruct<#= x.Type #>ArrayVariable(E.GetVariableByName("<#= x.Name #>"));
+<# } #>
 <# foreach (var x in vs.Distinct()){ #>
 			<#= ConvertFxName(x.Name) #> = E.GetVariableByName("<#= x.Name #>");
 <# } #>
@@ -499,11 +587,11 @@ namespace <#= resultNamespace #> {
         public void Dispose() {
 			if (E == null) return;
 <# foreach (var t in tls.Select(x => x.Type).Distinct()){ #>
-			InputSignature<#= t #>.Dispose();
-            Layout<#= t #>.Dispose();
+			DisposeHelper.Dispose(ref InputSignature<#= t #>);
+			DisposeHelper.Dispose(ref Layout<#= t #>);
 <# } #>
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 

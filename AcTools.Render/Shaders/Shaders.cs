@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
@@ -19,6 +20,35 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectDarkMaterial : IEffectWrapper, IEffectMatricesWrapper, IEffectScreenSizeWrapper {
+		public enum Mode { Main, NoPCSS, NoShadows, Simple, SimpleNoPCSS, SimpleNoShadows }
+			
+		[StructLayout(LayoutKind.Sequential)]
+        public struct Light {
+            public Vector3 PosW;
+            public float Range;
+            public Vector3 DirectionW;
+            public float SpotlightCosMin;
+            public Vector3 Color;
+            public float SpotlightCosMax;
+            public uint Type;
+            public uint ShadowMode;
+            public Vector2 Padding;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(Light));
+        }
+
+		public class EffectStructLightArrayVariable {
+			private readonly EffectVariable _v;
+
+			public EffectStructLightArrayVariable(EffectVariable v) {
+				_v = v;
+			}
+
+			public void SetArray(Light[] value){
+				 SlimDxExtension.SetArray(_v, value, Light.Stride);
+			}
+        }
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct StandartMaterial {
             public float Ambient;
@@ -32,7 +62,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(StandartMaterial));
         }
 
-        public class EffectStructStandartMaterialVariable {
+		public class EffectStructStandartMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructStandartMaterialVariable(EffectVariable v) {
@@ -43,7 +73,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct ReflectiveMaterial {
             public float FresnelC;
@@ -53,7 +83,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(ReflectiveMaterial));
         }
 
-        public class EffectStructReflectiveMaterialVariable {
+		public class EffectStructReflectiveMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructReflectiveMaterialVariable(EffectVariable v) {
@@ -64,10 +94,10 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct MapsMaterial {
-            public float DetailsUvMultipler;
+            public float DetailsUvMultiplier;
             public float DetailsNormalBlend;
             public float SunSpecular;
             public float SunSpecularExp;
@@ -75,7 +105,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(MapsMaterial));
         }
 
-        public class EffectStructMapsMaterialVariable {
+		public class EffectStructMapsMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructMapsMaterialVariable(EffectVariable v) {
@@ -86,7 +116,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct AlphaMaterial {
             public float Alpha;
@@ -94,7 +124,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(AlphaMaterial));
         }
 
-        public class EffectStructAlphaMaterialVariable {
+		public class EffectStructAlphaMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructAlphaMaterialVariable(EffectVariable v) {
@@ -105,16 +135,16 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct NmUvMultMaterial {
-            public float DiffuseMultipler;
-            public float NormalMultipler;
+            public float DiffuseMultiplier;
+            public float NormalMultiplier;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(NmUvMultMaterial));
         }
 
-        public class EffectStructNmUvMultMaterialVariable {
+		public class EffectStructNmUvMultMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructNmUvMultMaterialVariable(EffectVariable v) {
@@ -125,17 +155,30 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
-
-		public static readonly uint HasNormalMap = 1;
-		public static readonly uint UseNormalAlphaAsAlpha = 64;
-		public static readonly uint AlphaTest = 128;
-		public static readonly uint IsAdditive = 16;
-		public static readonly uint HasDetailsMap = 4;
-		public static readonly uint IsCarpaint = 32;
-		public static readonly int MaxNumSplits = 3;
-		public static readonly bool EnableShadows = true;
-		public static readonly bool EnablePcss = true;
-		public static readonly int MaxBones = 64;
+		
+		public const uint LightOff = 0;
+		public const uint LightPoint = 1;
+		public const uint LightSpot = 2;
+		public const uint LightDirectional = 3;
+		public const uint LightShadowOff = 0;
+		public const uint LightShadowMain = 1;
+		public const uint LightShadowExtra = 100;
+		public const uint LightShadowExtraFast = 200;
+		public const uint LightShadowExtraCube = 300;
+		public const uint HasNormalMap = 1;
+		public const uint UseNormalAlphaAsAlpha = 64;
+		public const uint AlphaTest = 128;
+		public const uint IsAdditive = 16;
+		public const uint HasDetailsMap = 4;
+		public const uint IsCarpaint = 32;
+		public const int MaxLighsAmount = 30;
+		public const int MaxExtraShadows = 5;
+		public const int MaxExtraShadowsSmooth = 1;
+		public const int ComplexLighting = 1;
+		public const int MaxNumSplits = 3;
+		public const int MaxBones = 64;
+		public const bool EnableShadows = true;
+		public const bool EnablePcss = true;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -144,31 +187,45 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
 
-		public EffectOnlyMatrixVariable FxWorld { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectOnlyMatrixArrayVariable FxShadowViewProj { get; private set; }
-		public EffectOnlyMatrixArrayVariable FxBoneTransforms { get; private set; }
+		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
+		public EffectOnlyMatrixArrayVariable FxExtraShadowViewProj, FxShadowViewProj, FxBoneTransforms;
 		public EffectOnlyResourceVariable FxReflectionCubemap, FxNoiseMap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap;
-		public EffectOnlyResourceArrayVariable FxShadowMaps;
-		public EffectScalarVariable FxGPassTransparent, FxGPassAlphaThreshold, FxNumSplits, FxPcssEnabled, FxFlatMirrored, FxReflectionPower, FxUseAo, FxCubemapReflections, FxCubemapAmbient, FxFlatMirrorPower;
-		public EffectVectorVariable FxLightDir { get; private set; }
-		public EffectVectorVariable FxLightColor { get; private set; }
-		public EffectVectorVariable FxPcssScale { get; private set; }
-		public EffectVectorVariable FxShadowMapSize { get; private set; }
-		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectVectorVariable FxAmbientDown { get; private set; }
-		public EffectVectorVariable FxAmbientRange { get; private set; }
-		public EffectVectorVariable FxBackgroundColor { get; private set; }
-		public EffectVectorVariable FxScreenSize { get; private set; }
-		public EffectStructStandartMaterialVariable FxMaterial { get; private set; }
-		public EffectStructReflectiveMaterialVariable FxReflectiveMaterial { get; private set; }
-		public EffectStructMapsMaterialVariable FxMapsMaterial { get; private set; }
-		public EffectStructAlphaMaterialVariable FxAlphaMaterial { get; private set; }
-		public EffectStructNmUvMultMaterialVariable FxNmUvMultMaterial { get; private set; }
+		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxExtraShadowCubeMaps, FxShadowMaps;
+		public EffectScalarVariable FxGPassTransparent, FxGPassAlphaThreshold, FxExtraShadowMapSize, FxNumSplits, FxPcssEnabled, FxFlatMirrored, FxReflectionPower, FxUseAo, FxCubemapReflections, FxCubemapAmbient, FxFlatMirrorPower;
+		public EffectVectorVariable FxLightDir, FxLightColor, FxExtraShadowNearFar, FxPcssScale, FxShadowMapSize, FxEyePosW, FxAmbientDown, FxAmbientRange, FxBackgroundColor, FxScreenSize;
+		public EffectStructStandartMaterialVariable FxMaterial;
+		public EffectStructReflectiveMaterialVariable FxReflectiveMaterial;
+		public EffectStructMapsMaterialVariable FxMapsMaterial;
+		public EffectStructAlphaMaterialVariable FxAlphaMaterial;
+		public EffectStructNmUvMultMaterialVariable FxNmUvMultMaterial;
+		public EffectStructLightArrayVariable FxLights;
 
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
+		
+		private Mode _mode = Mode.Main;
+
+		public Mode GetMode(){
+			return _mode;
+		}
+
+		public void SetMode(Mode mode, Device device){
+			if (mode == _mode) return;
+			_mode = mode;
+			if (_b != null) {
+				Dispose();
+				_b = null;
+				Initialize(device);
+			}
+		}
+		
 		public void Initialize(Device device) {
-			_b = EffectUtils.Load(ShadersResourceManager.Manager, "DarkMaterial");
+			if (_b != null) return;
+
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, _mode == Mode.Main ? "DarkMaterial" : "DarkMaterial." + _mode);
 			E = new Effect(device, _b);
 
 			TechGPass_Standard = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Standard"));
@@ -210,10 +267,10 @@ namespace AcTools.Render.Shaders {
 			TechFlatBackgroundGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatBackgroundGround"));
 			TechFlatAmbientGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatAmbientGround"));
 
-			for (var i = 0; i < TechGPass_FlatMirror.Description.PassCount && InputSignaturePT == null; i++) {
-				InputSignaturePT = TechGPass_FlatMirror.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechAmbientShadow.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechAmbientShadow.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePT == null) throw new System.Exception("input signature (DarkMaterial, PT, GPass_FlatMirror) == null");
+			if (InputSignaturePT == null) throw new System.Exception("input signature (DarkMaterial, PT, AmbientShadow) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 			for (var i = 0; i < TechGPass_Standard.Description.PassCount && InputSignaturePNTG == null; i++) {
 				InputSignaturePNTG = TechGPass_Standard.GetPassByIndex(i).Description.Signature;
@@ -229,6 +286,7 @@ namespace AcTools.Render.Shaders {
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld").AsMatrix());
 			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose").AsMatrix());
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj").AsMatrix());
+			FxExtraShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gExtraShadowViewProj").AsMatrix());
 			FxShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gShadowViewProj").AsMatrix());
 			FxBoneTransforms = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gBoneTransforms").AsMatrix());
 			FxReflectionCubemap = new EffectOnlyResourceVariable(E.GetVariableByName("gReflectionCubemap").AsResource());
@@ -239,9 +297,12 @@ namespace AcTools.Render.Shaders {
 			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap").AsResource());
 			FxDetailsNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsNormalMap").AsResource());
 			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap").AsResource());
+			FxExtraShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowMaps").AsResource());
+			FxExtraShadowCubeMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowCubeMaps").AsResource());
 			FxShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gShadowMaps").AsResource());
 			FxGPassTransparent = E.GetVariableByName("gGPassTransparent").AsScalar();
 			FxGPassAlphaThreshold = E.GetVariableByName("gGPassAlphaThreshold").AsScalar();
+			FxExtraShadowMapSize = E.GetVariableByName("gExtraShadowMapSize").AsScalar();
 			FxNumSplits = E.GetVariableByName("gNumSplits").AsScalar();
 			FxPcssEnabled = E.GetVariableByName("gPcssEnabled").AsScalar();
 			FxFlatMirrored = E.GetVariableByName("gFlatMirrored").AsScalar();
@@ -252,6 +313,7 @@ namespace AcTools.Render.Shaders {
 			FxFlatMirrorPower = E.GetVariableByName("gFlatMirrorPower").AsScalar();
 			FxLightDir = E.GetVariableByName("gLightDir").AsVector();
 			FxLightColor = E.GetVariableByName("gLightColor").AsVector();
+			FxExtraShadowNearFar = E.GetVariableByName("gExtraShadowNearFar").AsVector();
 			FxPcssScale = E.GetVariableByName("gPcssScale").AsVector();
 			FxShadowMapSize = E.GetVariableByName("gShadowMapSize").AsVector();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
@@ -264,18 +326,19 @@ namespace AcTools.Render.Shaders {
 			FxMapsMaterial = new EffectStructMapsMaterialVariable(E.GetVariableByName("gMapsMaterial"));
 			FxAlphaMaterial = new EffectStructAlphaMaterialVariable(E.GetVariableByName("gAlphaMaterial"));
 			FxNmUvMultMaterial = new EffectStructNmUvMultMaterialVariable(E.GetVariableByName("gNmUvMultMaterial"));
+			FxLights = new EffectStructLightArrayVariable(E.GetVariableByName("gLights"));
 		}
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-			InputSignaturePNTG.Dispose();
-            LayoutPNTG.Dispose();
-			InputSignaturePNTGW4B.Dispose();
-            LayoutPNTGW4B.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref InputSignaturePNTG);
+			DisposeHelper.Dispose(ref LayoutPNTG);
+			DisposeHelper.Dispose(ref InputSignaturePNTGW4B);
+			DisposeHelper.Dispose(ref LayoutPNTGW4B);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -291,7 +354,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(Material));
         }
 
-        public class EffectStructMaterialVariable {
+		public class EffectStructMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructMaterialVariable(EffectVariable v) {
@@ -302,7 +365,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, Material.Stride);
 			}
         }
-
+		
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -311,12 +374,14 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechPerPixel;
 
-		public EffectOnlyMatrixVariable FxWorld { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
 		public EffectOnlyResourceVariable FxDiffuseMap;
-		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectStructMaterialVariable FxMaterial { get; private set; }
+		public EffectVectorVariable FxEyePosW;
+		public EffectStructMaterialVariable FxMaterial;
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "KunosShader");
@@ -340,15 +405,15 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePNT.Dispose();
-            LayoutPNT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePNT);
+			DisposeHelper.Dispose(ref LayoutPNT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpBasic : IEffectWrapper, IEffectScreenSizeWrapper {
-		public static readonly int FxaaPreset = 5;
+		public const int FxaaPreset = 5;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -359,8 +424,9 @@ namespace AcTools.Render.Shaders {
 
 		public EffectOnlyResourceVariable FxInputMap, FxOverlayMap, FxDepthMap;
 		public EffectScalarVariable FxSizeMultipler, FxMultipler;
-		public EffectVectorVariable FxScreenSize { get; private set; }
-		public EffectVectorVariable FxBokenMultipler { get; private set; }
+		public EffectVectorVariable FxScreenSize, FxBokenMultipler;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBasic");
@@ -395,15 +461,15 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpBlur : IEffectWrapper, IEffectScreenSizeWrapper {
-		public static readonly int SampleCount = 15;
+		public const int SampleCount = 15;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -412,11 +478,12 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechGaussianBlur, TechFlatMirrorBlur, TechDarkSslrBlur0, TechReflectionGaussianBlur;
 
-		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProjInv;
 		public EffectOnlyResourceVariable FxInputMap, FxFlatMirrorDepthMap, FxFlatMirrorNormalsMap, FxMapsMap;
 		public EffectScalarVariable FxSampleWeights, FxPower;
-		public EffectVectorVariable FxSampleOffsets { get; private set; }
-		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxSampleOffsets, FxScreenSize;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpBlur");
@@ -446,15 +513,15 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpDarkSslr : IEffectWrapper {
-		public static readonly int Iterations = 30;
+		public const int Iterations = 30;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -463,14 +530,10 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechDownscale4, TechSslr, TechFinalStep;
 
-		public EffectOnlyMatrixVariable FxCameraProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxCameraProj { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxCameraProjInv, FxCameraProj, FxWorldViewProjInv, FxWorldViewProj;
 		public EffectOnlyResourceVariable FxDiffuseMap, FxDepthMap, FxBaseReflectionMap, FxNormalMap, FxNoiseMap, FxFirstStepMap, FxDepthMapDown, FxDepthMapDownMore;
 		public EffectScalarVariable FxStartFrom, FxFixMultiplier, FxOffset, FxGlowFix, FxDistanceThreshold;
-		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectVectorVariable FxSize { get; private set; }
+		public EffectVectorVariable FxEyePosW, FxSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDarkSslr");
@@ -509,10 +572,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -527,9 +590,9 @@ namespace AcTools.Render.Shaders {
 
 		public EffectOnlyResourceVariable FxInputTexture, FxInputTextureBokenBase, FxInputTextureDepth, FxInputTextureBokeh, FxInputTextureDownscaledColor;
 		public EffectScalarVariable FxZNear, FxZFar, FxFocusPlane, FxDofCoCScale, FxDebugBokeh, FxCoCLimit;
-		public EffectVectorVariable FxScreenSize { get; private set; }
-		public EffectVectorVariable FxScreenSizeHalfRes { get; private set; }
-		public EffectVectorVariable FxCocScaleBias { get; private set; }
+		public EffectVectorVariable FxScreenSize, FxScreenSizeHalfRes, FxCocScaleBias;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDof");
@@ -563,10 +626,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -580,8 +643,9 @@ namespace AcTools.Render.Shaders {
 		public EffectReadyTechnique TechCopy, TechAverage, TechAnisotropic;
 
 		public EffectOnlyResourceVariable FxInputMap;
-		public EffectVectorVariable FxScreenSize { get; private set; }
-		public EffectVectorVariable FxMultipler { get; private set; }
+		public EffectVectorVariable FxScreenSize, FxMultipler;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpDownsample");
@@ -604,10 +668,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -622,9 +686,7 @@ namespace AcTools.Render.Shaders {
 		public EffectReadyTechnique TechDownsampling, TechAdaptation, TechTonemap, TechCopy, TechColorGrading, TechCombine_ToneReinhard, TechCombine_ToneFilmic, TechCombine_ToneFilmicReinhard, TechCombine, TechBloom, TechBloomHighThreshold;
 
 		public EffectOnlyResourceVariable FxInputMap, FxBrightnessMap, FxBloomMap, FxColorGradingMap;
-		public EffectVectorVariable FxPixel { get; private set; }
-		public EffectVectorVariable FxCropImage { get; private set; }
-		public EffectVectorVariable FxParams { get; private set; }
+		public EffectVectorVariable FxPixel, FxCropImage, FxParams;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHdr");
@@ -659,10 +721,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -694,15 +756,15 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpOutline : IEffectWrapper, IEffectScreenSizeWrapper {
-		public static readonly float Threshold = 0.99999f;
+		public const float Threshold = 0.99999f;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -712,7 +774,9 @@ namespace AcTools.Render.Shaders {
 		public EffectReadyTechnique TechOutline;
 
 		public EffectOnlyResourceVariable FxInputMap, FxDepthMap;
-		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxScreenSize;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpOutline");
@@ -733,10 +797,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -749,13 +813,9 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechAddShadow, TechAddShadowBlur;
 
-		public EffectOnlyMatrixVariable FxViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxViewProj { get; private set; }
-		public EffectOnlyMatrixVariable FxShadowViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxViewProjInv, FxViewProj, FxShadowViewProj;
 		public EffectOnlyResourceVariable FxDepthMap, FxShadowMap, FxNoiseMap;
-		public EffectVectorVariable FxShadowPosition { get; private set; }
-		public EffectVectorVariable FxNoiseSize { get; private set; }
-		public EffectVectorVariable FxShadowSize { get; private set; }
+		public EffectVectorVariable FxShadowPosition, FxNoiseSize, FxShadowSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpAmbientShadows");
@@ -783,16 +843,16 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpAoBlur : IEffectWrapper {
-		public static readonly int MaxBlurRadius = 4;
-		public static readonly int BlurRadius = 4;
+		public const int MaxBlurRadius = 4;
+		public const int BlurRadius = 4;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -803,8 +863,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxFirstStepMap;
 		public EffectScalarVariable FxWeights;
-		public EffectVectorVariable FxSourcePixel { get; private set; }
-		public EffectVectorVariable FxNearFarValue { get; private set; }
+		public EffectVectorVariable FxSourcePixel, FxNearFarValue;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpAoBlur");
@@ -829,10 +888,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -875,7 +934,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(ASSAOConstants));
         }
 
-        public class EffectStructASSAOConstantsVariable {
+		public class EffectStructASSAOConstantsVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructASSAOConstantsVariable(EffectVariable v) {
@@ -886,12 +945,12 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ASSAOConstants.Stride);
 			}
         }
-
-		public static readonly int SsaoAdaptiveTapBaseCount = 5;
-		public static readonly int SsaoAdaptiveTapFlexibleCount = 5;
-		public static readonly int SsaoMaxTaps = 12;
-		public static readonly int SampleCount = 16;
-		public static readonly int SsaoEnableNormalWorldToViewConversion = 1;
+		
+		public const int SsaoAdaptiveTapBaseCount = 5;
+		public const int SsaoAdaptiveTapFlexibleCount = 5;
+		public const int SsaoMaxTaps = 12;
+		public const int SampleCount = 16;
+		public const int SsaoEnableNormalWorldToViewConversion = 1;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -900,14 +959,10 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechPrepareDepth, TechAssao;
 
-		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectOnlyMatrixVariable FxProj { get; private set; }
-		public EffectOnlyMatrixVariable FxProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxNormalsToViewSpace { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProjInv, FxWorldViewProj, FxProj, FxProjInv, FxNormalsToViewSpace;
 		public EffectOnlyResourceVariable Fx_DepthSource, Fx_NormalmapSource, Fx_ViewspaceDepthSource, Fx_ViewspaceDepthSource1, Fx_ViewspaceDepthSource2, Fx_ViewspaceDepthSource3, Fx_ImportanceMap, Fx_LoadCounter, Fx_BlurInput, FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
-		public EffectVectorVariable FxViewFrustumVectors { get; private set; }
-		public EffectStructASSAOConstantsVariable Fx_ASSAOConsts { get; private set; }
+		public EffectVectorVariable FxViewFrustumVectors;
+		public EffectStructASSAOConstantsVariable Fx_ASSAOConsts;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpAssao");
@@ -947,10 +1002,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -963,18 +1018,10 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechHbao;
 
-		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxView { get; private set; }
-		public EffectOnlyMatrixVariable FxProj { get; private set; }
-		public EffectOnlyMatrixVariable FxProjT { get; private set; }
-		public EffectOnlyMatrixVariable FxProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxNormalsToViewSpace { get; private set; }
-		public EffectOnlyMatrixVariable FxProjectionMatrix { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProjInv, FxView, FxProj, FxProjT, FxProjInv, FxNormalsToViewSpace, FxProjectionMatrix;
 		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxDitherMap, FxFirstStepMap;
 		public EffectScalarVariable FxDitherScale;
-		public EffectVectorVariable FxViewFrustumVectors { get; private set; }
-		public EffectVectorVariable FxRenderTargetResolution { get; private set; }
-		public EffectVectorVariable FxSampleDirections { get; private set; }
+		public EffectVectorVariable FxViewFrustumVectors, FxRenderTargetResolution, FxSampleDirections;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpHbao");
@@ -1008,19 +1055,19 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpSsao : IEffectWrapper {
-		public static readonly int SampleCount = 16;
-		public static readonly float Radius = 0.15f;
-		public static readonly float NormalBias = 0.01f;
-		public static readonly int MaxBlurRadius = 4;
-		public static readonly int BlurRadius = 4;
+		public const int SampleCount = 16;
+		public const float Radius = 0.15f;
+		public const float NormalBias = 0.01f;
+		public const int MaxBlurRadius = 4;
+		public const int BlurRadius = 4;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -1029,17 +1076,10 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechSsao, TechBlurH, TechBlurV;
 
-		public EffectOnlyMatrixVariable FxCameraProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxCameraProj { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxCameraProjInv, FxCameraProj, FxWorldViewProjInv, FxWorldViewProj;
 		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap, FxFirstStepMap;
 		public EffectScalarVariable FxAoPower, FxWeights;
-		public EffectVectorVariable FxSamplesKernel { get; private set; }
-		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectVectorVariable FxNoiseSize { get; private set; }
-		public EffectVectorVariable FxSourcePixel { get; private set; }
-		public EffectVectorVariable FxNearFarValue { get; private set; }
+		public EffectVectorVariable FxSamplesKernel, FxEyePosW, FxNoiseSize, FxSourcePixel, FxNearFarValue;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpSsao");
@@ -1074,16 +1114,16 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectPpSsaoAlt : IEffectWrapper {
-		public static readonly int SampleCount = 24;
-		public static readonly int SampleThreshold = 14;
+		public const int SampleCount = 24;
+		public const int SampleThreshold = 14;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -1092,12 +1132,10 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechSsaoVs;
 
-		public EffectOnlyMatrixVariable FxViewProjInv { get; private set; }
-		public EffectOnlyMatrixVariable FxViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxViewProjInv, FxViewProj;
 		public EffectOnlyResourceVariable FxDepthMap, FxNormalMap, FxNoiseMap;
 		public EffectScalarVariable FxAoPower;
-		public EffectVectorVariable FxSamplesKernel { get; private set; }
-		public EffectVectorVariable FxNoiseSize { get; private set; }
+		public EffectVectorVariable FxSamplesKernel, FxNoiseSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "PpSsaoAlt");
@@ -1123,10 +1161,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1144,7 +1182,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(StandartMaterial));
         }
 
-        public class EffectStructStandartMaterialVariable {
+		public class EffectStructStandartMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructStandartMaterialVariable(EffectVariable v) {
@@ -1155,7 +1193,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, StandartMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct ReflectiveMaterial {
             public float FresnelC;
@@ -1165,7 +1203,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(ReflectiveMaterial));
         }
 
-        public class EffectStructReflectiveMaterialVariable {
+		public class EffectStructReflectiveMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructReflectiveMaterialVariable(EffectVariable v) {
@@ -1176,7 +1214,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, ReflectiveMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct MapsMaterial {
             public float DetailsUvMultipler;
@@ -1185,7 +1223,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(MapsMaterial));
         }
 
-        public class EffectStructMapsMaterialVariable {
+		public class EffectStructMapsMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructMapsMaterialVariable(EffectVariable v) {
@@ -1196,7 +1234,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, MapsMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct AlphaMaterial {
             public float Alpha;
@@ -1204,7 +1242,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(AlphaMaterial));
         }
 
-        public class EffectStructAlphaMaterialVariable {
+		public class EffectStructAlphaMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructAlphaMaterialVariable(EffectVariable v) {
@@ -1215,7 +1253,7 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, AlphaMaterial.Stride);
 			}
         }
-
+		
 		[StructLayout(LayoutKind.Sequential)]
         public struct NmUvMultMaterial {
             public float DiffuseMultipler;
@@ -1224,7 +1262,7 @@ namespace AcTools.Render.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(NmUvMultMaterial));
         }
 
-        public class EffectStructNmUvMultMaterialVariable {
+		public class EffectStructNmUvMultMaterialVariable {
 			private readonly EffectVariable _v;
 
 			public EffectStructNmUvMultMaterialVariable(EffectVariable v) {
@@ -1235,14 +1273,14 @@ namespace AcTools.Render.Shaders {
 				 SlimDxExtension.SetObject(_v, value, NmUvMultMaterial.Stride);
 			}
         }
-
-		public static readonly uint HasNormalMap = 1;
-		public static readonly uint UseDiffuseAlphaAsMap = 2;
-		public static readonly uint UseNormalAlphaAsAlpha = 64;
-		public static readonly uint AlphaTest = 128;
-		public static readonly uint IsAdditive = 16;
-		public static readonly uint HasDetailsMap = 4;
-		public static readonly uint IsCarpaint = 32;
+		
+		public const uint HasNormalMap = 1;
+		public const uint UseDiffuseAlphaAsMap = 2;
+		public const uint UseNormalAlphaAsAlpha = 64;
+		public const uint AlphaTest = 128;
+		public const uint IsAdditive = 16;
+		public const uint HasDetailsMap = 4;
+		public const uint IsCarpaint = 32;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -1251,16 +1289,18 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechDiffMaps, TechGl, TechAmbientShadow, TechMirror;
 
-		public EffectOnlyMatrixVariable FxWorld { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
 		public EffectOnlyResourceVariable FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap;
-		public EffectVectorVariable FxEyePosW { get; private set; }
-		public EffectStructStandartMaterialVariable FxMaterial { get; private set; }
-		public EffectStructReflectiveMaterialVariable FxReflectiveMaterial { get; private set; }
-		public EffectStructMapsMaterialVariable FxMapsMaterial { get; private set; }
-		public EffectStructAlphaMaterialVariable FxAlphaMaterial { get; private set; }
-		public EffectStructNmUvMultMaterialVariable FxNmUvMultMaterial { get; private set; }
+		public EffectVectorVariable FxEyePosW;
+		public EffectStructStandartMaterialVariable FxMaterial;
+		public EffectStructReflectiveMaterialVariable FxReflectiveMaterial;
+		public EffectStructMapsMaterialVariable FxMapsMaterial;
+		public EffectStructAlphaMaterialVariable FxAlphaMaterial;
+		public EffectStructNmUvMultMaterialVariable FxNmUvMultMaterial;
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SimpleMaterial");
@@ -1307,12 +1347,12 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-			InputSignaturePNTG.Dispose();
-            LayoutPNTG.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref InputSignaturePNTG);
+			DisposeHelper.Dispose(ref LayoutPNTG);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1325,9 +1365,9 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechMain;
 
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProj;
 		public EffectScalarVariable FxOverrideColor;
-		public EffectVectorVariable FxCustomColor { get; private set; }
+		public EffectVectorVariable FxCustomColor;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialDebugLines");
@@ -1348,10 +1388,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePC.Dispose();
-            LayoutPC.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePC);
+			DisposeHelper.Dispose(ref LayoutPC);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1366,13 +1406,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectOnlyResourceVariable FxNoiseMap, FxInputMap, FxAoMap, FxMaskMap, FxOverlayMap;
 		public EffectScalarVariable FxNoiseMultipler, FxFlakes, FxUseMask;
-		public EffectVectorVariable FxInputMapChannels { get; private set; }
-		public EffectVectorVariable FxAoMapChannels { get; private set; }
-		public EffectVectorVariable FxMaskMapChannels { get; private set; }
-		public EffectVectorVariable FxOverlayMapChannels { get; private set; }
-		public EffectVectorVariable FxColor { get; private set; }
-		public EffectVectorVariable FxSize { get; private set; }
-		public EffectVectorVariable FxColors { get; private set; }
+		public EffectVectorVariable FxInputMapChannels, FxAoMapChannels, FxMaskMapChannels, FxOverlayMapChannels, FxColor, FxSize, FxColors;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialPaintShop");
@@ -1417,10 +1451,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1451,10 +1485,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1467,15 +1501,14 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult, TechSimplest, TechAo, TechAoResult, TechAoGrow;
 
-		public EffectOnlyMatrixVariable FxShadowViewProj { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectOnlyMatrixVariable FxWorld { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldInvTranspose { get; private set; }
+		public EffectOnlyMatrixVariable FxShadowViewProj, FxWorldViewProj, FxWorld, FxWorldInvTranspose;
 		public EffectOnlyResourceVariable FxInputMap, FxDepthMap, FxAlphaMap, FxNormalMap;
 		public EffectScalarVariable FxMultipler, FxGamma, FxCount, FxAmbient, FxPadding, FxFade, FxAlphaRef, FxNormalUvMult;
-		public EffectVectorVariable FxSize { get; private set; }
-		public EffectVectorVariable FxShadowSize { get; private set; }
-		public EffectVectorVariable FxLightDir { get; private set; }
+		public EffectVectorVariable FxSize, FxShadowSize, FxLightDir;
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialShadow");
@@ -1524,17 +1557,17 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-			InputSignaturePNTG.Dispose();
-            LayoutPNTG.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref InputSignaturePNTG);
+			DisposeHelper.Dispose(ref LayoutPNTG);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
 	public class EffectSpecialTrackMap : IEffectWrapper, IEffectScreenSizeWrapper {
-		public static readonly int Gblurradius = 3;
+		public const int Gblurradius = 3;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -1543,9 +1576,11 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechMain, TechPp, TechFinal, TechFinalCheckers, TechPpHorizontalBlur, TechPpVerticalBlur;
 
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProj;
 		public EffectOnlyResourceVariable FxInputMap;
-		public EffectVectorVariable FxScreenSize { get; private set; }
+		public EffectVectorVariable FxScreenSize;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialTrackMap");
@@ -1576,12 +1611,12 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignatureP.Dispose();
-            LayoutP.Dispose();
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignatureP);
+			DisposeHelper.Dispose(ref LayoutP);
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1594,12 +1629,12 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechFirstStep, TechExtraWidth, TechShadow, TechCombine, TechBlend, TechFinal, TechFinalBg, TechFinalCheckers, TechFirstStepObj;
 
-		public EffectOnlyMatrixVariable FxMatrix { get; private set; }
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxMatrix, FxWorldViewProj;
 		public EffectOnlyResourceVariable FxInputMap, FxBgMap;
 		public EffectScalarVariable FxExtraWidth, FxDropShadowRadius;
-		public EffectVectorVariable FxScreenSize { get; private set; }
-		public EffectVectorVariable FxBlendColor { get; private set; }
+		public EffectVectorVariable FxScreenSize, FxBlendColor;
+
+		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialTrackOutline");
@@ -1638,12 +1673,12 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePT.Dispose();
-            LayoutPT.Dispose();
-			InputSignatureP.Dispose();
-            LayoutP.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePT);
+			DisposeHelper.Dispose(ref LayoutPT);
+			DisposeHelper.Dispose(ref InputSignatureP);
+			DisposeHelper.Dispose(ref LayoutP);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1656,7 +1691,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechMain;
 
-		public EffectVectorVariable FxOffset { get; private set; }
+		public EffectVectorVariable FxOffset;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialUv");
@@ -1675,10 +1710,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePNTG.Dispose();
-            LayoutPNTG.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePNTG);
+			DisposeHelper.Dispose(ref LayoutPNTG);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1710,10 +1745,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignatureSpriteSpecific.Dispose();
-            LayoutSpriteSpecific.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignatureSpriteSpecific);
+			DisposeHelper.Dispose(ref LayoutSpriteSpecific);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1726,7 +1761,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechCube;
 
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProj;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingCube");
@@ -1745,10 +1780,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePC.Dispose();
-            LayoutPC.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePC);
+			DisposeHelper.Dispose(ref LayoutPC);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 
@@ -1761,7 +1796,7 @@ namespace AcTools.Render.Shaders {
 
 		public EffectReadyTechnique TechCube;
 
-		public EffectOnlyMatrixVariable FxWorldViewProj { get; private set; }
+		public EffectOnlyMatrixVariable FxWorldViewProj;
 
 		public void Initialize(Device device) {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, "TestingPnt");
@@ -1780,10 +1815,10 @@ namespace AcTools.Render.Shaders {
 
         public void Dispose() {
 			if (E == null) return;
-			InputSignaturePNT.Dispose();
-            LayoutPNT.Dispose();
-            E.Dispose();
-            _b.Dispose();
+			DisposeHelper.Dispose(ref InputSignaturePNT);
+			DisposeHelper.Dispose(ref LayoutPNT);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
         }
 	}
 

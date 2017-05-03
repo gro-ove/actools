@@ -77,10 +77,10 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW, inout fl
 	return lighted + refl * val;
 }
 
-float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, float specularExpMultipler, float reflectionMultipler, inout float alpha) {
+float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, float specularExpMultiplier, float reflectionMultiplier, inout float alpha) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normalW);
-	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
 
 	float val = GetReflectionStrength(normalW, toEyeW);
 	if (!HAS_FLAG(IS_ADDITIVE)) {
@@ -88,18 +88,18 @@ float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, flo
 		alpha = alpha + val * (1 - alpha);
 	}
 
-	return lighted + refl * val * reflectionMultipler;
+	return lighted + refl * val * reflectionMultiplier;
 }
 
-float3 CalculateReflection_Maps_NoAlpha(float3 lighted, float3 posW, float3 normalW, float specularExpMultipler, float reflectionMultipler) {
+float3 CalculateReflection_Maps_NoAlpha(float3 lighted, float3 posW, float3 normalW, float specularExpMultiplier, float reflectionMultiplier) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normalW);
-	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
 
 	float val = GetReflectionStrength(normalW, toEyeW);
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		lighted *= 1 - val;
 	}
 
-	return lighted + refl * val * reflectionMultipler;
+	return lighted + refl * val * reflectionMultiplier;
 }

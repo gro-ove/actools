@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -414,6 +415,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private readonly bool _showroom;
+        private readonly DarkDirectionalLight _mainLight, _reflectedLight;
 
         public DarkKn5ObjectRenderer(CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
             // UseMsaa = true;
@@ -437,6 +439,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             //EnablePcssShadows = true;
             //UseSsao = true;
 #endif
+
+            _mainLight = new DarkDirectionalLight { ShadowsMode = DarkShadowsMode.Main };
+            _reflectedLight = new DarkDirectionalLight {
+                ShadowsMode = DarkShadowsMode.ExtraSmooth,
+                Enabled = false
+            };
+
+            _lights.Add(_mainLight);
+            _lights.Add(_reflectedLight);
         }
 
         protected override void OnBackgroundColorChanged() {
@@ -610,6 +621,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 effect.FxShadowViewProj.SetMatrixArray(
                         shadows.Splits.Take(splits.Value).Select(x => x.ShadowTransform).ToArray());
             }
+
+            foreach (var light in _lights) {
+                light.InvalidateShadows();
+            }
         }
 
         protected override void DrawPrepare() {
@@ -687,6 +702,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
+        private bool _reflectionsWithMultipleLights;
+
+        public bool ReflectionsWithMultipleLights {
+            get { return _reflectionsWithMultipleLights; }
+            set {
+                if (Equals(value, _reflectionsWithMultipleLights)) return;
+                _reflectionsWithMultipleLights = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera) {
             var showroomNode = ShowroomNode;
             if (showroomNode == null) return;
@@ -695,7 +721,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 Effect.FxUseAo.Set(false);
             }
 
-            DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null);
+            DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null, !ReflectionsWithMultipleLights);
             DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
             showroomNode.Draw(holder, camera, SpecialRenderMode.Reflection);
             DeviceContext.Rasterizer.State = null;
@@ -735,6 +761,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (_pcssParamsSet) return;
             _pcssParamsSet = true;
 
+            var effect = Effect;
+            if (!effect.FxNoiseMap.IsValid) return;
+
             var splits = new Vector4[shadows.Splits.Length];
             var sceneScale = (ShowroomNode == null ? 1f : 2f) * PcssSceneScale;
             var lightScale = PcssLightScale;
@@ -742,7 +771,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 splits[i] = new Vector4(sceneScale / shadows.Splits[i].Size, lightScale / shadows.Splits[i].Size, 0, 0);
             }
 
-            var effect = Effect;
             effect.FxPcssScale.Set(splits);
 
             if (!_pcssNoiseMapSet) {
@@ -751,14 +779,192 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection) {
+        private class MovingLightDesc {
+            public DarkSpotLight Light;
+            public float A, B, C, D, E, F, G;
+        }
+
+        private readonly List<DarkLightBase> _lights = new List<DarkLightBase>(10);
+        private readonly List<MovingLightDesc> _pointLights = new List<MovingLightDesc>();
+        private readonly Random _random = new Random();
+
+        public void AddLight() {
+            var color = new Vector3((float)_random.NextDouble(), (float)_random.NextDouble(),
+                    (float)_random.NextDouble());
+            color.Normalize();
+
+            var light = new DarkSpotLight {
+                // Radius = 0.01f * _random.Next(100, 500),
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Color = color.ToColor(),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.75f,
+            };
+
+            _lights.Add(light);
+            _pointLights.Add(new MovingLightDesc {
+                Light = light,
+                A = (float)_random.NextDouble() + 2f,
+                B = (float)_random.NextDouble(),
+                C = 5.0f + (float)_random.NextDouble(),
+                D = (float)_random.NextDouble(),
+                E = (float)_random.NextDouble(),
+                F = (float)_random.NextDouble(),
+                G = 3.0f + (float)_random.NextDouble()
+            });
+
+            SetReflectionCubemapDirty();
+            IsDirty = true;
+        }
+
+        public void RemoveLight() {
+            var last = _pointLights.LastOrDefault();
+            if (last == null) return;
+
+            _lights.Remove(last.Light);
+            _pointLights.Remove(last);
+
+            SetReflectionCubemapDirty();
+            IsDirty = true;
+        }
+
+        private bool _flatMirrorReflectedLight = true;
+
+        public bool FlatMirrorReflectedLight {
+            get { return _flatMirrorReflectedLight; }
+            set {
+                if (Equals(value, _flatMirrorReflectedLight)) return;
+                _flatMirrorReflectedLight = value;
+                OnPropertyChanged();
+                IsDirty = true;
+            }
+        }
+
+        private void UpdateLights(Vector3 mainLightDirection, bool setShadows, bool singleLight) {
+            var effect = Effect;
+            
+            /*_lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Position = new Vector3(0.5f, 2.2f, 0f),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.75f,
+            });
+
+            _lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Position = new Vector3(0f, 2.2f, 0.5f),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.5f,
+            });
+
+            _lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Position = new Vector3(0.2f, 2.4f, -0.2f),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.95f,
+            });
+
+            _lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Position = new Vector3(0.2f, 2.4f, -0.2f),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.95f,
+            });
+
+            _lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Position = new Vector3(0.2f, 2.4f, -0.2f),
+                Range = 10f,
+                Angle = 0.5f,
+                Brightness = 0.5f,
+                SpotFocus = 0.95f,
+            });*/
+
+            /*var q = 0;
+            foreach (var l in _lights.OfType<DarkSpotLight>().Where(x => x.ShadowsMode == DarkShadowsMode.ExtraFast)) {
+                var e = Elapsed * (q + 0.5f) + q++ * 0.5f;
+                l.Color = new Vector3(e.Sin().Saturate(), 1f, e.Cos()).ToColor();
+                l.Direction = new Vector3(e.Sin(), 1f, e.Cos());
+            }*/
+
+            _mainLight.Direction = mainLightDirection;
+            _mainLight.Brightness = LightBrightness;
+            _mainLight.Color = LightColor;
+
+            if (FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred) {
+                _reflectedLight.Direction = new Vector3(mainLightDirection.X, -mainLightDirection.Y, mainLightDirection.Z);
+                _reflectedLight.Brightness = LightBrightness * FlatMirrorReflectiveness;
+                _reflectedLight.Color = LightColor;
+                _reflectedLight.ShadowsResolution = ShadowMapSize;
+                _reflectedLight.Enabled = true;
+            } else {
+                _reflectedLight.Enabled = false;
+            }
+
+            for (var i = _lights.Count - 1; i >= 0; i--) {
+                var l = _lights[i];
+                l.Update(DeviceContextHolder, ShadowsPosition, setShadows && !singleLight && EnableShadows ? this : null);
+            }
+
+            DarkLightBase.ToShader(effect, _lights, singleLight ? 1 : _lights.Count);
+        }
+        
+        private bool _complexMode;
+
+        private EffectDarkMaterial.Mode FindAppropriateMode() {
+            var useComplex = _lights.Count(x => x.Enabled) > 1;
+            _complexMode = useComplex;
+
+            return EnableShadows
+                    ? (UsePcss
+                            ? (useComplex ? EffectDarkMaterial.Mode.Main : EffectDarkMaterial.Mode.Simple)
+                            : (useComplex ? EffectDarkMaterial.Mode.NoPCSS : EffectDarkMaterial.Mode.SimpleNoPCSS))
+                    : (useComplex ? EffectDarkMaterial.Mode.NoShadows : EffectDarkMaterial.Mode.SimpleNoShadows);
+        }
+
+        private void UpdateEffect() {
+            if (_effect == null) {
+                _effect = DeviceContextHolder.GetExistingEffect<EffectDarkMaterial>();
+            }
+
+            var mode = FindAppropriateMode();
+            if (_effect == null) {
+                _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>(e => e.SetMode(mode, Device));
+            } else {
+                _effect.SetMode(mode, Device);
+            }
+        }
+
+        protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection,
+                bool singleLight) {
+            UpdateEffect();
+
             var effect = Effect;
             effect.FxEyePosW.Set(eyesPosition);
 
+            // for lighted reflection later
             _light = light;
-            effect.FxLightDir.Set(light);
 
+            // simlified lighting
+            effect.FxLightDir.Set(light);
             effect.FxLightColor.Set(LightColor.ToVector3() * LightBrightness);
+
+            if (_complexMode) {
+                // complex lighting
+                UpdateLights(light, shadows != null, singleLight);
+            }
+
+            // reflections
             effect.FxReflectionPower.Set(MaterialsReflectiveness);
             effect.FxCubemapReflections.Set(reflection != null);
             effect.FxCubemapAmbient.Set(reflection == null ? 0f : FxCubemapAmbientValue);
@@ -829,6 +1035,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // draw reflection if needed
             if (ShowroomNode == null && FlatMirror && _mirror != null) {
                 effect.FxLightDir.Set(new Vector3(_light.X, -_light.Y, _light.Z));
+                DarkLightBase.FlipPreviousY(effect);
 
                 if (FlatMirrorBlurred) {
                     DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
@@ -862,6 +1069,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 effect.FxLightDir.Set(_light);
+                DarkLightBase.FlipPreviousY(effect);
             }
 
             // draw a scene, apart from car
@@ -963,6 +1171,7 @@ AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
 Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
 Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
 Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
+Lights: {_lights.Count(x => x.Enabled)} (shadows: {_lights.Count(x => x.Enabled && x.ShadowsMode != DarkShadowsMode.Off)})
 Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
@@ -1032,7 +1241,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
         }
 
-        private EffectPpAmbientShadows aoShadowEffect;
+        private EffectPpAmbientShadows _aoShadowEffect;
 
         // do not dispose it! it’s just a temporary value from DrawSceneToBuffer() 
         // to DrawOverride() allowing to apply DOF after AA/HDR/color grading/bloom stages
@@ -1121,22 +1330,22 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 }
 
                 if (UseCorrectAmbientShadows) {
-                    if (aoShadowEffect == null) {
-                        aoShadowEffect = DeviceContextHolder.GetEffect<EffectPpAmbientShadows>();
-                        aoShadowEffect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(4, 4));
+                    if (_aoShadowEffect == null) {
+                        _aoShadowEffect = DeviceContextHolder.GetEffect<EffectPpAmbientShadows>();
+                        _aoShadowEffect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(4, 4));
                     }
 
-                    aoShadowEffect.FxDepthMap.SetResource(_lastDepthBuffer);
+                    _aoShadowEffect.FxDepthMap.SetResource(_lastDepthBuffer);
 
                     DeviceContext.OutputMerger.SetTargets(_aoBuffer.TargetView);
-                    DeviceContextHolder.PrepareQuad(aoShadowEffect.LayoutPT);
+                    DeviceContextHolder.PrepareQuad(_aoShadowEffect.LayoutPT);
                     DeviceContext.OutputMerger.BlendState = DeviceContextHolder.States.MultiplyState;
 
-                    aoShadowEffect.FxViewProj.SetMatrix(Camera.ViewProj);
-                    aoShadowEffect.FxViewProjInv.SetMatrix(Camera.ViewProjInvert);
+                    _aoShadowEffect.FxViewProj.SetMatrix(Camera.ViewProj);
+                    _aoShadowEffect.FxViewProjInv.SetMatrix(Camera.ViewProjInvert);
 
                     if (BlurCorrectAmbientShadows) {
-                        aoShadowEffect.FxNoiseSize.Set(new Vector2(Width / 4f, Height / 4f));
+                        _aoShadowEffect.FxNoiseSize.Set(new Vector2(Width / 4f, Height / 4f));
                     }
 
                     if (c != null) {
@@ -1146,7 +1355,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                             var v = o == null ? null : c.GetAmbientShadowView(DeviceContextHolder, o);
                             if (v == null) continue;
 
-                            aoShadowEffect.FxShadowMap.SetResource(v);
+                            _aoShadowEffect.FxShadowMap.SetResource(v);
 
                             var m = o.Transform * o.ParentMatrix;
                             if (!o.BoundingBox.HasValue) {
@@ -1155,22 +1364,22 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                             }
                             var b = o.BoundingBox.Value.GetSize();
 
-                            aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
-                            aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
-                            aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
-                                M11 = 0.5f,
+                            _aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
+                            _aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
+                            _aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
+                                M11 = -0.5f,
                                 M22 = 0.5f,
                                 M33 = 0.5f,
                                 M41 = 0.5f,
                                 M42 = 0.5f,
                                 M43 = 0.5f,
-                                M44 = 1f
+                                M44 = 1f,
                             });
 
                             if (BlurCorrectAmbientShadows) {
-                                aoShadowEffect.TechAddShadowBlur.DrawAllPasses(DeviceContext, 6);
+                                _aoShadowEffect.TechAddShadowBlur.DrawAllPasses(DeviceContext, 6);
                             } else {
-                                aoShadowEffect.TechAddShadow.DrawAllPasses(DeviceContext, 6);
+                                _aoShadowEffect.TechAddShadow.DrawAllPasses(DeviceContext, 6);
                             }
                         }
                     }
@@ -1416,6 +1625,16 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
         protected override void OnTick(float dt) {
             base.OnTick(dt);
+
+            foreach (var i in _pointLights) {
+                i.Light.Position = new Vector3(
+                        (Elapsed * i.B + i.D).Sin() * i.C, i.A,
+                        (Elapsed * i.E + i.F).Sin() * i.G);
+                i.Light.Direction = i.Light.Position;
+                IsDirty = true;
+                // SetReflectionCubemapDirty();
+            }
+
             if (IsDirty) {
                 _realTimeAccumulationSize = 0;
             }
@@ -1478,6 +1697,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
             DisposeHelper.Dispose(ref _accumulationBaseTexture);
 
+            _lights.DisposeEverything();
             base.DisposeOverride();
         }
 

@@ -53,21 +53,20 @@ namespace AcTools.Render.Kn5SpecificForward {
                 AcToolsLogging.Write($"Random texture: {s.Elapsed.TotalMilliseconds:F1} ms");
             }
 
-            DeviceContextHolder.PrepareQuad(_paintShopEffect.LayoutPT);
-            DeviceContextHolder.SaveRenderTargetAndViewport();
-            DeviceContext.Rasterizer.SetViewports(tex.Viewport);
-            DeviceContext.OutputMerger.SetTargets(tex.TargetView);
-            DeviceContext.ClearRenderTargetView(tex.TargetView, new Color4(0f, 0f, 0f, 0f));
-            DeviceContext.OutputMerger.BlendState = null;
-            DeviceContext.OutputMerger.DepthStencilState = null;
-            DeviceContext.Rasterizer.State = null;
+            using (DeviceContextHolder.SaveRenderTargetAndViewport()) {
+                DeviceContextHolder.PrepareQuad(_paintShopEffect.LayoutPT);
+                DeviceContext.Rasterizer.SetViewports(tex.Viewport);
+                DeviceContext.OutputMerger.SetTargets(tex.TargetView);
+                DeviceContext.ClearRenderTargetView(tex.TargetView, new Color4(0f, 0f, 0f, 0f));
+                DeviceContext.OutputMerger.BlendState = null;
+                DeviceContext.OutputMerger.DepthStencilState = null;
+                DeviceContext.Rasterizer.State = null;
 
-            _paintShopEffect.FxNoiseMultipler.Set(Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
-            _paintShopEffect.FxSize.Set(new Vector4(tex.Width, tex.Height, 1f / tex.Width, 1f / tex.Height));
+                _paintShopEffect.FxNoiseMultipler.Set(Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
+                _paintShopEffect.FxSize.Set(new Vector4(tex.Width, tex.Height, 1f / tex.Width, 1f / tex.Height));
 
-            fn?.Invoke(_paintShopEffect);
-
-            DeviceContextHolder.RestoreRenderTargetAndViewport();
+                fn?.Invoke(_paintShopEffect);
+            }
         }
 
         private TargetResourceTexture GetTexture([CanBeNull] string textureName, Action<EffectSpecialPaintShop> update, Size size) {

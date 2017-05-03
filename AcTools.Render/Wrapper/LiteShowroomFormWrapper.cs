@@ -59,6 +59,8 @@ namespace AcTools.Render.Wrapper {
             _renderer.StopMovement();
         }
 
+        protected override bool SleepMode => base.SleepMode && !Form.Focused;
+
         protected override void OnMouseMove(object sender, MouseEventArgs e) {
             if (!Form.Focused) {
                 _renderer.StopMovement();
@@ -380,6 +382,11 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             dark.UseSslr = !dark.UseSslr;
                         }
                     }
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (dark != null) {
+                            dark.ReflectionCubemapAtCamera = !dark.ReflectionCubemapAtCamera;
+                        }
+                    }
                     break;
 
                 case Keys.T:
@@ -400,6 +407,17 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                         }
                         if (args.Control && !args.Alt && args.Shift) {
                             dark.AoType = dark.AoType.NextValue();
+                        }
+                        if (args.Control && args.Alt && !args.Shift) {
+                            dark.AddLight();
+                        }
+                    }
+                    break;
+
+                case Keys.Z: 
+                    if (dark != null) {
+                        if (args.Control && args.Alt && !args.Shift) {
+                            dark.RemoveLight();
                         }
                     }
                     break;

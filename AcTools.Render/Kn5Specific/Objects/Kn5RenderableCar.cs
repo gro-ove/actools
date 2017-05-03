@@ -1168,7 +1168,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             dirty |= _wipersAnimator?.IsSet == true && (_wipersAnimator.Value?.OnTick(dt) ?? false);
             dirty |= _doorLeftAnimator?.IsSet == true && (_doorLeftAnimator.Value?.OnTick(dt) ?? false);
             dirty |= _doorRightAnimator?.IsSet == true && (_doorRightAnimator.Value?.OnTick(dt) ?? false);
-            dirty |= _crewAnimator?.IsSet == true && (_crewAnimator.Value?.OnTick(dt) ?? false);
+
+            if (IsCrewVisible) {
+                dirty |= _crewAnimator?.IsSet == true && (_crewAnimator.Value?.OnTick(dt) ?? false);
+            }
 
             if (dirty) {
                 _skinsWatcherHolder?.RaiseSceneUpdated();

@@ -100,14 +100,16 @@ namespace AcTools.Render.Base.PostEffects {
 
         public void Draw(DeviceContextHolder holder, ShaderResourceView view, TargetResourceTexture temporary) {
             // preparation
-            holder.SaveRenderTargetAndViewport();
+            var saved = holder.SaveRenderTargetAndViewport();
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
 
             // update those small texture
             UpdateNewAverateColor(holder, view);
             UpdateAdaptation(holder);
 
-            holder.RestoreRenderTargetAndViewport();
+            // restore viewport
+            saved.Dispose();
+
             holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
             holder.DeviceContext.ClearRenderTargetView(temporary.TargetView, BaseRenderer.ColorTransparent);
 
@@ -119,14 +121,16 @@ namespace AcTools.Render.Base.PostEffects {
             UpdateBloom(holder, temporary.View);
 
             if (BloomDebug) {
-                holder.RestoreRenderTargetAndViewport();
+                // restore viewport
+                saved.Dispose();
+
                 _effect.FxInputMap.SetResource(_bloomTexture.View);
                 _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
                 return;
             }
-
-            // reset viewport
-            holder.RestoreRenderTargetAndViewport();
+            
+            // restore viewport
+            saved.Dispose();
 
             _effect.FxInputMap.SetResource(temporary.View);
             _effect.FxBloomMap.SetResource(_bloomTexture.View);

@@ -796,11 +796,11 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _reflectionCubemapDirty = false;
             }
 
-            DrawPrepareEffect(eyesPosition, light, _shadows, _reflectionCubemap);
+            DrawPrepareEffect(eyesPosition, light, _shadows, _reflectionCubemap, false);
         }
 
         protected virtual void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, [CanBeNull] ShadowsDirectional shadows,
-                [CanBeNull] ReflectionCubemap reflection) {
+                [CanBeNull] ReflectionCubemap reflection, bool singleLight) {
             DeviceContextHolder.GetEffect<EffectSimpleMaterial>().FxEyePosW.Set(ActualCamera.Position);
         }
 

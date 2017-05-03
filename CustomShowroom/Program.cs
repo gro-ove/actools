@@ -197,9 +197,12 @@ namespace CustomShowroom {
                     //renderer.UseDof = true;
                     //renderer.UseAccumulationDof = true;
                     //renderer.UseAo = true;
-                    renderer.UseCorrectAmbientShadows = true;
-                    renderer.BlurCorrectAmbientShadows = true;
-                    renderer.AoOpacity = 0.8f;
+                    //renderer.UseCorrectAmbientShadows = true;
+                    //renderer.BlurCorrectAmbientShadows = true;
+                    renderer.AoOpacity = 0.5f;
+                    renderer.BackgroundBrightness = 0.02f;
+                    renderer.AmbientBrightness = 1.0f;
+                    renderer.LightBrightness = 1.2f;
 #endif
 
                     renderer.MagickOverride = options.MagickOverride;

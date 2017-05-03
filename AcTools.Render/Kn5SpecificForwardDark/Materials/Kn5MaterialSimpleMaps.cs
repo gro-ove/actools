@@ -45,7 +45,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             }
 
             _material = new EffectDarkMaterial.MapsMaterial {
-                DetailsUvMultipler = Kn5Material.GetPropertyValueAByName("detailUVMultiplier"),
+                DetailsUvMultiplier = Kn5Material.GetPropertyValueAByName("detailUVMultiplier"),
                 DetailsNormalBlend = _txDetailsNormal == null ? 0f : Kn5Material.GetPropertyValueAByName("detailNormalBlend"),
                 SunSpecular = Kn5Material.GetPropertyValueAByName("sunSpecular"),
                 SunSpecularExp = Kn5Material.GetPropertyValueAByName("sunSpecularEXP"),
@@ -80,10 +80,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
     public class Kn5MaterialSimpleSkinnedMaps : Kn5MaterialSimpleMaps, ISkinnedMaterial {
         public Kn5MaterialSimpleSkinnedMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
-
-        public override void Initialize(IDeviceContextHolder contextHolder) {
-            base.Initialize(contextHolder);
-            InputLayout = Effect.LayoutPNTGW4B;
+        
+        protected override void SetInputLayout(IDeviceContextHolder contextHolder) {
+            contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTGW4B;
         }
 
         protected override EffectReadyTechnique GetShadowTechnique() {

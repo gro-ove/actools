@@ -105,13 +105,37 @@ namespace AcTools.Render.Base {
         /// <returns></returns>
         [NotNull]
         public T GetEffect<T>() where T : IEffectWrapper, new() {
+            return GetEffect<T>(null);
+        }
+
+        /// <summary>
+        /// If you get effect this way, don’t call its Dispose()! It’ll be
+        /// called automatically!
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        [NotNull]
+        public T GetEffect<T>([CanBeNull] Action<T> customPreInitialization) where T : IEffectWrapper, new() {
             IEffectWrapper result;
             var type = typeof(T);
             if (_effects.TryGetValue(type, out result)) return (T)result;
 
             var created = (T)(_effects[type] = new T());
+            customPreInitialization?.Invoke(created);
             created.Initialize(Device);
             return created;
+        }
+
+        /// <summary>
+        /// If you get effect this way, don’t call its Dispose()! It’ll be
+        /// called automatically!
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        [CanBeNull]
+        public T GetExistingEffect<T>() where T : class, IEffectWrapper {
+            IEffectWrapper result;
+            return _effects.TryGetValue(typeof(T), out result) ? (T)result : null;
         }
 
         private readonly Dictionary<Type, object> _something = new Dictionary<Type, object>();
@@ -191,19 +215,14 @@ namespace AcTools.Render.Base {
             return created;
         }
 
-        private RenderTargetView _savedRenderTargetView;
-        private Viewport _savedViewport;
-
-        public void SaveRenderTargetAndViewport() {
-            var targets = DeviceContext.OutputMerger.GetRenderTargets(1);
+        [Pure]
+        public IDisposable SaveRenderTargetAndViewport() {
+            var targets = DeviceContext.OutputMerger.GetRenderTargets(2);
             var viewports = DeviceContext.Rasterizer.GetViewports();
-            _savedRenderTargetView = targets.Length > 0 ? targets[0] : null;
-            _savedViewport = viewports.Length > 0 ? viewports[0] : default(Viewport);
-        }
-
-        public void RestoreRenderTargetAndViewport() {
-            DeviceContext.Rasterizer.SetViewports(_savedViewport);
-            DeviceContext.OutputMerger.SetTargets(_savedRenderTargetView);
+            return new ActionAsDisposable(() => {
+                DeviceContext.Rasterizer.SetViewports(viewports);
+                DeviceContext.OutputMerger.SetTargets(targets);
+            });
         }
 
         public event EventHandler UpdateRequired;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using AcTools.Utils;
@@ -66,8 +67,17 @@ namespace AcTools.Render.Base.Utils {
             return bb.Maximum - bb.Minimum;
         }
 
-        public static Vector3 GetXyz(this Vector4 vec) {
+        public static Vector3 GetVector3(this Vector4 vec) {
             return new Vector3(vec.X, vec.Y, vec.Z);
+        }
+
+        public static Color ToColor(this Vector3 color) {
+            return Color.FromArgb((int)(color.X * 255f).Clamp(0, 255), (int)(color.Y * 255f).Clamp(0, 255), (int)(color.Z * 255f).Clamp(0, 255));
+        }
+
+        public static Color ToColor(this Vector4 color) {
+            return Color.FromArgb((int)(color.W * 255f).Clamp(0, 255), (int)(color.X * 255f).Clamp(0, 255), (int)(color.Y * 255f).Clamp(0, 255),
+                    (int)(color.Z * 255f).Clamp(0, 255));
         }
 
         public static Vector3 ToVector3(this Color color) {
@@ -85,6 +95,10 @@ namespace AcTools.Render.Base.Utils {
         public static Vector3 FlipX(this Vector3 vec) {
             vec.X *= -1f;
             return vec;
+        }
+
+        public static Vector4 ToVector4(this Vector3 vec) {
+            return new Vector4(vec, 0f);
         }
 
         public static BoundingBox Transform(this BoundingBox bb, Matrix matrix) {
@@ -219,6 +233,7 @@ namespace AcTools.Render.Base.Utils {
         }
 
         private static readonly Dictionary<int, CacheObject> Cache = new Dictionary<int, CacheObject>(); 
+        private static readonly Dictionary<Tuple<int, int>, ArrayCacheObject> ArrayCache = new Dictionary<Tuple<int, int>, ArrayCacheObject>(); 
 
         private class CacheObject : IDisposable {
             public static byte[] Array = new byte[512];
@@ -238,6 +253,30 @@ namespace AcTools.Render.Base.Utils {
 
             public void Dispose() {
                 Marshal.FreeHGlobal(Pointer);
+                Data.Dispose();
+            }
+        }
+
+        private class ArrayCacheObject : IDisposable {
+            public static byte[] Array = new byte[5120];
+            public readonly IntPtr Pointer;
+            public readonly DataStream Data;
+
+            public ArrayCacheObject(int elementLen, int arrayLen) {
+                var len = arrayLen * elementLen;
+                if (len > Array.Length) {
+                    Array = new byte[len];
+                } else {
+                    System.Array.Clear(Array, 0, Array.Length);
+                }
+                
+                Pointer = Marshal.AllocHGlobal(elementLen);
+                Data = new DataStream(Array, false, false);
+            }
+
+            public void Dispose() {
+                Marshal.FreeHGlobal(Pointer);
+                Data.Dispose();
             }
         }
 
@@ -263,6 +302,29 @@ namespace AcTools.Render.Base.Utils {
 
                 Marshal.StructureToPtr(o, cobj.Pointer, true);
                 Marshal.Copy(cobj.Pointer, CacheObject.Array, 0, len);
+                variable.SetRawValue(cobj.Data, len);
+            }
+        }
+
+        public static void SetArray(EffectVariable variable, Array o, int elementLen) {
+            if (o == null) {
+                // TODO (?)
+            } else {
+                var len = elementLen * o.Length;
+                var key = Tuple.Create(elementLen, o.Length);
+
+                ArrayCacheObject cobj;
+                if (!ArrayCache.TryGetValue(key, out cobj)) {
+                    cobj = new ArrayCacheObject(elementLen, o.Length);
+                    ArrayCache[key] = cobj;
+                    Debug.WriteLine("CACHED MEMORY AREA CREATED: " + len);
+                }
+
+                for (var i = 0; i < o.Length; i++) {
+                    Marshal.StructureToPtr(o.GetValue(i), cobj.Pointer, true);
+                    Marshal.Copy(cobj.Pointer, ArrayCacheObject.Array, elementLen * i, elementLen);
+                }
+                
                 variable.SetRawValue(cobj.Data, len);
             }
         }

@@ -116,10 +116,6 @@ cbuffer POISSON_DISKS {
 	};
 }
 
-float rand(float2 co) {
-	return frac(sin(dot(co.xy, float2(12.9898, 78.233))) * (43758.5453));
-}
-
 float4 ps_AddShadowBlur(PS_IN pin) : SV_Target {
 	float depth = GetDepth(pin.Tex);
 	float3 pos = GetPosition(pin.Tex, depth);
