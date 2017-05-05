@@ -293,7 +293,7 @@ namespace AcManager.Tools.AcObjectsNew {
         
         protected void OnImageChanged(string propertyName) {
             OnPropertyChanged(propertyName);
-            BetterImage.ReloadImage((string)GetType().GetProperty(propertyName).GetValue(this, null));
+            BetterImage.ReloadImage((string)GetType().GetProperty(propertyName)?.GetValue(this, null));
         }
 
         protected void OnImageChangedValue(string filename) {

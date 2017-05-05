@@ -25,7 +25,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcObjectViewModel : NotifyPropertyChanged {
         public static string SpecsFormat(string format, object value) {
-            return format.Replace(@"…", value.ToInvariantString());
+            return format.Replace(@"â€¦", value.ToInvariantString());
         }
 
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
@@ -208,18 +208,18 @@ namespace AcManager.Pages.Selected {
         protected void RegisterSpec([Localizable(false),NotNull] string key, [NotNull] string format, [NotNull] string propertyName) {
             RegisterSpec(key, format, () => {
                 var type = SelectedObject.GetType();
-                var property = type.GetProperty(propertyName).GetGetMethod();
-                return property.Invoke(SelectedObject, new object[0])?.ToString();
+                var property = type.GetProperty(propertyName)?.GetGetMethod();
+                return property?.Invoke(SelectedObject, new object[0])?.ToString();
             }, v => {
                 var type = SelectedObject.GetType();
-                var property = type.GetProperty(propertyName).GetSetMethod();
-                property.Invoke(SelectedObject, new object[] { v });
+                var property = type.GetProperty(propertyName)?.GetSetMethod();
+                property?.Invoke(SelectedObject, new object[] { v });
             });
         }
 
         [NotNull]
         private string GetFormat(string key) {
-            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item2 ?? @"…";
+            return _specs.FirstOrDefault(x => x.Item1 == key)?.Item2 ?? @"â€¦";
         }
 
         [CanBeNull]
@@ -255,7 +255,7 @@ namespace AcManager.Pages.Selected {
         private bool IsFormatCorrect(string key) {
             var format = GetFormat(key);
             var value = GetSpecsValue(key);
-            return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
+            return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"â€¦", @"-?\d+(?:\.\d+)?") + @"$");
         }
 
         private void FixFormat(string key) {

@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -9,7 +10,39 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkPointLight : DarkLightBase {
-        public float Range = 2f;
+        public DarkPointLight() : base(DarkLightType.Point) {
+            HighQualityShadowsAvailable = false;
+        }
+
+        protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
+            switch (newType) {
+                case DarkLightType.Point:
+                    return new DarkPointLight {
+                        Range = Range
+                    };
+                case DarkLightType.Directional:
+                    return new DarkDirectionalLight();
+                case DarkLightType.Spot:
+                    return new DarkSpotLight {
+                        Range = Range
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
+            }
+        }
+
+        private float _range = 2f;
+
+        public float Range {
+            get { return _range; }
+            set {
+                if (value.Equals(_range)) return;
+                _range = value;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
         private ShadowsPoint _shadows;
         private bool _shadowsCleared;
 
@@ -61,7 +94,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             _shadows?.Invalidate();
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
         }
 
@@ -84,6 +117,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             _dummy.ParentMatrix = Matrix.Translation(Position);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+
+        protected override DarkShadowsMode GetShadowsMode() {
+            return UseShadows ? DarkShadowsMode.ExtraPoint : DarkShadowsMode.Off;
         }
     }
 }

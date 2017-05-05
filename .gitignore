@@ -45,6 +45,7 @@ Temporary Items
 */obj
 Packages
 AcManager.VC.*
+.idea/*
 
 # Result files
 */bin

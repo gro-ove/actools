@@ -45,7 +45,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <mui:ModernTab mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:cmPreviewsSettings" LinksMargin="0 0 0 4" FrameMargin="0 56 0 0"
+        <mui:ModernTab mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:cmPreviewsSettings" LinksMargin="0 0 0 4" FrameMargin="0 48 0 0"
                 LinksHorizontalAlignment="Stretch" DataContext="{Binding Settings}" Margin="0 0 0 0">
             <mui:ModernTab.LinksListBoxTemplate>
                 <ControlTemplate>

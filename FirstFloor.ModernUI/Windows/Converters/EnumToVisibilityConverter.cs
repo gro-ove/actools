@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(object), typeof(Visibility))]
@@ -36,6 +38,17 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotSupportedException();
+        }
+    }
+
+    [ValueConversion(typeof(object), typeof(Visibility))]
+    public class DrawingToColorConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return (value as Color?)?.ToColor();
+        }
+        
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            return (value as System.Windows.Media.Color?)?.ToColor();
         }
     }
 }

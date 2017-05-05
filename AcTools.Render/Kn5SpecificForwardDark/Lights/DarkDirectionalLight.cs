@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -10,25 +11,86 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkDirectionalLight : DarkLightBase {
-        public Vector3 Direction = new Vector3(-1f, -1f, -1f);
+        public DarkDirectionalLight() : base(DarkLightType.Directional) { }
+
+        protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
+            switch (newType) {
+                case DarkLightType.Point:
+                    return new DarkPointLight();
+                case DarkLightType.Directional:
+                    return new DarkDirectionalLight {
+                        _shadowsSize = _shadowsSize,
+                        IsMainLightSource = IsMainLightSource,
+                        Direction = Direction
+                    };
+                case DarkLightType.Spot:
+                    return new DarkSpotLight {
+                        Direction = Direction
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
+            }
+        }
+
+        private Vector3 _direction = new Vector3(-1f, -1f, -1f);
+
+        public Vector3 Direction {
+            get { return _direction; }
+            set {
+                if (value.Equals(_direction)) return;
+                _direction = value;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
+        private float _shadowsSize = 50f;
+        private bool _shadowsSizeChanged;
+
+        public float ShadowsSize {
+            get { return _shadowsSize; }
+            set {
+                if (Equals(value, _shadowsSize)) return;
+                _shadowsSize = value;
+                _shadowsSizeChanged = true;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
         private ShadowsDirectional _shadows;
         private bool _shadowsCleared;
-        private float _shadowsSize = 50f;
 
-        public void SetShadowsSize(DeviceContextHolder holder, float size) {
-            _shadowsSize = size;
-            _shadows?.SetSplits(holder, new []{ _shadowsSize });
+        private bool _isMainLightSource;
+
+        public bool IsMainLightSource {
+            get { return _isMainLightSource; }
+            set {
+                if (Equals(value, _isMainLightSource)) return;
+                _isMainLightSource = value;
+                UpdateShadowsMode();
+                OnPropertyChanged();
+            }
         }
 
         protected override void UpdateShadowsOverride(DeviceContextHolder holder, Vector3 shadowsPosition, IShadowsDraw shadowsDraw) {
+            if (IsMainLightSource) return;
+
             if (_shadows == null) {
-                _shadows = new ShadowsDirectional(ShadowsResolution, new[] { _shadowsSize });
+                _shadows = new ShadowsDirectional(ShadowsResolution, new[] { ShadowsSize });
+                _shadowsSizeChanged = false;
                 _shadows.Initialize(holder);
             }
 
             if (shadowsDraw != null) {
                 _shadowsCleared = false;
                 _shadows.SetMapSize(holder, ShadowsResolution);
+
+                if (_shadowsSizeChanged) {
+                    _shadowsSizeChanged = false;
+                    _shadows.SetSplits(holder, new [] { ShadowsSize });
+                }
+
                 if (_shadows.Update(-Direction, shadowsPosition)) {
                     _shadows.DrawScene(holder, shadowsDraw);
                 }
@@ -60,7 +122,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             _shadows?.Invalidate();
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
         }
 
@@ -83,6 +145,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             _dummy.ParentMatrix = Position.LookAtMatrixXAxis(Position - Direction, Vector3.UnitY);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+
+        protected override DarkShadowsMode GetShadowsMode() {
+            return IsMainLightSource ? DarkShadowsMode.Main :
+                    UseShadows ? UseHighQualityShadows ? DarkShadowsMode.ExtraSmooth : DarkShadowsMode.ExtraFast :
+                            DarkShadowsMode.Off;
         }
     }
 }

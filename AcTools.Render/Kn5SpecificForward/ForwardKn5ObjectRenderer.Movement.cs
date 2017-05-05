@@ -30,6 +30,13 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (Equals(value, _showMovementArrows)) return;
                 _showMovementArrows = value;
                 OnPropertyChanged();
+
+                if (!_mousePositionSet) {
+                    _mousePositionSet = true;
+                    DeviceContextHolder.Set<IMousePositionProvider>(this);
+                }
+
+                IsDirty = true;
             }
         }
 

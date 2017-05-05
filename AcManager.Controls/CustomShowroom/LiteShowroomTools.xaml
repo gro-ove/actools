@@ -356,7 +356,7 @@
                         </DockPanel>
 
                         <mui:ModernTab x:Name="Tab" mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:visualSettings" LinksMargin="0 0 0 4"
-                                FrameMargin="0 28 0 0" LinksHorizontalAlignment="Stretch" Margin="0 16 0 0" DataContext="{Binding Settings}" Height="400">
+                                FrameMargin="0 48 0 0" LinksHorizontalAlignment="Stretch" Margin="0 4 0 0" DataContext="{Binding Settings}" Height="400">
                             <mui:ModernTab.LinksListBoxTemplate>
                                 <ControlTemplate>
                                     <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
@@ -365,13 +365,15 @@
                             <mui:ModernTab.Links>
                                 <mui:Link DisplayName="Quality" Source="Quality" />
                                 <mui:Link DisplayName="Scene" Source="Scene" />
+                                <mui:Link DisplayName="Lights" Source="Lights" />
                                 <mui:Link DisplayName="HDR" Source="Hdr" />
-                                <mui:Link DisplayName="…" Source="Extra" />
+                                <mui:Link DisplayName="Misc" Source="Extra" />
                             </mui:ModernTab.Links>
                             <mui:ModernTab.ContentLoader>
                                 <mui:DirectContentLoader>
                                     <mui:DirectContentLoaderEntry Source="Quality" Content="{StaticResource VisualSettings.Quality}" />
                                     <mui:DirectContentLoaderEntry Source="Scene" Content="{StaticResource VisualSettings.Scene}" />
+                                    <mui:DirectContentLoaderEntry Source="Lights" Content="{StaticResource VisualSettings.Lights}" />
                                     <mui:DirectContentLoaderEntry Source="Hdr" Content="{StaticResource VisualSettings.Hdr}" />
                                     <mui:DirectContentLoaderEntry Source="Extra" Content="{StaticResource VisualSettings.Extra}" />
                                 </mui:DirectContentLoader>

@@ -16,6 +16,7 @@ using AcManager.Tools.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForwardDark;
+using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -62,6 +63,10 @@ namespace AcManager.Controls.CustomShowroom {
 
         public static SettingEntry[] SsaaModesExtended { get; } = SsaaModes.Append(new SettingEntry(16, @"16x")).ToArray();
 
+        public static int[] ExtraShadowResolutionsValues { get; } = {
+            256, 512, 1024, 2048, 4096, 8192
+        };
+
         public static SettingEntry[] ShadowResolutions { get; } = {
             new SettingEntry(1024, "1024×1024"),
             new SettingEntry(2048, "2048×2048"),
@@ -74,6 +79,8 @@ namespace AcManager.Controls.CustomShowroom {
         public static AoType[] AoTypes { get; } = DarkKn5ObjectRenderer.ProductionReadyAo;
 
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
+
+        public static DarkLightType[] LightTypes { get; } = EnumExtension.GetValues<DarkLightType>();
 
         protected class SaveableData {
             public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(150, 180, 180);
@@ -675,6 +682,14 @@ namespace AcManager.Controls.CustomShowroom {
                 NonfatalError.Notify("Can’t load color grading texture", e);
             }
         }));
+
+        #region Lights
+        private DelegateCommand _addLightCommand;
+
+        public DelegateCommand AddLightCommand => _addLightCommand ?? (_addLightCommand = new DelegateCommand(() => {
+            Renderer.AddLight();
+        }));
+        #endregion
 
         #region Visual params, colors
         private void UpdateColors() {

@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.TargetTextures;
 using SlimDX;
@@ -30,15 +31,16 @@ namespace AcTools.Render.Base.Shadows {
             var result = _dirty;
             _dirty = false;
 
-            if (_camera.FovY != angle || _camera.FarZ != range) {
+            if (result || _camera.FovY != angle || _camera.FarZ != range) {
                 _camera.FovY = angle;
                 _camera.FarZ = range;
                 _camera.SetLens(1f);
                 result = true;
             }
 
-            if (_camera.Position != position || _camera.Look != direction) { // TODO: more flexible checking
-                _camera.LookAt(position, position + direction, direction == Vector3.UnitY ? Vector3.UnitX : Vector3.UnitY);
+            if (result || _camera.Position != position || Vector3.Dot(_camera.Look, direction) < 0.99) {
+                _camera.LookAt(position, position + direction, 
+                    Math.Abs(direction.Y - 1f) < 0.01f || Math.Abs(direction.Y - (-1f)) < 0.01f ? Vector3.UnitX : Vector3.UnitY);
                 _camera.UpdateViewMatrix();
                 result = true;
             }

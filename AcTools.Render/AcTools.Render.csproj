@@ -87,6 +87,7 @@
     <Compile Include="Base\Cameras\ICamera.cs" />
     <Compile Include="Base\Cameras\InterpolationCamera.cs" />
     <Compile Include="Base\CommonStates.cs" />
+    <Compile Include="Base\DelegateCommand.cs" />
     <Compile Include="Base\Materials\BasicMaterials.cs" />
     <Compile Include="Base\Materials\IMaterialsFactory.cs" />
     <Compile Include="Base\Objects\BaseRenderableObject.cs" />

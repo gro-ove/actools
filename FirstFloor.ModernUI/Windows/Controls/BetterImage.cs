@@ -716,7 +716,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Forces all BetterImages which showing specific filename to reload their content.
         /// </summary>
         /// <param name="filename"></param>
-        public static void ReloadImage(string filename) {
+        public static void ReloadImage([CanBeNull] string filename) {
+            if (string.IsNullOrWhiteSpace(filename)) return;
+
 #if ZIP_SUPPORT
             filename = GetActualFilename(filename);
             RemoveFromCache(filename);
@@ -750,7 +752,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static List<CacheEntry> Cache => _cache ?? (_cache = new List<CacheEntry>(OptionCacheTotalEntries));
 
-        private static void RemoveFromCache(string filename) {
+        private static void RemoveFromCache([NotNull] string filename) {
             var cache = Cache;
             lock (cache) {
                 for (var i = cache.Count - 1; i >= 0; i--) {

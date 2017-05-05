@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -11,10 +12,76 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkSpotLight : DarkLightBase {
-        public Vector3 Direction = new Vector3(-1f, -1f, -1f);
-        public float Angle = MathF.PI / 6;
-        public float SpotFocus = 0.5f;
-        public float Range = 2f;
+        public DarkSpotLight() : base(DarkLightType.Spot) {}
+
+        protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
+            switch (newType) {
+                case DarkLightType.Point:
+                    return new DarkPointLight {
+                        Range = Range
+                    };
+                case DarkLightType.Directional:
+                    return new DarkDirectionalLight {
+                        Direction = Direction
+                    };
+                case DarkLightType.Spot:
+                    return new DarkSpotLight {
+                        Range = Range,
+                        Angle = Angle,
+                        SpotFocus = SpotFocus
+                    };
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
+            }
+        }
+
+        private Vector3 _direction = new Vector3(-1f, -1f, -1f);
+
+        public Vector3 Direction {
+            get { return _direction; }
+            set {
+                if (value.Equals(_direction)) return;
+                _direction = value;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
+        private float _angle = MathF.PI / 6;
+
+        public float Angle {
+            get { return _angle; }
+            set {
+                if (value.Equals(_angle)) return;
+                _angle = value;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
+        private float _spotFocus = 0.5f;
+
+        public float SpotFocus {
+            get { return _spotFocus; }
+            set {
+                if (value.Equals(_spotFocus)) return;
+                _spotFocus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _range = 2f;
+
+        public float Range {
+            get { return _range; }
+            set {
+                if (value.Equals(_range)) return;
+                _range = value;
+                InvalidateShadows();
+                OnPropertyChanged();
+            }
+        }
+
         private ShadowsSpot _shadows;
         private bool _shadowsCleared;
 
@@ -55,11 +122,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             light.Range = Range;
             light.SpotlightCosMin = Angle.Cos();
             light.SpotlightCosMax = light.SpotlightCosMin.Lerp(1f, SpotFocus);
-            //light.SpotlightAngle = Angle;
-            /*light.LightParams.X = Range;
-            light.LightParams.Y = Angle.Cos();
-            light.LightParams.Z = light.LightParams.Y.Lerp(1f, SpotFocus);*/
-            //light.LightParams = new Vector4(Range, Angle.Cos(), Angle.Cos().Lerp(1f, SpotFocus), 0f);
             light.Type = EffectDarkMaterial.LightSpot;
         }
 
@@ -67,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             _shadows?.Invalidate();
         }
 
-        public override void Dispose() {
+        protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
         }
 
@@ -90,6 +152,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             _dummy.ParentMatrix = Position.LookAtMatrixXAxis(Position - Direction, Vector3.UnitY);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+
+        protected override DarkShadowsMode GetShadowsMode() {
+            return UseShadows ? UseHighQualityShadows ? DarkShadowsMode.ExtraSmooth : DarkShadowsMode.ExtraFast : DarkShadowsMode.Off;
         }
     }
 }

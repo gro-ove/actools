@@ -29,7 +29,6 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
-
         private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _mirrorTemporaryBuffer;
         private TargetResourceDepthTexture _mirrorDepthBuffer;
 
@@ -205,18 +204,25 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 #endif
 
             _mainLight = new DarkDirectionalLight {
-                ShadowsMode = DarkShadowsMode.Main,
+                DisplayName = "Sun",
+                Position = Vector3.UnitY - Vector3.UnitZ,
+                IsMainLightSource = true,
+                IsVisibleInUi = false,
                 IsMovable = false
             };
 
             _reflectedLight = new DarkDirectionalLight {
-                ShadowsMode = DarkShadowsMode.ExtraSmooth,
+                DisplayName = "Sun (Reflected)",
+                Position = -Vector3.UnitY - Vector3.UnitZ,
                 Enabled = false,
-                IsMovable = false
+                IsMovable = false,
+                IsVisibleInUi = false,
+                UseShadows = true,
+                UseHighQualityShadows = true
             };
 
-            _lights.Add(_mainLight);
-            _lights.Add(_reflectedLight);
+            AddLight(_mainLight);
+            AddLight(_reflectedLight);
         }
 
         protected override void OnBackgroundColorChanged() {
@@ -366,11 +372,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 effect.FxShadowViewProj.SetMatrixArray(
                         shadows.Splits.Take(splitsNum.Value).Select(x => x.ShadowTransform).ToArray());
 
-                _reflectedLight.SetShadowsSize(DeviceContextHolder, splits[0]);
+                _reflectedLight.ShadowsSize = splits[0];
             }
 
-            foreach (var light in _lights) {
-                light.InvalidateShadows();
+            if (_complexMode) {
+                foreach (var light in _lights) {
+                    light.InvalidateShadows();
+                }
             }
         }
 
@@ -437,8 +445,62 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             public float A, B, C, D, E, F, G;
         }
 
-        private readonly List<DarkLightBase> _lights = new List<DarkLightBase>(10);
-        private readonly List<MovingLightDesc> _pointLights = new List<MovingLightDesc>();
+        private DarkLightBase[] _lights = new DarkLightBase[0];
+
+        public DarkLightBase[] Lights {
+            get { return _lights; }
+            set {
+                if (Equals(value, _lights)) return;
+                _lights = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        private void OnLightPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(DarkLightBase.Type):
+                    var light = (DarkLightBase)sender;
+                    RemoveLight(light);
+                    AddLight(light.ChangeType(light.Type));
+                    break;
+                case nameof(DarkLightBase.IsDeleted):
+                    RemoveLight((DarkLightBase)sender);
+                    break;
+            }
+        }
+
+        public void AddLight(DarkLightBase light) {
+            if (light.DisplayName == null) {
+                for (var i = 1; i < 999; i++) {
+                    var c = "Light #" + i;
+                    if (_lights.All(x => x.DisplayName != c)) {
+                        light.DisplayName = c;
+                        break;
+                    }
+                }
+            }
+
+            light.PropertyChanged += OnLightPropertyChanged;
+
+            var updated = new DarkLightBase[_lights.Length + 1];
+            Array.Copy(_lights, updated, _lights.Length);
+            updated[updated.Length - 1] = light;
+            Lights = updated;
+        }
+
+        public void RemoveLight(DarkLightBase light) {
+            var index = _lights.IndexOf(light);
+            if (index == -1) return;
+
+            var updated = new DarkLightBase[_lights.Length - 1];
+            Array.Copy(_lights, updated, index);
+            Array.Copy(_lights, index + 1, updated, index, updated.Length - index);
+            Lights = updated;
+        }
+        
+        private readonly List<MovingLightDesc> _movingLights = new List<MovingLightDesc>();
         private readonly Random _random = new Random();
 
         public void AddLight() {
@@ -446,36 +508,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     (float)_random.NextDouble());
             color.Normalize();
 
-            /*_lights.Add(new DarkPointLight {
-                ShadowsMode = DarkShadowsMode.ExtraPoint,
-                Color = color.ToColor(),
-                Range = 10f,
-                Position = Vector3.UnitY * 2f,
-                Brightness = 0.5f
-            });*/
-
-            _lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
+            AddLight(new DarkSpotLight {
+                UseShadows = true,
                 Color = color.ToDrawingColor(),
                 Range = 10f,
                 Position = Vector3.UnitY * 2f,
+                Direction = Vector3.UnitY,
                 Brightness = 0.5f
             });
-
-            SetReflectionCubemapDirty();
-            IsDirty = true;
         }
 
         public void RemoveLight() {
             var last = _lights.LastOrDefault();
-            if (last == null || last.ShadowsMode != DarkShadowsMode.ExtraFast && last.ShadowsMode != DarkShadowsMode.ExtraPoint) {
-                return;
-            }
+            if (last == null || _movingLights.Any(x => x.Light == last)) return;
 
-            _lights.Remove(last);
-
-            SetReflectionCubemapDirty();
-            IsDirty = true;
+            RemoveLight(last);
         }
 
         public void AddMovingLight() {
@@ -484,7 +531,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             color.Normalize();
 
             var light = new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
+                UseShadows = true,
                 Color = color.ToDrawingColor(),
                 Range = 10f,
                 Angle = 0.5f,
@@ -493,8 +540,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 IsMovable = false
             };
 
-            _lights.Add(light);
-            _pointLights.Add(new MovingLightDesc {
+            AddLight(light);
+
+            _movingLights.Add(new MovingLightDesc {
                 Light = light,
                 A = (float)_random.NextDouble() + 2f,
                 B = (float)_random.NextDouble(),
@@ -504,20 +552,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 F = (float)_random.NextDouble(),
                 G = 3.0f + (float)_random.NextDouble()
             });
-
-            SetReflectionCubemapDirty();
-            IsDirty = true;
         }
 
         public void RemoveMovingLight() {
-            var last = _pointLights.LastOrDefault();
+            var last = _movingLights.LastOrDefault();
             if (last == null) return;
 
-            _lights.Remove(last.Light);
-            _pointLights.Remove(last);
-
-            SetReflectionCubemapDirty();
-            IsDirty = true;
+            RemoveLight(last.Light);
+            _movingLights.Remove(last);
         }
 
         private bool IsFlatMirrorReflectedLightEnabled => FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred;
@@ -539,12 +581,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _reflectedLight.Enabled = false;
             }
 
-            for (var i = _lights.Count - 1; i >= 0; i--) {
+            for (var i = _lights.Length - 1; i >= 0; i--) {
                 var l = _lights[i];
                 l.Update(DeviceContextHolder, ShadowsPosition, setShadows && !singleLight && EnableShadows ? this : null);
             }
 
-            DarkLightBase.ToShader(effect, _lights, singleLight ? 1 : _lights.Count);
+            DarkLightBase.ToShader(effect, _lights, singleLight ? 1 : _lights.Length);
         }
         
         private bool _complexMode;
@@ -610,7 +652,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             effect.FxCubemapAmbient.Set(reflection == null ? 0f : FxCubemapAmbientValue);
 
             // shadows
-            var useShadows = EnableShadows && shadows != null;
+            var useShadows = EnableShadows && LightBrightness > 0f && shadows != null;
             effect.FxNumSplits.Set(useShadows ? _numSplits : 0);
 
             if (useShadows) {
@@ -629,10 +671,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (FlatMirror && ShowroomNode == null) {
                 effect.FxFlatMirrorPower.Set(FlatMirrorReflectiveness);
             }
-
-            if (reflection != null) {
-                effect.FxReflectionCubemap.SetResource(reflection.View);
-            }
+            
+            effect.FxReflectionCubemap.SetResource(reflection?.View);
         }
 
         private bool _meshDebug;
@@ -774,11 +814,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     carNode.DrawMovementArrows(DeviceContextHolder, Camera);
                 }
 
-                foreach (var light in _lights) {
-                    if (light.Enabled) {
-                        light.DrawDummy(DeviceContextHolder, Camera);
-                        if (light.IsMovable) {
-                            light.DrawMovementArrows(DeviceContextHolder, Camera);
+                if (_complexMode) {
+                    for (var i = _lights.Length - 1; i >= 0; i--) {
+                        var light = _lights[i];
+                        if (light.Enabled) {
+                            light.DrawDummy(DeviceContextHolder, Camera);
+                            if (light.IsMovable) {
+                                light.DrawMovementArrows(DeviceContextHolder, Camera);
+                            }
                         }
                     }
                 }
@@ -787,7 +830,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         protected override bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
             return ShowroomNode != null && base.MoveObjectOverride(relativeFrom, relativeDelta, camera) ||
-                    _lights.Any(light => light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera));
+                    _complexMode && _lights.Any(light => light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera));
         }
 
         protected override void StopMovementOverride() {
@@ -795,9 +838,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 base.StopMovementOverride();
             }
 
-            foreach (var light in _lights) {
-                if (light.Enabled && light.ShadowsMode != DarkShadowsMode.Main && _pointLights.All(x => x.Light != light)) {
-                    light.Movable.StopMovement();
+            if (_complexMode) {
+                for (var i = _lights.Length - 1; i >= 0; i--) {
+                    var light = _lights[i];
+                    if (light.Enabled && (light as DarkDirectionalLight)?.IsMainLightSource != true && _movingLights.All(x => x.Light != light)) {
+                        light.Movable.StopMovement();
+                    }
                 }
             }
         }
@@ -811,6 +857,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _showDepth = value;
                 OnPropertyChanged();
             }
+        }
+
+        protected override void DrawSpritesInner() {
+            if (_complexMode && ShowMovementArrows) {
+                for (var i = _lights.Length - 1; i >= 0; i--) {
+                    var light = _lights[i];
+                    if (light.Enabled) {
+                        light.DrawSprites(Sprite, Camera, new Vector2(ActualWidth, ActualHeight));
+                    }
+                }
+            }
+            
+            base.DrawSpritesInner();
         }
 
         protected override string GetInformationString() {
@@ -844,7 +903,7 @@ AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
 Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
 Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
 Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
-Lights: {_lights.Count(x => x.Enabled)} (shadows: {_lights.Count(x => x.Enabled && x.ShadowsMode != DarkShadowsMode.Off)})
+Lights: {_lights.Count(x => x.Enabled)} (shadows: {_lights.Count(x => x.Enabled && x.UseShadows)})
 Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
@@ -1299,7 +1358,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         protected override void OnTick(float dt) {
             base.OnTick(dt);
 
-            foreach (var i in _pointLights) {
+            foreach (var i in _movingLights) {
                 i.Light.Position = new Vector3(
                         (Elapsed * i.B + i.D).Sin() * i.C, i.A,
                         (Elapsed * i.E + i.F).Sin() * i.G);
@@ -1371,6 +1430,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             DisposeHelper.Dispose(ref _accumulationBaseTexture);
 
             _lights.DisposeEverything();
+            _lights = new DarkLightBase[0];
             base.DisposeOverride();
         }
 
