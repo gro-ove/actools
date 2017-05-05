@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using AcTools.Utils;
@@ -37,6 +36,10 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
+        public static BoundingBox Grow(this BoundingBox b, Vector3 v) {
+            return new BoundingBox(b.Minimum - v, b.Maximum + v);
+        }
+
         public static void Extend(ref BoundingBox bb, ref Vector3 v) {
             if (bb.Maximum.X < v.X) bb.Maximum.X = v.X;
             if (bb.Maximum.Y < v.Y) bb.Maximum.Y = v.Y;
@@ -71,11 +74,11 @@ namespace AcTools.Render.Base.Utils {
             return new Vector3(vec.X, vec.Y, vec.Z);
         }
 
-        public static Color ToColor(this Vector3 color) {
+        public static Color ToDrawingColor(this Vector3 color) {
             return Color.FromArgb((int)(color.X * 255f).Clamp(0, 255), (int)(color.Y * 255f).Clamp(0, 255), (int)(color.Z * 255f).Clamp(0, 255));
         }
 
-        public static Color ToColor(this Vector4 color) {
+        public static Color ToDrawingColor(this Vector4 color) {
             return Color.FromArgb((int)(color.W * 255f).Clamp(0, 255), (int)(color.X * 255f).Clamp(0, 255), (int)(color.Y * 255f).Clamp(0, 255),
                     (int)(color.Z * 255f).Clamp(0, 255));
         }
@@ -170,6 +173,28 @@ namespace AcTools.Render.Base.Utils {
                 M43 = mat4x4[14],
                 M44 = mat4x4[15]
             };
+        }
+
+        public static Matrix LookAtMatrixXAxis(this Vector3 o, Vector3 p, Vector3 u) {
+            var d = Vector3.Normalize(p - o);
+            var s = Vector3.Normalize(Vector3.Cross(d, Vector3.Normalize(u)));
+            var v = Vector3.Cross(s, d);
+            return SlimDxExtension.ToMatrix(
+                    d.X, d.Y, d.Z, 0,
+                    v.X, v.Y, v.Z, 0,
+                    s.X, s.Y, s.Z, 0,
+                    o.X, o.Y, o.Z, 1);
+        }
+
+        public static Matrix LookAtMatrix(this Vector3 o, Vector3 p, Vector3 u) {
+            var d = Vector3.Normalize(o - p);
+            var s = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
+            var v = Vector3.Normalize(Vector3.Cross(d, s));
+            return SlimDxExtension.ToMatrix(
+                    v.X, v.Y, v.Z, 0,
+                    d.X, d.Y, d.Z, 0,
+                    s.X, s.Y, s.Z, 0,
+                    o.X, o.Y, o.Z, 1);
         }
 
         public static Matrix ToMatrix(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33,

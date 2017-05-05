@@ -693,7 +693,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private bool _reflectionCubemapAtCamera = true;
+        private bool _reflectionCubemapAtCamera;
 
         public bool ReflectionCubemapAtCamera {
             get { return _reflectionCubemapAtCamera; }
@@ -765,7 +765,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public bool DelayedBoundingBoxUpdate { get; set; }
 
-        protected void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
+        protected virtual void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
             var sceneDirty = _sceneDirty;
             _sceneDirty = false;
 

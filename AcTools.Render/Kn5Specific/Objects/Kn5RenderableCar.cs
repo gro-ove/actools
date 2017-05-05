@@ -111,7 +111,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
     }
 
-    public partial class Kn5RenderableCar : Kn5RenderableFile, INotifyPropertyChanged {
+    public partial class Kn5RenderableCar : Kn5RenderableFile, INotifyPropertyChanged, IMoveable {
         /// <summary>
         /// Fix messed up KNH file by loading steering animation immediately.
         /// </summary>
@@ -204,42 +204,42 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _ambientShadows.Draw(_ambientShadowsHolder, camera, SpecialRenderMode.Simple);
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
-            DrawInitialize(contextHolder);
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            DrawInitialize(holder);
 
             if (!_mirrorsInitialized) {
-                LoadMirrors(contextHolder);
+                LoadMirrors(holder);
             }
 
             /* driver, transparent */
             if (mode == SpecialRenderMode.SimpleTransparent) {
                 // This way, transparent part of driver’s helmet will be rendered before car’s windows
-                DrawDriver(contextHolder, camera, mode);
+                DrawDriver(holder, camera, mode);
             }
 
             /* car */
-            _currentLodObject.EnsurePrepared(LocalHolder, contextHolder, SharedMaterials, TexturesProvider, this);
+            _currentLodObject.EnsurePrepared(LocalHolder, holder, SharedMaterials, TexturesProvider, this);
             RootObject.Draw(_currentLodObject.Holder, camera, mode, filter);
 
             if (Skins != null && !_skinsWatcherSet) {
-                SkinsWatcherSet(contextHolder);
+                SkinsWatcherSet(holder);
             }
 
             if (!_actuallyLoaded) {
-                SelectSkin(contextHolder, CurrentSkin);
+                SelectSkin(holder, CurrentSkin);
             }
 
             /* driver, opaque */
             if (mode != SpecialRenderMode.SimpleTransparent) {
-                DrawDriver(contextHolder, camera, mode);
+                DrawDriver(holder, camera, mode);
             }
 
             /* crew */
-            DrawCrew(contextHolder, camera, mode);
+            DrawCrew(holder, camera, mode);
 
             /* collider */
             if (IsColliderVisible) {
-                _collider?.Draw(contextHolder, camera, mode, filter);
+                _collider?.Draw(holder, camera, mode, filter);
             }
         }
 
@@ -1798,102 +1798,36 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Movement
-        private DebugLinesObject _arrowX, _arrowY, _arrowZ, _circleY;
-        private Vector3 _arrowHighlighted, _circleHighlighted;
-        private bool _keepHighlight;
+        private MoveableHelper _movable;
+        public MoveableHelper Movable => _movable ?? (_movable = new MoveableHelper(this, MoveableRotationAxis.Y));
 
-        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
-            _keepHighlight = true;
-
-            if (_arrowHighlighted != default(Vector3)) {
-                Vector3 planeNormal;
-                if (_arrowHighlighted.Y == 0f) {
-                    planeNormal = Vector3.UnitY;
-                } else if (_arrowHighlighted.X == 0f) {
-                    if (_arrowHighlighted.Z == 0f) {
-                        planeNormal = camera.Look.X.Abs() < camera.Look.Z.Abs() ? Vector3.UnitZ : Vector3.UnitX;
-                    } else {
-                        planeNormal = Vector3.UnitX;
-                    }
-                } else if (_arrowHighlighted.Z == 0f) {
-                    planeNormal = Vector3.UnitZ;
-                } else {
-                    planeNormal = -camera.Look;
-                }
-
-                var plane = new Plane(Matrix.GetTranslationVector(), planeNormal);
-                var rayFrom = camera.GetPickingRay(relativeFrom, new Vector2(1f, 1f));
-                var rayTo = camera.GetPickingRay(relativeFrom + relativeDelta, new Vector2(1f, 1f));
-
-                float distance;
-
-                if (!Ray.Intersects(rayFrom, plane, out distance)) return false;
-                var pointFrom = rayFrom.Position + rayFrom.Direction * distance;
-
-                if (!Ray.Intersects(rayTo, plane, out distance)) return false;
-                var pointTo = rayTo.Position + rayTo.Direction * distance;
-                var pointDelta = pointTo - pointFrom;
-
-                var resultMovement = new Vector3(
-                        pointDelta.X * _arrowHighlighted.X,
-                        pointDelta.Y * _arrowHighlighted.Y,
-                        pointDelta.Z * _arrowHighlighted.Z);
-                LocalMatrix = LocalMatrix * Matrix.Translation(resultMovement);
-                UpdateBoundingBox();
-                return true;
-            }
-
-            if (_circleHighlighted != default(Vector3)) {
-                LocalMatrix = Matrix.RotationY(relativeDelta.X * 10f) * LocalMatrix;
-                UpdateBoundingBox();
-                return true;
-            }
-
-            return false;
+        public void DrawMovementArrows(DeviceContextHolder holder, BaseCamera camera) {
+            Movable.ParentMatrix = Matrix;
+            Movable.Draw(holder, camera, SpecialRenderMode.Simple);
         }
 
-        public void StopMovement() {
-            _keepHighlight = false;
+        private Matrix? _originalPosition;
+
+        public void ResetPosition() {
+            if (_originalPosition.HasValue) {
+                LocalMatrix = _originalPosition.Value;
+            }
         }
 
-        public void DrawMovementArrows(DeviceContextHolder holder, BaseCamera camera, Vector2 relativeMousePosition) {
-            if (_arrowX == null) {
-                _arrowX = GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f));
-                _arrowY = GetLinesArrow(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
-                _arrowZ = GetLinesArrow(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f));
-                _circleY = GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
+        void IMoveable.Move(Vector3 delta) {
+            if (!_originalPosition.HasValue) {
+                _originalPosition = LocalMatrix;
             }
 
-            var m = Matrix.Translation(Matrix.GetTranslationVector());
-            if (_arrowX.ParentMatrix != m) {
-                _arrowX.ParentMatrix = m;
-                _arrowY.ParentMatrix = m;
-                _arrowZ.ParentMatrix = m;
-                _circleY.ParentMatrix = m;
-                _arrowX.UpdateBoundingBox();
-                _arrowY.UpdateBoundingBox();
-                _arrowZ.UpdateBoundingBox();
-                _circleY.UpdateBoundingBox();
+            LocalMatrix = LocalMatrix * Matrix.Translation(delta);
+        }
+
+        void IMoveable.Rotate(Quaternion delta) {
+            if (!_originalPosition.HasValue) {
+                _originalPosition = LocalMatrix;
             }
 
-            if (_keepHighlight) {
-                _arrowX.Draw(holder, camera, _arrowHighlighted.X == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
-                _arrowY.Draw(holder, camera, _arrowHighlighted.Y == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
-                _arrowZ.Draw(holder, camera, _arrowHighlighted.Z == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
-                _circleY.Draw(holder, camera, _circleHighlighted.Y == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
-            } else {
-                var ray = camera.GetPickingRay(relativeMousePosition, new Vector2(1f, 1f));
-                _arrowHighlighted = new Vector3(
-                        _arrowX.DrawHighlighted(ray, holder, camera) ? 1f : 0f,
-                        _arrowY.DrawHighlighted(ray, holder, camera) ? 1f : 0f,
-                        _arrowZ.DrawHighlighted(ray, holder, camera) ? 1f : 0f);
-                if (_arrowHighlighted == Vector3.Zero) {
-                    _circleHighlighted = new Vector3(0f, _circleY.DrawHighlighted(ray, holder, camera) ? 1f : 0f, 0f);
-                } else {
-                    _circleHighlighted = Vector3.Zero;
-                    _circleY.Draw(holder, camera, SpecialRenderMode.Simple);
-                }
-            }
+            LocalMatrix = Matrix.RotationQuaternion(delta) * LocalMatrix;
         }
         #endregion
 
@@ -2177,83 +2111,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Colliders from colliders.ini
-        [NotNull]
-        private static DebugLinesObject GetLinesBox(Matrix matrix, Vector3 size, Color4 color) {
-            var vertices = new List<InputLayouts.VerticePC>();
-            var indices = new List<ushort>();
-
-            var box = GeometryGenerator.CreateLinesBox(size);
-            for (var i = 0; i < box.Vertices.Count; i++) {
-                vertices.Add(new InputLayouts.VerticePC(box.Vertices[i].Position, color));
-            }
-
-            indices.AddRange(box.Indices);
-            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
-        }
-
-        [NotNull]
-        private static DebugLinesObject GetLinesArrow(Matrix matrix, Vector3 direction, Color4 color, float size = 0.2f) {
-            var vertices = new List<InputLayouts.VerticePC>();
-            var indices = new List<ushort>();
-
-            direction.Normalize();
-
-            vertices.Add(new InputLayouts.VerticePC(new Vector3(0f), color));
-            vertices.Add(new InputLayouts.VerticePC(direction, color));
-            indices.AddRange(new ushort[] { 0, 1 });
-
-            Vector3 left, up;
-            if (direction == Vector3.UnitY) {
-                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
-                up = Vector3.Normalize(Vector3.Cross(direction, left));
-            } else {
-                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-                up = Vector3.Normalize(Vector3.Cross(direction, left));
-            }
-
-            vertices.Add(new InputLayouts.VerticePC(direction + (left + up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left + up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left - up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (left - up - direction) * 0.2f, color));
-            indices.AddRange(new ushort[] { 1, 2, 1, 3, 1, 4, 1, 5 });
-            indices.AddRange(new ushort[] { 2, 3, 3, 4, 4, 5, 5, 2 });
-
-            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
-        }
-
-        [NotNull]
-        private static DebugLinesObject GetLinesCircle(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float size = 0.16f) {
-            var vertices = new List<InputLayouts.VerticePC>();
-            var indices = new List<ushort>();
-
-            direction.Normalize();
-
-            Vector3 left, up;
-            if (direction == Vector3.UnitY) {
-                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
-                up = Vector3.Normalize(Vector3.Cross(direction, left));
-            } else {
-                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-                up = Vector3.Normalize(Vector3.Cross(direction, left));
-            }
-            
-            for (var i = 1; i <= segments; i++) {
-                var a = MathF.PI * 2f * i / segments;
-                vertices.Add(new InputLayouts.VerticePC(left * a.Cos()+ up * a.Sin(), color));
-                indices.Add((ushort)(i - 1));
-                indices.Add((ushort)(i == segments ? 0 : i));
-            }
-
-            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
-        }
-
         [CanBeNull]
         private Tuple<string, DebugLinesObject>[] _collidersLines;
 
         public void DrawCollidersDebugStuff(DeviceContextHolder holder, ICamera camera) {
             if (_collidersLines == null) {
                 var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
-                _collidersLines = _carData.GetColliders().Select(x => Tuple.Create(x.Name, GetLinesBox(
+                _collidersLines = _carData.GetColliders().Select(x => Tuple.Create(x.Name, DebugLinesObject.GetLinesBox(
                         Matrix.Translation(x.Center) * graphicMatrix,
                         x.Size, new Color4(1f, 1f, 0f, 0f)))).ToArray();
             }
@@ -2287,7 +2151,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 var volume = _carData.GetFuelTankVolume();
                 var side = volume.Pow(1f / 3f);
                 var proportions = new Vector3(2f, 0.5f, 1f);
-                _fuelTank = GetLinesBox(Matrix.Translation(_carData.GetFuelTankPosition()) * Matrix.Invert(_carData.GetGraphicMatrix()),
+                _fuelTank = DebugLinesObject.GetLinesBox(Matrix.Translation(_carData.GetFuelTankPosition()) * Matrix.Invert(_carData.GetGraphicMatrix()),
                         proportions * side, new Color4(1f, 0.5f, 1f, 0f));
             }
 
@@ -2315,7 +2179,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public void DrawFlames(DeviceContextHolder holder, ICamera camera) {
             if (_flamesLines == null) {
                 _flamesLines = _carData.GetFlames().Select(x => Tuple.Create(x.Name,
-                        GetLinesArrow(Matrix.Translation(x.Position), x.Direction, new Color4(1f, 1f, 0f, 0f)))).ToArray();
+                        DebugLinesObject.GetLinesArrow(Matrix.Translation(x.Position), x.Direction, new Color4(1f, 1f, 0f, 0f)))).ToArray();
             }
 
             for (var i = 0; i < _flamesLines.Length; i++) {
@@ -2412,22 +2276,22 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [CanBeNull]
         public BaseCamera GetDriverCamera() {
-            return _carData.GetDriverCamera()?.ToCamera();
+            return _carData.GetDriverCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
         public BaseCamera GetDashboardCamera() {
-            return _carData.GetDashboardCamera()?.ToCamera();
+            return _carData.GetDashboardCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
         public BaseCamera GetBonnetCamera() {
-            return _carData.GetBonnetCamera()?.ToCamera();
+            return _carData.GetBonnetCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
         public BaseCamera GetBumperCamera() {
-            return _carData.GetBumperCamera()?.ToCamera();
+            return _carData.GetBumperCamera()?.ToCamera(Matrix);
         }
 
         public int GetCamerasCount() {
@@ -2436,7 +2300,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [CanBeNull]
         public BaseCamera GetCamera(int index) {
-            return _carData.GetExtraCameras().Skip(index).Select(x => x.ToCamera()).FirstOrDefault();
+            return _carData.GetExtraCameras().Skip(index).Select(x => x.ToCamera(Matrix)).FirstOrDefault();
         }
         #endregion
 
@@ -2474,10 +2338,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref _debugNode);
             DisposeHelper.Dispose(ref _fuelTank);
             DisposeHelper.Dispose(ref _debugText);
-
-            DisposeHelper.Dispose(ref _arrowX);
-            DisposeHelper.Dispose(ref _arrowY);
-            DisposeHelper.Dispose(ref _arrowZ);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

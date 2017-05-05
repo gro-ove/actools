@@ -9,8 +9,6 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
 using AcTools;
-using AcTools.Render.Deferred;
-using AcTools.Render.Deferred.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
@@ -200,10 +198,14 @@ namespace CustomShowroom {
                     //renderer.UseCorrectAmbientShadows = true;
                     //renderer.BlurCorrectAmbientShadows = true;
                     renderer.AoOpacity = 0.5f;
-                    renderer.BackgroundBrightness = 0.02f;
-                    renderer.AmbientBrightness = 1.0f;
-                    renderer.LightBrightness = 1.2f;
 #endif
+
+                    renderer.BackgroundBrightness = 0.02f;
+                    renderer.BackgroundColor = Color.Black;
+                    renderer.AmbientBrightness = 0.8f;
+                    renderer.LightBrightness = 0.5f;
+                    renderer.FlatMirror = true;
+                    renderer.FlatMirrorReflectedLight = false;
 
                     renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomFormWrapper(renderer) {
@@ -215,11 +217,6 @@ namespace CustomShowroom {
                     renderer.UseFxaa = options.UseFxaa;
                     renderer.SetFilter(new TrackMapRendererFilter());
                     new BaseKn5FormWrapper(renderer, "Track", 800, 800).Run();
-                }
-            }else {
-                using (var renderer = new Kn5ObjectRenderer(kn5File, showroomKn5File)) {
-                    renderer.UseFxaa = options.UseFxaa;
-                    new FancyShowroomWrapper(renderer).Run();
                 }
             }
 

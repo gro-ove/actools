@@ -93,10 +93,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AcTools.Render.Deferred\AcTools.Render.Deferred.csproj">
-      <Project>{dc4496f0-c3d8-4dd3-8e8e-d7cc4973b2b0}</Project>
-      <Name>AcTools.Render.Deferred</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
       <Name>AcTools.Render</Name>

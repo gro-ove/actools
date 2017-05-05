@@ -17,6 +17,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
+using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
 using AcTools.Render.Shaders;
 using AcTools.Utils;
@@ -27,95 +28,7 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
-    public enum AoType {
-        [Description("SSAO")]
-        Ssao,
-
-        [Description("SSAO (Alt.)")]
-        SsaoAlt,
-
-        [Description("HBAO")]
-        Hbao,
-
-        [Description("ASSAO")]
-        Assao
-    }
-
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
-        public static readonly AoType[] ProductionReadyAo = {
-            AoType.Ssao, AoType.SsaoAlt
-        };
-
-        private Color _lightColor = Color.FromArgb(200, 180, 180);
-
-        public Color LightColor {
-            get { return _lightColor; }
-            set {
-                if (value.Equals(_lightColor)) return;
-                _lightColor = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private Color _ambientDown = Color.FromArgb(150, 180, 180);
-
-        public Color AmbientDown {
-            get { return _ambientDown; }
-            set {
-                if (value.Equals(_ambientDown)) return;
-                _ambientDown = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private Color _ambientUp = Color.FromArgb(180, 180, 150);
-
-        public Color AmbientUp {
-            get { return _ambientUp; }
-            set {
-                if (value.Equals(_ambientUp)) return;
-                _ambientUp = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        /*
-        public Color LightColor { get; set; } = Color.FromArgb(201, 201, 167);
-        public Color AmbientDown { get; set; } = Color.FromArgb(82, 136, 191);
-        public Color AmbientUp { get; set; } = Color.FromArgb(191, 191, 159);*/
-
-        private bool _flatMirror;
-
-        public bool FlatMirror {
-            get { return _flatMirror; }
-            set {
-                if (value == _flatMirror) return;
-                _flatMirror = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                _mirrorDirty = true;
-                UpdateBlurredFlatMirror();
-            }
-        }
-
-        private bool _flatMirrorBlurred;
-
-        public bool FlatMirrorBlurred {
-            get { return _flatMirrorBlurred; }
-            set {
-                if (Equals(value, _flatMirrorBlurred)) return;
-                _flatMirrorBlurred = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                UpdateBlurredFlatMirror();
-            }
-        }
 
         private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _mirrorTemporaryBuffer;
         private TargetResourceDepthTexture _mirrorDepthBuffer;
@@ -154,19 +67,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             ResizeGBuffers();
         }
 
-        private bool _opaqueGround = true;
-
-        public bool OpaqueGround {
-            get { return _opaqueGround; }
-            set {
-                if (Equals(value, _opaqueGround)) return;
-                _opaqueGround = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                _mirrorDirty = true;
-            }
-        }
-
         public override bool ShowWireframe {
             get { return base.ShowWireframe; }
             set {
@@ -176,110 +76,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private float _lightBrightness = 1.5f;
-
-        public float LightBrightness {
-            get { return _lightBrightness; }
-            set {
-                if (Equals(value, _lightBrightness)) return;
-                _lightBrightness = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private float _ambientBrightness = 2f;
-
-        public float AmbientBrightness {
-            get { return _ambientBrightness; }
-            set {
-                if (Equals(value, _ambientBrightness)) return;
-                _ambientBrightness = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private bool _gBufferMsaa = true;
-
-        public bool GBufferMsaa {
-            get { return _gBufferMsaa; }
-            set {
-                if (value == _gBufferMsaa) return;
-                _gBufferMsaa = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _useSslr;
-        private DarkSslr _sslr;
-
-        public bool UseSslr {
-            get { return _useSslr; }
-            set {
-                if (Equals(value, _useSslr)) return;
-                _useSslr = value;
-                IsDirty = true;
-                OnPropertyChanged();
-
-                if (!value) {
-                    DisposeHelper.Dispose(ref _sslr);
-                } else if (_sslr == null) {
-                    _sslr = new DarkSslr();
-                }
-
-                UpdateGBuffers();
-            }
-        }
-
         private TargetResourceTexture _aoBuffer;
 
         [CanBeNull]
         private AoHelperBase _aoHelper;
-
-        private float _aoOpacity = 0.3f;
-
-        public float AoOpacity {
-            get { return _aoOpacity; }
-            set {
-                if (Equals(value, _aoOpacity)) return;
-                _aoOpacity = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _useAo;
-
-        public bool UseAo {
-            get { return _useAo; }
-            set {
-                if (Equals(value, _useAo)) return;
-                _useAo = value;
-                IsDirty = true;
-                OnPropertyChanged();
-
-                RecreateAoBuffer();
-                UpdateGBuffers();
-            }
-        }
-
-        private bool _useCorrectAmbientShadows;
-
-        public bool UseCorrectAmbientShadows {
-            get { return _useCorrectAmbientShadows && ShowroomNode != null; }
-            set {
-                if (Equals(value, _useCorrectAmbientShadows)) return;
-                _useCorrectAmbientShadows = value;
-                IsDirty = true;
-                OnPropertyChanged();
-
-                RecreateAoBuffer();
-                UpdateGBuffers();
-            }
-        }
 
         protected override void OnShowroomChanged() {
             base.OnShowroomChanged();
@@ -289,46 +89,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 UpdateGBuffers();
                 OnPropertyChanged(nameof(UseCorrectAmbientShadows));
             }
-        }
 
-        private bool _blurCorrectAmbientShadows;
-
-        public bool BlurCorrectAmbientShadows {
-            get { return _blurCorrectAmbientShadows; }
-            set {
-                if (Equals(value, _blurCorrectAmbientShadows)) return;
-                _blurCorrectAmbientShadows = value;
-                OnPropertyChanged();
-                IsDirty = true;
-            }
-        }
-
-        private bool _aoDebug;
-
-        public bool AoDebug {
-            get { return _aoDebug; }
-            set {
-                if (Equals(value, _aoDebug)) return;
-                _aoDebug = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private AoType _aoType = AoType.Ssao;
-
-        public AoType AoType {
-            get { return _aoType; }
-            set {
-#if !DEBUG
-                if (!ProductionReadyAo.Contains(value)) value = AoType.Ssao;
-#endif
-
-                if (Equals(value, _aoType)) return;
-                _aoType = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                RecreateAoBuffer();
+            if (ShowroomNode == null) {
+                CarNode?.Movable.StopMovement();
+                CarNode?.ResetPosition();
             }
         }
 
@@ -440,10 +204,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             //UseSsao = true;
 #endif
 
-            _mainLight = new DarkDirectionalLight { ShadowsMode = DarkShadowsMode.Main };
+            _mainLight = new DarkDirectionalLight {
+                ShadowsMode = DarkShadowsMode.Main,
+                IsMovable = false
+            };
+
             _reflectedLight = new DarkDirectionalLight {
                 ShadowsMode = DarkShadowsMode.ExtraSmooth,
-                Enabled = false
+                Enabled = false,
+                IsMovable = false
             };
 
             _lights.Add(_mainLight);
@@ -560,31 +329,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private Vector3 _light;
 
-        private float _flatMirrorReflectiveness = 0.6f;
-
-        public float FlatMirrorReflectiveness {
-            get { return _flatMirrorReflectiveness; }
-            set {
-                if (Equals(value, _flatMirrorReflectiveness)) return;
-                _flatMirrorReflectiveness = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _shadowMapSize = 2048;
-
-        public int ShadowMapSize {
-            get { return _shadowMapSize; }
-            set {
-                if (Equals(value, _shadowMapSize)) return;
-                _shadowMapSize = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetShadowsDirty();
-            }
-        }
-
         private int? GetShadowsNumSplits() {
             // just a car — single cascade
             if (ShowroomNode == null) return 1;
@@ -604,22 +348,25 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         protected override void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
             _pcssParamsSet = false;
 
-            var splits = GetShadowsNumSplits();
-            if (splits == null) {
+            var splitsNum = GetShadowsNumSplits();
+            if (splitsNum == null) {
                 // everything is shadowed
                 _numSplits = -1;
             } else {
-                shadows.SetSplits(DeviceContextHolder, GetSplits(splits.Value, CarNode?.BoundingBox?.GetSize().Length() ?? 4f));
+                var splits = GetSplits(splitsNum.Value, CarNode?.BoundingBox?.GetSize().Length() ?? 4f);
+                shadows.SetSplits(DeviceContextHolder, splits);
                 shadows.SetMapSize(DeviceContextHolder, ShadowMapSize);
                 base.UpdateShadows(shadows, center);
 
-                _numSplits = splits.Value;
+                _numSplits = splitsNum.Value;
 
                 var effect = Effect;
                 effect.FxShadowMapSize.Set(new Vector2(ShadowMapSize, 1f / ShadowMapSize));
-                effect.FxShadowMaps.SetResourceArray(shadows.Splits.Take(splits.Value).Select(x => x.View).ToArray());
+                effect.FxShadowMaps.SetResourceArray(shadows.Splits.Take(splitsNum.Value).Select(x => x.View).ToArray());
                 effect.FxShadowViewProj.SetMatrixArray(
-                        shadows.Splits.Take(splits.Value).Select(x => x.ShadowTransform).ToArray());
+                        shadows.Splits.Take(splitsNum.Value).Select(x => x.ShadowTransform).ToArray());
+
+                _reflectedLight.SetShadowsSize(DeviceContextHolder, splits[0]);
             }
 
             foreach (var light in _lights) {
@@ -639,77 +386,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public override void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
             ShowroomNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
             CarNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
-        }
 
-        /*private bool _temporaryFlag;
-
-        public bool TemporaryFlag {
-            get { return _temporaryFlag; }
-            set {
-                if (Equals(value, _temporaryFlag)) return;
-                _temporaryFlag = value;
-                OnPropertyChanged();
-            }
-        }*/
-
-        private float _materialsReflectiveness = 1f;
-
-        public float MaterialsReflectiveness {
-            get { return _materialsReflectiveness; }
-            set {
-                if (Equals(value, _materialsReflectiveness)) return;
-                _materialsReflectiveness = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private bool _reflectionsWithShadows;
-
-        public bool ReflectionsWithShadows {
-            get { return _reflectionsWithShadows; }
-            set {
-                if (Equals(value, _reflectionsWithShadows)) return;
-                _reflectionsWithShadows = value;
-                IsDirty = true;
-                OnPropertyChanged();
-                SetReflectionCubemapDirty();
-            }
-        }
-
-        private bool _cubemapAmbientWhite = true;
-
-        public bool CubemapAmbientWhite {
-            get { return _cubemapAmbientWhite; }
-            set {
-                if (Equals(value, _cubemapAmbientWhite)) return;
-                _cubemapAmbientWhite = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private float _cubemapAmbient = 0.5f;
-
-        public float CubemapAmbient {
-            get { return _cubemapAmbient; }
-            set {
-                if (Equals(value, _cubemapAmbient)) return;
-                _cubemapAmbient = value;
-                IsDirty = true;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _reflectionsWithMultipleLights;
-
-        public bool ReflectionsWithMultipleLights {
-            get { return _reflectionsWithMultipleLights; }
-            set {
-                if (Equals(value, _reflectionsWithMultipleLights)) return;
-                _reflectionsWithMultipleLights = value;
-                OnPropertyChanged();
+            if (FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred) {
+                _mirror.MirroredObject?.Draw(holder, camera, SpecialRenderMode.Shadow);
             }
         }
 
@@ -725,32 +404,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
             showroomNode.Draw(holder, camera, SpecialRenderMode.Reflection);
             DeviceContext.Rasterizer.State = null;
-        }
-
-        private float _pcssLightScale = 2f;
-
-        public float PcssLightScale {
-            get { return _pcssLightScale; }
-            set {
-                if (Equals(value, _pcssLightScale)) return;
-                _pcssLightScale = value;
-                IsDirty = true;
-                _pcssParamsSet = false;
-                OnPropertyChanged();
-            }
-        }
-
-        private float _pcssSceneScale = 0.06f;
-
-        public float PcssSceneScale {
-            get { return _pcssSceneScale; }
-            set {
-                if (Equals(value, _pcssSceneScale)) return;
-                _pcssSceneScale = value;
-                IsDirty = true;
-                _pcssParamsSet = false;
-                OnPropertyChanged();
-            }
         }
 
         private float FxCubemapAmbientValue => CubemapAmbientWhite ? -CubemapAmbient : CubemapAmbient;
@@ -793,14 +446,51 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     (float)_random.NextDouble());
             color.Normalize();
 
-            var light = new DarkSpotLight {
-                // Radius = 0.01f * _random.Next(100, 500),
-                ShadowsMode = DarkShadowsMode.ExtraFast,
+            /*_lights.Add(new DarkPointLight {
+                ShadowsMode = DarkShadowsMode.ExtraPoint,
                 Color = color.ToColor(),
+                Range = 10f,
+                Position = Vector3.UnitY * 2f,
+                Brightness = 0.5f
+            });*/
+
+            _lights.Add(new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Color = color.ToDrawingColor(),
+                Range = 10f,
+                Position = Vector3.UnitY * 2f,
+                Brightness = 0.5f
+            });
+
+            SetReflectionCubemapDirty();
+            IsDirty = true;
+        }
+
+        public void RemoveLight() {
+            var last = _lights.LastOrDefault();
+            if (last == null || last.ShadowsMode != DarkShadowsMode.ExtraFast && last.ShadowsMode != DarkShadowsMode.ExtraPoint) {
+                return;
+            }
+
+            _lights.Remove(last);
+
+            SetReflectionCubemapDirty();
+            IsDirty = true;
+        }
+
+        public void AddMovingLight() {
+            var color = new Vector3((float)_random.NextDouble(), (float)_random.NextDouble(),
+                    (float)_random.NextDouble());
+            color.Normalize();
+
+            var light = new DarkSpotLight {
+                ShadowsMode = DarkShadowsMode.ExtraFast,
+                Color = color.ToDrawingColor(),
                 Range = 10f,
                 Angle = 0.5f,
                 Brightness = 0.5f,
                 SpotFocus = 0.75f,
+                IsMovable = false
             };
 
             _lights.Add(light);
@@ -819,7 +509,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             IsDirty = true;
         }
 
-        public void RemoveLight() {
+        public void RemoveMovingLight() {
             var last = _pointLights.LastOrDefault();
             if (last == null) return;
 
@@ -830,78 +520,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             IsDirty = true;
         }
 
-        private bool _flatMirrorReflectedLight = true;
-
-        public bool FlatMirrorReflectedLight {
-            get { return _flatMirrorReflectedLight; }
-            set {
-                if (Equals(value, _flatMirrorReflectedLight)) return;
-                _flatMirrorReflectedLight = value;
-                OnPropertyChanged();
-                IsDirty = true;
-            }
-        }
+        private bool IsFlatMirrorReflectedLightEnabled => FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred;
 
         private void UpdateLights(Vector3 mainLightDirection, bool setShadows, bool singleLight) {
             var effect = Effect;
-            
-            /*_lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
-                Position = new Vector3(0.5f, 2.2f, 0f),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.75f,
-            });
-
-            _lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
-                Position = new Vector3(0f, 2.2f, 0.5f),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.5f,
-            });
-
-            _lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
-                Position = new Vector3(0.2f, 2.4f, -0.2f),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.95f,
-            });
-
-            _lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
-                Position = new Vector3(0.2f, 2.4f, -0.2f),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.95f,
-            });
-
-            _lights.Add(new DarkSpotLight {
-                ShadowsMode = DarkShadowsMode.ExtraFast,
-                Position = new Vector3(0.2f, 2.4f, -0.2f),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.95f,
-            });*/
-
-            /*var q = 0;
-            foreach (var l in _lights.OfType<DarkSpotLight>().Where(x => x.ShadowsMode == DarkShadowsMode.ExtraFast)) {
-                var e = Elapsed * (q + 0.5f) + q++ * 0.5f;
-                l.Color = new Vector3(e.Sin().Saturate(), 1f, e.Cos()).ToColor();
-                l.Direction = new Vector3(e.Sin(), 1f, e.Cos());
-            }*/
 
             _mainLight.Direction = mainLightDirection;
             _mainLight.Brightness = LightBrightness;
             _mainLight.Color = LightColor;
 
-            if (FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred) {
+            if (IsFlatMirrorReflectedLightEnabled) {
                 _reflectedLight.Direction = new Vector3(mainLightDirection.X, -mainLightDirection.Y, mainLightDirection.Z);
                 _reflectedLight.Brightness = LightBrightness * FlatMirrorReflectiveness;
                 _reflectedLight.Color = LightColor;
@@ -922,7 +550,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _complexMode;
 
         private EffectDarkMaterial.Mode FindAppropriateMode() {
-            var useComplex = _lights.Count(x => x.Enabled) > 1;
+            var useComplex = _lights.Count(x => x.Enabled) > 1 || IsFlatMirrorReflectedLightEnabled;
             _complexMode = useComplex;
 
             return EnableShadows
@@ -940,15 +568,23 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var mode = FindAppropriateMode();
             if (_effect == null) {
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>(e => e.SetMode(mode, Device));
-            } else {
+            } else if (_effect.GetMode() != mode) {
                 _effect.SetMode(mode, Device);
+                _pcssParamsSet = false;
+                _pcssNoiseMapSet = false;
+                SetShadowsDirty();
+                SetReflectionCubemapDirty();
+                // TODO: more?
             }
+        }
+
+        protected override void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
+            UpdateEffect();
+            base.DrawPrepare(eyesPosition, light);
         }
 
         protected override void DrawPrepareEffect(Vector3 eyesPosition, Vector3 light, ShadowsDirectional shadows, ReflectionCubemap reflection,
                 bool singleLight) {
-            UpdateEffect();
-
             var effect = Effect;
             effect.FxEyePosW.Set(eyesPosition);
 
@@ -962,6 +598,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (_complexMode) {
                 // complex lighting
                 UpdateLights(light, shadows != null, singleLight);
+            } else {
+                _mainLight.Direction = light;
+                _mainLight.Brightness = LightBrightness;
+                _mainLight.Color = LightColor;
             }
 
             // reflections
@@ -1035,7 +675,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // draw reflection if needed
             if (ShowroomNode == null && FlatMirror && _mirror != null) {
                 effect.FxLightDir.Set(new Vector3(_light.X, -_light.Y, _light.Z));
-                DarkLightBase.FlipPreviousY(effect);
+
+                if (_complexMode) {
+                    DarkLightBase.FlipPreviousY(effect);
+                }
 
                 if (FlatMirrorBlurred) {
                     DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
@@ -1069,7 +712,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
 
                 effect.FxLightDir.Set(_light);
-                DarkLightBase.FlipPreviousY(effect);
+
+                if (_complexMode) {
+                    DarkLightBase.FlipPreviousY(effect);
+                }
             }
 
             // draw a scene, apart from car
@@ -1124,8 +770,35 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             carNode.DrawDebug(DeviceContextHolder, ActualCamera);
 
             if (ShowMovementArrows) {
-                carNode.DrawMovementArrows(DeviceContextHolder, Camera,
-                        new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight));
+                if (ShowroomNode != null) {
+                    carNode.DrawMovementArrows(DeviceContextHolder, Camera);
+                }
+
+                foreach (var light in _lights) {
+                    if (light.Enabled) {
+                        light.DrawDummy(DeviceContextHolder, Camera);
+                        if (light.IsMovable) {
+                            light.DrawMovementArrows(DeviceContextHolder, Camera);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected override bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
+            return ShowroomNode != null && base.MoveObjectOverride(relativeFrom, relativeDelta, camera) ||
+                    _lights.Any(light => light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera));
+        }
+
+        protected override void StopMovementOverride() {
+            if (ShowroomNode != null) {
+                base.StopMovementOverride();
+            }
+
+            foreach (var light in _lights) {
+                if (light.Enabled && light.ShadowsMode != DarkShadowsMode.Main && _pointLights.All(x => x.Light != light)) {
+                    light.Movable.StopMovement();
+                }
             }
         }
 

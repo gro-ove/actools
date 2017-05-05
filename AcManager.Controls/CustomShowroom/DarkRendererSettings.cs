@@ -28,6 +28,17 @@ using Newtonsoft.Json;
 using SlimDX;
 
 namespace AcManager.Controls.CustomShowroom {
+    public enum CarAmbientShadowsMode {
+        [Description("Attached Shadow")]
+        Attached = 0,
+
+        [Description("Simple Occlusion")]
+        Occlusion = 1,
+
+        [Description("Blurred Occlusion")]
+        Blurred = 2
+    }
+
     public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable {
         public static readonly string DefaultKey = "__DarkRendererSettings";
         public static readonly string DefaultPresetableKeyValue = "Custom Showroom";
@@ -62,6 +73,8 @@ namespace AcManager.Controls.CustomShowroom {
 
         public static AoType[] AoTypes { get; } = DarkKn5ObjectRenderer.ProductionReadyAo;
 
+        public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
+
         protected class SaveableData {
             public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(150, 180, 180);
             public virtual Color AmbientUpColor { get; set; } = Color.FromRgb(180, 180, 150);
@@ -77,6 +90,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
             public virtual AoType AoType { get; set; } = AoType.Ssao;
+            public CarAmbientShadowsMode CarAmbientShadowsMode { get; set; } = CarAmbientShadowsMode.Attached;
 
             [JsonProperty("CubemapAmbientValue")]
             public virtual float CubemapAmbient { get; set; } = 0.5f;
@@ -244,6 +258,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             obj.ToneMapping = Renderer.ToneMapping;
             obj.AoType = Renderer.AoType;
+            obj.CarAmbientShadowsMode = CarAmbientShadowsMode;
 
             obj.AmbientBrightness = Renderer.AmbientBrightness;
             obj.BackgroundBrightness = Renderer.BackgroundBrightness;
@@ -329,6 +344,8 @@ namespace AcManager.Controls.CustomShowroom {
             Renderer.LightBrightness = o.LightBrightness;
             LightθDeg = o.Lightθ;
             LightφDeg = o.Lightφ;
+
+            CarAmbientShadowsMode = o.CarAmbientShadowsMode;
         }
 
         protected void LoadHdr(SaveableData o) {
@@ -468,6 +485,11 @@ namespace AcManager.Controls.CustomShowroom {
                 case nameof(Renderer.Light):
                     ActionExtension.InvokeInMainThread(SyncLight);
                     break;
+                    
+                case nameof(Renderer.UseCorrectAmbientShadows):
+                case nameof(Renderer.BlurCorrectAmbientShadows):
+                    ActionExtension.InvokeInMainThread(SyncCarAmbientShadowsMode);
+                    break;
             }
         }
 
@@ -476,6 +498,7 @@ namespace AcManager.Controls.CustomShowroom {
             SyncUseSsaa();
             //SyncSsaaMode();
             SyncShadowMapSize();
+            SyncCarAmbientShadowsMode();
             SyncLight();
         }
 
@@ -502,6 +525,13 @@ namespace AcManager.Controls.CustomShowroom {
         private void SyncShadowMapSize() {
             _shadowMapSize = ShadowResolutions.GetByIdOrDefault<SettingEntry, int?>(Renderer.ShadowMapSize);
             OnPropertyChanged(nameof(ShadowMapSize));
+        }
+
+        private void SyncCarAmbientShadowsMode() {
+            _carAmbientShadowsMode = Renderer.UseCorrectAmbientShadows ?
+                    Renderer.BlurCorrectAmbientShadows ? CarAmbientShadowsMode.Blurred : CarAmbientShadowsMode.Occlusion :
+                    CarAmbientShadowsMode.Attached;
+            OnPropertyChanged(nameof(CarAmbientShadowsMode));
         }
 
         private void SyncLight() {
@@ -555,6 +585,20 @@ namespace AcManager.Controls.CustomShowroom {
                 OnPropertyChanged();
 
                 Renderer.ShadowMapSize = value.IntValue ?? 2048;
+            }
+        }
+
+        private CarAmbientShadowsMode _carAmbientShadowsMode;
+
+        public CarAmbientShadowsMode CarAmbientShadowsMode {
+            get { return _carAmbientShadowsMode; }
+            set {
+                if (Equals(value, _carAmbientShadowsMode)) return;
+                _carAmbientShadowsMode = value;
+                OnPropertyChanged();
+
+                Renderer.UseCorrectAmbientShadows = value != CarAmbientShadowsMode.Attached;
+                Renderer.BlurCorrectAmbientShadows = value == CarAmbientShadowsMode.Blurred;
             }
         }
 

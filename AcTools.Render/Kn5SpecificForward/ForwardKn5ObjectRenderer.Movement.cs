@@ -1,7 +1,10 @@
-﻿using SlimDX;
+﻿using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Objects;
+using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForward {
-    public partial class ForwardKn5ObjectRenderer {
+    public partial class ForwardKn5ObjectRenderer : IMousePositionProvider {
+        private bool _mousePositionSet;
         private Vector2 _mousePosition;
 
         public Vector2 MousePosition {
@@ -9,6 +12,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             set {
                 if (Equals(value, _mousePosition)) return;
                 _mousePosition = value;
+
+                if (!_mousePositionSet) {
+                    _mousePositionSet = true;
+                    DeviceContextHolder.Set<IMousePositionProvider>(this);
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -25,10 +34,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public bool MoveObject(Vector2 delta) {
-            if (CarNode?.MoveObject(new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight),
-                    new Vector2(delta.X / ActualWidth, delta.Y / ActualHeight), Camera) != true) {
-                return false;
-            }
+            if (!MoveObjectOverride(new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight),
+                    new Vector2(delta.X / ActualWidth, delta.Y / ActualHeight), Camera)) return false;
 
             AutoAdjustTarget = false;
             _carBoundingBox = null;
@@ -39,7 +46,19 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         public void StopMovement() {
-            CarNode?.StopMovement();
+            StopMovementOverride();
+        }
+
+        protected virtual bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
+            return CarNode?.Movable.MoveObject(relativeFrom, relativeDelta, camera) == true;
+        }
+
+        protected virtual void StopMovementOverride() {
+            CarNode?.Movable.StopMovement();
+        }
+
+        Vector2 IMousePositionProvider.GetRelative() {
+            return new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight);
         }
     }
 }

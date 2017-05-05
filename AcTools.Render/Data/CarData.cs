@@ -637,6 +637,15 @@ namespace AcTools.Render.Data {
                 camera.LookAt(Position, Position + Look, Up);
                 return camera;
             }
+
+            public FpsCamera ToCamera(Matrix transform) {
+                var camera = new FpsCamera(Fov.ToRadians());
+                camera.LookAt(
+                        Vector3.TransformCoordinate(Position, transform),
+                        Vector3.TransformCoordinate(Position + Look, transform),
+                        Vector3.TransformNormal(Up, transform));
+                return camera;
+            }
         }
 
         [CanBeNull]

@@ -194,8 +194,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         /// <summary>
         /// Despite being a list, only RootObject is drawn!
         /// </summary>
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
-            DrawInitialize(contextHolder);
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            DrawInitialize(holder);
             RootObject.Draw(LocalHolder, camera, mode, filter);
         }
 

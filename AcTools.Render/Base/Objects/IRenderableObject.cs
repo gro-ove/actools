@@ -20,10 +20,11 @@ namespace AcTools.Render.Base.Objects {
 
         BoundingBox? BoundingBox { get; }
 
-        void Draw(IDeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, [CanBeNull] Func<IRenderableObject, bool> filter = null);
+        void Draw(IDeviceContextHolder holder, [CanBeNull] ICamera camera, SpecialRenderMode mode, [CanBeNull] Func<IRenderableObject, bool> filter = null);
 
         void UpdateBoundingBox();
 
+        [NotNull]
         IRenderableObject Clone();
 
         float? CheckIntersection(Ray ray);
@@ -50,7 +51,7 @@ namespace AcTools.Render.Base.Objects {
 
         public BoundingBox? BoundingBox => null;
 
-        public void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {}
+        public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {}
 
         public void UpdateBoundingBox() {}
 

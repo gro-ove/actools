@@ -311,6 +311,12 @@
                     <Label Content="Blurred mirror" />
                 </CheckBox>
 
+                <Border IsEnabled="{Binding Renderer.FlatMirrorBlurred, Converter={StaticResource InvertBooleanConverter}}">
+                    <CheckBox IsChecked="{Binding Renderer.FlatMirrorReflectedLight}" IsEnabled="{Binding Renderer.FlatMirror}">
+                        <Label Content="Reflected light" />
+                    </CheckBox>
+                </Border>
+
                 <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding FlatMirror}">
                     <mui:ValueLabel Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
@@ -345,9 +351,56 @@
                         <Label.ToolTip>AC doesn’t draw shadows for reflections</Label.ToolTip>
                     </Label>
                 </CheckBox>
+
+                <CheckBox IsChecked="{Binding Renderer.ReflectionsWithMultipleLights}">
+                    <Label Content="Reflections with multiple lights" />
+                </CheckBox>
+
+                <DockPanel>
+                    <Label Content="Car shadows:" />
+                    <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CarAmbientShadowsMode}"
+                            ItemsSource="{x:Static local:DarkRendererSettings.CarAmbientShadowsModes}">
+                        <mui:BetterComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                            </DataTemplate>
+                        </mui:BetterComboBox.ItemTemplate>
+                    </mui:BetterComboBox>
+                </DockPanel>
             </mui:SpacingStackPanel>
 
             <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetSceneCommand}" />
+        </mui:SpacingStackPanel>
+    </ScrollViewer>
+
+    <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
+            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+        <mui:SpacingStackPanel Spacing="4">
+            <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
+
+            <mui:ColorPicker Color="{Binding LightColor}" />
+            <DockPanel DataContext="{Binding Renderer}">
+                <mui:ValueLabel Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                <Slider Minimum="0" Maximum="300" Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                        TickFrequency="30" TickPlacement="BottomRight" />
+            </DockPanel>
+            
+            <CheckBox IsChecked="{Binding Renderer.EnableShadows}">
+                <Label Content="Shadows" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Renderer.UsePcss}" IsEnabled="{Binding Renderer.EnableShadows}">
+                <Label Content="PCSS (blurred shadows)" />
+            </CheckBox>
+
+            <DockPanel IsEnabled="{Binding Renderer.EnableShadows}">
+                <Label Content="Resolution:" />
+                <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
+                        ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+            
+            <TextBlock Text="Extra lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
         </mui:SpacingStackPanel>
     </ScrollViewer>
 
@@ -624,8 +677,8 @@
                     </CheckBox>
 
                     <DockPanel IsEnabled="{Binding UseAccumulationDof}">
-                        <mui:ValueLabel Value="{Binding AccumulationDofIterations}" mui:BetterTextBox.Mode="Number"
-                                DockPanel.Dock="Top" Content="Iterations for screenshots" />
+                        <mui:ValueLabel Value="{Binding AccumulationDofIterations}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                Content="Iterations for screenshots" />
                         <Slider Minimum="50" Maximum="300" Value="{Binding AccumulationDofIterations}" TickFrequency="25" TickPlacement="BottomRight" />
                     </DockPanel>
 

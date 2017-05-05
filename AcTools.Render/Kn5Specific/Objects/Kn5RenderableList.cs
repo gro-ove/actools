@@ -28,18 +28,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (_dirNode != null && !_dirTargetSet) {
                 _dirTargetSet = true;
 
-                var model = contextHolder.TryToGet<IKn5Model>();
+                var model = holder.TryToGet<IKn5Model>();
                 if (model != null) {
                     _dirTarget = model.GetDummyByName(_dirNode);
                     _dirTarget?.LookAt(this);
                 }
             }
 
-            base.Draw(contextHolder, camera, mode, filter);
+            base.Draw(holder, camera, mode, filter);
         }
 
         public Matrix ModelMatrixInverted { get; internal set; }

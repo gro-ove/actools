@@ -82,7 +82,7 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
-            //showroomKn5File = null;
+            showroomKn5File = null;
 
             return showroomKn5File;
         }

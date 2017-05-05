@@ -24,7 +24,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
     internal static class SourceReadyExtension {
         public static void Set([CanBeNull] this SourceReady ready, [NotNull] EffectOnlyResourceVariable resource,
-                [NotNull] EffectVectorVariable channelsAssignments) {
+                [NotNull] EffectOnlyVector4Variable channelsAssignments) {
             resource.SetResource(ready?.View);
             channelsAssignments.Set(ready?.ChannelsAssignments ?? default(Vector4));
         }

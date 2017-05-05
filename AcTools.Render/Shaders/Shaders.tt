@@ -24,11 +24,13 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
 // ReSharper disable InconsistentNaming
 // ReSharper disable LocalizableElement
+// ReSharper disable NotNullMemberIsNotInitialized
 
 <#
 /* INITIALIZE PATHS */
@@ -350,8 +352,16 @@ namespace <#= resultNamespace #> {
 		var vrsArr = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture[123]D|TextureCube)(?:<\w+>)?\s+(\w+)\s*(?:\[\w+\]\s*)(?::.*?)?;").Cast<Match>().ToList();
 		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>().ToList();
 		var vmsArr = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
-		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int|bool)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>().ToList();
-		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>().ToList();
+		var vssFloat = Regex.Matches(cbs, @"\n\s+(?:float)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vssFloatArr = Regex.Matches(cbs, @"\n\s+(?:float)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
+		var vssInt = Regex.Matches(cbs, @"\n\s+(?:int)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vssIntArr = Regex.Matches(cbs, @"\n\s+(?:int)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
+		var vssBool = Regex.Matches(cbs, @"\n\s+(?:bool)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vssBoolArr = Regex.Matches(cbs, @"\n\s+(?:bool)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
+		var vvsV2 = Regex.Matches(cbs, @"\n\s+(?:float2)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vvsV3 = Regex.Matches(cbs, @"\n\s+(?:float3)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vvsV4 = Regex.Matches(cbs, @"\n\s+(?:float4)\s+(\w+)\s*;").Cast<Match>().ToList();
+		var vvsVArr = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*);").Cast<Match>().ToList();
 		var vs = Regex.Matches(cbs, @"\n\s+((?!matrix|float\d?|int|bool)\w+)\s+(\w+)\s*;").Cast<Match>().Select(x => new {
 			Type = x.Groups[1].Value,
 			Name = x.Groups[2].Value
@@ -462,7 +472,7 @@ namespace <#= resultNamespace #> {
 	/* IF SHADER CONTAINS ALL OBJECTS MATRICES */
 		var matricesNames = vms.Select(x => x.Groups[1].Value.Substring(1)).ToList();
 		var matricesMode = matricesNames.Contains("World") && matricesNames.Contains("WorldInvTranspose") && matricesNames.Contains("WorldViewProj");
-		var screenSizeMode = vvs.Select(x => x.Groups[1].Value).Contains("gScreenSize");
+		var screenSizeMode = vvsV4.Select(x => x.Groups[1].Value).Contains("gScreenSize");
 		#>
 	public class Effect<#= name #> : <#= string.Join(", ", new[]{
 			"IEffectWrapper",
@@ -478,27 +488,67 @@ namespace <#= resultNamespace #> {
 		public EffectReadyTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
 <# if (vms.Any()){ #>
+		[NotNull]
 		public EffectOnlyMatrixVariable <#= string.Join(", ", vms.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vmsArr.Any()){ #>
+		[NotNull]
 		public EffectOnlyMatrixArrayVariable <#= string.Join(", ", vmsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vrs.Any()){ #>
+		[NotNull]
 		public EffectOnlyResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# if (vrsArr.Any()){ #>
+		[NotNull]
 		public EffectOnlyResourceArrayVariable <#= string.Join(", ", vrsArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
-<# if (vss.Any()){ #>
-		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# if (vssInt.Any()){ #>
+		[NotNull]
+		public EffectOnlyIntVariable <#= string.Join(", ", vssInt.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
-<# if (vvs.Any()){ #>
-		public EffectVectorVariable <#= string.Join(", ", vvs.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# if (vssIntArr.Any()){ #>
+		[NotNull]
+		public EffectOnlyIntArrayVariable <#= string.Join(", ", vssIntArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vssFloat.Any()){ #>
+		[NotNull]
+		public EffectOnlyFloatVariable <#= string.Join(", ", vssFloat.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vssFloatArr.Any()){ #>
+		[NotNull]
+		public EffectOnlyFloatArrayVariable <#= string.Join(", ", vssFloatArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vssBool.Any()){ #>
+		[NotNull]
+		public EffectOnlyBoolVariable <#= string.Join(", ", vssBool.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vssBoolArr.Any()){ #>
+		[NotNull]
+		public EffectOnlyBoolArrayVariable <#= string.Join(", ", vssBoolArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vvsV2.Any()){ #>
+		[NotNull]
+		public EffectOnlyVector2Variable <#= string.Join(", ", vvsV2.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vvsV3.Any()){ #>
+		[NotNull]
+		public EffectOnlyVector3Variable <#= string.Join(", ", vvsV3.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vvsV4.Any()){ #>
+		[NotNull]
+		public EffectOnlyVector4Variable <#= string.Join(", ", vvsV4.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
+<# } #>
+<# if (vvsVArr.Any()){ #>
+		[NotNull]
+		public EffectOnlyVectorArrayVariable <#= string.Join(", ", vvsVArr.Select(x => ConvertFxName(x.Groups[1].Value)).Distinct()) #>;
 <# } #>
 <# foreach (var vsStruct in vsStructs){ #>
+		[NotNull]
 		public EffectStruct<#= vsStruct.Type #>Variable <#= ConvertFxName(vsStruct.Name) #>;
 <# } #>
 <# foreach (var vsStruct in vsArrStructs){ #>
+		[NotNull]
 		public EffectStruct<#= vsStruct.Type #>ArrayVariable <#= ConvertFxName(vsStruct.Name) #>;
 <# } #>
 <# if (vs.Any()){ #>
@@ -506,7 +556,7 @@ namespace <#= resultNamespace #> {
 <# } #>
 <# if (screenSizeMode){ #>
 
-		EffectVectorVariable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
+		EffectOnlyVector4Variable IEffectScreenSizeWrapper.FxScreenSize => FxScreenSize;
 <# } #>
 <# if (matricesMode){ #>
 
@@ -556,22 +606,46 @@ namespace <#= resultNamespace #> {
 <# } #>
 
 <# foreach (var x in vms.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
 <# foreach (var x in vmsArr.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix());
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
 <# foreach (var x in vrs.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource());
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
 <# foreach (var x in vrsArr.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource());
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyResourceArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
-<# foreach (var x in vss.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsScalar();
+<# foreach (var x in vssInt.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyIntVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
-<# foreach (var x in vvs.Distinct()){ #>
-			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsVector();
+<# foreach (var x in vssIntArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyIntArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vssFloat.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyFloatVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vssFloatArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyFloatArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vssBool.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyBoolVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vssBoolArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyBoolArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vvsV2.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyVector2Variable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vvsV3.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyVector3Variable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vvsV4.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyVector4Variable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
+<# } #>
+<# foreach (var x in vvsVArr.Distinct()){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = new EffectOnlyVectorArrayVariable(E.GetVariableByName("<#= x.Groups[1].Value #>"));
 <# } #>
 <# foreach (var x in vsStructs.Distinct()){ #>
 			<#= ConvertFxName(x.Name) #> = new EffectStruct<#= x.Type #>Variable(E.GetVariableByName("<#= x.Name #>"));

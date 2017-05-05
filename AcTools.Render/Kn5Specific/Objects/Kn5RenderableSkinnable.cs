@@ -65,11 +65,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (!IsEnabled) return;
 
             if (LocalHolder == null) {
-                DrawInitialize(contextHolder);
+                DrawInitialize(holder);
             }
 
             if (_debugModeLater.HasValue) {
@@ -80,7 +80,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 }
             }
 
-            base.Draw(contextHolder, camera, mode, filter);
+            base.Draw(holder, camera, mode, filter);
         }
 
         protected override ITexturesProvider InitializeTextures(IDeviceContextHolder contextHolder) {

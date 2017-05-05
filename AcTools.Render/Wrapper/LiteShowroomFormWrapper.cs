@@ -409,6 +409,9 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             dark.AoType = dark.AoType.NextValue();
                         }
                         if (args.Control && args.Alt && !args.Shift) {
+                            dark.AddMovingLight();
+                        }
+                        if (args.Control && args.Alt && args.Shift) {
                             dark.AddLight();
                         }
                     }
@@ -417,6 +420,9 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                 case Keys.Z: 
                     if (dark != null) {
                         if (args.Control && args.Alt && !args.Shift) {
+                            dark.RemoveMovingLight();
+                        }
+                        if (args.Control && args.Alt && args.Shift) {
                             dark.RemoveLight();
                         }
                     }

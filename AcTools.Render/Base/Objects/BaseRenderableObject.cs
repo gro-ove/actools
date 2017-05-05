@@ -27,17 +27,17 @@ namespace AcTools.Render.Base.Objects {
 
         public BoundingBox? BoundingBox { get; protected set; }
 
-        public void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (filter?.Invoke(this) == false) return;
             if (!IsEnabled || mode == SpecialRenderMode.Reflection && !IsReflectable) return;
 
             if (!IsInitialized) {
-                Initialize(contextHolder);
+                Initialize(holder);
                 IsInitialized = true;
             }
 
             if (mode != SpecialRenderMode.InitializeOnly) {
-                DrawOverride(contextHolder, camera, mode);
+                DrawOverride(holder, camera, mode);
             }
         }
 

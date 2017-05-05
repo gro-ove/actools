@@ -9,14 +9,6 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
-    public class MoveableHelper : RenderableList {
-        private readonly bool _rotateInAllAxes;
-
-        public MoveableHelper(bool rotateInAllAxes) {
-            _rotateInAllAxes = rotateInAllAxes;
-        }
-    }
-
     public class RenderableList : List<IRenderableObject>, IRenderableObject {
         public string Name { get; }
 
@@ -85,28 +77,6 @@ namespace AcTools.Render.Base.Objects {
         private Matrix _originalMatrix;
         private RenderableList _lookAt;
 
-        private static Matrix RotateToFaceDirSpecial(Vector3 o, Vector3 p, Vector3 u) {
-            var d = Vector3.Normalize(p - o);
-            var s = Vector3.Normalize(Vector3.Cross(d, Vector3.Normalize(u)));
-            var v = Vector3.Cross(s, d);
-            return SlimDxExtension.ToMatrix(
-                    d.X, d.Y, d.Z, 0,
-                    v.X, v.Y, v.Z, 0,
-                    s.X, s.Y, s.Z, 0,
-                    o.X, o.Y, o.Z, 1);
-        }
-
-        private static Matrix RotateToFace(Vector3 o, Vector3 p, Vector3 u) {
-            var d = Vector3.Normalize(o - p);
-            var s = Vector3.Normalize(Vector3.Cross(Vector3.Normalize(u), d));
-            var v = Vector3.Normalize(Vector3.Cross(d, s));
-            return SlimDxExtension.ToMatrix(
-                    v.X, v.Y, v.Z, 0,
-                    d.X, d.Y, d.Z, 0,
-                    s.X, s.Y, s.Z, 0,
-                    o.X, o.Y, o.Z, 1);
-        }
-
         public void LookAtDirMode(Vector3 globalPoint, Vector3 up) {
             if (!_originalLocalPos.HasValue) {
                 _originalLocalPos = LocalMatrix.GetTranslationVector();
@@ -115,13 +85,13 @@ namespace AcTools.Render.Base.Objects {
 
             var globalPos = Vector3.TransformCoordinate(_originalLocalPos.Value, ParentMatrix);
             var yAxis = Vector3.TransformNormal(up, _originalMatrix * ParentMatrix);
-            LocalMatrix = RotateToFaceDirSpecial(globalPos, globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
+            LocalMatrix = globalPos.LookAtMatrixXAxis(globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
         }
 
         public void LookAt(Vector3 globalPoint, Vector3 up) {
             var globalPos = Vector3.TransformCoordinate(LocalMatrix.GetTranslationVector(), ParentMatrix);
             var yAxis = up;
-            LocalMatrix = RotateToFace(globalPos, globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
+            LocalMatrix = globalPos.LookAtMatrix(globalPoint, yAxis) * Matrix.Invert(ParentMatrix);
         }
 
         private Matrix _prevThisMatrix, _prevLookAtMatrix;
@@ -189,10 +159,6 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        private void EnsureLinesReady() {
-            
-        }
-
         private void DrawChildren(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (!IsEnabled || filter?.Invoke(this) == false) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
@@ -227,8 +193,8 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
-        public virtual void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
-            DrawChildren(contextHolder, camera, mode, filter);
+        public virtual void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            DrawChildren(holder, camera, mode, filter);
             if (HighlightDummy && mode == SpecialRenderMode.SimpleTransparent) {
                 if (_lines == null) {
                     _lines = new DebugLinesObject(Matrix.Identity, new[] {
@@ -242,7 +208,7 @@ namespace AcTools.Render.Base.Objects {
                 }
 
                 _lines.ParentMatrix = Matrix;
-                _lines.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+                _lines.Draw(holder, camera, SpecialRenderMode.Simple);
             }
         }
 

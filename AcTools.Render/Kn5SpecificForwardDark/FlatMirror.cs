@@ -215,12 +215,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             var matrix = Matrix.Scaling(200f, 200f, 200f) * Matrix.Translation(point);
 
             if (mirroredObject != null) {
-                Add(mirroredObject.Clone());
+                MirroredObject = mirroredObject.Clone();
+                Add(MirroredObject);
                 _object = new FlatMirrorObject(matrix, mode) { ParentMatrix = Matrix };
             } else {
                 _object = new FlatMirrorObject(matrix, mode) { ParentMatrix = Matrix };
             }
         }
+
+        [CanBeNull]
+        public IRenderableObject MirroredObject { get; }
 
         public FlatMirror([NotNull] IRenderableObject mirroredObject, Plane plane) : this(mirroredObject, plane, FlatMirrorMode.TransparentMirror) {}
 
@@ -228,26 +232,28 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private RasterizerState _rasterizerState;
 
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.GBuffer) return;
-            _object.Draw(contextHolder, camera, mode, filter);
+            _object.Draw(holder, camera, mode, filter);
         }
 
-        public void Draw(IDeviceContextHolder contextHolder, ICamera camera, ShaderResourceView reflected, ShaderResourceView depth, ShaderResourceView normals) {
+        public void Draw(IDeviceContextHolder holder, ICamera camera, ShaderResourceView reflected, ShaderResourceView depth, ShaderResourceView normals) {
             _object.SetTexture(reflected, depth, normals);
-            _object.Draw(contextHolder, camera, SpecialRenderMode.Simple);
+            _object.Draw(holder, camera, SpecialRenderMode.Simple);
         }
 
-        public void DrawReflection(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public void DrawReflection(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null,
+                RasterizerState rasterizerState = null) {
             if (camera != null && camera.Position.Y > 0) {
                 var state = contextHolder.DeviceContext.Rasterizer.State;
+                var effect = contextHolder.GetEffect<EffectDarkMaterial>();
                 try {
-                    contextHolder.DeviceContext.Rasterizer.State = _rasterizerState ?? contextHolder.States.InvertedState;
-                    contextHolder.GetEffect<EffectDarkMaterial>().FxFlatMirrored.Set(true);
+                    contextHolder.DeviceContext.Rasterizer.State = rasterizerState ?? _rasterizerState ?? contextHolder.States.InvertedState;
+                    effect.FxFlatMirrored.Set(true);
                     base.Draw(contextHolder, camera, mode, filter);
                 } finally {
                     contextHolder.DeviceContext.Rasterizer.State = state;
-                    contextHolder.GetEffect<EffectDarkMaterial>().FxFlatMirrored.Set(false);
+                    effect.FxFlatMirrored.Set(false);
                 }
             }
         }

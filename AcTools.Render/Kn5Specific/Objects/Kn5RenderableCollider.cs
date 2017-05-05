@@ -28,9 +28,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public override void Draw(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+        public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (mode == SpecialRenderMode.SimpleTransparent) {
-                base.Draw(contextHolder, camera, mode, filter);
+                base.Draw(holder, camera, mode, filter);
             }
         }
     }
