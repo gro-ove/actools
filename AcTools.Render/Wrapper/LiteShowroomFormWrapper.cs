@@ -75,8 +75,10 @@ namespace AcTools.Render.Wrapper {
                 _renderer.IsDirty = true;
             }
 
-            if (button != MouseButtons.Left ||
-                    !_renderer.MoveObject(new Vector2(dx, dy) * (User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey) ? 0.2f : 1f))) {
+            var slow = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
+            var tryToClone = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
+
+            if (button != MouseButtons.Left || !_renderer.MoveObject(new Vector2(dx, dy) * (slow ? 0.2f : 1f), tryToClone)) {
                 base.OnMouseMove(button, dx, dy);
             }
 
@@ -617,19 +619,19 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
 
                 case Keys.NumPad4:
                     if (!args.Alt) {
-                        _renderer.AnimationsMultipler = 0.2f;
+                        _renderer.TimeFactor = 0.2f;
                     }
                     break;
 
                 case Keys.NumPad5:
                     if (!args.Alt) {
-                        _renderer.AnimationsMultipler = 1f;
+                        _renderer.TimeFactor = 1f;
                     }
                     break;
 
                 case Keys.NumPad6:
                     if (!args.Alt) {
-                        _renderer.AnimationsMultipler = 2.5f;
+                        _renderer.TimeFactor = 2.5f;
                     }
                     break;
 
@@ -691,13 +693,13 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
 
                 case Keys.PageUp:
                     if (!args.Control && args.Alt && !args.Shift) {
-                        _renderer.SelectPreviousLod();
+                        _renderer.MainSlot.SelectPreviousLod();
                     }
                     break;
 
                 case Keys.PageDown:
                     if (!args.Control && args.Alt && !args.Shift) {
-                        _renderer.SelectNextLod();
+                        _renderer.MainSlot.SelectNextLod();
                     }
                     break;
 
@@ -713,6 +715,19 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     } else if (args.Shift && args.Control && !args.Alt) {
                         if (_renderer.CarNode != null) {
                             _renderer.CarNode.UseUp = !_renderer.CarNode.UseUp;
+                        }
+                    }
+                    break;
+
+                case Keys.Q:
+                    if (args.Control && !args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.AreWingsVisible = !_renderer.CarNode.AreWingsVisible;
+                        }
+                    }
+                    if (!args.Control && args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.AreWheelsContoursVisible = !_renderer.CarNode.AreWheelsContoursVisible;
                         }
                     }
                     break;

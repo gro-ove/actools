@@ -739,6 +739,12 @@
                             <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
                                 <Label Content="Flames" />
                             </CheckBox>
+                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreWingsVisible}">
+                                <Label Content="Wings" />
+                            </CheckBox>
+                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreWheelsContoursVisible}">
+                                <Label Content="Wheels" />
+                            </CheckBox>
                         </mui:SpacingUniformGrid>
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer"

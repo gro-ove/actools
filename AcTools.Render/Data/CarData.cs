@@ -107,14 +107,20 @@ namespace AcTools.Render.Data {
         public class LightObject {
             public string Name { get; }
 
-            public Vector3 HeadlightColor { get; }
+            public Vector3? HeadlightColor { get; }
 
-            public Vector3 BrakeColor { get; }
+            public Vector3? BrakeColor { get; }
 
-            public LightObject(string name, Vector3 headlightColor, Vector3 brakeColor) {
+            public TimeSpan? Duration { get; }
+
+            public LightObject(string name, Vector3? headlightColor, Vector3? brakeColor, float? duration) {
                 Name = name;
                 HeadlightColor = headlightColor;
                 BrakeColor = brakeColor;
+
+                if (duration.HasValue) {
+                    Duration = TimeSpan.FromSeconds(duration.Value);
+                }
             }
         }
 
@@ -131,9 +137,10 @@ namespace AcTools.Render.Data {
             foreach (var x in ini.GetSections("BRAKE")) {
                 var name = x.GetNonEmpty("NAME");
                 if (name != null) {
-                    yield return new LightObject(x.GetNonEmpty("NAME"), 
-                        supportsCombined ? x.GetSlimVector3("OFF_COLOR") : default(Vector3),
-                        x.GetSlimVector3("COLOR"));
+                    yield return new LightObject(x.GetNonEmpty("NAME"),
+                            supportsCombined ? x.GetSlimVector3("OFF_COLOR") : (Vector3?)null,
+                            x.GetSlimVector3("COLOR"),
+                            x.GetFloatNullable("__CM_SMOOTH_DELAY"));
                 }
             }
 
@@ -141,8 +148,9 @@ namespace AcTools.Render.Data {
                 var name = x.GetNonEmpty("NAME");
                 if (name != null) {
                     yield return new LightObject(x.GetNonEmpty("NAME"),
-                        x.GetSlimVector3("COLOR"),
-                        default(Vector3));
+                            x.GetSlimVector3("COLOR"),
+                            null,
+                            x.GetFloatNullable("__CM_SMOOTH_DELAY"));
                 }
             }
         }
@@ -696,12 +704,105 @@ namespace AcTools.Render.Data {
         }
         #endregion
 
+        #region Wheels
+        public class WheelDescription {
+            public string Name { get; }
+
+            public bool IsLeft => Center.X > 0f;
+
+            public bool IsFront => Center.Z > 0f;
+
+            public Vector3 Center { get; }
+
+            public float Radius { get; }
+
+            public float RimRadius { get; }
+
+            public float Width { get; }
+
+            public float BaseY { get; }
+
+            public WheelDescription(string name, IniFileSection wheelsPairSection, IniFileSection axleSection, IniFileSection graphicOffsetSection,
+                    float wheelbase, float cgLocation, bool left, bool front) {
+                Name = name;
+                BaseY = axleSection.GetFloat("BASEY", 0f);
+                Center = new Vector3(
+                        (left ? 0.5f : -0.5f) * axleSection.GetFloat("TRACK", 1.4f) + graphicOffsetSection.GetFloat("SUSP_" + name, 0f),
+                        BaseY,
+                        (front ? 1f - cgLocation : -cgLocation) * wheelbase);
+                Radius = wheelsPairSection.GetFloat("RADIUS", 0.3f);
+                RimRadius = wheelsPairSection.GetFloat("RIM_RADIUS", 0.23f) - 0.0254f;
+                Width = wheelsPairSection.GetFloat("WIDTH", 0.2f);
+            }
+        }
+
+        public IEnumerable<WheelDescription> GetWheels() {
+            if (IsEmpty) {
+                yield break;
+            }
+
+            var tyres = _data.GetIniFile("tyres.ini");
+            var front = tyres["FRONT"];
+            var rear = tyres["REAR"];
+
+            var suspension = _data.GetIniFile("suspensions.ini");
+            var wheelbase = suspension["BASIC"].GetFloat("WHEELBASE", 2.4f);
+            var cgLocation = suspension["BASIC"].GetFloat("CG_LOCATION", 0.5f);
+            var frontTrack = suspension["FRONT"];
+            var rearTrack = suspension["REAR"];
+            var graphicOffset = suspension["GRAPHICS_OFFSETS"];
+
+            yield return new WheelDescription("LF", front, frontTrack, graphicOffset, wheelbase, cgLocation, true, true);
+            yield return new WheelDescription("RF", front, frontTrack, graphicOffset, wheelbase, cgLocation, false, true);
+            yield return new WheelDescription("LR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, true, false);
+            yield return new WheelDescription("RR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, false, false);
+        }
+        #endregion
+
+        #region Wings
+        public class WingDescription {
+            public string Name { get; }
+
+            public float Chord { get; }
+
+            public float Span { get; }
+
+            public float Angle { get; }
+
+            public Vector3 Position { get; }
+
+            public WingDescription(IniFileSection section) {
+                Name = section.GetNonEmpty("NAME");
+                Chord = section.GetFloat("CHORD", 1f);
+                Span = section.GetFloat("SPAN", 1f);
+                Angle = section.GetFloat("ANGLE", 0f);
+                Position = section.GetSlimVector3("POSITION");
+            }
+        }
+
+        public IEnumerable<WingDescription> GetWings() {
+            return IsEmpty ? new WingDescription[0] :
+                    _data.GetIniFile("aero.ini")
+                         .GetSections("WING")
+                         .Select(x => new WingDescription(x));
+        }
+        #endregion
+
         #region Wings animations
         public class WingAnimation : AnimationBase {
+            public int Id { get; }
+
             public int? Next { get; }
 
-            public WingAnimation(string ksAnimName, float duration, int? next) : base(ksAnimName, duration) {
-                Next = next;
+            public float StartAngle { get; }
+
+            public float AngleRange { get; }
+
+            public WingAnimation(IniFileSection section) : base(section.GetNonEmpty("FILE"), section.GetFloat("TIME", 1f)) {
+                Id = section.GetInt("WING", 0);
+                Next = section.GetIntNullable("NEXT");
+                StartAngle = section.GetFloat("MIN", 0f);
+                AngleRange = section.GetFloat("MAX", 60f) - StartAngle;
             }
         }
 
@@ -709,7 +810,7 @@ namespace AcTools.Render.Data {
             return IsEmpty ? new WingAnimation[0] :
                     _data.GetIniFile("wing_animations.ini")
                          .GetSections("ANIMATION")
-                         .Select(x => new WingAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f), x.GetIntNullable("NEXT")))
+                         .Select(x => new WingAnimation(x))
                          .Where(x => x.KsAnimName != null)
                          .Distinct<WingAnimation>(AnimationBase.KsAnimNameComparer);
         }

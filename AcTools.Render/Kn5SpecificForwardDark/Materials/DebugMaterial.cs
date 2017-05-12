@@ -5,13 +5,11 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
 using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DebugMaterial : ISkinnedMaterial, IEmissiveMaterial {
@@ -146,17 +144,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }
 
-        public void SetEmissive(Vector3 value) {
-            SetEmissiveNext(value);
-
+        public void SetEmissiveNext(Vector3 value, float multipler) {
             var material = _material;
-            material.Emissive = value;
-            _material = material;
-        }
-
-        public void SetEmissiveNext(Vector3 value) {
-            var material = _material;
-            material.Emissive = value;
+            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
             _effect.FxMaterial.Set(material);
         }
 

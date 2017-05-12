@@ -27,11 +27,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         void SetDebugMode(IDeviceContextHolder holder, bool enabled);
 
-        void SetEmissive(Vector3? color);
+        void SetTransparent(bool? isTransparent);
+
+        SmoothEmissiveChange Emissive { get; }
 
         int TrianglesCount { get; }
-
-        void SetTransparent(bool? isTransparent);
     }
 
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
@@ -118,12 +118,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public Vector3? Emissive { get; set; }
-
-        public void SetEmissive(Vector3? color) {
-            Emissive = color;
-        }
-
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
         public void SetTransparent(bool? isTransparent) {
@@ -162,6 +156,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         internal static readonly SpecialRenderMode OpaqueModes = SpecialRenderMode.Simple |
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
+
+        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
         
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if ((_renderModes & mode) == 0) return;
@@ -179,10 +175,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!material.Prepare(contextHolder, mode)) return;
 
             base.DrawOverride(contextHolder, camera, mode);
-
-            if (Emissive.HasValue) {
-                (material as IEmissiveMaterial)?.SetEmissiveNext(Emissive.Value);
-            }
+            Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
 
             material.SetMatrices(ParentMatrix, camera);
             material.Draw(contextHolder, Indices.Length, mode);
@@ -223,10 +216,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (!material.Prepare(contextHolder, mode)) return;
 
                 base.DrawOverride(contextHolder, camera, mode);
-
-                if (_original.Emissive.HasValue) {
-                    (material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
-                }
+                _original.Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
 
                 material.SetMatrices(ParentMatrix, camera);
                 material.Draw(contextHolder, Indices.Length, mode);

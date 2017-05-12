@@ -22,7 +22,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectDarkMaterial : IEffectWrapper, IEffectMatricesWrapper, IEffectScreenSizeWrapper {
-		public enum Mode { Main, NoPCSS, NoShadows, Simple, SimpleNoPCSS, SimpleNoShadows }
+		public enum Mode { Main, Limited, LimitedNoPCSS, NoPCSS, NoShadows, Simple, SimpleNoPCSS, SimpleNoShadows }
 			
 		[StructLayout(LayoutKind.Sequential)]
         public struct Light {
@@ -34,7 +34,8 @@ namespace AcTools.Render.Shaders {
             public float SpotlightCosMax;
             public uint Type;
             public uint ShadowMode;
-            public Vector2 Padding;
+            public bool ShadowCube;
+            public float Padding;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(Light));
         }
@@ -164,23 +165,24 @@ namespace AcTools.Render.Shaders {
 		public const uint LightDirectional = 3;
 		public const uint LightShadowOff = 0;
 		public const uint LightShadowMain = 1;
-		public const uint LightShadowExtra = 100;
+		public const uint LightShadowExtraSmooth = 100;
 		public const uint LightShadowExtraFast = 200;
-		public const uint LightShadowExtraCube = 300;
 		public const uint HasNormalMap = 1;
 		public const uint UseNormalAlphaAsAlpha = 64;
 		public const uint AlphaTest = 128;
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
-		public const int MaxLighsAmount = 30;
-		public const int MaxExtraShadows = 5;
-		public const int MaxExtraShadowsSmooth = 1;
 		public const int ComplexLighting = 1;
 		public const int MaxNumSplits = 3;
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
+		public const int MaxLighsAmount = 30;
+		public const int MaxExtraShadows = 10;
+		public const int MaxExtraShadowsSmooth = 1;
+		public const int MaxExtraShadowsLimited = 5;
+		public const int ComplexLightingDebugMode = 0;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -196,7 +198,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyResourceVariable FxReflectionCubemap, FxNoiseMap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap;
 		[NotNull]
-		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxExtraShadowCubeMaps, FxShadowMaps;
+		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxShadowMaps;
 		[NotNull]
 		public EffectOnlyIntVariable FxNumSplits;
 		[NotNull]
@@ -324,7 +326,6 @@ namespace AcTools.Render.Shaders {
 			FxDetailsNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsNormalMap"));
 			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap"));
 			FxExtraShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowMaps"));
-			FxExtraShadowCubeMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowCubeMaps"));
 			FxShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gShadowMaps"));
 			FxNumSplits = new EffectOnlyIntVariable(E.GetVariableByName("gNumSplits"));
 			FxGPassAlphaThreshold = new EffectOnlyFloatVariable(E.GetVariableByName("gGPassAlphaThreshold"));
@@ -1498,6 +1499,54 @@ namespace AcTools.Render.Shaders {
 			if (E == null) return;
 			DisposeHelper.Dispose(ref InputSignaturePC);
 			DisposeHelper.Dispose(ref LayoutPC);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
+        }
+	}
+
+	public class EffectSpecialDebugReflections : IEffectWrapper, IEffectMatricesWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePNTG;
+        public InputLayout LayoutPNTG;
+
+		public EffectReadyTechnique TechMain;
+
+		[NotNull]
+		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
+		[NotNull]
+		public EffectOnlyResourceVariable FxReflectionCubemap;
+		[NotNull]
+		public EffectOnlyVector3Variable FxEyePosW;
+
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorld => FxWorld;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldInvTranspose => FxWorldInvTranspose;
+		EffectOnlyMatrixVariable IEffectMatricesWrapper.FxWorldViewProj => FxWorldViewProj;
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialDebugReflections");
+			E = new Effect(device, _b);
+
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
+
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePNTG == null; i++) {
+				InputSignaturePNTG = TechMain.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePNTG == null) throw new System.Exception("input signature (SpecialDebugReflections, PNTG, Main) == null");
+			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
+
+			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld"));
+			FxWorldInvTranspose = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldInvTranspose"));
+			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj"));
+			FxReflectionCubemap = new EffectOnlyResourceVariable(E.GetVariableByName("gReflectionCubemap"));
+			FxEyePosW = new EffectOnlyVector3Variable(E.GetVariableByName("gEyePosW"));
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			DisposeHelper.Dispose(ref InputSignaturePNTG);
+			DisposeHelper.Dispose(ref LayoutPNTG);
 			DisposeHelper.Dispose(ref E);
 			DisposeHelper.Dispose(ref _b);
         }

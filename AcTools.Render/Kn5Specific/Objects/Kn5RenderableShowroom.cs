@@ -89,7 +89,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public Kn5RenderableShowroom(Kn5 kn5, Matrix matrix, TexturesProviderBase loader, bool allowSkinnedObjects = false) : base(kn5, matrix, false, allowSkinnedObjects) {
+        public string RootDirectory { get; }
+
+        public Kn5RenderableShowroom(Kn5 kn5, Matrix matrix, TexturesProviderBase loader, bool allowSkinnedObjects = false)
+                : base(kn5, matrix, false, allowSkinnedObjects) {
+            RootDirectory = Path.GetDirectoryName(kn5.OriginalFilename);
             _loader = loader;
         }
 

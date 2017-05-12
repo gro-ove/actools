@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -23,6 +26,7 @@ using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -204,6 +208,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 #endif
 
             _mainLight = new DarkDirectionalLight {
+                Tag = DarkLightTag.Main,
                 DisplayName = "Sun",
                 Position = Vector3.UnitY - Vector3.UnitZ,
                 IsMainLightSource = true,
@@ -212,6 +217,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             };
 
             _reflectedLight = new DarkDirectionalLight {
+                Tag = DarkLightTag.Main,
                 DisplayName = "Sun (Reflected)",
                 Position = -Vector3.UnitY - Vector3.UnitZ,
                 Enabled = false,
@@ -274,16 +280,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        protected override void ExtendCar(Kn5RenderableCar car, RenderableList carWrapper) {
-            if (_car != null) {
-                _car.ObjectsChanged -= OnCarObjectsChanged;
-            }
-
-            base.ExtendCar(car, carWrapper);
+        protected override void ExtendCar(CarSlot slot, Kn5RenderableCar car, RenderableList carWrapper) {
+            base.ExtendCar(slot, car, carWrapper);
 
             _car = car;
             if (_car != null) {
-                _car.ObjectsChanged += OnCarObjectsChanged;
+                LoadObjLights(DarkLightTag.GetCarTag(slot.Id), _car.RootDirectory);
             }
 
             _carWrapper = carWrapper;
@@ -296,7 +298,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private bool _mirrorDirty;
 
-        private void OnCarObjectsChanged(object sender, EventArgs e) {
+        protected override void OnCarObjectsChanged() {
+            base.OnCarObjectsChanged();
             _mirrorDirty = true;
         }
 
@@ -376,8 +379,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             if (_complexMode) {
-                foreach (var light in _lights) {
-                    light.InvalidateShadows();
+                for (var i = _lights.Length - 1; i >= 0; i--) {
+                    _lights[i].InvalidateShadows();
                 }
             }
         }
@@ -393,7 +396,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public override void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
             ShowroomNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
-            CarNode?.Draw(holder, camera, SpecialRenderMode.Shadow);
+            DrawCars(holder, camera, SpecialRenderMode.Shadow);
 
             if (FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred) {
                 _mirror.MirroredObject?.Draw(holder, camera, SpecialRenderMode.Shadow);
@@ -440,17 +443,79 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private class MovingLightDesc {
-            public DarkSpotLight Light;
-            public float A, B, C, D, E, F, G;
+        private class MovingLight {
+            public MovingLight() {
+                var color = new Vector3(MathUtils.Random(1f), MathUtils.Random(1f),
+                        MathUtils.Random(1f));
+                color.Normalize();
+
+                /*Light = new DarkSpotLight {
+                    Tag = DarkLightTag.Main,
+                    UseShadows = true,
+                    Color = color.ToDrawingColor(),
+                    Range = 10f,
+                    Angle = 0.5f,
+                    Brightness = 0.5f,
+                    SpotFocus = 0.75f,
+                    IsMovable = false
+                };*/
+
+                Light = new DarkPointLight {
+                    Tag = DarkLightTag.Main,
+                    UseShadows = true,
+                    Color = color.ToDrawingColor(),
+                    Range = 10f,
+                    Brightness = 3.5f,
+                    IsMovable = false
+                };
+
+                _a = MathUtils.Random(2f, 3f);
+                _b = MathUtils.Random(1f);
+                _c = MathUtils.Random(5f, 6f);
+                _d = MathUtils.Random(1f);
+                _e = MathUtils.Random(1f);
+                _f = MathUtils.Random(1f);
+                _g = MathUtils.Random(3f, 4f);
+            }
+
+            public readonly DarkPointLight Light;
+            private readonly float _a, _b, _c, _d, _e, _f, _g;
+
+            public bool Update(float elapsed) {
+                if (!Light.Enabled) return false;
+
+                Light.Position = new Vector3(
+                        (elapsed * _b + _d).Sin() * _c, _a,
+                        (elapsed * _e + _f).Sin() * _g);
+                // Light.Direction = Light.Position;
+                return true;
+            }
         }
 
+        [NotNull]
         private DarkLightBase[] _lights = new DarkLightBase[0];
 
+        [NotNull]
         public DarkLightBase[] Lights {
             get { return _lights; }
             set {
                 if (Equals(value, _lights)) return;
+
+                for (var i = _lights.Length - 1; i >= 0; i--) {
+                    var light = _lights[i];
+                    if (!value.Contains(light)) {
+                        light.Dispose();
+                        light.PropertyChanged -= OnLightPropertyChanged;
+                    }
+                }
+
+                for (var i = value.Length - 1; i >= 0; i--) {
+                    var light = value[i];
+                    if (!_lights.Contains(light)) {
+                        light.PropertyChanged += OnLightPropertyChanged;
+                    }
+                }
+
                 _lights = value;
                 OnPropertyChanged();
                 IsDirty = true;
@@ -463,15 +528,32 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 case nameof(DarkLightBase.Type):
                     var light = (DarkLightBase)sender;
                     RemoveLight(light);
-                    AddLight(light.ChangeType(light.Type));
+
+                    if (light.Tag == DarkLightTag.Extra) {
+                        AddLight(light.ChangeType(light.Type));
+                    } else {
+                        var index = _lights.FindIndex(x => x.Tag > light.Tag);
+                        if (index == -1) {
+                            AddLight(light.ChangeType(light.Type));
+                        } else {
+                            InsertLightAt(light.ChangeType(light.Type), index);
+                        }
+                    }
                     break;
                 case nameof(DarkLightBase.IsDeleted):
                     RemoveLight((DarkLightBase)sender);
                     break;
+                default:
+                    if (!Disposed) {
+                        LightPropertyChanged?.Invoke(sender, e);
+                    }
+                    break;
             }
         }
 
-        public void AddLight(DarkLightBase light) {
+        public event PropertyChangedEventHandler LightPropertyChanged;
+
+        private void PrepareNewLight(DarkLightBase light) {
             if (light.DisplayName == null) {
                 for (var i = 1; i < 999; i++) {
                     var c = "Light #" + i;
@@ -481,12 +563,22 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
                 }
             }
+        }
 
-            light.PropertyChanged += OnLightPropertyChanged;
-
+        public void AddLight(DarkLightBase light) {
+            PrepareNewLight(light);
             var updated = new DarkLightBase[_lights.Length + 1];
             Array.Copy(_lights, updated, _lights.Length);
             updated[updated.Length - 1] = light;
+            Lights = updated;
+        }
+
+        public void InsertLightAt(DarkLightBase light, int index) {
+            PrepareNewLight(light);
+            var updated = new DarkLightBase[_lights.Length + 1];
+            Array.Copy(_lights, updated, index);
+            Array.Copy(_lights, index, updated, index + 1, _lights.Length - index);
+            updated[index] = light;
             Lights = updated;
         }
 
@@ -500,66 +592,81 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             Lights = updated;
         }
         
-        private readonly List<MovingLightDesc> _movingLights = new List<MovingLightDesc>();
+        private readonly List<MovingLight> _movingLights = new List<MovingLight>();
         private readonly Random _random = new Random();
 
         public void AddLight() {
-            var color = new Vector3((float)_random.NextDouble(), (float)_random.NextDouble(),
-                    (float)_random.NextDouble());
+            var color = new Vector3((float)MathUtils.Random(), (float)MathUtils.Random(),
+                    (float)MathUtils.Random());
             color.Normalize();
 
-            AddLight(new DarkSpotLight {
+            /*AddLight(new DarkSpotLight {
                 UseShadows = true,
                 Color = color.ToDrawingColor(),
                 Range = 10f,
                 Position = Vector3.UnitY * 2f,
                 Direction = Vector3.UnitY,
                 Brightness = 0.5f
+            });*/
+            AddLight(new DarkPointLight {
+                UseShadows = true,
+                Color = color.ToDrawingColor(),
+                Range = 20f,
+                Position = Vector3.UnitY * 2f,
+                Brightness = 5.5f
             });
         }
 
         public void RemoveLight() {
-            var last = _lights.LastOrDefault();
+            var last = _lights.LastOrDefault(x => x.Tag == DarkLightTag.Extra);
             if (last == null || _movingLights.Any(x => x.Light == last)) return;
 
             RemoveLight(last);
         }
 
+        public JObject[] SerializeLights(DarkLightTag tag) {
+            return Lights.Where(x => x.Tag == tag).Select(x => x.SerializeToJObject()).NonNull().ToArray();
+        }
+
+        public void DeserializeLights(DarkLightTag tag, [CanBeNull] IEnumerable<JObject> data) {
+            var deserialized = data?.Select(DarkLightBase.Deserialize).NonNull().ToArray() ?? new DarkLightBase[0];
+            if (deserialized.Length == 0) return;
+
+            foreach (var light in deserialized) {
+                light.Tag = tag;
+            }
+
+            // keep the right order
+            Lights = Lights.Where(x => x.Tag < tag)
+                           .Concat(deserialized)
+                           .Concat(Lights.Where(x => x.Tag > tag))
+                           .ToArray();
+        }
+
+        public void LoadObjLights(DarkLightTag tag, string objDirectory) {
+            var filename = Path.Combine(objDirectory, "ui", "cm_lights.json");
+            if (!File.Exists(filename)) return;
+
+            var lights = JArray.Parse(File.ReadAllText(filename)).OfType<JObject>();
+            DeserializeLights(tag, lights);
+        }
+
         public void AddMovingLight() {
-            var color = new Vector3((float)_random.NextDouble(), (float)_random.NextDouble(),
-                    (float)_random.NextDouble());
-            color.Normalize();
-
-            var light = new DarkSpotLight {
-                UseShadows = true,
-                Color = color.ToDrawingColor(),
-                Range = 10f,
-                Angle = 0.5f,
-                Brightness = 0.5f,
-                SpotFocus = 0.75f,
-                IsMovable = false
-            };
-
-            AddLight(light);
-
-            _movingLights.Add(new MovingLightDesc {
-                Light = light,
-                A = (float)_random.NextDouble() + 2f,
-                B = (float)_random.NextDouble(),
-                C = 5.0f + (float)_random.NextDouble(),
-                D = (float)_random.NextDouble(),
-                E = (float)_random.NextDouble(),
-                F = (float)_random.NextDouble(),
-                G = 3.0f + (float)_random.NextDouble()
-            });
+#if DEBUG
+            var moving = new MovingLight();
+            AddLight(moving.Light);
+            _movingLights.Add(moving);
+#endif
         }
 
         public void RemoveMovingLight() {
+#if DEBUG
             var last = _movingLights.LastOrDefault();
             if (last == null) return;
 
             RemoveLight(last.Light);
             _movingLights.Remove(last);
+#endif
         }
 
         private bool IsFlatMirrorReflectedLightEnabled => FlatMirrorReflectedLight && ShowroomNode == null && FlatMirror && !FlatMirrorBlurred;
@@ -586,20 +693,107 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 l.Update(DeviceContextHolder, ShadowsPosition, setShadows && !singleLight && EnableShadows ? this : null);
             }
 
-            DarkLightBase.ToShader(effect, _lights, singleLight ? 1 : _lights.Length);
+            // TODO: move somewhere else?
+            DarkLightBase.ToShader(DeviceContextHolder, effect, _lights, singleLight ? 1 : _lights.Length,
+                    _limitedMode ? EffectDarkMaterial.MaxExtraShadows / 2 : EffectDarkMaterial.MaxExtraShadows);
+        }
+
+        private static void UpdateCarLights(CarSlot slot, DarkLightBase[] lights) {
+            var car = slot.CarNode;
+            var tag = DarkLightTag.GetCarTag(slot.Id);
+            if (car == null) {
+                for (var i = lights.Length - 1; i >= 0; i--) {
+                    var l = lights[i];
+                    if (l.Tag != tag) continue;
+
+                    l.Enabled = false;
+                }
+            } else {
+                for (var i = lights.Length - 1; i >= 0; i--) {
+                    var l = lights[i];
+                    if (l.Tag != tag) continue;
+
+                    if (l.ActAsHeadlight) {
+                        l.Enabled = car.HeadlightsEnabled;
+                        l.BrightnessMultipler = 1f;
+
+                        if (!l.SmoothDelay.HasValue) {
+                            l.SmoothDelay = car.GetApproximateHeadlightsDelay() ?? TimeSpan.Zero;
+                        }
+                    } else if (l.ActAsBrakeLight) {
+                        if (l.ActAsDouble == 0f) {
+                            l.Enabled = car.BrakeLightsEnabled;
+                            l.BrightnessMultipler = 1f;
+                        } else {
+                            l.Enabled = car.BrakeLightsEnabled || car.HeadlightsEnabled;
+                            l.BrightnessMultipler = car.BrakeLightsEnabled ? 1f : l.ActAsDouble;
+                        }
+
+                        if (!l.SmoothDelay.HasValue) {
+                            l.SmoothDelay = car.GetApproximateBrakeLightsDelay() ?? TimeSpan.Zero;
+                        }
+                    }
+
+                    if (l.AttachedTo == null) {
+                        l.ParentMatrix = car.Matrix;
+                    } else {
+                        if (l.AttachedToObject == null) {
+                            l.AttachedToObject = car.GetByName(l.AttachedTo) ?? (IRenderableObject)car.RootObject;
+                            l.AttachedToRelativeMatrix = Matrix.Invert(FindOriginalMatrix(l.AttachedToObject, car.RootObject, Matrix.Identity));
+                            if (l.AttachedToObject == null) continue;
+                        }
+
+                        var a = l.AttachedToObject as Kn5RenderableList;
+                        if (a == null) {
+                            l.ParentMatrix = l.AttachedToRelativeMatrix * l.AttachedToObject.ParentMatrix;
+                        } else {
+                            l.ParentMatrix = l.AttachedToRelativeMatrix * a.Matrix;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static Matrix FindOriginalMatrix(IRenderableObject obj, RenderableList root, Matrix matrix) {
+            while (obj != root && obj != null) {
+                matrix *= (obj as Kn5RenderableList)?.OriginalNode.Transform.ToMatrix() ?? (obj as RenderableList)?.LocalMatrix ?? Matrix.Identity;
+                obj = obj.GetParent(root);
+            }
+
+            return matrix;
+        }
+
+        private void UpdateCarLights() {
+            for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                UpdateCarLights(CarSlots[i], _lights);
+            }
         }
         
         private bool _complexMode;
+        private bool _limitedMode;
 
         private EffectDarkMaterial.Mode FindAppropriateMode() {
-            var useComplex = _lights.Count(x => x.Enabled) > 1 || IsFlatMirrorReflectedLightEnabled;
+            _complexMode = true;
+            _limitedMode = false;
+            return EffectDarkMaterial.Mode.Main;
+
+            var useComplex = _lights.Count(x => x.ActuallyEnabled) > 1 || IsFlatMirrorReflectedLightEnabled;
             _complexMode = useComplex;
 
-            return EnableShadows
-                    ? (UsePcss
-                            ? (useComplex ? EffectDarkMaterial.Mode.Main : EffectDarkMaterial.Mode.Simple)
-                            : (useComplex ? EffectDarkMaterial.Mode.NoPCSS : EffectDarkMaterial.Mode.SimpleNoPCSS))
-                    : (useComplex ? EffectDarkMaterial.Mode.NoShadows : EffectDarkMaterial.Mode.SimpleNoShadows);
+            if (!EnableShadows) {
+                return useComplex ? EffectDarkMaterial.Mode.NoShadows : EffectDarkMaterial.Mode.SimpleNoShadows;
+            }
+
+            if (!useComplex) {
+                return UsePcss ? EffectDarkMaterial.Mode.Simple : EffectDarkMaterial.Mode.SimpleNoPCSS;
+            }
+
+            var shadowsAmount = _lights.Count(x => x.ActuallyEnabled && x.UseShadows);
+            _limitedMode = shadowsAmount <= 5;
+
+            return _limitedMode
+                    ? (UsePcss ? EffectDarkMaterial.Mode.Limited : EffectDarkMaterial.Mode.LimitedNoPCSS)
+                    : (UsePcss ? EffectDarkMaterial.Mode.Main : EffectDarkMaterial.Mode.NoPCSS);
         }
 
         private void UpdateEffect() {
@@ -621,6 +815,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void DrawPrepare(Vector3 eyesPosition, Vector3 light) {
+            UpdateCarLights();
             UpdateEffect();
             base.DrawPrepare(eyesPosition, light);
         }
@@ -648,7 +843,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             // reflections
             effect.FxReflectionPower.Set(MaterialsReflectiveness);
-            effect.FxCubemapReflections.Set(reflection != null);
+            effect.FxCubemapReflections.Set(CubemapReflection);
             effect.FxCubemapAmbient.Set(reflection == null ? 0f : FxCubemapAmbientValue);
 
             // shadows
@@ -673,6 +868,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
             
             effect.FxReflectionCubemap.SetResource(reflection?.View);
+
+#if DEBUG
+            var debugReflections = DeviceContextHolder.GetEffect<EffectSpecialDebugReflections>();
+            debugReflections.FxEyePosW.Set(eyesPosition);
+            debugReflections.FxReflectionCubemap.SetResource(reflection?.View);
+#endif
         }
 
         private bool _meshDebug;
@@ -703,14 +904,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void DrawScene() {
-            // TODO: support more than one car?
             var effect = Effect;
 
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = GetRasterizerState();
-
-            var carNode = CarNode;
 
             // draw reflection if needed
             if (ShowroomNode == null && FlatMirror && _mirror != null) {
@@ -791,27 +989,30 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             }
 
-            // draw car
-            if (carNode == null) return;
-
             // shadows
             if (!UseCorrectAmbientShadows) {
-                carNode.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
+                for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                    CarSlots[i].CarNode?.DrawAmbientShadows(DeviceContextHolder, ActualCamera);
+                }
             }
 
             // car itself
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
-            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+            DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
-            carNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+            DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
 
             // debug stuff
-            carNode.DrawDebug(DeviceContextHolder, ActualCamera);
+            for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                CarSlots[i].CarNode?.DrawDebug(DeviceContextHolder, ActualCamera);
+            }
 
             if (ShowMovementArrows) {
                 if (ShowroomNode != null) {
-                    carNode.DrawMovementArrows(DeviceContextHolder, Camera);
+                    for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                        CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera);
+                    }
                 }
 
                 if (_complexMode) {
@@ -828,9 +1029,20 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        protected override bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
-            return ShowroomNode != null && base.MoveObjectOverride(relativeFrom, relativeDelta, camera) ||
-                    _complexMode && _lights.Any(light => light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera));
+        protected override bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera, bool tryToClone) {
+            return ShowroomNode != null && base.MoveObjectOverride(relativeFrom, relativeDelta, camera, tryToClone) ||
+                    _complexMode && _lights.Any(light => {
+                        IMoveable cloned;
+                        if (light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out cloned)) {
+                            var clonedLight = cloned as DarkLightBase;
+                            if (clonedLight != null) {
+                                InsertLightAt(clonedLight, _lights.IndexOf(light));
+                            }
+                            return true;
+                        }
+
+                        return false;
+                    });
         }
 
         protected override void StopMovementOverride() {
@@ -903,7 +1115,7 @@ AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
 Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
 Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
 Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
-Lights: {_lights.Count(x => x.Enabled)} (shadows: {_lights.Count(x => x.Enabled && x.UseShadows)})
+Lights: {_lights.Count(x => x.ActuallyEnabled)} (shadows: {(EnableShadows ? 1 + _lights.Count(x => x.ActuallyEnabled && x.UseShadows) : 0)})
 Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
@@ -979,6 +1191,45 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         // to DrawOverride() allowing to apply DOF after AA/HDR/color grading/bloom stages
         private ShaderResourceView _lastDepthBuffer;
 
+        private void DrawGBufferAmbientShadows(CarSlot slot) {
+            var c = slot.CarNode;
+            if (c != null) {
+                var s = c.GetAmbientShadows();
+                for (var i = 0; i < s.Count; i++) {
+                    var o = s[i] as AmbientShadow;
+                    var v = o == null ? null : c.GetAmbientShadowView(DeviceContextHolder, o);
+                    if (v == null) continue;
+
+                    _aoShadowEffect.FxShadowMap.SetResource(v);
+
+                    var m = o.Transform * o.ParentMatrix;
+                    if (!o.BoundingBox.HasValue) {
+                        o.UpdateBoundingBox();
+                        if (!o.BoundingBox.HasValue) continue;
+                    }
+                    var b = o.BoundingBox.Value.GetSize();
+
+                    _aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
+                    _aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
+                    _aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
+                        M11 = -0.5f,
+                        M22 = 0.5f,
+                        M33 = 0.5f,
+                        M41 = 0.5f,
+                        M42 = 0.5f,
+                        M43 = 0.5f,
+                        M44 = 1f,
+                    });
+
+                    if (BlurCorrectAmbientShadows) {
+                        _aoShadowEffect.TechAddShadowBlur.DrawAllPasses(DeviceContext, 6);
+                    } else {
+                        _aoShadowEffect.TechAddShadow.DrawAllPasses(DeviceContext, 6);
+                    }
+                }
+            }
+        }
+
         protected override void DrawSceneToBuffer() {
             if (!GMode()) {
                 base.DrawSceneToBuffer();
@@ -1029,13 +1280,12 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                     }
                 }
             }
-
-            var c = CarNode;
-            c?.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            
+            DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
 
             if (ShowDepth) {
                 DeviceContextHolder.GetHelper<CopyHelper>().DepthToLinear(DeviceContextHolder, _lastDepthBuffer, InnerBuffer.TargetView,
-                        Camera.NearZValue, Camera.FarZValue, (Camera.Position - CarCenter).Length() * 2);
+                        Camera.NearZValue, Camera.FarZValue, (Camera.Position - MainSlot.CarCenter).Length() * 2);
                 return;
             }
             
@@ -1079,41 +1329,9 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                     if (BlurCorrectAmbientShadows) {
                         _aoShadowEffect.FxNoiseSize.Set(new Vector2(Width / 4f, Height / 4f));
                     }
-
-                    if (c != null) {
-                        var s = c.GetAmbientShadows();
-                        for (var i = 0; i < s.Count; i++) {
-                            var o = s[i] as AmbientShadow;
-                            var v = o == null ? null : c.GetAmbientShadowView(DeviceContextHolder, o);
-                            if (v == null) continue;
-
-                            _aoShadowEffect.FxShadowMap.SetResource(v);
-
-                            var m = o.Transform * o.ParentMatrix;
-                            if (!o.BoundingBox.HasValue) {
-                                o.UpdateBoundingBox();
-                                if (!o.BoundingBox.HasValue) continue;
-                            }
-                            var b = o.BoundingBox.Value.GetSize();
-
-                            _aoShadowEffect.FxShadowPosition.Set(m.GetTranslationVector());
-                            _aoShadowEffect.FxShadowSize.Set(new Vector2(1f / b.X, 1f / b.Z));
-                            _aoShadowEffect.FxShadowViewProj.SetMatrix(Matrix.Invert(m) * new Matrix {
-                                M11 = -0.5f,
-                                M22 = 0.5f,
-                                M33 = 0.5f,
-                                M41 = 0.5f,
-                                M42 = 0.5f,
-                                M43 = 0.5f,
-                                M44 = 1f,
-                            });
-
-                            if (BlurCorrectAmbientShadows) {
-                                _aoShadowEffect.TechAddShadowBlur.DrawAllPasses(DeviceContext, 6);
-                            } else {
-                                _aoShadowEffect.TechAddShadow.DrawAllPasses(DeviceContext, 6);
-                            }
-                        }
+                    
+                    for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                        DrawGBufferAmbientShadows(CarSlots[i]);
                     }
 
                     DeviceContext.OutputMerger.BlendState = null;
@@ -1358,13 +1576,10 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         protected override void OnTick(float dt) {
             base.OnTick(dt);
 
-            foreach (var i in _movingLights) {
-                i.Light.Position = new Vector3(
-                        (Elapsed * i.B + i.D).Sin() * i.C, i.A,
-                        (Elapsed * i.E + i.F).Sin() * i.G);
-                i.Light.Direction = i.Light.Position;
-                IsDirty = true;
-                // SetReflectionCubemapDirty();
+            foreach (var light in _movingLights) {
+                if (light.Update(Elapsed)) {
+                    IsDirty = true;
+                }
             }
 
             if (IsDirty) {
@@ -1428,9 +1643,9 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             DisposeHelper.Dispose(ref _accumulationMaxTexture);
             DisposeHelper.Dispose(ref _accumulationTemporaryTexture);
             DisposeHelper.Dispose(ref _accumulationBaseTexture);
+            
+            Lights = new DarkLightBase[0]; // thus, disposing everything
 
-            _lights.DisposeEverything();
-            _lights = new DarkLightBase[0];
             base.DisposeOverride();
         }
 

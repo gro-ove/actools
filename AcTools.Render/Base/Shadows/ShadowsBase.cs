@@ -16,28 +16,13 @@ namespace AcTools.Render.Base.Shadows {
             _viewport = new Viewport(0, 0, MapSize, MapSize, 0, 1.0f);
         }
 
-        protected virtual RasterizerStateDescription GetRasterizerStateDescription() {
-            return new RasterizerStateDescription {
-                CullMode = CullMode.Front,
-                FillMode = FillMode.Solid,
-                IsAntialiasedLineEnabled = false,
-                IsDepthClipEnabled = true,
-                DepthBias = 100,
-                DepthBiasClamp = 0.0f,
-                SlopeScaledDepthBias = 1f
-            };
+        protected virtual RasterizerState GetRasterizerState(IDeviceContextHolder holder) {
+            return holder.States.ShadowsState;
         }
 
         public void Initialize(DeviceContextHolder holder) {
-            _rasterizerState = RasterizerState.FromDescription(holder.Device, GetRasterizerStateDescription());
-
-            _depthStencilState = DepthStencilState.FromDescription(holder.Device, new DepthStencilStateDescription {
-                DepthWriteMask = DepthWriteMask.All,
-                DepthComparison = Comparison.Greater,
-                IsDepthEnabled = true,
-                IsStencilEnabled = false
-            });
-            
+            _rasterizerState = GetRasterizerState(holder);
+            _depthStencilState = holder.States.ShadowsDepthState;
             ResizeBuffers(holder, MapSize);
         }
 
@@ -48,14 +33,15 @@ namespace AcTools.Render.Base.Shadows {
             MapSize = value;
             _viewport = new Viewport(0, 0, value, value, 0, 1.0f);
             ResizeBuffers(holder, value);
+            Invalidate();
         }
 
         public void DrawScene(DeviceContextHolder holder, [NotNull] IShadowsDraw draw) {
             using (holder.SaveRenderTargetAndViewport()) {
                 holder.DeviceContext.Rasterizer.SetViewports(_viewport);
-                holder.DeviceContext.OutputMerger.DepthStencilState = null;
-                holder.DeviceContext.OutputMerger.BlendState = null;
                 holder.DeviceContext.Rasterizer.State = _rasterizerState;
+                holder.DeviceContext.OutputMerger.DepthStencilState = _depthStencilState;
+                holder.DeviceContext.OutputMerger.BlendState = null;
 
                 UpdateBuffers(holder, draw);
 
@@ -66,6 +52,7 @@ namespace AcTools.Render.Base.Shadows {
 
         public void Clear(DeviceContextHolder holder) {
             ClearBuffers(holder);
+            Invalidate();
         }
 
         protected abstract void UpdateBuffers(DeviceContextHolder holder, IShadowsDraw draw);
@@ -76,11 +63,6 @@ namespace AcTools.Render.Base.Shadows {
 
         public void Dispose() {
             DisposeOverride();
-            try {
-                // TODO: figure out what's going on
-                DisposeHelper.Dispose(ref _rasterizerState);
-                DisposeHelper.Dispose(ref _depthStencilState);
-            } catch (ObjectDisposedException) { }
         }
 
         protected abstract void DisposeOverride();

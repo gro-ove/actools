@@ -79,9 +79,6 @@ namespace AcTools.Render.Base.Cameras {
             Look = new Vector3(0, 0, 1);
             FovY = fov;
 
-            // NearZ = 0.01f;
-            // FarZ = 30.0f; // TODO
-
             SetView(Matrix.Identity);
             SetProj(Matrix.Identity);
         }
@@ -147,5 +144,11 @@ namespace AcTools.Render.Base.Cameras {
         public FrustrumIntersectionType Intersect(BoundingBox box) {
             return Frustum.Intersect(box);
         }
+
+        Vector3 ICamera.Up => Up;
+
+        Vector3 ICamera.Right => Right;
+
+        Vector3 ICamera.Look => Look;
     }
 }

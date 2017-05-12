@@ -38,8 +38,6 @@ namespace AcTools.Render.Base.Cameras {
                 Proj = camera.Proj;
                 View = camera.Proj;
                 ViewProjInvert = camera.ViewProjInvert;
-                FarZValue = camera.FarZValue;
-                NearZValue = camera.NearZValue;
                 _first = false;
             } else {
                 Position = (Position * Smoothiness + camera.Position) / (1f + Smoothiness);
@@ -48,14 +46,22 @@ namespace AcTools.Render.Base.Cameras {
                 View = (View * Smoothiness + camera.View) / (1f + Smoothiness);
                 ViewProjInvert = (ViewProjInvert * Smoothiness + camera.ViewProjInvert) / (1f + Smoothiness);
             }
+
+            FarZValue = camera.FarZValue;
+            NearZValue = camera.NearZValue;
+            Up = camera.Up;
+            Look = camera.Look;
+            Right = camera.Right;
         }
-
-        public float FarZValue { get; private set; }
-
-        public float NearZValue { get; private set; }
 
         public Ray GetPickingRay(Vector2 from, Vector2 screenDims) {
             throw new System.NotImplementedException();
         }
+
+        public float FarZValue { get; private set; }
+        public float NearZValue { get; private set; }
+        public Vector3 Up { get; private set; }
+        public Vector3 Right { get; private set; }
+        public Vector3 Look { get; private set; }
     }
 }

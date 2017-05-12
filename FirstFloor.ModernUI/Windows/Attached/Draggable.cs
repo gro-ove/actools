@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -109,22 +110,22 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             MouseEventHandler handler;
             var grid = element as DataGrid;
             if (grid != null) {
-                handler = DataGrid_MouseMove;
+                handler = OnDataGridMouseMove;
             } else if (element is ListBox) {
-                handler = ListBox_MouseMove;
+                handler = OnListBoxMouseMove;
             } else if (element is ItemsControl) {
-                handler = ItemsControl_MouseMove;
+                handler = OnItemsControlMouseMove;
             } else {
-                handler = Element_MouseMove;
+                handler = OnElementMouseMove;
             }
 
             if (e.Property == DataProperty && e.NewValue != null ||
                     e.Property == EnabledProperty && e.NewValue as bool? != false) {
-                element.PreviewMouseDown += Element_MouseDown;
+                element.PreviewMouseDown += OnElementMouseDown;
                 element.PreviewMouseMove += handler;
                 element.AllowDrop = true;
             } else {
-                element.PreviewMouseDown -= Element_MouseDown;
+                element.PreviewMouseDown -= OnElementMouseDown;
                 element.PreviewMouseMove -= handler;
                 element.AllowDrop = false;
             }
@@ -134,7 +135,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static object _previous;
         private static Point _startingPoint;
 
-        private static void Element_MouseDown(object sender, MouseButtonEventArgs e) {
+        private static void OnElementMouseDown(object sender, MouseButtonEventArgs e) {
             if (!e.Handled) {
                 var element = sender as FrameworkElement;
                 if (element != null && !IgnoreSpecialControls(sender, e)) {
@@ -171,7 +172,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 }
             }
 
-            return null;
+            return element?.GetParent<ItemsControl>();
         }
 
         private static void MarkDestinations(string format) {
@@ -179,7 +180,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (app == null) return;
             foreach (var destination in app.Windows.OfType<Window>()
                     .SelectMany(VisualTreeHelperEx.FindVisualChildren<FrameworkElement>)
-                    .Where(x => string.Equals(GetDestination(x), format, StringComparison.Ordinal))) {
+                    .Where(x => string.Equals(GetDestination(x)?.ToString(), format, StringComparison.Ordinal))) {
                 SetIsDestinationHighlighted(destination, true);
             }
         }
@@ -194,16 +195,47 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        private static bool MoveDraggable([CanBeNull] FrameworkElement element, [CanBeNull] IDraggable draggable) {
+        private static readonly List<Type> DraggableTypes = new List<Type>(10);
+
+        public static void RegisterDraggable(Type type) {
+            if (!DraggableTypes.Contains(type)) {
+                DraggableTypes.Add(type);
+            }
+        }
+
+        public static void RegisterDraggable<T>() {
+            DraggableTypes.Add(typeof(T));
+        }
+
+        [CanBeNull]
+        private static string GetFormat([NotNull] object draggable) {
+            var format = (draggable as IDraggable)?.DraggableFormat;
+            if (format != null) {
+                return format;
+            }
+
+            var type = draggable.GetType();
+            var registered = DraggableTypes.FirstOrDefault(x => x == type || type.IsSubclassOf(x));
+            if (registered != null) {
+                return registered.ToString();
+            }
+
+            return null;
+        }
+
+        private static bool MoveDraggable([CanBeNull] FrameworkElement element, [CanBeNull] object draggable) {
             if (element == null || draggable == null) return false;
+
+            var format = GetFormat(draggable);
+            if (format == null) return false;
 
             try {
                 _dragging = true;
 
                 var data = new DataObject();
-                data.SetData(draggable.DraggableFormat, draggable);
-                MarkDestinations(draggable.DraggableFormat);
-                Events.RaiseDragStarted(draggable.DraggableFormat, draggable);
+                data.SetData(format, draggable);
+                MarkDestinations(format);
+                Events.RaiseDragStarted(format, draggable);
 
                 var source = PrepareItem(element);
                 if (source != null) {
@@ -216,14 +248,14 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             } finally {
                 _dragging = false;
                 UnmarkDestinations();
-                Events.RaiseDragEnded(draggable.DraggableFormat, draggable);
+                Events.RaiseDragEnded(format, draggable);
             }
 
             return true;
         }
 
         private static bool MoveBasic(FrameworkElement element) {
-            return element != null && MoveDraggable(element, (GetData(element) ?? element.DataContext) as IDraggable);
+            return element != null && MoveDraggable(element, GetData(element) ?? element.DataContext);
         }
 
         private static bool MoveFromListBox(IInputElement element, MouseEventArgs e) {
@@ -231,16 +263,20 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static bool MoveFromItemsControl(IInputElement element, MouseEventArgs e) {
-            var item = (element as ItemsControl)?.GetFromPoint<FrameworkElement>(e.GetPosition(element))?
-                                                 .GetParents()
-                                                 .OfType<FrameworkElement>()
-                                                 .FirstOrDefault(x => ReferenceEquals(x.TemplatedParent, element));
+            var items = element as ItemsControl;
+            if (items == null) return false;
+
+            var item = items.GetFromPoint<FrameworkElement>(e.GetPosition(element))?
+                            .GetParents()
+                            .OfType<FrameworkElement>()
+                            .FirstOrDefault(x => items.ItemsSource.OfType<object>().Contains(x.DataContext) ||
+                                    ReferenceEquals(x.TemplatedParent, element));
             return MoveBasic(item);
         }
 
         private static bool MoveFromDataGrid(FrameworkElement element, MouseEventArgs e) {
             var row = (element as DataGrid)?.GetFromPoint<DataGridRow>(e.GetPosition(element));
-            return row != null && MoveDraggable(row, row.Item as IDraggable);
+            return row != null && MoveDraggable(row, row.Item);
         }
 
         private static bool IsIgnored(DependencyObject obj) {
@@ -280,43 +316,47 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return true;
         }
 
-        private static void Element_MouseMove(object sender, MouseEventArgs e) {
+        private static void OnElementMouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveBasic((FrameworkElement)sender);
         }
 
-        private static void ListBox_MouseMove(object sender, MouseEventArgs e) {
+        private static void OnListBoxMouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromListBox((FrameworkElement)sender, e);
         }
 
-        private static void ItemsControl_MouseMove(object sender, MouseEventArgs e) {
+        private static void OnItemsControlMouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromItemsControl((FrameworkElement)sender, e);
         }
 
-        private static void DataGrid_MouseMove(object sender, MouseEventArgs e) {
+        private static void OnDataGridMouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromDataGrid((FrameworkElement)sender, e);
         }
 
-        public static string GetDestination(DependencyObject obj) {
-            return (string)obj.GetValue(DestinationProperty);
+        public static object GetDestination(DependencyObject obj) {
+            return obj.GetValue(DestinationProperty);
         }
 
-        public static void SetDestination(DependencyObject obj, string value) {
+        public static void SetDestination(DependencyObject obj, object value) {
             obj.SetValue(DestinationProperty, value);
         }
 
-        public static readonly DependencyProperty DestinationProperty = DependencyProperty.RegisterAttached("Destination", typeof(string),
+        public static readonly DependencyProperty DestinationProperty = DependencyProperty.RegisterAttached("Destination", typeof(object),
                 typeof(Draggable), new UIPropertyMetadata(OnDestinationChanged));
 
         private static void OnDestinationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as ItemsControl;
-            if (element == null || !(e.NewValue is string)) return;
+            if (element == null) return;
 
-            var newValue = (string)e.NewValue;
-            if (newValue != null) {
-                element.Drop += Destination_Drop;
+            if (e.NewValue != null) {
+                var type = e.NewValue as Type;
+                if (type != null) {
+                    RegisterDraggable(type);
+                }
+
+                element.Drop += OnDestinationDrop;
                 element.AllowDrop = true;
             } else {
-                element.Drop -= Destination_Drop;
+                element.Drop -= OnDestinationDrop;
                 element.AllowDrop = false;
             }
         }
@@ -338,23 +378,23 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             
             var newValue = (IDraggableDestinationConverter)e.NewValue;
             if (newValue != null) {
-                element.Drop += DestinationConverter_Drop;
+                element.Drop += OnDestinationConverterDrop;
                 element.AllowDrop = true;
             } else {
-                element.Drop -= DestinationConverter_Drop;
+                element.Drop -= OnDestinationConverterDrop;
                 element.AllowDrop = false;
             }
         }
 
-        private static void Destination_Drop(object sender, DragEventArgs e) {
+        private static void OnDestinationDrop(object sender, DragEventArgs e) {
             var destination = (ItemsControl)sender;
             var format = GetDestination(destination);
-            var item = e.Data.GetData(format) as IDraggable;
+            var item = e.Data.GetData(format?.ToString());
             var source = e.Data.GetData(SourceFormat) as ItemsControl;
             InnerDrop(source, destination, item, e);
         }
 
-        private static void DestinationConverter_Drop(object sender, DragEventArgs e) {
+        private static void OnDestinationConverterDrop(object sender, DragEventArgs e) {
             var destination = (ItemsControl)sender;
             var converter = GetDestinationConverter(destination);
             var item = converter?.Convert(e.Data);
@@ -404,7 +444,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     var method = (from x in destinationList.GetType().GetMethods()
                                   where x.Name == "Add"
                                   let p = x.GetParameters()
-                                  where p.Length == 1 && p[0].ParameterType == type
+                                  where p.Length == 1 && (p[0].ParameterType == type || type.IsSubclassOf(p[0].ParameterType))
                                   select x).FirstOrDefault();
                     if (method == null) {
                         e.Effects = DragDropEffects.None;
@@ -417,7 +457,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     var method = (from x in destinationList.GetType().GetMethods()
                                   where x.Name == "Insert"
                                   let p = x.GetParameters()
-                                  where p.Length == 2 && p[1].ParameterType == type
+                                  where p.Length == 2 && (p[1].ParameterType == type || type.IsSubclassOf(p[1].ParameterType))
                                   select x).FirstOrDefault();
                     if (method == null) {
                         e.Effects = DragDropEffects.None;

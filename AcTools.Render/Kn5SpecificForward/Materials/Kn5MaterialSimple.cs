@@ -38,17 +38,9 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             };
         }
 
-        public void SetEmissive(Vector3 value) {
-            SetEmissiveNext(value);
-
+        public void SetEmissiveNext(Vector3 value, float multipler) {
             var material = _material;
-            material.Emissive = value;
-            _material = material;
-        }
-
-        public void SetEmissiveNext(Vector3 value) {
-            var material = _material;
-            material.Emissive = value;
+            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
             Effect.FxMaterial.Set(material);
         }
 

@@ -18,7 +18,6 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Kn5File;
-using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
@@ -521,7 +520,7 @@ namespace AcManager.Controls.CustomShowroom {
             }
 
             private void LoadSkinItems() {
-                var skinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.Kn5).ToList();
+                var skinItems = PaintShop.GetPaintableItems(Car.Id, Renderer?.MainSlot.Kn5).ToList();
                 SkinItems = skinItems;
                 UpdateLicensePlatesStyles();
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
@@ -830,8 +829,10 @@ namespace AcManager.Controls.CustomShowroom {
                         var progress = (IProgress<double>)waiting;
 
                         await Task.Run(() => {
-                            if (Renderer?.Kn5 == null) return;
-                            using (var renderer = new AmbientShadowRenderer(Renderer.Kn5, Car.AcdData) {
+                            var kn5 = Renderer?.MainSlot.Kn5;
+                            if (kn5 == null) return;
+
+                            using (var renderer = new AmbientShadowRenderer(kn5, Car.AcdData) {
                                 DiffusionLevel = (float)AmbientShadowDiffusion / 100f,
                                 SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f,
                                 Iterations = AmbientShadowIterations,
@@ -912,13 +913,13 @@ namespace AcManager.Controls.CustomShowroom {
             private CommandBase _unpackKn5Command;
 
             public ICommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new AsyncCommand(async () => {
-                if (Renderer?.Kn5 == null) return;
+                var kn5 = Renderer?.MainSlot.Kn5;
+                if (kn5 == null) return;
 
                 try {
                     Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename("FbxConverter", "FbxConverter.exe");
 
                     var destination = Path.Combine(Car.Location, "unpacked");
-
                     using (var waiting = new WaitingDialog(Tools.ToolsStrings.Common_Exporting)) {
                         await Task.Delay(1);
 
@@ -932,21 +933,21 @@ namespace AcManager.Controls.CustomShowroom {
                             } while (FileUtils.Exists(destination));
                         }
 
-                        var name = Renderer.Kn5.RootNode.Name.StartsWith(@"FBX: ") ? Renderer.Kn5.RootNode.Name.Substring(5) :
+                        var name = kn5.RootNode.Name.StartsWith(@"FBX: ") ? kn5.RootNode.Name.Substring(5) :
                                 @"model.fbx";
                         Directory.CreateDirectory(destination);
-                        await Renderer.Kn5.ExportFbxWithIniAsync(Path.Combine(destination, name), waiting, waiting.CancellationToken);
+                        await kn5.ExportFbxWithIniAsync(Path.Combine(destination, name), waiting, waiting.CancellationToken);
 
                         var textures = Path.Combine(destination, "texture");
                         Directory.CreateDirectory(textures);
-                        await Renderer.Kn5.ExportTexturesAsync(textures, waiting, waiting.CancellationToken);
+                        await kn5.ExportTexturesAsync(textures, waiting, waiting.CancellationToken);
                     }
 
                     Process.Start(destination);
                 } catch (Exception e) {
                     NonfatalError.Notify(string.Format(Tools.ToolsStrings.Common_CannotUnpack, Tools.ToolsStrings.Common_KN5), e);
                 }
-            }, () => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
+            }, () => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.MainSlot.Kn5 != null));
             #endregion
 
             #region Materials & Textures
@@ -1023,7 +1024,9 @@ namespace AcManager.Controls.CustomShowroom {
             private CommandBase _viewTextureCommand;
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
-                if (Renderer?.Kn5 == null) return;
+                var kn5 = Renderer?.MainSlot.Kn5;
+                if (kn5 == null) return;
+
                 new CarTextureDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
                         Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue) {
                     Owner = null

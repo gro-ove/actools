@@ -33,7 +33,7 @@ namespace AcTools.Render.Base.Reflections {
             using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription {
                 Width = _cubeMapSize,
                 Height = _cubeMapSize,
-                MipLevels = 11,
+                MipLevels = 10,
                 ArraySize = 6,
                 SampleDescription = new SampleDescription(1, 0),
                 Format = format,
@@ -124,7 +124,7 @@ namespace AcTools.Render.Base.Reflections {
                 for (var i = 0; i < 6; i++) {
                     holder.DeviceContext.ClearRenderTargetView(_targetView[i], BackgroundColor);
                     holder.DeviceContext.ClearDepthStencilView(_depthTargetView,
-                            DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil,
+                            DepthStencilClearFlags.Depth,
                             1.0f, 0);
                     holder.DeviceContext.OutputMerger.SetTargets(_depthTargetView, _targetView[i]);
                     draw.DrawSceneForReflection(holder, _cameras[i]);

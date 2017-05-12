@@ -429,7 +429,16 @@ namespace AcTools.Render.Base {
 
         protected RenderTargetView RenderTargetView => _renderView;
 
-        public float TimeFactor { get; set; } = 1f;
+        private float _timeFactor = 1f;
+
+        public float TimeFactor {
+            get { return _timeFactor; }
+            set {
+                if (value.Equals(_timeFactor)) return;
+                _timeFactor = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsPaused { get; set; }
 
@@ -459,6 +468,7 @@ namespace AcTools.Render.Base {
 
                 if (dt > 0f) {
                     OnTick(dt);
+                    DeviceContextHolder.OnTick(dt);
                     Tick?.Invoke(this, new TickEventArgs(dt));
                 }
 
@@ -745,6 +755,7 @@ namespace AcTools.Render.Base {
 
         [NotifyPropertyChangedInvocator]
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            if (Disposed) return;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

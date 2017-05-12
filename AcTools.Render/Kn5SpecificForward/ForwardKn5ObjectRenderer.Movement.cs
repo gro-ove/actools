@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base.Cameras;
+﻿using System.Linq;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using SlimDX;
 
@@ -40,12 +41,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public bool MoveObject(Vector2 delta) {
+        public bool MoveObject(Vector2 delta, bool tryToClone) {
             if (!MoveObjectOverride(new Vector2(MousePosition.X / ActualWidth, MousePosition.Y / ActualHeight),
-                    new Vector2(delta.X / ActualWidth, delta.Y / ActualHeight), Camera)) return false;
+                    new Vector2(delta.X / ActualWidth, delta.Y / ActualHeight), Camera, tryToClone)) return false;
 
             AutoAdjustTarget = false;
-            _carBoundingBox = null;
             IsDirty = true;
             SetShadowsDirty();
             SetReflectionCubemapDirty();
@@ -56,12 +56,14 @@ namespace AcTools.Render.Kn5SpecificForward {
             StopMovementOverride();
         }
 
-        protected virtual bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
-            return CarNode?.Movable.MoveObject(relativeFrom, relativeDelta, camera) == true;
+        protected virtual bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera, bool tryToClone) {
+            return CarSlots.Any(x => x.MoveObject(relativeFrom, relativeDelta, camera, false));
         }
 
         protected virtual void StopMovementOverride() {
-            CarNode?.Movable.StopMovement();
+            foreach (var carSlot in CarSlots) {
+                carSlot.StopMovement();
+            }
         }
 
         Vector2 IMousePositionProvider.GetRelative() {

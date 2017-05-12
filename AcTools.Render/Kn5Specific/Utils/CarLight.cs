@@ -1,3 +1,4 @@
+using System;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
@@ -32,28 +33,40 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         private void UpdateEmissive() {
-            if (!IsHeadlightEnabled && !IsBrakeEnabled || Description == null) {
-                SetEmissive(default(Vector3));
+            var d = Description;
+            if (!IsHeadlightEnabled && !IsBrakeEnabled || d == null) {
+                SetEmissive(null, d?.Duration);
             } else if (IsHeadlightEnabled) {
                 if (IsBrakeEnabled) {
-                    SetEmissive(Description.HeadlightColor.LengthSquared() > Description.BrakeColor.LengthSquared() ?
-                            Description.HeadlightColor : Description.BrakeColor);
+                    SetEmissive(d.BrakeColor?.LengthSquared() > d.HeadlightColor?.LengthSquared() ?
+                            d.BrakeColor : d.HeadlightColor, d.Duration);
                 } else {
-                    SetEmissive(Description.HeadlightColor);
+                    SetEmissive(d.HeadlightColor, d.Duration);
                 }
             } else if (IsBrakeEnabled) {
-                SetEmissive(Description.BrakeColor);
+                SetEmissive(d.BrakeColor, d.Duration);
             }
         }
 
-        protected virtual void SetEmissive(Vector3 value) {
-            Node?.SetEmissive(value);
+        protected virtual void SetEmissive(Vector3? value, TimeSpan? duration) {
+            Node?.Emissive.Set(value, duration);
+        }
+
+        public TimeSpan? GetDuration() {
+            var d = Description;
+            if (d == null) return null;
+            if (d.Duration.HasValue) return d.Duration;
+
+            var color = d.BrakeColor ?? d.HeadlightColor;
+            if (!color.HasValue) return null;
+
+            return SmoothEmissiveChange.GuessDuration(color.Value);
         }
 
         [CanBeNull]
         protected IKn5RenderableObject Node { get; private set; }
 
-        public virtual void Initialize([NotNull] CarData.LightObject description, RenderableList main) {
+        public void Initialize([NotNull] CarData.LightObject description, RenderableList main) {
             Description = description;
             Node = main.GetByName(description.Name);
         }

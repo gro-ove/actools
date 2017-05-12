@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,10 +24,12 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 
 namespace AcManager.Controls.CustomShowroom {
@@ -136,6 +140,9 @@ namespace AcManager.Controls.CustomShowroom {
             public virtual bool UseAccumulationDof { get; set; } = false;
             public virtual int AccumulationDofIterations { get; set; } = 100;
             public virtual float AccumulationDofApertureSize { get; set; } = 0.01f;
+
+            [CanBeNull]
+            public virtual JObject[] ExtraLights { get; set; }
 
             [CanBeNull]
             private static byte[] Compress(byte[] data) {
@@ -266,6 +273,7 @@ namespace AcManager.Controls.CustomShowroom {
             obj.ToneMapping = Renderer.ToneMapping;
             obj.AoType = Renderer.AoType;
             obj.CarAmbientShadowsMode = CarAmbientShadowsMode;
+            obj.ExtraLights = Renderer.SerializeLights(DarkLightTag.Extra);
 
             obj.AmbientBrightness = Renderer.AmbientBrightness;
             obj.BackgroundBrightness = Renderer.BackgroundBrightness;
@@ -353,6 +361,7 @@ namespace AcManager.Controls.CustomShowroom {
             LightφDeg = o.Lightφ;
 
             CarAmbientShadowsMode = o.CarAmbientShadowsMode;
+            Renderer.DeserializeLights(DarkLightTag.Extra, o.ExtraLights);
         }
 
         protected void LoadHdr(SaveableData o) {
@@ -414,13 +423,107 @@ namespace AcManager.Controls.CustomShowroom {
             if (reset) {
                 _saveable.Reset();
             } else {
-                _saveable.Initialize();
+                _saveable.LoadOrReset();
             }
 
             UpdateColors();
             SyncAll();
 
+            ExtraLights = new BetterObservableCollection<DarkLightBase>(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Extra));
+            CarLights = new BetterObservableCollection<DarkLightBase>(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Car));
+            ShowroomLights = new BetterObservableCollection<DarkLightBase>(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Showroom));
+
+            ExtraLights.CollectionChanged += OnLightsCollectionChanged;
+            CarLights.CollectionChanged += OnLightsCollectionChanged;
+            ShowroomLights.CollectionChanged += OnLightsCollectionChanged;
+
             Renderer.PropertyChanged += OnRendererPropertyChanged;
+            Renderer.LightPropertyChanged += OnLightPropertyChanged;
+        }
+
+        public BetterObservableCollection<DarkLightBase> ExtraLights { get; private set; }
+
+        public BetterObservableCollection<DarkLightBase> CarLights { get; private set; }
+
+        public BetterObservableCollection<DarkLightBase> ShowroomLights { get; private set; }
+
+        private bool _ignore, _delay;
+
+        private async void OnLightsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            if (_delay || _ignore) return;
+
+            try {
+                _delay = true;
+                await Task.Delay(1);
+            } finally {
+                _delay = false;
+            }
+
+            if (_ignore) return;
+
+            try {
+                _ignore = true;
+
+                var updatedList = Renderer.Lights.Where(x => x.Tag == DarkLightTag.Main).ToList();
+
+                foreach (var light in CarLights) {
+                    if (updatedList.Contains(light)) continue;
+                    light.Tag = DarkLightTag.Car;
+                    ExtraLights.Remove(light);
+                    ShowroomLights.Remove(light);
+                    updatedList.Add(light);
+                }
+
+                updatedList.AddRange(Renderer.Lights.Where(x => x.Tag > DarkLightTag.Car && x.Tag < DarkLightTag.Showroom));
+
+                foreach (var light in ShowroomLights) {
+                    if (updatedList.Contains(light)) continue;
+                    light.Tag = DarkLightTag.Showroom;
+                    ExtraLights.Remove(light);
+                    updatedList.Add(light);
+                }
+
+                updatedList.AddRange(Renderer.Lights.Where(x => x.Tag > DarkLightTag.Showroom && x.Tag < DarkLightTag.Extra));
+
+                foreach (var light in ExtraLights) {
+                    if (updatedList.Contains(light)) continue;
+                    light.Tag = DarkLightTag.Extra;
+                    updatedList.Add(light);
+                }
+                
+                if (!updatedList.SequenceEqual(Renderer.Lights)) {
+                    Renderer.Lights = updatedList.ToArray();
+                }
+            } finally {
+                _ignore = false;
+            }
+        }
+
+        static DarkRendererSettings() {
+            Draggable.RegisterDraggable<DarkLightBase>();
+        }
+
+        private void UpdateLights() {
+            if (_ignore) return;
+
+            try {
+                _ignore = true;
+                ExtraLights.ReplaceIfDifferBy(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Extra));
+                CarLights.ReplaceIfDifferBy(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Car));
+                ShowroomLights.ReplaceIfDifferBy(Renderer.Lights.Where(x => x.Tag == DarkLightTag.Showroom));
+            } finally {
+                _ignore = false;
+            }
+        }
+
+        private void OnLightPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (((DarkLightBase)sender).Tag != DarkLightTag.Extra) {
+                ActionExtension.InvokeInMainThread(SaveLater);
+            }
+
+            if (e.PropertyName == nameof(DarkLightBase.Tag)) {
+                UpdateLights();
+            }
         }
 
         public DarkRendererSettings(DarkKn5ObjectRenderer renderer) : this(renderer, DefaultPresetableKeyValue) {
@@ -470,6 +573,13 @@ namespace AcManager.Controls.CustomShowroom {
                 case nameof(Renderer.AccumulationDofApertureSize):
                 case nameof(Renderer.AccumulationDofIterations):
                     ActionExtension.InvokeInMainThread(SaveLater);
+                    break;
+
+                case nameof(Renderer.Lights):
+                    ActionExtension.InvokeInMainThread(() => {
+                        UpdateLights();
+                        SaveLater();
+                    });
                     break;
 
                 case nameof(Renderer.MsaaSampleCount):
@@ -689,6 +799,52 @@ namespace AcManager.Controls.CustomShowroom {
         public DelegateCommand AddLightCommand => _addLightCommand ?? (_addLightCommand = new DelegateCommand(() => {
             Renderer.AddLight();
         }));
+
+        private DelegateCommand _saveCarLightsCommand;
+
+        public DelegateCommand SaveCarLightsCommand => _saveCarLightsCommand ?? (_saveCarLightsCommand = new DelegateCommand(() => {
+            if (Renderer.CarNode == null) return;
+
+            var filename = Path.Combine(Renderer.CarNode.RootDirectory, "ui", "cm_lights.json");
+            FileUtils.EnsureFileDirectoryExists(filename);
+
+            var array = new JArray();
+            foreach (var light in Renderer.SerializeLights(DarkLightTag.Car)) {
+                array.Add(light);
+            }
+
+            File.WriteAllText(filename, array.ToString(Formatting.Indented));
+        }, () => Renderer.CarNode != null)).ListenOnWeak(Renderer, nameof(Renderer.CarNode));
+
+        private DelegateCommand _saveShowroomLightsCommand;
+
+        public DelegateCommand SaveShowroomLightsCommand => _saveShowroomLightsCommand ?? (_saveShowroomLightsCommand = new DelegateCommand(() => {
+            if (Renderer.ShowroomNode == null) return;
+
+            var filename = Path.Combine(Renderer.ShowroomNode.RootDirectory, "ui", "cm_lights.json");
+            FileUtils.EnsureFileDirectoryExists(filename);
+
+            var array = new JArray();
+            foreach (var light in Renderer.SerializeLights(DarkLightTag.Showroom)) {
+                array.Add(light);
+            }
+
+            File.WriteAllText(filename, array.ToString(Formatting.Indented));
+        }, () => Renderer.ShowroomNode != null)).ListenOnWeak(Renderer, nameof(Renderer.ShowroomNode));
+
+        private DelegateCommand _loadCarLightsCommand;
+
+        public DelegateCommand LoadCarLightsCommand => _loadCarLightsCommand ?? (_loadCarLightsCommand = new DelegateCommand(() => {
+            if (Renderer.CarNode == null) return;
+            Renderer.LoadObjLights(DarkLightTag.Car, Renderer.CarNode.RootDirectory);
+        }, () => Renderer.CarNode != null)).ListenOnWeak(Renderer, nameof(Renderer.CarNode));
+
+        private DelegateCommand _loadShowroomLightsCommand;
+
+        public DelegateCommand LoadShowroomLightsCommand => _loadShowroomLightsCommand ?? (_loadShowroomLightsCommand = new DelegateCommand(() => {
+            if (Renderer.ShowroomNode == null) return;
+            Renderer.LoadObjLights(DarkLightTag.Showroom, Renderer.ShowroomNode.RootDirectory);
+        }, () => Renderer.ShowroomNode != null)).ListenOnWeak(Renderer, nameof(Renderer.ShowroomNode));
         #endregion
 
         #region Visual params, colors

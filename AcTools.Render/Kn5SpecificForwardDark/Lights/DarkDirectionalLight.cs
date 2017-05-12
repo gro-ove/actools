@@ -6,6 +6,7 @@ using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.Direct3D11;
 
@@ -32,6 +33,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
+        protected override void SerializeOverride(JObject obj) {
+            base.SerializeOverride(obj);
+            obj["direction"] = VectorToString(Direction);
+        }
+
+        protected override void DeserializeOverride(JObject obj) {
+            base.DeserializeOverride(obj);
+            Direction = StringToVector((string)obj["direction"]) ?? Vector3.UnitY;
+        }
+
         private Vector3 _direction = new Vector3(-1f, -1f, -1f);
 
         public Vector3 Direction {
@@ -39,10 +50,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             set {
                 if (value.Equals(_direction)) return;
                 _direction = value;
+                _actualDirection = null;
                 InvalidateShadows();
                 OnPropertyChanged();
             }
         }
+
+        protected override void OnParentMatrixChanged() {
+            base.OnParentMatrixChanged();
+            _actualDirection = null;
+        }
+
+        private Vector3? _actualDirection;
+        public Vector3 ActualDirection => _actualDirection ?? (_actualDirection = Vector3.TransformNormal(Direction, ParentMatrix)).Value;
 
         private float _shadowsSize = 50f;
         private bool _shadowsSizeChanged;
@@ -91,7 +111,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     _shadows.SetSplits(holder, new [] { ShadowsSize });
                 }
 
-                if (_shadows.Update(-Direction, shadowsPosition)) {
+                if (_shadows.Update(-ActualDirection, shadowsPosition)) {
                     _shadows.DrawScene(holder, shadowsDraw);
                 }
             } else if (!_shadowsCleared) {
@@ -112,9 +132,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected override void SetOverride(ref EffectDarkMaterial.Light light) {
-            base.SetOverride(ref light);
-            light.DirectionW = Vector3.Normalize(Direction);
+        protected override void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
+            base.SetOverride(holder, ref light);
+            light.DirectionW = Vector3.Normalize(ActualDirection);
             light.Type = EffectDarkMaterial.LightDirectional;
         }
 
@@ -128,7 +148,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         public override void Rotate(Quaternion delta) {
             if (!IsMovable) return;
-            Direction = Vector3.TransformNormal(Direction, Matrix.RotationQuaternion(delta));
+            var parentMatrixInvert = Matrix.Invert(ParentMatrix);
+            Direction = Vector3.TransformNormal(Vector3.TransformNormal(ActualDirection, Matrix.RotationQuaternion(delta)), parentMatrixInvert);
         }
 
         private RenderableList _dummy;
@@ -143,7 +164,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 };
             }
 
-            _dummy.ParentMatrix = Position.LookAtMatrixXAxis(Position - Direction, Vector3.UnitY);
+            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition - ActualDirection, Vector3.UnitY);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
         }
 

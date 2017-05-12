@@ -62,7 +62,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 DeviceContext.OutputMerger.DepthStencilState = null;
                 DeviceContext.Rasterizer.State = null;
 
-                _paintShopEffect.FxNoiseMultipler.Set(Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
+                _paintShopEffect.FxNoiseMultipler.Set((float)Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
                 _paintShopEffect.FxSize.Set(new Vector4(tex.Width, tex.Height, 1f / tex.Width, 1f / tex.Height));
 
                 fn?.Invoke(_paintShopEffect);
@@ -115,8 +115,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     return source.Data;
                 }
 
-                if (source.Name != null && Kn5?.TexturesData.ContainsKey(source.Name) == true) {
-                    return Kn5.TexturesData[source.Name];
+                if (source.Name != null && MainSlot.Kn5?.TexturesData.ContainsKey(source.Name) == true) {
+                    return MainSlot.Kn5.TexturesData[source.Name];
                 }
 
                 if (source.Color != null) {
@@ -180,7 +180,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         private SourceReady GetOriginal(ref Dictionary<int, ShaderResourceView> storage, [NotNull] PaintShopSource source, int maxSize,
                 Func<ShaderResourceView, ShaderResourceView> preparation = null) {
-            if (Kn5 == null) return null;
+            if (MainSlot.Kn5 == null) return null;
 
             if (storage == null) {
                 storage = new Dictionary<int, ShaderResourceView>(2);

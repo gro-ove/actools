@@ -169,12 +169,13 @@ namespace AcManager.Tools.Profile {
             }
         }
 
+        [ItemNotNull]
         public async Task<IReadOnlyList<LapTimeEntry>> GetEntriesAsync() {
             if (_listChangeId != ChangeId || _list == null) {
                 await EnsureActualAsync().ConfigureAwait(false);
             }
 
-            return _list;
+            return _list ?? new LapTimeEntry[0];
         }
 
         public async Task AddEntryAsync(LapTimeEntry entry) {

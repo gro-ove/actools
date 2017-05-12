@@ -93,11 +93,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public Vector3? Emissive { get; set; }
 
-        public void SetEmissive(Vector3? color) {
-            Emissive = color;
-        }
 
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
@@ -129,6 +125,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
+
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!(_isTransparent ? Kn5RenderableObject.TransparentModes : Kn5RenderableObject.OpaqueModes).HasFlag(mode)) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
@@ -142,10 +140,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!material.Prepare(contextHolder, mode)) return;
 
             base.DrawOverride(contextHolder, camera, mode);
-
-            if (Emissive.HasValue) {
-                (material as IEmissiveMaterial)?.SetEmissiveNext(Emissive.Value);
-            }
+            Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
 
             UpdateNodes();
             material.SetBones(_bones);
@@ -234,10 +229,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (!material.Prepare(contextHolder, mode)) return;
 
                 base.DrawOverride(contextHolder, camera, mode);
-
-                if (_original.Emissive.HasValue) {
-                    (material as IEmissiveMaterial)?.SetEmissiveNext(_original.Emissive.Value);
-                }
+                _original.Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
 
                 material.SetBones(_original._bones);
                 material.SetMatrices(ParentMatrix, camera);

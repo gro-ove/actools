@@ -153,7 +153,7 @@ namespace AcManager.Tools.Profile {
 
         public BetterObservableCollection<LapTimeEntry> Entries { get; }
 
-        private static void KeepBetterOnes(List<LapTimeEntry> result, IEnumerable<LapTimeEntry> additional) {
+        private static void KeepBetterOnes([NotNull] List<LapTimeEntry> result, [NotNull] IEnumerable<LapTimeEntry> additional) {
             foreach (var entry in additional) {
                 var existingIndex = result.FindIndex(x => x.Same(entry));
                 if (existingIndex != -1) {

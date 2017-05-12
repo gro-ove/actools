@@ -1,6 +1,5 @@
 ﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
@@ -37,17 +36,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             };
         }
 
-        public void SetEmissive(Vector3 value) {
-            SetEmissiveNext(value);
-
+        public void SetEmissiveNext(Vector3 value, float multipler) {
             var material = _material;
-            material.Emissive = value;
-            _material = material;
-        }
-
-        public void SetEmissiveNext(Vector3 value) {
-            var material = _material;
-            material.Emissive = value;
+            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
             Effect.FxMaterial.Set(material);
         }
 

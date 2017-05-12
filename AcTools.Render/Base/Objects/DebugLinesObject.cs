@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Materials;
@@ -18,13 +19,15 @@ namespace AcTools.Render.Base.Objects {
             Transform = transform;
         }
 
+        public Color Color => IsEmpty ? Color.White : Vertices.First().Color.ToDrawingColor();
+
         public Matrix Transform;
         private IRenderableMaterial _material;
 
         public override void UpdateBoundingBox() {
             var matrix = Transform * ParentMatrix;
             BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, matrix))
-                                                                 .ToBoundingBox().Grow(new Vector3(0.05f));
+                                                                 .ToBoundingBox().Grow(new Vector3(0.005f));
         }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
@@ -84,7 +87,7 @@ namespace AcTools.Render.Base.Objects {
             float distance;
             var intersects = Ray.Intersects(pickingRay, BoundingBox ?? default(BoundingBox), out distance);
             if (intersects) {
-                intersects = DoesIntersect(pickingRay, 0.02f);
+                intersects = DoesIntersect(pickingRay, 0.005f);
             }
 
             Draw(contextHolder, camera, intersects ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);
@@ -122,7 +125,7 @@ namespace AcTools.Render.Base.Objects {
             indices.AddRange(new ushort[] { 0, 1 });
 
             Vector3 left, up;
-            if (direction == Vector3.UnitY) {
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
                 left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             } else {
@@ -130,10 +133,10 @@ namespace AcTools.Render.Base.Objects {
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             }
 
-            vertices.Add(new InputLayouts.VerticePC(direction + (left + up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left + up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left - up - direction) * 0.2f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (left - up - direction) * 0.2f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (left + up - direction) * 0.1f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (-left + up - direction) * 0.1f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (-left - up - direction) * 0.1f, color));
+            vertices.Add(new InputLayouts.VerticePC(direction + (left - up - direction) * 0.1f, color));
             indices.AddRange(new ushort[] { 1, 2, 1, 3, 1, 4, 1, 5 });
             indices.AddRange(new ushort[] { 2, 3, 3, 4, 4, 5, 5, 2 });
 
@@ -148,13 +151,16 @@ namespace AcTools.Render.Base.Objects {
             direction.Normalize();
 
             Vector3 left, up;
-            if (direction == Vector3.UnitY) {
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
                 left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             } else {
                 left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             }
+
+            left *= size;
+            up *= size;
 
             for (var i = 1; i <= segments; i++) {
                 var a = MathF.PI * 2f * i / segments;
@@ -163,7 +169,37 @@ namespace AcTools.Render.Base.Objects {
                 indices.Add((ushort)(i == segments ? 0 : i));
             }
 
-            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        [NotNull]
+        public static DebugLinesObject GetLinesPlane(Matrix matrix, Vector3 direction, Color4 color, float width = 0.16f, float length = 0.16f) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+
+            up *= length / 2f;
+            left *= width / 2f;
+
+            for (var i = 1; i <= 4; i++) {
+                var l = i == 2 || i == 3 ? 1f : -1f;
+                var f = i == 1 || i == 2 ? 1f : -1f;
+                vertices.Add(new InputLayouts.VerticePC(left * l + up * f, color));
+                indices.Add((ushort)(i - 1));
+                indices.Add((ushort)(i == 4 ? 0 : i));
+            }
+
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
         }
     }
 }

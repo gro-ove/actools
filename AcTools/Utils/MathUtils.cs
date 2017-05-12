@@ -167,5 +167,31 @@ namespace AcTools.Utils {
 
         public static float Lerp(this float v0, float v1, float t) => (1f - t) * v0 + t * v1;
         public static double Lerp(this double v0, double v1, double t) => (1d - t) * v0 + t * v1;
+
+        /// <summary>
+        /// For normalized and saturated X.
+        /// </summary>
+        public static float SmootherStep(this float x) => x * x * x * (x * (x * 6f - 15f) + 10f);
+
+        /// <summary>
+        /// For normalized and saturated X.
+        /// </summary>
+        public static double SmootherStep(this double x) => x * x * x * (x * (x * 6d - 15d) + 10d);
+
+        public static float SmootherStep(this float x, float edge0, float edge1) => ((x - edge0) / (edge1 - edge0)).Saturate().SmootherStep();
+        public static double SmootherStep(this double x, double edge0, double edge1) => ((x - edge0) / (edge1 - edge0)).Saturate().SmootherStep();
+
+        /// <summary>
+        /// For normalized and saturated X.
+        /// </summary>
+        public static float SmoothStep(this float x) => x * x * (3f - 2f * x);
+
+        /// <summary>
+        /// For normalized and saturated X.
+        /// </summary>
+        public static double SmoothStep(this double x) => x * x * (3d - 2d * x);
+
+        public static float SmoothStep(this float x, float edge0, float edge1) => ((x - edge0) / (edge1 - edge0)).Saturate().SmoothStep();
+        public static double SmoothStep(this double x, double edge0, double edge1) => ((x - edge0) / (edge1 - edge0)).Saturate().SmoothStep();
     }
 }

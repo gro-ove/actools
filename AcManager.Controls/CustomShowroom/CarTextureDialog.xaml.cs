@@ -538,7 +538,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                 var car = _activeSkin == null ? null : CarsManager.Instance.GetById(_activeSkin.CarId);
                 if (car != null) {
-                    (_renderer as ToolsKn5ObjectRenderer)?.SetCar(CarDescription.FromKn5(_kn5, car.Location, car.AcdData));
+                    (_renderer as ToolsKn5ObjectRenderer)?.MainSlot.SetCar(CarDescription.FromKn5(_kn5, car.Location, car.AcdData));
                 }
 
                 Close?.Invoke();

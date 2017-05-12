@@ -92,8 +92,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public void SetDebugMode(IDeviceContextHolder holder, bool enabled) { }
 
-        public void SetEmissive(Vector3? color) { }
-
         int IKn5RenderableObject.TrianglesCount => GetTrianglesCount();
 
         public void SetTransparent(bool? isTransparent) { }
@@ -187,5 +185,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        SmoothEmissiveChange IKn5RenderableObject.Emissive { get; } = null;
     }
 }

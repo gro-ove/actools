@@ -204,7 +204,7 @@ namespace AcManager.Tools.Helpers {
             if (IsLoading || _savingInProgress || Key == null) return;
             _savingInProgress = true;
 
-            await Task.Delay(300);
+            await Task.Delay(1000);
 
             if (IsLoading) {
                 return;

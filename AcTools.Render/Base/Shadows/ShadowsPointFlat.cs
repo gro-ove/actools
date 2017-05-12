@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
 using SlimDX;
@@ -7,22 +9,25 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Shadows {
-    public class ShadowsPoint : ShadowsBase {
+    /// <summary>
+    /// Similar to ShadowsPoint, but uses 2D texture instead of cubemap to store shadows.
+    /// </summary>
+    public class ShadowsPointFlat : ShadowsBase {
         private readonly FpsCamera[] _cameras;
-        private ShaderResourceView _view;
-        private DepthStencilView[] _targetView;
+        private TargetResourceDepthTexture _buffer;
 
-        public ShaderResourceView View => _view;
+        public ShaderResourceView View => _buffer.View;
 
         public float FarZValue => _cameras[0].FarZValue;
 
         public float NearZValue => _cameras[0].NearZValue;
 
-        public ShadowsPoint(int mapSize) : base(mapSize) {
+        public ShadowsPointFlat(int mapSize) : base(mapSize) {
             _cameras = Enumerable.Range(0, 6).Select(x => new FpsCamera(MathF.PI / 2) {
                 NearZ = 0.1f,
                 RhMode = false
             }).ToArray();
+            _buffer = TargetResourceDepthTexture.Create(Format.R24G8_Typeless);
         }
 
         protected override RasterizerState GetRasterizerState(IDeviceContextHolder holder) {
@@ -30,36 +35,8 @@ namespace AcTools.Render.Base.Shadows {
         }
 
         protected override void ResizeBuffers(DeviceContextHolder holder, int size) {
-            DisposeHelper.Dispose(ref _view);
-            DisposeHelper.Dispose(ref _targetView);
-
-            using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription {
-                Width = size,
-                Height = size,
-                MipLevels = 1,
-                ArraySize = 6,
-                SampleDescription = new SampleDescription(1, 0),
-                Format = Format.R24G8_Typeless,
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.ShaderResource | BindFlags.DepthStencil,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.TextureCube
-            })) {
-                _targetView = Enumerable.Range(0, 6).Select(x => new DepthStencilView(holder.Device, cubeTex,
-                        new DepthStencilViewDescription {
-                            Format = Format.D24_UNorm_S8_UInt,
-                            Dimension = DepthStencilViewDimension.Texture2DArray,
-                            ArraySize = 1,
-                            FirstArraySlice = x,
-                            MipSlice = 0
-                        })).ToArray();
-                _view = new ShaderResourceView(holder.Device, cubeTex, new ShaderResourceViewDescription {
-                    Format = Format.R24_UNorm_X8_Typeless,
-                    Dimension = ShaderResourceViewDimension.TextureCube,
-                    MostDetailedMip = 0,
-                    MipLevels = -1
-                });
-            }
+            if (size > 2048) size = 2048;
+            _buffer.Resize(holder, size, size * 6, null);
         }
 
         private Vector3 _center;
@@ -91,6 +68,7 @@ namespace AcTools.Render.Base.Shadows {
 
             for (var i = 0; i < 6; i++) {
                 if (_cameras[i].FarZ != radius) {
+                    _cameras[i].NearZ = 0.001f;
                     _cameras[i].FarZ = radius;
                     _cameras[i].SetLens(1f);
                 }
@@ -108,23 +86,29 @@ namespace AcTools.Render.Base.Shadows {
         }
 
         protected override void UpdateBuffers(DeviceContextHolder holder, IShadowsDraw draw) {
+            holder.DeviceContext.OutputMerger.SetTargets(_buffer.DepthView);
+            holder.DeviceContext.ClearDepthStencilView(_buffer.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
+
             for (var i = 0; i < 6; i++) {
-                var view = _targetView[i];
-                holder.DeviceContext.OutputMerger.SetTargets(view);
-                holder.DeviceContext.ClearDepthStencilView(view, DepthStencilClearFlags.Depth, 1.0f, 0);
+                holder.DeviceContext.Rasterizer.SetViewports(new Viewport(0, i * _buffer.Width, _buffer.Width, _buffer.Width, 0f, 1f));
                 draw.DrawSceneForShadows(holder, _cameras[i]);
+                //break;
             }
+
+            /*using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
+                temporary.Resize(holder, _buffer.Width, _buffer.Height, null);
+                holder.DeviceContext.Rasterizer.SetViewports(temporary.Viewport);
+                holder.GetHelper<CopyHelper>().DepthToLinear(holder, _buffer.View, temporary.TargetView, _cameras[0].NearZValue, _cameras[0].FarZValue, 10f);
+                Texture2D.SaveTextureToFile(holder.DeviceContext, temporary.Texture, ImageFileFormat.Dds, @"U:\test.dds");
+            }*/
         }
 
         protected override void ClearBuffers(DeviceContextHolder holder) {
-            foreach (var view in _targetView) {
-                holder.DeviceContext.ClearDepthStencilView(view, DepthStencilClearFlags.Depth, 1.0f, 0);
-            }
+            holder.DeviceContext.ClearDepthStencilView(_buffer.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
         }
 
         protected override void DisposeOverride() {
-            DisposeHelper.Dispose(ref _view);
-            DisposeHelper.Dispose(ref _targetView);
+            DisposeHelper.Dispose(ref _buffer);
         }
     }
 }

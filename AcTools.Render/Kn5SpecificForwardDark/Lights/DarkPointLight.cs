@@ -5,6 +5,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shadows;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
+using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.Direct3D11;
 
@@ -12,6 +13,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public class DarkPointLight : DarkLightBase {
         public DarkPointLight() : base(DarkLightType.Point) {
             HighQualityShadowsAvailable = false;
+        }
+
+        protected override DarkShadowsMode GetShadowsMode() {
+            return UseShadows ? DarkShadowsMode.ExtraFast : DarkShadowsMode.Off;
         }
 
         protected override DarkLightBase ChangeTypeOverride(DarkLightType newType) {
@@ -31,6 +36,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
+        protected override void SerializeOverride(JObject obj) {
+            base.SerializeOverride(obj);
+            obj["range"] = Range;
+        }
+
+        protected override void DeserializeOverride(JObject obj) {
+            base.DeserializeOverride(obj);
+            Range = obj["range"] != null ? (float)obj["range"] : 2f;
+        }
+
         private float _range = 2f;
 
         public float Range {
@@ -43,19 +58,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        private ShadowsPoint _shadows;
+        private ShadowsPointFlat _shadows;
         private bool _shadowsCleared;
 
         protected override void UpdateShadowsOverride(DeviceContextHolder holder, Vector3 shadowsPosition, IShadowsDraw shadowsDraw) {
             if (_shadows == null) {
-                _shadows = new ShadowsPoint(ShadowsResolution);
+                _shadows = new ShadowsPointFlat(ShadowsResolution);
                 _shadows.Initialize(holder);
             }
 
             if (shadowsDraw != null) {
                 _shadowsCleared = false;
+
+                if (ShadowsResolution > 2048) {
+                    ShadowsResolution = 2048;
+                }
+
                 _shadows.SetMapSize(holder, ShadowsResolution);
-                if (_shadows.Update(Position, Range)) {
+                if (_shadows.Update(ActualPosition, Range)) {
                     _shadows.DrawScene(holder, shadowsDraw);
                 }
             } else if (!_shadowsCleared) {
@@ -83,11 +103,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected override void SetOverride(ref EffectDarkMaterial.Light light) {
-            base.SetOverride(ref light);
-            light.PosW = Position;
+        protected override void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
+            base.SetOverride(holder, ref light);
             light.Range = Range;
             light.Type = EffectDarkMaterial.LightPoint;
+            light.ShadowCube = true;
         }
 
         public override void InvalidateShadows() {
@@ -115,12 +135,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 };
             }
 
-            _dummy.ParentMatrix = Matrix.Translation(Position);
+            _dummy.ParentMatrix = Matrix.Translation(ActualPosition);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
-        }
-
-        protected override DarkShadowsMode GetShadowsMode() {
-            return UseShadows ? DarkShadowsMode.ExtraPoint : DarkShadowsMode.Off;
         }
     }
 }

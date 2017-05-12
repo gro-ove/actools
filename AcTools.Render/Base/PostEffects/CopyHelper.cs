@@ -1,3 +1,4 @@
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using SlimDX;
@@ -17,6 +18,14 @@ namespace AcTools.Render.Base.PostEffects {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxInputMap.SetResource(view);
+            _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
+        public void Draw(DeviceContextHolder holder, TargetResourceDepthTexture from, TargetResourceTexture to) {
+            holder.DeviceContext.Rasterizer.SetViewports(to.Viewport);
+            holder.DeviceContext.OutputMerger.SetTargets(to.TargetView);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(from.View);
             _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
         }
 

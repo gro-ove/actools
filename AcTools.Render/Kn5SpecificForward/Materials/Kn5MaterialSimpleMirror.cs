@@ -18,9 +18,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
 
-        public void SetEmissive(Vector3 value) {}
-
-        public void SetEmissiveNext(Vector3 value) {}
+        public void SetEmissiveNext(Vector3 value, float multipler) {}
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!mode.HasFlag(SpecialRenderMode.Simple)) return false;

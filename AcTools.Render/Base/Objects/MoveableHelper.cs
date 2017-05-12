@@ -11,6 +11,9 @@ namespace AcTools.Render.Base.Objects {
         void Move(Vector3 delta);
 
         void Rotate(Quaternion delta);
+
+        [CanBeNull]
+        IMoveable Clone();
     }
 
     public interface IMousePositionProvider {
@@ -33,8 +36,14 @@ namespace AcTools.Render.Base.Objects {
         private Vector3 _arrowHighlighted, _circleHighlighted;
         private bool _keepHighlight;
 
-        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera) {
-            _keepHighlight = true;
+        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera, bool tryToClone, [CanBeNull] out IMoveable cloned) {
+            if (_keepHighlight) {
+                tryToClone = false;
+            } else {
+                _keepHighlight = true;
+            }
+
+            cloned = null;
 
             if (_arrowHighlighted != default(Vector3)) {
                 Vector3 planeNormal;
@@ -65,6 +74,19 @@ namespace AcTools.Render.Base.Objects {
                 var pointTo = rayTo.Position + rayTo.Direction * distance;
                 var pointDelta = pointTo - pointFrom;
 
+                if (tryToClone) {
+                    cloned = _parent.Clone();
+                }
+
+                var xOver = pointDelta.X.Abs();
+                if (xOver > 1f) pointDelta.X /= xOver;
+
+                var yOver = pointDelta.Y.Abs();
+                if (yOver > 1f) pointDelta.Y /= yOver;
+
+                var zOver = pointDelta.Z.Abs();
+                if (zOver > 1f) pointDelta.Z /= zOver;
+
                 var resultMovement = new Vector3(
                         pointDelta.X * _arrowHighlighted.X,
                         pointDelta.Y * _arrowHighlighted.Y,
@@ -75,11 +97,11 @@ namespace AcTools.Render.Base.Objects {
             }
 
             if (_circleHighlighted != default(Vector3)) {
-                Vector3 rotationAxis;
-                if (_circleHighlighted.X * _circleHighlighted.Y * _circleHighlighted.Z != 0f) {
-                    rotationAxis = camera.Look;
-                } else {
-                    rotationAxis = _circleHighlighted;
+                var rotationAxis = _circleHighlighted.X * _circleHighlighted.Y * _circleHighlighted.Z != 0f ?
+                        camera.Look : _circleHighlighted;
+
+                if (tryToClone) {
+                    cloned = _parent.Clone();
                 }
 
                 _parent.Rotate(Quaternion.RotationAxis(rotationAxis, relativeDelta.X * 10f));
@@ -103,46 +125,58 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
+            const float arrowSize = 0.08f;
+            const float circleSize = 0.06f;
+
             if (_arrowX == null) {
-                _arrowX = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f));
-                _arrowY = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
-                _arrowZ = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f));
+                _arrowX = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f), arrowSize);
+                _arrowY = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f), arrowSize);
+                _arrowZ = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), arrowSize);
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.X)) {
-                    _circleX = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f));
+                    _circleX = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f), size: circleSize);
                 }
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.Y)) {
-                    _circleY = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f));
+                    _circleY = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f), size: circleSize);
                 }
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.Z)) {
-                    _circleZ = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f));
+                    _circleZ = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), size: circleSize);
                 }
             }
 
-            var m = Matrix.Translation(ParentMatrix.GetTranslationVector());
-            if (_arrowX.ParentMatrix != m) {
-                _arrowX.ParentMatrix = m;
-                _arrowY.ParentMatrix = m;
-                _arrowZ.ParentMatrix = m;
+            var pos = ParentMatrix.GetTranslationVector();
+            var viewProj = camera?.ViewProj;
+
+            var matrix = Matrix.Translation(pos);
+            if (viewProj != null) {
+                var onScreenSize = (Vector3.TransformCoordinate(pos, viewProj.Value) -
+                        Vector3.TransformCoordinate(pos + camera.Up, viewProj.Value)).Length();
+                matrix = Matrix.Scaling(new Vector3(1f / onScreenSize)) * matrix;
+            }
+
+            if (_arrowX.ParentMatrix != matrix) {
+                _arrowX.ParentMatrix = matrix;
+                _arrowY.ParentMatrix = matrix;
+                _arrowZ.ParentMatrix = matrix;
 
                 _arrowX.UpdateBoundingBox();
                 _arrowY.UpdateBoundingBox();
                 _arrowZ.UpdateBoundingBox();
 
                 if (_circleX != null) {
-                    _circleX.ParentMatrix = m;
+                    _circleX.ParentMatrix = matrix;
                     _circleX.UpdateBoundingBox();
                 }
 
                 if (_circleY != null) {
-                    _circleY.ParentMatrix = m;
+                    _circleY.ParentMatrix = matrix;
                     _circleY.UpdateBoundingBox();
                 }
 
                 if (_circleZ != null) {
-                    _circleZ.ParentMatrix = m;
+                    _circleZ.ParentMatrix = matrix;
                     _circleZ.UpdateBoundingBox();
                 }
             }

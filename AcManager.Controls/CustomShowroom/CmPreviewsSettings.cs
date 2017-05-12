@@ -589,7 +589,7 @@ namespace AcManager.Controls.CustomShowroom {
             _cameraBusy = true;
 
             try {
-                var offset = AlignCar ? -Renderer.CarCenter : Vector3.Zero;
+                var offset = AlignCar ? -Renderer.MainSlot.CarCenter : Vector3.Zero;
                 CameraPosition.Set(Renderer.Camera.Position + offset);
                 CameraLookAt.Set((Renderer.CameraOrbit?.Target ?? Renderer.Camera.Position + Renderer.Camera.Look) + offset);
                 CameraFov = Renderer.Camera.FovY.ToDegrees();
@@ -635,7 +635,7 @@ namespace AcManager.Controls.CustomShowroom {
         public AsyncCommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new AsyncCommand(() => {
             var currentCar = Renderer.CarNode?.CarId;
             var car = SelectCarDialog?.Invoke(currentCar == null ? null : CarsManager.Instance.GetById(currentCar));
-            return car == null ? Task.Delay(0) : Renderer.SetCarAsync(CarDescription.FromDirectory(car.Location, car.AcdData), car.SelectedSkin?.Id);
+            return car == null ? Task.Delay(0) : Renderer.MainSlot.SetCarAsync(CarDescription.FromDirectory(car.Location, car.AcdData), car.SelectedSkin?.Id);
         }));
 
         private void SetCarProperty(Action<Kn5RenderableCar> a) {

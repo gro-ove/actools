@@ -59,5 +59,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public static Kn5RenderableList GetDummyByName([NotNull] this RenderableList list, [NotNull] string name) {
             return list.GetAllDummiesByName(name).FirstOrDefault();
         }
+
+        [CanBeNull]
+        public static RenderableList GetParent([NotNull] this IRenderableObject child, [NotNull] RenderableList root) {
+            return root.GetAllChildren().OfType<RenderableList>().FirstOrDefault(x => x.Contains(child));
+        }
     }
 }

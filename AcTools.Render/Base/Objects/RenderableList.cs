@@ -47,7 +47,7 @@ namespace AcTools.Render.Base.Objects {
 
         public event EventHandler MatrixChanged;
 
-        protected virtual void OnMatrixChanged() {
+        protected void OnMatrixChanged() {
             MatrixChanged?.Invoke(this, EventArgs.Empty);
             UpdateMatrix();
         }

@@ -74,6 +74,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DarkPreviewsUpdaterTest.cs" />
+    <Compile Include="RendererClockTest.cs" />
+    <Compile Include="SimpleShowroomTest.cs" />
     <Compile Include="TrackMapRendererTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdatePreviewsTest.cs" />

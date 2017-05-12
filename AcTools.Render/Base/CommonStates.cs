@@ -12,10 +12,10 @@ namespace AcTools.Render.Base {
         }
 
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
-                _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
+                _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState, _shadowsDepthState;
         private BlendState _transparentBlendState, _addBlendState, _addState, _maxState, _minState, _multiplyState;
         private RasterizerState _doubleSidedState, _doubleSidedSmoothLinesState, _invertedState, _wireframeState, _wireframeInvertedState,
-                _ambientShadowState;
+                _ambientShadowState, _shadowsState, _shadowsPointState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
@@ -23,6 +23,14 @@ namespace AcTools.Render.Base {
                     IsStencilEnabled = false,
                     DepthWriteMask = DepthWriteMask.All,
                     DepthComparison = Comparison.Less,
+                }));
+
+        public DepthStencilState ShadowsDepthState => _shadowsDepthState ?? (_shadowsDepthState =
+                DepthStencilState.FromDescription(_device, new DepthStencilStateDescription {
+                    DepthWriteMask = DepthWriteMask.All,
+                    DepthComparison = Comparison.Greater,
+                    IsDepthEnabled = true,
+                    IsStencilEnabled = false
                 }));
 
         public DepthStencilState DisabledDepthState => _disabledDepthState ?? (_disabledDepthState =
@@ -191,9 +199,33 @@ namespace AcTools.Render.Base {
                     SlopeScaledDepthBias = -100f
                 }));
 
+        public RasterizerState ShadowsState => _shadowsState ?? (_shadowsState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    CullMode = CullMode.Front,
+                    FillMode = FillMode.Solid,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true,
+                    DepthBias = 100,
+                    DepthBiasClamp = 0.0f,
+                    SlopeScaledDepthBias = 1f
+                }));
+
+        public RasterizerState ShadowsPointState => _shadowsPointState ?? (_shadowsPointState =
+                RasterizerState.FromDescription(_device, new RasterizerStateDescription {
+                    CullMode = CullMode.Back,
+                    FillMode = FillMode.Solid,
+                    IsFrontCounterclockwise = true,
+                    IsAntialiasedLineEnabled = false,
+                    IsDepthClipEnabled = true,
+                    DepthBias = 100,
+                    DepthBiasClamp = 0.0f,
+                    SlopeScaledDepthBias = 1f
+                }));
+
         public void Dispose() {
             try {
                 DisposeHelper.Dispose(ref _normalDepthState);
+                DisposeHelper.Dispose(ref _shadowsDepthState);
                 DisposeHelper.Dispose(ref _readOnlyDepthState);
                 DisposeHelper.Dispose(ref _greaterReadOnlyDepthState);
                 DisposeHelper.Dispose(ref _lessEqualDepthState);
@@ -210,6 +242,8 @@ namespace AcTools.Render.Base {
                 DisposeHelper.Dispose(ref _wireframeState);
                 DisposeHelper.Dispose(ref _wireframeInvertedState);
                 DisposeHelper.Dispose(ref _ambientShadowState);
+                DisposeHelper.Dispose(ref _shadowsState);
+                DisposeHelper.Dispose(ref _shadowsPointState);
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
             }

@@ -225,16 +225,20 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
                 return ShowroomNode.OriginalFile.GetMaterial(obj.OriginalNode.MaterialId);
             }
-            
-            return CarNode?.GetMaterial(obj);
+
+            return (from carSlot in CarSlots
+                    where carSlot.CarNode?.RootObject.GetAllChildren().Contains(obj) == true
+                    select carSlot.CarNode?.GetMaterial(obj)).FirstOrDefault();
         }
 
         public Kn5 GetKn5(IKn5RenderableObject obj) {
             if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
                 return ShowroomNode.OriginalFile;
             }
-            
-            return CarNode?.GetKn5(obj);
+
+            return (from carSlot in CarSlots
+                    where carSlot.CarNode?.RootObject.GetAllChildren().Contains(obj) == true
+                    select carSlot.CarNode?.GetKn5(obj)).FirstOrDefault();
         }
 
         private IKn5RenderableObject _selectedObject;

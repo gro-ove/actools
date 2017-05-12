@@ -98,6 +98,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public ShaderResourceView GetFlatNmTexture() {
             return _mainHolder.GetFlatNmTexture();
         }
+
+        public RendererStopwatch StartNewStopwatch() {
+            return _mainHolder.StartNewStopwatch();
+        }
     }
 
     public class Kn5RenderableFile : RenderableList, IKn5Model {
