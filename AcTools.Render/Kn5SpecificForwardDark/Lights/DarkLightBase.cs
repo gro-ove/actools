@@ -515,7 +515,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected abstract DarkShadowsMode GetShadowsMode();
+        protected DarkShadowsMode GetShadowsMode() {
+            return UseShadows ? HighQualityShadowsAvailable && UseHighQualityShadows ? DarkShadowsMode.ExtraSmooth :
+                    DarkShadowsMode.ExtraFast : DarkShadowsMode.Off;
+        }
 
         private DarkShadowsMode _shadowsMode;
         private int _shadowsOffset;
@@ -530,7 +533,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected abstract void SetShadowOverride(out float size, out Matrix matrix, out ShaderResourceView view, ref Vector4 nearFar);
+        protected abstract void SetShadowOverride(out Vector4 size, out Matrix matrix, out ShaderResourceView view, ref Vector4 nearFar);
 
         private RendererStopwatch _stopwatch;
         private float _smoothPosition;
@@ -557,13 +560,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             
             light.PosW = ActualPosition;
             light.Color = Color.ToVector3() * brightnessMultipler;
-            light.ShadowMode = _shadowsOffset == -1 ? 0 : (uint)((uint)_shadowsMode + _shadowsOffset);
+            light.ShadowMode = _shadowsOffset == -1 ? 0 : (uint)_shadowsMode;
             light.ShadowCube = false;
+            light.ShadowId = (uint)_shadowsOffset;
         }
 
         // don’t need to dispose anything here — those buffers don’t actually store anything, but only used for moving stuff to shader
         private static EffectDarkMaterial.Light[] _lightsBuffer;
-        private static float[] _extraShadowsSizesBuffer;
+        private static Vector4[] _extraShadowsSizesBuffer;
         private static Vector4[] _extraShadowsNearFarBuffer;
         private static Matrix[] _extraShadowsMatricesBuffer;
         private static ShaderResourceView[] _extraShadowsViewsBuffer;
@@ -574,7 +578,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
 
             if (_extraShadowsSizesBuffer?.Length != shadowsCount) {
-                _extraShadowsSizesBuffer = new float[shadowsCount];
+                _extraShadowsSizesBuffer = new Vector4[shadowsCount];
                 _extraShadowsNearFarBuffer = new Vector4[shadowsCount];
                 _extraShadowsMatricesBuffer = new Matrix[shadowsCount];
                 _extraShadowsViewsBuffer = new ShaderResourceView[shadowsCount];

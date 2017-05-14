@@ -639,7 +639,7 @@ namespace AcTools.Render.Base {
 
         protected virtual bool CanShotWithoutExtraTextures => !UseMsaa;
 
-        public virtual void Shot(double multiplier, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
+        public void Shot(double multiplier, double downscale, double crop, Stream outputStream, bool lossless, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var original = new { Width, Height, ResolutionMultiplier };
             var format = lossless ? ImageFileFormat.Png : ImageFileFormat.Jpg;
@@ -742,7 +742,7 @@ namespace AcTools.Render.Base {
             }
         }
 
-        public virtual Image Shot(double multiplier, double downscale, double crop, bool lossless, IProgress<double> progress = null,
+        public Image Shot(double multiplier, double downscale, double crop, bool lossless, IProgress<double> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
                 Shot(multiplier, downscale, crop, stream, lossless, progress, cancellation);

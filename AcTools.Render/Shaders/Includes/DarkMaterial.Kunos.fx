@@ -3,8 +3,9 @@
 //// Standart
 
 float4 ps_Standard(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted(pin, lighted, alpha, normal);
+	float3 color, normal; float alpha;
+	Unpack(pin, color, alpha, normal);
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
 	return float4(lighted, alpha);
 }
 
@@ -12,7 +13,7 @@ technique10 Standard {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Standard()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Standard()));
 	}
 }
 
@@ -26,32 +27,42 @@ technique10 Sky {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Sky()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Sky()));
 	}
 }
 
 //// Alpha
 
 float4 ps_Alpha(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted(pin, lighted, alpha, normal);
-	return float4(lighted, alpha * gAlphaMaterial.Alpha);
+	float3 color, normal; float alpha;
+	Unpack_Alpha(pin, color, alpha, normal);
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
+	return float4(lighted, alpha);
 }
 
 technique10 Alpha {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Alpha()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Alpha()));
 	}
 }
 
 //// Reflective
 
 float4 ps_Reflective(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
+	float3 color, normal; float alpha;
+	Unpack(pin, color, alpha, normal);
+
+	float4 refl = CalculateReflection(pin.PosW, normal);
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+		alpha = alpha + refl.a * (1.0 - alpha);
+	}
+
+	return float4(lighted + refl.rgb * refl.a, alpha);
 }
 
 technique10 Reflective {
@@ -65,40 +76,60 @@ technique10 Reflective {
 //// NM
 
 float4 ps_Nm(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted_Nm(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
+	float3 color, normal; float alpha;
+	Unpack_Nm(pin, color, alpha, normal);
+
+	float4 refl = CalculateReflection(pin.PosW, normal);
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+		alpha = alpha + refl.a * (1.0 - alpha);
+	}
+
+	return float4(lighted + refl.rgb * refl.a, alpha);
 }
 
 technique10 Nm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Nm()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Nm()));
 	}
 }
 
 //// NM UV Mult
 
 float4 ps_NmUvMult(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted_NmUvMult(pin, lighted, alpha, normal);
-	return float4(CalculateReflection(lighted, pin.PosW, normal, alpha), alpha);
+	float3 color, normal; float alpha;
+	Unpack_NmUvMult(pin, color, alpha, normal);
+
+	float4 refl = CalculateReflection(pin.PosW, normal);
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+		alpha = alpha + refl.a * (1.0 - alpha);
+	}
+
+	return float4(lighted + refl.rgb * refl.a, alpha);
 }
 
 technique10 NmUvMult {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_NmUvMult()));
+		SetPixelShader(CompileShader(ps_5_0, ps_NmUvMult()));
 	}
 }
 
-//// AT_NM
+//// AT NM
 
 float4 ps_AtNm(PS_IN pin) : SV_Target {
-	float alpha; float3 lighted, normal;
-	CalculateLighted_AtNm(pin, lighted, alpha, normal);
+	float3 color, normal; float alpha;
+	Unpack_AtNm(pin, color, alpha, normal);
+
+	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
 	return float4(lighted, alpha);
 }
 
@@ -106,25 +137,32 @@ technique10 AtNm {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_AtNm()));
+		SetPixelShader(CompileShader(ps_5_0, ps_AtNm()));
 	}
 }
 
 //// Maps
 
 float4 ps_Maps(PS_IN pin) : SV_Target {
-	float3 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex).rgb;
+	float3 color, normal, maps; float alpha;
+	Unpack_Maps(pin, color, alpha, normal, maps);
 
-	float alpha, mask; float3 lighted, normal;
-	CalculateLighted_Maps(pin, mapsValue.r, mapsValue.g, lighted, alpha, mask, normal);
-	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, mapsValue.g, mapsValue.b, alpha), alpha);
+	float4 refl = CalculateReflection_Maps(pin.PosW, normal, maps.y);
+	float3 lighted = CalculateLight_Maps_Sun(color, normal, pin.PosW, maps.x, maps.y, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+		alpha = alpha + refl.a * (1.0 - alpha);
+	}
+
+	return float4(lighted + refl.rgb * refl.a * maps.z, alpha);
 }
 
 technique10 Maps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Maps()));
 	}
 }
 
@@ -132,21 +170,29 @@ technique10 SkinnedMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Maps()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Maps()));
 	}
 }
 
 float4 ps_DiffMaps(PS_IN pin) : SV_Target {
-	float alpha, mask; float3 lighted, normal;
-	CalculateLighted_DiffMaps(pin, lighted, alpha, normal);
-	return float4(CalculateReflection_Maps_NoAlpha(lighted, pin.PosW, normal, alpha, alpha), 1.0);
+	float3 color, normal, maps; float alpha;
+	Unpack_Maps(pin, color, alpha, normal, maps);
+
+	float4 refl = CalculateReflection_Maps(pin.PosW, normal, alpha);
+	float3 lighted = CalculateLight_Maps(color, normal, pin.PosW, alpha, 1.0, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+	}
+
+	return float4(lighted + refl.rgb * refl.a * alpha, alpha);
 }
 
 technique10 DiffMaps {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_DiffMaps()));
+		SetPixelShader(CompileShader(ps_5_0, ps_DiffMaps()));
 	}
 }
 
@@ -160,7 +206,7 @@ technique10 Gl {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Gl()));
 	}
 }
 
@@ -168,7 +214,7 @@ technique10 SkinnedGl {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Gl()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Gl()));
 	}
 }
 
@@ -193,7 +239,7 @@ float4 ps_Windscreen(PS_IN pin) : SV_Target {
 	float windscreenK = max(dot(fromEyeW, gLightDir), 0.0) * saturate(Luminance(gLightColor) * 0.76);
 
 #if ENABLE_SHADOWS == 1
-	windscreenK *= GetShadow_ConsiderMirror(pin.PosW);
+	windscreenK *= GetMainShadow_ConsiderMirror(pin.PosW);
 #endif
 
 	float3 ambient = GetAmbient(normal);
@@ -205,7 +251,7 @@ technique10 Windscreen {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Windscreen()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Windscreen()));
 	}
 }
 
@@ -226,7 +272,7 @@ technique10 Collider {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Collider()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Collider()));
 	}
 }
 
@@ -254,7 +300,7 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 	float diffuseMultiplier = GetDiffuseMultiplier(normal);
 
 #if ENABLE_SHADOWS == 1
-	diffuseMultiplier *= GetShadow_ConsiderMirror(position);
+	diffuseMultiplier *= GetMainShadow_ConsiderMirror(position);
 #endif
 
 	float nDotH = GetNDotH(normal, position);
@@ -288,7 +334,7 @@ technique10 Debug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Debug()));
 	}
 }
 
@@ -296,7 +342,7 @@ technique10 SkinnedDebug {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Debug()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Debug()));
 	}
 }
 
@@ -362,7 +408,7 @@ technique10 AmbientShadow {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_AmbientShadow()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_AmbientShadow()));
+		SetPixelShader(CompileShader(ps_5_0, ps_AmbientShadow()));
 	}
 }
 
@@ -377,13 +423,19 @@ technique10 Mirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Mirror()));
+		SetPixelShader(CompileShader(ps_5_0, ps_Mirror()));
 	}
 }
 
+SamplerState samTest {
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Border;
+	AddressV = Border;
+	BorderColor = (float4)0.5;
+};
+
 float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frenselOpacity) {
 #if COMPLEX_LIGHTING == 1
-	float3 gLightDir = gLights[0].DirectionW.xyz;
 	float3 gLightColor = gLights[0].Type == LIGHT_DIRECTIONAL ? gLights[0].Color.xyz : (float3)0.0;
 #endif
 
@@ -401,14 +453,20 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 	// only light is affected by distance
 	float distanceMultiplier = saturate(1.2 - distance / 40);
 
-	// how much surface is lighed according to light direction
-	float3 light = gLightDir.y * gLightColor * distanceMultiplier;
-
 	// shadow at the point
 #if ENABLE_SHADOWS == 1
 	float shadow = GetShadow(posW);
 #else
 	float shadow = 0.0;
+#endif
+
+#if COMPLEX_LIGHTING == 1
+	float3 diffuse;
+	GetLight_NoSpecular(float3(0, 1, 0), posW, diffuse);
+	float3 light = diffuse * distanceMultiplier;
+#else
+	// how much surface is lighed according to light direction
+	float3 light = gLightDir.y * gLightColor * distanceMultiplier;
 #endif
 
 	// ambient color
@@ -436,7 +494,7 @@ technique10 FlatMirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatMirror()));
+		SetPixelShader(CompileShader(ps_5_0, ps_FlatMirror()));
 	}
 }
 
@@ -453,7 +511,7 @@ technique10 FlatTextureMirror {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatTextureMirror()));
+		SetPixelShader(CompileShader(ps_5_0, ps_FlatTextureMirror()));
 	}
 }
 
@@ -465,7 +523,7 @@ technique10 FlatBackgroundGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatBackgroundGround()));
+		SetPixelShader(CompileShader(ps_5_0, ps_FlatBackgroundGround()));
 	}
 }
 
@@ -490,7 +548,7 @@ float4 ps_FlatAmbientGround(pt_PS_IN pin) : SV_Target {
 	float diffuseMultiplier = saturate(dot(normal, gLightDir));
 
 #if ENABLE_SHADOWS == 1
-	diffuseMultiplier *= GetShadow_ConsiderMirror(position);
+	diffuseMultiplier *= GetMainShadow_ConsiderMirror(position);
 #endif
 
 	float nDotH = GetNDotH(normal, position);
@@ -506,6 +564,6 @@ technique10 FlatAmbientGround {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_FlatAmbientGround()));
+		SetPixelShader(CompileShader(ps_5_0, ps_FlatAmbientGround()));
 	}
 }

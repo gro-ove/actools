@@ -133,13 +133,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected override void SetShadowOverride(out float size, out Matrix matrix, out ShaderResourceView view, ref Vector4 nearFar) {
+        protected override void SetShadowOverride(out Vector4 size, out Matrix matrix, out ShaderResourceView view, ref Vector4 nearFar) {
             if (_shadows == null) {
-                size = 0;
+                size = default(Vector4);
                 matrix = Matrix.Identity;
                 view = null;
             } else {
-                size = 1f / _shadows.MapSize;
+                size = new Vector4(_shadows.MapSize, _shadows.MapSize, 1f / _shadows.MapSize, 1f / _shadows.MapSize);
                 matrix = _shadows.ShadowTransform;
                 view = _shadows.View;
             }
@@ -217,10 +217,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition - ActualDirection, Vector3.UnitY);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
-        }
-
-        protected override DarkShadowsMode GetShadowsMode() {
-            return UseShadows ? UseHighQualityShadows ? DarkShadowsMode.ExtraSmooth : DarkShadowsMode.ExtraFast : DarkShadowsMode.Off;
         }
     }
 }

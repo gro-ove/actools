@@ -35,7 +35,7 @@ namespace AcTools.Render.Shaders {
             public uint Type;
             public uint ShadowMode;
             public bool ShadowCube;
-            public float Padding;
+            public uint ShadowId;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(Light));
         }
@@ -174,15 +174,16 @@ namespace AcTools.Render.Shaders {
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
 		public const int ComplexLighting = 1;
+		public const float CubemapPadding = 0.95f;
 		public const int MaxNumSplits = 3;
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
 		public const int MaxLighsAmount = 30;
-		public const int MaxExtraShadows = 10;
-		public const int MaxExtraShadowsSmooth = 1;
+		public const int MaxExtraShadows = 15;
+		public const int MaxExtraShadowsSmooth = 15;
 		public const int MaxExtraShadowsLimited = 5;
-		public const int ComplexLightingDebugMode = 0;
+		public const int ComplexLightingDebugMode = 1;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -204,8 +205,6 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapAmbient, FxFlatMirrorPower;
 		[NotNull]
-		public EffectOnlyFloatArrayVariable FxExtraShadowMapSize;
-		[NotNull]
 		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxFlatMirrored, FxUseAo, FxCubemapReflections;
 		[NotNull]
 		public EffectOnlyVector2Variable FxShadowMapSize;
@@ -214,7 +213,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyVector4Variable FxScreenSize;
 		[NotNull]
-		public EffectOnlyVectorArrayVariable FxExtraShadowNearFar, FxPcssScale;
+		public EffectOnlyVectorArrayVariable FxExtraShadowMapSize, FxExtraShadowNearFar, FxPcssScale;
 		[NotNull]
 		public EffectStructStandartMaterialVariable FxMaterial;
 		[NotNull]
@@ -332,7 +331,6 @@ namespace AcTools.Render.Shaders {
 			FxReflectionPower = new EffectOnlyFloatVariable(E.GetVariableByName("gReflectionPower"));
 			FxCubemapAmbient = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapAmbient"));
 			FxFlatMirrorPower = new EffectOnlyFloatVariable(E.GetVariableByName("gFlatMirrorPower"));
-			FxExtraShadowMapSize = new EffectOnlyFloatArrayVariable(E.GetVariableByName("gExtraShadowMapSize"));
 			FxGPassTransparent = new EffectOnlyBoolVariable(E.GetVariableByName("gGPassTransparent"));
 			FxPcssEnabled = new EffectOnlyBoolVariable(E.GetVariableByName("gPcssEnabled"));
 			FxFlatMirrored = new EffectOnlyBoolVariable(E.GetVariableByName("gFlatMirrored"));
@@ -346,6 +344,7 @@ namespace AcTools.Render.Shaders {
 			FxAmbientRange = new EffectOnlyVector3Variable(E.GetVariableByName("gAmbientRange"));
 			FxBackgroundColor = new EffectOnlyVector3Variable(E.GetVariableByName("gBackgroundColor"));
 			FxScreenSize = new EffectOnlyVector4Variable(E.GetVariableByName("gScreenSize"));
+			FxExtraShadowMapSize = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gExtraShadowMapSize"));
 			FxExtraShadowNearFar = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gExtraShadowNearFar"));
 			FxPcssScale = new EffectOnlyVectorArrayVariable(E.GetVariableByName("gPcssScale"));
 			FxMaterial = new EffectStructStandartMaterialVariable(E.GetVariableByName("gMaterial"));

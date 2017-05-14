@@ -444,7 +444,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private class MovingLight {
-            public MovingLight() {
+            public MovingLight(IDeviceContextHolder holder) {
                 var color = new Vector3(MathUtils.Random(1f), MathUtils.Random(1f),
                         MathUtils.Random(1f));
                 color.Normalize();
@@ -460,12 +460,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     IsMovable = false
                 };*/
 
-                Light = new DarkPointLight {
+                Light = new DarkSpotLight {
                     Tag = DarkLightTag.Main,
                     UseShadows = true,
+                    UseHighQualityShadows = true,
+                    ShadowsResolution = 2048,
                     Color = color.ToDrawingColor(),
-                    Range = 10f,
+                    Range = 20f,
+                    Angle = 0.5f,
                     Brightness = 3.5f,
+                    SpotFocus = 0.75f,
                     IsMovable = false
                 };
 
@@ -476,18 +480,27 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _e = MathUtils.Random(1f);
                 _f = MathUtils.Random(1f);
                 _g = MathUtils.Random(3f, 4f);
+
+                _stopwatch = holder.StartNewStopwatch();
             }
 
-            public readonly DarkPointLight Light;
+            public readonly DarkLightBase Light;
+            private readonly RendererStopwatch _stopwatch;
             private readonly float _a, _b, _c, _d, _e, _f, _g;
 
-            public bool Update(float elapsed) {
+            public bool Update() {
                 if (!Light.Enabled) return false;
 
+                var elapsed = (float)_stopwatch.ElapsedSeconds;
                 Light.Position = new Vector3(
                         (elapsed * _b + _d).Sin() * _c, _a,
                         (elapsed * _e + _f).Sin() * _g);
-                // Light.Direction = Light.Position;
+
+                var spot = Light as DarkSpotLight;
+                if (spot != null) {
+                    spot.Direction = spot.Position;
+                }
+
                 return true;
             }
         }
@@ -610,6 +623,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             });*/
             AddLight(new DarkPointLight {
                 UseShadows = true,
+                UseHighQualityShadows = true,
                 Color = color.ToDrawingColor(),
                 Range = 20f,
                 Position = Vector3.UnitY * 2f,
@@ -653,7 +667,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         public void AddMovingLight() {
 #if DEBUG
-            var moving = new MovingLight();
+            var moving = new MovingLight(DeviceContextHolder);
             AddLight(moving.Light);
             _movingLights.Add(moving);
 #endif
@@ -691,6 +705,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             for (var i = _lights.Length - 1; i >= 0; i--) {
                 var l = _lights[i];
                 l.Update(DeviceContextHolder, ShadowsPosition, setShadows && !singleLight && EnableShadows ? this : null);
+            }
+
+            // TODO: only once?
+            if (!_pcssNoiseMapSet) {
+                _pcssNoiseMapSet = true;
+                effect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(16, 16));
             }
 
             // TODO: move somewhere else?
@@ -1577,9 +1597,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             base.OnTick(dt);
 
             foreach (var light in _movingLights) {
-                if (light.Update(Elapsed)) {
-                    IsDirty = true;
-                }
+                IsDirty |= light.Update();
             }
 
             if (IsDirty) {
@@ -1662,7 +1680,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                                     } : null;
                                 })
                                 .Where(x => x != null)
-                                .MinEntry(x => x.Distance)?.Distance;
+                                .MinEntryOrDefault(x => x.Distance)?.Distance;
             if (distance.HasValue) {
                 DofFocusPlane = distance.Value;
             }

@@ -22,10 +22,11 @@ namespace AcTools.Render.Base.Shadows {
 
         public float NearZValue => _cameras[0].NearZValue;
 
-        public ShadowsPointFlat(int mapSize) : base(mapSize) {
+        public ShadowsPointFlat(int mapSize, float padding) : base(mapSize) {
             _cameras = Enumerable.Range(0, 6).Select(x => new FpsCamera(MathF.PI / 2) {
                 NearZ = 0.1f,
-                RhMode = false
+                RhMode = false,
+                CutProj = Matrix.Transformation2D(Vector2.Zero, 0f, new Vector2(padding), Vector2.Zero, 0f, Vector2.Zero)
             }).ToArray();
             _buffer = TargetResourceDepthTexture.Create(Format.R24G8_Typeless);
         }
@@ -68,7 +69,7 @@ namespace AcTools.Render.Base.Shadows {
 
             for (var i = 0; i < 6; i++) {
                 if (_cameras[i].FarZ != radius) {
-                    _cameras[i].NearZ = 0.001f;
+                    _cameras[i].NearZ = 0.1f;
                     _cameras[i].FarZ = radius;
                     _cameras[i].SetLens(1f);
                 }
@@ -92,15 +93,7 @@ namespace AcTools.Render.Base.Shadows {
             for (var i = 0; i < 6; i++) {
                 holder.DeviceContext.Rasterizer.SetViewports(new Viewport(0, i * _buffer.Width, _buffer.Width, _buffer.Width, 0f, 1f));
                 draw.DrawSceneForShadows(holder, _cameras[i]);
-                //break;
             }
-
-            /*using (var temporary = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm)) {
-                temporary.Resize(holder, _buffer.Width, _buffer.Height, null);
-                holder.DeviceContext.Rasterizer.SetViewports(temporary.Viewport);
-                holder.GetHelper<CopyHelper>().DepthToLinear(holder, _buffer.View, temporary.TargetView, _cameras[0].NearZValue, _cameras[0].FarZValue, 10f);
-                Texture2D.SaveTextureToFile(holder.DeviceContext, temporary.Texture, ImageFileFormat.Dds, @"U:\test.dds");
-            }*/
         }
 
         protected override void ClearBuffers(DeviceContextHolder holder) {
