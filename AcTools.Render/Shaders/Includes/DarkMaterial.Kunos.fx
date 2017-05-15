@@ -232,19 +232,18 @@ float4 ps_Windscreen(PS_IN pin) : SV_Target {
 	float3 fromEyeW = normalize(pin.PosW - gEyePosW);
 
 #if COMPLEX_LIGHTING == 1
-	float3 gLightDir = gLights[0].DirectionW.xyz;
-	float3 gLightColor = gLights[0].Type == LIGHT_DIRECTIONAL ? gLights[0].Color.xyz : (float3)0.0;
-#endif
-
-	float windscreenK = max(dot(fromEyeW, gLightDir), 0.0) * saturate(Luminance(gLightColor) * 0.76);
-
+	float3 diffuse;
+	GetLight_NoSpecular(fromEyeW, pin.PosW, diffuse);
+#else
+	float3 diffuse = saturate(Luminance(gLightColor) * 0.76);
 #if ENABLE_SHADOWS == 1
-	windscreenK *= GetMainShadow_ConsiderMirror(pin.PosW);
+	diffuse *= GetMainShadow_ConsiderMirror(pin.PosW);
+#endif
 #endif
 
 	float3 ambient = GetAmbient(normal);
-	float3 lighted = txColor.rgb * (gMaterial.Ambient * ambient + gMaterial.Diffuse * windscreenK + gMaterial.Emissive);
-	return float4(lighted, alpha > 0.5 ? alpha : alpha * windscreenK);
+	float3 lighted = txColor.rgb * (gMaterial.Ambient * ambient + gMaterial.Diffuse * diffuse + gMaterial.Emissive);
+	return float4(lighted, alpha > 0.5 ? alpha : alpha * saturate(Luminance(diffuse) * 0.76));
 }
 
 technique10 Windscreen {
@@ -288,8 +287,7 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	}
-	else {
+	} else {
 		normal = normalize(pin.NormalW);
 		alpha = diffuseMapValue.a;
 	}
@@ -308,7 +306,7 @@ float4 ps_Debug(PS_IN pin) : SV_Target {
 	float3 light = 0.4 * ambient + (0.5 + specular) * gLightColor * diffuseMultiplier;
 #else
 	float3 diffuse, specular;
-	GetLight_Maps(normal, position, 1.0, diffuse, specular);
+	GetLight_Custom(normal, position, 50.0, 0.5, diffuse, specular);
 	float3 light = 0.4 * ambient + 0.5 * diffuse + specular;
 #endif
 

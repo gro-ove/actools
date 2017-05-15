@@ -22,7 +22,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectDarkMaterial : IEffectWrapper, IEffectMatricesWrapper, IEffectScreenSizeWrapper {
-		public enum Mode { Main, Limited, LimitedNoPCSS, NoPCSS, NoShadows, Simple, SimpleNoPCSS, SimpleNoShadows }
+		public enum Mode { Main, FewerExtraShadows, FewerExtraShadowsNoPCSS, NoExtraShadows, NoPCSS, Simple, SimpleNoPCSS, SimpleNoShadows, WithoutLighting }
 			
 		[StructLayout(LayoutKind.Sequential)]
         public struct Light {
@@ -179,11 +179,10 @@ namespace AcTools.Render.Shaders {
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
-		public const int MaxLighsAmount = 30;
-		public const int MaxExtraShadows = 15;
-		public const int MaxExtraShadowsSmooth = 15;
-		public const int MaxExtraShadowsLimited = 5;
-		public const int ComplexLightingDebugMode = 1;
+		public const int MaxLighsAmount = 50;
+		public const int MaxExtraShadows = 25;
+		public const int MaxExtraShadowsSmooth = 25;
+		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
 		public Effect E;
 
@@ -197,7 +196,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyMatrixArrayVariable FxExtraShadowViewProj, FxShadowViewProj, FxBoneTransforms;
 		[NotNull]
-		public EffectOnlyResourceVariable FxReflectionCubemap, FxNoiseMap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap;
+		public EffectOnlyResourceVariable FxNoiseMap, FxReflectionCubemap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap;
 		[NotNull]
 		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxShadowMaps;
 		[NotNull]
@@ -316,6 +315,7 @@ namespace AcTools.Render.Shaders {
 			FxExtraShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gExtraShadowViewProj"));
 			FxShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gShadowViewProj"));
 			FxBoneTransforms = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gBoneTransforms"));
+			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
 			FxReflectionCubemap = new EffectOnlyResourceVariable(E.GetVariableByName("gReflectionCubemap"));
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
 			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap"));

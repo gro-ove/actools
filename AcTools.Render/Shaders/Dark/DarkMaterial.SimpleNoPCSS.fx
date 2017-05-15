@@ -7,4 +7,5 @@
 #include "DarkMaterial.Reflection.fx"
 #include "DarkMaterial.Lighting.Simple.fx"
 #include "DarkMaterial.Lighting.Complex.Placeholder.fx"
+#include "DarkMaterial.Unpack.fx"
 #include "DarkMaterial.Kunos.fx"

@@ -35,12 +35,16 @@ float GetDiffuseMultiplier(float3 normal) {
 	return saturate(dot(normal, gLightDir));
 }
 
-float GetShadow_ConsiderMirror(float3 position) {
+float GetMainShadow_ConsiderMirror(float3 position) {
+#if ENABLE_SHADOWS == 1
 	[flatten]
 	if (gFlatMirrored) {
 		position.y = -position.y;
 	}
 	return GetShadow(position);
+#else
+	return 1.0;
+#endif
 }
 
 float3 CalculateLight(float3 txColor, float3 normal, float3 position, float2 screenCoords) {
@@ -48,7 +52,7 @@ float3 CalculateLight(float3 txColor, float3 normal, float3 position, float2 scr
 	float diffuseMultiplier = GetDiffuseMultiplier(normal);
 
 #if ENABLE_SHADOWS == 1
-	diffuseMultiplier *= GetShadow_ConsiderMirror(position);
+	diffuseMultiplier *= GetMainShadow_ConsiderMirror(position);
 #endif
 
 	ambient *= GetAo(screenCoords);
@@ -63,7 +67,7 @@ float3 CalculateLight_Maps(float3 txColor, float3 normal, float3 position, float
 	float diffuseMultiplier = GetDiffuseMultiplier(normal);
 
 #if ENABLE_SHADOWS == 1
-	diffuseMultiplier *= GetShadow_ConsiderMirror(position);
+	diffuseMultiplier *= GetMainShadow_ConsiderMirror(position);
 #endif
 
 	ambient *= GetAo(screenCoords);
@@ -78,7 +82,7 @@ float3 CalculateLight_Maps_Sun(float3 txColor, float3 normal, float3 position, f
 	float diffuseMultiplier = GetDiffuseMultiplier(normal);
 
 #if ENABLE_SHADOWS == 1
-	diffuseMultiplier *= GetShadow_ConsiderMirror(position);
+	diffuseMultiplier *= GetMainShadow_ConsiderMirror(position);
 #endif
 
 	ambient *= GetAo(screenCoords);

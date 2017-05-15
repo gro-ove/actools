@@ -3,6 +3,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -38,6 +39,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public void SetEmissiveNext(Vector3 value, float multipler) {
             var material = _material;
+            multipler = multipler.Pow((value.Length() / 21f).Clamp(1f, 7f));
             material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
             Effect.FxMaterial.Set(material);
         }

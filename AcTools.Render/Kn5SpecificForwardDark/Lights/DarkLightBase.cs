@@ -221,7 +221,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             result.IsMovable = IsMovable;
             result.IsVisibleInUi = IsVisibleInUi;
             result.ShadowsResolution = ShadowsResolution;
-            result.BrightnessMultipler = BrightnessMultipler;
+            result.BrightnessMultiplier = BrightnessMultiplier;
             result.AttachedTo = AttachedTo;
             result.SmoothDelay = SmoothDelay;
             return result;
@@ -259,11 +259,25 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         private string _attachedTo;
 
+        [CanBeNull]
         public string AttachedTo {
             get { return _attachedTo; }
             set {
+                value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 if (Equals(value, _attachedTo)) return;
                 _attachedTo = value;
+                AttachedToObject = null;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _attachedToSelect;
+
+        public bool AttachedToSelect {
+            get { return _attachedToSelect; }
+            set {
+                if (Equals(value, _attachedToSelect)) return;
+                _attachedToSelect = value;
                 OnPropertyChanged();
             }
         }
@@ -275,6 +289,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             set {
                 if (Equals(value, _smoothDelay)) return;
                 _smoothDelay = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _asHeadlightMultiplier;
+
+        public float AsHeadlightMultiplier {
+            get { return _asHeadlightMultiplier; }
+            set {
+                if (Equals(value, _asHeadlightMultiplier)) return;
+                _asHeadlightMultiplier = value;
                 OnPropertyChanged();
             }
         }
@@ -302,6 +327,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 obj["shadowsSmooth"] = UseHighQualityShadows;
             }
 
+            if (AsHeadlightMultiplier != 0f) {
+                obj["headlightsMultiplier"] = AsHeadlightMultiplier;
+            }
+
             if (!string.IsNullOrWhiteSpace(AttachedTo)) {
                 obj["attached"] = AttachedTo;
             }
@@ -327,6 +356,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             Position = StringToVector((string)obj["pos"]) ?? Vector3.UnitY;
             Color = HexStringToColor((string)obj["color"]) ?? Color.White;
             Brightness = obj["brightness"] != null ? (float)obj["brightness"] : 1f;
+            AsHeadlightMultiplier = obj["headlightsMultiplier"] != null ? (float)obj["headlightsMultiplier"] : 0f;
             _enabled = obj["enabled"] == null || (bool)obj["enabled"]; // to avoid smooth enabling
             DisplayName = (string)obj["name"] ?? DisplayName;
             UseShadows = obj["shadows"] != null && (bool)obj["shadows"];
@@ -479,6 +509,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
+        public bool ShadowsActive => UseShadows && _shadowsOffset != -1;
+
         private bool _highQualityShadowsAvailable = true;
 
         public bool HighQualityShadowsAvailable {
@@ -539,7 +571,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _smoothPosition;
 
         protected virtual void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
-            var brightnessMultipler = Brightness * BrightnessMultipler;
+            var brightnessMultipler = Brightness * BrightnessMultiplier;
 
             if (_smoothChanging && _smoothDelay.HasValue) {
                 if (_stopwatch == null) {
@@ -550,7 +582,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 _stopwatch.Reset();
 
                 _smoothPosition = (float)(Enabled ? _smoothPosition + delta : _smoothPosition - delta).Saturate();
-                brightnessMultipler *= _smoothPosition;
+                brightnessMultipler *= _smoothPosition.SmoothStep();
 
                 if (_smoothPosition == (Enabled ? 1f : 0f)) {
                     _smoothChanging = false;
@@ -565,7 +597,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             light.ShadowId = (uint)_shadowsOffset;
         }
 
-        // don’t need to dispose anything here — those buffers don’t actually store anything, but only used for moving stuff to shader
+        // donâ€™t need to dispose anything here â€” those buffers donâ€™t actually store anything, but only used for moving stuff to shader
         private static EffectDarkMaterial.Light[] _lightsBuffer;
         private static Vector4[] _extraShadowsSizesBuffer;
         private static Vector4[] _extraShadowsNearFarBuffer;
@@ -681,38 +713,45 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 _tag = value;
                 UpdateActs();
                 OnPropertyChanged();
-                BrightnessMultipler = 1f;
+                BrightnessMultiplier = 1f;
                 AttachedToObject = null;
             }
         }
         #endregion
 
         #region Car light
-        public bool ActAsHeadlight { get; private set; }
+        private bool _actAsHeadlight;
 
-        public bool ActAsBrakeLight { get; private set; }
+        public bool ActAsHeadlight {
+            get { return _actAsHeadlight; }
+            private set {
+                if (value == _actAsHeadlight) return;
+                _actAsHeadlight = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public float ActAsDouble { get; private set; }
+        private bool _actAsBrakeLight;
 
-        public float BrightnessMultipler { get; set; } = 1f;
+        public bool ActAsBrakeLight {
+            get { return _actAsBrakeLight; }
+            private set {
+                if (value == _actAsBrakeLight) return;
+                _actAsBrakeLight = value;
+                OnPropertyChanged();
+            }
+        }
 
-        private static readonly Regex ActAsDoubleRegex = new Regex(@"\+(\d+(?:\.\d+)?)\s*[hH]", RegexOptions.Compiled);
+        public float BrightnessMultiplier { get; set; } = 1f;
 
         // TODO: raise amount of shadows in one more sets?
-        // TODO: don’t actually disable shadows is there is not enough slots
+        // TODO: donâ€™t actually disable shadows is there is not enough slots
 
         private void UpdateActs() {
             var name = DisplayName;
             if (!Tag.IsCarTag || name == null) return;
             
             if (name.Contains("brake", StringComparison.OrdinalIgnoreCase)) {
-                var m = ActAsDoubleRegex.Match(name);
-                if (m.Success) {
-                    ActAsDouble = (float)(FlexibleParser.TryParseDouble(m.Groups[1].Value) ?? 0d);
-                } else {
-                    ActAsDouble = 0f;
-                }
-
                 ActAsBrakeLight = true;
                 ActAsHeadlight = false;
             } else {

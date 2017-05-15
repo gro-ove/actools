@@ -214,6 +214,11 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
                 <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
             </Trigger>
+            <Trigger Property="ToggleButton.IsChecked" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
+                <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+            </Trigger>
             <Trigger Property="IsFocused" Value="True">
                 <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
             </Trigger>

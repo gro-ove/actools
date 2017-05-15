@@ -38,7 +38,8 @@ namespace AcTools.Render.Kn5Specific.Utils {
                 SetEmissive(null, d?.Duration);
             } else if (IsHeadlightEnabled) {
                 if (IsBrakeEnabled) {
-                    SetEmissive(d.BrakeColor?.LengthSquared() > d.HeadlightColor?.LengthSquared() ?
+                    SetEmissive(d.HeadlightColor == null || d.BrakeColor != null &&
+                            d.BrakeColor.Value.LengthSquared() > d.HeadlightColor.Value.LengthSquared() ?
                             d.BrakeColor : d.HeadlightColor, d.Duration);
                 } else {
                     SetEmissive(d.HeadlightColor, d.Duration);

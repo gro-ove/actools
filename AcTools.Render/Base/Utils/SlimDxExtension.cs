@@ -40,6 +40,24 @@ namespace AcTools.Render.Base.Utils {
             return new BoundingBox(b.Minimum - v, b.Maximum + v);
         }
 
+        public static void ExtendBoundingBox(this Vector3 v, ref BoundingBox bb) {
+            if (bb.Maximum.X < v.X) bb.Maximum.X = v.X;
+            if (bb.Maximum.Y < v.Y) bb.Maximum.Y = v.Y;
+            if (bb.Maximum.Z < v.Z) bb.Maximum.Z = v.Z;
+            if (bb.Minimum.X > v.X) bb.Minimum.X = v.X;
+            if (bb.Minimum.Y > v.Y) bb.Minimum.Y = v.Y;
+            if (bb.Minimum.Z > v.Z) bb.Minimum.Z = v.Z;
+        }
+
+        public static void ExtendBoundingBox(this BoundingBox b, ref BoundingBox bb) {
+            if (bb.Maximum.X < b.Maximum.X) bb.Maximum.X = b.Maximum.X;
+            if (bb.Maximum.Y < b.Maximum.Y) bb.Maximum.Y = b.Maximum.Y;
+            if (bb.Maximum.Z < b.Maximum.Z) bb.Maximum.Z = b.Maximum.Z;
+            if (bb.Minimum.X > b.Minimum.X) bb.Minimum.X = b.Minimum.X;
+            if (bb.Minimum.Y > b.Minimum.Y) bb.Minimum.Y = b.Minimum.Y;
+            if (bb.Minimum.Z > b.Minimum.Z) bb.Minimum.Z = b.Minimum.Z;
+        }
+
         public static void Extend(ref BoundingBox bb, ref Vector3 v) {
             if (bb.Maximum.X < v.X) bb.Maximum.X = v.X;
             if (bb.Maximum.Y < v.Y) bb.Maximum.Y = v.Y;
@@ -68,6 +86,14 @@ namespace AcTools.Render.Base.Utils {
 
         public static Vector3 GetSize(this BoundingBox bb) {
             return bb.Maximum - bb.Minimum;
+        }
+
+        public static float GetVolume(this BoundingBox bb) {
+            return (bb.Maximum - bb.Minimum).GetVolume();
+        }
+
+        public static float GetVolume(this Vector3 v) {
+            return v.X * v.Y * v.Z;
         }
 
         public static Vector3 GetVector3(this Vector4 vec) {

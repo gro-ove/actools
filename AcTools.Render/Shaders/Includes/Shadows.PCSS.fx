@@ -1,4 +1,7 @@
+#ifndef _NOISE_MAP_DEFINED
+#define _NOISE_MAP_DEFINED
 Texture2D gNoiseMap;
+#endif
 
 // Skip translation
 

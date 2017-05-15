@@ -1,5 +1,10 @@
 //////////////// Complex lighting
 
+#ifndef _NOISE_MAP_DEFINED
+#define _NOISE_MAP_DEFINED
+Texture2D gNoiseMap;
+#endif
+
 #define COMPLEX_LIGHTING 1
 
 static const dword LIGHT_OFF = 0;
@@ -41,7 +46,7 @@ cbuffer cbNotUsed {
 	float3 gLightColor;
 }
 
-#if ENABLE_SHADOWS == 1
+#if ENABLE_SHADOWS == 1 && MAX_EXTRA_SHADOWS > 0
 Texture2D gExtraShadowMaps[MAX_EXTRA_SHADOWS];
 
 SamplerState samNoise {
@@ -222,7 +227,7 @@ float GetMainShadow_ConsiderMirror(float3 position) {
 }
 
 float GetExtraShadow_ByType(Light light, float3 position, float3 normal) {
-#if ENABLE_SHADOWS == 1
+#if ENABLE_SHADOWS == 1 && MAX_EXTRA_SHADOWS > 0
 	float3 uv = GetExtraShadowUv(position, normal, light, light.ShadowId);
 
 	[branch]
@@ -239,7 +244,7 @@ float GetExtraShadow_ByType(Light light, float3 position, float3 normal) {
 }
 
 float GetExtraShadow_ConsiderMirror(Light light, float3 position, float3 normal) {
-#if ENABLE_SHADOWS == 1
+#if ENABLE_SHADOWS == 1 && MAX_EXTRA_SHADOWS > 0
 	[branch]
 	if (light.ShadowMode == LIGHT_SHADOW_OFF) {
 		return 1.0;
@@ -266,14 +271,9 @@ float CalculateSpecularLight(float nDotH, float exp, float level) {
 	return pow(nDotH, max(exp, 0.1)) * level;
 }
 
-float CalculateSpecularLight(float3 normal, float3 position, float3 lightDir) {
+float CalculateSpecularLight_ByValues(float3 normal, float3 position, float3 lightDir, float exp, float level) {
 	float nDotH = GetNDotH(normal, position, lightDir);
-	return CalculateSpecularLight(nDotH, gMaterial.SpecularExp, gMaterial.Specular);
-}
-
-float CalculateSpecularLight_Maps(float3 normal, float3 position, float specularExpMultiplier, float3 lightDir) {
-	float nDotH = GetNDotH(normal, position, lightDir);
-	return CalculateSpecularLight(nDotH, gMaterial.SpecularExp * specularExpMultiplier, gMaterial.Specular);
+	return CalculateSpecularLight(nDotH, exp, level);
 }
 
 float CalculateSpecularLight_Maps_Sun(float3 normal, float3 position, float specularExpMultiplier, float3 lightDir) {
@@ -343,11 +343,11 @@ void GetLight_NoSpecular(float3 normal, float3 position, out float3 diffuse) {
 	}
 }
 
-void GetLight_Maps(float3 normal, float3 position, float specularExpMultiplier, out float3 diffuse, out float3 specular) {
+void GetLight_Custom(float3 normal, float3 position, float specularExp, float specularValue, out float3 diffuse, out float3 specular) {
 	float3 direction = gLights[0].DirectionW.xyz;
 	float shadow = GetMainShadow_ConsiderMirror(position) * GetDiffuseMultiplier(normal, direction);
 	diffuse = gLights[0].Color.xyz * shadow;
-	specular = CalculateSpecularLight_Maps(normal, position, specularExpMultiplier, direction) * gLights[0].Color.xyz * shadow;
+	specular = CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * gLights[0].Color.xyz * shadow;
 
 	[loop]
 	for (int i = 1; i < MAX_LIGHS_AMOUNT; i++) {
@@ -356,11 +356,15 @@ void GetLight_Maps(float3 normal, float3 position, float specularExpMultiplier, 
 
 		shadow = GetLight_SummaryShadow(gLights[i], normal, position, direction);
 		diffuse += gLights[i].Color.xyz * shadow;
-		specular += CalculateSpecularLight_Maps(normal, position, specularExpMultiplier, direction) * gLights[i].Color.xyz * shadow;
+		specular += CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * gLights[i].Color.xyz * shadow;
 	}
 }
 
-void GetLight_Maps_Sun(float3 normal, float3 position, float specularExpMultiplier, out float3 diffuse, out float3 specular) {
+void GetLight_Material(float3 normal, float3 position, float specularExpMultiplier, out float3 diffuse, out float3 specular) {
+	GetLight_Custom(normal, position, gMaterial.SpecularExp * specularExpMultiplier, gMaterial.Specular, diffuse, specular);
+}
+
+void GetLight_Material_Sun(float3 normal, float3 position, float specularExpMultiplier, out float3 diffuse, out float3 specular) {
 	float3 direction = gLights[0].DirectionW.xyz;
 	float shadow = GetMainShadow_ConsiderMirror(position) * GetDiffuseMultiplier(normal, direction);
 	diffuse = gLights[0].Color.xyz * shadow;
@@ -376,24 +380,26 @@ void GetLight_Maps_Sun(float3 normal, float3 position, float specularExpMultipli
 	}
 }
 
+//////////////// Calculate light using material values
+
 float3 CalculateLight(float3 txColor, float3 normal, float3 position, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal) * GetAo(screenCoords);
 	float3 diffuse, specular;
-	GetLight_Maps(normal, position, 1.0, diffuse, specular);
+	GetLight_Material(normal, position, 1.0, diffuse, specular);
 	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * diffuse + gMaterial.Emissive) + specular;
 }
 
 float3 CalculateLight_Maps(float3 txColor, float3 normal, float3 position, float specularMultiplier, float specularExpMultiplier, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal) * GetAo(screenCoords);
 	float3 diffuse, specular;
-	GetLight_Maps(normal, position, specularExpMultiplier, diffuse, specular);
+	GetLight_Material(normal, position, specularExpMultiplier, diffuse, specular);
 	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * diffuse + gMaterial.Emissive) + specular * specularMultiplier;
 }
 
 float3 CalculateLight_Maps_Sun(float3 txColor, float3 normal, float3 position, float specularMultiplier, float specularExpMultiplier, float2 screenCoords) {
 	float3 ambient = GetAmbient(normal) * GetAo(screenCoords);
 	float3 diffuse, specular;
-	GetLight_Maps_Sun(normal, position, specularExpMultiplier, diffuse, specular);
+	GetLight_Material_Sun(normal, position, specularExpMultiplier, diffuse, specular);
 	return txColor * (gMaterial.Ambient * ambient + gMaterial.Diffuse * diffuse + gMaterial.Emissive) + specular * specularMultiplier;
 }
 

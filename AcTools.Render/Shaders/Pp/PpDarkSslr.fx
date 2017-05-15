@@ -127,7 +127,8 @@
 	#define gFixMultiplier 0.5
 	#define gOffset 0.05
 	#define gGlowFix 0.1
-	#define gDistanceThreshold 0.02
+	#define gDistanceThreshold 0.005
+	// gDistanceThreshold is divided by 4
 
 // new
 	float4 GetReflection(float2 coords, float3 normal, SamplerState s) {
@@ -179,7 +180,7 @@
 		newPosition = GetPosition(newUv.xy, GetDepth(newUv.xy, s));
 
 		float fresnel = saturate(3.2 * pow(1 + dot(viewDir, normal), 2));
-		float quality = 1 - saturate(abs(length(calculatedPosition - newPosition)) / gDistanceThreshold);
+		float quality = 1 - saturate(length(calculatedPosition - newPosition) / gDistanceThreshold - 3);
 
 		float alpha = fresnel * quality * saturate(min(newUv.x, 1 - newUv.x) / 0.1) * saturate(min(newUv.y, 1 - newUv.y) / 0.1);
 		return float4(newUv.xy - coords, saturate(2.0 * L / quality), alpha);
@@ -261,7 +262,7 @@
 		float specularExp = gNormalMap.Sample(s, coords).a;
 
 		float4 baseReflection = gBaseReflectionMap.SampleLevel(s, coords, 0);
-		float blur = saturate(firstStep.b / specularExp - 0.1) * 0.1;
+		float blur = saturate(firstStep.b) * saturate(1 - specularExp / 255) * 0.01;
 
 		float4 reflection;
 		[branch]

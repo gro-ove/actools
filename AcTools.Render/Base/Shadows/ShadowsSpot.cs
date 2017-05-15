@@ -15,7 +15,7 @@ namespace AcTools.Render.Base.Shadows {
 
         public ShadowsSpot(int mapSize) : base(mapSize) {
             _camera = new FpsCamera(1f) {
-                NearZ = 0.1f
+                NearZ = 0.02f
             };
 
             _buffer = TargetResourceDepthTexture.Create();

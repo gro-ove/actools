@@ -44,7 +44,7 @@ namespace AcManager.Controls.CustomShowroom {
         Blurred = 2
     }
 
-    public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable {
+    public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider {
         public static readonly string DefaultKey = "__DarkRendererSettings";
         public static readonly string DefaultPresetableKeyValue = "Custom Showroom";
 
@@ -533,6 +533,8 @@ namespace AcManager.Controls.CustomShowroom {
         protected DarkRendererSettings(DarkKn5ObjectRenderer renderer, string presetableKeyValue) {
             _presetableKeyValue = presetableKeyValue;
             Renderer = renderer;
+            Renderer.SetLightsDescriptionProvider(this);
+            TryToGuessCarLights = ValuesStorage.GetBool(KeyTryToGuessCarLights, true);
         }
 
         protected virtual void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -794,6 +796,24 @@ namespace AcManager.Controls.CustomShowroom {
         }));
 
         #region Lights
+        private const string KeyTryToGuessCarLights = "__TryToGuessCarLights";
+        private bool? _tryToGuessCarLights;
+
+        public bool TryToGuessCarLights {
+            get { return _tryToGuessCarLights ?? false; }
+            set {
+                if (Equals(value, _tryToGuessCarLights)) return;
+                _tryToGuessCarLights = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyTryToGuessCarLights, value);
+                Renderer.TryToGuessCarLightsIfMissing = value;
+            }
+        }
+
+        string IDarkLightsDescriptionProvider.GetFilename(string id) {
+            return FilesStorage.Instance.GetContentFilesFiltered($@"{id}.json", ContentCategory.CustomShowroomLights).Select(x => x.Filename).FirstOrDefault();
+        }
+
         private DelegateCommand _addLightCommand;
 
         public DelegateCommand AddLightCommand => _addLightCommand ?? (_addLightCommand = new DelegateCommand(() => {

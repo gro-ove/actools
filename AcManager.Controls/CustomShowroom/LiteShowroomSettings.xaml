@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
-        xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render" mc:Ignorable="d">
+                    xmlns:local="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                    xmlns:c="clr-namespace:AcManager.Controls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:t="http://acstuff.ru/app/tools"
+                    xmlns:forward="clr-namespace:AcTools.Render.Forward;assembly=AcTools.Render"
+                    xmlns:lights="clr-namespace:AcTools.Render.Kn5SpecificForwardDark.Lights;assembly=AcTools.Render" mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
@@ -31,7 +31,7 @@
                             <mui:HierarchicalComboBox.SelectedContent>
                                 <DataTemplate>
                                     <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"
-                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
+                                               Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
                                 </DataTemplate>
                             </mui:HierarchicalComboBox.SelectedContent>
                         </mui:HierarchicalComboBox>
@@ -42,7 +42,7 @@
                                 <Setter.Value>
                                     <DataTemplate>
                                         <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic"
-                                                Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
+                                                   Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type c:UserPresetsControl}}}" />
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -80,7 +80,7 @@
     </DataTemplate>
 
     <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -108,7 +108,7 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 0" Text="Parameters:" />
 
@@ -146,7 +146,7 @@
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="View angle"
-                        Postfix="°" />
+                                Postfix="°" />
                 <Slider Minimum="1.8" Maximum="90" Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" TickFrequency="8.82" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -170,7 +170,7 @@
                 </CheckBox>
 
                 <mui:ValueLabel Value="{Binding AlignCameraHorizontallyOffset, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Offset" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Offset" Postfix="%" />
                 <Slider Minimum="-100" Maximum="100"
                         Value="{Binding AlignCameraHorizontallyOffset, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                         TickFrequency="20" TickPlacement="BottomRight" />
@@ -186,7 +186,7 @@
                 </CheckBox>
 
                 <mui:ValueLabel Value="{Binding AlignCameraVerticallyOffset, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Offset" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Offset" Postfix="%" />
                 <Slider Minimum="-100" Maximum="100"
                         Value="{Binding AlignCameraVerticallyOffset, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" TickFrequency="20"
                         TickPlacement="BottomRight" />
@@ -197,11 +197,11 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <DockPanel>
                 <mui:ValueLabel Value="{Binding SteerDeg, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer"
-                        Postfix="°" />
+                                Postfix="°" />
                 <Slider Minimum="-30" Maximum="30" Value="{Binding SteerDeg, StringFormat='{}{0:F1}'}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -232,7 +232,7 @@
                     <mui:Cell>
                         <TextBlock Text="Change Car" />
                         <ProgressBar IsIndeterminate="True" VerticalAlignment="Bottom"
-                                Visibility="{Binding ChangeCarCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                                     Visibility="{Binding ChangeCarCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                     </mui:Cell>
                 </Button.Content>
             </Button>
@@ -241,14 +241,14 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Background:" Style="{StaticResource Heading2}" />
 
             <mui:ColorPicker Color="{Binding BackgroundColor}" />
             <DockPanel DataContext="{Binding Renderer}">
                 <mui:ValueLabel Value="{Binding BackgroundBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
                 <Slider Minimum="0" Maximum="300" Value="{Binding BackgroundBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
@@ -258,19 +258,19 @@
             <mui:ColorPicker Color="{Binding LightColor}" />
             <DockPanel DataContext="{Binding Renderer}">
                 <mui:ValueLabel Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
                 <Slider Minimum="0" Maximum="300" Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
             <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1">
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding LightθDeg, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="θ"
-                            Postfix="°" />
+                                    Postfix="°" />
                     <Slider Minimum="5" Maximum="89.9999" Value="{Binding LightθDeg, StringFormat='{}{0:F1}'}" TickFrequency="17" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding LightφDeg, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="φ"
-                            Postfix="°" />
+                                    Postfix="°" />
                     <Slider Minimum="0" Maximum="359.9999" Value="{Binding LightφDeg, StringFormat='{}{0:F1}'}" TickFrequency="72" TickPlacement="BottomRight" />
                 </DockPanel>
             </mui:SpacingUniformGrid>
@@ -287,7 +287,7 @@
             </DockPanel>
             <DockPanel DataContext="{Binding Renderer}">
                 <mui:ValueLabel Value="{Binding AmbientBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
                 <Slider Minimum="0" Maximum="300" Value="{Binding AmbientBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
@@ -295,7 +295,7 @@
             <TextBlock Text="Scene:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
             <ListBox Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding Showroom}" Margin="0 0 4 0" Height="200"
-                    ItemTemplate="{StaticResource VisualSettings.ShowroomItem}" mui:FancyScrollHelper.Outsize="False">
+                     ItemTemplate="{StaticResource VisualSettings.ShowroomItem}" mui:FancyScrollHelper.Outsize="False">
                 <ListBox.ItemsSource>
                     <CompositeCollection>
                         <x:Static Member="mui:BetterComboBox.NullValue" />
@@ -305,7 +305,7 @@
             </ListBox>
 
             <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
-                    Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='null'}">
+                                   Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='null'}">
                 <CheckBox IsChecked="{Binding Renderer.FlatMirror}">
                     <Label Content="Mirror" />
                 </CheckBox>
@@ -322,7 +322,7 @@
 
                 <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding FlatMirror}">
                     <mui:ValueLabel Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
+                                    mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
                     <Slider Minimum="0" Maximum="100"
                             Value="{Binding FlatMirrorReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="10"
                             TickPlacement="BottomRight" />
@@ -330,16 +330,16 @@
             </mui:SpacingStackPanel>
 
             <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
-                    Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠null'}">
+                                   Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠null'}">
                 <DockPanel DataContext="{Binding Renderer}">
                     <mui:ValueLabel Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from showroom" Postfix="%" />
+                                    mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from showroom" Postfix="%" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             TickFrequency="10" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding Renderer.CubemapAmbientWhite}"
-                        IsEnabled="{Binding Renderer.CubemapAmbient, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}">
+                          IsEnabled="{Binding Renderer.CubemapAmbient, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}">
                     <Label Content="White ambient as neutral" />
                 </CheckBox>
 
@@ -362,7 +362,7 @@
                 <DockPanel>
                     <Label Content="Car shadows:" />
                     <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding CarAmbientShadowsMode}"
-                            ItemsSource="{x:Static local:DarkRendererSettings.CarAmbientShadowsModes}">
+                                        ItemsSource="{x:Static local:DarkRendererSettings.CarAmbientShadowsModes}">
                         <mui:BetterComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -413,9 +413,9 @@
 
                     <DockPanel>
                         <mui:ValueLabel Value="{Binding Brightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
                         <Slider Minimum="0" Maximum="300" Value="{Binding Brightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                                TickFrequency="30" TickPlacement="BottomRight" />
+                                TickFrequency="30" TickPlacement="None" />
                     </DockPanel>
 
                     <DockPanel>
@@ -423,19 +423,38 @@
                         <mui:ColorPicker Color="{Binding Color, Converter={StaticResource DrawingToColorConverter}}" />
                     </DockPanel>
 
+                    <mui:Switch Value="{Binding Tag}">
+                        <mui:SpacingStackPanel Spacing="4" mui:Switch.When="{x:Static lights:DarkLightTag.Car}">
+                            <DockPanel>
+                                <Label Content="Attach to:" />
+                                <ToggleButton DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 2" IsChecked="{Binding AttachedToSelect}">
+                                    <Path Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Data="F1 M 54.25,34L 42,34L 42,21.75L 46,17.75L 46,26.75L 54,18.75L 57.25,22L 49.25,30L 58.25,30L 54.25,34 Z M 34,21.75L 34,34L 21.75,34L 17.75,30L 26.75,30L 18.75,22L 22,18.75L 30,26.75L 30,17.75L 34,21.75 Z M 21.75,42L 34,42L 34,54.25L 30,58.25L 30,49.25L 22,57.25L 18.75,54L 26.75,46L 17.75,46L 21.75,42 Z M 42,54.25L 42,42L 54.25,42L 58.25,46L 49.25,46L 57.25,54L 54,57.25L 46,49.25L 46,58.25L 42,54.25 Z" Width="12" Height="12" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </ToggleButton>
+                                <mui:BetterTextBox Text="{Binding AttachedTo}" Placeholder="None" />
+                            </DockPanel>
+                            <DockPanel Visibility="{Binding ActAsBrakeLight, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       ToolTip="Apart from being enabled with brake lights, also work with headlights, using provided multiplier">
+                                <mui:ValueLabel Value="{Binding AsHeadlightMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="As headlights" Postfix="%" />
+                                <Slider Minimum="0" Maximum="100" Value="{Binding AsHeadlightMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+                                        TickFrequency="10" TickPlacement="None" />
+                            </DockPanel>
+                        </mui:SpacingStackPanel>
+                    </mui:Switch>
+
                     <CheckBox IsChecked="{Binding UseShadows}">
                         <Label Content="Shadows" />
                     </CheckBox>
 
                     <CheckBox IsChecked="{Binding UseHighQualityShadows}" IsEnabled="{Binding UseShadows}"
-                            Visibility="{Binding HighQualityShadowsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                              Visibility="{Binding HighQualityShadowsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Label Content="Shadows filtering" />
                     </CheckBox>
 
                     <DockPanel IsEnabled="{Binding UseShadows}">
                         <Label Content="Resolution:" />
                         <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowsResolution}"
-                                ItemsSource="{x:Static local:DarkRendererSettings.ExtraShadowResolutionsValues}">
+                                            ItemsSource="{x:Static local:DarkRendererSettings.ExtraShadowResolutionsValues}">
                             <mui:BetterComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding StringFormat='{}{0}×{0}'}" />
@@ -451,7 +470,7 @@
                                 <mui:SpacingStackPanel Spacing="4">
                                     <DockPanel>
                                         <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Shadow size" Postfix=" m"
-                                                Value="{Binding ShadowsSize, StringFormat='{}{0:F1}'}" />
+                                                        Value="{Binding ShadowsSize, StringFormat='{}{0:F1}'}" />
                                         <Slider Minimum="2" Maximum="100" Value="{Binding ShadowsSize}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
                                 </mui:SpacingStackPanel>
@@ -462,7 +481,7 @@
                                 <mui:SpacingStackPanel Spacing="4">
                                     <DockPanel>
                                         <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"
-                                                Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
+                                                        Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
                                         <Slider Minimum="0" Maximum="10" Value="{Binding Range}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
                                 </mui:SpacingStackPanel>
@@ -473,17 +492,17 @@
                                 <mui:SpacingStackPanel Spacing="4">
                                     <DockPanel>
                                         <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Range" Postfix=" cm"
-                                                Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
+                                                        Value="{Binding Range, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
                                         <Slider Minimum="0" Maximum="10" Value="{Binding Range}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
                                     <DockPanel>
                                         <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Angle" Postfix="°"
-                                                Value="{Binding Angle, Converter={StaticResource MultiplyConverter}, ConverterParameter=114.591, StringFormat='{}{0:F0}'}" />
+                                                        Value="{Binding Angle, Converter={StaticResource MultiplyConverter}, ConverterParameter=114.591, StringFormat='{}{0:F0}'}" />
                                         <Slider Minimum="0" Maximum="1.047" Value="{Binding Angle}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
                                     <DockPanel>
                                         <mui:ValueLabel mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Blurness" Postfix="%"
-                                                Value="{Binding SpotFocus, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
+                                                        Value="{Binding SpotFocus, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                                         <Slider Minimum="0" Maximum="1" Value="{Binding SpotFocus}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
                                 </mui:SpacingStackPanel>
@@ -494,8 +513,8 @@
             </mui:BooleanSwitch>
 
             <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 -1 4 1" Stretch="Uniform"
-                    Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                    Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                  Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
             <mui:Switch Value="{Binding Tag}">
                 <Border mui:Switch.When="{x:Static lights:DarkLightTag.Car}" />
                 <CheckBox IsChecked="{Binding Enabled}" DockPanel.Dock="Left" Margin="4 0" />
@@ -509,8 +528,8 @@
                     </Style>
                 </Button.Style>
                 <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                        Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
-                        HorizontalAlignment="Center" StrokeThickness="1" />
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
+                      HorizontalAlignment="Center" StrokeThickness="1" />
             </Button>
             <mui:BetterTextBox Text="{Binding DisplayName}" Style="{StaticResource Borderless}" />
         </DockPanel>
@@ -522,14 +541,14 @@
     </DataTemplate>
 
     <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
 
             <mui:ColorPicker Color="{Binding LightColor}" />
             <DockPanel DataContext="{Binding Renderer}">
                 <mui:ValueLabel Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
                 <Slider Minimum="0" Maximum="300" Value="{Binding LightBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
@@ -546,12 +565,12 @@
             <DockPanel IsEnabled="{Binding Renderer.EnableShadows}">
                 <Label Content="Resolution:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-                        ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+                                    ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <TextBlock Text="Extra lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
             <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding ExtraLights}"
-                    ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
+                          ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
 
             <Button Content="Add New Light" Command="{Binding AddLightCommand}" ToolTip="Add new extra light to the scene (Ctrl+Shift+Alt+A)" />
 
@@ -559,15 +578,16 @@
                 <TextBlock.Text>Car’s lights:</TextBlock.Text>
             </TextBlock>
             <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding CarLights}"
-                    ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
+                          ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
 
             <c:MessageBlock CloseKey="dont-forget-to-save-car-lights">
                 <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">Don’t forget to save car’s and showrooms’s lights: each has its own set, so they won’t be saved with a scene preset!</TextBlock>
             </c:MessageBlock>
 
-            <!--<TextBlock Text="Showroom lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
-            <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding CarLights}"
-                    ItemTemplate="{StaticResource LightItemDataTemplate}" />-->
+            <CheckBox IsChecked="{Binding TryToGuessCarLights}" IsEnabled="{Binding Renderer.EnableShadows}">
+                <CheckBox.ToolTip>Try to guess lights based on entries from lights.ini and their meshes</CheckBox.ToolTip>
+                <Label Content="Guess lights" />
+            </CheckBox>
 
             <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
                 <Button Command="{Binding SaveCarLightsCommand}">
@@ -584,7 +604,7 @@
                 <TextBlock.Text>Showroom’s lights:</TextBlock.Text>
             </TextBlock>
             <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding ShowroomLights}"
-                    ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
+                          ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
 
             <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4">
                 <Button Command="{Binding SaveShowroomLightsCommand}">
@@ -600,19 +620,19 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
             <DockPanel>
                 <Label Content="MSAA:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static local:DarkRendererSettings.MsaaModes}"
-                        DisplayMemberPath="DisplayName" />
+                                    DisplayMemberPath="DisplayName" />
             </DockPanel>
             <DockPanel>
                 <Label Content="Pixel density:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static local:DarkRendererSettings.SsaaModes}"
-                        DisplayMemberPath="DisplayName" />
+                                    DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
@@ -665,7 +685,7 @@
             <DockPanel IsEnabled="{Binding Renderer.EnableShadows}">
                 <Label Content="Resolution:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-                        ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+                                    ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetQualityCommand}" />
@@ -673,25 +693,25 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance local:CmPreviewsSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
             <DockPanel>
                 <Label Content="MSAA:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding MsaaMode}" ItemsSource="{x:Static local:DarkRendererSettings.MsaaModes}"
-                        DisplayMemberPath="DisplayName" />
+                                    DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>
                 <Label Content="Pixel density:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding SsaaMode}" ItemsSource="{x:Static local:CmPreviewsSettings.SsaaModesExtended}"
-                        DisplayMemberPath="DisplayName" />
+                                    DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding HighQualityPreview, Converter={StaticResource InvertBooleanConverter}}">
                 <Label Content="Limit pixel density in editing mode"
-                        ToolTip="Limits the pixel density to 4x while adjusting the settings. Actual previews will still render at whatever setting you choose." />
+                       ToolTip="Limits the pixel density to 4x while adjusting the settings. Actual previews will still render at whatever setting you choose." />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Renderer.UseFxaa}">
@@ -740,7 +760,7 @@
             <DockPanel IsEnabled="{Binding Renderer.EnableShadows}">
                 <Label Content="Resolution:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding ShadowMapSize}"
-                        ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
+                                    ItemsSource="{x:Static local:DarkRendererSettings.ShadowResolutions}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetQualityCommand}" />
@@ -748,14 +768,14 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="Tone mapping:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
             <DockPanel>
                 <Label Content="Type:" />
                 <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Renderer.ToneMapping}"
-                        ItemsSource="{x:Static local:DarkRendererSettings.ToneMappings}">
+                                    ItemsSource="{x:Static local:DarkRendererSettings.ToneMappings}">
                     <mui:BetterComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock x:Name="Text" Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -770,23 +790,23 @@
             </DockPanel>
 
             <DockPanel DataContext="{Binding Renderer}"
-                    IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
+                       IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
                 <mui:ValueLabel Value="{Binding ToneExposure, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Exposure" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Exposure" Postfix="%" />
                 <Slider Minimum="50" Maximum="250" Value="{Binding ToneExposure, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
             <DockPanel DataContext="{Binding Renderer}"
-                    IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
+                       IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
                 <mui:ValueLabel Value="{Binding ToneGamma, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Gamma" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Gamma" Postfix="%" />
                 <Slider Minimum="50" Maximum="250" Value="{Binding ToneGamma, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
             <DockPanel DataContext="{Binding Renderer}"
-                    IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
+                       IsEnabled="{Binding ToneMapping, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠None'}">
                 <mui:ValueLabel Value="{Binding ToneWhitePoint, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="White point" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="White point" Postfix="%" />
                 <Slider Minimum="100" Maximum="400" Value="{Binding ToneWhitePoint, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="30" TickPlacement="BottomRight" />
             </DockPanel>
@@ -794,7 +814,7 @@
             <TextBlock Text="Color grading:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
             <CheckBox IsChecked="{Binding Renderer.UseColorGrading}"
-                    IsEnabled="{Binding Renderer.ColorGradingData, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                      IsEnabled="{Binding Renderer.ColorGradingData, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                 <Label Content="Enabled" />
             </CheckBox>
             <Button Content="Set Color Grading Texture" Command="{Binding SetColorGradingTextureCommand}" />
@@ -804,20 +824,20 @@
     </ScrollViewer>
 
     <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance local:DarkRendererSettings}" mui:FancyScrollHelper.Outsize="False"
-            Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+                  Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
         <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="PCSS params:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
             <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UsePcss}">
                 <mui:ValueLabel Value="{Binding PcssSceneScale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scene scale" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scene scale" Postfix="%" />
                 <Slider Minimum="5" Maximum="75" Value="{Binding PcssSceneScale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                         TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UsePcss}">
                 <mui:ValueLabel Value="{Binding PcssLightScale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Light scale" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Light scale" Postfix="%" />
                 <Slider Minimum="20" Maximum="720" Value="{Binding PcssLightScale, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                         TickFrequency="70" TickPlacement="BottomRight" />
             </DockPanel>
@@ -826,21 +846,21 @@
 
             <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UseBloom}">
                 <mui:ValueLabel Value="{Binding BloomRadiusMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Bloom" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Bloom" Postfix="%" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding BloomRadiusMultiplier, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel DataContext="{Binding Renderer}" IsEnabled="{Binding UseAo}">
                 <mui:ValueLabel Value="{Binding AoOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="SSAO" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="SSAO" Postfix="%" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding AoOpacity, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                         TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel DataContext="{Binding Renderer}">
                 <mui:ValueLabel Value="{Binding MaterialsReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
+                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Reflectiveness" Postfix="%" />
                 <Slider Minimum="50" Maximum="250"
                         Value="{Binding MaterialsReflectiveness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="20"
                         TickPlacement="BottomRight" />
@@ -855,13 +875,13 @@
             <mui:SpacingStackPanel IsEnabled="{Binding UseDof}" DataContext="{Binding Renderer}" Spacing="4">
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding DofFocusPlane, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                            Content="Focus plane" Postfix="m" />
+                                    Content="Focus plane" Postfix="m" />
                     <Slider Minimum="0" Maximum="5" Value="{Binding DofFocusPlane}" TickFrequency="1" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding DofScale, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scale" Postfix="%" />
+                                    mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Scale" Postfix="%" />
                     <Slider Minimum="0" Maximum="200" Value="{Binding DofScale, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
                             TickFrequency="20" TickPlacement="BottomRight" />
                 </DockPanel>
@@ -873,13 +893,13 @@
 
                     <DockPanel IsEnabled="{Binding UseAccumulationDof}">
                         <mui:ValueLabel Value="{Binding AccumulationDofIterations}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                                Content="Iterations for screenshots" />
+                                        Content="Iterations for screenshots" />
                         <Slider Minimum="50" Maximum="300" Value="{Binding AccumulationDofIterations}" TickFrequency="25" TickPlacement="BottomRight" />
                     </DockPanel>
 
                     <DockPanel IsEnabled="{Binding UseAccumulationDof}">
                         <mui:ValueLabel Value="{Binding AccumulationDofApertureSize, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
-                                mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Aperture size" Postfix=" cm" />
+                                        mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Aperture size" Postfix=" cm" />
                         <Slider Minimum="0" Maximum="2"
                                 Value="{Binding AccumulationDofApertureSize, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
                                 TickFrequency="0.2" TickPlacement="BottomRight" />

@@ -10,7 +10,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
     public class SmoothEmissiveChange {
         private Vector3? _value;
         private RendererStopwatch _stopwatch;
-        private bool _off;
+        private bool _off, _disableEmissive;
         private bool _smoothChanging;
         private float _position;
         
@@ -21,6 +21,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public static TimeSpan GuessDuration(Vector3 v) {
+            if (v.Length() < 10f) return TimeSpan.Zero;
+
             var color = (Vector3.Normalize(v) * 255f).ToDrawingColor();
             var saturation = color.GetSaturation();
 
@@ -31,21 +33,21 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var hue = color.GetHue();
             if (hue > 150 && hue <= 300) {
-                // bluish — modern?
+                // bluish â€” modern?
                 return TimeSpan.Zero;
             }
 
             if (hue > 100 && hue <= 150) {
-                // green — not very old
+                // green â€” not very old
                 return TimeSpan.FromSeconds(0.1);
             }
 
             if (hue < 20 || hue > 300) {
-                // red — brake lights, but not very saturated?
+                // red â€” brake lights, but not very saturated?
                 return TimeSpan.FromSeconds(0.1);
             }
 
-            // the only colors left are yellowish ones — definitely oldschool
+            // the only colors left are yellowish ones â€” definitely oldschool
             return TimeSpan.FromSeconds(0.2);
         }
 
@@ -54,7 +56,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _duration = duration.Value;
             }
 
+            if (_duration == TimeSpan.Zero) {
+                if (_value != color) {
+                    _value = color;
+                    _disableEmissive = color == null;
+                    _smoothChanging = false;
+                }
+                return;
+            }
+
             if (color == null) {
+                _disableEmissive = true;
                 if (_value != null) {
                     _off = true;
                     _smoothChanging = true;
@@ -76,19 +88,26 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     _duration = GuessDuration(_value ?? new Vector3(1f));
                 }
 
-                var delta = _stopwatch.ElapsedSeconds / _duration.Value.TotalSeconds;
-                _stopwatch.Reset();
-
-                _position = (float)(_off ? _position - delta : _position + delta).Saturate();
-
-                if (_position == (_off ? 0f : 1f)) {
+                if (_duration == TimeSpan.Zero) {
                     _smoothChanging = false;
                     _stopwatch = null;
+                    _position = 1f;
+                } else {
+                    var delta = _stopwatch.ElapsedSeconds / _duration.Value.TotalSeconds;
+                    _stopwatch.Reset();
+
+                    _position = (float)(_off ? _position - delta : _position + delta).Saturate();
+
+                    if (_position == (_off ? 0f : 1f)) {
+                        _smoothChanging = false;
+                        _stopwatch = null;
+                    }
                 }
             }
 
-            if (_value.HasValue) {
-                material?.SetEmissiveNext(_value.Value, _position);
+            if (_value.HasValue || _disableEmissive) {
+                _disableEmissive = false;
+                material?.SetEmissiveNext(_value ?? default(Vector3), _position);
             }
         }
     }

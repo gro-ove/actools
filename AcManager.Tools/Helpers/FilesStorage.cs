@@ -26,6 +26,7 @@ namespace AcManager.Tools.Helpers {
         public static readonly string GridTypes = "Grid Types";
         public static readonly string LicensePlates = "License Plates";
         public static readonly string PaintShop = "Paint Shop";
+        public static readonly string CustomShowroomLights = "Custom Showroom Lights";
     }
 
     public class FilesStorage : AbstractFilesStorage {

@@ -339,21 +339,25 @@ namespace AcTools.Render.Kn5SpecificForward {
                     _previousSelectedObjects.Clear();
                     _previousSelectedObjects.Add(first);
                     _previousSelectedFirstObject = first;
-                    SelectedObject = first;
+                    OnClickSelect(first);
                 } else {
                     var filtered = nodes.Where(x => !_previousSelectedObjects.Contains(x)).ToList();
                     if (filtered.Any()) {
                         _previousSelectedObjects.Add(filtered[0]);
-                        SelectedObject = filtered[0];
+                        OnClickSelect(filtered[0]);
                     } else {
                         _previousSelectedObjects.Clear();
                         _previousSelectedObjects.Add(first);
-                        SelectedObject = first;
+                        OnClickSelect(first);
                     }
                 }
             } else {
                 Deselect();
             }
+        }
+
+        protected virtual void OnClickSelect(IKn5RenderableObject selected) {
+            SelectedObject = selected;
         }
 
         public void Deselect() {

@@ -173,7 +173,7 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t build image", e);
+                NonfatalError.Notify("Canâ€™t build image", e);
             } finally {
                 _busy = false;
                 UpdateSize();
@@ -189,7 +189,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (!_warningShown) {
                     _warningShown = true;
                     ActionExtension.InvokeInMainThreadAsync(() => {
-                        FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "You’ll have to join pieces manually");
+                        FirstFloor.ModernUI.Windows.Toast.Show("Montage Plugin Not Installed", "Youâ€™ll have to join pieces manually");
                     });
                 }
 
@@ -200,7 +200,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
                         !OptionHwDownscale && downscale, Wrap(progress), cancellation);
 
-                progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.92));
+                progress?.Report(new Tuple<string, double?>("Combining piecesâ€¦", 0.92));
 
                 using (var process = new Process {
                     StartInfo = {
@@ -221,7 +221,7 @@ namespace AcManager.Controls.CustomShowroom {
                     }
                 }
 
-                progress?.Report(new Tuple<string, double?>("Cleaning up…", 0.96));
+                progress?.Report(new Tuple<string, double?>("Cleaning upâ€¦", 0.96));
 
                 var result = Path.Combine(destination, "out.jpg");
                 if (!File.Exists(result)) {

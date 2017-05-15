@@ -1576,6 +1576,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
             });
         }
 
+        public IEnumerable<CarLight> GetCarLights() {
+            var carLights = _carLights;
+            if (carLights == null) {
+                carLights = LoadLights().ToArray();
+                _carLights = carLights;
+            }
+
+            return _carLights;
+        }
+
         protected virtual IEnumerable<CarLight> LoadLights() {
             return LoadLights<CarLight>();
         }

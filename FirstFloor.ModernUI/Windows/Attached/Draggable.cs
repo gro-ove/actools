@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -416,6 +417,20 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return list;
         }
 
+        private static MethodInfo GetListMethod(IList list, Type type, bool add) {
+            return (add
+                    ? from x in list.GetType().GetMethods()
+                      where x.Name == "Add"
+                      let p = x.GetParameters()
+                      where p.Length == 1 && (p[0].ParameterType == type || type.IsSubclassOf(p[0].ParameterType))
+                      select x
+                    : from x in list.GetType().GetMethods()
+                      where x.Name == "Insert"
+                      let p = x.GetParameters()
+                      where p.Length == 2 && (p[1].ParameterType == type || type.IsSubclassOf(p[1].ParameterType))
+                      select x).FirstOrDefault();
+        }
+
         private static void InnerDrop([CanBeNull] ItemsControl source, [NotNull] ItemsControl destination, [CanBeNull] object item, DragEventArgs e) {
             if (item == null) {
                 e.Effects = DragDropEffects.None;
@@ -427,47 +442,37 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             try {
                 var destinationList = GetActualList(destination) as IList;
-                var ss = GetActualList(source);
-                var sourceList = ss as IList;
+                var sourceList = GetActualList(source) as IList;
 
                 if (destinationList == null) {
                     Logging.Warning("Can’t find target: " + destination.ItemsSource);
                     e.Effects = DragDropEffects.None;
                     return;
                 }
-                
+
+                if (ReferenceEquals(sourceList, destinationList) && sourceList.IndexOf(item) == newIndex) {
+                    e.Effects = DragDropEffects.None;
+                    return;
+                }
+
+                var method = GetListMethod(destinationList, type, newIndex == -1);
+                if (method == null) {
+                    e.Effects = DragDropEffects.None;
+                    return;
+                }
+
+                sourceList?.Remove(item);
                 if (newIndex >= destinationList.Count) {
                     newIndex = -1;
-                }
+                    method = GetListMethod(destinationList, type, true);
 
-                if (newIndex == -1) {
-                    var method = (from x in destinationList.GetType().GetMethods()
-                                  where x.Name == "Add"
-                                  let p = x.GetParameters()
-                                  where p.Length == 1 && (p[0].ParameterType == type || type.IsSubclassOf(p[0].ParameterType))
-                                  select x).FirstOrDefault();
                     if (method == null) {
                         e.Effects = DragDropEffects.None;
                         return;
                     }
-
-                    sourceList?.Remove(item);
-                    method.Invoke(destinationList, new[] { item });
-                } else {
-                    var method = (from x in destinationList.GetType().GetMethods()
-                                  where x.Name == "Insert"
-                                  let p = x.GetParameters()
-                                  where p.Length == 2 && (p[1].ParameterType == type || type.IsSubclassOf(p[1].ParameterType))
-                                  select x).FirstOrDefault();
-                    if (method == null) {
-                        e.Effects = DragDropEffects.None;
-                        return;
-                    }
-
-                    sourceList?.Remove(item);
-                    method.Invoke(destinationList, new[] { newIndex, item });
                 }
 
+                method.Invoke(destinationList, newIndex == -1 ? new[] { item } : new[] { newIndex, item });
                 e.Effects = DragDropEffects.Move;
             } catch (Exception ex) {
                 Logging.Debug(ex);

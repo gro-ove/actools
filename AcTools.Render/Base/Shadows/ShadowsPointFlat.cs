@@ -69,7 +69,7 @@ namespace AcTools.Render.Base.Shadows {
 
             for (var i = 0; i < 6; i++) {
                 if (_cameras[i].FarZ != radius) {
-                    _cameras[i].NearZ = 0.1f;
+                    _cameras[i].NearZ = 0.02f;
                     _cameras[i].FarZ = radius;
                     _cameras[i].SetLens(1f);
                 }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -17,6 +15,7 @@ using AcTools.Render.Base.Reflections;
 using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Data;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
@@ -32,6 +31,11 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
+    public interface IDarkLightsDescriptionProvider {
+        [CanBeNull]
+        string GetFilename([NotNull] string id);
+    }
+
     public partial class DarkKn5ObjectRenderer : ToolsKn5ObjectRenderer {
         private TargetResourceTexture _mirrorBuffer, _mirrorBlurBuffer, _mirrorTemporaryBuffer;
         private TargetResourceDepthTexture _mirrorDepthBuffer;
@@ -96,6 +100,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (ShowroomNode == null) {
                 CarNode?.Movable.StopMovement();
                 CarNode?.ResetPosition();
+            } else {
+                LoadObjLights(DarkLightTag.Showroom, ShowroomNode.RootDirectory);
             }
         }
 
@@ -252,8 +258,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     return new[] { 10f };
             }
         }
-
-        private Kn5RenderableCar _car;
+        
         private FlatMirror _mirror;
         private RenderableList _carWrapper;
 
@@ -280,12 +285,50 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        protected override void ExtendCar(CarSlot slot, Kn5RenderableCar car, RenderableList carWrapper) {
+        private readonly Dictionary<int, bool> _lightsGuessed = new Dictionary<int, bool>();
+        private bool _tryToGuessCarLightsIfMissing;
+
+        public bool TryToGuessCarLightsIfMissing {
+            get { return _tryToGuessCarLightsIfMissing; }
+            set {
+                if (Equals(value, _tryToGuessCarLightsIfMissing)) return;
+                _tryToGuessCarLightsIfMissing = value;
+                OnPropertyChanged();
+
+                if (value) {
+                    foreach (var slot in CarSlots) {
+                        var tag = DarkLightTag.GetCarTag(slot.Id);
+                        if (Lights.All(x => x.Tag != tag)) {
+                            TryToGuessCarLights(tag, slot.CarNode);
+                        }
+                    }
+                } else {
+                    foreach (var id in _lightsGuessed.Keys) {
+                        RemoveLights(DarkLightTag.GetCarTag(id));
+                    }
+                }
+            }
+        }
+
+        [CanBeNull]
+        private IDarkLightsDescriptionProvider _lightsDescriptionProvider;
+
+        public void SetLightsDescriptionProvider([CanBeNull] IDarkLightsDescriptionProvider provider) {
+            _lightsDescriptionProvider = provider;
+        }
+
+        protected override void ExtendCar([NotNull] CarSlot slot, [CanBeNull] Kn5RenderableCar car, [NotNull] RenderableList carWrapper) {
             base.ExtendCar(slot, car, carWrapper);
 
-            _car = car;
-            if (_car != null) {
-                LoadObjLights(DarkLightTag.GetCarTag(slot.Id), _car.RootDirectory);
+            var lightTag = DarkLightTag.GetCarTag(slot.Id);
+            RemoveLights(lightTag);
+
+            if (car != null && !LoadObjLights(lightTag, car.RootDirectory) &&
+                    TryToGuessCarLightsIfMissing) {
+                TryToGuessCarLights(lightTag, car);
+                _lightsGuessed[slot.Id] = true;
+            } else {
+                _lightsGuessed.Remove(slot.Id);
             }
 
             _carWrapper = carWrapper;
@@ -294,6 +337,179 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (_meshDebug) {
                 UpdateMeshDebug(car);
             }
+        }
+
+        private static float IsHeadlightColor(Vector3? color) {
+            if (color == null) return 0f;
+
+            var v = color.Value;
+            var n = Vector3.Normalize(v);
+            var c = n.ToDrawingColor();
+            var saturation = c.GetSaturation();
+            var brightness = c.GetBrightness();
+            var hue = c.GetHue();
+
+            if (saturation > 0.2 && (hue < 20 || hue > 340)) return 0f;
+            if (saturation > 0.8) return 0f;
+            if (brightness < 0.4) return 0f;
+            if (v.Length() < 30) return 0f;
+
+            return v.Length() * (2f - saturation);
+        }
+
+        private static float IsBrakeLightColor(Vector3? color) {
+            if (color == null) return 0f;
+
+            var v = color.Value;
+            var n = Vector3.Normalize(v);
+            var c = n.ToDrawingColor();
+            var saturation = c.GetSaturation();
+            var hue = c.GetHue();
+
+            if (hue > 40 && hue < 320) return 0f;
+            if (saturation < 0.4) return 0f;
+            if (v.Length() < 5) return 0f;
+
+            return v.Length() * (1f + saturation);
+        }
+
+        private class InnerPair {
+            public Vector3 Position;
+            public Vector3 Normal;
+            public int Count;
+            public BoundingBox BoundingBox;
+        }
+
+        private int CreateLightsForEmissiveMesh(DarkLightTag tag, CarData.LightObject light, Kn5RenderableObject mesh) {
+            if (mesh?.BoundingBox.HasValue != true) return 0;
+
+            var inv = Matrix.Invert(Matrix.Transpose(mesh.ParentMatrix));
+
+            var vertices = mesh.Vertices.Select(x => new {
+                Position = Vector3.TransformCoordinate(x.Position, mesh.ParentMatrix),
+                Normal = Vector3.TransformCoordinate(x.Normal, inv)
+            }).ToArray();
+            var list = new List<InnerPair>();
+
+            var threshold = 0.3f;
+            foreach (var v in vertices) {
+                var min = float.PositiveInfinity;
+                InnerPair minPair = null;
+                foreach (var t in list) {
+                    if (BoundingBox.Contains(t.BoundingBox, v.Position) == ContainmentType.Contains) {
+                        minPair = t;
+                        break;
+                    }
+
+                    var d = (v.Position - t.Position).LengthSquared();
+                    if (d > min || d > threshold) continue;
+                    min = d;
+                    minPair = t;
+                }
+
+                if (minPair == null) {
+                    list.Add(new InnerPair {
+                        Position = v.Position,
+                        Normal = v.Normal,
+                        Count = 1,
+                        BoundingBox = new BoundingBox(v.Position, v.Position)
+                    });
+                } else {
+                    minPair.Position = (minPair.Position * minPair.Count + v.Position) / (1f + minPair.Count);
+                    minPair.Normal = (minPair.Normal * minPair.Count + v.Normal) / (1f + minPair.Count);
+                    minPair.Position.ExtendBoundingBox(ref minPair.BoundingBox);
+                    minPair.Count++;
+                }
+            }
+
+            for (var i = 1; i < list.Count; i++) {
+                var v = list[i];
+                for (var j = 0; j < i; j++) {
+                    var t = list[j];
+                    var d = (v.Position - t.Position).LengthSquared();
+                    if (d <= threshold) {
+                        v.Position = (v.Position * v.Count + t.Position * t.Count) / (v.Count + t.Count);
+                        v.Normal = (v.Normal * v.Count + t.Normal * t.Count) / (v.Count + t.Count);
+                        v.Count += t.Count;
+                        t.BoundingBox.ExtendBoundingBox(ref v.BoundingBox);
+
+                        // list.Remove(v); // wut? why?
+                        list.Remove(t);
+
+                        i = 0;
+                        break;
+                    }
+                }
+            }
+
+            var result = 0;
+            if (light.BrakeColor != null) {
+                var emissive = light.BrakeColor.Value;
+                foreach (var x in list) {
+                    AddLight(new DarkSpotLight {
+                        DisplayName = light.HeadlightColor != null ? $"Brakelight (+{light.HeadlightColor.Value.Length() / emissive.Length():F2} h.)" : "Brakelight",
+                        Tag = tag,
+                        Position = x.Position + x.Normal * 0.1f,
+                        Direction = Vector3.Normalize(x.Normal + new Vector3(0f, -1f, -1f)),
+                        Range = 1.5f,
+                        Angle = 1.4f,
+                        Color = Vector3.Normalize(emissive).ToDrawingColor(),
+                        UseShadows = true,
+                        Brightness = (emissive.Length() * x.BoundingBox.GetSize().Length() * 0.2f).Clamp(0.2f, 0.5f)
+                    });
+                    result++;
+                }
+            } else {
+                var emissive = light.HeadlightColor ?? default(Vector3);
+                if (emissive == default(Vector3)) return 0;
+
+                foreach (var x in list) {
+                    AddLight(new DarkSpotLight {
+                        DisplayName = "Headlight",
+                        Tag = tag,
+                        Position = x.Position + x.Normal * 0.05f,
+                        Direction = new Vector3(0, -0.45f, 0.9f),
+                        Range = 13.5f,
+                        Color = Vector3.Normalize(emissive).ToDrawingColor(),
+                        UseShadows = true,
+                        Brightness = (emissive.Length() * x.BoundingBox.GetSize().Length() * 0.2f).Clamp(2.0f, 3.5f)
+                    });
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
+        private bool TryToGuessCarLights(DarkLightTag tag, Kn5RenderableCar car) {
+            // unline with deferred renderer, here we only try to guess four lights, two headlights and two rearlights, 
+            // which should be symmetrical with proper colors and all that
+
+            var lights = car.GetCarLights().ToArrayIfItIsNot();
+
+            const int limit = 2;
+            var headlightsAdded = 0;
+            var brakeLightsAdded = 0;
+
+            foreach (var light in lights.Select(x => new {
+                Priority = Math.Max(IsHeadlightColor(x.Description?.HeadlightColor), IsBrakeLightColor(x.Description?.BrakeColor)),
+                Light = x
+            }).Where(x => x.Priority > 0f).OrderBy(x => x.Priority)) {
+                var isBrakeLight = light.Light.Description?.BrakeColor != null;
+                if ((isBrakeLight ? brakeLightsAdded : headlightsAdded) >= limit) continue;
+
+                var mesh = car.RootObject.GetAllChildren().OfType<Kn5RenderableObject>().FirstOrDefault(x => x.Name == light.Light.Description?.Name);
+                if (mesh == null) continue;
+
+                var added = CreateLightsForEmissiveMesh(tag, light.Light.Description, mesh);
+                if (isBrakeLight) {
+                    brakeLightsAdded += added;
+                } else {
+                    headlightsAdded += added;
+                }
+            }
+
+            return headlightsAdded > 0 || brakeLightsAdded > 0;
         }
 
         private bool _mirrorDirty;
@@ -419,7 +635,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private float FxCubemapAmbientValue => CubemapAmbientWhite ? -CubemapAmbient : CubemapAmbient;
 
-        private bool _pcssNoiseMapSet, _pcssParamsSet;
+        private bool _effectNoiseMapSet;
+        
+        public void SetEffectNoiseMap() {
+            if (!_effectNoiseMapSet) {
+                _effectNoiseMapSet = true;
+                Effect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(16, 16));
+            }
+        }
+
+        private bool _pcssParamsSet;
 
         private void PreparePcss(ShadowsDirectional shadows) {
             if (_pcssParamsSet) return;
@@ -436,11 +661,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             effect.FxPcssScale.Set(splits);
-
-            if (!_pcssNoiseMapSet) {
-                _pcssNoiseMapSet = true;
-                effect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(16, 16));
-            }
+            SetEffectNoiseMap();
         }
 
         private class MovingLight {
@@ -604,9 +825,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             Array.Copy(_lights, index + 1, updated, index, updated.Length - index);
             Lights = updated;
         }
+
+        public void RemoveLights(DarkLightTag tag) {
+            if (Lights.Any(x => x.Tag == tag)) {
+                Lights = Lights.Where(x => x.Tag != tag).ToArray();
+            }
+        }
         
         private readonly List<MovingLight> _movingLights = new List<MovingLight>();
-        private readonly Random _random = new Random();
 
         public void AddLight() {
             var color = new Vector3((float)MathUtils.Random(), (float)MathUtils.Random(),
@@ -657,12 +883,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                            .ToArray();
         }
 
-        public void LoadObjLights(DarkLightTag tag, string objDirectory) {
-            var filename = Path.Combine(objDirectory, "ui", "cm_lights.json");
-            if (!File.Exists(filename)) return;
+        public bool LoadObjLights(DarkLightTag tag, string objDirectory) {
+            var filename = _lightsDescriptionProvider?.GetFilename(Path.GetFileName(objDirectory) ?? "") ??
+                    Path.Combine(objDirectory, "ui", "cm_lights.json");
+            if (!File.Exists(filename)) {
+                RemoveLights(tag);
+                return false;
+            }
 
             var lights = JArray.Parse(File.ReadAllText(filename)).OfType<JObject>();
             DeserializeLights(tag, lights);
+            return true;
         }
 
         public void AddMovingLight() {
@@ -688,12 +919,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void UpdateLights(Vector3 mainLightDirection, bool setShadows, bool singleLight) {
             var effect = Effect;
 
-            _mainLight.Direction = mainLightDirection;
+            _mainLight.Direction = -mainLightDirection;
             _mainLight.Brightness = LightBrightness;
             _mainLight.Color = LightColor;
 
             if (IsFlatMirrorReflectedLightEnabled) {
-                _reflectedLight.Direction = new Vector3(mainLightDirection.X, -mainLightDirection.Y, mainLightDirection.Z);
+                _reflectedLight.Direction = new Vector3(-mainLightDirection.X, mainLightDirection.Y, -mainLightDirection.Z);
                 _reflectedLight.Brightness = LightBrightness * FlatMirrorReflectiveness;
                 _reflectedLight.Color = LightColor;
                 _reflectedLight.ShadowsResolution = ShadowMapSize;
@@ -701,21 +932,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             } else {
                 _reflectedLight.Enabled = false;
             }
-
+            
             for (var i = _lights.Length - 1; i >= 0; i--) {
                 var l = _lights[i];
                 l.Update(DeviceContextHolder, ShadowsPosition, setShadows && !singleLight && EnableShadows ? this : null);
             }
 
-            // TODO: only once?
-            if (!_pcssNoiseMapSet) {
-                _pcssNoiseMapSet = true;
-                effect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(16, 16));
-            }
-
-            // TODO: move somewhere else?
+            SetEffectNoiseMap();
             DarkLightBase.ToShader(DeviceContextHolder, effect, _lights, singleLight ? 1 : _lights.Length,
-                    _limitedMode ? EffectDarkMaterial.MaxExtraShadows / 2 : EffectDarkMaterial.MaxExtraShadows);
+                    _limitedMode ? EffectDarkMaterial.MaxExtraShadowsFewer : EffectDarkMaterial.MaxExtraShadows);
         }
 
         private static void UpdateCarLights(CarSlot slot, DarkLightBase[] lights) {
@@ -735,18 +960,18 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                     if (l.ActAsHeadlight) {
                         l.Enabled = car.HeadlightsEnabled;
-                        l.BrightnessMultipler = 1f;
+                        l.BrightnessMultiplier = 1f;
 
                         if (!l.SmoothDelay.HasValue) {
                             l.SmoothDelay = car.GetApproximateHeadlightsDelay() ?? TimeSpan.Zero;
                         }
                     } else if (l.ActAsBrakeLight) {
-                        if (l.ActAsDouble == 0f) {
+                        if (l.AsHeadlightMultiplier == 0f) {
                             l.Enabled = car.BrakeLightsEnabled;
-                            l.BrightnessMultipler = 1f;
+                            l.BrightnessMultiplier = 1f;
                         } else {
                             l.Enabled = car.BrakeLightsEnabled || car.HeadlightsEnabled;
-                            l.BrightnessMultipler = car.BrakeLightsEnabled ? 1f : l.ActAsDouble;
+                            l.BrightnessMultiplier = car.BrakeLightsEnabled ? 1f : l.AsHeadlightMultiplier;
                         }
 
                         if (!l.SmoothDelay.HasValue) {
@@ -791,28 +1016,29 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         
         private bool _complexMode;
         private bool _limitedMode;
+        private EffectDarkMaterial.Mode _darkMode;
 
         private EffectDarkMaterial.Mode FindAppropriateMode() {
-            _complexMode = true;
-            _limitedMode = false;
-            return EffectDarkMaterial.Mode.Main;
-
             var useComplex = _lights.Count(x => x.ActuallyEnabled) > 1 || IsFlatMirrorReflectedLightEnabled;
             _complexMode = useComplex;
 
             if (!EnableShadows) {
-                return useComplex ? EffectDarkMaterial.Mode.NoShadows : EffectDarkMaterial.Mode.SimpleNoShadows;
+                return useComplex ? EffectDarkMaterial.Mode.NoExtraShadows : EffectDarkMaterial.Mode.SimpleNoShadows;
             }
 
             if (!useComplex) {
+                if (LightBrightness <= 0f || LightColor == Color.Black) {
+                    return EffectDarkMaterial.Mode.WithoutLighting;
+                }
+
                 return UsePcss ? EffectDarkMaterial.Mode.Simple : EffectDarkMaterial.Mode.SimpleNoPCSS;
             }
 
             var shadowsAmount = _lights.Count(x => x.ActuallyEnabled && x.UseShadows);
-            _limitedMode = shadowsAmount <= 5;
+            _limitedMode = shadowsAmount <= EffectDarkMaterial.MaxExtraShadowsFewer;
 
             return _limitedMode
-                    ? (UsePcss ? EffectDarkMaterial.Mode.Limited : EffectDarkMaterial.Mode.LimitedNoPCSS)
+                    ? (UsePcss ? EffectDarkMaterial.Mode.FewerExtraShadows : EffectDarkMaterial.Mode.FewerExtraShadowsNoPCSS)
                     : (UsePcss ? EffectDarkMaterial.Mode.Main : EffectDarkMaterial.Mode.NoPCSS);
         }
 
@@ -821,13 +1047,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _effect = DeviceContextHolder.GetExistingEffect<EffectDarkMaterial>();
             }
 
-            var mode = FindAppropriateMode();
+            _darkMode = FindAppropriateMode();
             if (_effect == null) {
-                _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>(e => e.SetMode(mode, Device));
-            } else if (_effect.GetMode() != mode) {
-                _effect.SetMode(mode, Device);
+                _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>(e => e.SetMode(_darkMode, Device));
+            } else if (_effect.GetMode() != _darkMode) {
+                _effect.SetMode(_darkMode, Device);
                 _pcssParamsSet = false;
-                _pcssNoiseMapSet = false;
+                _effectNoiseMapSet = false;
                 SetShadowsDirty();
                 SetReflectionCubemapDirty();
                 // TODO: more?
@@ -1135,7 +1361,8 @@ AA: {(string.IsNullOrEmpty(aa) ? "None" : aa)}
 Shadows: {(EnableShadows ? $"{(UsePcss ? "Yes, PCSS" : "Yes")} ({ShadowMapSize})" : "No")}
 Effects: {(string.IsNullOrEmpty(se) ? "None" : se)}
 Color: {(string.IsNullOrWhiteSpace(pp) ? "Original" : pp)}
-Lights: {_lights.Count(x => x.ActuallyEnabled)} (shadows: {(EnableShadows ? 1 + _lights.Count(x => x.ActuallyEnabled && x.UseShadows) : 0)})
+Shaders set: {_darkMode}
+Lights: {_lights.Count(x => x.ActuallyEnabled)} (shadows: {(EnableShadows ? 1 + _lights.Count(x => x.ActuallyEnabled && x.ShadowsActive) : 0)})
 Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av., enabled" : "Magick.NET av., disabled" : "Magick.NET not available")}".Trim();
         }
 
@@ -1683,6 +1910,16 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                                 .MinEntryOrDefault(x => x.Distance)?.Distance;
             if (distance.HasValue) {
                 DofFocusPlane = distance.Value;
+            }
+        }
+
+        protected override void OnClickSelect(IKn5RenderableObject selected) {
+            var light = _lights.FirstOrDefault(x => x.Tag.IsCarTag && x.AttachedToSelect);
+            if (light != null) {
+                light.AttachedTo = selected.Name;
+                light.AttachedToSelect = false;
+            } else {
+                base.OnClickSelect(selected);
             }
         }
     }

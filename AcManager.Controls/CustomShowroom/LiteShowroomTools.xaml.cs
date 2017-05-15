@@ -145,7 +145,8 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            public bool CanSelectNodes() => Mode == Mode.Main || Mode == Mode.Selected;
+            public bool CanSelectNodes() => Mode == Mode.Main || Mode == Mode.Selected ||
+                    (Renderer as DarkKn5ObjectRenderer)?.Lights.Any(x => x.Tag.IsCarTag && x.AttachedToSelect) == true;
 
             private DelegateCommand<Mode> _selectModeCommand;
 

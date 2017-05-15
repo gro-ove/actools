@@ -48,7 +48,7 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 float4 GetReflection_Maps_NoAlpha(float3 posW, float3 normal, float alpha, float specularExpMultiplier, float reflectionMultiplier) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normal);
-	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
+	float3 refl = GetReflection(reflected, gMaterial.SpecularExp * specularExpMultiplier);
 
 	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultiplier;
 
@@ -79,7 +79,7 @@ PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, floa
 	float txMapsReflectionMultiplier) {
 	return PackResult(
 			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
-			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultiplier);
+			normal, depth, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * txMapsSpecularExpMultiplier);
 }
 
 PS_OUT GetResult_Maps_NoAlpha(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultiplier, float txMapsSpecularExpMultiplier,
