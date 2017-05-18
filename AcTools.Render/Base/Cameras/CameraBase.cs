@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
-    public abstract class BaseCamera : ICamera {
+    public abstract class CameraBase : ICamera {
         public bool RhMode { get; set; } = true;
 
         public Vector3 Position { get; set; }
@@ -72,7 +72,7 @@ namespace AcTools.Render.Base.Cameras {
         public Matrix ViewProjInvert => _viewProjInvert ?? (_viewProjInvert = Matrix.Invert(ViewProj)).Value;
         private Matrix? _viewProjInvert;
 
-        protected BaseCamera(float fov) {
+        protected CameraBase(float fov) {
             Position = new Vector3();
             Right = new Vector3(1, 0, 0);
             Up = new Vector3(0, 1, 0);
@@ -101,7 +101,7 @@ namespace AcTools.Render.Base.Cameras {
 
         public abstract void Restore();
 
-        public abstract BaseCamera Clone();
+        public abstract CameraBase Clone();
 
         public virtual void SetLens(float aspect) {
             Aspect = aspect;

@@ -192,27 +192,32 @@ namespace CustomShowroom {
                     renderer.UseSsaa = options.UseSsaa;
 
 #if DEBUG
-                    //renderer.UseDof = true;
-                    //renderer.UseAccumulationDof = true;
-                    //renderer.UseAo = true;
-                    //renderer.UseCorrectAmbientShadows = true;
-                    //renderer.BlurCorrectAmbientShadows = true;
                     renderer.AoOpacity = 0.5f;
 
-                    // renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
-#endif
-
-                    renderer.BackgroundColor = Color.Black;
+                    /*renderer.BackgroundColor = Color.Black;
                     renderer.LightBrightness = 0.2f;
                     renderer.AmbientBrightness = 0.2f;
                     /*renderer.BackgroundBrightness = 0.02f;
                     renderer.FlatMirror = true;*/
                     renderer.FlatMirrorReflectedLight = true;
-                    
+                    renderer.TryToGuessCarLightsIfMissing = true;
+
+                    renderer.FlatMirror = true;
+
+                    // renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
+#endif
+
                     renderer.MagickOverride = options.MagickOverride;
                     new LiteShowroomFormWrapper(renderer) {
                         ReplaceableShowroom = true
-                    }.Run();
+                    }.Run(() => {
+                        // ReSharper disable once AccessToDisposedClosure
+                        var r = renderer;
+
+                        if (r.CarNode != null) {
+                            // r.CarNode.AlignWheelsByData = true;
+                        }
+                    });
                 }
             } else if (options.Mode == Mode.TrackMap) {
                 using (var renderer = new TrackMapPreparationRenderer(kn5File)) {

@@ -121,4 +121,10 @@
   <data name="Bokeh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\bokeh.dds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="LtcAmp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\ltcamp.dds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LtcMat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\ltcmat.dds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

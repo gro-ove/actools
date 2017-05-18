@@ -25,8 +25,13 @@ using FontWeight = SlimDX.DirectWrite.FontWeight;
 using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
-    public enum DarkLightType {
-        Point = 0, Directional = 1, Spot = 2
+    public enum DarkLightType : uint {
+        Point = EffectDarkMaterial.LightPoint,
+        Directional = EffectDarkMaterial.LightDirectional,
+        Spot = EffectDarkMaterial.LightSpot,
+        Sphere = EffectDarkMaterial.LightSphere,
+        Tube = EffectDarkMaterial.LightTube,
+        Plane = EffectDarkMaterial.LightPlane,
     }
 
     public class DarkLightTag {
@@ -133,6 +138,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
+        private bool _useSpeculars = true;
+
+        public bool UseSpeculars {
+            get { return _useSpeculars; }
+            set {
+                if (Equals(value, _useSpeculars)) return;
+                _useSpeculars = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool ActuallyEnabled => _enabled || _smoothChanging;
 
         private bool _isVisibleInUi = true;
@@ -172,6 +188,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkDirectionalLight();
                 case DarkLightType.Spot:
                     return new DarkSpotLight();
+                case DarkLightType.Sphere:
+                    return new DarkAreaSphereLight();
+                case DarkLightType.Tube:
+                    return new DarkAreaTubeLight();
+                case DarkLightType.Plane:
+                    return new DarkAreaPlaneLight();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
             }
@@ -223,7 +245,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             result.ShadowsResolution = ShadowsResolution;
             result.BrightnessMultiplier = BrightnessMultiplier;
             result.AttachedTo = AttachedTo;
+            result.AsHeadlightMultiplier = AsHeadlightMultiplier;
             result.SmoothDelay = SmoothDelay;
+            result.UseSpeculars = UseSpeculars;
+            result.ShadowsBlurMultiplier = ShadowsBlurMultiplier;
             return result;
         }
         #endregion
@@ -317,6 +342,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 obj["enabled"] = Enabled;
             }
 
+            if (!UseSpeculars) {
+                obj["speculars"] = UseSpeculars;
+            }
+
             obj["name"] = DisplayName;
 
             if (UseShadows) {
@@ -325,6 +354,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             if (UseHighQualityShadows) {
                 obj["shadowsSmooth"] = UseHighQualityShadows;
+            }
+
+            if (ShadowsBlurMultiplier != 1f) {
+                obj["shadowsBlur"] = ShadowsBlurMultiplier;
             }
 
             if (AsHeadlightMultiplier != 0f) {
@@ -356,8 +389,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             Position = StringToVector((string)obj["pos"]) ?? Vector3.UnitY;
             Color = HexStringToColor((string)obj["color"]) ?? Color.White;
             Brightness = obj["brightness"] != null ? (float)obj["brightness"] : 1f;
+            ShadowsBlurMultiplier = obj["shadowsBlur"] != null ? (float)obj["shadowsBlur"] : 1f;
             AsHeadlightMultiplier = obj["headlightsMultiplier"] != null ? (float)obj["headlightsMultiplier"] : 0f;
             _enabled = obj["enabled"] == null || (bool)obj["enabled"]; // to avoid smooth enabling
+            UseSpeculars = obj["speculars"] == null || (bool)obj["speculars"]; // to avoid smooth enabling
             DisplayName = (string)obj["name"] ?? DisplayName;
             UseShadows = obj["shadows"] != null && (bool)obj["shadows"];
             UseHighQualityShadows = obj["shadowsSmooth"] != null && (bool)obj["shadowsSmooth"];
@@ -423,7 +458,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             return new MoveableHelper(this, MoveableRotationAxis.All);
         }
 
-        public void DrawMovementArrows(DeviceContextHolder holder, BaseCamera camera) {
+        public void DrawMovementArrows(DeviceContextHolder holder, CameraBase camera) {
             if (!IsMovable) return;
             Movable.ParentMatrix = Matrix.Translation(ActualPosition);
             Movable.Draw(holder, camera, SpecialRenderMode.Simple);
@@ -493,18 +528,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected void UpdateShadowsMode() {
-            _shadowsMode = GetShadowsMode();
-        }
-
         private bool _useShadows;
 
         public bool UseShadows {
-            get { return _useShadows; }
+            get { return _useShadows && _shadowsAvailable; }
             set {
                 if (Equals(value, _useShadows)) return;
                 _useShadows = value;
-                UpdateShadowsMode();
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _shadowsAvailable = true;
+
+        public bool ShadowsAvailable {
+            get { return _shadowsAvailable; }
+            set {
+                if (Equals(value, _shadowsAvailable)) return;
+                _shadowsAvailable = value;
                 OnPropertyChanged();
             }
         }
@@ -518,7 +559,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             set {
                 if (Equals(value, _highQualityShadowsAvailable)) return;
                 _highQualityShadowsAvailable = value;
-                UpdateShadowsMode();
                 OnPropertyChanged();
             }
         }
@@ -530,7 +570,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             set {
                 if (Equals(value, _useHighQualityShadows)) return;
                 _useHighQualityShadows = value;
-                UpdateShadowsMode();
+                OnPropertyChanged();
+            }
+        }
+
+        private float _shadowsBlurMultiplier = 1f;
+
+        public float ShadowsBlurMultiplier {
+            get { return _shadowsBlurMultiplier; }
+            set {
+                if (Equals(value, _shadowsBlurMultiplier)) return;
+                _shadowsBlurMultiplier = value;
                 OnPropertyChanged();
             }
         }
@@ -547,12 +597,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        protected DarkShadowsMode GetShadowsMode() {
-            return UseShadows ? HighQualityShadowsAvailable && UseHighQualityShadows ? DarkShadowsMode.ExtraSmooth :
-                    DarkShadowsMode.ExtraFast : DarkShadowsMode.Off;
-        }
-
-        private DarkShadowsMode _shadowsMode;
         private int _shadowsOffset;
 
         protected abstract void UpdateShadowsOverride(DeviceContextHolder holder, Vector3 shadowsPosition, [CanBeNull] IShadowsDraw shadowsDraw);
@@ -560,7 +604,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         public void Update(DeviceContextHolder holder, Vector3 shadowsPosition, [CanBeNull] IShadowsDraw shadowsDraw) {
             // main shadows are rendered separately, by DarkKn5ObjectRenderer so all those
             // splits/PCSS/etc will be handled properly
-            if (ActuallyEnabled && _shadowsMode != DarkShadowsMode.Off && _shadowsMode != DarkShadowsMode.Main) {
+            if (ActuallyEnabled && UseShadows) {
                 UpdateShadowsOverride(holder, shadowsPosition, shadowsDraw);
             }
         }
@@ -590,11 +634,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 }
             }
             
+            light.Type = (uint)Type;
             light.PosW = ActualPosition;
             light.Color = Color.ToVector3() * brightnessMultipler;
-            light.ShadowMode = _shadowsOffset == -1 ? 0 : (uint)_shadowsMode;
-            light.ShadowCube = false;
             light.ShadowId = (uint)_shadowsOffset;
+            light.Flags = (UseSpeculars ? EffectDarkMaterial.LightSpecular : 0) |
+                    (UseShadows && _shadowsOffset != -1 ? 0 : EffectDarkMaterial.LightNoShadows) |
+                    (UseHighQualityShadows ? EffectDarkMaterial.LightSmoothShadows : 0);
         }
 
         // don’t need to dispose anything here — those buffers don’t actually store anything, but only used for moving stuff to shader
@@ -632,15 +678,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             var shadowOffset = 0;
 
             for (var i = count - 1; i >= 0; i--) {
-                var l = lights[i];
-                if (l.ActuallyEnabled && l._shadowsMode != DarkShadowsMode.Off && l._shadowsMode != DarkShadowsMode.Main) {
-                    lights[i]._shadowsOffset = -1;
-                }
+                lights[i]._shadowsOffset = -1;
             }
 
             for (var i = 0; i < count; i++) {
                 var l = lights[i];
-                if (l.ActuallyEnabled && l.UseShadows && l._shadowsMode == DarkShadowsMode.ExtraSmooth) {
+                if (l.ActuallyEnabled && l.UseShadows && l.UseHighQualityShadows) {
                     var offset = shadowOffset++;
                     if (offset < shadowsCount) {
                         l.SetShadowOverride(out _extraShadowsSizesBuffer[offset], out _extraShadowsMatricesBuffer[offset],
@@ -658,7 +701,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
             for (var i = 0; i < count; i++) {
                 var l = lights[i];
-                if (l.ActuallyEnabled && l.UseShadows && l._shadowsMode == DarkShadowsMode.ExtraFast && l._shadowsOffset == -1) {
+                if (l.ActuallyEnabled && l.UseShadows && !l.UseHighQualityShadows && l._shadowsOffset == -1) {
                     var offset = shadowOffset++;
                     if (offset < shadowsCount) {
                         l.SetShadowOverride(out _extraShadowsSizesBuffer[offset], out _extraShadowsMatricesBuffer[offset],
@@ -699,6 +742,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         public void Dispose() {
             DisposeOverride();
             DisposeHelper.Dispose(ref _debugText);
+            DisposeHelper.Dispose(ref _movable);
         }
 
         protected abstract void DisposeOverride();

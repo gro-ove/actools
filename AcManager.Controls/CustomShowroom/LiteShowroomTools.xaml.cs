@@ -97,6 +97,7 @@ namespace AcManager.Controls.CustomShowroom {
             Selected,
             AmbientShadows,
             Car,
+            Cars,
             Skin,
             Camera,
         }
@@ -176,6 +177,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     var dark = value as DarkKn5ObjectRenderer;
                     Settings = dark != null ? new DarkRendererSettings(dark) : null;
+                    Cars = dark != null ? new DarkRendererCars(dark) : null;
                 }
             }
 
@@ -192,6 +194,23 @@ namespace AcManager.Controls.CustomShowroom {
                     OnPropertyChanged();
                 }
             }
+
+            private DarkRendererCars _cars;
+
+            public DarkRendererCars Cars {
+                get { return _cars; }
+                set {
+                    if (Equals(value, _cars)) return;
+                    _cars = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelegateCommand _addCarCommand;
+
+            public DelegateCommand AddCarCommand => _addCarCommand ?? (_addCarCommand = new DelegateCommand(() => {
+                var car = SelectCarDialog
+            }));
 
             public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId);
 

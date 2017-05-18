@@ -150,7 +150,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             IsDirty = true;
         }
 
-        protected virtual void PrepareCamera(BaseCamera camera) { }
+        protected virtual void PrepareCamera(CameraBase camera) { }
 
         public bool AsyncTexturesLoading { get; set; } = true;
 
@@ -292,7 +292,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected virtual void OnShowroomChanged() {
             _sceneDirty = true;
-            CubemapReflection = ShowroomNode != null;
+            IsCubemapReflectionActive = ShowroomNode != null;
             IsDirty = true;
             SetReflectionCubemapDirty();
             SetShadowsDirty();
@@ -326,13 +326,13 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private bool _cubemapReflection = false;
+        private bool _isCubemapReflectionActive = false;
 
-        public bool CubemapReflection {
-            get { return _cubemapReflection; }
+        public bool IsCubemapReflectionActive {
+            get { return _isCubemapReflectionActive; }
             private set {
-                if (value == _cubemapReflection) return;
-                _cubemapReflection = value;
+                if (value == _isCubemapReflectionActive) return;
+                _isCubemapReflectionActive = value;
 
                 if (value) {
                     _reflectionCubemap = CreateReflectionCubemap();
@@ -483,20 +483,20 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 _light = value;
                 _sceneDirty = true;
-                _reflectionCubemapDirty = true;
                 IsDirty = true;
+                SetReflectionCubemapDirty();
                 OnPropertyChanged();
             }
         }
 
-        private bool _sceneDirty, _sceneWasDirty, _reflectionCubemapDirty, _shadowsEnabled;
+        private bool _sceneDirty, _sceneWasDirty, _shadowsEnabled;
 
-        public void SetShadowsDirty() {
+        protected void SetShadowsDirty() {
             _previousShadowsTarget = null;
         }
 
-        public void SetReflectionCubemapDirty() {
-            _reflectionCubemapDirty = true;
+        protected void SetReflectionCubemapDirty() {
+            _reflectionCubemap?.SetDirty();
         }
 
         private void OnSceneUpdated(object sender, EventArgs e) {
@@ -515,6 +515,30 @@ namespace AcTools.Render.Kn5SpecificForward {
             } else {
                 shadows.Update(-Light, center);
                 shadows.DrawScene(DeviceContextHolder, this);
+            }
+        }
+
+        private int _cubemapReflectionMapSize = 2048;
+
+        public int CubemapReflectionMapSize {
+            get { return _cubemapReflectionMapSize; }
+            set {
+                if (Equals(value, _cubemapReflectionMapSize)) return;
+                _cubemapReflectionMapSize = value;
+                _reflectionCubemap?.SetResolution(DeviceContextHolder, value);
+                OnPropertyChanged();
+            }
+        }
+
+        private int _cubemapReflectionFacesPerFrame = 1;
+
+        public int CubemapReflectionFacesPerFrame {
+            get { return _cubemapReflectionFacesPerFrame; }
+            set {
+                value = value.Clamp(1, 6);
+                if (Equals(value, _cubemapReflectionFacesPerFrame)) return;
+                _cubemapReflectionFacesPerFrame = value;
+                OnPropertyChanged();
             }
         }
 
@@ -545,10 +569,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             var reflectionPosition = ReflectionCubemapPosition;
-            if (_reflectionCubemap != null && (_reflectionCubemap.Update(reflectionPosition) || _reflectionCubemapDirty)) {
+            if (_reflectionCubemap != null) {
+                _reflectionCubemap.Update(reflectionPosition);
                 _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
-                _reflectionCubemap.DrawScene(DeviceContextHolder, this);
-                _reflectionCubemapDirty = false;
+                if (!_reflectionCubemap.DrawScene(DeviceContextHolder, this, ShotInProcess ? 6 : CubemapReflectionFacesPerFrame)) {
+                    IsDirty = true;
+                }
             }
 
             DrawPrepareEffect(eyesPosition, light, _shadows, _reflectionCubemap, false);
@@ -866,7 +892,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         [CanBeNull]
-        private BaseCamera GetCamera(CarCameraMode mode) {
+        private CameraBase GetCamera(CarCameraMode mode) {
             switch (mode) {
                 case CarCameraMode.None:
                     return null;

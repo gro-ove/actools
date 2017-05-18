@@ -3,6 +3,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shadows;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
 using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
@@ -27,8 +28,20 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Range = Range
                     };
+                case DarkLightType.Sphere:
+                    return new DarkAreaSphereLight {
+                        Range = Range
+                    };
+                case DarkLightType.Tube:
+                    return new DarkAreaTubeLight {
+                        Range = Range
+                    };
+                case DarkLightType.Plane:
+                    return new DarkAreaPlaneLight {
+                        Range = Range
+                    };
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
+                    return base.ChangeTypeOverride(newType);
             }
         }
 
@@ -86,7 +99,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 matrix = Matrix.Identity;
                 view = null;
             } else {
-                size = new Vector4(_shadows.MapSize, _shadows.MapSize * 6, 1f / _shadows.MapSize, 1f / 6f / _shadows.MapSize);
+                size = new Vector4(_shadows.MapSize, _shadows.MapSize * 6,
+                        ShadowsBlurMultiplier / _shadows.MapSize, ShadowsBlurMultiplier / 6f / _shadows.MapSize);
                 matrix = Matrix.Identity;
                 view = _shadows.View;
 
@@ -103,7 +117,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             base.SetOverride(holder, ref light);
             light.Range = Range;
             light.Type = EffectDarkMaterial.LightPoint;
-            light.ShadowCube = true;
+            light.Flags |= EffectDarkMaterial.LightShadowsCube;
         }
 
         public override void InvalidateShadows() {
@@ -112,6 +126,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
+            DisposeHelper.Dispose(ref _dummy);
         }
 
         public override void Rotate(Quaternion delta) {}
@@ -125,13 +140,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         public override void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
             if (_dummy == null) {
                 _dummy = new RenderableList {
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.08f),
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, 0.08f),
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(1f, 1f, 1f, 0f), 20, 0.08f),
+                    DebugLinesObject.GetLinesSphere(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.04f)
                 };
             }
-
-            _dummy.ParentMatrix = Matrix.Translation(ActualPosition);
+            
+            _dummy.ParentMatrix = ActualPosition.ToFixedSizeMatrix(camera);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
         }
     }

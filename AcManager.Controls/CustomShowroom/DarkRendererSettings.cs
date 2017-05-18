@@ -78,6 +78,13 @@ namespace AcManager.Controls.CustomShowroom {
             new SettingEntry(8192, "8192×8192")
         };
 
+        public static SettingEntry[] CubemapReflectionResolutions { get; } = {
+            new SettingEntry(256, "256×256"),
+            new SettingEntry(512, "512×512"),
+            new SettingEntry(1024, "1024×1024"),
+            new SettingEntry(2048, "2048×2048")
+        };
+
         public static ToneMappingFn[] ToneMappings { get; } = EnumExtension.GetValues<ToneMappingFn>();
 
         public static AoType[] AoTypes { get; } = DarkKn5ObjectRenderer.ProductionReadyAo;
@@ -95,6 +102,8 @@ namespace AcManager.Controls.CustomShowroom {
             public virtual int MsaaMode { get; set; } = 0;
             public virtual int SsaaMode { get; set; } = 1;
             public virtual int ShadowMapSize { get; set; } = 2048;
+            public int CubemapReflectionMapSize { get; set; } = 1024;
+            public int CubemapReflectionFacesPerFrame { get; set; } = 2;
 
             public virtual string ShowroomId { get; set; }
             public virtual string ColorGrading { get; set; }
@@ -251,12 +260,14 @@ namespace AcManager.Controls.CustomShowroom {
             obj.MsaaMode = MsaaMode.IntValue ?? -1;
             obj.SsaaMode = SsaaMode.IntValue ?? -1;
             obj.ShadowMapSize = ShadowMapSize.IntValue ?? -1;
+            obj.CubemapReflectionMapSize = CubemapReflectionMapSize.IntValue ?? -1;
 
             obj.ShowroomId = (Showroom as ShowroomObject)?.Id;
             obj.ColorGradingData = Renderer.UseColorGrading ? Renderer.ColorGradingData : null;
 
             obj.CubemapAmbient = Renderer.CubemapAmbient;
             obj.CubemapAmbientWhite = Renderer.CubemapAmbientWhite;
+            obj.CubemapReflectionFacesPerFrame = Renderer.CubemapReflectionFacesPerFrame;
             obj.ReflectionCubemapAtCamera = Renderer.ReflectionCubemapAtCamera;
             obj.ReflectionsWithShadows = Renderer.ReflectionsWithShadows;
             obj.EnableShadows = Renderer.EnableShadows;
@@ -304,7 +315,8 @@ namespace AcManager.Controls.CustomShowroom {
             MsaaMode = MsaaModes.GetByIdOrDefault<SettingEntry, int?>(o.MsaaMode);
             SsaaMode = SsaaModesExtended.GetByIdOrDefault<SettingEntry, int?>(o.SsaaMode);
             ShadowMapSize = ShadowResolutions.GetByIdOrDefault<SettingEntry, int?>(o.ShadowMapSize);
-
+            CubemapReflectionMapSize = CubemapReflectionResolutions.GetByIdOrDefault<SettingEntry, int?>(o.CubemapReflectionMapSize);
+            
             Renderer.EnableShadows = o.EnableShadows;
             Renderer.UseBloom = o.UseBloom;
             Renderer.UseFxaa = o.UseFxaa;
@@ -314,6 +326,7 @@ namespace AcManager.Controls.CustomShowroom {
             Renderer.UseSslr = o.UseSslr;
 
             Renderer.AoType = o.AoType;
+            Renderer.CubemapReflectionFacesPerFrame = o.CubemapReflectionFacesPerFrame;
         }
 
         private async Task LoadShowroom(string showroomId) {
@@ -574,6 +587,7 @@ namespace AcManager.Controls.CustomShowroom {
                 case nameof(Renderer.UseAccumulationDof):
                 case nameof(Renderer.AccumulationDofApertureSize):
                 case nameof(Renderer.AccumulationDofIterations):
+                case nameof(Renderer.CubemapReflectionFacesPerFrame):
                     ActionExtension.InvokeInMainThread(SaveLater);
                     break;
 
@@ -601,6 +615,10 @@ namespace AcManager.Controls.CustomShowroom {
                     ActionExtension.InvokeInMainThread(SyncShadowMapSize);
                     break;
                     
+                case nameof(Renderer.CubemapReflectionMapSize):
+                    ActionExtension.InvokeInMainThread(SyncCubemapReflectionsMapSize);
+                    break;
+                    
                 case nameof(Renderer.Light):
                     ActionExtension.InvokeInMainThread(SyncLight);
                     break;
@@ -617,6 +635,7 @@ namespace AcManager.Controls.CustomShowroom {
             SyncUseSsaa();
             //SyncSsaaMode();
             SyncShadowMapSize();
+            SyncCubemapReflectionsMapSize();
             SyncCarAmbientShadowsMode();
             SyncLight();
         }
@@ -644,6 +663,11 @@ namespace AcManager.Controls.CustomShowroom {
         private void SyncShadowMapSize() {
             _shadowMapSize = ShadowResolutions.GetByIdOrDefault<SettingEntry, int?>(Renderer.ShadowMapSize);
             OnPropertyChanged(nameof(ShadowMapSize));
+        }
+
+        private void SyncCubemapReflectionsMapSize() {
+            _cubemapReflectionMapSize = CubemapReflectionResolutions.GetByIdOrDefault<SettingEntry, int?>(Renderer.CubemapReflectionMapSize);
+            OnPropertyChanged(nameof(CubemapReflectionMapSize));
         }
 
         private void SyncCarAmbientShadowsMode() {
@@ -704,6 +728,20 @@ namespace AcManager.Controls.CustomShowroom {
                 OnPropertyChanged();
 
                 Renderer.ShadowMapSize = value.IntValue ?? 2048;
+            }
+        }
+
+        private SettingEntry _cubemapReflectionMapSize;
+
+        public SettingEntry CubemapReflectionMapSize {
+            get { return _cubemapReflectionMapSize; }
+            set {
+                if (!CubemapReflectionResolutions.Contains(value)) value = CubemapReflectionResolutions[2];
+                if (Equals(value, _cubemapReflectionMapSize)) return;
+                _cubemapReflectionMapSize = value;
+                OnPropertyChanged();
+
+                Renderer.CubemapReflectionMapSize = value.IntValue ?? 1024;
             }
         }
 

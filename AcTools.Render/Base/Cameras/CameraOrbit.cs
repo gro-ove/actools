@@ -3,7 +3,7 @@ using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
-    public class CameraOrbit : BaseCamera {
+    public class CameraOrbit : CameraBase {
         public float Radius, Alpha, Beta;
         public float MinBeta = float.MinValue, MinY = float.MinValue;
 
@@ -32,7 +32,7 @@ namespace AcTools.Render.Base.Cameras {
             Target = _target;
         }
 
-        public override BaseCamera Clone() {
+        public override CameraBase Clone() {
             return new CameraOrbit(FovY) {
                 Radius = Radius,
                 Alpha = Alpha,

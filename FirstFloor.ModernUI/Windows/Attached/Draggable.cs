@@ -9,6 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -280,23 +281,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return row != null && MoveDraggable(row, row.Item);
         }
 
-        private static bool IsIgnored(DependencyObject obj) {
-            var textBox = obj as TextBoxBase;
-            if (textBox != null) {
-                return textBox.IsEnabled;
-            }
-
-            var thumb = obj as Thumb;
-            if (thumb != null) {
-                return thumb.IsEnabled;
-            }
-
-            var passwordBox = obj as PasswordBox;
-            if (passwordBox != null) {
-                return passwordBox.IsEnabled;
-            }
-
-            return false;
+        private static bool IsIgnored(DependencyObject o) {
+            return (o as UIElement)?.IsEnabled == true &&
+                    (o is TextBoxBase || o is Thumb || o is PasswordBox || o is ColorPicker);
         }
 
         private static bool IgnoreSpecialControls(object sender, MouseEventArgs e) {

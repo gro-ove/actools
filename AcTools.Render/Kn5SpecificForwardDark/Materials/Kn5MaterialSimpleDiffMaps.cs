@@ -6,7 +6,7 @@ using AcTools.Render.Kn5Specific.Textures;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimpleDiffMaps : Kn5MaterialSimpleReflective {
+    /*public class Kn5MaterialSimpleDiffMaps : Kn5MaterialSimpleReflective {
         private IRenderableTexture _txNormal;
 
         public Kn5MaterialSimpleDiffMaps([NotNull] Kn5MaterialDescription description) : base(description) { }
@@ -30,5 +30,5 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             Effect.FxNormalMap.SetResource(_txNormal);
             return true;
         }
-    }
+    }*/
 }

@@ -370,7 +370,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
 
-            public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera, bool tryToClone) {
+            public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone) {
                 IMoveable c;
                 if (CarNode?.Movable.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out c) == true) {
                     ResetCarBoundingBox();

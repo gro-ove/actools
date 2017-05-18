@@ -48,8 +48,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             CarNode = (RenderableList)Kn5RenderableDepthOnlyObject.Convert(Kn5.RootNode);
             Scene.Add(CarNode);
 
-            CarNode.UpdateBoundingBox();
-            CarNode.LocalMatrix = Matrix.Translation(0, UpDelta - (CarNode.BoundingBox?.Minimum.Y ?? 0f), 0) * CarNode.LocalMatrix;
             ApplyCarState();
             Scene.UpdateBoundingBox();
         }
@@ -64,6 +62,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private bool _cockpitLrActive;
         private bool _seatbeltOnActive;
         private bool _blurredNodesActive;
+        private bool _dataWheels;
+        private CarSuspensionModifiers _suspensionModifiers;
 
         protected bool IsVisible(IRenderableObject obj) {
             return _hiddenNodes?.Contains(obj.Name) != true;
@@ -81,6 +81,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 _cockpitLrActive = car.CockpitLrActive;
                 _seatbeltOnActive = car.SeatbeltOnActive;
                 _blurredNodesActive = car.BlurredNodesActive;
+                _dataWheels = car.AlignWheelsByData;
+                _suspensionModifiers = car.SuspensionModifiers;
                 _wingsStates = car.Wings.Select(x => x.Value > 0.1f).ToArray();
                 _extraAnimationsStates = car.Extras.Select(x => x.Value > 0.1f).ToArray();
             }
@@ -89,6 +91,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private void ApplyCarState() {
             var carData = CarData;
             if (carData == null) return;
+
+            if (_dataWheels) {
+                Kn5RenderableFile.UpdateModelMatrixInverted(CarNode);
+                Kn5RenderableCar.SetWheelsByData(CarNode, carData.GetWheels(_suspensionModifiers), Matrix.Invert(carData.GetGraphicMatrix()));
+            }
+
+            Kn5RenderableCar.AdjustPosition(CarNode);
 
             if (_leftDoorOpen) {
                 Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetLeftDoorAnimation())?.SetImmediate(CarNode, 1f);
@@ -106,7 +115,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             Kn5RenderableCar.SetCockpitLrActive(CarNode, _cockpitLrActive);
             Kn5RenderableCar.SetSeatbeltActive(CarNode, _seatbeltOnActive);
-            Kn5RenderableCar.SetBlurredObjects(CarNode, carData.GetBlurredObjects(), _blurredNodesActive);
+            Kn5RenderableCar.SetBlurredObjects(CarNode, carData.GetBlurredObjects().ToArray(), _blurredNodesActive ? 100f : 0f);
 
             if (_wingsStates != null) {
                 var i = 0;

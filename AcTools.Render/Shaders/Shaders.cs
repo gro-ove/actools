@@ -22,7 +22,7 @@ namespace AcTools.Render.Shaders {
 	}
 
 	public class EffectDarkMaterial : IEffectWrapper, IEffectMatricesWrapper, IEffectScreenSizeWrapper {
-		public enum Mode { Main, FewerExtraShadows, FewerExtraShadowsNoPCSS, NoExtraShadows, NoPCSS, Simple, SimpleNoPCSS, SimpleNoShadows, WithoutLighting }
+		public enum Mode { Main, FewerExtraShadows, FewerExtraShadowsNoPCSS, NoAreaLights, NoExtraShadows, NoPCSS, Simple, SimpleNoPCSS, SimpleNoShadows, WithoutLighting }
 			
 		[StructLayout(LayoutKind.Sequential)]
         public struct Light {
@@ -33,9 +33,10 @@ namespace AcTools.Render.Shaders {
             public Vector3 Color;
             public float SpotlightCosMax;
             public uint Type;
-            public uint ShadowMode;
-            public bool ShadowCube;
+            public uint Flags;
             public uint ShadowId;
+            public float Padding;
+            public Vector4 Extra;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(Light));
         }
@@ -159,28 +160,55 @@ namespace AcTools.Render.Shaders {
 			}
         }
 		
+		[StructLayout(LayoutKind.Sequential)]
+        public struct TyresMaterial {
+            public float BlurLevel;
+            public float DirtyLevel;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(TyresMaterial));
+        }
+
+		public class EffectStructTyresMaterialVariable {
+			private readonly EffectVariable _v;
+
+			public EffectStructTyresMaterialVariable(EffectVariable v) {
+				_v = v;
+			}
+
+			public void Set(TyresMaterial value){
+				 SlimDxExtension.SetObject(_v, value, TyresMaterial.Stride);
+			}
+        }
+		
 		public const uint LightOff = 0;
 		public const uint LightPoint = 1;
 		public const uint LightSpot = 2;
 		public const uint LightDirectional = 3;
-		public const uint LightShadowOff = 0;
-		public const uint LightShadowMain = 1;
-		public const uint LightShadowExtraSmooth = 100;
-		public const uint LightShadowExtraFast = 200;
+		public const uint LightSphere = 4;
+		public const uint LightTube = 5;
+		public const uint LightPlane = 6;
+		public const uint LightNoShadows = 1;
+		public const uint LightSmoothShadows = 2;
+		public const uint LightShadowsCube = 4;
+		public const uint LightSpecular = 8;
+		public const uint LightPlaneDoubleSide = 16;
 		public const uint HasNormalMap = 1;
 		public const uint UseNormalAlphaAsAlpha = 64;
 		public const uint AlphaTest = 128;
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
+		public const bool DebugMode = true;
 		public const int ComplexLighting = 1;
 		public const float CubemapPadding = 0.95f;
+		public const float LutSize = 64.0f;
 		public const int MaxNumSplits = 3;
 		public const int MaxBones = 64;
 		public const bool EnableShadows = true;
 		public const bool EnablePcss = true;
 		public const int MaxLighsAmount = 50;
 		public const int MaxExtraShadows = 25;
+		public const bool EnableAreaLights = true;
 		public const int MaxExtraShadowsSmooth = 25;
 		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
@@ -189,14 +217,14 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_DiffMaps, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_Debug, TechGPass_SkinnedDebug, TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround;
+		public EffectReadyTechnique TechStandard, TechSky, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechSkinnedMaps, TechDiffMaps, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechCollider, TechDebug, TechSkinnedDebug, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechFlatTextureMirror, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj;
 		[NotNull]
 		public EffectOnlyMatrixArrayVariable FxExtraShadowViewProj, FxShadowViewProj, FxBoneTransforms;
 		[NotNull]
-		public EffectOnlyResourceVariable FxNoiseMap, FxReflectionCubemap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxAoMap;
+		public EffectOnlyResourceVariable FxNoiseMap, FxLtcMap, FxLtcAmp, FxReflectionCubemap, FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxDiffuseBlurMap, FxNormalBlurMap, FxDirtyMap, FxAoMap;
 		[NotNull]
 		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxShadowMaps;
 		[NotNull]
@@ -223,6 +251,8 @@ namespace AcTools.Render.Shaders {
 		public EffectStructAlphaMaterialVariable FxAlphaMaterial;
 		[NotNull]
 		public EffectStructNmUvMultMaterialVariable FxNmUvMultMaterial;
+		[NotNull]
+		public EffectStructTyresMaterialVariable FxTyresMaterial;
 		[NotNull]
 		public EffectStructLightArrayVariable FxLights;
 
@@ -254,20 +284,6 @@ namespace AcTools.Render.Shaders {
 			_b = EffectUtils.Load(ShadersResourceManager.Manager, _mode == Mode.Main ? "DarkMaterial" : "DarkMaterial." + _mode);
 			E = new Effect(device, _b);
 
-			TechGPass_Standard = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Standard"));
-			TechGPass_Alpha = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Alpha"));
-			TechGPass_Reflective = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Reflective"));
-			TechGPass_Nm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Nm"));
-			TechGPass_NmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("GPass_NmUvMult"));
-			TechGPass_AtNm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_AtNm"));
-			TechGPass_Maps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Maps"));
-			TechGPass_SkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedMaps"));
-			TechGPass_DiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_DiffMaps"));
-			TechGPass_Gl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Gl"));
-			TechGPass_SkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedGl"));
-			TechGPass_FlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("GPass_FlatMirror"));
-			TechGPass_Debug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Debug"));
-			TechGPass_SkinnedDebug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedDebug"));
 			TechStandard = new EffectReadyTechnique(E.GetTechniqueByName("Standard"));
 			TechSky = new EffectReadyTechnique(E.GetTechniqueByName("Sky"));
 			TechAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha"));
@@ -278,6 +294,7 @@ namespace AcTools.Render.Shaders {
 			TechMaps = new EffectReadyTechnique(E.GetTechniqueByName("Maps"));
 			TechSkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedMaps"));
 			TechDiffMaps = new EffectReadyTechnique(E.GetTechniqueByName("DiffMaps"));
+			TechTyres = new EffectReadyTechnique(E.GetTechniqueByName("Tyres"));
 			TechGl = new EffectReadyTechnique(E.GetTechniqueByName("Gl"));
 			TechSkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedGl"));
 			TechWindscreen = new EffectReadyTechnique(E.GetTechniqueByName("Windscreen"));
@@ -292,21 +309,36 @@ namespace AcTools.Render.Shaders {
 			TechFlatTextureMirror = new EffectReadyTechnique(E.GetTechniqueByName("FlatTextureMirror"));
 			TechFlatBackgroundGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatBackgroundGround"));
 			TechFlatAmbientGround = new EffectReadyTechnique(E.GetTechniqueByName("FlatAmbientGround"));
+			TechGPass_Standard = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Standard"));
+			TechGPass_Alpha = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Alpha"));
+			TechGPass_Reflective = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Reflective"));
+			TechGPass_Nm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Nm"));
+			TechGPass_NmUvMult = new EffectReadyTechnique(E.GetTechniqueByName("GPass_NmUvMult"));
+			TechGPass_AtNm = new EffectReadyTechnique(E.GetTechniqueByName("GPass_AtNm"));
+			TechGPass_Maps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Maps"));
+			TechGPass_SkinnedMaps = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedMaps"));
+			TechGPass_Tyres = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Tyres"));
+			TechGPass_Gl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Gl"));
+			TechGPass_SkinnedGl = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedGl"));
+			TechGPass_FlatMirror = new EffectReadyTechnique(E.GetTechniqueByName("GPass_FlatMirror"));
+			TechGPass_FlatMirror_SslrFix = new EffectReadyTechnique(E.GetTechniqueByName("GPass_FlatMirror_SslrFix"));
+			TechGPass_Debug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_Debug"));
+			TechGPass_SkinnedDebug = new EffectReadyTechnique(E.GetTechniqueByName("GPass_SkinnedDebug"));
 
 			for (var i = 0; i < TechAmbientShadow.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechAmbientShadow.GetPassByIndex(i).Description.Signature;
 			}
 			if (InputSignaturePT == null) throw new System.Exception("input signature (DarkMaterial, PT, AmbientShadow) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
-			for (var i = 0; i < TechGPass_Standard.Description.PassCount && InputSignaturePNTG == null; i++) {
-				InputSignaturePNTG = TechGPass_Standard.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechStandard.Description.PassCount && InputSignaturePNTG == null; i++) {
+				InputSignaturePNTG = TechStandard.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePNTG == null) throw new System.Exception("input signature (DarkMaterial, PNTG, GPass_Standard) == null");
+			if (InputSignaturePNTG == null) throw new System.Exception("input signature (DarkMaterial, PNTG, Standard) == null");
 			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
-			for (var i = 0; i < TechGPass_SkinnedMaps.Description.PassCount && InputSignaturePNTGW4B == null; i++) {
-				InputSignaturePNTGW4B = TechGPass_SkinnedMaps.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechSkinnedMaps.Description.PassCount && InputSignaturePNTGW4B == null; i++) {
+				InputSignaturePNTGW4B = TechSkinnedMaps.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePNTGW4B == null) throw new System.Exception("input signature (DarkMaterial, PNTGW4B, GPass_SkinnedMaps) == null");
+			if (InputSignaturePNTGW4B == null) throw new System.Exception("input signature (DarkMaterial, PNTGW4B, SkinnedMaps) == null");
 			LayoutPNTGW4B = new InputLayout(device, InputSignaturePNTGW4B, InputLayouts.VerticePNTGW4B.InputElementsValue);
 
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld"));
@@ -316,6 +348,8 @@ namespace AcTools.Render.Shaders {
 			FxShadowViewProj = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gShadowViewProj"));
 			FxBoneTransforms = new EffectOnlyMatrixArrayVariable(E.GetVariableByName("gBoneTransforms"));
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
+			FxLtcMap = new EffectOnlyResourceVariable(E.GetVariableByName("gLtcMap"));
+			FxLtcAmp = new EffectOnlyResourceVariable(E.GetVariableByName("gLtcAmp"));
 			FxReflectionCubemap = new EffectOnlyResourceVariable(E.GetVariableByName("gReflectionCubemap"));
 			FxNoiseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNoiseMap"));
 			FxDiffuseMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseMap"));
@@ -323,6 +357,9 @@ namespace AcTools.Render.Shaders {
 			FxMapsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gMapsMap"));
 			FxDetailsMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsMap"));
 			FxDetailsNormalMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDetailsNormalMap"));
+			FxDiffuseBlurMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDiffuseBlurMap"));
+			FxNormalBlurMap = new EffectOnlyResourceVariable(E.GetVariableByName("gNormalBlurMap"));
+			FxDirtyMap = new EffectOnlyResourceVariable(E.GetVariableByName("gDirtyMap"));
 			FxAoMap = new EffectOnlyResourceVariable(E.GetVariableByName("gAoMap"));
 			FxExtraShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowMaps"));
 			FxShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gShadowMaps"));
@@ -352,6 +389,7 @@ namespace AcTools.Render.Shaders {
 			FxMapsMaterial = new EffectStructMapsMaterialVariable(E.GetVariableByName("gMapsMaterial"));
 			FxAlphaMaterial = new EffectStructAlphaMaterialVariable(E.GetVariableByName("gAlphaMaterial"));
 			FxNmUvMultMaterial = new EffectStructNmUvMultMaterialVariable(E.GetVariableByName("gNmUvMultMaterial"));
+			FxTyresMaterial = new EffectStructTyresMaterialVariable(E.GetVariableByName("gTyresMaterial"));
 			FxLights = new EffectStructLightArrayVariable(E.GetVariableByName("gLights"));
 		}
 

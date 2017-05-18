@@ -1,7 +1,7 @@
 ﻿using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
-    public class CameraOrtho : BaseCamera {
+    public class CameraOrtho : CameraBase {
         public float Width, Height;
 
         public Vector3 Target { get; set; }
@@ -26,7 +26,7 @@ namespace AcTools.Render.Base.Cameras {
             throw new System.NotImplementedException();
         }
 
-        public override BaseCamera Clone() {
+        public override CameraBase Clone() {
             return new CameraOrtho {
                 Width = Width,
                 Height = Height,

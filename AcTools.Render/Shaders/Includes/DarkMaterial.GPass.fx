@@ -56,7 +56,7 @@ float4 GetReflection_Maps_NoAlpha(float3 posW, float3 normal, float alpha, float
 	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
 }
 
-float2 EncodeNormal(float3 n){
+float2 EncodeNormal(float3 n) {
 	float p = sqrt(n.z * 8 + 8);
 	return float2(n.xy / p + 0.5);
 }
@@ -71,22 +71,22 @@ PS_OUT PackResult(float4 reflection, float3 normal, float depth, float specularE
 
 PS_OUT GetResult(float depth, float3 posW, float3 normal, float alpha) {
 	return PackResult(
-			GetReflection(posW, normal, alpha),
-			normal, depth, gMaterial.SpecularExp);
+		GetReflection(posW, normal, alpha),
+		normal, depth, gMaterial.SpecularExp);
 }
 
 PS_OUT GetResult_Maps(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultiplier, float txMapsSpecularExpMultiplier,
 	float txMapsReflectionMultiplier) {
 	return PackResult(
-			GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
-			normal, depth, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * txMapsSpecularExpMultiplier);
+		GetReflection_Maps(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
+		normal, depth, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * txMapsSpecularExpMultiplier);
 }
 
 PS_OUT GetResult_Maps_NoAlpha(float depth, float3 posW, float3 normal, float alpha, float txMapsSpecularMultiplier, float txMapsSpecularExpMultiplier,
 	float txMapsReflectionMultiplier) {
 	return PackResult(
-			GetReflection_Maps_NoAlpha(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
-			normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultiplier);
+		GetReflection_Maps_NoAlpha(posW, normal, alpha, txMapsSpecularExpMultiplier, txMapsReflectionMultiplier),
+		normal, depth, gMaterial.SpecularExp * txMapsSpecularExpMultiplier);
 }
 
 float GetDepth(float4 posH) {
@@ -198,7 +198,8 @@ PS_OUT ps_GPass_Maps(PS_IN pin) {
 		}
 
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	} else {
+	}
+	else {
 		normal = normalize(pin.NormalW);
 		alpha = 1.0;
 	}
@@ -222,18 +223,44 @@ technique10 GPass_SkinnedMaps {
 	}
 }
 
-PS_OUT ps_GPass_DiffMaps(PS_IN pin) {
-	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
-	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
+// Diff maps (as Maps, but multipliers are taken from diffuse alpha-channel)
+
+/*PS_OUT ps_GPass_DiffMaps(PS_IN pin) {
+float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
+return GetResult_Maps_NoAlpha(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a);
+}
+
+technique10 GPass_DiffMaps {
+pass P0 {
+SetVertexShader(CompileShader(vs_4_0, vs_main()));
+SetGeometryShader(NULL);
+SetPixelShader(CompileShader(ps_4_0, ps_GPass_DiffMaps()));
+}
+}*/
+
+// Tyres
+
+PS_OUT ps_GPass_Tyres(PS_IN pin) {
+	float4 diffuseMapValue = lerp(
+		gDiffuseMap.Sample(samAnisotropic, pin.Tex),
+		gDiffuseBlurMap.Sample(samAnisotropic, pin.Tex),
+		gTyresMaterial.BlurLevel);
+	float4 normalValue = lerp(
+		gNormalMap.Sample(samAnisotropic, pin.Tex),
+		gNormalBlurMap.Sample(samAnisotropic, pin.Tex),
+		gTyresMaterial.BlurLevel);
+
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
 	return GetResult_Maps_NoAlpha(GetDepth(pin.PosH), pin.PosW, normal, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a, diffuseMapValue.a);
 }
 
-technique10 GPass_DiffMaps {
+technique10 GPass_Tyres {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_GPass_DiffMaps()));
+		SetPixelShader(CompileShader(ps_4_0, ps_GPass_Tyres()));
 	}
 }
 
@@ -257,7 +284,7 @@ technique10 GPass_SkinnedGl {
 
 //// Ground
 
-PS_OUT ps_GPass_FlatMirror(pt_PS_IN pin){
+PS_OUT ps_GPass_FlatMirror(pt_PS_IN pin) {
 	return PackResult((float4)0.0, float3(0, 1, 0), GetDepth(pin.PosH), 0.0);
 }
 
@@ -266,6 +293,38 @@ technique10 GPass_FlatMirror {
 		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_GPass_FlatMirror()));
+	}
+}
+
+float GetFlatBackgroundGroundOpacity(float3 posW, float baseOpacity, float frenselOpacity) {
+	// distance to viewer
+	float3 eyeW = gEyePosW - posW;
+	float distance = length(eyeW);
+
+	// if viewing angle is small, “fresnel” is smaller → result is more backgroundy
+	float fresnel = baseOpacity + frenselOpacity * pow(normalize(eyeW).y, 4);
+
+	// summary opacity (aka non-backgroundy) is combined from viewing angle and distance
+	// for smooth transition\w\w not anymore
+	float opacity = fresnel;
+
+	return opacity;
+}
+
+float4 ps_GPass_FlatMirror_SslrFix(pt_PS_IN pin) : SV_Target{
+	float2 tex = pin.PosH.xy / gScreenSize.xy;
+	float4 value = gDiffuseMap.Sample(samAnisotropic, tex);
+
+	float opacity = GetFlatBackgroundGroundOpacity(pin.PosW, 0.7, 0.3);
+	value.a *= 1.0 - saturate(1.5 * opacity * (1.0 - gFlatMirrorPower));
+	return value;
+}
+
+technique10 GPass_FlatMirror_SslrFix {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_pt_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, ps_GPass_FlatMirror_SslrFix()));
 	}
 }
 
@@ -283,7 +342,7 @@ float4 GetReflection_Debug(float3 posW, float3 normal, float alpha) {
 	return float4(refl, (gGPassTransparent ? alpha : 1.0) * val);
 }
 
-PS_OUT ps_GPass_Debug(PS_IN pin){
+PS_OUT ps_GPass_Debug(PS_IN pin) {
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
 	float3 normal;
@@ -292,7 +351,8 @@ PS_OUT ps_GPass_Debug(PS_IN pin){
 		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	} else {
+	}
+	else {
 		normal = normalize(pin.NormalW);
 		alpha = diffuseMapValue.a;
 	}

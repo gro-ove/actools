@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -166,6 +167,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             UpdateTogglesInformation();
 
             IsReflectable = false;
+            SuspensionModifiers.PropertyChanged += OnSuspensionModifiersChanged;
         }
 
         protected override ITexturesProvider InitializeTextures(IDeviceContextHolder contextHolder) {
@@ -262,100 +264,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             ReenableWings();
             ReenableExtras();
             ReenableDoors();
-            ReupdatePreudoSteer();
+            OnRootObjectChangedWheels();
             UpdateTogglesInformation();
             UpdateBoundingBox();
         }
-
-        #region Live reload
-        private void OnDataChanged(object sender, DataChangedEventArgs e) {
-            var holder = _skinsWatcherHolder;
-            if (holder == null) return;
-
-            switch (e.PropertyName) {
-                case null:
-                    ResetAmbientShadowSize();
-                    ReloadSteeringWheelLock();
-                    CamerasChanged?.Invoke(this, EventArgs.Empty);
-                    ExtraCamerasChanged?.Invoke(this, EventArgs.Empty);
-                    ResetExtras();
-                    ResetLights();
-                    LoadMirrors(holder);
-                    ReloadSuspension();
-                    ResetWings();
-
-                    // driver
-                    _driverSet = false;
-                    _driverSteerAnimator = null;
-                    DisposeHelper.Dispose(ref _driver);
-
-                    // debug lines
-                    _wingsLines.Reset();
-                    _fuelTankLines.Reset();
-                    _colliderLines.Reset();
-                    _flamesLines.Reset();
-                    _wheelsLines.Reset();
-                    break;
-
-                case "aero.ini":
-                    _wingsLines.Reset();
-                    break;
-                case "ambient_shadows.ini":
-                    ResetAmbientShadowSize();
-                    break;
-                case "car.ini":
-                    _fuelTankLines.Reset();
-                    _colliderLines.Reset(); // because they are affected by offset
-                    ReloadSteeringWheelLock();
-                    CamerasChanged?.Invoke(this, EventArgs.Empty);
-                    break;
-                case "cameras.ini":
-                    ExtraCamerasChanged?.Invoke(this, EventArgs.Empty);
-                    break;
-                case "colliders.ini":
-                    _colliderLines.Reset();
-                    break;
-                case "dash_cam.ini":
-                    CamerasChanged?.Invoke(this, EventArgs.Empty);
-                    break;
-                case "driver3d.ini":
-                    _driverSet = false;
-                    DisposeHelper.Dispose(ref _driver);
-                    _driverSteerAnimator = null;
-                    break;
-                case "extra_animations.ini":
-                    ResetExtras();
-                    break;
-                case "flames.ini":
-                    _flamesLines.Reset();
-                    break;
-                case "lights.ini":
-                    ResetLights();
-                    break;
-                case "mirrors.ini":
-                    LoadMirrors(holder);
-                    break;
-                case "suspensions.ini":
-                    ReloadSuspension();
-                    _wheelsLines.Reset();
-                    break;
-                case "tyres.ini":
-                    _wheelsLines.Reset();
-                    break;
-                case "wing_animations.ini":
-                    ResetWings();
-                    break;
-            }
-
-            holder.RaiseUpdateRequired();
-        }
-
-        private void ReloadSuspension() {
-            _suspensionsPack = null;
-            DisposeHelper.Dispose(ref _suspensionLines);
-            ReupdatePreudoSteer();
-        }
-        #endregion
 
         #region Driver
         private bool _driverSet;
@@ -659,7 +571,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public readonly RenderableList Renderable;
             public Kn5SharedMaterials Materials;
             internal IDeviceContextHolder Holder;
-            internal Dictionary<string, Matrix> OriginalMatrices;
             internal readonly Kn5 NonDefaultKn5;
             private bool _prepared;
 
@@ -671,6 +582,40 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public LodObject(Kn5 kn5, bool allowSkinnedObjects) {
                 NonDefaultKn5 = kn5;
                 Renderable = (Kn5RenderableList)Convert(kn5.RootNode, allowSkinnedObjects);
+            }
+
+            private Dictionary<string, Matrix> _originalLocalMatrices;
+
+            public Matrix GetOriginalLocalMatrix([NotNull] RenderableList node) {
+                var name = node.Name ?? "";
+
+                if (_originalLocalMatrices == null) {
+                    _originalLocalMatrices = new Dictionary<string, Matrix>(3);
+                }
+
+                Matrix original;
+                if (!_originalLocalMatrices.TryGetValue(name, out original)) {
+                    original = _originalLocalMatrices[name] = node.LocalMatrix;
+                }
+
+                return original;
+            }
+
+            private Dictionary<string, Matrix> _originalRelativeToModelMatrices;
+
+            public Matrix GetOriginalRelativeToModelMatrix([NotNull] Kn5RenderableList node) {
+                var name = node.Name ?? "";
+
+                if (_originalRelativeToModelMatrices == null) {
+                    _originalRelativeToModelMatrices = new Dictionary<string, Matrix>(3);
+                }
+
+                Matrix original;
+                if (!_originalRelativeToModelMatrices.TryGetValue(name, out original)) {
+                    original = _originalRelativeToModelMatrices[name] = node.RelativeToModel;
+                }
+
+                return original;
             }
 
             public void Dispose() {
@@ -886,8 +831,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Rims (blurred/static), cockpit (HR/LR), seatbelt (on/off)
-        public IList<CarData.BlurredObject> BlurredObjects => _blurredObjs ?? (_blurredObjs = _carData.GetBlurredObjects().ToList());
-        private IList<CarData.BlurredObject> _blurredObjs;
+        public CarData.BlurredObject[] BlurredObjects => _blurredObjs ?? (_blurredObjs = _carData.GetBlurredObjects().ToArray());
+        private CarData.BlurredObject[] _blurredObjs;
 
         private void UpdateTogglesInformation() {
             var hasCockpitLr = false;
@@ -917,7 +862,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         hasSeatbeltOff = true;
                         break;
                     default:
-                        if (BlurredObjects.Any(x => x.BlurredName == dummy.OriginalNode.Name)) {
+                        if (BlurredObjects.Any(x => x.MinSpeed >= 0f && x.Name == dummy.OriginalNode.Name)) {
                             hasBlurredNodes = true;
                             blurredNodesActive &= dummy.IsEnabled;
                         }
@@ -1031,7 +976,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (Equals(value, _blurredNodesActive)) return;
                 _blurredNodesActive = value;
 
-                if (SetBlurredObjects(_currentLodObject.Renderable, BlurredObjects, value)) {
+                if (SetBlurredObjects(this, BlurredObjects, value ? 100f : 0f)) {
                     _currentLodObject.Renderable.UpdateBoundingBox();
                     InvalidateCount();
                     _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1043,8 +988,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         #endregion
 
         #region Adjust position
-        private void AdjustPosition() {
-            var node = RootObject;
+        private Matrix? _initiallyCalculatedPosition;
+
+        public static void AdjustPosition([NotNull] RenderableList parent, Kn5RenderableCar car = null) {
+            Func<string, RenderableList> getDummyByName = s => car?.GetDummyByName(s) ?? parent.GetDummyByName(s);
+
+            var node = parent;
 
 #if BB_PERF_PROFILE
             var sw = Stopwatch.StartNew();
@@ -1061,30 +1010,39 @@ namespace AcTools.Render.Kn5Specific.Objects {
             node.UpdateBoundingBox();
 #endif
 
-            var wheelLf = GetDummyByName("WHEEL_LF");
-            var wheelRf = GetDummyByName("WHEEL_RF");
-            var wheelLr = GetDummyByName("WHEEL_LR");
-            var wheelRr = GetDummyByName("WHEEL_RR");
-            if (wheelLf == null || wheelRf == null || wheelLr == null || wheelRr == null) return;
+            var wheelLf = getDummyByName("WHEEL_LF");
+            var wheelRf = getDummyByName("WHEEL_RF");
+            var wheelLr = getDummyByName("WHEEL_LR");
+            var wheelRr = getDummyByName("WHEEL_RR");
 
-            if (!wheelLf.BoundingBox.HasValue ||
-                    !wheelRf.BoundingBox.HasValue ||
-                    !wheelLr.BoundingBox.HasValue ||
-                    !wheelRr.BoundingBox.HasValue) {
-                node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
-                return;
-            }
+            if (wheelLf == null || wheelRf == null || wheelLr == null || wheelRr == null ||
+                    !wheelLf.BoundingBox.HasValue || !wheelRf.BoundingBox.HasValue ||
+                    !wheelLr.BoundingBox.HasValue || !wheelRr.BoundingBox.HasValue) goto Fallback;
 
             var y1 = Math.Min((float)wheelLf.BoundingBox?.Minimum.Y, (float)wheelRf.BoundingBox?.Minimum.Y) - 0.001f;
             var y2 = Math.Min((float)wheelLr.BoundingBox?.Minimum.Y, (float)wheelRr.BoundingBox?.Minimum.Y) - 0.001f;
+            if (float.IsPositiveInfinity(y1) || float.IsPositiveInfinity(y2)) goto Fallback;
 
-            if (float.IsPositiveInfinity(y1) || float.IsPositiveInfinity(y2)) {
-                node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
-            } else {
-                var x1 = node.GetDummyByName("WHEEL_LF")?.BoundingBox?.GetCenter().Z ?? 0f;
-                var x2 = -node.GetDummyByName("WHEEL_LR")?.BoundingBox?.GetCenter().Z ?? 0f;
-                var y = y2 + x2 * (y1 - y2) / (x1 + x2);
-                node.LocalMatrix = Matrix.RotationX((float)Math.Atan2(y1 - y2, x1 + x2)) * Matrix.Translation(0, -y, 0) * node.LocalMatrix;
+            var x1 = node.GetDummyByName("WHEEL_LF")?.BoundingBox?.GetCenter().Z ?? 0f;
+            var x2 = -node.GetDummyByName("WHEEL_LR")?.BoundingBox?.GetCenter().Z ?? 0f;
+            var xSum = x1 + x2;
+            if (xSum < 0.01f) goto Fallback;
+
+            var y = y2 + x2 * (y1 - y2) / xSum;
+            if ((float)Math.Atan2(y1 - y2, xSum).Abs() > 0.3f) {
+                Debugger.Break();
+            }
+            node.LocalMatrix = Matrix.RotationX((float)Math.Atan2(y1 - y2, xSum)) * Matrix.Translation(0, -y, 0) * node.LocalMatrix;
+            return;
+
+            Fallback:
+            node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
+        }
+
+        private void AdjustPosition() {
+            AdjustPosition(RootObject, this);
+            if (!_initiallyCalculatedPosition.HasValue) {
+                _initiallyCalculatedPosition = RootObject.LocalMatrix;
             }
         }
         #endregion
@@ -1181,6 +1139,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (IsCrewVisible) {
                 dirty |= _crewAnimator?.IsSet == true && (_crewAnimator.Value?.OnTick(dt) ?? false);
             }
+
+            dirty |= OnTickWheels(dt);
 
             if (dirty) {
                 _skinsWatcherHolder?.RaiseSceneUpdated();
@@ -1776,18 +1736,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             AmbientShadowSize = _carData.GetBodyShadowSize();
         }
 
-        public Vector3 GetWheelShadowSize() {
-            return _carData.GetWheelShadowSize();
-        }
-
-        private Matrix GetWheelAmbientShadowMatrix([NotNull] Kn5RenderableList wheel) {
-            var offset = _carData.GetWheelGraphicOffset(wheel.Name);
-            var wheelMatrix = wheel.ModelMatrixInverted == default(Matrix) ? wheel.Matrix : wheel.Matrix * wheel.ModelMatrixInverted;
-            var translation = offset + wheelMatrix.GetTranslationVector();
-            translation.Y = _shadowsHeight;
-            return Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI - _steerDeg * MathF.PI / 180f) * Matrix.Translation(translation);
-        }
-
         private AmbientShadow LoadWheelAmbientShadow(string nodeName, string textureName) {
             var node = GetDummyByName(nodeName);
             return node == null ? null : new AmbientShadow(textureName, GetWheelAmbientShadowMatrix(node));
@@ -1805,7 +1753,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return shadow.GetView(_ambientShadowsHolder);
         }
 
-        private AmbientShadow _wheelLfShadow, _wheelRfShadow;
+        private AmbientShadow _wheelLfShadow, _wheelRfShadow, _wheelLrShadow, _wheelRrShadow;
 
         private void UpdateFrontWheelsShadowsRotation() {
             if (_wheelLfShadow != null) {
@@ -1823,13 +1771,29 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        private void UpdateRearWheelsShadowsRotation() {
+            if (_wheelLrShadow != null) {
+                var node = GetDummyByName("WHEEL_LR");
+                if (node != null) {
+                    _wheelLrShadow.Transform = GetWheelAmbientShadowMatrix(node);
+                }
+            }
+
+            if (_wheelRrShadow != null) {
+                var node = GetDummyByName("WHEEL_RR");
+                if (node != null) {
+                    _wheelRrShadow.Transform = GetWheelAmbientShadowMatrix(node);
+                }
+            }
+        }
+
         private IEnumerable<IRenderableObject> LoadAmbientShadows() {
             return _carData.IsEmpty ? new IRenderableObject[0] : new[] {
                 LoadBodyAmbientShadow(),
                 _wheelLfShadow = LoadWheelAmbientShadow("WHEEL_LF", "tyre_0_shadow.png"),
                 _wheelRfShadow = LoadWheelAmbientShadow("WHEEL_RF", "tyre_1_shadow.png"),
-                LoadWheelAmbientShadow("WHEEL_LR", "tyre_2_shadow.png"),
-                LoadWheelAmbientShadow("WHEEL_RR", "tyre_3_shadow.png")
+                _wheelLrShadow = LoadWheelAmbientShadow("WHEEL_LR", "tyre_2_shadow.png"),
+                _wheelRrShadow = LoadWheelAmbientShadow("WHEEL_RR", "tyre_3_shadow.png")
             }.Where(x => x != null);
         }
         #endregion
@@ -1874,7 +1838,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private MoveableHelper _movable;
         public MoveableHelper Movable => _movable ?? (_movable = new MoveableHelper(this, MoveableRotationAxis.Y));
 
-        public void DrawMovementArrows(DeviceContextHolder holder, BaseCamera camera) {
+        public void DrawMovementArrows(DeviceContextHolder holder, CameraBase camera) {
             Movable.ParentMatrix = Matrix;
             Movable.Draw(holder, camera, SpecialRenderMode.Simple);
         }
@@ -1906,203 +1870,27 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
         #endregion
 
-        #region Steering
-        private float _steerDeg;
-
-        public float SteerDeg {
-            get { return _steerDeg; }
-            set {
-                value = value.Clamp(-50f, 50f).Round(0.1f);
-                if (Equals(value, _steerDeg)) return;
-                _steerDeg = value;
-                OnPropertyChanged();
-                UpdatePreudoSteer();
-            }
-        }
-
-        private Vector3 _wheelLfCon;
-        private float _steerDegPrevious;
-
-        private Matrix? GetSteerWheelMatrix([NotNull] Kn5RenderableList node, Tuple<Vector3, Vector3> axis, float angle) {
-            Matrix original;
-            var name = node.Name ?? "-";
-            if (!_currentLodObject.OriginalMatrices.TryGetValue(name, out original)) return null;
-
-            Vector3 position, scale;
-            Quaternion rotation;
-            original.Decompose(out scale, out rotation, out position);
-
-            var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
-            var p = new Plane(position, rotationAxis);
-            Vector3 con;
-            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out con)) {
-                AcToolsLogging.Write("10f is not enough!?");
-                return null;
-            }
-
-#if DEBUG
-            _wheelLfCon = con;
-#endif
-
-            var delta = con - position;
-
-            var transform = Matrix.Translation(-delta) * Matrix.RotationAxis(rotationAxis, angle * MathF.PI / 180f) * Matrix.Translation(delta);
-            //var camber = Matrix.RotationZ((left ? -1000f : 1000f) * suspension.StaticCamber * MathF.PI / 180f);
-            // node.LocalMatrix = Matrix.RotationAxis(rotationAxis, _steerDeg * MathF.PI / 180f) * Matrix.Translation(Vector3.Transform(suspension.RefPoint, pack.GraphicOffset).GetXyz());
-            // node.LocalMatrix = transform * Matrix.Translation(Vector3.Transform(suspension.RefPoint, pack.GraphicOffset).GetXyz());
-            // node.LocalMatrix = transform * Matrix.Translation(position);
-
-            return Matrix.Scaling(scale) * Matrix.RotationQuaternion(rotation) * transform * Matrix.Translation(position);
-        }
-
-        private void SteerWheel(bool left, [NotNull] CarData.SuspensionsPack pack, [CanBeNull] CarData.SuspensionBase suspension, float angle) {
-            var axis = suspension?.WheelSteerAxis;
-            if (axis == null) return;
-
-            var namePostfix = left ? "LF" : "RF";
-
-            var animatedDisc = $@"DISC_{namePostfix}_ANIM";
-            var names = new[] {
-                $@"WHEEL_{namePostfix}", $@"SUSP_{namePostfix}", $@"HUB_{namePostfix}",
-                GetDummyByName(animatedDisc) != null ? null : $@"DISC_{namePostfix}"
-            };
-
-            if (_currentLodObject.OriginalMatrices == null) {
-                _currentLodObject.OriginalMatrices = new Dictionary<string, Matrix>(3);
-                UpdateModelMatrixInverted();
-            }
-
-            foreach (var dummy in names.NonNull().Select(GetDummyByName).NonNull()) {
-                var key = dummy.Name ?? "-";
-                if (!_currentLodObject.OriginalMatrices.ContainsKey(key)) {
-                    _currentLodObject.OriginalMatrices[key] = dummy.RelativeToModel;
-                }
-            }
-
-            var range = (angle.Abs() / 30f).Saturate();
-            angle += (left ? 1.5f : -1.5f) * MathF.Pow(range, 2f);
-
-            axis = Tuple.Create(
-                    pack.TranslateRelativeToCarModel(suspension, axis.Item1),
-                    pack.TranslateRelativeToCarModel(suspension, axis.Item2));
-
-            var wheel = GetDummyByName($@"WHEEL_{namePostfix}");
-            if (wheel == null) return;
-
-            var wheelMatrix = GetSteerWheelMatrix(wheel, axis, -angle);
-            if (!wheelMatrix.HasValue) return;
-
-            foreach (var node in Dummies.Where(x => names.NonNull().Contains(x.Name))) {
-                Vector3 translation, scale;
-                Quaternion rotation;
-                node.OriginalNode.Transform.ToMatrix().Decompose(out scale, out rotation, out translation);
-                node.LocalMatrix = Matrix.Scaling(scale) * (GetSteerWheelMatrix(node, axis, -angle) ?? wheelMatrix.Value) * 
-                        Matrix.Invert(node.ParentMatrix * node.ModelMatrixInverted);
-            }
-        }
-
-        public class SteeringWheelParams {
-            public Matrix ParentMatrix;
-            public Matrix OriginalLocalMatrix;
-            public float RotationDegress;
-        }
-
-        private float GetSteeringWheelRotationDegress(float offset) {
-            if (!_steerLock.HasValue) {
-                _steerLock = _carData.GetSteerLock();
-            }
-
-            return _steerLock.Value * offset;
-        }
-
-        [CanBeNull]
-        private SteeringWheelParams GetSteeringWheelParams(float offset) {
-            var node = GetDummyByName("STEER_HR");
-            return node == null ? null : new SteeringWheelParams {
-                OriginalLocalMatrix = node.OriginalNode.Transform.ToMatrix(),
-                ParentMatrix = node.ParentMatrix,
-                RotationDegress = GetSteeringWheelRotationDegress(offset)
-            };
-        }
-
-        private float? _steerLock;
-
-        private void SteerSteeringWheel(float offset) {
-            if (_currentLodObject.OriginalMatrices == null) {
-                _currentLodObject.OriginalMatrices = new Dictionary<string, Matrix>(3);
-                UpdateModelMatrixInverted();
-            }
-
-            var degress = GetSteeringWheelRotationDegress(offset);
-            foreach (var node in new[] { "HR", "LR" }.Select(x => GetDummyByName($@"STEER_{x}")).NonNull()) {
-                var name = node.Name ?? "";
-
-                Matrix original;
-                if (!_currentLodObject.OriginalMatrices.TryGetValue(name, out original)) {
-                    original = _currentLodObject.OriginalMatrices[name] = node.LocalMatrix;
-                }
-
-                node.LocalMatrix = Matrix.RotationZ(degress.ToRadians()) * original;
-            }
-        }
-
-        /// <summary>
-        /// From -1 to 1.
-        /// </summary>
-        private float GetSteerOffset() {
-            return (SteerDeg / 30f).Clamp(-1f, 1f);
-        }
-
-        private void ReloadSteeringWheelLock() {
-            _steerLock = null;
-            SteerSteeringWheel(GetSteerOffset());
-        }
-
-        private void ReupdatePreudoSteer() {
-            _steerDegPrevious = float.NaN;
-            UpdatePreudoSteer();
-        }
-
-        private void UpdatePreudoSteer() {
-            var pack = SuspensionsPack;
-            var front = pack.Front as CarData.IndependentSuspensionsGroup;
-            if (front == null) return;
-
-            var angle = SteerDeg;
-            if (Equals(_steerDegPrevious, angle)) return;
-            _steerDegPrevious = angle;
-
-            SteerWheel(true, pack, front.Left, angle);
-            SteerWheel(false, pack, front.Right, angle);
-            SteerSteeringWheel(GetSteerOffset());
-            UpdateDriverSteerAnimation(GetSteerOffset());
-
-            UpdateFrontWheelsShadowsRotation();
-            _skinsWatcherHolder?.RaiseSceneUpdated();
-        }
-        #endregion
-        
         #region Cameras
         public event EventHandler CamerasChanged;
         public event EventHandler ExtraCamerasChanged;
 
         [CanBeNull]
-        public BaseCamera GetDriverCamera() {
+        public CameraBase GetDriverCamera() {
             return _carData.GetDriverCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
-        public BaseCamera GetDashboardCamera() {
+        public CameraBase GetDashboardCamera() {
             return _carData.GetDashboardCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
-        public BaseCamera GetBonnetCamera() {
+        public CameraBase GetBonnetCamera() {
             return _carData.GetBonnetCamera()?.ToCamera(Matrix);
         }
 
         [CanBeNull]
-        public BaseCamera GetBumperCamera() {
+        public CameraBase GetBumperCamera() {
             return _carData.GetBumperCamera()?.ToCamera(Matrix);
         }
 
@@ -2111,7 +1899,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         [CanBeNull]
-        public BaseCamera GetCamera(int index) {
+        public CameraBase GetCamera(int index) {
             return _carData.GetExtraCameras().Skip(index).Select(x => x.ToCamera(Matrix)).FirstOrDefault();
         }
         #endregion

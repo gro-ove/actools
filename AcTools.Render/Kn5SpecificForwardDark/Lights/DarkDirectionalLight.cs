@@ -18,6 +18,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             switch (newType) {
                 case DarkLightType.Point:
                     return new DarkPointLight();
+                case DarkLightType.Sphere:
+                    return new DarkAreaSphereLight();
+                case DarkLightType.Tube:
+                    return new DarkAreaTubeLight();
                 case DarkLightType.Directional:
                     return new DarkDirectionalLight {
                         _shadowsSize = _shadowsSize,
@@ -28,8 +32,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Direction = Direction
                     };
+                case DarkLightType.Plane:
+                    return new DarkAreaPlaneLight {
+                        Direction = Direction
+                    };
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
+                    return base.ChangeTypeOverride(newType);
             }
         }
 
@@ -89,7 +97,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             set {
                 if (Equals(value, _isMainLightSource)) return;
                 _isMainLightSource = value;
-                UpdateShadowsMode();
                 OnPropertyChanged();
             }
         }
@@ -127,7 +134,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 matrix = Matrix.Identity;
                 view = null;
             } else {
-                size = new Vector4(_shadows.MapSize, _shadows.MapSize, 1f / _shadows.MapSize, 1f / _shadows.MapSize);
+                size = new Vector4(_shadows.MapSize, _shadows.MapSize,
+                        ShadowsBlurMultiplier / _shadows.MapSize, ShadowsBlurMultiplier / _shadows.MapSize);
                 matrix = _shadows.Splits[0].ShadowTransform;
                 view = _shadows.Splits[0].View;
             }
@@ -136,7 +144,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         protected override void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
             base.SetOverride(holder, ref light);
             light.DirectionW = -ActualDirection;
-            light.Type = EffectDarkMaterial.LightDirectional;
+            light.DirectionW.Normalize();
         }
 
         public override void InvalidateShadows() {
@@ -145,6 +153,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
+            DisposeHelper.Dispose(ref _dummy);
         }
 
         public override void Rotate(Quaternion delta) {
@@ -165,7 +174,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 };
             }
 
-            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY);
+            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY).ToFixedSizeMatrix(camera);
             _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
         }
     }

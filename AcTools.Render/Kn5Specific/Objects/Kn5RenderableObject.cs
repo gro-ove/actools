@@ -15,6 +15,21 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
+    public class AcDynamicMaterialParams {
+        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
+
+        public float RadialSpeedBlur { get; set; }
+
+        public void SetMaterial(IDeviceContextHolder contextHolder, IAcDynamicMaterial material) {
+            if (material == null) return;
+            Emissive.SetMaterial(contextHolder, material);
+
+            if (RadialSpeedBlur != 0f) {
+                material.SetRadialSpeedBlurNext(RadialSpeedBlur);
+            }
+        }
+    }
+
     public interface IKn5RenderableObject : IRenderableObject {
         [NotNull]
         Kn5Node OriginalNode { get; }
@@ -29,7 +44,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         void SetTransparent(bool? isTransparent);
 
-        SmoothEmissiveChange Emissive { get; }
+        AcDynamicMaterialParams DynamicMaterialParams { get; }
 
         int TrianglesCount { get; }
     }
@@ -157,7 +172,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 SpecialRenderMode.Outline | SpecialRenderMode.GBuffer |
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
 
-        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
+        public AcDynamicMaterialParams DynamicMaterialParams { get; } = new AcDynamicMaterialParams();
         
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if ((_renderModes & mode) == 0) return;
@@ -175,7 +190,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!material.Prepare(contextHolder, mode)) return;
 
             base.DrawOverride(contextHolder, camera, mode);
-            Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
+            DynamicMaterialParams.SetMaterial(contextHolder, material as IAcDynamicMaterial);
 
             material.SetMatrices(ParentMatrix, camera);
             material.Draw(contextHolder, Indices.Length, mode);
@@ -216,7 +231,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (!material.Prepare(contextHolder, mode)) return;
 
                 base.DrawOverride(contextHolder, camera, mode);
-                _original.Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
+                _original.DynamicMaterialParams.SetMaterial(contextHolder, material as IAcDynamicMaterial);
 
                 material.SetMatrices(ParentMatrix, camera);
                 material.Draw(contextHolder, Indices.Length, mode);

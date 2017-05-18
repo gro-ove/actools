@@ -3,7 +3,7 @@ using AcTools.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
-    public class FpsCamera : BaseCamera {
+    public class FpsCamera : CameraBase {
         public FpsCamera(float fov) : base(fov) {}
 
         public override void Save() {
@@ -14,7 +14,7 @@ namespace AcTools.Render.Base.Cameras {
             throw new System.NotImplementedException();
         }
 
-        public override BaseCamera Clone() {
+        public override CameraBase Clone() {
             return new FpsCamera(FovY) {
                 Position = Position,
                 Look = Look,

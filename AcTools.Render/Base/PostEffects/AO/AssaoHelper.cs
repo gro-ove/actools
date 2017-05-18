@@ -122,7 +122,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.Fx_NormalmapSource.SetResource(normals);
 
             // assao
-            var c = camera as BaseCamera;
+            var c = camera as CameraBase;
             if (c == null) return;
 
             var proj = Matrix.PerspectiveFovLH(c.FovY, c.Aspect, c.NearZValue, c.FarZValue);

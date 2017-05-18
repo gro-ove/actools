@@ -46,6 +46,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
                 if (mode == SpecialRenderMode.GBuffer) {
                     contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPT;
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.ReadOnlyDepthState;
                     return true;
                 }
 
@@ -58,7 +59,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
                 if (mode == SpecialRenderMode.GBuffer) {
-                    Effect.TechGPass_FlatMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    Effect.TechGPass_FlatMirror_SslrFix.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
                     return;
                 }
 

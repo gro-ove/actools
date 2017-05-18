@@ -68,8 +68,8 @@ namespace AcTools.Render.Base.Objects {
 
         private void UpdateMatrix() {
             Matrix = _localMatrix * _parentMatrix;
-            foreach (var child in this) {
-                child.ParentMatrix = Matrix;
+            for (var i = Count - 1; i >= 0; i--) {
+                this[i].ParentMatrix = Matrix;
             }
         }
 
@@ -121,7 +121,7 @@ namespace AcTools.Render.Base.Objects {
         public void UpdateBoundingBox() {
             BoundingBox? bb = null;
 
-            for (var i = 0; i < Count; i++) {
+            for (var i = Count - 1; i >= 0; i--) {
                 var c = this[i];
                 if (!c.IsEnabled) continue;
 

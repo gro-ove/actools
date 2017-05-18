@@ -156,6 +156,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _modelMatrixInvertedDirty = true;
         }
 
+        public static void UpdateModelMatrixInverted(RenderableList root) {
+            var inverted = Matrix.Invert(root.Matrix);
+            foreach (var dummy in root.GetAllChildren().OfType<Kn5RenderableList>()) {
+                dummy.ModelMatrixInverted = inverted;
+            }
+
+            foreach (var dummy in root.GetAllChildren().OfType<IKn5RenderableObject>()) {
+                dummy.ModelMatrixInverted = inverted;
+            }
+        }
+
         protected void UpdateModelMatrixInverted() {
             if (!_modelMatrixInvertedDirty) return;
             _modelMatrixInvertedDirty = false;

@@ -113,12 +113,17 @@
     <Compile Include="Base\Shadows\ShadowsBase.cs" />
     <Compile Include="Base\Shadows\ShadowsPointFlat.cs" />
     <Compile Include="Base\Shadows\ShadowsSpot.cs" />
+    <Compile Include="Data\CarSuspensionModifiers.cs" />
     <Compile Include="Forward\ToneMappingFn.cs" />
     <Compile Include="Base\PostEffects\AO\AssaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\AoHelperBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkDof.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Lights.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.DebugMode.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Properties.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaPlaneLight.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaTubeLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkDirectionalLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkLightBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkSslr.cs" />
@@ -126,7 +131,7 @@
     <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
     <Compile Include="Base\SceneRenderer.cs" />
     <Compile Include="Base\BaseRenderer.cs" />
-    <Compile Include="Base\Cameras\BaseCamera.cs" />
+    <Compile Include="Base\Cameras\CameraBase.cs" />
     <Compile Include="Base\Cameras\CameraOrbit.cs" />
     <Compile Include="Base\Cameras\CameraOrtho.cs" />
     <Compile Include="Base\Objects\TrianglesRenderableObject.cs" />
@@ -151,8 +156,8 @@
     <Compile Include="Base\Objects\DebugLinesObject.cs" />
     <Compile Include="Kn5SpecificForwardDark\FlatMirror.cs" />
     <Compile Include="Base\PostEffects\AO\HbaoHelper.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaSphereLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkPointLight.cs" />
-    <Compile Include="Kn5SpecificForwardDark\Lights\DarkShadowsMode.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkSpotLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\AmbientShadowMaterialSimple.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\DebugColliderMaterial.cs" />
@@ -162,6 +167,7 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleBase.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleTyres.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleDiffMaps.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleGl.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialSimpleMaps.cs" />
@@ -185,6 +191,8 @@
     <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.LiveReload.cs" />
+    <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Wheels.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Lines.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Utils.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.cs" />
@@ -289,6 +297,9 @@
     <None Include="Resources\SearchTex.dds" />
     <None Include="Resources\AreaTexDX10.dds" />
     <Content Include="Resources\Bokeh.dds" />
+    <Content Include="Resources\LtcAmp.dds" />
+    <Content Include="Resources\LtcMat.dds" />
+    <Content Include="Shaders\Dark\DarkMaterial.NoAreaLights.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.FewerExtraShadows.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.FewerExtraShadowsNoPCSS.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.NoExtraShadows.fx" />
@@ -299,6 +310,7 @@
     <Content Include="Shaders\Dark\DarkMaterial.WithoutLighting.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Kunos.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Lighting.Area.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Placeholder.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.None.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Unpack.fx" />

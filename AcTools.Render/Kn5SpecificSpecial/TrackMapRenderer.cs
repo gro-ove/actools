@@ -518,7 +518,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             };
         }
 
-        public BaseCamera Camera { get; protected set; }
+        public CameraBase Camera { get; protected set; }
 
         protected virtual void ResetCamera() {
             Camera = GetCamera();

@@ -69,5 +69,25 @@ namespace AcTools.Render {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] LtcAmp {
+            get {
+                object obj = ResourceManager.GetObject("LtcAmp", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] LtcMat {
+            get {
+                object obj = ResourceManager.GetObject("LtcMat", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

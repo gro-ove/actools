@@ -70,7 +70,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
             _effect.FxNormalMap.SetResource(normals);
 
             // hbao
-            var c = camera as BaseCamera;
+            var c = camera as CameraBase;
             if (c == null) return;
 
             //_effect.FxWorldViewProjInv.SetMatrix(c.ViewProjInvert);

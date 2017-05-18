@@ -125,7 +125,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public SmoothEmissiveChange Emissive { get; } = new SmoothEmissiveChange();
+        public AcDynamicMaterialParams DynamicMaterialParams { get; } = new AcDynamicMaterialParams();
 
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!(_isTransparent ? Kn5RenderableObject.TransparentModes : Kn5RenderableObject.OpaqueModes).HasFlag(mode)) return;
@@ -140,7 +140,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (!material.Prepare(contextHolder, mode)) return;
 
             base.DrawOverride(contextHolder, camera, mode);
-            Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
+            DynamicMaterialParams.SetMaterial(contextHolder, material as IAcDynamicMaterial);
 
             UpdateNodes();
             material.SetBones(_bones);
@@ -229,7 +229,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (!material.Prepare(contextHolder, mode)) return;
 
                 base.DrawOverride(contextHolder, camera, mode);
-                _original.Emissive.SetMaterial(contextHolder, material as IEmissiveMaterial);
+                _original.DynamicMaterialParams.SetMaterial(contextHolder, material as IAcDynamicMaterial);
 
                 material.SetBones(_original._bones);
                 material.SetMatrices(ParentMatrix, camera);

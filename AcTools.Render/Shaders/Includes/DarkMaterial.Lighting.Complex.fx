@@ -12,10 +12,20 @@ static const dword LIGHT_POINT = 1;
 static const dword LIGHT_SPOT = 2;
 static const dword LIGHT_DIRECTIONAL = 3;
 
-static const dword LIGHT_SHADOW_OFF = 0;
-static const dword LIGHT_SHADOW_MAIN = 1;
-static const dword LIGHT_SHADOW_EXTRA_SMOOTH = 100;
-static const dword LIGHT_SHADOW_EXTRA_FAST = 200;
+#if ENABLE_AREA_LIGHTS == 1
+static const dword LIGHT_SPHERE = 4;
+static const dword LIGHT_TUBE = 5;
+static const dword LIGHT_PLANE = 6;
+#endif
+
+static const dword LIGHT_NO_SHADOWS = 1;
+static const dword LIGHT_SMOOTH_SHADOWS = 2;
+static const dword LIGHT_SHADOWS_CUBE = 4;
+static const dword LIGHT_SPECULAR = 8;
+
+#if ENABLE_AREA_LIGHTS == 1
+static const dword LIGHT_PLANE_DOUBLE_SIDE = 16;
+#endif
 
 struct Light {
 	float3 PosW;
@@ -30,16 +40,35 @@ struct Light {
 	// 36 bytes here
 
 	uint Type;
-	uint ShadowMode;
-	bool ShadowCube;
+	uint Flags;
 	uint ShadowId;
+	float Padding;
 
 	// +16 = 52 bytes
+
+	float4 Extra;
 };
+
+#if ENABLE_AREA_LIGHTS == 1
+Texture2D gLtcMap;
+Texture2D gLtcAmp;
+
+#define LIGHT_GET_SPHERE_RADIUS(l) (l.SpotlightCosMin)
+#define LIGHT_GET_TUBE_RADIUS(l) (l.SpotlightCosMin)
+#define LIGHT_GET_PLANE_WIDTH(l) (l.SpotlightCosMin)
+#define LIGHT_GET_PLANE_HEIGHT(l) (l.SpotlightCosMax)
+#define LIGHT_GET_PLANE_CORNER_0(l) (l.PosW)
+#define LIGHT_GET_PLANE_CORNER_1(l) (l.DirectionW)
+#define LIGHT_GET_PLANE_CORNER_2(l) (float3(l.SpotlightCosMin, l.SpotlightCosMax, l.Padding))
+#define LIGHT_GET_PLANE_CORNER_3(l) (l.Extra.xyz)
+#endif
 
 cbuffer cbLighting : register(b1) {
 	Light gLights[MAX_LIGHS_AMOUNT];
 }
+
+#define LIGHT_HAS_FLAG_I(i,x) ((gLights[i].Flags & x) == x)
+#define LIGHT_HAS_FLAG(l,x) ((l.Flags & x) == x)
 
 cbuffer cbNotUsed {
 	float3 gLightDir;
@@ -108,11 +137,11 @@ float2 GetCubemapUv(float3 L) {
 }
 
 float3 GetExtraShadowUv(float3 position, float3 normal, Light light, uint extra) {
-	if (light.ShadowCube){
+	if (LIGHT_HAS_FLAG(light, LIGHT_SHADOWS_CUBE)){
 		float4 nearFar = gExtraShadowNearFar[extra];
 		float3 toLightW = position - light.PosW.xyz;
 		float3 toLightN = normalize(toLightW);
-		float sD = VectorToDepth(toLightW, nearFar.z, nearFar.w, light.ShadowMode == LIGHT_SHADOW_EXTRA_SMOOTH ? 0.06 * dot(normal, toLightN) - 0.07 : 0.0);
+		float sD = VectorToDepth(toLightW, nearFar.z, nearFar.w, LIGHT_HAS_FLAG(light, LIGHT_SMOOTH_SHADOWS) ? 0.06 * dot(normal, toLightN) - 0.07 : 0.0);
 		return float3(GetCubemapUv(toLightN), sD);
 	} else {
 		float4 uv = mul(float4(position, 1.0), gExtraShadowViewProj[extra]);
@@ -231,12 +260,10 @@ float GetExtraShadow_ByType(Light light, float3 position, float3 normal) {
 	float3 uv = GetExtraShadowUv(position, normal, light, light.ShadowId);
 
 	[branch]
-	switch (light.ShadowMode) {
-		case LIGHT_SHADOW_EXTRA_SMOOTH:
-			return GetExtraShadowByUvSmooth(uv, light.ShadowId);
-		// case LIGHT_SHADOW_EXTRA_FAST:
-		default:
-			return GetExtraShadowByUvFast(uv, light.ShadowId);
+	if (LIGHT_HAS_FLAG(light, LIGHT_SMOOTH_SHADOWS)){
+        return GetExtraShadowByUvSmooth(uv, light.ShadowId);
+	} else {
+        return GetExtraShadowByUvFast(uv, light.ShadowId);
 	}
 #else
 	return 1.0;
@@ -246,7 +273,7 @@ float GetExtraShadow_ByType(Light light, float3 position, float3 normal) {
 float GetExtraShadow_ConsiderMirror(Light light, float3 position, float3 normal) {
 #if ENABLE_SHADOWS == 1 && MAX_EXTRA_SHADOWS > 0
 	[branch]
-	if (light.ShadowMode == LIGHT_SHADOW_OFF) {
+	if (LIGHT_HAS_FLAG(light, LIGHT_NO_SHADOWS)) {
 		return 1.0;
 	} else {
 		[flatten]
@@ -290,7 +317,23 @@ float Attenuation(float range, float d) {
 	return 1.0f - smoothstep(range * 0.5f, range, d);
 }
 
-float GetLight_SummaryShadow(Light light, float3 normal, float3 position, out float3 direction) {
+#if ENABLE_AREA_LIGHTS == 1
+#include "DarkMaterial.Lighting.Area.fx"
+
+#define LUT_SIZE 64.0
+#define LUT_SCALE ((LUT_SIZE - 1.0) / LUT_SIZE)
+#define LUT_BIAS (0.5 / LUT_SIZE)
+
+SamplerState samLtc {
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+#endif
+
+void GetLight_ByType(Light light, float3 normal, float3 position, const float specularExp, const float specularValue, const bool sunSpeculars,
+		inout float3 diffuse, inout float3 specular) {
+	float3 direction;
 	float attenuation;
 
 	[branch]
@@ -318,6 +361,92 @@ float GetLight_SummaryShadow(Light light, float3 normal, float3 position, out fl
 			attenuation = Attenuation(light.Range, distance) * spotCone;
 			break;
 		}
+#if ENABLE_AREA_LIGHTS == 1
+		case LIGHT_SPHERE: {
+			direction = normalize(gEyePosW - position);
+			float nov = saturate(dot(normal, direction));
+			float3 r = reflect(-direction, normal);
+
+			float specularExpValue = specularExp;
+			if (sunSpeculars) {
+				specularExpValue *= gMapsMaterial.SunSpecularExp;
+			}
+
+			float distance;
+			float value = AreaLight_Sphere(position, normal, direction, r,
+				light.PosW.xyz, LIGHT_GET_SPHERE_RADIUS(light),
+				0.3, clamp(1 - specularExpValue / 250, 0.03, 0.42), nov, distance, attenuation);
+
+			//attenuation *= Attenuation(light.Range, distance);
+
+			diffuse += light.Color.xyz * attenuation;
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+				specular += light.Color.xyz * value * attenuation;
+			}
+			return;
+		}
+		case LIGHT_TUBE: {
+			direction = normalize(gEyePosW - position);
+			float nov = saturate(dot(normal, direction));
+			float3 r = reflect(-direction, normal);
+
+			float specularExpValue = specularExp;
+			if (sunSpeculars) {
+				specularExpValue *= gMapsMaterial.SunSpecularExp;
+			}
+
+			float distance;
+			float value = AreaLight_Tube(position, normal, direction, r,
+				light.PosW.xyz, light.DirectionW.xyz, LIGHT_GET_TUBE_RADIUS(light),
+				0.3, clamp(1 - specularExpValue / 250, 0.03, 0.42), nov, distance, attenuation);
+
+			attenuation *= Attenuation(light.Range, distance);
+
+			diffuse += light.Color.xyz * attenuation;
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+				specular += light.Color.xyz * value * attenuation;
+			}
+			return;
+		}
+		case LIGHT_PLANE: {
+			float3 points[4];
+			points[0] = LIGHT_GET_PLANE_CORNER_0(light);
+			points[1] = LIGHT_GET_PLANE_CORNER_1(light);
+			points[2] = LIGHT_GET_PLANE_CORNER_2(light);
+			points[3] = LIGHT_GET_PLANE_CORNER_3(light);
+
+			bool doubleSide = LIGHT_HAS_FLAG(light, LIGHT_PLANE_DOUBLE_SIDE);
+
+			direction = normalize(gEyePosW - position);
+			attenuation = AreaLight_Plane(normal, direction, position, float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1), points, doubleSide);
+
+			float specularExpValue = specularExp;
+			if (sunSpeculars) {
+				specularExpValue *= gMapsMaterial.SunSpecularExp;
+			}
+
+			diffuse += light.Color.xyz * attenuation;
+
+			[branch]
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+				float theta = acos(dot(normal, direction));
+				float2 uv = float2(clamp(1 - specularExpValue / 250, 0.03, 0.42), theta / (0.5 * 3.141592653));
+				uv = uv * LUT_SCALE + LUT_BIAS;
+
+				float4 t = gLtcMap.SampleLevel(samLtc, uv, 0);
+				float3x3 Minv = float3x3(
+					float3(1, 0, t.w),
+					float3(0, t.z, 0),
+					float3(t.y, 0, t.x)
+					);
+
+				float spec = AreaLight_Plane(normal, direction, position, Minv, points, doubleSide);
+				spec *= gLtcAmp.SampleLevel(samLtc, uv, 0).w;
+				specular += light.Color.xyz * spec;
+			}
+			return;
+		}
+#endif
 		default: {
 			direction = 0.0;
 			attenuation = 0.0;
@@ -325,7 +454,20 @@ float GetLight_SummaryShadow(Light light, float3 normal, float3 position, out fl
 		}
 	}
 
-	return GetExtraShadow_ConsiderMirror(light, position, normal) * GetDiffuseMultiplier(normal, direction) * attenuation;
+	float shadow = GetExtraShadow_ConsiderMirror(light, position, normal) * GetDiffuseMultiplier(normal, direction) * attenuation;
+
+	diffuse += light.Color.xyz * shadow;
+	if (specularValue != 0) {
+		if (sunSpeculars) {
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+				specular += CalculateSpecularLight_Maps_Sun(normal, position, specularExp, direction) * light.Color.xyz * shadow;
+			}
+		} else {
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+				specular += CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * light.Color.xyz * shadow;
+			}
+		}
+	}
 }
 
 void GetLight_NoSpecular(float3 normal, float3 position, out float3 diffuse) {
@@ -338,8 +480,8 @@ void GetLight_NoSpecular(float3 normal, float3 position, out float3 diffuse) {
 		[branch]
 		if (gLights[i].Type == LIGHT_OFF) continue;
 
-		shadow = GetLight_SummaryShadow(gLights[i], normal, position, direction);
-		diffuse += gLights[i].Color.xyz * shadow;
+		float3 specular = 0.0;
+		GetLight_ByType(gLights[i], normal, position, 0, 0, false, diffuse, specular);
 	}
 }
 
@@ -347,16 +489,16 @@ void GetLight_Custom(float3 normal, float3 position, float specularExp, float sp
 	float3 direction = gLights[0].DirectionW.xyz;
 	float shadow = GetMainShadow_ConsiderMirror(position) * GetDiffuseMultiplier(normal, direction);
 	diffuse = gLights[0].Color.xyz * shadow;
-	specular = CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * gLights[0].Color.xyz * shadow;
+
+	if (LIGHT_HAS_FLAG_I(0, LIGHT_SPECULAR)){
+	    specular = CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * gLights[0].Color.xyz * shadow;
+	}
 
 	[loop]
 	for (int i = 1; i < MAX_LIGHS_AMOUNT; i++) {
 		[branch]
 		if (gLights[i].Type == LIGHT_OFF) continue;
-
-		shadow = GetLight_SummaryShadow(gLights[i], normal, position, direction);
-		diffuse += gLights[i].Color.xyz * shadow;
-		specular += CalculateSpecularLight_ByValues(normal, position, direction, specularExp, specularValue) * gLights[i].Color.xyz * shadow;
+		GetLight_ByType(gLights[i], normal, position, specularExp, specularValue, false, diffuse, specular);
 	}
 }
 
@@ -368,15 +510,15 @@ void GetLight_Material_Sun(float3 normal, float3 position, float specularExpMult
 	float3 direction = gLights[0].DirectionW.xyz;
 	float shadow = GetMainShadow_ConsiderMirror(position) * GetDiffuseMultiplier(normal, direction);
 	diffuse = gLights[0].Color.xyz * shadow;
-	specular = CalculateSpecularLight_Maps_Sun(normal, position, specularExpMultiplier, direction) * gLights[0].Color.xyz * shadow;
+
+	if (LIGHT_HAS_FLAG_I(0, LIGHT_SPECULAR)) {
+		specular = CalculateSpecularLight_Maps_Sun(normal, position, specularExpMultiplier, direction) * gLights[0].Color.xyz * shadow;
+	}
 
 	[loop]
 	for (int i = 1; i < MAX_LIGHS_AMOUNT; i++) {
 		if (gLights[i].Type == LIGHT_OFF) continue;
-
-		shadow = GetLight_SummaryShadow(gLights[i], normal, position, direction);
-		diffuse += gLights[i].Color.xyz * shadow;
-		specular += CalculateSpecularLight_Maps_Sun(normal, position, specularExpMultiplier, direction) * gLights[i].Color.xyz * shadow;
+		GetLight_ByType(gLights[i], normal, position, specularExpMultiplier, 1, true, diffuse, specular);
 	}
 }
 

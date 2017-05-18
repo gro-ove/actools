@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class Kn5MaterialSimple : Kn5MaterialSimpleBase, IEmissiveMaterial {
+    public class Kn5MaterialSimple : Kn5MaterialSimpleBase, IAcDynamicMaterial {
         /// <summary>
         /// Should be set before Kn5MaterialSimple.Initialize()
         /// </summary>
@@ -37,13 +37,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             };
         }
 
-        public void SetEmissiveNext(Vector3 value, float multipler) {
-            var material = _material;
-            multipler = multipler.Pow((value.Length() / 21f).Clamp(1f, 7f));
-            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
-            Effect.FxMaterial.Set(material);
-        }
-
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
                     mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
@@ -54,5 +47,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             PrepareStates(contextHolder, mode);
             return true;
         }
+
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
+            var material = _material;
+            multipler = multipler.Pow((value.Length() / 21f).Clamp(1f, 7f));
+            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
+            Effect.FxMaterial.Set(material);
+        }
+
+        public virtual void SetRadialSpeedBlurNext(float amount) {}
     }
 }

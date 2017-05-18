@@ -59,9 +59,27 @@ void Unpack_AtNm(PS_IN pin, out float3 color, out float alpha, out float3 normal
 }
 
 //// behaves like maps, but multipliers are taken from diffuse alpha
-void Unpack_DiffMaps(PS_IN pin, out float3 color, out float alpha, out float3 normal) {
+/*void Unpack_DiffMaps(PS_IN pin, out float3 color, out float alpha, out float3 normal) {
 	float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+
+	color = diffuseValue.rgb;
+	alpha = diffuseValue.a;
+	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
+
+	AlphaTest(alpha);
+}*/
+
+//// special version for tyres
+void Unpack_Tyres(PS_IN pin, out float3 color, out float alpha, out float3 normal) {
+	float4 diffuseValue = lerp(
+		gDiffuseMap.Sample(samAnisotropic, pin.Tex),
+		gDiffuseBlurMap.Sample(samAnisotropic, pin.Tex),
+		gTyresMaterial.BlurLevel);
+	float4 normalValue = lerp(
+		gNormalMap.Sample(samAnisotropic, pin.Tex),
+		gNormalBlurMap.Sample(samAnisotropic, pin.Tex),
+		gTyresMaterial.BlurLevel);
 
 	color = diffuseValue.rgb;
 	alpha = diffuseValue.a;

@@ -730,6 +730,11 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                             _renderer.CarNode.AreWheelsContoursVisible = !_renderer.CarNode.AreWheelsContoursVisible;
                         }
                     }
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        if (_renderer.CarNode != null) {
+                            _renderer.CarNode.AlignWheelsByData = !_renderer.CarNode.AlignWheelsByData;
+                        }
+                    }
                     break;
             }
         }

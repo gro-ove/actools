@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForward.Materials {
-    public class Kn5MaterialSimple : Kn5MaterialSimpleBase, IEmissiveMaterial {
+    public class Kn5MaterialSimple : Kn5MaterialSimpleBase, IAcDynamicMaterial {
         /// <summary>
         /// Should be set before Kn5MaterialSimple.Initialize()
         /// </summary>
@@ -38,12 +38,6 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             };
         }
 
-        public void SetEmissiveNext(Vector3 value, float multipler) {
-            var material = _material;
-            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
-            Effect.FxMaterial.Set(material);
-        }
-
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
@@ -57,5 +51,13 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
+
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
+            var material = _material;
+            material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
+            Effect.FxMaterial.Set(material);
+        }
+
+        void IAcDynamicMaterial.SetRadialSpeedBlurNext(float amount) {}
     }
 }

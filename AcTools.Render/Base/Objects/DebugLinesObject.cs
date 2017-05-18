@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
@@ -27,7 +28,7 @@ namespace AcTools.Render.Base.Objects {
         public override void UpdateBoundingBox() {
             var matrix = Transform * ParentMatrix;
             BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.TransformCoordinate(x.Position, matrix))
-                                                                 .ToBoundingBox().Grow(new Vector3(0.005f));
+                                                                 .ToBoundingBox().Grow(new Vector3(0.05f));
         }
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
@@ -84,11 +85,12 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public bool DrawHighlighted(Ray pickingRay, IDeviceContextHolder contextHolder, ICamera camera) {
+            var bb = BoundingBox;
+
             float distance;
-            var intersects = Ray.Intersects(pickingRay, BoundingBox ?? default(BoundingBox), out distance);
-            if (intersects) {
-                intersects = DoesIntersect(pickingRay, 0.005f);
-            }
+            var intersects = bb.HasValue &&
+                    Ray.Intersects(pickingRay, bb.Value, out distance) &&
+                    DoesIntersect(pickingRay, 0.02f / bb.Value.GetCenter().GetOnScreenSize(camera));
 
             Draw(contextHolder, camera, intersects ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);
             return intersects;
@@ -144,7 +146,7 @@ namespace AcTools.Render.Base.Objects {
         }
 
         [NotNull]
-        public static DebugLinesObject GetLinesCircle(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float size = 0.16f) {
+        public static DebugLinesObject GetLinesCircle(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f) {
             var vertices = new List<InputLayouts.VerticePC>();
             var indices = new List<ushort>();
 
@@ -159,14 +161,139 @@ namespace AcTools.Render.Base.Objects {
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             }
 
-            left *= size;
-            up *= size;
+            left *= radius;
+            up *= radius;
 
             for (var i = 1; i <= segments; i++) {
                 var a = MathF.PI * 2f * i / segments;
                 vertices.Add(new InputLayouts.VerticePC(left * a.Cos() + up * a.Sin(), color));
                 indices.Add((ushort)(i - 1));
                 indices.Add((ushort)(i == segments ? 0 : i));
+            }
+
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        [NotNull]
+        public static DebugLinesObject GetLinesSphere(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+
+            var forward = direction * radius;
+            left *= radius;
+            up *= radius;
+
+            for (var i = 1; i <= segments; i++) {
+                var a = MathF.PI * 2f * i / segments;
+                var cos = a.Cos();
+                var sin = a.Sin();
+                vertices.Add(new InputLayouts.VerticePC(left * cos + up * sin, color));
+                vertices.Add(new InputLayouts.VerticePC(forward * cos + up * sin, color));
+                vertices.Add(new InputLayouts.VerticePC(left * cos + forward * sin, color));
+                indices.Add((ushort)(i * 3 - 3));
+                indices.Add((ushort)(i == segments ? 0 : i * 3));
+                indices.Add((ushort)(i * 3 - 2));
+                indices.Add((ushort)(i == segments ? 1 : i * 3 + 1));
+                indices.Add((ushort)(i * 3 - 1));
+                indices.Add((ushort)(i == segments ? 2 : i * 3 + 2));
+            }
+
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        [NotNull]
+        public static DebugLinesObject GetLinesRoundedCylinder(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f, 
+                float height = 0.32f) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+
+            var side = direction * height * 0.5f;
+
+            var forward = direction * radius;
+            left *= radius;
+            up *= radius;
+
+            for (var i = 1; i <= segments; i++) {
+                var a = MathF.PI * 2f * i / segments;
+                var cos = a.Cos();
+                var sin = a.Sin();
+                var j = vertices.Count;
+                
+                var sa = Math.Abs(cos) < 0.001f;
+                var sb = i == segments || i == segments / 2;
+
+                vertices.Add(new InputLayouts.VerticePC(left * cos + up * sin + side, color));
+                vertices.Add(new InputLayouts.VerticePC(left * cos + up * sin - side, color));
+                vertices.Add(new InputLayouts.VerticePC(forward * cos + up * sin + (cos > 0 && !sa ? side : -side), color));
+                vertices.Add(new InputLayouts.VerticePC(left * cos + forward * sin + (sin > 0 && !sb ? side : -side), color));
+
+                var jo = 4;
+
+                if (sa) {
+                    var v = new InputLayouts.VerticePC(forward * cos + up * sin + side, color);
+                    if (i > segments / 2) {
+                        vertices.Add(v);
+                    } else {
+                        vertices.Add(vertices[j + 2]);
+                        vertices[j + 2] = v;
+                    }
+                    jo++;
+                }
+
+                if (sb) {
+                    var v = new InputLayouts.VerticePC(left * cos + forward * sin + side, color);
+                    if (i > segments / 2) {
+                        vertices.Add(v);
+                    } else {
+                        vertices.Add(vertices[j + 3]);
+                        vertices[j + 3] = v;
+                    }
+                    jo++;
+                }
+
+                // circles
+                indices.Add((ushort)j);
+                indices.Add((ushort)(i == segments ? 0 : j + jo));
+                indices.Add((ushort)(j + 1));
+                indices.Add((ushort)(i == segments ? 1 : j + jo + 1));
+
+                // first goes-around thing
+                indices.Add((ushort)(j + 2));
+                if (sa) {
+                    indices.Add((ushort)(j + 4));
+                    indices.Add((ushort)(j + 4));
+                }
+                indices.Add((ushort)(i == segments ? 2 : j + jo + 2));
+
+                // second goes-around thing
+                indices.Add((ushort)(j + 3));
+                if (sb) {
+                    indices.Add((ushort)(j + jo - 1));
+                    indices.Add((ushort)(j + jo - 1));
+                }
+                indices.Add((ushort)(i == segments ? 3 : j + jo + 3));
             }
 
             return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
@@ -200,6 +327,44 @@ namespace AcTools.Render.Base.Objects {
             }
 
             return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        public static DebugLinesObject GetLinesCone(float angle, Vector3 direction, Color4 color, int segments = 8, int subSegments = 10, float size = 0.1f) {
+            var vertices = new List<InputLayouts.VerticePC> { new InputLayouts.VerticePC(Vector3.Zero, color) };
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.5f) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+
+            var angleSin = angle.Sin();
+            var angleCos = angle.Cos();
+
+            left *= size * angleSin;
+            up *= size * angleSin;
+            direction *= size * angleCos;
+
+            var total = segments * subSegments;
+            for (var i = 1; i <= total; i++) {
+                var a = MathF.PI * 2f * i / total;
+                vertices.Add(new InputLayouts.VerticePC(left * a.Cos() + up * a.Sin() + direction, color));
+                indices.Add((ushort)i);
+                indices.Add((ushort)(i == total ? 1 : i + 1));
+
+                if (i % subSegments == 1) {
+                    indices.Add(0);
+                    indices.Add((ushort)i);
+                }
+            }
+
+            return new DebugLinesObject(Matrix.Identity, vertices.ToArray(), indices.ToArray());
         }
     }
 }

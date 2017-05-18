@@ -140,7 +140,7 @@ namespace AcTools.Render.Base.Shadows {
             }
         }
 
-        public void Update(Vector3 direction, BaseCamera camera) {
+        public void Update(Vector3 direction, CameraBase camera) {
             foreach (var split in Splits) {
                 split.LookAt(direction, camera.Position + camera.Look * split.Size / 2);
             }

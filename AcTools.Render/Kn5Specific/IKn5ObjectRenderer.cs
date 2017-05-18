@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace AcTools.Render.Kn5Specific {
     public interface IKn5ObjectRenderer {
         [NotNull]
-        BaseCamera Camera { get; }
+        CameraBase Camera { get; }
 
         [CanBeNull]
         CameraOrbit CameraOrbit { get; }

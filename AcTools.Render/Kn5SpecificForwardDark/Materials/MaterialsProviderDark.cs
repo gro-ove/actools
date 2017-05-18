@@ -53,7 +53,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
                 case "ksTyres":
                 case "ksBrakeDisc":
-                    return new Kn5MaterialSimpleDiffMaps(description);
+                    return new Kn5MaterialSimpleTyres(description);
+
+                //case "ksBrakeDisc":
+                //    return new Kn5MaterialSimpleDiffMaps(description);
 
                 case "ksWindscreen":
                     return new Kn5MaterialSimpleWindscreen(description);

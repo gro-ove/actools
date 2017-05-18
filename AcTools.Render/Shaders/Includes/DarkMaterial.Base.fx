@@ -55,6 +55,16 @@ struct NmUvMultMaterial {
 	float NormalMultiplier;
 };
 
+// tyres
+struct TyresMaterial {
+	float BlurLevel;
+	float DirtyLevel;
+};
+
+Texture2D gDiffuseBlurMap;
+Texture2D gNormalBlurMap;
+Texture2D gDirtyMap;
+
 // input resources
 cbuffer cbPerObject : register(b0) {
 	matrix gWorld;
@@ -66,6 +76,7 @@ cbuffer cbPerObject : register(b0) {
 	MapsMaterial gMapsMaterial;
 	AlphaMaterial gAlphaMaterial;
 	NmUvMultMaterial gNmUvMultMaterial;
+	TyresMaterial gTyresMaterial;
 
 	bool gFlatMirrored;
 }

@@ -7,7 +7,7 @@ using AcTools.Render.Shaders;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForward.Materials {
-    public class Kn5MaterialSimpleMirror : IRenderableMaterial, IEmissiveMaterial {
+    public class Kn5MaterialSimpleMirror : IRenderableMaterial, IAcDynamicMaterial {
         public bool IsBlending => false;
         
         private EffectSimpleMaterial _effect;
@@ -17,8 +17,6 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         public void Initialize(IDeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
-
-        public void SetEmissiveNext(Vector3 value, float multipler) {}
 
         public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!mode.HasFlag(SpecialRenderMode.Simple)) return false;
@@ -36,6 +34,10 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
              _effect.TechMirror.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
-        public void Dispose() {}
+        public void Dispose() { }
+
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) { }
+
+        void IAcDynamicMaterial.SetRadialSpeedBlurNext(float amount) { }
     }
 }

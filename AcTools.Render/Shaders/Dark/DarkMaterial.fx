@@ -5,13 +5,17 @@
 
 #define MAX_LIGHS_AMOUNT 50
 #define MAX_EXTRA_SHADOWS 25
+#define ENABLE_AREA_LIGHTS 1
 
 // Only for DarkKn5ObjectRenderer:
 #define MAX_EXTRA_SHADOWS_SMOOTH 25
 #define MAX_EXTRA_SHADOWS_FEWER 5
 
+static const bool DEBUG_MODE = true;
+
 #include "DarkMaterial.Base.fx"
 #include "DarkMaterial.Reflection.fx"
 #include "DarkMaterial.Lighting.Complex.fx"
 #include "DarkMaterial.Unpack.fx"
+#include "DarkMaterial.GPass.fx"
 #include "DarkMaterial.Kunos.fx"

@@ -50,7 +50,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         protected virtual void SetEmissive(Vector3? value, TimeSpan? duration) {
-            Node?.Emissive.Set(value, duration);
+            Node?.DynamicMaterialParams.Emissive.Set(value, duration);
         }
 
         public TimeSpan? GetDuration() {

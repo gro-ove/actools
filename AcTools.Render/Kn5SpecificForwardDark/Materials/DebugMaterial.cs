@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
-    public class DebugMaterial : ISkinnedMaterial, IEmissiveMaterial {
+    public class DebugMaterial : ISkinnedMaterial, IAcDynamicMaterial {
         private EffectDarkMaterial _effect;
         private EffectDarkMaterial.StandartMaterial _material;
         private IRenderableTexture _txDiffuse, _txNormal;
@@ -144,14 +144,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }
 
-        public void SetEmissiveNext(Vector3 value, float multipler) {
+        public bool IsBlending { get; }
+
+        public void Dispose() { }
+
+        void IAcDynamicMaterial.SetEmissiveNext(Vector3 value, float multipler) {
             var material = _material;
             material.Emissive = material.Emissive * (1f - multipler) + value * multipler;
             _effect.FxMaterial.Set(material);
         }
 
-        public bool IsBlending { get; }
-
-        public void Dispose() { }
+        void IAcDynamicMaterial.SetRadialSpeedBlurNext(float amount) { }
     }
 }

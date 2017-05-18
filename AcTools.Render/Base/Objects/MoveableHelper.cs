@@ -36,7 +36,7 @@ namespace AcTools.Render.Base.Objects {
         private Vector3 _arrowHighlighted, _circleHighlighted;
         private bool _keepHighlight;
 
-        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, BaseCamera camera, bool tryToClone, [CanBeNull] out IMoveable cloned) {
+        public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone, [CanBeNull] out IMoveable cloned) {
             if (_keepHighlight) {
                 tryToClone = false;
             } else {
@@ -134,28 +134,19 @@ namespace AcTools.Render.Base.Objects {
                 _arrowZ = DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), arrowSize);
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.X)) {
-                    _circleX = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f), size: circleSize);
+                    _circleX = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(0f, 1f, 0f, 0f), radius: circleSize);
                 }
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.Y)) {
-                    _circleY = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f), size: circleSize);
+                    _circleY = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(0f, 0f, 1f, 0f), radius: circleSize);
                 }
 
                 if (_rotationAxis.HasFlag(MoveableRotationAxis.Z)) {
-                    _circleZ = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), size: circleSize);
+                    _circleZ = DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(0f, 0f, 0f, 1f), radius: circleSize);
                 }
             }
 
-            var pos = ParentMatrix.GetTranslationVector();
-            var viewProj = camera?.ViewProj;
-
-            var matrix = Matrix.Translation(pos);
-            if (viewProj != null) {
-                var onScreenSize = (Vector3.TransformCoordinate(pos, viewProj.Value) -
-                        Vector3.TransformCoordinate(pos + camera.Up, viewProj.Value)).Length();
-                matrix = Matrix.Scaling(new Vector3(1f / onScreenSize)) * matrix;
-            }
-
+            var matrix = ParentMatrix.GetTranslationVector().ToFixedSizeMatrix(camera);
             if (_arrowX.ParentMatrix != matrix) {
                 _arrowX.ParentMatrix = matrix;
                 _arrowY.ParentMatrix = matrix;
@@ -190,7 +181,7 @@ namespace AcTools.Render.Base.Objects {
                 _circleZ?.Draw(holder, camera, _circleHighlighted.Z == 0f ? SpecialRenderMode.Simple : SpecialRenderMode.Outline);
             } else {
                 var mousePosition = holder.TryToGet<IMousePositionProvider>()?.GetRelative();
-                var rayN = mousePosition == null ? null : (camera as BaseCamera)?.GetPickingRay(mousePosition.Value, new Vector2(1f, 1f));
+                var rayN = mousePosition == null ? null : (camera as CameraBase)?.GetPickingRay(mousePosition.Value, new Vector2(1f, 1f));
                 if (!rayN.HasValue) return;
 
                 var ray = rayN.Value;

@@ -8,4 +8,5 @@
 #include "DarkMaterial.Lighting.None.fx"
 #include "DarkMaterial.Lighting.Complex.Placeholder.fx"
 #include "DarkMaterial.Unpack.fx"
+#include "DarkMaterial.GPass.fx"
 #include "DarkMaterial.Kunos.fx"

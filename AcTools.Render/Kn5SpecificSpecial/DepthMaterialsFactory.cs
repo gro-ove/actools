@@ -186,6 +186,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        SmoothEmissiveChange IKn5RenderableObject.Emissive { get; } = null;
+        AcDynamicMaterialParams IKn5RenderableObject.DynamicMaterialParams { get; } = null;
     }
 }

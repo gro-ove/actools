@@ -78,7 +78,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        public void SetMaterial(IDeviceContextHolder holder, [CanBeNull] IEmissiveMaterial material) {
+        public void SetMaterial(IDeviceContextHolder holder, [CanBeNull] IAcDynamicMaterial material) {
             if (_smoothChanging) {
                 if (_stopwatch == null) {
                     _stopwatch = holder.StartNewStopwatch();

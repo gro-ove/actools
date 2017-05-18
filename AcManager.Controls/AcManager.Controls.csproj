@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
+    <Compile Include="CustomShowroom\DarkRendererCars.cs" />
     <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
     <Compile Include="CustomShowroom\PaintShop.Items.cs" />
     <Compile Include="RaceGridEditorTable.cs" />

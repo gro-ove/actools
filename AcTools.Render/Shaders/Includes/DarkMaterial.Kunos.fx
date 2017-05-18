@@ -174,9 +174,11 @@ technique10 SkinnedMaps {
 	}
 }
 
-float4 ps_DiffMaps(PS_IN pin) : SV_Target {
-	float3 color, normal, maps; float alpha;
-	Unpack_Maps(pin, color, alpha, normal, maps);
+// Diff maps (as Maps, but multipliers are taken from diffuse alpha-channel)
+
+/*float4 ps_DiffMaps(PS_IN pin) : SV_Target {
+	float3 color, normal; float alpha;
+	Unpack_DiffMaps(pin, color, alpha, normal);
 
 	float4 refl = CalculateReflection_Maps(pin.PosW, normal, alpha);
 	float3 lighted = CalculateLight_Maps(color, normal, pin.PosW, alpha, 1.0, pin.PosH.xy);
@@ -193,6 +195,30 @@ technique10 DiffMaps {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, ps_DiffMaps()));
+	}
+}*/
+
+// Tyres
+
+float4 ps_Tyres(PS_IN pin) : SV_Target {
+	float3 color, normal; float alpha;
+	Unpack_Tyres(pin, color, alpha, normal);
+
+	float4 refl = CalculateReflection_Maps(pin.PosW, normal, alpha);
+	float3 lighted = CalculateLight_Maps(color, normal, pin.PosW, alpha, 1.0, pin.PosH.xy);
+
+	if (!HAS_FLAG(IS_ADDITIVE)) {
+		lighted *= 1.0 - refl.a;
+	}
+
+	return float4(lighted + refl.rgb * refl.a * alpha, alpha);
+}
+
+technique10 Tyres {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_main()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, ps_Tyres()));
 	}
 }
 
@@ -361,10 +387,6 @@ technique10 SkinnedDepthOnly {
 		SetPixelShader(NULL);
 	}
 }
-
-//////////////// For SSLR?
-
-#include "DarkMaterial.GPass.fx"
 
 //////////////// Misc stuff
 

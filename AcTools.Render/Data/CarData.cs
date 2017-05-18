@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using AcTools.DataFile;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -169,27 +167,36 @@ namespace AcTools.Render.Data {
 
         #region Blurred objects
         public class BlurredObject {
-            public BlurredObject(int wheelIndex, string staticName, string blurredName) {
-                WheelIndex = wheelIndex;
-                StaticName = staticName;
-                BlurredName = blurredName;
+            public BlurredObject(IniFileSection section) {
+                WheelIndex = section.GetInt("WHEEL_INDEX", -1);
+                Name = section.GetNonEmpty("NAME");
+                MinSpeed = section.GetFloat("MIN_SPEED", 0f);
+                MaxSpeed = section.GetFloat("MAX_SPEED", 30f);
             }
 
             public int WheelIndex { get; }
 
-            public string StaticName { get; }
+            public string Name { get; }
 
-            public string BlurredName { get; }
+            public float MinSpeed { get; }
+
+            public float MaxSpeed { get; }
+
+            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle(BlurredObject[] list, float speed) {
+                return GetNamesToToggle(list, new[] { speed, speed, speed, speed });
+            }
+
+            public static IEnumerable<Tuple<string, bool>> GetNamesToToggle(BlurredObject[] list, float[] speed) {
+                return from o in list
+                       let s = o.WheelIndex < speed.Length ? speed[o.WheelIndex] : 0f
+                       select Tuple.Create(o.Name, o.MinSpeed <= s && s <= o.MaxSpeed);
+            }
         }
 
         public IEnumerable<BlurredObject> GetBlurredObjects() {
             return IsEmpty ? new BlurredObject[0] :
-                    _data.GetIniFile("blurred_objects.ini").GetSections("OBJECT").GroupBy(x => x.GetInt("WHEEL_INDEX", -1))
-                         .Select(x => new BlurredObject(
-                                 x.First().GetInt("WHEEL_INDEX", -1),
-                                 x.FirstOrDefault(y => y.GetInt("MIN_SPEED", 0) == 0)?.GetNonEmpty("NAME"),
-                                 x.FirstOrDefault(y => y.GetInt("MIN_SPEED", 0) > 0)?.GetNonEmpty("NAME")
-                                 )).Where(x => x.WheelIndex >= 0 && x.StaticName != null && x.BlurredName != null);
+                    _data.GetIniFile("blurred_objects.ini").GetSections("OBJECT")
+                         .Select(x => new BlurredObject(x)).Where(x => x.WheelIndex >= 0 && x.Name != null);
         }
         #endregion
 
@@ -288,15 +295,6 @@ namespace AcTools.Render.Data {
         #endregion
 
         #region Suspension
-        public Vector3 GetCgOffset() {
-            var suspensions = _data.GetIniFile("suspensions.ini");
-            var basic = suspensions["BASIC"];
-            var wheelbase = basic.GetFloat("WHEELBASE", 2f);
-            var cgLocation = basic.GetFloat("CG_LOCATION", 0.5f);
-
-            return GetGraphicOffset() + Vector3.UnitZ * (cgLocation - 0.5f) * wheelbase;
-        }
-
         public Vector3 GetWheelGraphicOffset(string nodeName) {
             var suspensions = _data.GetIniFile("suspensions.ini");
             return new Vector3(-suspensions["GRAPHICS_OFFSETS"].GetFloat(nodeName, 0f), 0f, 0f);
@@ -339,8 +337,8 @@ namespace AcTools.Render.Data {
 
                 var tyres = data.GetIniFile("tyres.ini");
                 return new SuspensionsPack(
-                    SuspensionsGroupBase.Create(suspensions, true, tyres["FRONT"].GetFloat("RADIUS", 0f)),
-                    SuspensionsGroupBase.Create(suspensions, false, tyres["REAR"].GetFloat("RADIUS", 0f)), graphicOffset);
+                        SuspensionsGroupBase.Create(suspensions, true, tyres["FRONT"].GetFloat("RADIUS", 0f)),
+                        SuspensionsGroupBase.Create(suspensions, false, tyres["REAR"].GetFloat("RADIUS", 0f)), graphicOffset);
             }
 
             IEnumerator IEnumerable.GetEnumerator() {
@@ -708,11 +706,13 @@ namespace AcTools.Render.Data {
         public class WheelDescription {
             public string Name { get; }
 
-            public bool IsLeft => Center.X > 0f;
+            public bool IsLeft => CenterWheel.X > 0f;
 
-            public bool IsFront => Center.Z > 0f;
+            public bool IsFront => CenterWheel.Z > 0f;
 
-            public Vector3 Center { get; }
+            public Vector3 CenterWheel { get; }
+
+            public Vector3 CenterSusp { get; }
 
             public float Radius { get; }
 
@@ -722,21 +722,33 @@ namespace AcTools.Render.Data {
 
             public float BaseY { get; }
 
-            public WheelDescription(string name, IniFileSection wheelsPairSection, IniFileSection axleSection, IniFileSection graphicOffsetSection,
-                    float wheelbase, float cgLocation, bool left, bool front) {
+            public float StaticCamber { get; }
+
+            public float StaticToe { get; }
+
+            internal WheelDescription(string name, IniFileSection wheelsPairSection, IniFileSection axleSection, IniFileSection graphicOffsetSection,
+                    float wheelbase, float cgLocation, bool left, bool front, [CanBeNull] CarSuspensionModifiers modifiers) {
                 Name = name;
-                BaseY = axleSection.GetFloat("BASEY", 0f);
-                Center = new Vector3(
-                        (left ? 0.5f : -0.5f) * axleSection.GetFloat("TRACK", 1.4f) + graphicOffsetSection.GetFloat("SUSP_" + name, 0f),
+                BaseY = axleSection.GetFloat("BASEY", 0f) + ((front ? modifiers?.BaseYFrontAdd : modifiers?.BaseYRearAdd) ?? 0f);
+                StaticCamber = axleSection.GetFloat("STATIC_CAMBER", 0f) + ((front ? modifiers?.CamberFrontAdd : modifiers?.CamberRearAdd) ?? 0f);
+                StaticToe = (front ? modifiers?.ToeFrontAdd : modifiers?.ToeRearAdd) ?? 0f;
+
+                var baseCenter = new Vector3(
+                        (left ? 0.5f : -0.5f) * (
+                                axleSection.GetFloat("TRACK", 1.4f) +
+                                        ((front ? modifiers?.TrackWidthFrontAdd : modifiers?.TrackWidthRearAdd) ?? 0f)),
                         BaseY,
-                        (front ? 1f - cgLocation : -cgLocation) * wheelbase);
+                        (front ? 1f - cgLocation : -cgLocation) * wheelbase + ((front ? modifiers?.ZOffsetFrontAdd : modifiers?.ZOffsetRearAdd) ?? 0f));
+
+                CenterWheel = baseCenter + new Vector3(graphicOffsetSection.GetFloat("WHEEL_" + name, 0f), 0f, 0f);
+                CenterSusp = baseCenter + new Vector3(graphicOffsetSection.GetFloat("SUSP_" + name, 0f), 0f, 0f);
                 Radius = wheelsPairSection.GetFloat("RADIUS", 0.3f);
                 RimRadius = wheelsPairSection.GetFloat("RIM_RADIUS", 0.23f) - 0.0254f;
                 Width = wheelsPairSection.GetFloat("WIDTH", 0.2f);
             }
         }
 
-        public IEnumerable<WheelDescription> GetWheels() {
+        public IEnumerable<WheelDescription> GetWheels(CarSuspensionModifiers modifiers = null) {
             if (IsEmpty) {
                 yield break;
             }
@@ -752,10 +764,10 @@ namespace AcTools.Render.Data {
             var rearTrack = suspension["REAR"];
             var graphicOffset = suspension["GRAPHICS_OFFSETS"];
 
-            yield return new WheelDescription("LF", front, frontTrack, graphicOffset, wheelbase, cgLocation, true, true);
-            yield return new WheelDescription("RF", front, frontTrack, graphicOffset, wheelbase, cgLocation, false, true);
-            yield return new WheelDescription("LR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, true, false);
-            yield return new WheelDescription("RR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, false, false);
+            yield return new WheelDescription("LF", front, frontTrack, graphicOffset, wheelbase, cgLocation, true, true, modifiers);
+            yield return new WheelDescription("RF", front, frontTrack, graphicOffset, wheelbase, cgLocation, false, true, modifiers);
+            yield return new WheelDescription("LR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, true, false, modifiers);
+            yield return new WheelDescription("RR", rear, rearTrack, graphicOffset, wheelbase, cgLocation, false, false, modifiers);
         }
         #endregion
 

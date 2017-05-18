@@ -49,7 +49,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
         }
 
         // Blur is usually the same for all types of AO
-        public void Blur(DeviceContextHolder holder, TargetResourceTexture inputOutput, TargetResourceTexture temporary, BaseCamera camera) {
+        public void Blur(DeviceContextHolder holder, TargetResourceTexture inputOutput, TargetResourceTexture temporary, CameraBase camera) {
             _blurEffect.FxWeights.Set(_gaussianBlur ?? (_gaussianBlur = GaussianBlur()));
             _blurEffect.FxNearFarValue.Set(new Vector2(camera.NearZValue, camera.FarZValue));
 

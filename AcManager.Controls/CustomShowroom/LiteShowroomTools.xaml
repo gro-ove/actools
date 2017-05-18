@@ -3,8 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:cs="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:lp="clr-namespace:LicensePlates;assembly=LicensePlates" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
-        Topmost="True" ShowTitle="False" Width="250" SizeToContent="Height" MaxHeight="800" Loaded="OnLoaded">
+        Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" Width="250"
+        SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" ResizeMode="CanResizeWithGrip" LocationAndSizeKey="__cmls"
+        d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -356,7 +357,7 @@
                         </DockPanel>
 
                         <mui:ModernTab x:Name="Tab" mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:visualSettings" LinksMargin="0 0 0 4"
-                                FrameMargin="0 48 0 0" LinksHorizontalAlignment="Stretch" Margin="0 4 0 0" DataContext="{Binding Settings}" Height="400">
+                                FrameMargin="0 48 0 0" LinksHorizontalAlignment="Stretch" Margin="0 4 0 0" DataContext="{Binding Settings}">
                             <mui:ModernTab.LinksListBoxTemplate>
                                 <ControlTemplate>
                                     <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
@@ -381,480 +382,602 @@
                         </mui:ModernTab>
                     </mui:SpacingStackPanel>
 
-                    <StackPanel x:Key="Main">
-                        <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
+                    <ScrollViewer x:Key="Main" mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csMain">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <StackPanel>
-                                <DockPanel>
-                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
-                                    <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
-                                </DockPanel>
-                                <DockPanel>
-                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
-                                    <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
-                                </DockPanel>
-                                <DockPanel>
-                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                                    <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
-                                </DockPanel>
-
-                                <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                                <DockPanel Margin="0 4 0 0">
-                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                                            Content="Steer" Postfix="°" />
-                                    <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10"
-                                            TickPlacement="BottomRight" />
-                                </DockPanel>
-                            </StackPanel>
-
-                            <mui:SpacingStackPanel Margin="4 0 0 0" Spacing="8" Grid.Column="1"
-                                    Visibility="{Binding Settings, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}"
-                                        Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}"
-                                        ToolTip="Visual settings" />
-                                <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource SendPhotoData}"
-                                        Command="{Binding TransferToCmPreviewsCommand}" ToolTip="Save settings as CM Previews preset"
-                                        Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource EyePhotoData}"
-                                        Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Camera}"
-                                        ToolTip="Camera settings" />
-                                <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CarIconData}"
-                                        Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Car}" ToolTip="Car params" />
-                            </mui:SpacingStackPanel>
-                        </Grid>
-
-                        <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Skin}" ItemsSource="{Binding Car.EnabledOnlySkins}" Margin="0 4 0 0">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Height="18">
-                                        <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
-                                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                                <StackPanel>
+                                    <DockPanel>
+                                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_FpsLabel}" />
+                                        <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                                     </DockPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </mui:BetterComboBox>
-                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}"
-                                ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}">
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
-                        </CheckBox>
+                                    <DockPanel>
+                                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
+                                        <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
+                                        <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
+                                    </DockPanel>
 
-                        <Button Margin="0 20 0 0" Command="{Binding ToggleSkinModeCommand}" Content="Modify Skin" />
-                        <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
-                                Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-                        <Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
-                                ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />
+                                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}"
+                                            Margin="0 12 0 0" />
+                                    <DockPanel Margin="0 4 0 0">
+                                        <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                                Content="Steer" Postfix="°" />
+                                        <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10"
+                                                TickPlacement="BottomRight" />
+                                    </DockPanel>
+                                </StackPanel>
 
-                        <StackPanel
-                                Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                            <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
-                                <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
+                                <mui:SpacingStackPanel Margin="4 0 0 0" Spacing="8" Grid.Column="1"
+                                        Visibility="{Binding Settings, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                    <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}"
+                                            Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}"
+                                            ToolTip="Visual settings" />
+                                    <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource SendPhotoData}"
+                                            Command="{Binding TransferToCmPreviewsCommand}" ToolTip="Save settings as CM Previews preset"
+                                            Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource EyePhotoData}"
+                                            Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Camera}"
+                                            ToolTip="Camera settings" />
+                                    <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CarIconData}"
+                                            Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Car}"
+                                            ToolTip="Car params" />
+                                    <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource CarsIconData}"
+                                            Command="{Binding SelectModeCommand}" CommandParameter="{x:Static cs:LiteShowroomTools+Mode.Cars}"
+                                            ToolTip="Several cars" />
+                                </mui:SpacingStackPanel>
+                            </Grid>
 
-                    <StackPanel x:Key="Selected">
-                        <DockPanel Margin="0 0 0 4">
-                            <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
-                                    IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
-                                    ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                            <TextBlock Text="Selected Object" Style="{StaticResource Heading2}" />
-                        </DockPanel>
-                        <DockPanel>
-                            <DockPanel.InputBindings>
-                                <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
-                            </DockPanel.InputBindings>
-                            <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20"
-                                    Margin="4 0 0 0" Padding="4 0" />
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
-                            <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
-                        </DockPanel>
-                        <DockPanel>
-                            <DockPanel.InputBindings>
-                                <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
-                            </DockPanel.InputBindings>
-                            <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
-                                    Margin="4 0 0 0" Padding="4 0" />
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
-                            <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
-                        </DockPanel>
-                        <DockPanel>
-                            <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
-                                    Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_TexturesLabel}" />
-                            <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
-                                <ItemsControl.ItemTemplate>
+                            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                            <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Skin}" ItemsSource="{Binding Car.EnabledOnlySkins}" Margin="0 4 0 0">
+                                <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <DockPanel Margin="8 0 0 0">
-                                            <mui:ContextMenuButton DockPanel.Dock="Right"
-                                                    Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
-                                                    CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0" />
-                                            <Label VerticalAlignment="Center" Width="90">
-                                                <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
-                                            </Label>
-                                            <TextBlock Text="{Binding TextureName}" Margin="0 0 4 0" />
+                                        <DockPanel Height="18">
+                                            <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                            <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
                                         </DockPanel>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </DockPanel>
+                                </ComboBox.ItemTemplate>
+                            </mui:BetterComboBox>
+                            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.MagickOverride}"
+                                    ToolTip="{x:Static c:ControlsStrings.CustomShowroom_EditingMode_Tooltip}" IsEnabled="{Binding MagickNetEnabled}">
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
+                            </CheckBox>
 
-                        <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                        <DockPanel>
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                            <TextBlock Text="{Binding SelectedObjectTrianglesCount}" />
-                        </DockPanel>
-                    </StackPanel>
+                            <Button Margin="0 20 0 0" Command="{Binding ToggleSkinModeCommand}" Content="Modify Skin" />
+                            <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
+                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                            <Button Margin="0 4 0 0" Command="{Binding CopyCameraPositionCommand}"
+                                    ToolTip="Use this button if you want to find coordinates for updating previews" Content="Copy Camera Position" />
 
-                    <StackPanel x:Key="Skin">
-                        <DockPanel>
+                            <StackPanel
+                                    Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                                <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
+                                    <TextBlock
+                                            Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
+                        <StackPanel>
+                            <DockPanel Margin="0 0 0 4">
+                                <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                        IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
+                                        ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                                <TextBlock Text="Selected Object" Style="{StaticResource Heading2}" />
+                            </DockPanel>
+                            <DockPanel>
+                                <DockPanel.InputBindings>
+                                    <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
+                                </DockPanel.InputBindings>
+                                <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20"
+                                        Margin="4 0 0 0" Padding="4 0" />
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
+                                <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+                            </DockPanel>
+                            <DockPanel>
+                                <DockPanel.InputBindings>
+                                    <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
+                                </DockPanel.InputBindings>
+                                <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
+                                        Margin="4 0 0 0" Padding="4 0" />
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
+                                <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" Margin="0 0 4 0" />
+                            </DockPanel>
+                            <DockPanel>
+                                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left"
+                                        Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_TexturesLabel}" />
+                                <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel Margin="8 0 0 0">
+                                                <mui:ContextMenuButton DockPanel.Dock="Right"
+                                                        Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
+                                                        CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0" />
+                                                <Label VerticalAlignment="Center" Width="90">
+                                                    <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
+                                                </Label>
+                                                <TextBlock Text="{Binding TextureName}" Margin="0 0 4 0" />
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DockPanel>
+
+                            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                            <DockPanel>
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
+                                <TextBlock Text="{Binding SelectedObjectTrianglesCount}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <DockPanel x:Key="Skin">
+                        <DockPanel DockPanel.Dock="Top">
                             <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
                                     IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                                     Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
                             <TextBlock Text="Modify Skin" Style="{StaticResource Heading2}" />
                         </DockPanel>
 
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" MaxHeight="400" Margin="0 0 -8 0" Padding="0 0 8 0"
-                                mui:FancyScrollHelper.Outsize="True">
-                            <ItemsControl ItemsSource="{Binding SkinItems}" ItemTemplate="{StaticResource PaintShopItemTemplate}" />
-                        </ScrollViewer>
-
-                        <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0">
+                        <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" DockPanel.Dock="Bottom">
                             <Button Command="{Binding SkinSaveChangesCommand}" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
                                     Padding="0 3 0 5" />
                             <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save As New…" Padding="0 3 0 5" />
                         </mui:SpacingUniformGrid>
-                    </StackPanel>
 
-                    <mui:SpacingStackPanel x:Key="Camera" Spacing="4">
-                        <DockPanel>
-                            <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
-                                    IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
-                                    ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                            <TextBlock Text="Camera" Style="{StaticResource Heading2}" />
-                        </DockPanel>
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outsize="True"
+                                mui:SaveScroll.Key="__csSkinItems">
+                            <ItemsControl ItemsSource="{Binding SkinItems}" ItemTemplate="{StaticResource PaintShopItemTemplate}" />
+                        </ScrollViewer>
+                    </DockPanel>
 
-                        <Label Content="Position:" />
-                        <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraPosition}">
+                    <ScrollViewer x:Key="Camera" mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
+                        <mui:SpacingStackPanel Spacing="4">
                             <DockPanel>
-                                <mui:ValueLabel Value="{Binding X, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="X"
-                                        Postfix=" m" />
-                                <Slider Minimum="-16" Maximum="16" Value="{Binding X, StringFormat='{}{0:F2}'}" TickFrequency="4" TickPlacement="BottomRight" />
+                                <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                        IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
+                                        ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                                <TextBlock Text="Camera" Style="{StaticResource Heading2}" />
+                            </DockPanel>
+
+                            <Label Content="Position:" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraPosition}">
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding X, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="X" Postfix=" m" />
+                                    <Slider Minimum="-16" Maximum="16" Value="{Binding X, StringFormat='{}{0:F2}'}" TickFrequency="4"
+                                            TickPlacement="BottomRight" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Y, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="Y" Postfix=" m" />
+                                    <Slider Minimum="0" Maximum="2" Value="{Binding Y, StringFormat='{}{0:F2}'}" TickFrequency="0.4" TickPlacement="BottomRight" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Z, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="Z" Postfix=" m" />
+                                    <Slider Minimum="-16" Maximum="16" Value="{Binding Z, StringFormat='{}{0:F2}'}" TickFrequency="4"
+                                            TickPlacement="BottomRight" />
+                                </DockPanel>
+                            </mui:SpacingUniformGrid>
+
+                            <Label Content="Look at:" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraLookAt}">
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding X, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="X" Postfix=" m" />
+                                    <Slider Minimum="-16" Maximum="16" Value="{Binding X, StringFormat='{}{0:F2}'}" TickFrequency="4"
+                                            TickPlacement="BottomRight" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Y, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="Y" Postfix=" m" />
+                                    <Slider Minimum="0" Maximum="2" Value="{Binding Y, StringFormat='{}{0:F2}'}" TickFrequency="0.4" TickPlacement="BottomRight" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Z, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="Z" Postfix=" m" />
+                                    <Slider Minimum="-16" Maximum="16" Value="{Binding Z, StringFormat='{}{0:F2}'}" TickFrequency="4"
+                                            TickPlacement="BottomRight" />
+                                </DockPanel>
+                            </mui:SpacingUniformGrid>
+
+                            <DockPanel>
+                                <mui:ValueLabel Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                        Content="View angle" Postfix="°" />
+                                <Slider Minimum="1.8" Maximum="90" Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" TickFrequency="8.82"
+                                        TickPlacement="BottomRight" />
+                            </DockPanel>
+
+                            <CheckBox IsChecked="{Binding CameraOrbit}">
+                                <Label Content="Orbit camera" />
+                            </CheckBox>
+
+                            <CheckBox IsChecked="{Binding CameraAutoRotate}">
+                                <Label Content="Auto-rotate" />
+                            </CheckBox>
+
+                            <CheckBox IsChecked="{Binding CameraAutoAdjustTarget}">
+                                <Label Content="Auto-align car" />
+                            </CheckBox>
+
+                            <Button Command="{Binding ResetCameraCommand}" Margin="0 20 0 0"
+                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
+                        </mui:SpacingStackPanel>
+                    </ScrollViewer>
+
+                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Car" mui:SaveScroll.Key="__csCar">
+                        <mui:SpacingStackPanel Spacing="4">
+                            <DockPanel>
+                                <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                        IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
+                                        ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                                <TextBlock Text="Car" Style="{StaticResource Heading2}" />
+                            </DockPanel>
+
+                            <CheckBox IsChecked="{Binding Renderer.ShowWireframe}">
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Wireframe}" />
+                            </CheckBox>
+                            <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Skin}" ItemsSource="{Binding Car.EnabledOnlySkins}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel Height="18">
+                                            <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
+                                            <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </mui:BetterComboBox>
+
+                            <TextBlock Text="Driver &amp; Crew" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverVisible}">
+                                    <Label Content="Driver" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.IsCrewVisible}">
+                                    <Label Content="Crew" />
+                                </CheckBox>
+                            </mui:SpacingUniformGrid>
+
+                            <TextBlock Text="Lights" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.HeadlightsEnabled}">
+                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Lights}" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.BrakeLightsEnabled}">
+                                    <Label Content="Brake" />
+                                </CheckBox>
+                            </mui:SpacingUniformGrid>
+
+                            <TextBlock Text="States" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <DockPanel>
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
+                                <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
                             </DockPanel>
                             <DockPanel>
-                                <mui:ValueLabel Value="{Binding Y, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Y"
-                                        Postfix=" m" />
-                                <Slider Minimum="0" Maximum="2" Value="{Binding Y, StringFormat='{}{0:F2}'}" TickFrequency="0.4" TickPlacement="BottomRight" />
+                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
+                                <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
                             </DockPanel>
+                            <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}">
+                                <DockPanel.ToolTip>
+                                    <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
+                                                <Binding Path="In" />
+                                                <Binding Path="Out" />
+                                                <Binding Path="FileName" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DockPanel.ToolTip>
+                                <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top"
+                                        Content="LOD" />
+                                <Slider Minimum="0"
+                                        Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
+                                        Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
+                            </DockPanel>
+                            <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.BlurredNodesActive}" IsEnabled="{Binding Renderer.CarNode.HasBlurredNodes}">
+                                    <Label Content="Blurred rims" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.CockpitLrActive}" IsEnabled="{Binding Renderer.CarNode.HasCockpitBoth}">
+                                    <Label Content="Low res. cockpit" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.SeatbeltOnActive}" IsEnabled="{Binding Renderer.CarNode.HasSeatbeltOn}">
+                                    <Label Content="Seatbelt" />
+                                </CheckBox>
+                            </mui:SpacingUniformGrid>
+
+                            <TextBlock Text="Animation" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4">
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.LeftDoorOpen}" IsEnabled="{Binding Renderer.CarNode.HasLeftDoorAnimation}">
+                                    <Label Content="Left door" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.RightDoorOpen}" IsEnabled="{Binding Renderer.CarNode.HasRightDoorAnimation}">
+                                    <Label Content="Right door" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.WipersEnabled}" IsEnabled="{Binding Renderer.CarNode.HasWipers}">
+                                    <Label Content="Wipers" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.FansEnabled}"
+                                        Visibility="{Binding Renderer.CarNode.HasFans, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Label Content="Fans" />
+                                </CheckBox>
+                            </mui:SpacingUniformGrid>
+                            <ItemsControl ItemsSource="{Binding Renderer.CarNode.Wings}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Active}">
+                                            <Label Content="{Binding DisplayName}" />
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding Renderer.CarNode.Extras}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Active}">
+                                            <Label Content="{Binding DisplayName}" />
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Text="Physics" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
+                                <CheckBox IsChecked="{Binding DarkRenderer.CarNode.SuspensionDebug}">
+                                    <Label Content="Suspension" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.IsColliderVisible}">
+                                    <Label Content="Collider" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.IsFuelTankVisible}">
+                                    <Label Content="Fuel tank" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
+                                    <Label Content="Flames" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.AreWingsVisible}">
+                                    <Label Content="Wings" />
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Renderer.CarNode.AreWheelsContoursVisible}">
+                                    <Label Content="Wheels" />
+                                </CheckBox>
+                            </mui:SpacingUniformGrid>
                             <DockPanel>
-                                <mui:ValueLabel Value="{Binding Z, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Z"
-                                        Postfix=" m" />
-                                <Slider Minimum="-16" Maximum="16" Value="{Binding Z, StringFormat='{}{0:F2}'}" TickFrequency="4" TickPlacement="BottomRight" />
+                                <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer"
+                                        Postfix="°" />
+                                <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="BottomRight" />
                             </DockPanel>
-                        </mui:SpacingUniformGrid>
+                            <ItemsControl ItemsSource="{Binding DarkRenderer.CarNode.SuspensionsPack}"
+                                    Visibility="{Binding DarkRenderer.CarNode.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12">
+                                            <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+                                            <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
+                                            <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
+                                        </mui:SpacingStackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
-                        <Label Content="Look at:" />
-                        <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraLookAt}">
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding X, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="X"
-                                        Postfix=" m" />
-                                <Slider Minimum="-16" Maximum="16" Value="{Binding X, StringFormat='{}{0:F2}'}" TickFrequency="4" TickPlacement="BottomRight" />
-                            </DockPanel>
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding Y, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Y"
-                                        Postfix=" m" />
-                                <Slider Minimum="0" Maximum="2" Value="{Binding Y, StringFormat='{}{0:F2}'}" TickFrequency="0.4" TickPlacement="BottomRight" />
-                            </DockPanel>
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding Z, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Z"
-                                        Postfix=" m" />
-                                <Slider Minimum="-16" Maximum="16" Value="{Binding Z, StringFormat='{}{0:F2}'}" TickFrequency="4" TickPlacement="BottomRight" />
-                            </DockPanel>
-                        </mui:SpacingUniformGrid>
+                            <TextBlock Text="Wheels" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
+                            <CheckBox IsChecked="{Binding Renderer.CarNode.AlignWheelsByData}">
+                                <Label Content="Align using data" />
+                            </CheckBox>
+                            <mui:SpacingStackPanel Spacing="4"
+                                    Visibility="{Binding Renderer.CarNode.AlignWheelsByData, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    ToolTip="Because alignment is far from accurate, you might want to adjust some options manually. All those parameters only affect the way car looks in Custom Showroom during this session">
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.WheelsSpeedKph, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number"
+                                            DockPanel.Dock="Top" Content="Rotation" Postfix=" km/h" />
+                                    <Slider Minimum="-50" Maximum="50" Value="{Binding Renderer.CarNode.WheelsSpeedKph}" TickFrequency="1" TickPlacement="None"
+                                            IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.SuspensionModifiers.CamberFrontAdd, StringFormat='{}{0:F2}'}"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Front camber" Postfix="°" />
+                                    <Slider Minimum="-10" Maximum="10" Value="{Binding Renderer.CarNode.SuspensionModifiers.CamberFrontAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.SuspensionModifiers.CamberRearAdd, StringFormat='{}{0:F2}'}"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Rear camber" Postfix="°" />
+                                    <Slider Minimum="-10" Maximum="10" Value="{Binding Renderer.CarNode.SuspensionModifiers.CamberRearAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.SuspensionModifiers.ToeFrontAdd, StringFormat='{}{0:F2}'}"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Front toe" Postfix="°" />
+                                    <Slider Minimum="-10" Maximum="10" Value="{Binding Renderer.CarNode.SuspensionModifiers.ToeFrontAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.CarNode.SuspensionModifiers.ToeRearAdd, StringFormat='{}{0:F2}'}"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Rear toe" Postfix="°" />
+                                    <Slider Minimum="-10" Maximum="10" Value="{Binding Renderer.CarNode.SuspensionModifiers.ToeRearAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.BaseYFrontAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Front base Y" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.BaseYFrontAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.BaseYRearAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Rear base Y" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.BaseYRearAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.ZOffsetFrontAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Front Z-offset" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.ZOffsetFrontAdd}"
+                                            TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.ZOffsetRearAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Rear Z-offset" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.ZOffsetRearAdd}" TickFrequency="1"
+                                            TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.TrackWidthFrontAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Front width" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.TrackWidthFrontAdd}"
+                                            TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel
+                                            Value="{Binding Renderer.CarNode.SuspensionModifiers.TrackWidthRearAdd, Converter={StaticResource MultiplyConverter}, ConverterParameter=1000, StringFormat='{}{0:F0}'}"
+                                            mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="Rear width" Postfix=" mm" />
+                                    <Slider Minimum="-0.1" Maximum="0.1" Value="{Binding Renderer.CarNode.SuspensionModifiers.TrackWidthRearAdd}"
+                                            TickFrequency="1" TickPlacement="None" IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                            </mui:SpacingStackPanel>
+                        </mui:SpacingStackPanel>
+                    </ScrollViewer>
 
-                        <DockPanel>
-                            <mui:ValueLabel Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                                    Content="View angle" Postfix="°" />
-                            <Slider Minimum="1.8" Maximum="90" Value="{Binding CameraFov, StringFormat='{}{0:F1}'}" TickFrequency="8.82"
-                                    TickPlacement="BottomRight" />
-                        </DockPanel>
+                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
+                            mui:SaveScroll.Key="__csAmbientShadows">
+                        <StackPanel>
+                            <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}"
+                                                Command="{Binding AmbientShadowResetCommand}" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
 
-                        <CheckBox IsChecked="{Binding CameraOrbit}">
-                            <Label Content="Orbit camera" />
-                        </CheckBox>
+                                <DockPanel>
+                                    <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                            IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
+                                            Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
+                                    <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
+                                </DockPanel>
 
-                        <CheckBox IsChecked="{Binding CameraAutoRotate}">
-                            <Label Content="Auto-rotate" />
-                        </CheckBox>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
+                                    <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%"
+                                            mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
+                                    <Slider Minimum="150" Maximum="400" Value="{Binding AmbientShadowBrightness}" TickFrequency="50" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
+                                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
+                                    <Slider Minimum="400" Maximum="8000" Value="{Binding AmbientShadowIterations}" TickFrequency="760"
+                                            TickPlacement="BottomRight" IsSnapToTickEnabled="False" SmallChange="400" LargeChange="1200" />
+                                </DockPanel>
+                                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
+                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
+                                </CheckBox>
+                                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
+                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
+                                </CheckBox>
+                                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowAccurate}">
+                                    <CheckBox.ToolTip>Enable to improve accuracy (doesn’t affect performance)</CheckBox.ToolTip>
+                                    <Label Content="Accurate lighting" />
+                                </CheckBox>
+                                <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
+                                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                            </StackPanel>
 
-                        <CheckBox IsChecked="{Binding CameraAutoAdjustTarget}">
-                            <Label Content="Auto-align car" />
-                        </CheckBox>
+                            <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}"
+                                                Command="{Binding AmbientShadowSizeResetCommand}" />
+                                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}"
+                                                Command="{Binding AmbientShadowSizeFitCommand}" />
+                                        <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
+                                                Command="{Binding AmbientShadowSizeSaveCommand}" />
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
 
-                        <Button Command="{Binding ResetCameraCommand}" Margin="0 20 0 0"
-                                Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
-                    </mui:SpacingStackPanel>
+                                <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}"
+                                        Margin="0 12 0 0" />
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
+                                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="{x:Static t:ToolsStrings.Common_Width}" />
+                                    <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
+                                            Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
+                                            Content="{x:Static t:ToolsStrings.Common_Length}" />
+                                    <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" />
+                                </DockPanel>
 
-                    <mui:SpacingStackPanel x:Key="Car" Spacing="4">
-                        <DockPanel>
-                            <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
-                                    IconHeight="10" IconData="{StaticResource ArrowLeftIconData}" Command="{Binding MainModeCommand}"
-                                    ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                            <TextBlock Text="Car" Style="{StaticResource Heading2}" />
-                        </DockPanel>
+                                <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
+                                    <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Highlight}" />
+                                </CheckBox>
 
-                        <CheckBox IsChecked="{Binding Renderer.ShowWireframe}">
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Wireframe}" />
-                        </CheckBox>
-                        <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Skin}" ItemsSource="{Binding Car.EnabledOnlySkins}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Height="18">
-                                        <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
-                                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </mui:BetterComboBox>
+                                <DockPanel>
+                                    <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
+                                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" />
+                                    <Button Command="{Binding AmbientShadowSizeSaveCommand}"
+                                            FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
+                                            Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
+                                </DockPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
 
-                        <TextBlock Text="Driver &amp; Crew" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-                        <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.IsDriverVisible}">
-                                <Label Content="Driver" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.IsCrewVisible}">
-                                <Label Content="Crew" />
-                            </CheckBox>
-                        </mui:SpacingUniformGrid>
-
-                        <TextBlock Text="Lights" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-                        <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.HeadlightsEnabled}">
-                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Control_Lights}" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.BrakeLightsEnabled}">
-                                <Label Content="Brake" />
-                            </CheckBox>
-                        </mui:SpacingUniformGrid>
-
-                        <TextBlock Text="States" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-                        <DockPanel>
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_ObjectsLabel}" />
-                            <TextBlock Text="{Binding Renderer.CarNode.ObjectsCount}" />
-                        </DockPanel>
-                        <DockPanel>
-                            <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Stats_TrianglesLabel}" />
-                            <TextBlock Text="{Binding Renderer.CarNode.TrianglesCount}" />
-                        </DockPanel>
-                        <DockPanel IsEnabled="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource MoreConverter}}">
-                            <DockPanel.ToolTip>
-                                <TextBlock DataContext="{Binding Renderer.CarNode.CurrentLodInformation}">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}Visible from {0:F0} m to {1:F0} m ({2})">
-                                            <Binding Path="In" />
-                                            <Binding Path="Out" />
-                                            <Binding Path="FileName" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </DockPanel.ToolTip>
-                            <mui:ValueLabel Value="{Binding Renderer.CarNode.CurrentLod}" mui:BetterTextBox.Mode="Integer" DockPanel.Dock="Top" Content="LOD" />
-                            <Slider Minimum="0" Maximum="{Binding Renderer.CarNode.LodsCount, Converter={StaticResource SumConverter}, ConverterParameter=-1}"
-                                    Value="{Binding Renderer.CarNode.CurrentLod}" TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True" />
-                        </DockPanel>
-                        <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.BlurredNodesActive}" IsEnabled="{Binding Renderer.CarNode.HasBlurredNodes}">
-                                <Label Content="Blurred rims" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.CockpitLrActive}" IsEnabled="{Binding Renderer.CarNode.HasCockpitBoth}">
-                                <Label Content="Low res. cockpit" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.SeatbeltOnActive}" IsEnabled="{Binding Renderer.CarNode.HasSeatbeltOn}">
-                                <Label Content="Seatbelt" />
-                            </CheckBox>
-                        </mui:SpacingUniformGrid>
-
-                        <TextBlock Text="Animation" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-                        <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4">
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.LeftDoorOpen}" IsEnabled="{Binding Renderer.CarNode.HasLeftDoorAnimation}">
-                                <Label Content="Left door" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.RightDoorOpen}" IsEnabled="{Binding Renderer.CarNode.HasRightDoorAnimation}">
-                                <Label Content="Right door" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.WipersEnabled}" IsEnabled="{Binding Renderer.CarNode.HasWipers}">
-                                <Label Content="Wipers" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.FansEnabled}"
-                                    Visibility="{Binding Renderer.CarNode.HasFans, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="Fans" />
-                            </CheckBox>
-                        </mui:SpacingUniformGrid>
-                        <ItemsControl ItemsSource="{Binding Renderer.CarNode.Wings}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <CheckBox IsChecked="{Binding Active}">
-                                        <Label Content="{Binding DisplayName}" />
-                                    </CheckBox>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <ItemsControl ItemsSource="{Binding Renderer.CarNode.Extras}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="0" VerticalSpacing="4" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <CheckBox IsChecked="{Binding Active}">
-                                        <Label Content="{Binding DisplayName}" />
-                                    </CheckBox>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <TextBlock Text="Physics" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
-                        <mui:SpacingUniformGrid HorizontalSpacing="0" VerticalSpacing="4" Columns="2">
-                            <CheckBox IsChecked="{Binding DarkRenderer.CarNode.SuspensionDebug}">
-                                <Label Content="Suspension" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.IsColliderVisible}">
-                                <Label Content="Collider" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.IsFuelTankVisible}">
-                                <Label Content="Fuel tank" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreFlamesVisible}">
-                                <Label Content="Flames" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreWingsVisible}">
-                                <Label Content="Wings" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding Renderer.CarNode.AreWheelsContoursVisible}">
-                                <Label Content="Wheels" />
-                            </CheckBox>
-                        </mui:SpacingUniformGrid>
-                        <DockPanel>
-                            <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer"
-                                    Postfix="°" />
-                            <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="BottomRight" />
-                        </DockPanel>
-                        <ItemsControl ItemsSource="{Binding DarkRenderer.CarNode.SuspensionsPack}"
-                                Visibility="{Binding DarkRenderer.CarNode.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12">
-                                        <TextBlock FontWeight="Bold" Text="{Binding Name}" />
-                                        <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
-                                        <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
-                                    </mui:SpacingStackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </mui:SpacingStackPanel>
-
-                    <StackPanel x:Key="AmbientShadows">
-                        <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                            <StackPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Reset}"
-                                            Command="{Binding AmbientShadowResetCommand}" />
-                                </ContextMenu>
-                            </StackPanel.ContextMenu>
-
+                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
+                        <mui:SpacingStackPanel Spacing="4">
                             <DockPanel>
                                 <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
                                         IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                                         Command="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" DockPanel.Dock="Left" />
-                                <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
+                                <TextBlock Text="Cars" Style="{StaticResource Heading2}" />
                             </DockPanel>
 
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                                        DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Diffusion}" />
-                                <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
-                                        IsSnapToTickEnabled="False" />
-                            </DockPanel>
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" mui:BetterTextBox.Mode="Number"
-                                        DockPanel.Dock="Top" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Brightness}" />
-                                <Slider Minimum="150" Maximum="400" Value="{Binding AmbientShadowBrightness}" TickFrequency="50" TickPlacement="BottomRight"
-                                        IsSnapToTickEnabled="False" />
-                            </DockPanel>
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
-                                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Iterations}" />
-                                <Slider Minimum="400" Maximum="8000" Value="{Binding AmbientShadowIterations}" TickFrequency="760" TickPlacement="BottomRight"
-                                        IsSnapToTickEnabled="False" SmallChange="400" LargeChange="1200" />
-                            </DockPanel>
-                            <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
-                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_HideWheels}" />
-                            </CheckBox>
-                            <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
-                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_FadeToEdges}" />
-                            </CheckBox>
-                            <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowAccurate}">
-                                <CheckBox.ToolTip>Enable to improve accuracy (doesn’t affect performance)</CheckBox.ToolTip>
-                                <Label Content="Accurate lighting" />
-                            </CheckBox>
-                            <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
-                                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-                        </StackPanel>
-
-                        <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                            <StackPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}"
-                                            Command="{Binding AmbientShadowSizeResetCommand}" />
-                                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}"
-                                            Command="{Binding AmbientShadowSizeFitCommand}" />
-                                    <MenuItem Header="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}"
-                                            Command="{Binding AmbientShadowSizeSaveCommand}" />
-                                </ContextMenu>
-                            </StackPanel.ContextMenu>
-
-                            <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}"
-                                    Margin="0 12 0 0" />
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
-                                        Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                                        Content="{x:Static t:ToolsStrings.Common_Width}" />
-                                <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
-                                        IsSnapToTickEnabled="False" />
-                            </DockPanel>
-                            <DockPanel>
-                                <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
-                                        Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top"
-                                        Content="{x:Static t:ToolsStrings.Common_Length}" />
-                                <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
-                                        IsSnapToTickEnabled="False" />
-                            </DockPanel>
-
-                            <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
-                                <Label Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Highlight}" />
-                            </CheckBox>
-
-                            <DockPanel>
-                                <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
-                                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Fit}" />
-                                <Button Command="{Binding AmbientShadowSizeSaveCommand}"
-                                        FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
-                                        Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Save}" />
-                            </DockPanel>
-                        </StackPanel>
-                    </StackPanel>
+                            <ItemsControl mui:Draggable.Destination="{x:Type cs:CarSlotWrapped}" mui:Draggable.Enabled="True" ItemsSource="{Binding Cars}"
+                                    ItemTemplate="{StaticResource CarSlotWrappedTemplate}" Background="Transparent" Padding="0 0 0 12" />
+                            
+                            <Button Content="Add New Car" Command="{Binding AddCarCommand}" ToolTip="Add new car to the scene" />
+                        </mui:SpacingStackPanel>
+                    </ScrollViewer>
                 </ResourceDictionary>
             </FrameworkElement.Resources>
 
@@ -865,6 +988,7 @@
                 <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Skin}" ResourceKey="Skin" />
                 <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Camera}" ResourceKey="Camera" />
                 <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Car}" ResourceKey="Car" />
+                <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.Cars}" ResourceKey="Cars" />
                 <mui:LazySwitchDefinition When="{x:Static cs:LiteShowroomTools+Mode.AmbientShadows}" ResourceKey="AmbientShadows" />
             </mui:LazySwitch.Definitions>
         </mui:LazySwitch>

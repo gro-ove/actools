@@ -27,9 +27,9 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         bool _first = true;
-        BaseCamera _camera;
+        CameraBase _camera;
 
-        public void Update(BaseCamera camera, float dt) {
+        public void Update(CameraBase camera, float dt) {
             _camera = camera;
 
             if (_first) {
