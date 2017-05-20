@@ -150,6 +150,10 @@
       <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SlimDX-x86\SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -175,6 +179,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -200,6 +205,34 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="CustomShowroom\AttachedHelper.cs" />
+    <Compile Include="CustomShowroom\CarTextureDialog.xaml.cs">
+      <DependentUpon>CarTextureDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsSettings.cs" />
+    <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
+      <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
+    <Compile Include="CustomShowroom\DarkRendererCars.cs" />
+    <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
+    <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
+      <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\PaintShop.cs" />
+    <Compile Include="CustomShowroom\PaintShop.Items.cs" />
+    <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
+    <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
+      <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
+    <Compile Include="CustomShowroom\TrackOutlineRendererTools.xaml.cs">
+      <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="LocaleHelper.cs" />
     <Compile Include="PackedHelper.cs" />
@@ -685,6 +718,30 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Livery\Styles\Solid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\CarTextureDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\CmPreviewsTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\TrackMapRendererTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\TrackOutlineRendererTools.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1470,6 +1527,10 @@
       <Project>{9a653a28-fe46-40e8-a14f-48b0e325165d}</Project>
       <Name>FirstFloor.ModernUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LicensePlates\LicensePlates.csproj">
+      <Project>{bcea4235-ccbb-4588-a223-67deae6c4272}</Project>
+      <Name>LicensePlates</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StringBasedFilter\StringBasedFilter.csproj">
       <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
       <Name>StringBasedFilter</Name>
@@ -1668,9 +1729,10 @@
     <Content Include="About\ImportantTips\Recommended Mods.txt" />
     <None Include="About\ImportantTips\Custom Showroom Big Screenshots.txt" />
     <None Include="About\ImportantTips\Custom Showroom Shortcuts.txt" />
+    <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
+    <Content Include="About\Licenses\AreaLightLTC\AreaLightLTC.txt" />
     <Content Include="About\Licenses\ExifLib\ExifLib.txt" />
     <Content Include="About\Licenses\ExifWorks\ExifWorks.txt" />
-    <Content Include="About\Licenses\AdornedControl\AdornedControl.txt" />
     <Content Include="About\Licenses\AssettoCorsaSharedMemory\AssettoCorsaSharedMemory.txt" />
     <Content Include="About\Licenses\AvalonEdit\AvalonEdit.txt" />
     <Content Include="About\Licenses\CachedImage\CachedImage.txt" />
@@ -1680,6 +1742,7 @@
     <Content Include="About\Licenses\Json.NET\Json.NET.txt" />
     <Content Include="About\Licenses\LevelDB.net\LevelDB.net.txt" />
     <Content Include="About\Licenses\LevelDB\LevelDB.txt" />
+    <Content Include="About\Licenses\BokehDOF\BokehDOF.txt" />
     <Content Include="About\Licenses\LZF\LZF.txt" />
     <Content Include="About\Licenses\Meta.Vlc\Meta.Vlc.txt" />
     <Content Include="About\Licenses\MoonSharp\MoonSharp.txt" />

@@ -19,17 +19,18 @@ namespace AcManager.Pages.About {
         public AboutPage() {
             DataContext = new ViewModel();
             InitializeComponent();
+            FancyHints.DoYouKnowAboutAndroid.Trigger(TimeSpan.FromSeconds(1));
         }
 
-        private void Version_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 10 &&
+        private void OnVersionClick(object sender, MouseButtonEventArgs e) {
+            if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 7 &&
                     ModernDialog.ShowMessage(AppStrings.About_DeveloperMode, AppStrings.About_DeveloperMode_Title, MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 SettingsHolder.Common.DeveloperMode = true;
             }
         }
 
-        private void ContentElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnElementClick(object sender, MouseButtonEventArgs e) {
             if (Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Control)) _clicks += 11;
             if (!SettingsHolder.Common.MsMode && (_clicks += 99) == 990 &&
                     ModernDialog.ShowMessage(@"Enable most secret mode? Using it might cause data corruption.", @"Most Secret Mode", MessageBoxButton.YesNo) ==

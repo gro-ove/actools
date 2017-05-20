@@ -693,25 +693,23 @@ namespace AcManager.Pages.Windows {
             var trackObject = e.Data.GetData(TrackObjectBase.DraggableFormat) as TrackObjectBase;
             if (trackObject != null) {
                 TracksListPage.Show(trackObject);
-                e.Effects = DragDropEffects.Copy;
-                return;
+            } else {
+                var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+                if (raceGridEntry != null) {
+                    CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
+                } else {
+                    var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+                    if (carObject != null) {
+                        CarsListPage.Show(carObject);
+                    } else {
+                        e.Effects = DragDropEffects.None;
+                        return;
+                    }
+                }
             }
 
-            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
-            if (raceGridEntry != null) {
-                CarsListPage.Show(raceGridEntry.Car, raceGridEntry.CarSkin?.Id);
-                e.Effects = DragDropEffects.Copy;
-                return;
-            }
-
-            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
-            if (carObject != null) {
-                CarsListPage.Show(carObject);
-                e.Effects = DragDropEffects.Copy;
-                return;
-            }
-
-            e.Effects = DragDropEffects.None;
+            e.Effects = DragDropEffects.Copy;
+            FancyHints.DragForContentSection.MaskAsUnnecessary();
         }
 
         private void OnDriveTitleLinkDrop(object sender, DragEventArgs e) {
@@ -729,6 +727,7 @@ namespace AcManager.Pages.Windows {
             }
 
             e.Effects = DragDropEffects.Copy;
+            FancyHints.DragForContentSection.MaskAsUnnecessary();
         }
 
         private void MakeSureOnlineIsReady([CanBeNull] Uri uri) {

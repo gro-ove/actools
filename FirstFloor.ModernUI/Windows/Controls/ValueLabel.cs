@@ -4,6 +4,28 @@ using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public class DoubleValueLabel : ValueLabel {
+        static DoubleValueLabel() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DoubleValueLabel), new FrameworkPropertyMetadata(typeof(DoubleValueLabel)));
+        }
+
+        public static readonly DependencyProperty SecondValueProperty = DependencyProperty.Register(nameof(SecondValue), typeof(string),
+                typeof(DoubleValueLabel), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public string SecondValue {
+            get { return (string)GetValue(SecondValueProperty); }
+            set { SetValue(SecondValueProperty, value); }
+        }
+
+        public static readonly DependencyProperty SeparatorProperty = DependencyProperty.Register(nameof(Separator), typeof(string),
+                typeof(DoubleValueLabel));
+
+        public string Separator {
+            get { return (string)GetValue(SeparatorProperty); }
+            set { SetValue(SeparatorProperty, value); }
+        }
+    }
+
     [ContentProperty(nameof(Content))]
     public class ValueLabel : Control {
         static ValueLabel() {

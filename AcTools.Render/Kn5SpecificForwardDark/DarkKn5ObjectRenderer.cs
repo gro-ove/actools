@@ -296,6 +296,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private Vector3 _light;
 
         private int? GetShadowsNumSplits() {
+            // several cars — turn on all cascades!
+            if (CarSlots.Length > 1) return 3;
+            
             // just a car — single cascade
             if (ShowroomNode == null) return 1;
 

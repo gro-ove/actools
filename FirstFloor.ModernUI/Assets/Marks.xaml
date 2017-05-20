@@ -1,5 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:modernUi="clr-namespace:FirstFloor.ModernUI">
+                    xmlns:modernUi="clr-namespace:FirstFloor.ModernUI"
+                    xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+                    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -24,5 +26,79 @@
         <Setter Property="Background" Value="{DynamicResource Accent}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <Style x:Key="HintMarkStyle" TargetType="attached:FancyHintControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="attached:FancyHintControl">
+                    <controls:Cell x:Name="PART_Cell" Width="72" Height="72" attached:VisibilityAnimation.Visible="False">
+                        <Border Margin="-4000 -4000 72 -4000" Background="{TemplateBinding Background}" />
+                        <Border Margin="72 -4000 -4000 -4000" Background="{TemplateBinding Background}" />
+                        <Border Margin="0 -4000 0 72" Background="{TemplateBinding Background}" />
+                        <Border Margin="0 72 0 -4000" Background="{TemplateBinding Background}" />
+                        <Border Margin="0 0 0 0" Background="{TemplateBinding Background}">
+                            <Border.Clip>
+                                <CombinedGeometry GeometryCombineMode="Exclude">
+                                    <CombinedGeometry.Geometry1>
+                                        <RectangleGeometry Rect="0 0 72 72" />
+                                    </CombinedGeometry.Geometry1>
+                                    <CombinedGeometry.Geometry2>
+                                        <EllipseGeometry RadiusX="36" RadiusY="36" Center="36 36" />
+                                    </CombinedGeometry.Geometry2>
+                                </CombinedGeometry>
+                            </Border.Clip>
+                        </Border>
+                        <DockPanel x:Name="PART_Panel" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <controls:SpacingStackPanel DockPanel.Dock="Top" Margin="0 0 0 20" Spacing="12"
+                                                        DataContext="{Binding Hint, RelativeSource={RelativeSource TemplatedParent}}" MaxWidth="240">
+                                <FrameworkElement.Effect>
+                                    <DropShadowEffect Opacity="1" Color="Black" ShadowDepth="0" BlurRadius="10" RenderingBias="Quality" />
+                                </FrameworkElement.Effect>
+                                <controls:BbCodeBlock x:Name="PART_Header" Style="{StaticResource Title}" BbCode="{Binding Header}" />
+                                <controls:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Description}" Width="{Binding ActualWidth, ElementName=PART_Header}" />
+                            </controls:SpacingStackPanel>
+                            <DockPanel>
+                                <FrameworkElement.Effect>
+                                    <DropShadowEffect Opacity="0.6" Color="Black" Direction="-90" ShadowDepth="2" BlurRadius="10" RenderingBias="Quality" />
+                                </FrameworkElement.Effect>
+                                <Button x:Name="PART_DisableHintsButton" Content="Disable Occasional Hints" DockPanel.Dock="Right" />
+                                <Button x:Name="PART_CloseButton" Content="Got It" Margin="0 0 4 0" />
+                            </DockPanel>
+                        </DockPanel>
+                    </controls:Cell>
+
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Left" />
+                                <Condition Property="VerticalContentAlignment" Value="Top" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="54 56 -720 -720" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Right" />
+                                <Condition Property="VerticalContentAlignment" Value="Top" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="-720 56 54 -720" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Center" />
+                                <Condition Property="VerticalContentAlignment" Value="Top" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="-720 56 -720 -720" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Margin" Value="-4000" />
+        <Setter Property="IsHitTestVisible" Value="True" />
+        <Setter Property="Background" Value="#c4000000" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
     </Style>
 </ResourceDictionary>

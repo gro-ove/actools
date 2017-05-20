@@ -129,17 +129,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private int CreateLightsForEmissiveMesh(DarkLightTag tag, CarData.LightObject light, Kn5RenderableObject mesh) {
             if (mesh?.BoundingBox.HasValue != true) return 0;
-
-            var inv = Matrix.Invert(Matrix.Transpose(mesh.ParentMatrix));
-
-            var vertices = mesh.Vertices.Select(x => new {
-                Position = Vector3.TransformCoordinate(x.Position, mesh.ParentMatrix),
-                Normal = Vector3.TransformCoordinate(x.Normal, inv)
-            }).ToArray();
+            
+            var matrix = mesh.ParentMatrix * mesh.ModelMatrixInverted;
             var list = new List<InnerPair>();
 
             var threshold = 0.3f;
-            foreach (var v in vertices) {
+            foreach (var v in mesh.Vertices.Select(x => new {
+                Position = Vector3.TransformCoordinate(x.Position, matrix),
+                Normal = Vector3.TransformNormal(x.Normal, matrix)
+            })) {
                 var min = float.PositiveInfinity;
                 InnerPair minPair = null;
                 foreach (var t in list) {
@@ -238,6 +236,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             const int limit = 2;
             var headlightsAdded = 0;
             var brakeLightsAdded = 0;
+
+            car.UpdateModelMatrixInverted();
 
             foreach (var light in lights.Select(x => new {
                 Priority = Math.Max(IsHeadlightColor(x.Description?.HeadlightColor), IsBrakeLightColor(x.Description?.BrakeColor)),
@@ -551,6 +551,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             } else {
                 LoadObjLights(DarkLightTag.Showroom, ShowroomNode.RootDirectory);
             }
+        }
+
+        protected override void OnCarSlotRemoved(CarSlot slot) {
+            base.OnCarSlotRemoved(slot);
+            RemoveLights(DarkLightTag.GetCarTag(slot.Id));
         }
         #endregion
 

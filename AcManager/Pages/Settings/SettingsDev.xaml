@@ -57,7 +57,67 @@
                         <Setter Property="Margin" Value="0 0 0 4" />
                     </Style>
                 </StackPanel.Resources>
-                <TextBlock Text="Controls Test:" Style="{StaticResource Heading2}" />
+                <TextBlock Text="Double Sliders Test" Style="{StaticResource SettingsPanel.Heading2.First}" />
+                
+                <!--<DockPanel>
+                    <Label Content="Sel. range:" Width="200" DockPanel.Dock="Left" />
+                    <Slider Minimum="0" Maximum="60" AutoToolTipPlacement="TopLeft" IsSelectionRangeEnabled="True" TickPlacement="Both" Margin="0 0 20 0"
+                            SelectionStart="20" SelectionEnd="40" />
+                </DockPanel>-->
+                
+                <DockPanel>
+                    <Label Content="Double slider (FromTo):" Width="200" DockPanel.Dock="Left" />
+                    <mui:DoubleSlider x:Name="DoubleSlider1" BindingMode="FromTo" Maximum="60" Minimum="0" From="30" To="30" Margin="0 0 20 0"
+                                      LargeChange="5" SmallChange="5" />
+                </DockPanel>
+                
+                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
+                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider1}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider1}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider1}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider1}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
+                </mui:SpacingStackPanel>
+                
+                <DockPanel>
+                    <Label Content="Double slider (P.R.):" Width="200" DockPanel.Dock="Left" />
+                    <mui:DoubleSlider x:Name="DoubleSlider2" BindingMode="PositionRange" Maximum="60" Minimum="0" Value="30" Range="0" Margin="0 0 20 0"
+                                      LargeChange="5" SmallChange="5" />
+                </DockPanel>
+                
+                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
+                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider2}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider2}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider2}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider2}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
+                </mui:SpacingStackPanel>
+                
+                <DockPanel>
+                    <Label Content="Double slider (FromTo):" Width="200" DockPanel.Dock="Left" />
+                    <mui:DoubleSlider x:Name="DoubleSlider3" BindingMode="FromTo" Maximum="60" Minimum="0" From="30" To="30" Margin="0 0 20 0"
+                                      LargeChange="5" SmallChange="5" mui:DoubleThumb.HighlightRange="True" />
+                </DockPanel>
+                
+                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
+                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider3}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider3}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider3}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider3}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
+                </mui:SpacingStackPanel>
+                
+                <DockPanel>
+                    <Label Content="Double slider (P.R.):" Width="200" DockPanel.Dock="Left" />
+                    <mui:DoubleSlider x:Name="DoubleSlider4" BindingMode="PositionRange" Maximum="60" Minimum="0" Value="30" Range="0" Margin="0 0 20 0"
+                                      LargeChange="5" SmallChange="5" mui:DoubleThumb.HighlightRange="True" />
+                </DockPanel>
+                
+                <mui:SpacingStackPanel Spacing="0" Background="DarkSlateBlue">
+                    <Slider Minimum="0" Maximum="60" Value="{Binding From, ElementName=DoubleSlider4}" ToolTip="From" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding To, ElementName=DoubleSlider4}" ToolTip="To" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Value, ElementName=DoubleSlider4}" ToolTip="Value" AutoToolTipPlacement="TopLeft" Height="4" />
+                    <Slider Minimum="0" Maximum="60" Value="{Binding Range, ElementName=DoubleSlider4}" ToolTip="Range" AutoToolTipPlacement="TopLeft" Height="4" />
+                </mui:SpacingStackPanel>
+                
+                <TextBlock Text="Toggle Buttons Test" Style="{StaticResource SettingsPanel.Heading2}" />
 
                 <DockPanel>
                     <Label Content="LabeledToggleButton, left:" Width="200" DockPanel.Dock="Left" />

@@ -29,6 +29,10 @@
                 </mui:BetterTextBox>
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" mui:NewMarkService.New="True">
+                <Label Content="Show occasional hints" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Common.DeveloperMode}"
                     Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
                 <Label Content="{x:Static g:AppStrings.Common_DevMode}" />

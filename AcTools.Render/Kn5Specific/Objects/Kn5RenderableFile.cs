@@ -167,7 +167,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        protected void UpdateModelMatrixInverted() {
+        public void UpdateModelMatrixInverted() {
             if (!_modelMatrixInvertedDirty) return;
             _modelMatrixInvertedDirty = false;
 

@@ -4,6 +4,7 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BbCodeBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ContextMenuButton.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/DoubleSlider.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HistoricalTextBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/LabeledToggleButton.xaml" />
@@ -15,6 +16,7 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernTab.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernTabSplitter.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernWindow.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/RoundSlider.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/SplitButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/TransitioningContentControl.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/TagsList.xaml" />

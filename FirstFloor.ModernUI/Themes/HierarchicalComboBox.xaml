@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+                    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -35,8 +35,8 @@
                             <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0" />
                         </Grid.ColumnDefinitions>
                         <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Grid.Column="0" Placement="Bottom" Margin="1"
-                                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                             <Grid Margin="4" MinWidth="{Binding ActualWidth, ElementName=MainGrid}">
                                 <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                                 <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
@@ -47,25 +47,25 @@
                                         <Grid RenderOptions.ClearTypeHint="Enabled">
                                             <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                                                 <Rectangle x:Name="OpaqueRect" Height="{Binding ActualHeight, ElementName=DropDownBorder}"
-                                                        Width="{Binding ActualWidth, ElementName=DropDownBorder}"
-                                                        Fill="{Binding Background, ElementName=DropDownBorder}" />
+                                                           Width="{Binding ActualWidth, ElementName=DropDownBorder}"
+                                                           Fill="{Binding Background, ElementName=DropDownBorder}" />
                                             </Canvas>
                                             <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
-                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </Grid>
                                     </ScrollViewer>
                                 </Border>
                             </Grid>
                         </Popup>
                         <ToggleButton Grid.ColumnSpan="2" Grid.Column="0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                IsChecked="{Binding IsSubmenuOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Padding="0 0 0 10" />
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      IsChecked="{Binding IsSubmenuOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Padding="0 0 0 10" />
                         <Path x:Name="Arrow" Grid.ColumnSpan="2" Grid.Column="0" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}"
-                                Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+                              Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
                         <ContentPresenter Grid.Column="0" ContentSource="Header" RecognizesAccessKey="False" Margin="{TemplateBinding Padding}"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" IsHitTestVisible="False"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" IsHitTestVisible="False"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
@@ -98,13 +98,13 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="54" />
             </Grid.ColumnDefinitions>
-            <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7 2 8 2" RecognizesAccessKey="True"
-                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7 2 8 2" RecognizesAccessKey="False"
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             <Path x:Name="RightArrow" Grid.Column="1" VerticalAlignment="Center" Margin="41 0 0 0" Fill="{TemplateBinding MenuItem.Foreground}"
-                    Data="{StaticResource RightArrow}" IsHitTestVisible="False" />
+                  Data="{StaticResource RightArrow}" IsHitTestVisible="False" />
             <Popup x:Name="PART_Popup" Grid.Column="0" Grid.ColumnSpan="2" AllowsTransparency="True" Placement="Left"
-                    IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
-                    PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
+                   IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
+                   PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                 <Grid Margin="4" Background="{DynamicResource PopupBackground}">
                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
@@ -112,8 +112,8 @@
                             BorderThickness="1" Margin="0 -1 0 0">
                         <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
                             <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True"
-                                    RenderOptions.ClearTypeHint="Enabled" />
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True"
+                                            RenderOptions.ClearTypeHint="Enabled" />
                         </ScrollViewer>
                     </Border>
                 </Grid>
@@ -140,11 +140,12 @@
             <Border.ToolTip>
                 <ToolTip Visibility="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityConverter},
                     ConverterParameter=inverse}">
-                    <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}}"
+                                      RecognizesAccessKey="False" />
                 </ToolTip>
             </Border.ToolTip>
-            <ContentPresenter ContentSource="Header" Margin="7 2 62 2" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                    ToolTip="{x:Null}" />
+            <ContentPresenter ContentSource="Header" Margin="7 2 62 2" RecognizesAccessKey="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                              ToolTip="{x:Null}" />
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsHighlighted" Value="True">
@@ -205,16 +206,16 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:HierarchicalComboBox}">
                     <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
-                            x:Name="PART_Menu">
+                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
+                          x:Name="PART_Menu">
                         <c:LazyMenuItem x:Name="PART_MenuItem" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource HierarchicalComboBoxMenuItem}"
-                                ItemsSource="{TemplateBinding InnerItems}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource HierarchicalComboBoxMenuItem}"
+                                        ItemsSource="{TemplateBinding InnerItems}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                        Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
                             <MenuItem.Header>
                                 <ContentPresenter Content="{TemplateBinding SelectedItem}" ContentTemplate="{TemplateBinding SelectedContent}"
-                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                             </MenuItem.Header>
                         </c:LazyMenuItem>
                     </Menu>

@@ -259,14 +259,20 @@ namespace AcManager.Tools.Helpers.Api {
 
                 var temperatureValue = doc.Descendants(@"temperature").FirstOrDefault()?.Attribute(@"value")?.Value;
                 var weatherNode = doc.Descendants(@"weather").FirstOrDefault();
-                if (temperatureValue == null || weatherNode == null) throw new Exception("Invalid response");
+                var windNode = doc.Descendants(@"wind").FirstOrDefault();
+                if (temperatureValue == null || weatherNode == null || windNode == null) throw new Exception("Invalid response");
 
+                var type = OpenWeatherTypeToCommonType((OpenWeatherType)FlexibleParser.ParseInt(weatherNode.Attribute(@"number")?.Value));
                 var temperature = FlexibleParser.ParseDouble(temperatureValue);
-                var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attribute(@"number")?.Value, NumberStyles.Any, CultureInfo.InvariantCulture));
                 var description = weatherNode.Attribute(@"value")?.Value;
+
+                var windSpeed = FlexibleParser.ParseDouble(windNode.Descendants(@"speed").First().Attribute("value")?.Value);
+                var windDirection = FlexibleParser.ParseDouble(windNode.Descendants(@"direction").First().Attribute("value")?.Value);
+                
                 var icon = weatherNode.Attribute(@"icon")?.Value;
                 var iconUri = icon == null ? null : string.Format(IconUri, icon);
-                return new WeatherDescription(type, temperature, description, iconUri);
+                
+                return new WeatherDescription(type, temperature, description, windSpeed, windDirection, iconUri);
             }
         }
     }

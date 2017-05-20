@@ -71,7 +71,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void SerializeOverride(JObject obj) {
             base.SerializeOverride(obj);
-            obj["range"] = Range;
+            //obj["range"] = Range;
             obj["width"] = Width;
             obj["height"] = Height;
             obj["direction"] = VectorToString(Direction);
@@ -83,10 +83,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         protected override void DeserializeOverride(JObject obj) {
             base.DeserializeOverride(obj);
             Direction = StringToVector((string)obj["direction"]) ?? Vector3.UnitX;
-            Range = obj["range"] != null ? (float)obj["range"] : 2f;
+            //Range = obj["range"] != null ? (float)obj["range"] : 2f;
             Width = obj["width"] != null ? (float)obj["width"] : 0.6f;
             Height = obj["height"] != null ? (float)obj["height"] : 0.4f;
-            DoubleSide = obj["doubleSide"] != null && (bool)obj["doubleSide"]; // to avoid smooth enabling
+            DoubleSide = obj["doubleSide"] != null && (bool)obj["doubleSide"];
         }
 
         private float _range = 2f;

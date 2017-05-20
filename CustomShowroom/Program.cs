@@ -204,7 +204,7 @@ namespace CustomShowroom {
 
                     renderer.FlatMirror = true;
 
-                    // renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
+                    renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
 #endif
 
                     renderer.MagickOverride = options.MagickOverride;

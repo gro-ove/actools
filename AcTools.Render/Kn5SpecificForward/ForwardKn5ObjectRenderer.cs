@@ -163,7 +163,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
             _showroomKn5Filename = showroomKn5Filename;
 
-            MainSlot = new CarSlot(this, car, 0);
+            _mainSlot = new CarSlot(this, car, 0);
             _carSlots = new[] { MainSlot };
 
             MainSlot.PropertyChanged += OnMainSlotPropertyChanged;
@@ -178,15 +178,38 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public readonly CarSlot MainSlot;
+        private CarSlot _mainSlot;
+
+        [NotNull]
+        public CarSlot MainSlot {
+            get { return _mainSlot; }
+            private set {
+                if (Equals(value, _mainSlot)) return;
+                _mainSlot = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CarLightsEnabled));
+                OnPropertyChanged(nameof(CarBrakeLightsEnabled));
+                OnPropertyChanged(nameof(CarNode));
+            }
+        }
 
         private CarSlot[] _carSlots;
 
+        [NotNull]
         public CarSlot[] CarSlots {
             get { return _carSlots; }
-            private set {
+            set {
+                if (value.Length == 0) value = new[] { _mainSlot };
                 if (Equals(value, _carSlots)) return;
+
+                if (_carSlots != null) {
+                    foreach (var removed in _carSlots.Where(x => !value.Contains(x))) {
+                        OnCarSlotRemoved(removed);
+                    }
+                }
+
                 _carSlots = value;
+                MainSlot = value[0];
                 OnPropertyChanged();
 
                 if (Initialized) {
@@ -196,6 +219,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
         }
+        
+        protected virtual void OnCarSlotRemoved(CarSlot slot){}
 
         public void AddSlot(CarSlot light) {
             var updated = new CarSlot[_carSlots.Length + 1];
@@ -222,7 +247,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             CarSlots = updated;
         }
 
-        public IDisposable AddCar(CarDescription car) {
+        public CarSlot AddCar(CarDescription car) {
             var slot = new CarSlot(this, car, null) {
                 LocalMatrix = Matrix.Translation(_carSlots.Length * 2.5f, 0f, 0f)
             };
@@ -235,9 +260,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 Scene.UpdateBoundingBox();
             }
 
-            return new ActionAsDisposable(() => {
-                RemoveSlot(slot);
-            });
+            return slot;
         }
 
         protected override void InitializeInner() {

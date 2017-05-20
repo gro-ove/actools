@@ -184,6 +184,10 @@ namespace AcManager.Tools.Data {
         public WeatherType Type { get; }
 
         public double Temperature { get; }
+        
+        public double WindSpeed { get; }
+        
+        public double WindDirection { get; }
 
         [CanBeNull]
         public string Icon { get; }
@@ -194,10 +198,12 @@ namespace AcManager.Tools.Data {
 
         public bool HasIcon => Icon != null;
 
-        public WeatherDescription(WeatherType type, double temperature, string description, string icon = null) {
+        public WeatherDescription(WeatherType type, double temperature, string description, double windSpeed, double windDirection, string icon = null) {
             Type = type;
             Temperature = temperature;
             Description = description;
+            WindSpeed = windSpeed;
+            WindDirection = windDirection;
             Icon = icon;
         }
     }

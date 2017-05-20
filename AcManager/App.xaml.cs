@@ -11,12 +11,12 @@ using System.Windows.Media;
 using AcManager.ContentRepair;
 using AcManager.Controls;
 using AcManager.Controls.Converters;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.CustomShowroom;
 using AcManager.Internal;
 using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
@@ -268,6 +268,8 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
+
+            CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
             StartupUri = new Uri(acRootIsFine ?

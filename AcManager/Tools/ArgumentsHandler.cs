@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AcManager.Controls;
-using AcManager.Controls.CustomShowroom;
+using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;

@@ -1,0 +1,3 @@
+name: Real-Time Polygonal-Light Shading with Linearly Transformed Cosines
+url: https://eheitzresearch.wordpress.com/415-2/
+sid: 67_-1714872196_

@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using JetBrains.Annotations;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.CustomShowroom;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
@@ -245,7 +245,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [CanBeNull]
-        public static CarObject Show([CanBeNull] CarObject car, ref CarSkinObject carSkin) {
+        public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin) {
             var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
                 SelectedSkin = car?.SkinsActualList.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
             };

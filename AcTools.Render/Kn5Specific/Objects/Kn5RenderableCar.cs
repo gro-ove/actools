@@ -785,6 +785,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void SelectNextSkin(IDeviceContextHolder contextHolder) {
             if (Skins?.Any() != true) return;
+            
+            if (contextHolder == null) {
+                contextHolder = _skinsWatcherHolder;
+                if (contextHolder == null) return;
+            }
 
             var index = Skins.IndexOf(CurrentSkin);
             SelectSkin(contextHolder, index < 0 || index >= Skins.Count - 1 ? Skins[0] : Skins[index + 1]);
@@ -792,12 +797,22 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void SelectPreviousSkin(IDeviceContextHolder contextHolder) {
             if (Skins?.Any() != true) return;
+            
+            if (contextHolder == null) {
+                contextHolder = _skinsWatcherHolder;
+                if (contextHolder == null) return;
+            }
 
             var index = Skins.IndexOf(CurrentSkin);
             SelectSkin(contextHolder, index <= 0 ? Skins[Skins.Count - 1] : Skins[index - 1]);
         }
 
         public void SelectSkin(IDeviceContextHolder contextHolder, [CanBeNull] string skinId) {
+            if (contextHolder == null) {
+                contextHolder = _skinsWatcherHolder;
+                if (contextHolder == null) return;
+            }
+            
             if (skinId == DefaultSkin) {
                 skinId = Skins?.FirstOrDefault();
             }

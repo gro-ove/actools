@@ -85,12 +85,12 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\studio_smoke\studio_smoke.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\at_previews\at_previews.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\gasstation\gasstation.kn5";
-            showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\big_shop\big_shop.kn5";
+            //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\big_shop\big_shop.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\sr_hl\sr_hl.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
-            showroomKn5File = null;
+            //showroomKn5File = null;
 
             return showroomKn5File;
         }

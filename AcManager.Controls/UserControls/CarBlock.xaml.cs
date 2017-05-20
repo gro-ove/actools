@@ -1,19 +1,31 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
+    public interface ICustomShowroomWrapper {
+        Task StartAsync(string kn5, string skinId = null, string presetFilename = null);
+
+        Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null);
+
+        string PresetableKeyValue { get; }
+    }
+
     [ContentProperty(nameof(PreviewContent))]
     public partial class CarBlock {
+        [CanBeNull]
+        public static ICustomShowroomWrapper CustomShowroomWrapper { get; set; }
+
         public CarBlock() {
             InitializeComponent();
             InnerCarBlockPanel.DataContext = this;
@@ -83,7 +95,7 @@ namespace AcManager.Controls.UserControls {
             var custom = !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) &&
                     Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ^ SettingsHolder.CustomShowroom.CustomShowroomInstead;
             if (custom) {
-                CustomShowroomWrapper.StartAsync(car, skin);
+                CustomShowroomWrapper?.StartAsync(car, skin);
             } else if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                     !CarOpenInShowroomDialog.Run(car, skin?.Id)) {
                 new CarOpenInShowroomDialog(car, skin?.Id).ShowDialog();
@@ -115,19 +127,22 @@ namespace AcManager.Controls.UserControls {
         private static void ShowroomMenuCustom(ContextMenu contextMenu, CarObject car, CarSkinObject skin) {
             var item = new MenuItem {
                 Header = ControlsStrings.Car_OpenInCustomShowroom,
-                InputGestureText = SettingsHolder.CustomShowroom.CustomShowroomInstead ? null : UiStrings.KeyAlt
+                InputGestureText = SettingsHolder.CustomShowroom.CustomShowroomInstead ? null : UiStrings.KeyAlt,
+                IsEnabled = CustomShowroomWrapper != null
             };
 
-            item.Click += (s, args) => CustomShowroomWrapper.StartAsync(car, skin);
+            item.Click += (s, args) => CustomShowroomWrapper?.StartAsync(car, skin);
             contextMenu.Items.Add(item);
 
             // presets
-            item = new MenuItem { Header = "Custom Showroom Presets" };
-            foreach (var menuItem in PresetsMenuHelper.GroupPresets(DarkRendererSettings.DefaultPresetableKeyValue,
-                    p => CustomShowroomWrapper.StartAsync(car, skin, p.Filename))) {
-                item.Items.Add(menuItem);
+            if (CustomShowroomWrapper != null) {
+                item = new MenuItem { Header = "Custom Showroom Presets" };
+                foreach (var menuItem in PresetsMenuHelper.GroupPresets(CustomShowroomWrapper.PresetableKeyValue,
+                        p => CustomShowroomWrapper.StartAsync(car, skin, p.Filename))) {
+                    item.Items.Add(menuItem);
+                }
+                contextMenu.Items.Add(item);
             }
-            contextMenu.Items.Add(item);
         }
 
         public static void OnShowroomContextMenu(ContextMenu contextMenu, CarObject car, CarSkinObject skin = null) {

@@ -1,0 +1,3 @@
+name: Bokeh DOF shader by Bart Wronski
+url: https://bartwronski.com/2014/04/07/bokeh-depth-of-field-going-insane-part-1/
+sid: 32_-1831516868_

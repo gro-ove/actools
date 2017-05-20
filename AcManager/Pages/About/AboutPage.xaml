@@ -26,8 +26,10 @@
                     <Button Command="{Binding SendLogsCommand}" Content="{x:Static g:AppStrings.About_ReportAnIssue}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Margin="0 20 0 40" PreviewMouseLeftButtonUp="Version_OnMouseLeftButtonUp">
-                    <TextBlock Style="{StaticResource Label}" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" />
+                <StackPanel Orientation="Horizontal" Margin="0 20 0 40" PreviewMouseLeftButtonUp="OnVersionClick">
+                    <TextBlock Style="{StaticResource Label}" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}"
+                               mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoYouKnowAboutAndroid}}"
+                               mui:FancyHintsService.OffsetX="60" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0">
                         <TextBox.Text>
                             <MultiBinding Mode="OneTime" StringFormat="{}{0} ({1})">
@@ -52,7 +54,7 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Margin="20 12">
-            <TextBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="ContentElement_OnPreviewMouseLeftButtonDown" Background="Transparent"
+            <TextBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="OnElementClick" Background="Transparent"
                     Text="{x:Static g:AppStrings.About_Copyright}" />
             <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" BbCode="{x:Static g:AppStrings.About_Footer}" />
         </StackPanel>

@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -7,8 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.Controls.Converters;
 using AcManager.Controls.Dialogs;
+using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -347,6 +346,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _randomTemperature)) return;
                     _randomTemperature = value;
                     OnPropertyChanged();
+                    SaveLater();
                 }
             }
 
@@ -430,6 +430,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _randomTime)) return;
                     _randomTime = value;
                     OnPropertyChanged();
+                    SaveLater();
                 }
             }
 
@@ -452,6 +453,138 @@ namespace AcManager.Pages.Drive {
                     Time = time;
                 }
             }
+
+            #region Wind
+            private double _windDirection;
+
+            public double WindDirection {
+                get { return _windDirection; }
+                set {
+                    value = ((value % 360 + 360) % 360).Round();
+                    if (Equals(value, _windDirection)) return;
+                    _windDirection = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayWindDirection));
+                    OnPropertyChanged(nameof(WindDirectionFlipped));
+                    if (!RealConditions) {
+                        SaveLater();
+                    }
+                }
+            }
+
+            public double WindDirectionFlipped {
+                get { return (_windDirection + 180) % 360; }
+                set { WindDirection = (value - 180) % 360; }
+            }
+
+            private double _windSpeedMin;
+
+            public double WindSpeedMin {
+                get { return _windSpeedMin; }
+                set {
+                    value = value.Round(0.1);
+                    if (Equals(value, _windSpeedMin)) return;
+                    _windSpeedMin = value;
+
+                    if (WindSpeedMax < value) {
+                        WindSpeedMax = value;
+                    }
+
+                    OnPropertyChanged();
+                    if (!RealConditions) {
+                        SaveLater();
+                    }
+                }
+            }
+
+            private double _windSpeedMax;
+
+            public double WindSpeedMax {
+                get { return _windSpeedMax; }
+                set {
+                    value = value.Round(0.1);
+                    if (Equals(value, _windSpeedMax)) return;
+                    _windSpeedMax = value;
+
+                    if (WindSpeedMin > value) {
+                        WindSpeedMin = value;
+                    }
+
+                    OnPropertyChanged();
+                    if (!RealConditions) {
+                        SaveLater();
+                    }
+                }
+            }
+
+            public string DisplayWindDirection {
+                get {
+                    if (RandomWindDirection) return "RND";
+                    switch ((_windDirection / 22.5).RoundToInt()) {
+                        case 0:
+                        case 16:
+                            return "N";
+                        case 1:
+                            return "NNE";
+                        case 2:
+                            return "NE";
+                        case 3:
+                            return "ENE";
+                        case 4:
+                            return "E";
+                        case 5:
+                            return "ESE";
+                        case 6:
+                            return "SE";
+                        case 7:
+                            return "SSE";
+                        case 8:
+                            return "S";
+                        case 9:
+                            return "SSW";
+                        case 10:
+                            return "SW";
+                        case 11:
+                            return "WSW";
+                        case 12:
+                            return "W";
+                        case 13:
+                            return "WNW";
+                        case 14:
+                            return "NW";
+                        case 15:
+                            return "NNW";
+                        default:
+                            return "?";
+                    }
+                }
+            }
+
+            private bool _randomWindSpeed;
+
+            public bool RandomWindSpeed {
+                get { return _randomWindSpeed; }
+                set {
+                    if (Equals(value, _randomWindSpeed)) return;
+                    _randomWindSpeed = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private bool _randomWindDirection;
+
+            public bool RandomWindDirection {
+                get { return _randomWindDirection; }
+                set {
+                    if (Equals(value, _randomWindDirection)) return;
+                    _randomWindDirection = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayWindDirection));
+                    SaveLater();
+                }
+            }
+            #endregion
 
             private CancellationTokenSource _updateCancellationTokenSource;
 
@@ -480,6 +613,9 @@ namespace AcManager.Pages.Drive {
                                         TryToSetTemperature(weather.Temperature);
                                         SelectedWeatherType = weather.Type;
                                         TryToSetWeather();
+                                        WindDirection = weather.WindDirection;
+                                        WindSpeedMin = weather.WindSpeed * 3.6 * 0.95;
+                                        WindSpeedMax = weather.WindSpeed * 3.6 * 1.05;
                                     }, cancellation.Token);
                         } catch (TaskCanceledException) {} catch (Exception e) {
                             Logging.Warning(e);
@@ -532,6 +668,10 @@ namespace AcManager.Pages.Drive {
                     _tryToSetWeatherLater = false;
                 }
             }
+        }
+
+        private void OnAssistsContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
+            FancyHints.MoreDriveAssists.MaskAsUnnecessary();
         }
     }
 
@@ -591,15 +731,15 @@ namespace AcManager.Pages.Drive {
         private const int SecondsPerDay = 24 * 60 * 60;
 
         /// <summary>
-        /// Complex method, but it’s the best I can think of for now. Due to async nature,
+        /// Complex method, but itâ€™s the best I can think of for now. Due to async nature,
         /// all results will be returned in callbacks. There is no guarantee in which order callbacks
         /// will be called (and even if they will be called at all or not)!
         /// </summary>
         /// <param name="track">Track for which conditions will be loaded.</param>
         /// <param name="localWeather">Use local weather instead.</param>
-        /// <param name="considerTimezones">Consider timezones while setting time. Be careful: you’ll get an unclamped time!</param>
-        /// <param name="timeCallback">Set to null if you don’t need an automatic time.</param>
-        /// <param name="weatherCallback">Set to null if you don’t need weather.</param>
+        /// <param name="considerTimezones">Consider timezones while setting time. Be careful: youâ€™ll get an unclamped time!</param>
+        /// <param name="timeCallback">Set to null if you donâ€™t need an automatic time.</param>
+        /// <param name="weatherCallback">Set to null if you donâ€™t need weather.</param>
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Task.</returns>
         public static async Task UpdateConditions(TrackObjectBase track, bool localWeather, bool considerTimezones,

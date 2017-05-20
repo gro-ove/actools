@@ -31,8 +31,8 @@ namespace AcTools.Processes {
         }
 
         private static void SetDefaultProperies(IniFile file) {
-            var lapInvalidatorSection = file["LAP_INVALIDATOR"];
-            lapInvalidatorSection.Set("ALLOWED_TYRES_OUT", -1);
+            file["HEADER"].Set("VERSION", 2);
+            file["LAP_INVALIDATOR"].Set("ALLOWED_TYRES_OUT", -1);
         }
         
         public static bool OptionDebugMode = false;

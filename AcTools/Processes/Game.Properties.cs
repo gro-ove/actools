@@ -65,9 +65,11 @@ namespace AcTools.Processes {
         }
 
         public class BasicProperties : RaceIniProperties {
-            public string DriverName, DriverNationality;
+            public string DriverName, DriverNationality, DriverNationCode;
             public string CarId, CarSkinId, CarSetupId;
             public string TrackId, TrackConfigurationId;
+            public int Ballast, Restrictor;
+            public bool UseMph;
 
             public override void Set(IniFile file) {
                 var section = file["RACE"];
@@ -86,15 +88,21 @@ namespace AcTools.Processes {
                     ["SKIN"] = CarSkinId?.ToLowerInvariant(),
                     ["MODEL"] = "-",
                     ["MODEL_CONFIG"] = "",
+                    ["BALLAST"] = Ballast,
+                    ["RESTRICTOR"] = Restrictor,
                     ["DRIVER_NAME"] = DriverName,
+                    ["NATION_CODE"] = DriverNationCode ?? DriverNationality.Substring(0, Math.Min(3, DriverNationality.Length)).ToUpper(),
                     ["NATIONALITY"] = DriverNationality
                 };
+                
+                file["OPTIONS"].Set("USE_MPH", UseMph);
             }
         }
 
         public class AiCar {
             public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "";
-            public int AiLevel = 100;
+            public int AiLevel = 100, AiAggression = 0;
+            public int Ballast, Restrictor;
         }
 
         public abstract class BaseModeProperties : RaceIniProperties {
@@ -142,7 +150,10 @@ namespace AcTools.Processes {
                                                ["SETUP"] = car.Setup?.ToLowerInvariant(),
                                                ["MODEL_CONFIG"] = "",
                                                ["AI_LEVEL"] = car.AiLevel,
+                                               ["AI_AGGRESSION"] = car.AiAggression,
                                                ["DRIVER_NAME"] = car.DriverName,
+                                               ["BALLAST"] = car.Ballast,
+                                               ["RESTRICTOR"] = car.Restrictor,
                                                ["NATIONALITY"] = car.Nationality
                                            });
             }
@@ -400,6 +411,7 @@ namespace AcTools.Processes {
         public class ConditionProperties : RaceIniProperties {
             public double? SunAngle, TimeMultipler, CloudSpeed;
             public double? RoadTemperature, AmbientTemperature;
+            public double? WindDirectionDeg, WindSpeedMin, WindSpeedMax;
             public string WeatherName;
 
             public override void Set(IniFile file) {
@@ -414,6 +426,11 @@ namespace AcTools.Processes {
 
                 var weatherSection = file["WEATHER"];
                 weatherSection.SetId("NAME", WeatherName);
+
+                var windSection = file["WIND"];
+                windSection.Set("SPEED_KMH_MIN", WindSpeedMin);
+                windSection.Set("SPEED_KMH_MAX", WindSpeedMax);
+                windSection.Set("DIRECTION_DEG", WindDirectionDeg);
             }
 
             public static double GetSunAngle(double seconds) {

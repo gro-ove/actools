@@ -12,11 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Controls;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.CustomShowroom;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Lists;
@@ -157,6 +157,21 @@ namespace AcManager.Pages.Drive {
             public int Time, TimeMultipler;
 
             public string TrackPropertiesPresetFilename, TrackPropertiesData;
+
+            [JsonProperty(@"wsf")]
+            public double WindSpeedMin = 10;
+
+            [JsonProperty(@"wst")]
+            public double WindSpeedMax = 10;
+
+            [JsonProperty(@"wd")]
+            public double WindDirection;
+
+            [JsonProperty(@"rws")]
+            public bool RandomWindSpeed;
+
+            [JsonProperty(@"rwd")]
+            public bool RandomWindDirection;
 
             [JsonProperty(@"tpc")]
             public bool TrackPropertiesChanged;
@@ -372,7 +387,7 @@ namespace AcManager.Pages.Drive {
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
                     WeatherId = SelectedWeatherObject?.Id,
-                    
+
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
@@ -380,6 +395,11 @@ namespace AcManager.Pages.Drive {
                     Temperature = Temperature,
                     Time = Time,
                     TimeMultipler = TimeMultipler,
+                    WindSpeedMin = WindSpeedMin,
+                    WindSpeedMax = WindSpeedMax,
+                    WindDirection = WindDirection,
+                    RandomWindSpeed = RandomWindSpeed,
+                    RandomWindDirection = RandomWindDirection,
 
                     RandomTemperature = RandomTemperature,
                     RandomTime = RandomTime,
@@ -395,6 +415,11 @@ namespace AcManager.Pages.Drive {
 
                     Temperature = o.Temperature;
                     Time = o.Time;
+                    WindSpeedMin = o.WindSpeedMin;
+                    WindSpeedMax = o.WindSpeedMax;
+                    WindDirection = o.WindDirection;
+                    RandomWindSpeed = o.RandomWindSpeed;
+                    RandomWindDirection = o.RandomWindDirection;
 
                     RandomTemperature = o.RandomTemperature;
                     RandomTime = o.RandomTime;
@@ -451,6 +476,11 @@ namespace AcManager.Pages.Drive {
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
                     TimeMultipler = 1;
+                    WindSpeedMin = 10;
+                    WindSpeedMax = 10;
+                    WindDirection = 0;
+                    RandomWindSpeed = false;
+                    RandomWindDirection = false;
 
                     RandomTemperature = false;
                     RandomTime = false;
@@ -471,6 +501,10 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
+                if (WindSpeedMin == 10d && WindSpeedMax == 10d) {
+                    FancyHints.DoubleSlider.Trigger();
+                }
+
                 if (carObject != null) {
                     SelectedCar = carObject;
                     // TODO: skin?
@@ -489,6 +523,8 @@ namespace AcManager.Pages.Drive {
                 UpdateHierarchicalWeatherList().Forget();
                 WeakEventManager<IBaseAcObjectObservableCollection, EventArgs>.AddHandler(WeatherManager.Instance.WrappersList,
                         nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
+
+                FancyHints.MoreDriveAssists.Trigger(TimeSpan.FromSeconds(1d));
             }
 
             #region Presets
@@ -522,6 +558,7 @@ namespace AcManager.Pages.Drive {
                 car.SelectedSkin = dialog.SelectedSkin;
 
                 SelectedCar = car;
+                FancyHints.DragForContentSection.Trigger();
             }));
 
             private ICommand _changeTrackCommand;
@@ -635,7 +672,11 @@ namespace AcManager.Pages.Drive {
                         TimeMultipler = TimeMultipler,
                         CloudSpeed = 0.2,
 
-                        WeatherName = weather?.Id
+                        WeatherName = weather?.Id,
+
+                        WindDirectionDeg = RandomWindDirection ? MathUtils.Random(0, 360) : WindDirection,
+                        WindSpeedMin = RandomWindSpeed ? 2 : WindSpeedMin,
+                        WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
                     }, TrackState.ToProperties());
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
@@ -863,6 +904,10 @@ namespace AcManager.Pages.Drive {
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             LeftPanel.Width = 180 + ((ActualWidth - 800) / 2d).Clamp(0, 60);
+
+            var cellWidth = (((ActualWidth - 720) / 320).Saturate() * 60 + 120).Round();
+            CarCell.Width = cellWidth;
+            TrackCell.Width = cellWidth;
         }
 
         private void OnShowroomButtonClick(object sender, RoutedEventArgs e) {

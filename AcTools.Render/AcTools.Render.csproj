@@ -309,8 +309,9 @@
     <Content Include="Shaders\Dark\DarkMaterial.fx" />
     <Content Include="Shaders\Dark\DarkMaterial.WithoutLighting.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Kunos.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.2.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.fx" />
-    <Content Include="Shaders\Includes\DarkMaterial.Lighting.Area.fx" />
+    <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Area.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.Complex.Placeholder.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Lighting.None.fx" />
     <Content Include="Shaders\Includes\DarkMaterial.Unpack.fx" />

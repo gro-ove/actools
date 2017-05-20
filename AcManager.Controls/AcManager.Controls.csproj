@@ -137,9 +137,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
-    <Compile Include="CustomShowroom\DarkRendererCars.cs" />
-    <Compile Include="CustomShowroom\PaintShop.LicensePlate.cs" />
-    <Compile Include="CustomShowroom\PaintShop.Items.cs" />
+    <Compile Include="CustomShowroom\Dummy.cs" />
+    <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
@@ -152,23 +151,6 @@
     <Compile Include="Converters\CarIdToCarWrapperConverter.cs" />
     <Compile Include="Converters\TimeSpanConverters.cs" />
     <Compile Include="Converters\TrackIdToTrackWrapperConverter.cs" />
-    <Compile Include="CustomShowroom\AttachedHelper.cs" />
-    <Compile Include="CustomShowroom\CmPreviewsSettings.cs" />
-    <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
-      <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\CmPreviewsFormWrapper.cs" />
-    <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
-    <Compile Include="CustomShowroom\ExtraModelProvider.cs" />
-    <Compile Include="CustomShowroom\PaintShop.cs" />
-    <Compile Include="CustomShowroom\TrackOutlineRendererTools.xaml.cs">
-      <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\TrackMapRendererTools.xaml.cs">
-      <DependentUpon>TrackMapRendererTools.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
-    <Compile Include="CustomShowroom\TrackMapRendererWrapper.cs" />
     <Compile Include="Dialogs\UserChampionshipIntro.xaml.cs">
       <DependentUpon>UserChampionshipIntro.xaml</DependentUpon>
     </Compile>
@@ -222,14 +204,6 @@
     <Compile Include="Converters\PlaceToColorConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
     <Compile Include="Converters\CountryIdToImageConverter.cs" />
-    <Compile Include="CustomShowroom\CarTextureDialog.xaml.cs">
-      <DependentUpon>CarTextureDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
-    <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
-      <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomShowroom\LiteShowroomFormWrapperWithTools.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
     <Compile Include="Helpers\PresetsMenuHelper.cs" />
@@ -349,30 +323,6 @@
     <Page Include="Assets\SelectedObjectToolBarTray\Fixed.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomShowroom\CarTextureDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomShowroom\CmPreviewsTools.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomShowroom\LiteShowroomSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomShowroom\LiteShowroomTools.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomShowroom\TrackOutlineRendererTools.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomShowroom\TrackMapRendererTools.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\CarOpenInShowroomDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -318,7 +318,7 @@ float Attenuation(float range, float d) {
 }
 
 #if ENABLE_AREA_LIGHTS == 1
-#include "DarkMaterial.Lighting.Area.fx"
+#include "DarkMaterial.Lighting.Complex.Area.fx"
 
 #define LUT_SIZE 64.0
 #define LUT_SCALE ((LUT_SIZE - 1.0) / LUT_SIZE)

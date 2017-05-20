@@ -135,6 +135,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             light.DirectionW = ActualPosition + ActualDirection * Length / 2f;
             light.Range = Range;
             light.SpotlightCosMin = Radius;
+            light.Type = (uint)DarkLightType.Tube;
         }
 
         public override void InvalidateShadows() {}

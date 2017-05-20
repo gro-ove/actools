@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AcManager.Controls.CustomShowroom;
+using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;

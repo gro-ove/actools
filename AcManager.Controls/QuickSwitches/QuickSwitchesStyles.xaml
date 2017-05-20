@@ -335,7 +335,7 @@
                                                 <TranslateTransform X="30" Y="60" />
                                                 <RotateTransform CenterX="40" CenterY="40">
                                                     <RotateTransform.Angle>
-                                                        <MultiBinding Converter="{x:Static qs:QuickSwitchSlider.Converter}">
+                                                        <MultiBinding Converter="{x:Static mui:RoundSlider.Converter}">
                                                             <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Value" />
                                                             <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Minimum" />
                                                             <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Maximum" />
@@ -347,6 +347,7 @@
                                     </Thumb>
                                 </Canvas>
                             </Viewbox>
+                            
                             <Path Grid.Row="0" x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{StaticResource IconSize}"
                                     Height="{StaticResource IconSize}" Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center"
                                     VerticalAlignment="Center" SnapsToDevicePixels="True" />

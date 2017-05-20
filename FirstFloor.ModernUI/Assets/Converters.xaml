@@ -37,6 +37,7 @@
     <c:SumConverter x:Key="SumConverter" />
     <c:ToLowerConverter x:Key="ToLowerConverter" />
     <c:ToSentenceConverter x:Key="ToSentenceConverter" />
+    <c:ToThicknessConverter x:Key="ToThicknessConverter" />
     <c:ToTitleConverter x:Key="ToTitleConverter" />
     <c:ToUpperConverter x:Key="ToUpperConverter" />
     <c:ToUpperSpecialConverter x:Key="ToUpperSpecialConverter" />
