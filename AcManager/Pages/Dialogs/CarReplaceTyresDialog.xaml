@@ -85,7 +85,7 @@
                             </Button>
 
                             <!--tyres per place (draggable tyres)-->
-                            <c:PropertiesGrid Columns="1" LabelWidth="60" Spacing="4">
+                            <c:PropertiesGrid Columns="1" LabelWidth="60" VerticalSpacing="4">
                                 <Border c:PropertiesGrid.Label="Front:" mui:Draggable.Data="{Binding Front}" AllowDrop="True" Drop="OnFrontSlotDrop"
                                         Style="{StaticResource TyresCell}" PreviewMouseLeftButtonDown="OnFrontSlotMouseDown">
                                     <mui:Cell>
@@ -223,7 +223,7 @@
                 <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
             </DockPanel>
 
-            <c:PropertiesGrid Columns="1" LabelWidth="120" Spacing="4" LabelPadding="8 0 0 0" DockPanel.Dock="Top">
+            <c:PropertiesGrid Columns="1" LabelWidth="120" VerticalSpacing="4" LabelPadding="8 0 0 0" DockPanel.Dock="Top">
                 <TextBlock c:PropertiesGrid.Label="Current version:" Text="{Binding SetsVersion}" TextTrimming="CharacterEllipsis" />
                 <TextBlock c:PropertiesGrid.Label="Front tyres:" Text="{Binding OriginalTyresFront.DisplayParams}" TextTrimming="CharacterEllipsis" />
                 <TextBlock c:PropertiesGrid.Label="Rear tyres:" Text="{Binding OriginalTyresRear.DisplayParams}" TextTrimming="CharacterEllipsis" />

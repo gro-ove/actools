@@ -41,7 +41,7 @@
         <ItemsControl.ItemTemplate>
             <DataTemplate>
                 <DockPanel Margin="0 0 0 8" Width="240">
-                    <c:PropertiesGrid Columns="1" DockPanel.Dock="Top" Spacing="8">
+                    <c:PropertiesGrid Columns="1" DockPanel.Dock="Top" VerticalSpacing="8">
                         <mui:BetterTextBox x:Name="TextBox" c:PropertiesGrid.Label="Name:"
                                 Text="{Binding Tag.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" ToolTip="Name of the tag" />
                         <mui:ColorPicker c:PropertiesGrid.Label="Color:" Color="{Binding Tag.Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

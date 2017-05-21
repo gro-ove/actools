@@ -455,9 +455,9 @@ namespace AcManager.Pages.Drive {
             }
 
             #region Wind
-            private double _windDirection;
+            private int _windDirection;
 
-            public double WindDirection {
+            public int WindDirection {
                 get { return _windDirection; }
                 set {
                     value = ((value % 360 + 360) % 360).Round();
@@ -472,7 +472,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public double WindDirectionFlipped {
+            public int WindDirectionFlipped {
                 get { return (_windDirection + 180) % 360; }
                 set { WindDirection = (value - 180) % 360; }
             }
@@ -613,9 +613,9 @@ namespace AcManager.Pages.Drive {
                                         TryToSetTemperature(weather.Temperature);
                                         SelectedWeatherType = weather.Type;
                                         TryToSetWeather();
-                                        WindDirection = weather.WindDirection;
-                                        WindSpeedMin = weather.WindSpeed * 3.6 * 0.95;
-                                        WindSpeedMax = weather.WindSpeed * 3.6 * 1.05;
+                                        WindDirection = weather.WindDirection.RoundToInt();
+                                        WindSpeedMin = weather.WindSpeed * 3.6;
+                                        WindSpeedMax = weather.WindSpeed * 3.6;
                                     }, cancellation.Token);
                         } catch (TaskCanceledException) {} catch (Exception e) {
                             Logging.Warning(e);

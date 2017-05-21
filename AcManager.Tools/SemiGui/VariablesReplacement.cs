@@ -56,11 +56,11 @@ namespace AcManager.Tools.SemiGui {
                 case "type":
                     return GetType(startProperties, result);
                 case "car":
-                    return CarsManager.Instance.GetById(startProperties.BasicProperties.CarId)?.DisplayName;
+                    return CarsManager.Instance.GetById(startProperties.BasicProperties.CarId ?? "")?.DisplayName;
                 case "car.id":
                     return startProperties.BasicProperties.CarId;
                 case "track":
-                    var track = TracksManager.Instance.GetById(startProperties.BasicProperties.TrackId);
+                    var track = TracksManager.Instance.GetById(startProperties.BasicProperties.TrackId ?? "");
                     var config = startProperties.BasicProperties.TrackConfigurationId != null
                             ? track?.GetLayoutByLayoutId(startProperties.BasicProperties.TrackConfigurationId) : track;
                     return config?.Name;

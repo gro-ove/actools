@@ -43,7 +43,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return (double)GetValue(VerticalSpacingProperty); }
             set { SetValue(VerticalSpacingProperty, value); }
         }
-        
+
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
@@ -67,7 +67,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     maxChildDesiredHeight = childDesiredSize.Height;
                 }
             }
-            
+
             return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, maxChildDesiredHeight * _rows + _totalSpacingHeight);
         }
 
@@ -106,14 +106,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (_rows == 0 || _columns == 0) {
                 var nonCollapsedCount = 0;
-                
+
                 for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
                     var child = InternalChildren[i];
                     if (child.Visibility != Visibility.Collapsed) {
                         nonCollapsedCount++;
                     }
                 }
-                
+
                 if (nonCollapsedCount == 0) {
                     nonCollapsedCount = 1;
                 }
@@ -136,8 +136,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _horizontalSpacing = HorizontalSpacing;
             _verticalSpacing = VerticalSpacing;
 
-            _totalSpacingWidth = _columns == 0 ? 0 : HorizontalSpacing * (_columns - 1);
-            _totalSpacingHeight = _rows == 0 ? 0 : VerticalSpacing * (_rows - 1);
+            _totalSpacingWidth = _columns == 0 ? 0 : _horizontalSpacing * (_columns - 1);
+            _totalSpacingHeight = _rows == 0 ? 0 : _verticalSpacing * (_rows - 1);
         }
 
         private int _rows;

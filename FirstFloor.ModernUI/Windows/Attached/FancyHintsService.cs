@@ -9,6 +9,7 @@ using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public class ShowHintEventArgs : EventArgs {
@@ -43,11 +44,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private readonly bool _forced;
 
         public FancyHint(string id, string header, string description, double probability = 1d, bool availableByDefault = true,
-                int startupsDelay = 2, int triggersDelay = 0, bool forced = false) {
+                int startupsDelay = 2, int triggersDelay = 0, bool forced = false, bool closeOnResize = false) {
             Id = id;
             Header = header;
             Description = description;
             Probability = probability;
+            CloseOnResize = closeOnResize;
             _keyShown = $"__fancyHint:shown:{id}";
             _keyAvailable = availableByDefault ? null : $"__fancyHint:available:{id}";
 
@@ -69,10 +71,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public string Description { get; }
 
         public double Probability { get; }
+        public bool CloseOnResize { get; }
 
         public async void Trigger(TimeSpan delay) {
             await Task.Delay(delay);
             ActionExtension.InvokeInMainThreadAsync(() => {
+                if (FancyHintAdorner.IsAnyShown) {
+                    Logging.Debug($"{Id}: something else is being shown right now");
+                    return;
+                }
+
                 if (!OptionDebugMode && Shown) {
                     Logging.Debug($"{Id}: already shown");
                     return;
@@ -174,11 +182,45 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        // private static readonly List<FancyHint> Hints = new List<FancyHint>(10);
+        private static readonly List<FancyHint> Hints = new List<FancyHint>(10);
 
         internal static void Register(FancyHint hint) {
-            // Hints.Add(hint);
+            Hints.Add(hint);
             hint.Show += OnHintShow;
+        }
+
+        private static Tuple<string, FrameworkElement> _nextHint;
+
+        private static bool TryToShow(FrameworkElement element, FancyHint hint) {
+            var parent = element;
+
+            var attachTo = GetAttachTo(element);
+            if (attachTo != null) {
+                var attachToType = attachTo as Type;
+                if (attachToType != null) {
+                    element = element.FindVisualChildren<FrameworkElement>().FirstOrDefault(x => {
+                        var t = x.GetType();
+                        return t == attachToType || t.IsSubclassOf(attachToType);
+                    });
+                } else {
+                    // TODO
+                    element = null;
+                }
+            }
+
+            if (element == null) {
+                Logging.Warning("Element is null!");
+                return false;
+            }
+
+            var layer = GetAdornerLayer(element);
+            if (layer == null) {
+                Logging.Warning("Can’t find adorner layer!");
+                return false;
+            }
+
+            layer.Item1.Add(new FancyHintAdorner(element, parent, layer.Item1, layer.Item2, hint));
+            return true;
         }
 
         private static void OnHintShow(object sender, ShowHintEventArgs eventArgs) {
@@ -186,18 +228,24 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             var hint = (FancyHint)sender;
 
+            if (_nextHint != null) {
+                var next = _nextHint;
+                _nextHint = null;
+
+                if (next.Item1 == hint.Id && TryToShow(next.Item2, hint)) {
+                    eventArgs.Shown = true;
+                    return;
+                }
+            }
+
             Purge();
             foreach (var reference in Elements) {
                 FrameworkElement f;
                 if (!reference.TryGetTarget(out f)) return;
 
-                if (GetHint(f) == hint.Id && f.IsLoaded) {
-                    var layer = GetAdornerLayer(f);
-                    if (layer != null) {
-                        layer.Add(new FancyHintAdorner(f, layer, hint));
-                        eventArgs.Shown = true;
-                        return;
-                    }
+                if (GetHint(f) == hint.Id && f.IsLoaded && TryToShow(f, hint)) {
+                    eventArgs.Shown = true;
+                    return;
                 }
             }
         }
@@ -249,28 +297,33 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (GetHint(u) == null) {
                 if (reference != null) {
                     Elements.Remove(reference);
+                    u.Loaded -= OnElementLoaded;
                 }
             } else if (reference == null){
                 Elements.Add(new WeakReference<FrameworkElement>(u));
+                if (u.IsLoaded) {
+                    OnElementLoaded(u, null);
+                } else {
+                    u.Loaded += OnElementLoaded;
+                }
             }
         }
 
-        private static AdornerLayer GetAdornerLayer(Visual visual) {
+        private static void OnElementLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            var e = sender as FrameworkElement;
+            if (e == null || !GetTriggerOnLoad(e)) return;
+
+            var id = GetHint(e);
+            _nextHint = Tuple.Create(id, e);
+            Hints.FirstOrDefault(x => x.Id == id)?.Trigger();
+        }
+
+        private static Tuple<AdornerLayer, Window> GetAdornerLayer([NotNull] Visual visual) {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
 
-            foreach (var parent in visual.GetParents()) {
-                {
-                    var decorator = parent as AdornerDecorator;
-                    if (decorator != null && GetHintsDecorator(decorator)) return decorator.AdornerLayer;
-                }
-
-                {
-                    var dialog = parent as Window;
-                    if (dialog != null) return dialog.FindVisualChildren<AdornerDecorator>().FirstOrDefault(GetHintsDecorator)?.AdornerLayer;
-                }
-            }
-
-            return null;
+            var window = visual.GetParent<Window>();
+            var layer = window?.FindVisualChildren<AdornerDecorator>().FirstOrDefault(GetHintsDecorator)?.AdornerLayer;
+            return layer != null ? Tuple.Create(layer, window) : null;
         }
 
         #region Style-related
@@ -317,6 +370,29 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         public static readonly DependencyProperty OffsetYProperty = DependencyProperty.RegisterAttached("OffsetY", typeof(double),
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.None));
+
+        public static bool GetTriggerOnLoad(DependencyObject obj) {
+            return (bool)obj.GetValue(TriggerOnLoadProperty);
+        }
+
+        public static void SetTriggerOnLoad(DependencyObject obj, bool value) {
+            obj.SetValue(TriggerOnLoadProperty, value);
+        }
+
+        public static readonly DependencyProperty TriggerOnLoadProperty = DependencyProperty.RegisterAttached("TriggerOnLoad", typeof(bool),
+                typeof(FancyHintsService), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None));
+
+        public static object GetAttachTo(DependencyObject obj) {
+            return obj.GetValue(AttachToProperty);
+        }
+
+        public static void SetAttachTo(DependencyObject obj, object value) {
+            obj.SetValue(AttachToProperty, value);
+        }
+
+        public static readonly DependencyProperty AttachToProperty = DependencyProperty.RegisterAttached("AttachTo", typeof(object),
+                typeof(FancyHintsService), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
+
         #endregion
     }
 }

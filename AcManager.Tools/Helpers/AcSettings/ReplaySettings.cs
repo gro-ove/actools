@@ -37,7 +37,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (!Kernel32.GlobalMemoryStatusEx(memStatus)) return null;
 
                 var installedMemory = memStatus.ullTotalPhys;
-                _recommendedSize = Math.Min((int)(0.1 * installedMemory / 1024 / 1024), 1000);
+                _recommendedSize = Math.Min((int)(0.1 * installedMemory / 1024 / 1024), 2000);
                 return _recommendedSize;
             }
         }

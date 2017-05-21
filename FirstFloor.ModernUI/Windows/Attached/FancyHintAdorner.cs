@@ -26,25 +26,32 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             set { SetValue(HintProperty, value); }
         }
     }
-    
+
     internal class FancyHintAdorner : Adorner {
+        public static bool IsAnyShown { get; private set; }
+
         private readonly AdornerLayer _layer;
+        private readonly Window _window;
+        private readonly FancyHint _hint;
         private readonly FrameworkElement _contentPresenter;
 
-        public FancyHintAdorner(UIElement adornedElement, AdornerLayer layer, FancyHint hint) : base(adornedElement) {
+        public FancyHintAdorner(UIElement adornedElement, UIElement parent, AdornerLayer layer, Window window, FancyHint hint) : base(adornedElement) {
             _layer = layer;
+            _window = window;
+            _hint = hint;
+
             IsHitTestVisible = true;
 
             var style = FindResource(@"HintMarkStyle") as Style;
-            
-            var offsetX = FancyHintsService.GetOffsetX(adornedElement);
-            var offsetY = FancyHintsService.GetOffsetY(adornedElement);
-            
+
+            var offsetX = FancyHintsService.GetOffsetX(parent);
+            var offsetY = FancyHintsService.GetOffsetY(parent);
+
             _contentPresenter = new FancyHintControl {
                 Style = style,
                 Hint = hint,
-                HorizontalContentAlignment = FancyHintsService.GetHorizontalAlignment(adornedElement),
-                VerticalContentAlignment = FancyHintsService.GetVerticalAlignment(adornedElement),
+                HorizontalContentAlignment = FancyHintsService.GetHorizontalAlignment(parent),
+                VerticalContentAlignment = FancyHintsService.GetVerticalAlignment(parent),
                 Margin = new Thickness(-4000 + offsetX, -4000 + offsetY, -4000 - offsetX, -4000 - offsetY)
             };
 
@@ -52,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 Source = adornedElement,
                 Converter = new BooleanToVisibilityConverter()
             });
-            
+
             AddVisualChild(_contentPresenter);
             Show();
         }
@@ -62,18 +69,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             return _contentPresenter.FindVisualChildren<FrameworkElement>().FirstOrDefault(x => x.Name == name);
         }
 
-        private Window _window;
-
         private async void Show() {
             await Task.Delay(1);
             var cell = GetByName("PART_Cell");
             if (cell != null) {
                 VisibilityAnimation.SetDuration(cell, TimeSpan.FromSeconds(0.3));
                 VisibilityAnimation.SetVisible(cell, true);
-                
-                _window = Window.GetWindow(_contentPresenter);
-                if (_window != null) {
-                    _window.PreviewMouseDown += OnWindowMouseDown;
+
+                _window.PreviewMouseDown += OnWindowMouseDown;
+                if (_hint.CloseOnResize) {
+                    _window.SizeChanged += OnWindowSizeChanged;
                 }
 
                 cell.PreviewMouseDown += OnMouseDown;
@@ -85,10 +90,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         Close();
                     });
                 }
+
+                IsAnyShown = true;
             }
         }
 
         private void OnWindowMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
+            Close();
+        }
+
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs) {
             Close();
         }
 
@@ -98,17 +109,20 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private async void Close() {
             IsHitTestVisible = false;
-            if (_window != null) {
-                _window.PreviewMouseDown -= OnWindowMouseDown;
+
+            _window.PreviewMouseDown -= OnWindowMouseDown;
+            if (_hint.CloseOnResize) {
+                _window.SizeChanged -= OnWindowSizeChanged;
             }
-            
+
             var cell = GetByName("PART_Cell");
             if (cell != null) {
                 VisibilityAnimation.SetVisible(cell, false);
                 await Task.Delay(300);
             }
-            
+
             _layer.Remove(this);
+            IsAnyShown = false;
         }
 
         protected override int VisualChildrenCount => 1;

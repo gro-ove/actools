@@ -93,7 +93,7 @@ namespace AcManager.Tools.SemiGui {
             var online = properties.ModeProperties as Game.OnlineProperties;
             if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
                 var filter = Filter.Create(new GameWrapper.StringTester(), SettingsHolder.Live.SrsAutoMask, true);
-                if (filter.Test(online.ServerName)) {
+                if (filter.Test(online.ServerName ?? "")) {
                     Logging.Write("Looks like this is a SRS server, let’s use SRS name");
                     properties.SetAdditional(new SrsMark {
                         Name = SrsMark.GetName(),
@@ -133,7 +133,7 @@ namespace AcManager.Tools.SemiGui {
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
                 properties.SetAdditional(new WeatherSpecificCloudsHelper());
             }
-            
+
             if (SettingsHolder.Drive.WeatherSpecificTyreSmoke) {
                 properties.SetAdditional(new WeatherSpecificTyreSmokeHelper());
             }

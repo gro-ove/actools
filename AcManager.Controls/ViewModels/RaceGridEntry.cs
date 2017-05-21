@@ -148,6 +148,40 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        private int? _aiAggression;
+
+        public int? AiAggression {
+            get { return _aiAggression; }
+            set {
+                value = value?.Clamp(0, 100);
+                if (Equals(value, _aiAggression)) return;
+                _aiAggression = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _ballast;
+
+        public int Ballast {
+            get { return _ballast; }
+            set {
+                if (Equals(value, _ballast)) return;
+                _ballast = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _restrictor;
+
+        public int Restrictor {
+            get { return _restrictor; }
+            set {
+                if (Equals(value, _restrictor)) return;
+                _restrictor = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _candidatePriority = 1;
 
         public int CandidatePriority {
@@ -196,6 +230,9 @@ namespace AcManager.Controls.ViewModels {
             return new RaceGridEntry(Car) {
                 CarSkin = CarSkin,
                 AiLevel = AiLevel,
+                AiAggression = AiAggression,
+                Ballast = Ballast,
+                Restrictor = Restrictor,
                 CandidatePriority = CandidatePriority,
                 Name = Name,
                 Nationality = Nationality

@@ -146,7 +146,7 @@ namespace AcManager.Pages.Drive {
             [Localizable(false)]
             protected class SaveableData {
                 public int Version => 2;
-                
+
                 public bool? Penalties;
                 public Game.JumpStartPenaltyType? JumpStartPenalty;
                 public int? LapsNumber;
@@ -201,7 +201,6 @@ namespace AcManager.Pages.Drive {
                     }
 
                     RaceGridViewModel.ShuffleCandidates = true;
-                    RaceGridViewModel.AiLevelFixed = o.AiLevelFixed ?? true;
                     RaceGridViewModel.AiLevelArrangeRandom = o.AiLevelArrangeRandomly.HasValue ? (o.AiLevelArrangeRandomly.Value ? 1d : 0d) : 0.2;
                     RaceGridViewModel.AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? true;
                     RaceGridViewModel.AiLevel = o.AiLevel ?? 92;
@@ -279,8 +278,8 @@ namespace AcManager.Pages.Drive {
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
-                var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId);
-                var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId, basicProperties.TrackConfigurationId);
+                var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId ?? "");
+                var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId ?? "", basicProperties.TrackConfigurationId);
 
                 IEnumerable<Game.AiCar> botCars;
 
@@ -310,6 +309,9 @@ namespace AcManager.Pages.Drive {
                     NonfatalError.Notify("Can’t create race grid", e);
                     return;
                 }
+
+                basicProperties.Ballast = RaceGridViewModel.PlayerBallast;
+                basicProperties.Restrictor = RaceGridViewModel.PlayerRestrictor;
 
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = basicProperties,

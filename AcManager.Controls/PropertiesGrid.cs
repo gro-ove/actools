@@ -17,6 +17,14 @@ namespace AcManager.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertiesGrid), new FrameworkPropertyMetadata(typeof(PropertiesGrid)));
         }
 
+        public static readonly DependencyProperty FirstColumnProperty = DependencyProperty.Register(nameof(FirstColumn), typeof(int), typeof(PropertiesGrid),
+                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public int FirstColumn {
+            get { return (int)GetValue(FirstColumnProperty); }
+            set { SetValue(FirstColumnProperty, value); }
+        }
+
         public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(PropertiesGrid),
                 new FrameworkPropertyMetadata(2, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
@@ -25,12 +33,28 @@ namespace AcManager.Controls {
             set { SetValue(ColumnsProperty, value); }
         }
 
-        public static readonly DependencyProperty SpacingProperty = DependencyProperty.Register(nameof(Spacing), typeof(double), typeof(PropertiesGrid),
-                new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
+        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(nameof(Rows), typeof(int),
+                typeof(PropertiesGrid));
 
-        public double Spacing {
-            get { return (double)GetValue(SpacingProperty); }
-            set { SetValue(SpacingProperty, value); }
+        public int Rows {
+            get { return (int)GetValue(RowsProperty); }
+            set { SetValue(RowsProperty, value); }
+        }
+
+        public static readonly DependencyProperty HorizontalSpacingProperty = DependencyProperty.Register(nameof(HorizontalSpacing), typeof(double),
+                typeof(PropertiesGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public double HorizontalSpacing {
+            get { return (double)GetValue(HorizontalSpacingProperty); }
+            set { SetValue(HorizontalSpacingProperty, value); }
+        }
+
+        public static readonly DependencyProperty VerticalSpacingProperty = DependencyProperty.Register(nameof(VerticalSpacing), typeof(double),
+                typeof(PropertiesGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public double VerticalSpacing {
+            get { return (double)GetValue(VerticalSpacingProperty); }
+            set { SetValue(VerticalSpacingProperty, value); }
         }
 
         public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(nameof(LabelWidth), typeof(double), typeof(PropertiesGrid),
@@ -168,7 +192,7 @@ namespace AcManager.Controls {
 
         protected override void OnRender(DrawingContext dc) {
             base.OnRender(dc);
-            
+
             var y = 0.0;
             for (int i = 0, c = 0; i < _labels.Length; i++, c++) {
                 if (c == _columns) {
@@ -214,39 +238,69 @@ namespace AcManager.Controls {
 
         private void UpdateComputedValues() {
             _columns = Columns;
-            _rows = 0;
-            _spacing = Spacing;
+            _rows = Rows;
             _labelWidth = LabelWidth;
 
-            _nonCollapsedCount = 0;
-            for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
-                var child = InternalChildren[i];
-                if (child.Visibility != Visibility.Collapsed) {
-                    _nonCollapsedCount++;
+            if (FirstColumn >= _columns) {
+                FirstColumn = 0;
+            }
+
+            var nonCollapsedCount = 0;
+
+            if (_rows == 0 || _columns == 0) {
+                for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                    var child = InternalChildren[i];
+                    if (child.Visibility != Visibility.Collapsed) {
+                        nonCollapsedCount++;
+                    }
+                }
+
+                if (nonCollapsedCount == 0) {
+                    nonCollapsedCount = 1;
+                }
+
+                if (_rows == 0) {
+                    if (_columns > 0) {
+                        _rows = (nonCollapsedCount + FirstColumn + (_columns - 1)) / _columns;
+                    } else {
+                        _rows = (int)Math.Sqrt(nonCollapsedCount);
+                        if (_rows * _rows < nonCollapsedCount) {
+                            _rows++;
+                        }
+                        _columns = _rows;
+                    }
+                } else if (_columns == 0) {
+                    _columns = (nonCollapsedCount + (_rows - 1)) / _rows;
+                }
+            } else {
+                for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
+                    var child = InternalChildren[i];
+                    if (child.Visibility != Visibility.Collapsed) {
+                        nonCollapsedCount++;
+                    }
                 }
             }
 
-            if (_nonCollapsedCount == 0) {
-                _nonCollapsedCount = 1;
-            }
+            _nonCollapsedCount = nonCollapsedCount;
 
-            _rows = (_nonCollapsedCount + (_columns - 1)) / _columns;
+            _horizontalSpacing = HorizontalSpacing;
+            _verticalSpacing = VerticalSpacing;
+
+            _totalSpacingWidth = _columns == 0 ? 0 : _horizontalSpacing * (_columns - 1) + _labelWidth * _columns;
+            _totalSpacingHeight = _rows == 0 ? 0 : _verticalSpacing * (_rows - 1);
         }
 
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
             if (_columns == 0 || _rows == 0) return default(Size);
-            var totalSpacingX = _spacing * (_columns - 1) + _labelWidth * _columns;
-            var totalSpacingY = _spacing * (_rows - 1);
-
-            var childConstraint = new Size(Math.Max(constraint.Width - totalSpacingX, 0d) / _columns, Math.Max((constraint.Height - totalSpacingY) / _rows, 0d));
+            var childConstraint = new Size(Math.Max(constraint.Width - _totalSpacingWidth, 0d) / _columns, Math.Max((constraint.Height - _totalSpacingHeight) / _rows, 0d));
             var maxChildDesiredWidth = 0d;
             var maxChildDesiredHeight = 0d;
 
             for (int i = 0, count = InternalChildren.Count; i < count; ++i) {
                 var child = InternalChildren[i];
-                
+
                 child.Measure(childConstraint);
                 var childDesiredSize = child.DesiredSize;
 
@@ -259,26 +313,25 @@ namespace AcManager.Controls {
                 }
             }
 
-            return new Size(maxChildDesiredWidth * _columns + totalSpacingX, maxChildDesiredHeight * _rows + totalSpacingY);
+            return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, maxChildDesiredHeight * _rows + _totalSpacingHeight);
         }
-        
+
         protected override Size ArrangeOverride(Size arrangeSize) {
             if (_columns == 0 || _rows == 0) return default(Size);
             UpdateLabels();
 
-            var totalSpacingX = _spacing * (_columns - 1);
-            var totalSpacingY = _spacing * (_rows - 1);
+            var totalSpacingX = _columns == 0 ? 0 : _horizontalSpacing * (_columns - 1);
 
             _xStep = (arrangeSize.Width - totalSpacingX) / _columns;
-            _yStep = Math.Max(arrangeSize.Height - totalSpacingY, 0d) / _rows;
+            _yStep = Math.Max(arrangeSize.Height - _totalSpacingHeight, 0d) / _rows;
             _labelTextOffset = (_yStep + _labelPadding.Top - _labelPadding.Bottom) / 2;
 
             var xBound = arrangeSize.Width - 1.0;
             var childBounds = new Rect(_labelWidth, 0, Math.Max(_xStep - _labelWidth, 0d), _yStep);
 
-            _xStep += _spacing;
-            _yStep += _spacing;
-            
+            _xStep += _horizontalSpacing;
+            _yStep += _verticalSpacing;
+
             foreach (UIElement child in InternalChildren) {
                 var delta = childBounds.Height - child.DesiredSize.Height;
                 if (delta > 0) {
@@ -288,7 +341,7 @@ namespace AcManager.Controls {
                 } else {
                     child.Arrange(childBounds);
                 }
-                
+
                 if (child.Visibility != Visibility.Collapsed) {
                     childBounds.X += _xStep;
                     if (childBounds.X >= xBound) {
@@ -304,6 +357,9 @@ namespace AcManager.Controls {
         private int _rows;
         private int _columns;
         private int _nonCollapsedCount;
-        private double _spacing;
+        private double _horizontalSpacing;
+        private double _verticalSpacing;
+        private double _totalSpacingWidth;
+        private double _totalSpacingHeight;
     }
 }

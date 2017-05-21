@@ -210,7 +210,6 @@ namespace AcManager.Pages.Selected {
                         RaceGridViewModel.Mode = BuiltInGridMode.Custom;
                         RaceGridViewModel.ShuffleCandidates = false;
 
-                        RaceGridViewModel.AiLevelFixed = true;
                         RaceGridViewModel.AiLevelArrangeRandom = 0;
                         RaceGridViewModel.AiLevelArrangeReverse = false;
                         RaceGridViewModel.AiLevel = 100;

@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         FromTo,
         FromToFixed,
         PositionRange
-    }   
+    }
 
     public class DoubleThumb : Thumb {
         static DoubleThumb() {
@@ -25,7 +25,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             get { return (double)GetValue(RangeLeftProperty); }
             set { SetValue(RangeLeftProperty, value); }
         }
-        
+
         public static readonly DependencyProperty RangeRightProperty = DependencyProperty.Register(nameof(RangeRight), typeof(double),
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
@@ -105,7 +105,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private bool _valueNotSet;
-        
+
         public DoubleSlider() {
             _valueNotSet = true;
         }
@@ -132,6 +132,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     RangeRight = -newValue;
                     Range = -newValue * 2d;
                 } else {
+                    RangeRight = -newValue;
+                    Range = -newValue * 2d;
                     _publicValuesBusy.Do(() => {
                         var newFrom = Value + newValue;
                         var newSliderValue = (newFrom + _to) / 2;
@@ -156,7 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ((DoubleSlider)o).OnRangeRightChanged((double)e.NewValue);
         }
 
-        private void OnRangeRightChanged(double newValue) { 
+        private void OnRangeRightChanged(double newValue) {
             _internalValuesBusy.Do(() => {
                 if (_bindingMode == DoubleSliderBindingMode.PositionRange || _bindingMode == DoubleSliderBindingMode.FromToFixed) {
                     RangeLeft = -newValue;
@@ -239,7 +241,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty ThumbSizeDeltaProperty = DependencyProperty.RegisterAttached("ThumbSizeDelta", typeof(double),
                 typeof(DoubleSlider), new FrameworkPropertyMetadata(2d, FrameworkPropertyMetadataOptions.Inherits));
 
-        
+
         private void ForceUpdateThumbValues() {
             var half = Range / 2d;
 
@@ -250,10 +252,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var range = maximum - minimum;
             var leftLimit = value - minimum;
             var rightLimit = maximum - value;
-            
+
             SetValue(RangeLeftLimitPropertyKey, -leftLimit);
             SetValue(RangeRightLimitPropertyKey, rightLimit);
-            
+
             RangeLeft = -(value - half < minimum ? leftLimit : half);
             RangeRight = value + half > maximum ? rightLimit : half;
 
@@ -294,10 +296,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty BindingModeProperty = DependencyProperty.Register(nameof(BindingMode), typeof(DoubleSliderBindingMode),
-                typeof(DoubleSlider), new PropertyMetadata(DoubleSliderBindingMode.PositionRange,
+                typeof(DoubleSlider), new PropertyMetadata(DoubleSliderBindingMode.FromToFixed,
                         (o, e) => { ((DoubleSlider)o)._bindingMode = (DoubleSliderBindingMode)e.NewValue; }));
 
-        private DoubleSliderBindingMode _bindingMode = DoubleSliderBindingMode.PositionRange;
+        private DoubleSliderBindingMode _bindingMode = DoubleSliderBindingMode.FromToFixed;
 
         public DoubleSliderBindingMode BindingMode {
             get { return _bindingMode; }
@@ -305,7 +307,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty RangeProperty = DependencyProperty.Register(nameof(Range), typeof(double), typeof(DoubleSlider),
-                new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRangeChanged, CoerceToCallback));
+                new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRangeChanged, CoerceRangeCallback));
+
+        private static object CoerceRangeCallback(DependencyObject d, object baseValue) {
+            var r = (DoubleSlider)d;
+            return Clamp(baseValue.AsDouble(), 0d, (r.Maximum - r.Minimum) * 2d);
+        }
 
         private double _range;
 

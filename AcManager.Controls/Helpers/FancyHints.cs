@@ -23,7 +23,24 @@ namespace AcManager.Controls.Helpers {
         public static readonly FancyHint DoubleSlider = new FancyHint(
                 "double-slider",
                 "This is a double slider allowing to specify a range",
-                "To make a range, either click somewhere next to moving thing or move mouse carefully over it and pull out range marks.",
-                startupsDelay: 0, forced: true);
+                "To make a range, either click somewhere next to handle or move mouse carefully over it and pull out range marks.",
+                #if DEBUG
+                startupsDelay: int.MaxValue,
+                #else
+                startupsDelay: 0,
+                #endif
+                forced: true);
+
+        public static readonly FancyHint DegressWind = new FancyHint(
+                "degress-wind",
+                "If needed, you can set a specific wind direction",
+                "To do so, switch the mode in context menu.",
+                startupsDelay: 4, probability: 0.8, triggersDelay: 0);
+
+        public static readonly FancyHint ResizeableWindow = new FancyHint(
+                "resizeable-window",
+                "Try to resize the dialog window",
+                "Amount of information displayed depends on window’s size, so UI could be a bit more flexible. It’s not the best system, but it’s better than everything being fixed size.",
+                startupsDelay: 1, probability: 0.8, triggersDelay: 0, closeOnResize: true);
     }
 }

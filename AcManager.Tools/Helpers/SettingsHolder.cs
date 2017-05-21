@@ -569,7 +569,7 @@ namespace AcManager.Tools.Helpers {
 
                 public bool IsSelectable => !_nonSelectable && IsAvailable;
 
-                internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null, 
+                internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null,
                         bool nonSelectable = false, bool requiresSteam = true) {
                     Id = id;
                     DisplayName = displayName;
@@ -723,7 +723,7 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
-            
+
             private List<string> _ignoredInterfaces;
 
             public IEnumerable<string> IgnoredInterfaces {
@@ -1089,6 +1089,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _quickDriveAiLevelInName)) return;
                     _quickDriveAiLevelInName = value;
                     ValuesStorage.Set("RaceGrid.AiLevelInDriverName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _quickDriveAiAggressionInName;
+
+            public bool QuickDriveAiAggressionInName {
+                get { return _quickDriveAiAggressionInName ?? (_quickDriveAiAggressionInName = ValuesStorage.GetBool("RaceGrid.AiAggressionInDriverName", false)).Value; }
+                set {
+                    if (Equals(value, _quickDriveAiAggressionInName)) return;
+                    _quickDriveAiAggressionInName = value;
+                    ValuesStorage.Set("RaceGrid.AiAggressionInDriverName", value);
                     OnPropertyChanged();
                 }
             }
@@ -1865,7 +1877,7 @@ namespace AcManager.Tools.Helpers {
         private static SharingSettings _sharing;
 
         public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
-        
+
         public class LiveSettings : NotifyPropertyChanged {
             internal LiveSettings() {}
 

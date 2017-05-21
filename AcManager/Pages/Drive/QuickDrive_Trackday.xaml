@@ -70,11 +70,11 @@
                 <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
             </DockPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
+            <!--<StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
                 <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">
                     <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
                 </CheckBox>
-            </StackPanel>
+            </StackPanel>-->
 
             <StackPanel Grid.Row="2" Grid.Column="1" Margin="{StaticResource ElementMargin}">
                 <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">

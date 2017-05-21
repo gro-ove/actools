@@ -65,9 +65,10 @@ namespace AcTools.Processes {
         }
 
         public class BasicProperties : RaceIniProperties {
-            public string DriverName, DriverNationality, DriverNationCode;
-            public string CarId, CarSkinId, CarSetupId;
-            public string TrackId, TrackConfigurationId;
+            [CanBeNull]
+            public string DriverName, DriverNationality, DriverNationCode,
+                    CarId, CarSkinId, CarSetupId,
+                    TrackId, TrackConfigurationId;
             public int Ballast, Restrictor;
             public bool UseMph;
 
@@ -91,15 +92,16 @@ namespace AcTools.Processes {
                     ["BALLAST"] = Ballast,
                     ["RESTRICTOR"] = Restrictor,
                     ["DRIVER_NAME"] = DriverName,
-                    ["NATION_CODE"] = DriverNationCode ?? DriverNationality.Substring(0, Math.Min(3, DriverNationality.Length)).ToUpper(),
+                    ["NATION_CODE"] = DriverNationCode ?? DriverNationality?.Substring(0, Math.Min(3, DriverNationality.Length)).ToUpper(),
                     ["NATIONALITY"] = DriverNationality
                 };
-                
+
                 file["OPTIONS"].Set("USE_MPH", UseMph);
             }
         }
 
         public class AiCar {
+            [CanBeNull]
             public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "";
             public int AiLevel = 100, AiAggression = 0;
             public int Ballast, Restrictor;
@@ -160,6 +162,7 @@ namespace AcTools.Processes {
         }
 
         public class OnlineProperties : BaseModeProperties {
+            [CanBeNull]
             public string ServerName, ServerIp, Guid, Password, RequestedCar, SessionName;
             public int ServerPort;
             public int? ServerHttpPort;
@@ -218,6 +221,7 @@ namespace AcTools.Processes {
         }
 
         public class HotlapProperties : BaseModeProperties {
+            [CanBeNull]
             public string SessionName = "Hotlap";
             public bool GhostCar = true;
             public bool? RecordGhostCar = null;
@@ -242,6 +246,7 @@ namespace AcTools.Processes {
         }
 
         public class TimeAttackProperties : BaseModeProperties {
+            [CanBeNull]
             public string SessionName = "Time Attack";
 
             public override void Set(IniFile file) {
@@ -259,6 +264,7 @@ namespace AcTools.Processes {
         }
 
         public class DragProperties : BaseModeProperties {
+            [CanBeNull]
             public string SessionName = "Drag Race";
             public StartType StartType = StartType.RegularStart;
             public int AiLevel = 100;
@@ -303,6 +309,7 @@ namespace AcTools.Processes {
         }
 
         public class DriftProperties : BaseModeProperties {
+            [CanBeNull]
             public string SessionName = "Drift Session";
             public StartType StartType = StartType.Pit;
 

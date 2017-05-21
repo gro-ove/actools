@@ -413,7 +413,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #pragma warning restore 612
                     int value;
                     var skip = !FlexibleParser.TryParseInt(text, out value);
-                        
+
                     if (skip) {
                         value = GetLabelValue();
                     }
@@ -516,7 +516,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        // sorry about it, but I don’t think I can handle another library only for number parsing
+        // sorry about it, but I donâ€™t think I can handle another library only for number parsing
         private static class FlexibleParser {
             private static Regex _parseDouble, _parseInt;
 

@@ -66,7 +66,6 @@ namespace AcManager.Pages.Drive {
             protected override void Load(QuickDrive_Race.ViewModel.SaveableData o) {
                 base.Load(o);
                 RaceGridViewModel.OpponentsNumber = 1;
-                RaceGridViewModel.AiLevelFixed = true;
                 var r = (SaveableData)o;
                 MatchesCount = r.MatchesCount ?? 10;
             }
@@ -75,7 +74,6 @@ namespace AcManager.Pages.Drive {
                 base.Reset();
                 MatchesCount = 10;
                 RaceGridViewModel.OpponentsNumber = 1;
-                RaceGridViewModel.AiLevelFixed = true;
             }
 
             public override void CheckIfTrackFits(TrackObjectBase track) {

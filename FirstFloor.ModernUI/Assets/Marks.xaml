@@ -37,6 +37,8 @@
                         <Border Margin="72 -4000 -4000 -4000" Background="{TemplateBinding Background}" />
                         <Border Margin="0 -4000 0 72" Background="{TemplateBinding Background}" />
                         <Border Margin="0 72 0 -4000" Background="{TemplateBinding Background}" />
+                        <!--<Border Width="1" Background="Red" HorizontalAlignment="Center" />
+                        <Border Height="1" Background="Red" VerticalAlignment="Center" />-->
                         <Border Margin="0 0 0 0" Background="{TemplateBinding Background}">
                             <Border.Clip>
                                 <CombinedGeometry GeometryCombineMode="Exclude">
@@ -90,6 +92,27 @@
                                 <Condition Property="VerticalContentAlignment" Value="Top" />
                             </MultiTrigger.Conditions>
                             <Setter TargetName="PART_Panel" Property="Margin" Value="-720 56 -720 -720" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Left" />
+                                <Condition Property="VerticalContentAlignment" Value="Bottom" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="54 -720 -720 56" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Right" />
+                                <Condition Property="VerticalContentAlignment" Value="Bottom" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="-720 -720 54 56" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HorizontalContentAlignment" Value="Center" />
+                                <Condition Property="VerticalContentAlignment" Value="Bottom" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Panel" Property="Margin" Value="-720 -720 -720 56" />
                         </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

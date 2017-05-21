@@ -26,7 +26,7 @@
                         <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Bottom" Height="2" />
                         <Border x:Name="Highlight" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Center" Height="4" Margin="-200 0 0 0" />
+                                BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Center" Height="4" Margin="-2000 0 0 0" />
                     </c:Cell>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -43,7 +43,7 @@
                         </Trigger>
                         <Trigger Property="c:DoubleThumb.IsLeftSubThumb" Value="True">
                             <Setter Property="HorizontalAlignment" Value="Left" TargetName="VerticalLine" />
-                            <Setter Property="Margin" Value="0 0 -200 0" TargetName="Highlight" />
+                            <Setter Property="Margin" Value="0 0 -2000 0" TargetName="Highlight" />
                         </Trigger>
                         <Trigger Property="c:DoubleThumb.HighlightRange" Value="False">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="Highlight" />
@@ -124,7 +124,7 @@
                                         <converters:ToThicknessConverter Top="0" Bottom="0" />
                                     </MultiBinding.Converter>
                                     <Binding Path="(c:DoubleSlider.ThumbSizeDelta)" RelativeSource="{RelativeSource TemplatedParent}" />
-                                    <Binding Path="RangeRightWidth" RelativeSource="{RelativeSource TemplatedParent}" 
+                                    <Binding Path="RangeRightWidth" RelativeSource="{RelativeSource TemplatedParent}"
                                              Converter="{StaticResource MultiplyConverter}" ConverterParameter="-1" />
                                 </MultiBinding>
                             </Border.Margin>
@@ -139,7 +139,7 @@
                                     <MultiBinding.Converter>
                                         <converters:ToThicknessConverter Top="0" Bottom="0" />
                                     </MultiBinding.Converter>
-                                    <Binding Path="RangeLeftWidth" RelativeSource="{RelativeSource TemplatedParent}" 
+                                    <Binding Path="RangeLeftWidth" RelativeSource="{RelativeSource TemplatedParent}"
                                              Converter="{StaticResource MultiplyConverter}" ConverterParameter="-1" />
                                     <Binding Path="(c:DoubleSlider.ThumbSizeDelta)" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>

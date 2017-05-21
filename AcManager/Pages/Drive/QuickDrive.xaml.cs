@@ -417,7 +417,7 @@ namespace AcManager.Pages.Drive {
                     Time = o.Time;
                     WindSpeedMin = o.WindSpeedMin;
                     WindSpeedMax = o.WindSpeedMax;
-                    WindDirection = o.WindDirection;
+                    WindDirection = o.WindDirection.RoundToInt();
                     RandomWindSpeed = o.RandomWindSpeed;
                     RandomWindDirection = o.RandomWindDirection;
 
@@ -525,6 +525,18 @@ namespace AcManager.Pages.Drive {
                         nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
 
                 FancyHints.MoreDriveAssists.Trigger(TimeSpan.FromSeconds(1d));
+
+                var stored = Stored.Get("windDirectionInDegrees");
+                if (stored.Value != null) {
+                    FancyHints.DegressWind.MaskAsUnnecessary();
+                } else {
+                    FancyHints.DegressWind.Trigger(TimeSpan.FromSeconds(1.5d));
+                    stored.SubscribeWeak((o, e) => {
+                        if (e.PropertyName == nameof(Stored.StoredValue.Value)) {
+                            FancyHints.DegressWind.MaskAsUnnecessary();
+                        }
+                    });
+                }
             }
 
             #region Presets

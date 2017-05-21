@@ -82,16 +82,34 @@ namespace AcManager.Controls.ViewModels {
             public int[] AiLevels;
 
             [CanBeNull]
+            public int[] AiAggressions;
+
+            [CanBeNull]
+            public int[] Ballasts;
+
+            [CanBeNull]
+            public int[] Restrictors;
+
+            public int PlayerBallast, PlayerRestrictor;
+
+            [CanBeNull]
             public string[] Names, Nationalities, SkinIds;
 
-            public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse, ShuffleCandidates;
+            public bool? ShuffleCandidates;
+            public int? OpponentsNumber, StartingPosition;
+
+            public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly;
             public double? AiLevelArrangeRandom;
-            public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
-            
+            public int? AiLevel, AiLevelMin;
+
+            public bool? AiAggressionArrangeReverse;
+            public double? AiAggressionArrangeRandom;
+            public int? AiAggression, AiAggressionMin;
+
             string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
                 var w = new JsonTextWriter(s);
-                
+
                 w.WriteStartObject();
                 w.Write("ModeId", ModeId);
                 w.Write("FilterValue", FilterValue);
@@ -102,18 +120,25 @@ namespace AcManager.Controls.ViewModels {
                 w.Write("CarIds", CarIds);
                 w.Write("CandidatePriorities", CandidatePriorities);
                 w.Write("AiLevels", AiLevels);
+                w.Write("AiAggressions", AiAggressions);
 
                 w.Write("Names", Names);
                 w.Write("Nationalities", Nationalities);
                 w.Write("SkinIds", SkinIds);
 
-                w.Write("AiLevelFixed", AiLevelFixed);
-                w.Write("AiLevelArrangeRandom", AiLevelArrangeRandom);
-                w.Write("AiLevelArrangeReverse", AiLevelArrangeReverse);
-                w.Write("AiLevel", AiLevel);
-                w.Write("AiLevelMin", AiLevelMin);
                 w.Write("OpponentsNumber", OpponentsNumber);
                 w.Write("StartingPosition", StartingPosition);
+
+                w.Write("AiLevel", AiLevel);
+                w.Write("AiLevelMin", AiLevelMin);
+                w.Write("AiLevelArrangeRandom", AiLevelArrangeRandom);
+                w.Write("AiLevelArrangeReverse", AiLevelArrangeReverse);
+
+                w.Write("AiAggression", AiAggression);
+                w.Write("AiAggressionMin", AiAggressionMin);
+                w.Write("AiAggressionArrangeRandom", AiAggressionArrangeRandom);
+                w.Write("AiAggressionArrangeReverse", AiAggressionArrangeReverse);
+
                 w.WriteEndObject();
 
                 return s.ToString();
@@ -133,6 +158,36 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        private int _playerBallast;
+
+        public int PlayerBallast {
+            get { return _playerBallast; }
+            set {
+                if (Equals(value, _playerBallast)) return;
+                _playerBallast = value;
+                OnPropertyChanged();
+
+                if (PlayerEntry != null) {
+                    PlayerEntry.Ballast = value;
+                }
+            }
+        }
+
+        private int _playerRestrictor;
+
+        public int PlayerRestrictor {
+            get { return _playerRestrictor; }
+            set {
+                if (Equals(value, _playerRestrictor)) return;
+                _playerRestrictor = value;
+                OnPropertyChanged();
+
+                if (PlayerEntry != null) {
+                    PlayerEntry.Restrictor = value;
+                }
+            }
+        }
+
         public RaceGridViewModel(bool ignoreStartingPosition = false, [CanBeNull] string keySaveable = KeySaveable) {
             IgnoreStartingPosition = ignoreStartingPosition;
 
@@ -142,13 +197,18 @@ namespace AcManager.Controls.ViewModels {
                     FilterValue = FilterValue,
                     RandomSkinsFilter = RandomSkinsFilter,
                     ShuffleCandidates = ShuffleCandidates,
-                    AiLevelFixed = AiLevelFixed,
-                    AiLevelArrangeRandom = AiLevelArrangeRandom,
-                    AiLevelArrangeReverse = AiLevelArrangeReverse,
-                    AiLevel = AiLevel,
-                    AiLevelMin = AiLevelMin,
                     OpponentsNumber = OpponentsNumber,
                     StartingPosition = StartingPosition,
+
+                    AiLevel = AiLevel,
+                    AiLevelMin = AiLevelMin,
+                    AiLevelArrangeRandom = AiLevelArrangeRandom,
+                    AiLevelArrangeReverse = AiLevelArrangeReverse,
+
+                    AiAggression = AiAggression,
+                    AiAggressionMin = AiAggressionMin,
+                    AiAggressionArrangeRandom = AiAggressionArrangeRandom,
+                    AiAggressionArrangeReverse = AiAggressionArrangeReverse,
                 };
 
                 if (Mode == BuiltInGridMode.CandidatesManual) {
@@ -172,6 +232,18 @@ namespace AcManager.Controls.ViewModels {
                         data.AiLevels = filtered.Select(x => x.AiLevel ?? -1).ToArray();
                     }
 
+                    if (filtered.Any(x => x.AiAggression.HasValue)) {
+                        data.AiAggressions = filtered.Select(x => x.AiAggression ?? -1).ToArray();
+                    }
+
+                    if (filtered.Any(x => x.Ballast != 0)) {
+                        data.Ballasts = filtered.Select(x => x.Ballast).ToArray();
+                    }
+
+                    if (filtered.Any(x => x.Restrictor != 0)) {
+                        data.Restrictors = filtered.Select(x => x.Restrictor).ToArray();
+                    }
+
                     if (filtered.Any(x => x.Name != null)) {
                         data.Names = filtered.Select(x => x.Name).ToArray();
                     }
@@ -185,15 +257,23 @@ namespace AcManager.Controls.ViewModels {
                     }
                 }
 
+                data.PlayerBallast = PlayerBallast;
+                data.PlayerRestrictor = PlayerRestrictor;
+
                 return data;
             }, data => {
                 ShuffleCandidates = data.ShuffleCandidates ?? true;
-                AiLevelFixed = data.AiLevelFixed ?? false;
+
+                AiLevel = data.AiLevel ?? 95;
+                AiLevelMin = data.AiLevelMin ?? 85;
                 AiLevelArrangeRandom = data.AiLevelArrangeRandomly.HasValue ? (data.AiLevelArrangeRandomly.Value ? 1d : 0d) :
                         data.AiLevelArrangeRandom ?? 0.1d;
                 AiLevelArrangeReverse = data.AiLevelArrangeReverse ?? false;
-                AiLevel = data.AiLevel ?? 95;
-                AiLevelMin = data.AiLevelMin ?? 85;
+
+                AiAggression = data.AiAggression ?? 0;
+                AiAggressionMin = data.AiAggressionMin ?? 0;
+                AiAggressionArrangeRandom = data.AiAggressionArrangeRandom ?? 0.1;
+                AiAggressionArrangeReverse = data.AiAggressionArrangeReverse ?? false;
 
                 FilterValue = data.FilterValue;
                 ErrorMessage = null;
@@ -214,10 +294,14 @@ namespace AcManager.Controls.ViewModels {
                             if (x == null) return null;
 
                             var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                            var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
                             var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
                             return new RaceGridEntry(x) {
                                 CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
                                 AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
+                                AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
+                                Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0,
+                                Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0,
                                 Name = data.Names?.ElementAtOrDefault(i),
                                 Nationality = data.Nationalities?.ElementAtOrDefault(i),
                                 CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
@@ -233,19 +317,26 @@ namespace AcManager.Controls.ViewModels {
                         if (x == null) return null;
 
                         var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                        var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
                         var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
 
                         return new RaceGridEntry(x) {
                             AiLevel = aiLevel >= 0 ? aiLevel : null,
+                            AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
+                            Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0,
+                            Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0,
                             Name = data.Names?.ElementAtOrDefault(i),
                             Nationality = data.Nationalities?.ElementAtOrDefault(i),
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
                 }
-                
+
                 StartingPosition = data.StartingPosition ?? 7;
                 FinishLoading();
+
+                PlayerBallast = data.PlayerBallast;
+                PlayerRestrictor = data.PlayerRestrictor;
             }, Reset);
 
             _presetsHelper = new PresetsMenuHelper();
@@ -281,17 +372,24 @@ namespace AcManager.Controls.ViewModels {
                 SetOpponentsNumberInternal(NonfilteredList.Count);
                 UpdateOpponentsNumber();
             }
-            
+
             UpdatePlayerEntry();
         }
 
         public void Reset() {
             ShuffleCandidates = true;
-            AiLevelFixed = false;
-            AiLevelArrangeRandom = 0.1;
-            AiLevelArrangeReverse = false;
+
             AiLevel = 95;
             AiLevelMin = 85;
+            AiLevelArrangeRandom = 0.1;
+            AiLevelArrangeReverse = false;
+
+            AiAggression = 0;
+            AiAggressionMin = 0;
+            AiAggressionArrangeRandom = 0.1;
+            AiAggressionArrangeReverse = false;
+
+            PlayerBallast = PlayerRestrictor = 0;
 
             FilterValue = "";
             ErrorMessage = null;
@@ -393,7 +491,7 @@ namespace AcManager.Controls.ViewModels {
                 ErrorMessage = null;
                 FilteredView.CustomSort = value.CandidatesMode ? this : null;
                 if (LoadingItself) return;
-                
+
                 if (value == BuiltInGridMode.SameCar) {
                     NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
                 } else if (value != BuiltInGridMode.CandidatesManual && value.CandidatesMode) {
@@ -404,7 +502,7 @@ namespace AcManager.Controls.ViewModels {
                         NonfilteredList.ReplaceEverythingBy(Enumerable.Range(0, OpponentsNumber).Select(x => x > 0 ? opponent.Clone() : opponent));
                     } else {
                         NonfilteredList.ReplaceEverythingBy(value.CandidatesMode
-                                ? CombinePriorities(NonfilteredList.ApartFrom(_playerEntry))
+                                ? CombinePriorities(NonfilteredList.ApartFrom(PlayerEntry))
                                 : _modeKeepOrder ? FlattenPriorities(NonfilteredList) : FlattenPriorities(NonfilteredList).Sort(Compare));
                     }
                 }
@@ -419,27 +517,42 @@ namespace AcManager.Controls.ViewModels {
         [CanBeNull]
         private RaceGridPlayerEntry _playerEntry;
 
+        [CanBeNull]
+        private RaceGridPlayerEntry PlayerEntry {
+            get { return _playerEntry; }
+            set {
+                if (ReferenceEquals(value, _playerEntry)) return;
+                _playerEntry?.UnsubscribeWeak(OnPlayerEntryPropertyChanged);
+                _playerEntry = value;
+                _playerEntry?.SubscribeWeak(OnPlayerEntryPropertyChanged);
+            }
+        }
+
         private void UpdatePlayerEntry() {
-            if (_playerCar != _playerEntry?.Car) {
-                if (_playerEntry != null) {
-                    NonfilteredList.Remove(_playerEntry);
-                    _playerEntry = null;
+            if (_playerCar != PlayerEntry?.Car) {
+                if (PlayerEntry != null) {
+                    NonfilteredList.Remove(PlayerEntry);
+                    PlayerEntry = null;
                 }
 
                 if (Mode != BuiltInGridMode.Custom || IgnoreStartingPosition) return;
-                _playerEntry = _playerCar == null ? null : new RaceGridPlayerEntry(_playerCar);
+                PlayerEntry = _playerCar == null ? null : new RaceGridPlayerEntry(_playerCar) {
+                    Ballast = PlayerBallast,
+                    Restrictor = PlayerRestrictor
+                };
+
             }
 
-            if (_playerEntry == null) return;
+            if (PlayerEntry == null) return;
             if (Mode == BuiltInGridMode.Custom) {
-                var index = NonfilteredList.IndexOf(_playerEntry);
+                var index = NonfilteredList.IndexOf(PlayerEntry);
                 var pos = StartingPosition - 1;
 
                 if (index == -1) {
                     if (pos > NonfilteredList.Count) {
-                        NonfilteredList.Add(_playerEntry);
+                        NonfilteredList.Add(PlayerEntry);
                     } else if (pos >= 0) {
-                        NonfilteredList.Insert(pos, _playerEntry);
+                        NonfilteredList.Insert(pos, PlayerEntry);
                     }
                 } else {
                     if (pos < 0) {
@@ -448,15 +561,26 @@ namespace AcManager.Controls.ViewModels {
                         NonfilteredList.Move(index, pos);
                     }
                 }
-            } else if (NonfilteredList.Contains(_playerEntry)) {
-                NonfilteredList.Remove(_playerEntry);
-                _playerEntry = null;
+            } else if (NonfilteredList.Contains(PlayerEntry)) {
+                NonfilteredList.Remove(PlayerEntry);
+                PlayerEntry = null;
+            }
+        }
+
+        private void OnPlayerEntryPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            switch (propertyChangedEventArgs.PropertyName) {
+                case nameof(PlayerEntry.Ballast):
+                    PlayerBallast = PlayerEntry?.Ballast ?? PlayerBallast;
+                    break;
+                case nameof(PlayerEntry.Restrictor):
+                    PlayerRestrictor = PlayerEntry?.Restrictor ?? PlayerRestrictor;
+                    break;
             }
         }
 
         private void UpdateOpponentsNumber() {
             if (!Mode.CandidatesMode) {
-                SetOpponentsNumberInternal(NonfilteredList.ApartFrom(_playerEntry).Count());
+                SetOpponentsNumberInternal(NonfilteredList.ApartFrom(PlayerEntry).Count());
             }
         }
 
@@ -563,7 +687,7 @@ namespace AcManager.Controls.ViewModels {
                 var candidates = await FindCandidates();
                 if (mode != Mode) goto again;
 
-                // I’ve seen that XKCD comic, but I still think goto is more 
+                // I’ve seen that XKCD comic, but I still think goto is more
                 // suitable than a loop here
 
                 if (candidates == null) return;
@@ -638,7 +762,7 @@ namespace AcManager.Controls.ViewModels {
                     var carsEnumerable = (IEnumerable<CarObject>)CarsManager.Instance.EnabledOnly.ToList();
 
                     if (!string.IsNullOrWhiteSpace(candidatesMode.Filter)) {
-                        var filter = StringBasedFilter.Filter.Create(CarObjectTester.Instance, candidatesMode.Filter);
+                        var filter = Filter.Create(CarObjectTester.Instance, candidatesMode.Filter);
                         carsEnumerable = carsEnumerable.Where(filter.Test);
                     }
 
@@ -762,7 +886,7 @@ namespace AcManager.Controls.ViewModels {
 
                 _track = value;
                 OnPropertyChanged();
-                
+
                 if (Mode.AffectedByTrack) {
                     RebuildGridAsync().Forget();
                 }
@@ -803,7 +927,7 @@ namespace AcManager.Controls.ViewModels {
                 }
             } else {
                 var left = OpponentsNumberLimit;
-                foreach (var entry in NonfilteredList.ApartFrom(_playerEntry)) {
+                foreach (var entry in NonfilteredList.ApartFrom(PlayerEntry)) {
                     entry.ExceedsLimit = --left < 0;
                 }
             }
@@ -822,7 +946,9 @@ namespace AcManager.Controls.ViewModels {
                 SaveLater();
             }
         }
+        #endregion
 
+        #region AI Level
         public int AiLevelMinimum => SettingsHolder.Drive.QuickDriveExpandBounds ? 30 : 70;
 
         public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
@@ -836,11 +962,13 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(AiLevelFixed));
                 SaveLater();
 
-                if (!AiLevelFixed && value >= AiLevelMin) return;
-                _aiLevelMin = value;
-                OnPropertyChanged(nameof(AiLevelMin));
+                if (value < AiLevelMin) {
+                    _aiLevelMin = value;
+                    OnPropertyChanged(nameof(AiLevelMin));
+                }
             }
         }
 
@@ -849,35 +977,16 @@ namespace AcManager.Controls.ViewModels {
         public int AiLevelMin {
             get { return _aiLevelMin; }
             set {
-                if (AiLevelFixed) return;
-
                 value = value.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
                 if (Equals(value, _aiLevelMin)) return;
                 _aiLevelMin = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(AiLevelFixed));
                 SaveLater();
 
                 if (value > AiLevel) {
                     _aiLevel = value;
                     OnPropertyChanged(nameof(AiLevel));
-                }
-            }
-        }
-
-        private bool _aiLevelFixed;
-
-        public bool AiLevelFixed {
-            get { return _aiLevelFixed; }
-            set {
-                if (Equals(value, _aiLevelFixed)) return;
-                _aiLevelFixed = value;
-                OnPropertyChanged();
-                SaveLater();
-
-                if (value && _aiLevelMin != _aiLevel) {
-                    _aiLevelMin = _aiLevel;
-                    OnPropertyChanged(nameof(AiLevelMin));
-                    OnPropertyChanged(nameof(AiLevelInDriverName));
                 }
             }
         }
@@ -892,10 +1001,6 @@ namespace AcManager.Controls.ViewModels {
                 _aiLevelArrangeRandom = value;
                 OnPropertyChanged();
                 SaveLater();
-
-                //if (value) {
-                //    AiLevelArrangeReverse = false;
-                //}
             }
         }
 
@@ -912,13 +1017,91 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public bool AiLevelInDriverName {
-            get { return !AiLevelFixed && SettingsHolder.Drive.QuickDriveAiLevelInName; }
+            get { return SettingsHolder.Drive.QuickDriveAiLevelInName; }
             set {
                 if (Equals(value, SettingsHolder.Drive.QuickDriveAiLevelInName)) return;
                 SettingsHolder.Drive.QuickDriveAiLevelInName = value;
                 OnPropertyChanged();
             }
         }
+
+        public bool AiLevelFixed => AiLevel <= AiLevelMin;
+        #endregion
+
+        #region AI Aggression
+        private int _aiAggression;
+
+        public int AiAggression {
+            get { return _aiAggression; }
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _aiAggression)) return;
+                _aiAggression = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AiAggressionFixed));
+                SaveLater();
+
+                if (value < AiAggressionMin) {
+                    _aiAggressionMin = value;
+                    OnPropertyChanged(nameof(AiAggressionMin));
+                }
+            }
+        }
+
+        private int _aiAggressionMin;
+
+        public int AiAggressionMin {
+            get { return _aiAggressionMin; }
+            set {
+                value = value.Clamp(0, 100);
+                if (Equals(value, _aiAggressionMin)) return;
+                _aiAggressionMin = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AiAggressionFixed));
+                SaveLater();
+
+                if (value > AiAggression) {
+                    _aiAggression = value;
+                    OnPropertyChanged(nameof(AiAggression));
+                }
+            }
+        }
+
+        private double _aiAggressionArrangeRandom;
+
+        public double AiAggressionArrangeRandom {
+            get { return _aiAggressionArrangeRandom; }
+            set {
+                value = value.Round(0.01);
+                if (Equals(value, _aiAggressionArrangeRandom)) return;
+                _aiAggressionArrangeRandom = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        private bool _aiAggressionArrangeReverse;
+
+        public bool AiAggressionArrangeReverse {
+            get { return _aiAggressionArrangeReverse; }
+            set {
+                if (Equals(value, _aiAggressionArrangeReverse)) return;
+                _aiAggressionArrangeReverse = value;
+                OnPropertyChanged();
+                SaveLater();
+            }
+        }
+
+        public bool AiAggressionInDriverName {
+            get { return SettingsHolder.Drive.QuickDriveAiAggressionInName; }
+            set {
+                if (Equals(value, SettingsHolder.Drive.QuickDriveAiAggressionInName)) return;
+                SettingsHolder.Drive.QuickDriveAiAggressionInName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool AiAggressionFixed => AiAggression <= AiAggressionMin;
         #endregion
 
         #region Grid methods (addind, deleting)
@@ -981,7 +1164,7 @@ namespace AcManager.Controls.ViewModels {
             }
 
             if (StartingPosition != 0) {
-                StartingPositionLimited = NonfilteredList.IndexOf(_playerEntry) + 1;
+                StartingPositionLimited = NonfilteredList.IndexOf(PlayerEntry) + 1;
             }
 
             UpdateExceeded();
@@ -1122,9 +1305,29 @@ namespace AcManager.Controls.ViewModels {
                 } else if (AiLevelArrangeRandom > 0d) {
                     aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom);
                 }
-                
+
                 aiLevels = aiLevelsInner.Take(opponentsNumber).ToList();
                 Logging.Debug("AI levels: " + aiLevels.Select(x => $@"{x}%").JoinToString(@", "));
+            }
+
+            List<int> aiAggressions;
+            if (AiAggressionFixed) {
+                aiAggressions = null;
+            } else {
+                var aiAggressionsInner = from i in Enumerable.Range(0, opponentsNumber)
+                                    select AiAggressionMin + ((opponentsNumber < 2 ? 1d : 1d - i / (opponentsNumber - 1d)) * (AiAggression - AiAggressionMin)).RoundToInt();
+                if (AiAggressionArrangeReverse) {
+                    aiAggressionsInner = aiAggressionsInner.Reverse();
+                }
+
+                if (Equals(AiAggressionArrangeRandom, 1d)) {
+                    aiAggressionsInner = GoodShuffle.Get(aiAggressionsInner);
+                } else if (AiAggressionArrangeRandom > 0d) {
+                    aiAggressionsInner = LimitedShuffle.Get(aiAggressionsInner, AiAggressionArrangeRandom);
+                }
+
+                aiAggressions = aiAggressionsInner.Take(opponentsNumber).ToList();
+                Logging.Debug("AI aggressions: " + aiAggressions.Select(x => $@"{x}%").JoinToString(@", "));
             }
 
             IEnumerable<RaceGridEntry> final;
@@ -1164,6 +1367,7 @@ namespace AcManager.Controls.ViewModels {
             var takenNames = new List<string>(opponentsNumber);
             return final.Take(opponentsNumber).Select((entry, i) => {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
+                var aggression = entry.AiAggression ?? aiAggressions?[i] ?? 100;
 
                 var skin = entry.CarSkin;
                 if (skin == null) {
@@ -1187,11 +1391,32 @@ namespace AcManager.Controls.ViewModels {
                 var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";
                 var skinId = skin?.Id;
 
+                string displayName;
+                switch ((AiLevelInDriverName ? 1 : 0) + (AiAggressionInDriverName ? 2 : 0)) {
+                    case 0:
+                        displayName = name;
+                        break;
+                    case 1:
+                        displayName = $@"{name} ({level}%)";
+                        break;
+                    case 2:
+                        displayName = $@"{name} ({aggression}%)";
+                        break;
+                    case 3:
+                        displayName = $@"{name} ({level}%, {aggression}%)";
+                        break;
+                    default:
+                        displayName = name;
+                        break;
+                }
+
                 return new Game.AiCar {
                     AiLevel = level,
                     CarId = entry.Car.Id,
-                    DriverName = AiLevelInDriverName ? $@"{name} ({level}%)" : name,
+                    DriverName = displayName,
                     Nationality = nationality,
+                    Ballast = entry.Ballast,
+                    Restrictor = entry.Restrictor,
                     Setup = "",
                     SkinId = skinId
                 };

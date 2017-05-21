@@ -8,12 +8,14 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -103,7 +105,7 @@ namespace AcManager.UserControls {
         public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new DelegateCommand(() => {
             var items = ListBox.SelectedItems.OfType<RaceGridEntry>().ToList();
             if (items.Count == 0 || Model == null) return;
-            
+
             foreach (var item in items) {
                 Model.DeleteEntry(item);
             }
@@ -204,14 +206,41 @@ namespace AcManager.UserControls {
 
         private void OnDetailsButtonClick(object sender, RoutedEventArgs e) {
             if (!CloseDetailsPopup()) {
+                var resizeableHint = new Border {
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Width = 0d,
+                    Height = 0d
+                };
+
+                resizeableHint.SetValue(FancyHintsService.HintProperty, FancyHints.ResizeableWindow.Id);
+                resizeableHint.SetValue(FancyHintsService.TriggerOnLoadProperty, true);
+                resizeableHint.SetValue(FancyHintsService.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+                resizeableHint.SetValue(FancyHintsService.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+                resizeableHint.SetValue(FancyHintsService.OffsetYProperty, 40d);
+                resizeableHint.SetValue(FancyHintsService.OffsetXProperty, 20d);
+
                 (_dialog = new ModernDialog {
                     WindowStartupLocation = WindowStartupLocation.Manual,
+                    SizeToContent = SizeToContent.Manual,
                     LocationAndSizeKey = ".raceGridEditor",
-                    Content = new Controls.RaceGridEditorTable {
-                        Model = Model,
-                        AddOpponentCommand = AddOpponentCommand,
-                        CloseCommand = ClosePopupsCommand,
-                        Margin = new Thickness(-16, -8, -16, -36),
+                    ResizeMode = ResizeMode.CanResizeWithGrip,
+                    MinWidth = 520,
+                    MinHeight = 240,
+                    Width = 1000,
+                    Height = 480,
+                    MaxWidth = 9999,
+                    MaxHeight = 9999,
+                    Content = new Cell {
+                        Children = {
+                            new Controls.RaceGridEditorTable {
+                                Model = Model,
+                                AddOpponentCommand = AddOpponentCommand,
+                                CloseCommand = ClosePopupsCommand,
+                                Margin = new Thickness(-16, -8, -16, -36),
+                            },
+                            resizeableHint
+                        }
                     },
                     ShowTopBlob = true,
                     ShowTitle = false,

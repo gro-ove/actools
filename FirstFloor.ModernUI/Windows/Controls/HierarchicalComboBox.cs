@@ -300,7 +300,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Mode = BindingMode.OneWay
                 });
             }
-            
+
             if (view != null) {
                 view._temporaryParent = Parent == null ? null : new WeakReference<HierarchicalComboBox>(Parent);
 
@@ -469,7 +469,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         group = list as HierarchicalGroup;
                         return true;
                     }
-                } else if (GetGroup(g, item, out @group)) {
+                } else if (GetGroup(g, item, out group)) {
                     return true;
                 }
             }
@@ -479,6 +479,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static HierarchicalGroup GetGroup([NotNull] IList list, object item) {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             HierarchicalGroup g;
             return GetGroup(list, item, out g) ? g : null;
         }
@@ -522,7 +524,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSelectedItemChanged(object oldValue, object newValue) {
             SelectionChanged?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, newValue));
-            SetValue(SelectedItemHeaderConverterPropertyKey, GetGroup(ItemsSource, SelectedItem)?.HeaderConverter);
+
+            var itemsSource = ItemsSource;
+            SetValue(SelectedItemHeaderConverterPropertyKey, itemsSource == null ? null : GetGroup(itemsSource, SelectedItem)?.HeaderConverter);
         }
 
         internal void ItemChosen(object item, HierarchicalGroup parentGroup) {
