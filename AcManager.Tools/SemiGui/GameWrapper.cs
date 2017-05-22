@@ -92,7 +92,7 @@ namespace AcManager.Tools.SemiGui {
 
             var online = properties.ModeProperties as Game.OnlineProperties;
             if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
-                var filter = Filter.Create(new GameWrapper.StringTester(), SettingsHolder.Live.SrsAutoMask, true);
+                var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);
                 if (filter.Test(online.ServerName ?? "")) {
                     Logging.Write("Looks like this is a SRS server, let’s use SRS name");
                     properties.SetAdditional(new SrsMark {
@@ -119,7 +119,14 @@ namespace AcManager.Tools.SemiGui {
             }
         }*/
 
+        private static bool _nationCodesProviderSet;
+
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
+            if (!_nationCodesProviderSet) {
+                _nationCodesProviderSet = true;
+                Game.NationCodeProvider = NationCodeProvider.Instance;
+            }
+
             AcSettingsHolder.Graphics.FixShadowMapBias();
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {

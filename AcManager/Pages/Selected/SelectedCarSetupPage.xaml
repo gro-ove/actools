@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance selected:SelectedCarSetupPage+ViewModel}"
+        d:DataContext="{d:DesignInstance selected:SelectedCarSetupPage+ViewModel}"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>

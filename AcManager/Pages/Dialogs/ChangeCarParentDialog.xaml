@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.CarParent_Title}" d:DataContext="{d:DesignInstance di:ChangeCarParentDialog}">
+        Title="{x:Static g:AppStrings.CarParent_Title}" d:DataContext="{d:DesignInstance di:ChangeCarParentDialog}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -5,7 +5,7 @@
         xmlns:miscellaneous="clr-namespace:AcManager.Tools.Miscellaneous;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:largeFilesSharing="clr-namespace:AcManager.LargeFilesSharing;assembly=AcManager.LargeFilesSharing" xmlns:g="clr-namespace:AcManager"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        mc:Ignorable="d" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>

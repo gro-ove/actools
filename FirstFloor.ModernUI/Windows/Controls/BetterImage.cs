@@ -222,9 +222,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Applied before cropping! Also, it will affect image size, so most likely you wouldn’t want to set it
         /// with CropUnits=Absolute.
-        /// 
-        /// Without cropping, if set to -1 (default value), MaxWidth or Width will be used instead. Set to 0 
-        /// if you want to disable this behavior and force full-size decoding. 
+        ///
+        /// Without cropping, if set to -1 (default value), MaxWidth or Width will be used instead. Set to 0
+        /// if you want to disable this behavior and force full-size decoding.
         /// </summary>
         public static readonly DependencyProperty DecodeWidthProperty = DependencyProperty.Register(nameof(DecodeWidth), typeof(int),
                 typeof(BetterImage), new PropertyMetadata(-1, (o, e) => {
@@ -785,7 +785,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         break;
                     }
                 }
-                
+
                 CacheEntry item;
                 if (index == -1) {
                     // item does not exist now, let’s add it
@@ -884,7 +884,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
             if (_currentTask != null) {
-                Logging.Here();
                 _currentTask.Cancel();
                 _currentTask = null;
             }
@@ -1044,7 +1043,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var decodeWidth = InnerDecodeWidth;
             var decodeHeight = InnerDecodeHeight;
-            
+
             if (data.Length < OptionDecodeImageSyncThreshold && UpdateLoaded()) {
                 SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
                 return;

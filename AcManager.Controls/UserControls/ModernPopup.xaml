@@ -1,7 +1,7 @@
 ﻿<Popup x:Class="AcManager.Controls.UserControls.ModernPopup" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" StaysOpen="False" AllowsTransparency="True"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" StaysOpen="False" AllowsTransparency="True"
         PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Custom" HorizontalAlignment="Left"
         mui:PopupHelper.Register="True">
     <mui:Cell x:Name="Root" Margin="4" HorizontalAlignment="Center" d:DataContext="{d:DesignInstance local:ModernPopup}">

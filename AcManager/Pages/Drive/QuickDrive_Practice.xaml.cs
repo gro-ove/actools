@@ -1,26 +1,15 @@
 ﻿using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Practice : IQuickDriveModeControl {
-        public class ViewModel : QuickDriveModeViewModel {
-            private bool _penalties;
+        public class ViewModel : QuickDriveSingleModeViewModel {
+            public Game.StartType[] StartTypes => Game.StartType.Values;
+
             private Game.StartType _selectedStartType;
-
-            public bool Penalties {
-                get { return _penalties; }
-                set {
-                    if (value == _penalties) return;
-                    _penalties = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
-            public BindingList<Game.StartType> StartTypes => Game.StartType.Values;
 
             public Game.StartType SelectedStartType {
                 get { return _selectedStartType; }
@@ -32,32 +21,35 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private class SaveableData {
-                public bool Penalties;
-                public string StartType;
+            #region Saveable
+            protected new class SaveableData : QuickDriveSingleModeViewModel.SaveableData {
+                public string StartType = Game.StartType.Pit.Id;
+            }
+
+            protected override ISaveHelper CreateSaveable(string key) {
+                return new SaveHelper<SaveableData>(key, () => Save(new SaveableData()), Load);
+            }
+
+            protected SaveableData Save(SaveableData data) {
+                base.Save(data);
+                data.StartType = SelectedStartType.Id;
+                return data;
+            }
+
+            protected void Load(SaveableData data) {
+                base.Load(data);
+                SelectedStartType = Game.StartType.Values.GetByIdOrDefault(data.StartType) ?? Game.StartType.Pit;
             }
 
             public ViewModel(bool initialize = true) {
-                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Practice", () => new SaveableData {
-                    Penalties = Penalties,
-                    StartType = SelectedStartType.Value
-                }, o => {
-                    Penalties = o.Penalties;
-                    SelectedStartType = Game.StartType.Values.FirstOrDefault(x => x.Value == o.StartType) ?? Game.StartType.Pit;
-                }, () => {
-                    Penalties = true;
-                    SelectedStartType = Game.StartType.Pit;
-                });
-
-                if (initialize) {
-                    Saveable.Initialize();
-                } else {
-                    Saveable.Reset();
-                }
+                Initialize("__QuickDrive_Practice", initialize);
             }
+            #endregion
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                basicProperties.Ballast = PlayerBallast;
+                basicProperties.Restrictor = PlayerRestrictor;
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = basicProperties,
                     AssistsProperties = assistsProperties,

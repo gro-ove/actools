@@ -6,6 +6,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data.GameSpecific;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
@@ -150,7 +151,7 @@ namespace AcManager.Tools.Objects {
         private PlaceConditionsType? _conditionType;
 
         /// <summary>
-        /// Champinoship — null, otherwise has value.
+        /// Champinoship ï¿½ null, otherwise has value.
         /// </summary>
         public PlaceConditionsType? ConditionType {
             get { return _conditionType; }
@@ -428,7 +429,7 @@ namespace AcManager.Tools.Objects {
 
             ErrorIf(WeatherObject == null, AcErrorType.Data_KunosCareerWeatherIsMissing, WeatherId);
         }
-        
+
         protected virtual void LoadConditions(IniFile ini) {
             var conditions = LinqExtension.RangeFrom()
                     .Select(x => $@"CONDITION_{x}")
@@ -548,6 +549,7 @@ namespace AcManager.Tools.Objects {
             ini["CAR_0"].SetId("SKIN", ini["CAR_0"].GetPossiblyEmpty("SKIN"));
             ini["CAR_0"].Set("DRIVER_NAME", SettingsHolder.Drive.PlayerName);
             ini["CAR_0"].Set("NATIONALITY", SettingsHolder.Drive.PlayerNationality);
+            ini["CAR_0"].Set("NATION_CODE", NationCodeProvider.Instance.GetNationCode(SettingsHolder.Drive.PlayerNationality));
             return ini;
         }
     }

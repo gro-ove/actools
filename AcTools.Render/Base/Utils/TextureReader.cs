@@ -17,7 +17,7 @@ namespace AcTools.Render.Base.Utils {
 
         protected override void ResizeInner() {}
 
-        protected override void OnTick(float dt) { }
+        protected override void OnTickOverride(float dt) { }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public byte[] ToPngNoFormat(byte[] bytes, bool ignoreAlpha = false, Size? downsize = null) {

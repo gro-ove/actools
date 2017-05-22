@@ -51,7 +51,7 @@ namespace AcTools.Render.Base {
             for (var i = Math.Max(-anotherEnd, 0); i <= _previousFrameId; i++) {
                 result += _previousFrames[i];
             }
-            
+
             for (var i = _previousFrames.Length - anotherEnd; i < _previousFrames.Length; i++) {
                 result += _previousFrames[i];
             }
@@ -65,7 +65,7 @@ namespace AcTools.Render.Base {
                     totalTime = 0d;
                 } else {
                     var difference = _totalFrames - frame;
-                    if (difference < 0) return;
+                    if (difference <= 0) return;
                     totalTime += GetTotalTime(difference);
                 }
             }
@@ -74,6 +74,10 @@ namespace AcTools.Render.Base {
         }
 
         internal long GetFrame() => _totalFrames;
+
+        public double GetLastFrameTime() {
+            return _previousFrameId == -1 ? 0d : _previousFrames[_previousFrameId];
+        }
     }
 
     public class RendererStopwatch {
@@ -105,7 +109,7 @@ namespace AcTools.Render.Base {
         }
 
         public void Reset() {
-            _totalTime = 0d;
+            _totalTime = _clock.GetLastFrameTime();
             _frame = _clock.GetFrame();
         }
     }
@@ -358,7 +362,7 @@ namespace AcTools.Render.Base {
 
             return texture;
         }
-        
+
         private ShaderResourceView _flatNmView;
 
         public delegate Color FillColor(int x, int y);

@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.ServerPreset"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager"
         xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:userControls="clr-namespace:AcManager.UserControls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance l:SelectedPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -162,7 +162,7 @@
                         Style="{StaticResource NonTransparent}"
                         IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
                 <!--<mui:ModernToggleButton x:Name="DetailsButton" IconData="{StaticResource ListGearIconData}"
-                    ToolTip="{x:Static g:AppStrings.RaceGrid_DetailedSettings}" 
+                    ToolTip="{x:Static g:AppStrings.RaceGrid_DetailedSettings}"
                     Style="{StaticResource NonTransparent}"
                     IsHitTestVisible="{Binding ElementName=DetailsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />-->
             </mui:SpacingStackPanel>

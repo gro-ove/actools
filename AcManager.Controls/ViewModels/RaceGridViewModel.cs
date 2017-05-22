@@ -79,18 +79,18 @@ namespace AcManager.Controls.ViewModels {
             public int[] CandidatePriorities;
 
             [CanBeNull]
-            public int[] AiLevels;
+            public double[] AiLevels;
 
             [CanBeNull]
-            public int[] AiAggressions;
+            public double[] AiAggressions;
 
             [CanBeNull]
-            public int[] Ballasts;
+            public double[] Ballasts;
 
             [CanBeNull]
-            public int[] Restrictors;
+            public double[] Restrictors;
 
-            public int PlayerBallast, PlayerRestrictor;
+            public double PlayerBallast, PlayerRestrictor;
 
             [CanBeNull]
             public string[] Names, Nationalities, SkinIds;
@@ -99,12 +99,10 @@ namespace AcManager.Controls.ViewModels {
             public int? OpponentsNumber, StartingPosition;
 
             public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly;
-            public double? AiLevelArrangeRandom;
-            public int? AiLevel, AiLevelMin;
+            public double? AiLevelArrangeRandom, AiLevel, AiLevelMin;
 
             public bool? AiAggressionArrangeReverse;
-            public double? AiAggressionArrangeRandom;
-            public int? AiAggression, AiAggressionMin;
+            public double? AiAggressionArrangeRandom, AiAggression, AiAggressionMin;
 
             string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
@@ -158,9 +156,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int _playerBallast;
+        private double _playerBallast;
 
-        public int PlayerBallast {
+        public double PlayerBallast {
             get { return _playerBallast; }
             set {
                 if (Equals(value, _playerBallast)) return;
@@ -173,9 +171,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int _playerRestrictor;
+        private double _playerRestrictor;
 
-        public int PlayerRestrictor {
+        public double PlayerRestrictor {
             get { return _playerRestrictor; }
             set {
                 if (Equals(value, _playerRestrictor)) return;
@@ -953,9 +951,9 @@ namespace AcManager.Controls.ViewModels {
 
         public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
 
-        private int _aiLevel;
+        private double _aiLevel;
 
-        public int AiLevel {
+        public double AiLevel {
             get { return _aiLevel; }
             set {
                 value = value.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
@@ -972,9 +970,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int _aiLevelMin;
+        private double _aiLevelMin;
 
-        public int AiLevelMin {
+        public double AiLevelMin {
             get { return _aiLevelMin; }
             set {
                 value = value.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
@@ -1029,9 +1027,9 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region AI Aggression
-        private int _aiAggression;
+        private double _aiAggression;
 
-        public int AiAggression {
+        public double AiAggression {
             get { return _aiAggression; }
             set {
                 value = value.Clamp(0, 100);
@@ -1048,9 +1046,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int _aiAggressionMin;
+        private double _aiAggressionMin;
 
-        public int AiAggressionMin {
+        public double AiAggressionMin {
             get { return _aiAggressionMin; }
             set {
                 value = value.Clamp(0, 100);
@@ -1290,7 +1288,7 @@ namespace AcManager.Controls.ViewModels {
                 nameNationalities = null;
             }
 
-            List<int> aiLevels;
+            List<double> aiLevels;
             if (AiLevelFixed) {
                 aiLevels = null;
             } else {
@@ -1310,7 +1308,7 @@ namespace AcManager.Controls.ViewModels {
                 Logging.Debug("AI levels: " + aiLevels.Select(x => $@"{x}%").JoinToString(@", "));
             }
 
-            List<int> aiAggressions;
+            List<double> aiAggressions;
             if (AiAggressionFixed) {
                 aiAggressions = null;
             } else {
@@ -1366,8 +1364,8 @@ namespace AcManager.Controls.ViewModels {
 
             var takenNames = new List<string>(opponentsNumber);
             return final.Take(opponentsNumber).Select((entry, i) => {
-                var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
-                var aggression = entry.AiAggression ?? aiAggressions?[i] ?? 100;
+                var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
+                var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
                 var skin = entry.CarSkin;
                 if (skin == null) {
@@ -1412,6 +1410,7 @@ namespace AcManager.Controls.ViewModels {
 
                 return new Game.AiCar {
                     AiLevel = level,
+                    AiAggression = aggression,
                     CarId = entry.Car.Id,
                     DriverName = displayName,
                     Nationality = nationality,

@@ -243,7 +243,7 @@
                         <DataGrid Grid.Row="0"
                                   ItemsSource="{Binding Model.FilteredView, RelativeSource={RelativeSource TemplatedParent}}"
                                   Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True" MinRowHeight="20"
-                                  x:Name="PART_DataGrid">
+                                  x:Name="PART_DataGrid" mui:DataGridFix.Enabled="True">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Width="*"
                                                         Header="{x:Static co:ControlsStrings.TableHeader_Car}"

@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selectionLists="clr-namespace:AcManager.Pages.SelectionLists"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded"
+        mc:Ignorable="d" Loaded="OnLoaded"
         d:DataContext="{d:DesignInstance selectionLists:TrackCountries}">
     <UserControl.Resources>
         <ResourceDictionary>

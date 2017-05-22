@@ -140,7 +140,7 @@ namespace AcManager.Tools.Data {
                     Logging.Warning("Cannot load TagCountries.json: " + e);
                     _tagCountries = new Dictionary<string, string>();
                 }
-                
+
                 return _tagCountries;
             }
         }
@@ -193,13 +193,32 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _countryByIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "CountryIds.json"));
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "CountryIds.json"));
                 } catch (Exception e) {
                     Logging.Warning("Cannot load CountryIds.json: " + e);
                     _countryByIds = new Dictionary<string, string>();
                 }
 
                 return _countryByIds;
+            }
+        }
+
+        private Dictionary<string, string> _countryByKunosIds;
+
+        [NotNull]
+        public IReadOnlyDictionary<string, string> CountryByKunosIds {
+            get {
+                if (_countryByKunosIds != null) return _countryByKunosIds;
+
+                try {
+                    _countryByKunosIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "KunosCountryIds.json"));
+                } catch (Exception e) {
+                    Logging.Warning("Cannot load KunosCountryIds.json: " + e);
+                    _countryByKunosIds = new Dictionary<string, string>();
+                }
+
+                return _countryByKunosIds;
             }
         }
 
@@ -218,13 +237,28 @@ namespace AcManager.Tools.Data {
             }
         }
 
+        private Dictionary<string, string> _countryToKunosIds;
+
+        [NotNull]
+        public IReadOnlyDictionary<string, string> CountryToKunosIds {
+            get {
+                if (_countryToKunosIds != null) return _countryToKunosIds;
+
+                _countryToKunosIds = new Dictionary<string, string>(CountryByKunosIds.Count);
+                foreach (var pair in CountryByKunosIds) {
+                    _countryToKunosIds[pair.Value] = pair.Key;
+                }
+                return _countryToKunosIds;
+            }
+        }
+
         private Dictionary<string, string> _brandCountries;
 
         [NotNull]
         public IReadOnlyDictionary<string, string> BrandCountries {
             get {
                 if (_brandCountries != null) return _brandCountries;
-                
+
                 try {
                     _brandCountries = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
                             FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "BrandCountries.json"))

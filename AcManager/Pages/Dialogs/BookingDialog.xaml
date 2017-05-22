@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:loc="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" Title="{Binding ServerEntry.DisplayName}" d:DataContext="{d:DesignInstance loc:BookingDialog}" MaxWidth="320"
+        Title="{Binding ServerEntry.DisplayName}" d:DataContext="{d:DesignInstance loc:BookingDialog}" MaxWidth="320"
         Padding="0" LocationAndSizeKey=".BookingDialog.LS" WindowStartupLocation="Manual">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
-    
+
     <mui:ModernDialog.BackgroundContent>
         <Rectangle>
             <Rectangle.Fill>
@@ -54,7 +54,7 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </Border>-->
-        
+
         <StackPanel Margin="20 0">
             <StackPanel Margin="0 0 0 20" Visibility="{Binding ServerEntry.BookingErrorMessage, Converter={StaticResource NullToVisibilityConverter}}">
                 <TextBlock Text="Left:" Style="{StaticResource Label}" />

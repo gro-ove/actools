@@ -584,7 +584,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         private void SaveResultAs(string filename) {
-            using (var stream = new MemoryStream()) { 
+            using (var stream = new MemoryStream()) {
                 Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
                 stream.Position = 0;
 
@@ -615,7 +615,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _information.SaveTo(filename);
         }
 
-        protected override void OnTick(float dt) { }
+        protected override void OnTickOverride(float dt) { }
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _buffer0);

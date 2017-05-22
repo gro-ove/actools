@@ -11,7 +11,7 @@ namespace AcManager.Controls.Helpers {
     [Localizable(false)]
     public static class AwesomiumResolverService {
         public static bool IsInitialized => _awesomiumPath != null;
-        
+
         private const string DllExtension = ".dll";
         private static readonly string[] Dependencies;
         private static readonly string[] Resources;
@@ -74,8 +74,6 @@ namespace AcManager.Controls.Helpers {
         private static Assembly ResolveAwesomium(object sender, ResolveEventArgs args) {
             var unresolved = args.Name.ToLower();
             var resourcesDll = Resources.FirstOrDefault(item => unresolved.StartsWith(item));
-
-            Logging.Debug(unresolved);
 
             if (!string.IsNullOrEmpty(resourcesDll)) {
                 var resourceId = CultureInfo.CurrentUICulture.IetfLanguageTag;

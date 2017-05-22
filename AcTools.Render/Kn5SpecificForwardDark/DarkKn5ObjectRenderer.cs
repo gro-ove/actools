@@ -214,7 +214,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     return new[] { 10f };
             }
         }
-        
+
         private FlatMirror _mirror;
         private RenderableList _carWrapper;
 
@@ -298,7 +298,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private int? GetShadowsNumSplits() {
             // several cars — turn on all cascades!
             if (CarSlots.Length > 1) return 3;
-            
+
             // just a car — single cascade
             if (ShowroomNode == null) return 1;
 
@@ -376,7 +376,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private float FxCubemapAmbientValue => CubemapAmbientWhite ? -CubemapAmbient : CubemapAmbient;
 
         private bool _effectNoiseMapSet;
-        
+
         public void SetEffectNoiseMap() {
             if (!_effectNoiseMapSet) {
                 _effectNoiseMapSet = true;
@@ -456,7 +456,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             if (FlatMirror && ShowroomNode == null) {
                 effect.FxFlatMirrorPower.Set(FlatMirrorReflectiveness);
             }
-            
+
             effect.FxReflectionCubemap.SetResource(reflection?.View);
 
 #if DEBUG
@@ -670,7 +670,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
                 }
             }
-            
+
             base.DrawSpritesInner();
         }
 
@@ -778,7 +778,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
         private EffectPpAmbientShadows _aoShadowEffect;
 
-        // do not dispose it! it’s just a temporary value from DrawSceneToBuffer() 
+        // do not dispose it! it’s just a temporary value from DrawSceneToBuffer()
         // to DrawOverride() allowing to apply DOF after AA/HDR/color grading/bloom stages
         private ShaderResourceView _lastDepthBuffer;
 
@@ -892,7 +892,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                     }
                 }
             }
-            
+
             DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
 
             if (ShowDepth) {
@@ -900,7 +900,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                         Camera.NearZValue, Camera.FarZValue, (Camera.Position - MainSlot.CarCenter).Length() * 2);
                 return;
             }
-            
+
             if (UseAo || UseCorrectAmbientShadows) {
                 var aoHelper = _aoHelper;
                 if (aoHelper == null) {
@@ -941,7 +941,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                     if (BlurCorrectAmbientShadows) {
                         _aoShadowEffect.FxNoiseSize.Set(new Vector2(Width / 4f, Height / 4f));
                     }
-                    
+
                     for (var i = CarSlots.Length - 1; i >= 0; i--) {
                         DrawGBufferAmbientShadows(CarSlots[i]);
                     }
@@ -1064,7 +1064,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 base.DrawOverride();
             } else if (_realTimeAccumulationMode) {
                 DrawRealTimeDofAccumulation();
-            } else { 
+            } else {
                 DrawDof();
             }
         }
@@ -1175,7 +1175,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
                     copy.AccumulateDivide(DeviceContextHolder, summary.View, target, iterations);
                 }
-                
+
                 _useDof = true;
                 return;
             }
@@ -1185,8 +1185,8 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
         public override bool AccumulationMode => UseDof && UseAccumulationDof;
 
-        protected override void OnTick(float dt) {
-            base.OnTick(dt);
+        protected override void OnTickOverride(float dt) {
+            base.OnTickOverride(dt);
 
             foreach (var light in _movingLights) {
                 IsDirty |= light.Update();
@@ -1203,7 +1203,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                 if (IsDirty) {
                     _realTimeAccumulationSize = 0;
                 }
-                
+
                 base.Draw();
             } else {
                 if (_realTimeAccumulationMode) {

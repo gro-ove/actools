@@ -179,7 +179,7 @@ namespace AcTools.Render.Forward {
                 if (Equals(value, _useBloom)) return;
 
                 _useBloom = value;
-                
+
                 DisposeHelper.Dispose(ref _bufferH1);
                 DisposeHelper.Dispose(ref _bufferH2);
 
@@ -206,7 +206,7 @@ namespace AcTools.Render.Forward {
                 if (value) {
                     UseBloom = true;
                 }
-                
+
                 //if (!InitiallyResized) return;
                 //ResizeBuffers();
 
@@ -214,7 +214,7 @@ namespace AcTools.Render.Forward {
                 OnPropertyChanged();
             }
         }
-        
+
         protected TargetResourceTexture InnerBuffer => _bufferOverride ?? _bufferF;
         private TargetResourceTexture _bufferOverride;
 
@@ -244,7 +244,7 @@ namespace AcTools.Render.Forward {
 
         private readonly InterpolationCamera _interpolationCamera = new InterpolationCamera(5f);
 
-        protected override void OnTick(float dt) {
+        protected override void OnTickOverride(float dt) {
             IsFxaaAvailable = !UseMsaa || UseSsaa;
 
             if (UseInterpolationCamera) {
@@ -397,7 +397,7 @@ namespace AcTools.Render.Forward {
                 if (_blur == null) {
                     _blur = DeviceContextHolder.GetHelper<BlurHelper>();
                 }
-                
+
                 // filter bright areas by high threshold to downscaled buffer #1
                 DeviceContext.Rasterizer.SetViewports(_bufferH1.Viewport);
                 DeviceContext.OutputMerger.SetTargets(_bufferH1.TargetView);
@@ -415,7 +415,7 @@ namespace AcTools.Render.Forward {
                 _lensFlares.FxInputMap.SetResource(_bufferH1.View);
                 _lensFlares.TechGhosts.DrawAllPasses(DeviceContext, 6);
 
-                // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one 
+                // blur bright areas from buffer #1 to itself using downscaled buffer #3 as a temporary one
                 _blur.Blur(DeviceContextHolder, _bufferH2, _bufferH1, 2f, 2);
 
                 // combine original buffer and buffer #1 with blurred bright areas to buffer #2
@@ -555,10 +555,10 @@ namespace AcTools.Render.Forward {
                 DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, input, target);
                 return null;
             }
-            
+
             return input;
         }
-        
+
         /// <summary>
         /// Inner _bufferA used as temporary if SSAA enabled. If returns null, result is in target.
         /// </summary>

@@ -13,6 +13,7 @@ using JetBrains.Annotations;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -92,7 +93,7 @@ namespace AcManager.Pages.Selected {
                         break;
                 }
             }
-            
+
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "class":
@@ -520,7 +521,7 @@ namespace AcManager.Pages.Selected {
 
                             powerCurve.ScaleToSelf(power.Value);
                         }
-                        
+
                         o.SpecsPowerCurve = new GraphData(powerCurve);
                         o.SpecsTorqueCurve = new GraphData(torqueCurve);
                     }));
@@ -529,7 +530,7 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand RecalculateCurvesCommand => _recalculateCurvesCommand ?? (_recalculateCurvesCommand = new DelegateCommand(() => {
                 var o = SelectedObject;
-                
+
                 var data = o.AcdData;
                 if (data == null) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, "Data is damaged");
@@ -548,7 +549,7 @@ namespace AcManager.Pages.Selected {
                 var dlg = new CarTransmissionLossSelector(o, torque.MaxY, power.MaxY);
                 dlg.ShowDialog();
                 if (!dlg.IsResultOk) return;
-                
+
                 torque.TransformSelf(x => x.Y * dlg.Multipler);
                 power.TransformSelf(x => x.Y * dlg.Multipler);
 
@@ -609,6 +610,10 @@ namespace AcManager.Pages.Selected {
             SetModel();
             InitializeComponent();
             UpdateExtendedMode();
+
+            if (!AppAppearanceManager.Instance.PopupToolBars) {
+                FancyHints.AccidentallyRemoved.Trigger();
+            }
         }
 
         private void SetModel() {

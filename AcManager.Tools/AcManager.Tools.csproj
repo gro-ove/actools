@@ -198,6 +198,7 @@
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
+    <Compile Include="GameProperties\NationCodeProvider.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
     <Compile Include="GameProperties\TemporaryFileReplacement.cs" />
     <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />

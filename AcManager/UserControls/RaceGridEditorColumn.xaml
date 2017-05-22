@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance c:RaceGridViewModel}" x:Name="This"
+        d:DataContext="{d:DesignInstance c:RaceGridViewModel}" x:Name="This"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" Unloaded="OnUnload">
     <FrameworkElement.Resources>
         <ResourceDictionary>
@@ -33,7 +33,7 @@
             <RowDefinition Height="80" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        
+
         <mui:ModernProgressRing Grid.Row="1" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
         <StackPanel Grid.Row="2" DataContext="{x:Static t:CarsManager.Instance}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8"

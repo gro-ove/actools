@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Found Tyres" SizeToContent="Manual"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="Found Tyres" SizeToContent="Manual"
         Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="99999" MaxHeight="99999" LocationAndSizeKey=".carReplaceTyresDialog"
         ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" x:Name="This">
     <mui:ModernDialog.Resources>

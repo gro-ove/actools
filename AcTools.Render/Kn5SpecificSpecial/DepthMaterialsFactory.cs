@@ -110,13 +110,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        private Kn5MaterialDepth _material;
+        private IRenderableMaterial _material;
+
+        [CanBeNull]
+        private Kn5MaterialDepth _materialDepth;
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            _material = (Kn5MaterialDepth)contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
+            _material = contextHolder.Get<SharedMaterials>().GetMaterial(BasicMaterials.DepthOnlyKey);
             _material.Initialize(contextHolder);
+
+            _materialDepth = _material as Kn5MaterialDepth;
         }
 
         private Tuple<IRenderableTexture, float> _txNormal, _txAlpha;
@@ -129,30 +134,32 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     _pntgObject = new TrianglesRenderableObject<InputLayouts.VerticePNTG>("",
                             InputLayouts.VerticePNTG.Convert(OriginalNode.Vertices), Indices);
                     _pntgObject.Draw(contextHolder, camera, SpecialRenderMode.InitializeOnly);
-                    
+
                     _txNormal = contextHolder.Get<INormalsNormalTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
                     _txNormalView = _txNormal?.Item1.Resource ?? contextHolder.GetFlatNmTexture();
                 }
 
-                if (_material == null) return;
-                _material.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
+                if (_materialDepth == null) return;
+                _materialDepth.PrepareAo(contextHolder, _txNormalView, _txNormal?.Item2 ?? 1f);
                 _pntgObject.SetBuffers(contextHolder);
-                _material.SetMatricesAo(ParentMatrix);
-                _material.DrawAo(contextHolder, Indices.Length);
+                _materialDepth.SetMatricesAo(ParentMatrix);
+                _materialDepth.DrawAo(contextHolder, Indices.Length);
             } else {
                 if (mode != SpecialRenderMode.Simple) return;
                 if (!_material.Prepare(contextHolder, mode)) return;
 
-                if (!_txAlphaSet) {
-                    _txAlphaSet = true;
-                    _txAlpha = contextHolder.Get<IAlphaTexturesProvider>().GetTexture(contextHolder, OriginalNode.MaterialId);
-                    _txAlphaView = _txAlpha?.Item1.Resource;
-                }
+                if (_materialDepth != null) {
+                    if (!_txAlphaSet) {
+                        _txAlphaSet = true;
+                        _txAlpha = contextHolder.TryToGet<IAlphaTexturesProvider>()?.GetTexture(contextHolder, OriginalNode.MaterialId);
+                        _txAlphaView = _txAlpha?.Item1.Resource;
+                    }
 
-                if (_txAlpha != null) {
-                    _material.PrepareShadow(_txAlphaView, _txAlphaView == null ? -1f : _txAlpha.Item2);
-                } else {
-                    _material.PrepareShadow(null, -1f);
+                    if (_txAlpha != null) {
+                        _materialDepth.PrepareShadow(_txAlphaView, _txAlphaView == null ? -1f : _txAlpha.Item2);
+                    } else {
+                        _materialDepth.PrepareShadow(null, -1f);
+                    }
                 }
 
                 base.DrawOverride(contextHolder, camera, mode);

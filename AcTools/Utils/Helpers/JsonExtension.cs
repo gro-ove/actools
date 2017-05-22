@@ -342,7 +342,7 @@ namespace AcTools.Utils.Helpers {
 
         public static void Write(this JsonTextWriter writer, string key, double? value) {
             if (value == null) return;
-            writer.WritePropertyName(key); 
+            writer.WritePropertyName(key);
             writer.WriteValue(value.Value);
         }
 
@@ -351,7 +351,7 @@ namespace AcTools.Utils.Helpers {
             writer.WritePropertyName(key);
             writer.WriteValue(value);
         }
-        
+
         public static void Write(this JsonTextWriter writer, string key, string[] value) {
             if (value == null) return;
             writer.WritePropertyName(key);
@@ -363,6 +363,16 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static void Write(this JsonTextWriter writer, string key, int[] value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteStartArray();
+            for (var i = 0; i < value.Length; i++) {
+                writer.WriteValue(value[i].ToString(CultureInfo.InvariantCulture));
+            }
+            writer.WriteEndArray();
+        }
+
+        public static void Write(this JsonTextWriter writer, string key, double[] value) {
             if (value == null) return;
             writer.WritePropertyName(key);
             writer.WriteStartArray();

@@ -9,7 +9,14 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Processes {
+    public interface INationCodeProvider {
+        [CanBeNull]
+        string GetNationCode([CanBeNull] string country);
+    }
+
     public partial class Game {
+        public static INationCodeProvider NationCodeProvider { get; set; }
+
         public enum SessionType {
             [Description("Booking")]
             Booking = 0,
@@ -42,26 +49,32 @@ namespace AcTools.Processes {
             DriveThrough = 2
         }
 
-        public class StartType {
-            public string Value { get; }
+        public class StartType : IWithId {
             public string Name { get; }
 
             public static readonly StartType Pit = new StartType("PIT", "Pit Stop");
             public static readonly StartType RegularStart = new StartType("START", "Race Start");
             public static readonly StartType HotlapStart = new StartType("HOTLAP_START", "Hotlap Start");
 
-            public static readonly BindingList<StartType> Values = new BindingList<StartType>(new[] {
+            public static readonly StartType[] Values = {
                 Pit, RegularStart, HotlapStart
-            });
+            };
 
             private StartType(string value, string name) {
-                Value = value;
+                Id = value;
                 Name = name;
             }
 
             public override string ToString() {
                 return Name;
             }
+
+            public string Id { get; }
+        }
+
+        [CanBeNull]
+        private static string GetNationCode([CanBeNull] string country) {
+            return NationCodeProvider?.GetNationCode(country) ?? country?.Substring(0, Math.Min(3, country.Length)).ToUpper();
         }
 
         public class BasicProperties : RaceIniProperties {
@@ -69,7 +82,7 @@ namespace AcTools.Processes {
             public string DriverName, DriverNationality, DriverNationCode,
                     CarId, CarSkinId, CarSetupId,
                     TrackId, TrackConfigurationId;
-            public int Ballast, Restrictor;
+            public double Ballast, Restrictor;
             public bool UseMph;
 
             public override void Set(IniFile file) {
@@ -92,7 +105,7 @@ namespace AcTools.Processes {
                     ["BALLAST"] = Ballast,
                     ["RESTRICTOR"] = Restrictor,
                     ["DRIVER_NAME"] = DriverName,
-                    ["NATION_CODE"] = DriverNationCode ?? DriverNationality?.Substring(0, Math.Min(3, DriverNationality.Length)).ToUpper(),
+                    ["NATION_CODE"] = DriverNationCode ?? GetNationCode(DriverNationality),
                     ["NATIONALITY"] = DriverNationality
                 };
 
@@ -102,9 +115,9 @@ namespace AcTools.Processes {
 
         public class AiCar {
             [CanBeNull]
-            public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "";
-            public int AiLevel = 100, AiAggression = 0;
-            public int Ballast, Restrictor;
+            public string CarId, SkinId = "", Setup = "", DriverName = "", Nationality = "", NationCode;
+            public double AiLevel = 100, AiAggression = 0;
+            public double Ballast, Restrictor;
         }
 
         public abstract class BaseModeProperties : RaceIniProperties {
@@ -115,7 +128,7 @@ namespace AcTools.Processes {
             /// <summary>
             /// Session duration in minutes.
             /// </summary>
-            public int Duration = 0;
+            public double Duration = 0;
 
             public override void Set(IniFile file) {
                 var section = file["RACE"];
@@ -156,6 +169,7 @@ namespace AcTools.Processes {
                                                ["DRIVER_NAME"] = car.DriverName,
                                                ["BALLAST"] = car.Ballast,
                                                ["RESTRICTOR"] = car.Restrictor,
+                                               ["NATION_CODE"] = car.NationCode ?? GetNationCode(car.Nationality),
                                                ["NATIONALITY"] = car.Nationality
                                            });
             }
@@ -216,7 +230,7 @@ namespace AcTools.Processes {
                 section.Set("NAME", "Practice");
                 section.Set("TYPE", SessionType.Practice);
                 section.Set("DURATION_MINUTES", Duration);
-                section.Set("SPAWN_SET", StartType.Value);
+                section.Set("SPAWN_SET", StartType.Id);
             }
         }
 
@@ -267,7 +281,7 @@ namespace AcTools.Processes {
             [CanBeNull]
             public string SessionName = "Drag Race";
             public StartType StartType = StartType.RegularStart;
-            public int AiLevel = 100;
+            public double AiLevel = 100;
             public int MatchesCount = 10;
 
             [CanBeNull]
@@ -302,7 +316,7 @@ namespace AcTools.Processes {
                 file["SESSION_0"] = new IniFileSection {
                     ["NAME"] = SessionName,
                     ["TYPE"] = SessionType.Drag,
-                    ["SPAWN_SET"] = StartType.Value,
+                    ["SPAWN_SET"] = StartType.Id,
                     ["MATCHES"] = MatchesCount
                 };
             }
@@ -323,14 +337,15 @@ namespace AcTools.Processes {
                 section.Set("NAME", SessionName);
                 section.Set("TYPE", SessionType.Drift);
                 section.Set("DURATION_MINUTES", Duration);
-                section.Set("SPAWN_SET", StartType.Value);
+                section.Set("SPAWN_SET", StartType.Id);
             }
         }
 
         public class RaceProperties : BaseModeProperties {
             public string SessionName = "Quick Race";
             public IEnumerable<AiCar> BotCars;
-            public int AiLevel = 90, RaceLaps = 5, StartingPosition;
+            public double AiLevel = 90;
+            public int RaceLaps = 5, StartingPosition;
 
             public override void Set(IniFile file) {
                 SetGhostCar(file);
@@ -355,7 +370,7 @@ namespace AcTools.Processes {
                 file["SESSION_0"] = new IniFileSection {
                     ["NAME"] = SessionName,
                     ["DURATION_MINUTES"] = Duration,
-                    ["SPAWN_SET"] = StartType.RegularStart.Value,
+                    ["SPAWN_SET"] = StartType.RegularStart.Id,
                     ["TYPE"] = SessionType.Race,
                     ["LAPS"] = RaceLaps,
                     ["STARTING_POSITION"] = StartingPosition
@@ -370,7 +385,7 @@ namespace AcTools.Processes {
                 file["SESSION_0"] = new IniFileSection {
                     ["NAME"] = "Track Day",
                     ["DURATION_MINUTES"] = 720,
-                    ["SPAWN_SET"] = StartType.Pit.Value,
+                    ["SPAWN_SET"] = StartType.Pit.Id,
                     ["TYPE"] = UsePracticeSessionType ? SessionType.Practice : SessionType.Qualification
                 };
             }
@@ -387,7 +402,7 @@ namespace AcTools.Processes {
                     yield return new IniFileSection {
                         ["NAME"] = "Practice",
                         ["DURATION_MINUTES"] = PracticeDuration,
-                        ["SPAWN_SET"] = PracticeStartType.Value,
+                        ["SPAWN_SET"] = PracticeStartType.Id,
                         ["TYPE"] = SessionType.Practice
                     };
                 }
@@ -396,7 +411,7 @@ namespace AcTools.Processes {
                     yield return new IniFileSection {
                         ["NAME"] = "Qualifying",
                         ["DURATION_MINUTES"] = QualificationDuration,
-                        ["SPAWN_SET"] = QualificationStartType.Value,
+                        ["SPAWN_SET"] = QualificationStartType.Id,
                         ["TYPE"] = SessionType.Qualification
                     };
                 }
@@ -404,7 +419,7 @@ namespace AcTools.Processes {
                 yield return new IniFileSection {
                     ["NAME"] = "Race",
                     ["DURATION_MINUTES"] = Duration,
-                    ["SPAWN_SET"] = StartType.RegularStart.Value,
+                    ["SPAWN_SET"] = StartType.RegularStart.Id,
                     ["TYPE"] = SessionType.Race,
                     ["LAPS"] = RaceLaps,
                 };

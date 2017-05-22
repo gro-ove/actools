@@ -94,7 +94,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
 
-        protected override void OnTick(float dt) {}
+        protected override void OnTickOverride(float dt) {}
     }
 
     public class UvMaterialsFactory : IMaterialsFactory {

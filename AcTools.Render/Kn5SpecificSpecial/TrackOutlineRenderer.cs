@@ -357,7 +357,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 if (_dirty) {
                     Initialize(holder);
                 }
-                
+
                 if (AiLaneMode) {
                     Kn5MaterialTrackOutline.Matrix = mapMatrix;
 
@@ -373,7 +373,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     // revert quad
                     holder.PrepareQuad(effect.LayoutPT);
                 } else {
-                    // local transformation matrix: global×local offset (calculated from map.ini)×local scale
+                    // local transformation matrix: globalÃ—local offset (calculated from map.ini)Ã—local scale
                     var localScale = Matrix.Transformation2D(Vector2.Zero, 0f,
                             new Vector2(max.DataSize.X / DataSize.X, max.DataSize.Y / DataSize.Y) / DataScale,
                             Vector2.Zero, 0f, Vector2.Zero);
@@ -543,7 +543,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         // slower, but more accurate
-        private void CustomBlending(TargetResourceTexture result, TargetResourceTexture foreground, TargetResourceTexture temporary, 
+        private void CustomBlending(TargetResourceTexture result, TargetResourceTexture foreground, TargetResourceTexture temporary,
                 Color4 color) {
             // ssaa if needed
             ShaderResourceView view;
@@ -620,7 +620,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var offset = UseAiLanes ?
                         Matrix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(-OffsetX / Width, OffsetY / Height)) :
                         Matrix.AffineTransformation2D(1f, Vector2.Zero, 0f, new Vector2(OffsetX / Width, OffsetY / Height));
-                
+
                 global = UseAiLanes ? mapScale * rotation * scale * offset : offset * scale * rotation * mapScale;
             }
 
@@ -656,7 +656,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        protected override void OnTick(float dt) {}
+        protected override void OnTickOverride(float dt) {}
 
         protected override void DisposeOverride() {
             _maps?.DisposeEverything();

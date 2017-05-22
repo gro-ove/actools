@@ -2,19 +2,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance dr:QuickDrive_Hotlap+ViewModel}">
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance dr:QuickDrive_Hotlap+ViewModel}">
     <UserControl.Resources>
         <Thickness x:Key="ElementMargin">0 0 8 16</Thickness>
     </UserControl.Resources>
-    <Grid>
+    <Grid VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
@@ -23,16 +24,26 @@
             </CheckBox>
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
             <CheckBox Margin="8 0 0 0" IsChecked="{Binding GhostCar}">
                 <Label Content="{x:Static g:AppStrings.Drive_GhostCar}" />
             </CheckBox>
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
             <mui:ValueLabel Postfix="{x:Static c:ControlsStrings.Common_SecondsPostfix}" Margin="0 0 0 4"
                     Content="{x:Static g:AppStrings.Drive_GhostCarAdvantage}" mui:BetterTextBox.Mode="Number" Value="{Binding GhostCarAdvantage, StringFormat='{}{0:F2}'}" />
             <Slider Minimum="0" Maximum="5" Value="{Binding GhostCarAdvantage}" />
+        </StackPanel>
+
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
+            <mui:ValueLabel Postfix=" kg" Margin="0 0 0 4" Content="Ballast" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerBallast}" />
+            <Slider Minimum="0" Maximum="200" Value="{Binding PlayerBallast}" />
+        </StackPanel>
+
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
+            <mui:ValueLabel Postfix="%" Margin="0 0 0 4" Content="Restrictor" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerRestrictor}" />
+            <Slider Minimum="0" Maximum="100" Value="{Binding PlayerRestrictor}" />
         </StackPanel>
     </Grid>
 </UserControl>

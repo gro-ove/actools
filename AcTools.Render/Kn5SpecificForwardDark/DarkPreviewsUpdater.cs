@@ -444,7 +444,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     _renderer = CreateRenderer(_acRoot, _options, GetCarDescription(carId, carData), skinId);
                 } else {
                     _renderer.MainSlot.SetCar(GetCarDescription(carId, carData), skinId);
-                    _renderer.CarNode?.OnTick(float.MaxValue);
                 }
                 _carId = carId;
                 UpdateCamera();
@@ -452,6 +451,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _renderer.SelectSkin(skinId);
             }
 
+            _renderer.OnTick(float.MaxValue);
             ShotInner(carId, skinId, destination, information, callback);
         }
 
@@ -478,6 +478,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _renderer.SelectSkin(skinId);
             }
 
+            _renderer.OnTick(float.MaxValue);
             await ShotInnerAsync(carId, skinId, destination, information, callback).ConfigureAwait(false);
         }
 

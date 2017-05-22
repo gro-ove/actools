@@ -129,7 +129,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private int CreateLightsForEmissiveMesh(DarkLightTag tag, CarData.LightObject light, Kn5RenderableObject mesh) {
             if (mesh?.BoundingBox.HasValue != true) return 0;
-            
+
             var matrix = mesh.ParentMatrix * mesh.ModelMatrixInverted;
             var list = new List<InnerPair>();
 
@@ -228,7 +228,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private bool TryToGuessCarLights(DarkLightTag tag, [NotNull] Kn5RenderableCar car) {
-            // unline with deferred renderer, here we only try to guess four lights, two headlights and two rearlights, 
+            // unline with deferred renderer, here we only try to guess four lights, two headlights and two rearlights,
             // which should be symmetrical with proper colors and all that
 
             var lights = car.GetCarLights().ToArrayIfItIsNot();
@@ -420,7 +420,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     (float)MathUtils.Random());
             color.Normalize();
 
-            /*AddLight(new DarkPointLight {
+            AddLight(new DarkPointLight {
+                UseShadows = true,
+                UseHighQualityShadows = true,
+                Color = color.ToDrawingColor(),
+                Range = 20f,
+                Position = Vector3.UnitY * 2f,
+                Brightness = 1.5f
+            });
+
+            /*AddLight(new DarkAreaTubeLight {
                 UseShadows = true,
                 UseHighQualityShadows = true,
                 Color = color.ToDrawingColor(),
@@ -428,15 +437,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 Position = Vector3.UnitY * 2f,
                 Brightness = 5.5f
             });*/
-
-            AddLight(new DarkAreaTubeLight {
-                UseShadows = true,
-                UseHighQualityShadows = true,
-                Color = color.ToDrawingColor(),
-                Range = 20f,
-                Position = Vector3.UnitY * 2f,
-                Brightness = 5.5f
-            });
         }
 
         public void RemoveLight() {

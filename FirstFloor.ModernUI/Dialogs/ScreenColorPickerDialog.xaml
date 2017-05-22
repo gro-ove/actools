@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:co="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
         xmlns:pr="clr-namespace:FirstFloor.ModernUI.Presentation" xmlns:di="clr-namespace:FirstFloor.ModernUI.Dialogs"
-        xmlns:mui="clr-namespace:FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" MaxWidth="999999" MaxHeight="999999"
+        xmlns:mui="clr-namespace:FirstFloor.ModernUI" mc:Ignorable="d" MaxWidth="999999" MaxHeight="999999"
         Title="Pick a Color" ResizeMode="NoResize" WindowState="Maximized" WindowStyle="None" SizeToContent="Manual" MouseMove="OnMouseMove"
         MouseLeave="OnMouseLeave" KeyUp="OnKeyUp" MouseLeftButtonUp="OnMouseLeftButtonUp" d:DataContext="{d:DesignInstance di:ScreenColorPickerDialog}">
     <co:ModernDialog.Resources>

@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.OnlineNewDriverTag" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Add New Tag" Closing="OnClosing"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" Title="Add New Tag" Closing="OnClosing"
         d:DataContext="{d:DesignInstance di:OnlineNewDriverTag+ViewModel}">
     <mui:SpacingStackPanel VerticalAlignment="Center" Spacing="4">
         <TextBlock Text="Name for a new tag:" TextWrapping="Wrap" />

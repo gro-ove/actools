@@ -33,6 +33,7 @@
     <c:PercentageConverter x:Key="PercentageConverter" />
     <c:PluralizingConverter x:Key="PluralizingConverter" />
     <c:ReadableTimeSpanConverter x:Key="ReadableTimeSpanConverter" />
+    <c:SliderRoundConverter x:Key="SliderRoundConverter" />
     <c:SubstractConverter x:Key="SubstractConverter" />
     <c:SumConverter x:Key="SumConverter" />
     <c:ToLowerConverter x:Key="ToLowerConverter" />

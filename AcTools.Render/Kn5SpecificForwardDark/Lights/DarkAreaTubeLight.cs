@@ -53,7 +53,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        private Vector3 _direction = new Vector3(-1f, -1f, -1f);
+        private Vector3 _direction = new Vector3(1f, 0f, 0f);
 
         public Vector3 Direction {
             get { return _direction; }

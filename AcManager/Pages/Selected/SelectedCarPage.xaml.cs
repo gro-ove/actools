@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -66,7 +67,7 @@ namespace AcManager.Pages.Selected {
                         break;
                 }
             }
-            
+
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "class":
@@ -347,6 +348,10 @@ namespace AcManager.Pages.Selected {
 
             SetModel();
             InitializeComponent();
+
+            if (!AppAppearanceManager.Instance.PopupToolBars) {
+                FancyHints.AccidentallyRemoved.Trigger();
+            }
         }
 
         private void SetModel() {

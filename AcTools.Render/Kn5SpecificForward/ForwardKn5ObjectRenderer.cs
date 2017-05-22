@@ -134,7 +134,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             var camera = Camera;
             if (camera == null) return;
-            
+
             camera.SetLens(AspectRatio);
             camera.UpdateViewMatrix();
 
@@ -157,7 +157,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         public bool AsyncOverridesLoading { get; set; } = false;
 
         public bool AllowSkinnedObjects { get; set; } = false;
-        
+
         private readonly string _showroomKn5Filename;
 
         public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
@@ -219,7 +219,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
         }
-        
+
         protected virtual void OnCarSlotRemoved(CarSlot slot){}
 
         public void AddSlot(CarSlot light) {
@@ -371,7 +371,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 OnCubemapReflectionChanged();
             }
         }
-        
+
         protected void OnCubemapReflectionChanged() {}
 
         private bool _enableShadows;
@@ -827,7 +827,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             if (c == null) return;
 
             var offset = GetMaxCornerOffset(c);
-            
+
             c.FovY = newFovY.Clamp(MathF.PI * 0.01f, MathF.PI * 0.8f);
             c.SetLens(c.Aspect);
 
@@ -852,9 +852,9 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
 
         private float _elapsedCamera;
 
-        protected override void OnTick(float dt) {
-            base.OnTick(dt);
-            
+        protected override void OnTickOverride(float dt) {
+            base.OnTickOverride(dt);
+
             for (var i = CarSlots.Length - 1; i >= 0; i--) {
                 CarSlots[i].CarNode?.OnTick(dt);
             }

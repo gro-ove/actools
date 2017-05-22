@@ -129,6 +129,7 @@
     <Compile Include="ActualUnloadedHelper.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
+    <Compile Include="Windows\Attached\DataGridFix.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
+    <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
     <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
     <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
     <Compile Include="Windows\DragPopup.cs" />

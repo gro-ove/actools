@@ -1,7 +1,7 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.UpgradeIconEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.UpgradeIcon_Title}" Drop="OnDrop" AllowDrop="True">
+        mc:Ignorable="d" Title="{x:Static g:AppStrings.UpgradeIcon_Title}" Drop="OnDrop" AllowDrop="True">
     <mui:ModernTab SelectedSource="/Pages/Dialogs/UpgradeIconEditor_Editor.xaml" Layout="Tab" Width="320" Height="240" LinksMargin="0 -20 0 0"
             FrameMargin="0 10 0 0" x:Name="Tabs">
         <mui:ModernTab.Links>

@@ -109,7 +109,7 @@ namespace AcManager.CustomShowroom {
             private class SaveableData {
                 public string Filter;
                 public bool IgnoreCase, UseFxaa = true, AiLaneActualWidth = false;
-                public double Scale = 1.0, Margin = 5d, AiLaneWidth = 10d;
+                public double Scale = 1.0, Margin = 10d, AiLaneWidth = 10d;
             }
 
             public ViewModel(TrackObjectBase track, TrackMapPreparationRenderer renderer) {

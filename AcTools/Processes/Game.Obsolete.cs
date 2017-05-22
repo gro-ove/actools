@@ -17,7 +17,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "RACE", "TRACK", trackName);
             IniFile.Write(ini, "RACE", "CONFIG_TRACK", trackConfig ?? "");
         }
-        
+
         [Obsolete]
         private static void EnableGhostCar() {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -29,7 +29,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "GHOST_CAR", "FILE", "");
             IniFile.Write(ini, "GHOST_CAR", "ENABLED", "0");
         }
-        
+
         [Obsolete]
         private static void DisableGhostCar() {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -41,7 +41,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "GHOST_CAR", "FILE", "");
             IniFile.Write(ini, "GHOST_CAR", "ENABLED", "0");
         }
-        
+
         [Obsolete]
         public static void PrepareIniHotlapMode() {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -63,7 +63,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "SESSION_0", "DURATION_MINUTES", "0");
             IniFile.Write(ini, "SESSION_0", "SPAWN_SET", "HOTLAP_START");
         }
-        
+
         [Obsolete]
         public static void PrepareIniDriftMode() {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -84,7 +84,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "SESSION_0", "TYPE", "6");
             IniFile.Write(ini, "SESSION_0", "SPAWN_SET", "PIT");
         }
-        
+
         [Obsolete]
         public static void PrepareIniPracticeMode() {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -106,7 +106,7 @@ namespace AcTools.Processes {
             IniFile.Write(ini, "SESSION_0", "DURATION_MINUTES", "0");
             IniFile.Write(ini, "SESSION_0", "SPAWN_SET", "PIT");
         }
-        
+
         [Obsolete]
         public static void PrepareIniRaceMode(RaceProperties properties) {
             var ini = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "race.ini");
@@ -125,7 +125,7 @@ namespace AcTools.Processes {
             DisableGhostCar();
 
             IniFile.Write(ini, "RACE", "CARS", properties.BotCars.Count() + 1);
-            IniFile.Write(ini, "RACE", "AI_LEVEL", properties.AiLevel);
+            IniFile.Write(ini, "RACE", "AI_LEVEL", properties.AiLevel.RoundToInt());
             IniFile.Write(ini, "RACE", "DRIFT_MODE", "0");
             IniFile.Write(ini, "RACE", "RACE_LAPS", properties.RaceLaps);
             IniFile.Write(ini, "RACE", "FIXED_SETUP", properties.FixedSetup);
@@ -148,46 +148,46 @@ namespace AcTools.Processes {
                 IniFile.Write(ini, section, "MODEL", botCar.CarId);
                 IniFile.Write(ini, section, "MODEL_CONFIG", "");
                 IniFile.Write(ini, section, "SETUP", botCar.Setup);
-                IniFile.Write(ini, section, "AI_LEVEL", botCar.AiLevel);
+                IniFile.Write(ini, section, "AI_LEVEL", botCar.AiLevel.RoundToInt());
                 IniFile.Write(ini, section, "SKIN", botCar.SkinId);
                 IniFile.Write(ini, section, "DRIVER_NAME", botCar.DriverName);
                 IniFile.Write(ini, section, "NATIONALITY", botCar.Nationality);
             }
         }
-        
+
         [Obsolete]
         public static void StartPractice(string acRoot, string carName, string skinName, string trackName, string trackConfig) {
             PrepareIni(carName, skinName, trackName, trackConfig);
             PrepareIniPracticeMode();
             Start(acRoot);
         }
-        
+
         [Obsolete]
         public static void StartHotlap(string acRoot, string carName, string skinName, string trackName, string trackConfig) {
             PrepareIni(carName, skinName, trackName, trackConfig);
             PrepareIniHotlapMode();
             Start(acRoot);
         }
-        
+
         [Obsolete]
         public static void StartDrift(string acRoot, string carName, string skinName, string trackName, string trackConfig) {
             PrepareIni(carName, skinName, trackName, trackConfig);
             PrepareIniDriftMode();
             Start(acRoot);
         }
-        
+
         [Obsolete]
         public static void StartRace(string acRoot, string carName, string skinName, string trackName, string trackConfig, RaceProperties properties) {
             PrepareIni(carName, skinName, trackName, trackConfig);
             PrepareIniRaceMode(properties);
             Start(acRoot);
         }
-        
+
         [Obsolete]
         public static void StartSimpleRace(string acRoot, string carName, string skinName, string trackName, string trackConfig) {
             StartRace(acRoot, carName, skinName, trackName, trackConfig, new RaceProperties {
                 BotCars = new[] {
-                    new AiCar { CarId = carName }, 
+                    new AiCar { CarId = carName },
                     new AiCar { CarId = carName },
                     new AiCar { CarId = carName }
                 },

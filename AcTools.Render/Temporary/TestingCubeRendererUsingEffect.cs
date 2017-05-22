@@ -42,7 +42,7 @@ namespace AcTools.Render.Temporary {
             });
         }
 
-        protected override void OnTick(float dt) {
+        protected override void OnTickOverride(float dt) {
             CameraOrbit.Alpha += dt * 0.09f;
             CameraOrbit.Beta = (Elapsed * 0.05f).Sin() * 0.7f;
 

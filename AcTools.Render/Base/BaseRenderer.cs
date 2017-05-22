@@ -136,7 +136,7 @@ namespace AcTools.Render.Base {
 
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
         private readonly Stopwatch _stopwatch = new Stopwatch();
-        
+
         private float _previousFramesPerSecond;
 
         public float FramesPerSecond {
@@ -308,7 +308,7 @@ namespace AcTools.Render.Base {
             using (var factory = _swapChain.GetParent<Factory>()) {
                 factory.SetWindowAssociation(outputHandle, WindowAssociationFlags.IgnoreAll);
             }
-            
+
             InitializeInner();
             Initialized = true;
         }
@@ -335,7 +335,7 @@ namespace AcTools.Render.Base {
         private RenderTargetView _renderView;
         private Texture2D _depthBuffer;
         private DepthStencilView _depthView;
-        
+
         public Texture2D RenderBuffer => _renderBuffer;
 
         public Texture2D DepthBuffer => _depthBuffer;
@@ -468,8 +468,6 @@ namespace AcTools.Render.Base {
 
                 if (dt > 0f) {
                     OnTick(dt);
-                    DeviceContextHolder.OnTick(dt);
-                    Tick?.Invoke(this, new TickEventArgs(dt));
                 }
 
                 _previousElapsed = elapsed;
@@ -517,7 +515,13 @@ namespace AcTools.Render.Base {
 
         public event TickEventHandler Tick;
 
-        protected abstract void OnTick(float dt);
+        protected abstract void OnTickOverride(float dt);
+
+        public void OnTick(float dt) {
+            OnTickOverride(dt);
+            DeviceContextHolder.OnTick(dt);
+            Tick?.Invoke(this, new TickEventArgs(dt));
+        }
 
         public void ExitFullscreen() {
             if (_swapChain == null) return;

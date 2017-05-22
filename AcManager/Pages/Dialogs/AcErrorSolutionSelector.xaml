@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:mu="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
-        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding AcError.Message}"
+        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{Binding AcError.Message}"
         d:DataContext="{d:DesignInstance di:AcErrorSolutionSelector}" Loaded="OnLoaded" Unloaded="OnUnloaded">
     <mui:ModernDialog.ButtonsRowContent>
         <StackPanel Orientation="Horizontal">

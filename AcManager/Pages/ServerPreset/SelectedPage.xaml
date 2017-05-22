@@ -4,7 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager" xmlns:system="clr-namespace:System;assembly=System"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+        mc:Ignorable="d" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>

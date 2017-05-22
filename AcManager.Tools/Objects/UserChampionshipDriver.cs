@@ -87,10 +87,10 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Extra “baked” properties
-        private int _aiLevel = 100;
+        private double _aiLevel = 100;
 
-        [JsonProperty("aiLevel", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(100)]
-        public int AiLevel {
+        [JsonProperty("aiLevel", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(100d)]
+        public double AiLevel {
             get { return _aiLevel; }
             set {
                 if (Equals(value, _aiLevel)) return;

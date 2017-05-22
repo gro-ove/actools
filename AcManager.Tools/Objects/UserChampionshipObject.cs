@@ -7,13 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Input;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
@@ -70,7 +68,7 @@ namespace AcManager.Tools.Objects {
 
         [NotNull]
         public string ExtendedFilename { get; private set; }
-        
+
         [NotNull]
         public string PreviewImage { get; private set; }
 
@@ -152,14 +150,14 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged();
                     ChangedData = true;
                 }
-                
+
                 if (value != null) {
                     var player = value.First(x => x.IsPlayer);
                     PlayerCarId = player.CarId;
                     PlayerCarSkinId = player.SkinId;
 
-                    var aiLevelTo = 0;
-                    var aiLevelFrom = 100;
+                    var aiLevelTo = 0d;
+                    var aiLevelFrom = 100d;
 
                     foreach (var driver in value) {
                         if (driver.CarId != null && CarsManager.Instance.GetWrapperById(driver.CarId) == null) {
@@ -185,9 +183,9 @@ namespace AcManager.Tools.Objects {
         }
 
         #region For scaling AI level
-        private int _aiLevelTo;
+        private double _aiLevelTo;
 
-        public int AiLevelTo {
+        public double AiLevelTo {
             get { return _aiLevelTo; }
             private set {
                 if (Equals(value, _aiLevelTo)) return;
@@ -202,9 +200,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _aiLevelFrom;
+        private double _aiLevelFrom;
 
-        public int AiLevelFrom {
+        public double AiLevelFrom {
             get { return _aiLevelFrom; }
             private set {
                 if (Equals(value, _aiLevelFrom)) return;
@@ -463,7 +461,7 @@ namespace AcManager.Tools.Objects {
 
             try {
                 _updatingCoherentTime = true;
-                
+
                 var time = rounds[0].Time;
                 var playerCar = PlayerCar;
                 var interval = 20 * 60;
@@ -677,7 +675,7 @@ namespace AcManager.Tools.Objects {
                     if (perRound == 0) {
                         perRound = Rules.Points.FirstOrDefault();
                     }
-                    
+
                     ChampionshipPointsGoal = _rounds.Length * perRound;
                 } else {
                     ChampionshipPointsGoal = -ChampionshipPointsGoal;
@@ -1203,7 +1201,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private int _championshipPoints = -1;
-        
+
         public int ChampionshipPoints {
             get { return _championshipPoints; }
             set {
@@ -1417,7 +1415,7 @@ namespace AcManager.Tools.Objects {
                                     ChampionshipPoints,
                                     Drivers.Where(x => !x.IsPlayer).Select((x, i) => new {
                                         Key = i,
-                                        x.Points  
+                                        x.Points
                                     }).ToDictionary(x => x.Key, x => x.Points)),
                             globalUpdate);
                     break;

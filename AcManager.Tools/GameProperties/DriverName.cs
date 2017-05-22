@@ -1,5 +1,6 @@
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
@@ -29,9 +30,11 @@ namespace AcManager.Tools.GameProperties {
                     file["REMOTE"].Set("NAME", _driverName);
                     file["CAR_0"].Set("DRIVER_NAME", _driverName);
                     file["CAR_0"].Set("NATIONALITY", _nationality ?? settings.PlayerNationality);
+                    file["CAR_0"].Set("NATION_CODE", NationCodeProvider.Instance.GetNationCode(_nationality ?? settings.PlayerNationality));
                 } else {
                     file["CAR_0"].Set("DRIVER_NAME", _driverName);
                     file["CAR_0"].Set("NATIONALITY", _nationality ?? settings.PlayerNationality);
+                    file["CAR_0"].Set("NATION_CODE", NationCodeProvider.Instance.GetNationCode(_nationality ?? settings.PlayerNationality));
                 }
             }
 
@@ -40,6 +43,7 @@ namespace AcManager.Tools.GameProperties {
                 file["REMOTE"].Set("NAME", driverName);
                 file["CAR_0"].Set("DRIVER_NAME", driverName);
                 file["CAR_0"].Set("NATIONALITY", settings.PlayerNationality);
+                file["CAR_0"].Set("NATION_CODE", NationCodeProvider.Instance.GetNationCode(settings.PlayerNationality));
             } else {
                 var playerName = settings.PlayerName;
                 if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDifferentPlayerName &&
@@ -49,6 +53,7 @@ namespace AcManager.Tools.GameProperties {
 
                 file["CAR_0"].Set("DRIVER_NAME", playerName);
                 file["CAR_0"].Set("NATIONALITY", settings.PlayerNationality);
+                file["CAR_0"].Set("NATION_CODE", NationCodeProvider.Instance.GetNationCode(settings.PlayerNationality));
             }
         }
     }

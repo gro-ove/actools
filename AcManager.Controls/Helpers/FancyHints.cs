@@ -37,6 +37,12 @@ namespace AcManager.Controls.Helpers {
                 "To do so, switch the mode in context menu.",
                 startupsDelay: 4, probability: 0.8, triggersDelay: 0);
 
+        public static readonly FancyHint AccidentallyRemoved = new FancyHint(
+                "accidentally-removed",
+                "All removed content ends up in the Windows’ Recycle Bin",
+                "So, if you accidentally removed something useful, you can always restore it. And, if you just removed something, open any Explorer window, press Ctrl+Z and removed item will be restored.",
+                startupsDelay: 5, probability: 0.999, triggersDelay: 0, forced: true);
+
         public static readonly FancyHint ResizeableWindow = new FancyHint(
                 "resizeable-window",
                 "Try to resize the dialog window",

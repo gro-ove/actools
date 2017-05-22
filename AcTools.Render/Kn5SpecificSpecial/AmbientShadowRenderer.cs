@@ -332,7 +332,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Shot(Path.GetDirectoryName(Kn5.OriginalFilename), progress, cancellation);
         }
 
-        protected override void OnTick(float dt) { }
+        protected override void OnTickOverride(float dt) { }
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _blendState);

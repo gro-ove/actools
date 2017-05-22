@@ -136,33 +136,33 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int? _aiLevel;
+        private double? _aiLevel;
 
-        public int? AiLevel {
+        public double? AiLevel {
             get { return _aiLevel; }
             set {
-                value = value?.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100);
+                value = value?.Clamp(SettingsHolder.Drive.AiLevelMinimum, 100d);
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
                 OnPropertyChanged();
             }
         }
 
-        private int? _aiAggression;
+        private double? _aiAggression;
 
-        public int? AiAggression {
+        public double? AiAggression {
             get { return _aiAggression; }
             set {
-                value = value?.Clamp(0, 100);
+                value = value?.Clamp(0, 100d);
                 if (Equals(value, _aiAggression)) return;
                 _aiAggression = value;
                 OnPropertyChanged();
             }
         }
 
-        private int _ballast;
+        private double _ballast;
 
-        public int Ballast {
+        public double Ballast {
             get { return _ballast; }
             set {
                 if (Equals(value, _ballast)) return;
@@ -171,9 +171,9 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private int _restrictor;
+        private double _restrictor;
 
-        public int Restrictor {
+        public double Restrictor {
             get { return _restrictor; }
             set {
                 if (Equals(value, _restrictor)) return;

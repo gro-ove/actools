@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _steerDeg;
 
         public float SteerDeg {
-            get { return _steerDeg; }
+            get => _steerDeg;
             set {
                 value = value.Clamp(-50f, 50f).Round(0.1f);
                 if (Equals(value, _steerDeg)) return;
@@ -65,9 +65,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Matrix _wheelsFixMatrix;
 
         private Matrix? GetSteerWheelMatrix(bool left, [NotNull] Kn5RenderableList node, Tuple<Vector3, Vector3> axis, float angle) {
-            Vector3 position, scale;
-            Quaternion rotation;
-
             Matrix baseMatrix;
             if (AlignWheelsByData) {
                 var wheel = left ? _wheelLfDesc : _wheelRfDesc;
@@ -77,20 +74,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     if (isWheel) {
                         baseMatrix = GetWheelSpeedMatrix(_wheelsPosition, wheel.Radius) * baseMatrix;
                     }
-                    
+
                     goto BaseMatrixSet;
                 }
             }
 
-            baseMatrix = _currentLodObject.GetOriginalRelativeToModelMatrix(node);
+            baseMatrix = _currentLodObject.GetOriginalLocalMatrix(node);
 
             BaseMatrixSet:
-            baseMatrix.Decompose(out scale, out rotation, out position);
+            baseMatrix.Decompose(out var scale, out var rotation, out var position);
 
             var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
             var p = new Plane(position, rotationAxis);
-            Vector3 con;
-            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out con)) {
+            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out var con)) {
                 AcToolsLogging.Write("10f is not enough!?");
                 return null;
             }
@@ -126,7 +122,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var c = parent as Kn5RenderableCar;
             var getDummyByName = c != null ? (Func<string, RenderableList>)c.GetDummyByName :
                 ((RenderableList)parent).GetDummyByName;
-            
+
             var names = GetWheelNodesNames(parent, namePostfix);
 
             var wheel = getDummyByName($@"WHEEL_{namePostfix}") as Kn5RenderableList;
@@ -154,7 +150,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         [ContractAnnotation(@"collectNodes:true => notnull; collectNodes:false => null")]
-        private static List<Kn5RenderableList> SetWheelNodeMatrix([NotNull] IRenderableObject parent, string namePostfix, 
+        private static List<Kn5RenderableList> SetWheelNodeMatrix([NotNull] IRenderableObject parent, string namePostfix,
                 Matrix wheelMatrix, Matrix suspMatrix,
                 float wheelsPosition, float? wheelRadius, bool collectNodes) {
             return SetWheelNodeMatrix(parent, namePostfix, node => IsWheelNode(node) ?
@@ -189,7 +185,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             axis = Tuple.Create(
                     pack.TranslateRelativeToCarModel(suspension, axis.Item1),
                     pack.TranslateRelativeToCarModel(suspension, axis.Item2));
-            
+
             UpdateModelMatrixInverted();
             SetWheelNodeMatrix(this, namePostfix, node => GetSteerWheelMatrix(left, node, axis, -angle), false);
         }
@@ -269,7 +265,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _alignWheelsByData;
 
         public bool AlignWheelsByData {
-            get { return _alignWheelsByData; }
+            get => _alignWheelsByData;
             set {
                 if (Equals(value, _alignWheelsByData)) return;
                 _alignWheelsByData = value;
@@ -291,7 +287,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _wheelsPosition;
 
         public float WheelsSpeedKph {
-            get { return _wheelsSpeedKph; }
+            get => _wheelsSpeedKph;
             set {
                 if (Equals(value, _wheelsSpeedKph)) return;
                 _wheelsSpeedKph = value;
@@ -364,10 +360,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             for (var i = wheels.Length - 1; i >= 0; i--) {
                 var wheel = wheels[i];
                 if (SteerDeg == 0f || wheel != _wheelLfDesc && wheel != _wheelRfDesc) {
-                    SetWheelNodeMatrix(this, wheel.Name, 
-                        GetWheelMatrix(wheel, false) * _wheelsFixMatrix, 
-                        GetWheelMatrix(wheel, true) * _wheelsFixMatrix,
-                        _wheelsPosition, wheel.Radius, false);
+                    SetWheelNodeMatrix(this, wheel.Name,
+                            GetWheelMatrix(wheel, false) * _wheelsFixMatrix,
+                            GetWheelMatrix(wheel, true) * _wheelsFixMatrix,
+                            _wheelsPosition, wheel.Radius, false);
                 }
             }
 
@@ -432,8 +428,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         }
                     }
 
-                    _alignedWheelsNames.AddRange(SetWheelNodeMatrix(this, wheel.Name, 
-                            GetWheelMatrix(wheel, false) * graphicMatrix, 
+                    _alignedWheelsNames.AddRange(SetWheelNodeMatrix(this, wheel.Name,
+                            GetWheelMatrix(wheel, false) * graphicMatrix,
                             GetWheelMatrix(wheel, true) * graphicMatrix,
                             _wheelsPosition, wheel.Radius, true)
                             .Select(x => x.Name));

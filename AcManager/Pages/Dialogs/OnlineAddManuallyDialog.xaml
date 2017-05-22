@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:acManager="clr-namespace:AcManager"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static acManager:AppStrings.Online_AddServer_Title}"
+        mc:Ignorable="d" Title="{x:Static acManager:AppStrings.Online_AddServer_Title}"
         d:DataContext="{d:DesignInstance di:OnlineAddManuallyDialog+ViewModel}" Width="400" MinHeight="240" MaxHeight="400" SizeToContent="Height" Closing="OnClosing">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>

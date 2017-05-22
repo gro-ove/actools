@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
         xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance dr:KunosCareer_SelectedPage+ViewModel}" Loaded="OnLoaded"
+        d:DataContext="{d:DesignInstance dr:KunosCareer_SelectedPage+ViewModel}" Loaded="OnLoaded"
         Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>

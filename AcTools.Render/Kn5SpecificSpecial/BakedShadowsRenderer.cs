@@ -293,7 +293,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
         }
 
-        protected override void OnTick(float dt) { }
+        protected override void OnTickOverride(float dt) { }
 
         private class NormalsNormalsTexturesProvider : INormalsNormalTexturesProvider {
             private readonly Kn5 _kn5;

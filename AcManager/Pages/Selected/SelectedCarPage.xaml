@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance sel:SelectedCarPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -68,7 +68,8 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}" />
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}"
+                        mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.AccidentallyRemoved}}" />
                 <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />

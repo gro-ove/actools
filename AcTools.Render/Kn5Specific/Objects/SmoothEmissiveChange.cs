@@ -13,7 +13,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _off, _disableEmissive;
         private bool _smoothChanging;
         private float _position;
-        
+
         private TimeSpan? _duration;
 
         public SmoothEmissiveChange(TimeSpan? duration = null) {
@@ -95,7 +95,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 } else {
                     var delta = _stopwatch.ElapsedSeconds / _duration.Value.TotalSeconds;
                     _stopwatch.Reset();
-
                     _position = (float)(_off ? _position - delta : _position + delta).Saturate();
 
                     if (_position == (_off ? 0f : 1f)) {

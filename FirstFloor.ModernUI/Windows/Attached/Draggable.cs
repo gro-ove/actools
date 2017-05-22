@@ -65,7 +65,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         public static void SetEnabled(FrameworkElement obj, bool value) {
             obj.SetValue(EnabledProperty, value);
-        }   
+        }
 
         public static readonly DependencyProperty EnabledProperty = DependencyProperty.RegisterAttached("Enabled", typeof(bool), typeof(Draggable),
                 new PropertyMetadata(false, OnEnabledChanged));
@@ -363,7 +363,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static void OnDestinationConverterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as ItemsControl;
             if (element == null || !(e.NewValue is IDraggableDestinationConverter)) return;
-            
+
             var newValue = (IDraggableDestinationConverter)e.NewValue;
             if (newValue != null) {
                 element.Drop += OnDestinationConverterDrop;

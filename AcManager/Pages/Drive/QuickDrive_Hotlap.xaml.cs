@@ -4,19 +4,7 @@ using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Hotlap : IQuickDriveModeControl {
-        public class ViewModel : QuickDriveModeViewModel {
-            private bool _penalties;
-
-            public bool Penalties {
-                get { return _penalties; }
-                set {
-                    if (value == _penalties) return;
-                    _penalties = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
+        public class ViewModel : QuickDriveSingleModeViewModel {
             private bool _ghostCar;
 
             public bool GhostCar {
@@ -41,35 +29,38 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private class SaveableData {
-                public bool Penalties, GhostCar;
+            #region Saveable
+            protected new class SaveableData : QuickDriveSingleModeViewModel.SaveableData {
+                public bool GhostCar = true;
                 public double GhostCarAdvantage;
             }
 
-            public ViewModel(bool initialize = true) {
-                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Hotlap", () => new SaveableData {
-                    Penalties = Penalties,
-                    GhostCar = GhostCar,
-                    GhostCarAdvantage = GhostCarAdvantage
-                }, o => {
-                    Penalties = o.Penalties;
-                    GhostCar = o.GhostCar;
-                    GhostCarAdvantage = o.GhostCarAdvantage;
-                }, () => {
-                    Penalties = true;
-                    GhostCar = true;
-                    GhostCarAdvantage = 0.0;
-                });
-
-                if (initialize) {
-                    Saveable.Initialize();
-                } else {
-                    Saveable.Reset();
-                }
+            protected override ISaveHelper CreateSaveable(string key) {
+                return new SaveHelper<SaveableData>(key, () => Save(new SaveableData()), Load);
             }
+
+            protected SaveableData Save(SaveableData data) {
+                base.Save(data);
+                data.GhostCar = GhostCar;
+                data.GhostCarAdvantage = GhostCarAdvantage;
+                return data;
+            }
+
+            protected void Load(SaveableData data) {
+                base.Load(data);
+                GhostCar = data.GhostCar;
+                GhostCarAdvantage = data.GhostCarAdvantage;
+            }
+
+            public ViewModel(bool initialize = true) {
+                Initialize("__QuickDrive_Hotlap", initialize);
+            }
+            #endregion
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                basicProperties.Ballast = PlayerBallast;
+                basicProperties.Restrictor = PlayerRestrictor;
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = basicProperties,
                     AssistsProperties = assistsProperties,

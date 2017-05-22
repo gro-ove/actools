@@ -4,7 +4,7 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
         xmlns:g="clr-namespace:AcManager"
         xmlns:c="http://acstuff.ru/app/controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedTrackConfiguration.Name}"
+        mc:Ignorable="d" Title="{Binding SelectedTrackConfiguration.Name}"
         d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
         MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual">
     <mui:ModernDialog.BackgroundContent>
@@ -64,7 +64,7 @@
         </uc:TrackBlock>
 
         <c:FavouriteButton Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Right" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 -42 20 0" />
-        
+
         <AdornerDecorator Grid.Column="1" Margin="20 -44 0 0" Width="320">
             <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="Tabs_OnNavigated"
                     mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries_New.xaml" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack"
