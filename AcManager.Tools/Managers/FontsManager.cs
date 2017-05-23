@@ -34,6 +34,8 @@ namespace AcManager.Tools.Managers {
 
         public override string SearchPattern => @"*.txt";
 
+        public override string[] AttachedExtensions => FontObject.BitmapExtensions;
+
         protected override string CheckIfIdValid(string id) {
             if (!id.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase)) {
                 return $"ID should end with “{FontObject.FontExtension}”.";
@@ -56,30 +58,6 @@ namespace AcManager.Tools.Managers {
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
             return !FontObject.BitmapExtensions.Any(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase)) &&
                    !filename.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase);
-        }
-
-        protected override string GetObjectLocation(string filename, out bool inner) {
-            var minLength = Math.Min(Directories.EnabledDirectory.Length,
-                Directories.DisabledDirectory?.Length ?? int.MaxValue);
-
-            inner = false;
-            while (filename.Length > minLength) {
-                var parent = Path.GetDirectoryName(filename);
-                if (parent == null) return null;
-
-                if (parent == Directories.EnabledDirectory || parent == Directories.DisabledDirectory) {
-                    var special = FontObject.BitmapExtensions.FirstOrDefault(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
-                    if (special == null) return filename;
-
-                    inner = true;
-                    return filename.ApartFromLast(special, StringComparison.OrdinalIgnoreCase) + FontObject.FontExtension;
-                }
-
-                inner = true;
-                filename = parent;
-            }
-
-            return null;
         }
 
         public override IEnumerable<string> GetAttachedFiles(string location) {

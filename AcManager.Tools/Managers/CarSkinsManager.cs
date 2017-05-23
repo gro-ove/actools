@@ -15,7 +15,7 @@ namespace AcManager.Tools.Managers {
 
         public override IAcDirectories Directories { get; }
 
-        internal CarSkinsManager(string carId, BaseAcDirectories directories, EventHandler collectionReadyHandler) {
+        internal CarSkinsManager(string carId, AcDirectoriesBase directories, EventHandler collectionReadyHandler) {
             CarId = carId;
             Directories = directories;
             InnerWrappersList.CollectionReady += collectionReadyHandler;

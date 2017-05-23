@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
@@ -14,7 +15,7 @@ using Buffer = SlimDX.Direct3D11.Buffer;
 namespace AcTools.Render.Base.Objects {
     public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.IPositionLayout {
         protected bool IsEmpty { get; private set; }
-        
+
         public T[] Vertices { get; private set; }
 
         public ushort[] Indices { get; private set; }
@@ -56,8 +57,9 @@ namespace AcTools.Render.Base.Objects {
             var sqrLength = new float[Vertices.Length];
             var normalized = new Vector3[Vertices.Length];
 
+            var center = Vertices.Select(x => x.Position).ToBoundingBox().GetCenter();
             for (var i = 0; i < Vertices.Length; i++) {
-                var p = Vertices[i].Position;
+                var p = Vertices[i].Position - center;
                 var l = p.LengthSquared();
                 sqrLength[i] = l;
                 normalized[i] = l == 0f ? Vector3.Zero : p / l.Sqrt();
@@ -82,11 +84,11 @@ namespace AcTools.Render.Base.Objects {
                 }
 
                 if (add) {
-                    filtered.Add(Vertices[i].Position);
+                    filtered.Add(Vertices[i].Position + center);
                 }
             }
 
-            // AcToolsLogging.Write($"{Name}: {100d * filtered.Count / Vertices.Length:F1}% ({Vertices.Length})");
+            AcToolsLogging.Write($"{Name}: {100d * filtered.Count / Vertices.Length:F1}% ({Vertices.Length})");
             _positions = filtered.ToArray();
         }
 
@@ -178,7 +180,7 @@ namespace AcTools.Render.Base.Objects {
             if (!BoundingBox.HasValue || !Ray.Intersects(ray, BoundingBox.Value, out d)) {
                 return null;
             }
-            
+
             var min = float.MaxValue;
             var found = false;
 
@@ -204,7 +206,7 @@ namespace AcTools.Render.Base.Objects {
             Indices = new ushort[0];
             IndicesCount = 0;
             IsEmpty = true;
-            
+
             DisposeHelper.Dispose(ref _verticesBuffer);
             DisposeHelper.Dispose(ref _indicesBuffer);
             DisposeHelper.Dispose(ref _verticesStream);

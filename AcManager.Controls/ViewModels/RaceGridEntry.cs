@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.UserControls;
@@ -6,6 +7,7 @@ using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -145,7 +147,13 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(InputAiLevel));
             }
+        }
+
+        public string InputAiLevel {
+            get { return _aiLevel?.ToString(CultureInfo.CurrentUICulture); }
+            set { AiLevel = FlexibleParser.TryParseDouble(value); }
         }
 
         private double? _aiAggression;
@@ -157,7 +165,13 @@ namespace AcManager.Controls.ViewModels {
                 if (Equals(value, _aiAggression)) return;
                 _aiAggression = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(InputAiAggression));
             }
+        }
+
+        public string InputAiAggression {
+            get { return _aiAggression?.ToString(CultureInfo.CurrentUICulture); }
+            set { AiAggression = FlexibleParser.TryParseDouble(value); }
         }
 
         private double _ballast;

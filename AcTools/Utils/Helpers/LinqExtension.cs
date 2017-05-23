@@ -44,7 +44,7 @@ namespace AcTools.Utils.Helpers {
         [NotNull]
         public static T ElementAtOr<T>([NotNull] this IEnumerable<T> source, int index, [NotNull] T defaultValue) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            
+
             foreach (var item in source) {
                 if (--index < 0) return item;
             }
@@ -318,7 +318,7 @@ namespace AcTools.Utils.Helpers {
 
             return sb.ToString();
         }
-        
+
         public static void Pass<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             using (var e = enumerable.GetEnumerator()) {

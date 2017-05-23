@@ -6,6 +6,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -102,7 +103,7 @@ namespace AcManager.Tools {
                         }
                     }
 
-                    var directory = UserChampionshipsManager.Instance.Directories.EnabledDirectory;
+                    var directory = UserChampionshipsManager.Instance.Directories.GetMainDirectory();
                     Directory.CreateDirectory(directory);
 
                     if (existing == null || replacementId != null) {
@@ -203,7 +204,7 @@ namespace AcManager.Tools {
                         }
                     }
 
-                    var directory = UserChampionshipsManager.Instance.Directories.EnabledDirectory;
+                    var directory = UserChampionshipsManager.Instance.Directories.GetMainDirectory();
                     Directory.CreateDirectory(directory);
 
                     using (var stream = new MemoryStream(data)) {

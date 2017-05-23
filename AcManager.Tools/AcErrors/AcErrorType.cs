@@ -122,10 +122,10 @@ namespace AcManager.Tools.AcErrors {
         [Description("Map is missing")]
         Track_MapIsMissing,
 
-        [Description("Track’s outline is missing")]
+        [Description("Trackâ€™s outline is missing")]
         Track_OutlineIsMissing,
 
-        [Description("Track’s preview is missing")]
+        [Description("Trackâ€™s preview is missing")]
         Track_PreviewIsMissing,
 
 
@@ -160,6 +160,12 @@ namespace AcManager.Tools.AcErrors {
 
         [LocalizedDescription(nameof(ToolsStrings.AcError_TrackIsMissing))]
         Replay_TrackIsMissing,
+
+        [LocalizedDescription(nameof(ToolsStrings.AcError_CarIsMissing))]
+        Replay_CarIsMissing,
+
+        /*[LocalizedDescription(nameof(ToolsStrings.AcError_RequiredWeatherIsMissing))]
+        Replay_WeatherIsMissing,*/
 
         [LocalizedDescription(nameof(ToolsStrings.AcError_NameShouldnTContainSymbolsLikeOr))]
         Replay_InvalidName,

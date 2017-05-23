@@ -140,10 +140,10 @@ namespace AcManager.Tools.Managers {
 
         public IAcObjectNew AddNew(string id = null) {
             if (id == null) {
-                id = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Directories.EnabledDirectory, "SERVER"), "_{0:D2}", true, 0)) ?? @"CM_SERVER";
+                id = Directories.GetUniqueId("SERVER", "_{0:D2}", true, 0);
             }
 
-            var directory = Path.Combine(Directories.EnabledDirectory, id);
+            var directory = Directories.GetLocation(id, true);
             if (Directory.Exists(directory)) {
                 throw new InformativeException("Can’t add a new object", "This ID is already taken.");
             }

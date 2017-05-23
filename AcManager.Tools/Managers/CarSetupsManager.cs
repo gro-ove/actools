@@ -23,28 +23,21 @@ namespace AcManager.Tools.Managers {
         public static CarSetupsManager Create(CarObject car) {
             return new CarSetupsManager(car.Id, new CarSetupsDirectories(car));
         }
-        
-        protected override string LocationToId(string directory) {
-            var name = directory.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).TakeLast(2).JoinToString(Path.DirectorySeparatorChar);
-            if (name == null) throw new Exception("Cannot get file name from path");
-            return name;
-        }
 
         protected override string CheckIfIdValid(string id) {
             if (!id.EndsWith(CarSetupObject.FileExtension, StringComparison.OrdinalIgnoreCase)) {
-                return $"ID should end with “{CarSetupObject.FileExtension}”.";
+                return $"ID should end with â€œ{CarSetupObject.FileExtension}â€.";
             }
 
             if (id.IndexOf(Path.DirectorySeparatorChar) == -1) {
-                return "ID should be in “track”\\“name” form.";
+                return "ID should be in â€œtrackâ€\\â€œnameâ€ form.";
             }
 
             return base.CheckIfIdValid(id);
         }
 
-        protected override string GetObjectLocation(string filename, out bool inner) {
-            inner = false;
-            return filename.StartsWith(Directories.EnabledDirectory + Path.DirectorySeparatorChar) ? filename : null;
+        protected override string GetLocationByFilename(string filename, out bool inner) {
+            return Directories.GetLocationByFilename(filename, out inner);
         }
 
         public virtual string SearchPattern => @"*.ini";
@@ -56,8 +49,8 @@ namespace AcManager.Tools.Managers {
                 .IsMatch(id);
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
-            return Directories.GetSubFiles(SearchPattern).Select(dir => {
-                var id = LocationToId(dir);
+            return Directories.GetContentFiles(SearchPattern).Select(dir => {
+                var id = Directories.GetId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
             }).NonNull();
         }

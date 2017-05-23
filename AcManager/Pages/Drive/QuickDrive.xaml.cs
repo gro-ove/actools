@@ -24,6 +24,7 @@ using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -386,7 +387,7 @@ namespace AcManager.Pages.Drive {
 
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
-                    WeatherId = SelectedWeatherObject?.Id,
+                    WeatherId = SelectedWeather is WeatherTypeWrapped wrapped ? $@"*{((int)wrapped.Type).ToInvariantString()}" : SelectedWeatherObject?.Id,
 
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
@@ -443,10 +444,16 @@ namespace AcManager.Pages.Drive {
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
                     if (_weatherId != null) {
                         SelectedWeather = WeatherManager.Instance.GetById(_weatherId);
-                    } else if (o.WeatherId != null) {
-                        SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
-                    } else {
+                    } else if (o.WeatherId == null) {
                         SelectedWeather = RandomWeather;
+                    } else if (o.WeatherId.StartsWith(@"*")) {
+                        try {
+                            SelectedWeather = new WeatherTypeWrapped((WeatherType)(FlexibleParser.TryParseInt(o.WeatherId.Substring(1)) ?? 0));
+                        } catch (Exception e) {
+                            Logging.Error(e);
+                        }
+                    } else {
+                        SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
                     }
 
                     if (o.TrackPropertiesPresetFilename != null && o.TrackPropertiesData != null) {

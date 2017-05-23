@@ -44,24 +44,8 @@ namespace AcManager.Tools.AcManagersNew {
             Directories.Subscribe(this);
         }
 
-        protected virtual string GetObjectLocation(string filename, out bool inner) {
-            var minLength = Math.Min(Directories.EnabledDirectory.Length,
-                    Directories.DisabledDirectory?.Length ?? int.MaxValue);
-
-            inner = false;
-            while (filename.Length > minLength) {
-                var parent = Path.GetDirectoryName(filename);
-                if (parent == null) return null;
-
-                if (parent == Directories.EnabledDirectory || parent == Directories.DisabledDirectory) {
-                    return filename;
-                }
-
-                inner = true;
-                filename = parent;
-            }
-
-            return null;
+        protected virtual string GetLocationByFilename(string filename, out bool inner) {
+            return Directories.GetLocationByFilename(filename, out inner);
         }
 
         protected override async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
@@ -91,8 +75,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         private readonly Dictionary<string, WatchingTask> _watchingTasks = new Dictionary<string, WatchingTask>();
-        
-        private WatchingTask GetWatchingTask(string location) {
+
+        protected WatchingTask GetWatchingTask(string location) {
             lock (_watchingTasks) {
                 if (!_watchingTasks.ContainsKey(location)) {
                     _watchingTasks[location] = new WatchingTask(location, this);
@@ -110,7 +94,7 @@ namespace AcManager.Tools.AcManagersNew {
 #endif
             string id;
             try {
-                id = LocationToId(dir);
+                id = Directories.GetId(dir);
             } catch (Exception) {
                 // can’t get location from id
                 return;
@@ -153,7 +137,7 @@ namespace AcManager.Tools.AcManagersNew {
                             obj.Reload();
                         }
                     } else if (FileUtils.Exists(dir) && Filter(dir)) {
-                        id = LocationToId(FileUtils.GetOriginalFilename(dir));
+                        id = Directories.GetId(FileUtils.GetOriginalFilename(dir));
                         obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
@@ -185,7 +169,7 @@ namespace AcManager.Tools.AcManagersNew {
                     }
 
                     if (FileUtils.Exists(change.NewLocation)) {
-                        obj = CreateAndLoadAcObject(LocationToId(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
+                        obj = CreateAndLoadAcObject(Directories.GetId(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
                     }
@@ -214,10 +198,10 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             bool inner;
-            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
-            var objectId = LocationToId(objectLocation);
+            var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
                 if (GetWrapperById(objectId) != null) {
                     GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
@@ -234,15 +218,19 @@ namespace AcManager.Tools.AcManagersNew {
             OnChanged(e.FullPath);
         }
 
+        protected virtual void OnCreatedIgnored(string filename) {}
+
         private void OnCreated(string fullPath) {
             bool inner;
-            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
-            var objectId = LocationToId(objectLocation);
+            var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
                 if (GetWrapperById(objectId) != null) {
                     GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
+                }else {
+                    OnCreatedIgnored(fullPath);
                 }
                 return;
             }
@@ -273,15 +261,19 @@ namespace AcManager.Tools.AcManagersNew {
             OnCreated(e.FullPath);
         }
 
+        protected virtual void OnDeletedIgnored(string filename, string pseudoId) {}
+
         private void OnDeleted(string fullPath) {
             bool inner;
-            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            var objectLocation = GetLocationByFilename(fullPath, out inner)?.ToLowerInvariant();
             if (objectLocation == null) return;
 
-            var objectId = LocationToId(objectLocation);
+            var objectId = Directories.GetId(objectLocation);
             if (!Filter(objectId, objectLocation)) {
                 if (GetWrapperById(objectId) != null) {
                     GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Deleted, null, fullPath);
+                } else {
+                    OnDeletedIgnored(fullPath, objectId);
                 }
                 return;
             }
@@ -304,7 +296,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             OnDeleted(e.FullPath);
         }
-        
+
         void IDirectoryListener.FileOrDirectoryRenamed(object sender, RenamedEventArgs e) {
             if (ShouldIgnoreChanges()) return;
 

@@ -1,131 +1,88 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    internal sealed class ReplayReader : BinaryReader {
-        public ReplayReader(string filename)
-            : this(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096)) { }
-
-        public ReplayReader(Stream input)
-            : base(input) { }
-
-        public string ReadString(int limit) {
-            var length = ReadInt32();
-            if (length > limit) {
-                throw new Exception(ToolsStrings.ReplayReader_UnsupportedFormat);
-            }
-
-            return Encoding.ASCII.GetString(ReadBytes(length));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsStringCharacter(int c) {
-            return c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '_' || c >= 'A' && c <= 'Z';
-        }
-
-        [CanBeNull]
-        public string TryToReadNextString() {
-            var stream = BaseStream;
-
-            const int l = 2048;
-            var b = new byte[l + 4];
-            int bytesRead;
-            while ((bytesRead = stream.Read(b, 4, l)) > 0) {
-                var i = 3;
-                while (i < bytesRead) {
-                    if (!IsStringCharacter(b[i])) {
-                        i += 4;
-                    } else if (!IsStringCharacter(b[i - 1])) {
-                        i += 3;
-                    } else if (!IsStringCharacter(b[i - 2])) {
-                        i += 2;
-                    } else if (!IsStringCharacter(b[i - 3])) {
-                        ++i;
-                    } else {
-                        var sb = new StringBuilder();
-                        for (i = i - 3; i < bytesRead; i++) {
-                            var n = b[i];
-                            if (IsStringCharacter(n)) {
-                                sb.Append((char)n);
-                            } else {
-                                break;
-                            }
-                        }
-
-                        if (i == bytesRead) {
-                            int n;
-                            while ((n = stream.ReadByte()) != -1) {
-                                if (IsStringCharacter(n)) {
-                                    sb.Append((char)n);
-                                } else {
-                                    BaseStream.Seek(-1, SeekOrigin.Current);
-                                    break;
-                                }
-                            }
-                        } else {
-                            BaseStream.Seek(i - bytesRead - 4, SeekOrigin.Current);
-                        }
-
-                        return sb.ToString();
-                    }
-                }
-
-                b[0] = b[l];
-                b[1] = b[l + 1];
-                b[2] = b[l + 2];
-                b[3] = b[l + 3];
-            }
-
-            return null;
-        }
-
-        public override string ReadString() {
-            return ReadString(256);
-        }
-    }
-
     public class ReplayObject : AcCommonSingleFileObject {
         public static string PreviousReplayName => @"cr";
         public const string ReplayExtension = ".acreplay";
 
         public override string Extension => ReplayExtension;
 
-        public ReplayObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+        [CanBeNull]
+        public string Category { get; }
 
-        protected override Task RenameAsync() {
-            return RenameAsync(SettingsHolder.Drive.AutoAddReplaysExtension ? Name + Extension : Name);
+        public ReplayObject(IFileAcManager manager, string id, bool enabled)
+                : base(manager, id, enabled) {
+            Category = Path.GetDirectoryName(id);
+            if (string.IsNullOrWhiteSpace(Category)) Category = null;
+        }
+
+        protected override string GetNewId(string newName) {
+            var fileName = SettingsHolder.Drive.AutoAddReplaysExtension ? newName + Extension : newName;
+            return Category == null ? fileName : Path.Combine(Category, fileName);
         }
 
         public override bool HandleChangedFile(string filename) {
             if (string.Equals(filename, Location, StringComparison.OrdinalIgnoreCase)) {
-                Size = new FileInfo(Location).Length;
+                Reload();
             }
 
             return true;
         }
 
         public override string Name {
-            get { return base.Name; }
+            get => base.Name;
             protected set {
                 ErrorIf(value == null || value.Contains("[") || value.Contains("]"), AcErrorType.Replay_InvalidName);
                 base.Name = value;
             }
         }
 
-        protected override void LoadOrThrow() {
-            base.LoadOrThrow();
+        /*public async Task ReplaceWeather(string newWeatherId) {
+            var temporary = FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(Location) ?? "", "tmp"));
+            using (var reader = new ReplayReader(Location)) {
+                var version = reader.ReadInt32();
+                if (version < 14) {
+                    throw new Exception("Unsupported version of replay");
+                }
 
-            Size = new FileInfo(Location).Length;
+                var something = reader.ReadBytes(8);
+                reader.ReadString();
+
+                using (var stream = File.Open(temporary, FileMode.CreateNew, FileAccess.ReadWrite))
+                using (var updated = new BinaryWriter(File.Open(temporary, FileMode.CreateNew, FileAccess.ReadWrite), Encoding.ASCII, true)) {
+                    updated.Write(version);
+                    updated.Write(something);
+                    updated.Write(newWeatherId.Length);
+                    updated.Write(Encoding.ASCII.GetBytes(newWeatherId));
+                    await reader.CopyToAsync(stream).ConfigureAwait(false);
+                }
+
+                FileUtils.Recycle(Location);
+                File.Move(temporary, Location);
+            }
+        }*/
+
+        protected override void LoadOrThrow() {
+            OldName = Path.GetFileName(Id).ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
+            Name = OldName;
+
+            var fileInfo = new FileInfo(Location);
+            if (!fileInfo.Exists) {
+                throw new AcErrorException(this, AcErrorType.Load_Base, "File appears to be deleted");
+            }
+
+            Size = fileInfo.Length;
 
             if (Id == PreviousReplayName) {
                 IsNew = true;
@@ -137,19 +94,32 @@ namespace AcManager.Tools.Objects {
                 using (var reader = new ReplayReader(Location)) {
                     var version = reader.ReadInt32();
 
-                    if (version >= 0xe) {
-                        reader.ReadBytes(8);
+                    if (version >= 14) {
+                        reader.Skip(8);
 
                         WeatherId = reader.ReadString();
+                        /*if (!string.IsNullOrWhiteSpace(WeatherId)) {
+                            ErrorIf(WeatherManager.Instance.GetWrapperById(WeatherId) == null,
+                                    AcErrorType.Replay_WeatherIsMissing, WeatherId);
+                        }*/
+
                         TrackId = reader.ReadString();
                         TrackConfiguration = reader.ReadString();
                     } else {
                         TrackId = reader.ReadString();
                     }
-                    
-                    ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null, AcErrorType.Replay_TrackIsMissing, TrackId);
+
+                    ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null,
+                            AcErrorType.Replay_TrackIsMissing, TrackId);
 
                     CarId = reader.TryToReadNextString();
+
+                    if (!string.IsNullOrWhiteSpace(CarId)) {
+                        ErrorIf(CarsManager.Instance.GetWrapperById(CarId) == null,
+                                AcErrorType.Replay_CarIsMissing, CarId);
+                    }
+
+                    Logging.Debug($"{Id}: pos: 0x{reader.Position:X}");
                     try {
                         DriverName = reader.ReadString();
                         reader.ReadInt64();
@@ -158,6 +128,7 @@ namespace AcManager.Tools.Objects {
                         // ignored
                     }
                 }
+
                 ParsedSuccessfully = true;
             } catch (Exception e) {
                 ParsedSuccessfully = false;
@@ -165,7 +136,12 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string DisplayName => Id == PreviousReplayName && Name == PreviousReplayName ? ToolsStrings.ReplayObject_PreviousSession : base.DisplayName;
+        public override string DisplayName =>
+                Category != null
+                        ? $"[{Category}] {base.DisplayName}"
+                        : Id == PreviousReplayName && Name == PreviousReplayName
+                                ? ToolsStrings.ReplayObject_PreviousSession
+                                : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;
@@ -178,7 +154,7 @@ namespace AcManager.Tools.Objects {
         private bool _parsedSuccessfully;
 
         public bool ParsedSuccessfully {
-            get { return _parsedSuccessfully; }
+            get => _parsedSuccessfully;
             set {
                 if (Equals(value, _parsedSuccessfully)) return;
                 _parsedSuccessfully = value;
@@ -190,7 +166,7 @@ namespace AcManager.Tools.Objects {
         private string _weatherId;
 
         public string WeatherId {
-            get { return _weatherId; }
+            get => _weatherId;
             set {
                 if (Equals(value, _weatherId)) return;
                 _weatherId = value;
@@ -201,7 +177,7 @@ namespace AcManager.Tools.Objects {
         private string _carId;
 
         public string CarId {
-            get { return _carId; }
+            get => _carId;
             set {
                 if (Equals(value, _carId)) return;
                 _carId = value;
@@ -212,7 +188,7 @@ namespace AcManager.Tools.Objects {
         private string _carSkinId;
 
         public string CarSkinId {
-            get { return _carSkinId; }
+            get => _carSkinId;
             set {
                 if (Equals(value, _carSkinId)) return;
                 _carSkinId = value;
@@ -223,7 +199,7 @@ namespace AcManager.Tools.Objects {
         private string _driverName;
 
         public string DriverName {
-            get { return _driverName; }
+            get => _driverName;
             set {
                 if (Equals(value, _driverName)) return;
                 _driverName = value;
@@ -234,7 +210,7 @@ namespace AcManager.Tools.Objects {
         private string _trackId;
 
         public string TrackId {
-            get { return _trackId; }
+            get => _trackId;
             set {
                 if (Equals(value, _trackId)) return;
                 _trackId = value;
@@ -245,7 +221,7 @@ namespace AcManager.Tools.Objects {
         private string _trackConfiguration;
 
         public string TrackConfiguration {
-            get { return _trackConfiguration; }
+            get => _trackConfiguration;
             set {
                 if (Equals(value, _trackConfiguration)) return;
                 _trackConfiguration = value;
@@ -256,7 +232,7 @@ namespace AcManager.Tools.Objects {
         private long _size;
 
         public long Size {
-            get { return _size; }
+            get => _size;
             set {
                 if (Equals(value, _size)) return;
                 _size = value;
@@ -264,14 +240,14 @@ namespace AcManager.Tools.Objects {
             }
         }
         #endregion
-        
+
         // Bunch of temporary fields for filtering
 
         private CarObject _car;
 
         [CanBeNull]
         internal CarObject Car => _car ?? (_car = CarId == null ? null : CarsManager.Instance.GetById(CarId));
-        
+
         private CarSkinObject _carSkin;
 
         [CanBeNull]

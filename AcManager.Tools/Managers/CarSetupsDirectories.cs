@@ -13,35 +13,37 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Tools.Managers {
     internal class CarSetupsDirectories : IAcDirectories, IDirectoryListener {
         public CarSetupsDirectories(CarObject car) {
-            EnabledDirectory = FileUtils.GetCarSetupsDirectory(car.Id);
+            _enabledDirectory = FileUtils.GetCarSetupsDirectory(car.Id);
         }
 
-        public string EnabledDirectory { get; }
-
-        public string DisabledDirectory => null;
+        private readonly string _enabledDirectory;
 
         public bool Actual => true;
-
-        public IEnumerable<string> GetSubDirectories() {
-            throw new NotSupportedException();
-        }
-
-        public IEnumerable<string> GetSubDirectories(string searchPattern) {
-            throw new NotSupportedException();
-        }
-
-        public IEnumerable<string> GetSubFiles(string searchPattern) {
-            return Directory.Exists(EnabledDirectory)
-                    ? Directory.GetDirectories(EnabledDirectory).SelectMany(x => Directory.GetFiles(x, searchPattern))
-                    : new string[0];
-        }
 
         public bool CheckIfEnabled(string location) {
             return true;
         }
 
+        public IEnumerable<string> GetContent(Func<string, string[]> contentFromDirectoriesSelector) {
+            var enabledDirectory = _enabledDirectory;
+            return Directory.Exists(enabledDirectory) ? contentFromDirectoriesSelector(enabledDirectory) : new string[0];
+        }
+
+        public string GetId(string location) {
+            return FileUtils.GetRelativePath(location, _enabledDirectory);
+        }
+
+        public string GetLocationByFilename(string filename, out bool inner) {
+            inner = false;
+            return FileUtils.ArePathsEqual(Path.GetDirectoryName(filename), _enabledDirectory) ? filename : null;
+        }
+
+        public string GetUniqueId(string preferredId, string postfix, bool forcePostfix, int startFrom) {
+            return Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(_enabledDirectory, preferredId), postfix, forcePostfix, startFrom));
+        }
+
         public string GetLocation(string id, bool enabled) {
-            return Path.Combine(EnabledDirectory, id);
+            return Path.Combine(_enabledDirectory, id);
         }
 
         private List<IDirectoryListener> _subscribed;
@@ -57,8 +59,7 @@ namespace AcManager.Tools.Managers {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TestArgs(FileSystemEventArgs e) {
-            return e.FullPath.StartsWith(EnabledDirectory, StringComparison.OrdinalIgnoreCase) ||
-                   DisabledDirectory != null && e.FullPath.StartsWith(DisabledDirectory, StringComparison.OrdinalIgnoreCase);
+            return e.FullPath.StartsWith(_enabledDirectory, StringComparison.OrdinalIgnoreCase);
         }
 
         public void FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {
@@ -96,7 +97,7 @@ namespace AcManager.Tools.Managers {
             if (_watcher == null) {
                 _watcher = new DirectoryWatcher(FileUtils.GetCarSetupsDirectory());
                 _watcher.Subscribe(new InternalListener());
-                Logging.Write("[CarSetupsDirectories.InternalListener] Start watching…");
+                Logging.Write("[CarSetupsDirectories.InternalListener] Start watchingâ€¦");
             }
 
             Listeners.Purge();
@@ -111,7 +112,7 @@ namespace AcManager.Tools.Managers {
                 if (Listeners.Any()) return true;
 
                 DisposeHelper.Dispose(ref _watcher);
-                Logging.Write("[CarSetupsDirectories.InternalListener] Stop watching…");
+                Logging.Write("[CarSetupsDirectories.InternalListener] Stop watchingâ€¦");
                 return false;
             }
 

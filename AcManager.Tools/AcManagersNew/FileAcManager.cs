@@ -46,22 +46,15 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        [NotNull]
-        protected virtual string LocationToId(string directory) {
-            var name = Path.GetFileName(directory);
-            if (name == null) throw new Exception(ToolsStrings.AcObject_CannotGetId);
-            return name;
-        }
-
         public abstract IAcDirectories Directories { get; }
 
         protected bool Filter(string filename) {
-            return Filter(LocationToId(filename), filename);
+            return Filter(Directories.GetId(filename), filename);
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
-            return Directories.GetSubDirectories().Select(dir => {
-                var id = LocationToId(dir);
+            return Directories.GetContentDirectories().Select(dir => {
+                var id = Directories.GetId(dir);
                 return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
             }).NonNull();
         }
@@ -81,7 +74,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        protected virtual async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation, 
+        protected virtual async Task MoveOverrideAsync(string oldId, string newId, string oldLocation, string newLocation,
                 IEnumerable<Tuple<string, string>> attachedOldNew, bool newEnabled) {
             AssertId(newId);
 
@@ -133,25 +126,31 @@ namespace AcManager.Tools.AcManagersNew {
 
         public async Task RenameAsync([NotNull] string oldId, [NotNull] string newId, bool newEnabled) {
             if (!Directories.Actual) return;
-            if (oldId == null) throw new ArgumentNullException(nameof(oldId));
+            if (oldId == null) {
+                throw new ArgumentNullException(nameof(oldId));
+            }
+
+            if (GetWrapperById(newId) != null) {
+                throw new ToggleException("Object with the same ID already exists.");
+            }
 
             // find object which is being renamed
             var wrapper = GetWrapperById(oldId);
             var obj = wrapper?.Value as T;
-            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(oldId));
-
-            // new location for it…
-            var newDirectory = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (newDirectory == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
+            if (obj == null) {
+                throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(oldId));
+            }
 
             // files to move
             var currentLocation = obj.Location;
-            var newLocation = Path.Combine(newDirectory, newId);
+            var newLocation = Directories.GetLocation(newId, newEnabled);
             if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
             var currentAttached = GetAttachedFiles(currentLocation).NonNull().ToList();
             var newAttached = GetAttachedFiles(newLocation).NonNull().ToList();
-            if (newAttached.Any(FileUtils.Exists)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
+            if (newAttached.Any(FileUtils.Exists)) {
+                throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
+            }
 
             // let’s move!
             try {
@@ -172,13 +171,15 @@ namespace AcManager.Tools.AcManagersNew {
             var obj = wrapper?.Value as T;
             if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(oldId));
 
-            // new location for it…
-            var newDirectory = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (newDirectory == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
-
             // files to move
             var currentLocation = obj.Location;
-            var newLocation = Path.Combine(newDirectory, newId);
+            string newLocation;
+            try {
+                newLocation = Directories.GetLocation(newId, newEnabled);
+            } catch (Exception) {
+                throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
+            }
+
             if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
             var currentAttached = GetAttachedFiles(currentLocation).NonNull().ToList();
@@ -214,7 +215,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var obj = GetById(id);
             if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
-            
+
             return DeleteOverrideAsync(id, obj.Location, GetAttachedFiles(obj.Location).NonNull());
         }
 

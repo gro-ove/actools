@@ -11,7 +11,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.InnerHelpers {
-    internal class WatchingTask {
+    public class WatchingTask {
         public WatchingTask(string location, IWatchingChangeApplier applier) {
             _location = location;
             _applier = applier;

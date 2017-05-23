@@ -163,6 +163,8 @@ namespace AcManager.Tools.Managers {
 
         public override string SearchPattern => @"*.champ";
 
+        public override string[] AttachedExtensions => UserChampionshipObject.ExtraExtensions;
+
         protected override string CheckIfIdValid(string id) {
             if (!id.EndsWith(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase)) {
                 return $"ID should end with “{UserChampionshipObject.FileExtension}”.";
@@ -182,30 +184,6 @@ namespace AcManager.Tools.Managers {
                    !filename.EndsWith(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override string GetObjectLocation(string filename, out bool inner) {
-            var minLength = Math.Min(Directories.EnabledDirectory.Length,
-                    Directories.DisabledDirectory?.Length ?? int.MaxValue);
-
-            inner = false;
-            while (filename.Length > minLength) {
-                var parent = Path.GetDirectoryName(filename);
-                if (parent == null) return null;
-
-                if (parent == Directories.EnabledDirectory || parent == Directories.DisabledDirectory) {
-                    var special = UserChampionshipObject.ExtraExtensions.FirstOrDefault(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
-                    if (special == null) return filename;
-
-                    inner = true;
-                    return filename.ApartFromLast(special, StringComparison.OrdinalIgnoreCase) + UserChampionshipObject.FileExtension;
-                }
-
-                inner = true;
-                filename = parent;
-            }
-
-            return null;
-        }
-
         public override IEnumerable<string> GetAttachedFiles(string location) {
             yield return location.ApartFromLast(UserChampionshipObject.FileExtension, StringComparison.OrdinalIgnoreCase) +
                     UserChampionshipObject.FileDataExtension;
@@ -215,7 +193,7 @@ namespace AcManager.Tools.Managers {
 
         public IAcObjectNew AddNew(string id = null) {
             var newId = Guid.NewGuid() + UserChampionshipObject.FileExtension;
-            var filename = Path.Combine(Directories.EnabledDirectory, newId);
+            var filename = Directories.GetLocation(newId, true);
 
             if (File.Exists(filename)) {
                 throw new InformativeException("Can’t add a new object", "This ID is already taken.");

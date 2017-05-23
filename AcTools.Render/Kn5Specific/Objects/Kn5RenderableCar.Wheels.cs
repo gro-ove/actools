@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _steerDeg;
 
         public float SteerDeg {
-            get => _steerDeg;
+            get { return _steerDeg; }
             set {
                 value = value.Clamp(-50f, 50f).Round(0.1f);
                 if (Equals(value, _steerDeg)) return;
@@ -79,14 +79,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 }
             }
 
-            baseMatrix = _currentLodObject.GetOriginalLocalMatrix(node);
+            baseMatrix = _currentLodObject.GetOriginalRelativeToModelMatrix(node);
 
             BaseMatrixSet:
-            baseMatrix.Decompose(out var scale, out var rotation, out var position);
+            Vector3 position, scale;
+            Quaternion rotation;
+            baseMatrix.Decompose(out scale, out rotation, out position);
 
             var rotationAxis = Vector3.Normalize(axis.Item2 - axis.Item1);
             var p = new Plane(position, rotationAxis);
-            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out var con)) {
+            Vector3 con;
+            if (!Plane.Intersects(p, axis.Item1 - rotationAxis * 10f, axis.Item2 + rotationAxis * 10f, out con)) {
                 AcToolsLogging.Write("10f is not enough!?");
                 return null;
             }
@@ -132,8 +135,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var wheelMatrix = callback(wheel);
             if (!wheelMatrix.HasValue) return result;
 
-            //wheel.LocalMatrix = wheelMatrix.Value;
-
             foreach (var node in
                     (c?.Dummies ?? ((RenderableList)parent).GetAllChildren().OfType<Kn5RenderableList>()).Where(x => names.NonNull().Contains(x.Name))) {
                 Vector3 translation, scale;
@@ -177,6 +178,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (axis == null) return;
 
             var namePostfix = left ? "LF" : "RF";
+            UpdateModelMatrixInverted();
             EnsureOriginalRelativeToModelMatricesSaved(namePostfix);
 
             var range = (angle.Abs() / 30f).Saturate();
@@ -186,7 +188,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     pack.TranslateRelativeToCarModel(suspension, axis.Item1),
                     pack.TranslateRelativeToCarModel(suspension, axis.Item2));
 
-            UpdateModelMatrixInverted();
             SetWheelNodeMatrix(this, namePostfix, node => GetSteerWheelMatrix(left, node, axis, -angle), false);
         }
 
@@ -265,7 +266,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _alignWheelsByData;
 
         public bool AlignWheelsByData {
-            get => _alignWheelsByData;
+            get { return _alignWheelsByData; }
             set {
                 if (Equals(value, _alignWheelsByData)) return;
                 _alignWheelsByData = value;
@@ -287,7 +288,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _wheelsPosition;
 
         public float WheelsSpeedKph {
-            get => _wheelsSpeedKph;
+            get { return _wheelsSpeedKph; }
             set {
                 if (Equals(value, _wheelsSpeedKph)) return;
                 _wheelsSpeedKph = value;

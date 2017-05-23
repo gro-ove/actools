@@ -17,7 +17,7 @@ namespace AcManager.Tools.Managers {
             return GetById(v + PpFilterObject.FileExtension);
         }
 
-        public string DefaultFilename => Path.Combine(Directories.EnabledDirectory, "default.ini");
+        public string DefaultFilename => Directories.GetLocation("default.ini", true);
 
         public override string SearchPattern => @"*.ini";
 

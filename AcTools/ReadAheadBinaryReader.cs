@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace AcTools {
@@ -10,7 +11,7 @@ namespace AcTools {
     /// works in ACSII encoding (todo: fix), has minified amount of different checks. Also, has
     /// some additional methods for skipping and seeking, which, if possible, won’t call Seek()
     /// of underlying Stream at all and would only change cursor in cached data instead.
-    /// 
+    ///
     /// Mostly, was made for Kunos binary files.
     /// </summary>
     public class ReadAheadBinaryReader : IDisposable {
@@ -22,8 +23,8 @@ namespace AcTools {
         private long? _length;
 
         public long Position {
-            get { return _stream.Position - _left; }
-            set { Seek(value, SeekOrigin.Begin); }
+            get => _stream.Position - _left;
+            set => Seek(value, SeekOrigin.Begin);
         }
 
         public long Length => _length ?? (_length = _stream.Length).Value;
@@ -62,8 +63,8 @@ namespace AcTools {
             public override long Length => _parent.Length;
 
             public override long Position {
-                get { return _parent.Position; }
-                set { _parent.Seek(value, SeekOrigin.Begin); }
+                get => _parent.Position;
+                set => _parent.Seek(value, SeekOrigin.Begin);
             }
         }
 
@@ -80,6 +81,16 @@ namespace AcTools {
             _stream = stream;
             _buffer = new byte[bufferSize];
             _left = 0;
+        }
+
+        public async Task CopyToAsync(Stream stream) {
+            if (_left > 0) {
+                await _stream.WriteAsync(_buffer, _total - _left, _left).ConfigureAwait(false);
+            }
+
+            await _baseSteam.CopyToAsync(stream).ConfigureAwait(false);
+            _left = 0;
+            _total = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -228,8 +239,8 @@ namespace AcTools {
 
                 var read = _stream.Read(destination, offset, count);
                 if (read != count) throw new Exception("Unexpected end");
-                
-                _left = 0;
+
+                _left = _total = 0;
             }
 
             return count;
@@ -240,6 +251,10 @@ namespace AcTools {
         }
 
         public long Seek(long offset, SeekOrigin seekOrigin) {
+            if (_left == 0) {
+                // return _stream.Seek(offset, seekOrigin);
+            }
+
             var current = Position;
             long target;
 

@@ -37,7 +37,7 @@ namespace AcManager.Pages.Drive {
             private HierarchicalGroup _hierarchicalWeatherList;
 
             public HierarchicalGroup HierarchicalWeatherList {
-                get { return _hierarchicalWeatherList; }
+                get => _hierarchicalWeatherList;
                 set {
                     if (Equals(value, _hierarchicalWeatherList)) return;
                     _hierarchicalWeatherList = value;
@@ -80,6 +80,15 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private sealed class WeatherTypeWrapped : Displayable {
+                public WeatherType Type { get; }
+
+                public WeatherTypeWrapped(WeatherType type) {
+                    Type = type;
+                    DisplayName = type.GetDescription();
+                }
+            }
+
             private async Task UpdateHierarchicalWeatherList() {
                 await WeatherManager.Instance.EnsureLoadedAsync();
 
@@ -90,6 +99,11 @@ namespace AcManager.Pages.Drive {
                 } else {
                     if (WeatherList.Any(IsKunosWeather)) {
                         list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original, WeatherList.Where(IsKunosWeather)));
+                    }
+
+                    if (WeatherList.Any(x => x.Type != WeatherType.None)) {
+                        list.Add(new HierarchicalGroup("By Type", WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
+                                                                             .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
                     }
 
                     if (WeatherList.Any(IsGbwWeather)) {
@@ -114,7 +128,7 @@ namespace AcManager.Pages.Drive {
             #region User-set variables which define working mode
             private bool _realConditions;
             public bool RealConditions {
-                get { return _realConditions; }
+                get => _realConditions;
                 set {
                     if (Equals(value, _realConditions)) return;
                     _realConditions = value;
@@ -126,7 +140,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _realConditionsManualTime;
             public bool RealConditionsManualTime {
-                get { return _realConditionsManualTime; }
+                get => _realConditionsManualTime;
                 set {
                     if (value == _realConditionsManualTime) return;
                     _realConditionsManualTime = value;
@@ -138,7 +152,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _realConditionsLocalWeather;
             public bool RealConditionsLocalWeather {
-                get { return _realConditionsLocalWeather; }
+                get => _realConditionsLocalWeather;
                 set {
                     if (value == _realConditionsLocalWeather) return;
                     _realConditionsLocalWeather = value;
@@ -150,7 +164,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _realConditionsTimezones;
             public bool RealConditionsTimezones {
-                get { return _realConditionsTimezones; }
+                get => _realConditionsTimezones;
                 set {
                     if (value == _realConditionsTimezones) return;
                     _realConditionsTimezones = value;
@@ -165,7 +179,7 @@ namespace AcManager.Pages.Drive {
             private bool _manualTime;
 
             public bool ManualTime {
-                get { return _manualTime; }
+                get => _manualTime;
                 private set {
                     if (Equals(value, _manualTime)) return;
                     _manualTime = value;
@@ -182,7 +196,7 @@ namespace AcManager.Pages.Drive {
             private WeatherType _selectedWeatherType;
 
             public WeatherType SelectedWeatherType {
-                get { return _selectedWeatherType; }
+                get => _selectedWeatherType;
                 set {
                     if (Equals(value, _selectedWeatherType)) return;
                     _selectedWeatherType = value;
@@ -197,20 +211,24 @@ namespace AcManager.Pages.Drive {
             private object _selectedWeather;
 
             /// <summary>
-            /// Null for random weather.
+            /// Null for random weather, WeatherObject for specific weather, WeatherTypeWrapped for weather-by-type.
             /// </summary>
             [CanBeNull]
             public object SelectedWeather {
-                get { return _selectedWeather; }
+                get => _selectedWeather;
                 set {
                     if (Equals(value, _selectedWeather)) return;
                     _selectedWeather = value;
 
-                    var weatherObject = value as WeatherObject;
-                    SelectedWeatherObject = weatherObject;
+                    if (value is WeatherObject weatherObject) {
+                        SelectedWeatherObject = weatherObject;
+                    } else if (value is WeatherTypeWrapped weatherTypeWrapped) {
+                        SelectedWeatherObject = WeatherList.Where(x => x.Type == weatherTypeWrapped.Type).RandomElementOrDefault();
+                    }
 
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
+                    OnPropertyChanged(nameof(RecommendedRoadTemperature));
                     OnPropertyChanged(nameof(SelectedWeatherObject));
 
                     if (!RealConditions) {
@@ -251,7 +269,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public WeatherDescription RealWeather {
-                get { return _realWeather; }
+                get => _realWeather;
                 set {
                     if (Equals(value, _realWeather)) return;
                     _realWeather = value;
@@ -261,7 +279,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _isTimeClamped;
             public bool IsTimeClamped {
-                get { return _isTimeClamped; }
+                get => _isTimeClamped;
                 set {
                     if (value == _isTimeClamped) return;
                     _isTimeClamped = value;
@@ -271,7 +289,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _isTemperatureClamped;
             public bool IsTemperatureClamped {
-                get { return _isTemperatureClamped; }
+                get => _isTemperatureClamped;
                 set {
                     if (value == _isTemperatureClamped) return;
                     _isTemperatureClamped = value;
@@ -281,7 +299,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _isWeatherNotSupported;
             public bool IsWeatherNotSupported {
-                get { return _isWeatherNotSupported; }
+                get => _isWeatherNotSupported;
                 set {
                     if (value == _isWeatherNotSupported) return;
                     _isWeatherNotSupported = value;
@@ -316,7 +334,7 @@ namespace AcManager.Pages.Drive {
 
             // default limit: 10/36
             public double Temperature {
-                get { return _temperature; }
+                get => _temperature;
                 set {
                     value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
                             SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
@@ -341,7 +359,7 @@ namespace AcManager.Pages.Drive {
             private bool _randomTemperature;
 
             public bool RandomTemperature {
-                get { return _randomTemperature; }
+                get => _randomTemperature;
                 set {
                     if (Equals(value, _randomTemperature)) return;
                     _randomTemperature = value;
@@ -376,7 +394,7 @@ namespace AcManager.Pages.Drive {
             private bool _customRoadTemperature;
 
             public bool CustomRoadTemperature {
-                get { return _customRoadTemperature; }
+                get => _customRoadTemperature;
                 set {
                     if (Equals(value, _customRoadTemperature)) return;
                     _customRoadTemperature = value;
@@ -389,7 +407,7 @@ namespace AcManager.Pages.Drive {
             private double? _customRoadTemperatureValue;
 
             public double CustomRoadTemperatureValue {
-                get { return _customRoadTemperatureValue ?? RecommendedRoadTemperature; }
+                get => _customRoadTemperatureValue ?? RecommendedRoadTemperature;
                 set {
                     value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
                             SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
@@ -404,13 +422,14 @@ namespace AcManager.Pages.Drive {
             private int _time;
 
             public int Time {
-                get { return _time; }
+                get => _time;
                 set {
                     if (value == _time) return;
                     _time = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
+                    OnPropertyChanged(nameof(RecommendedRoadTemperature));
 
                     if (!RealConditions || RealConditionsManualTime) {
                         SaveLater();
@@ -425,7 +444,7 @@ namespace AcManager.Pages.Drive {
             private bool _randomTime;
 
             public bool RandomTime {
-                get { return _randomTime; }
+                get => _randomTime;
                 set {
                     if (Equals(value, _randomTime)) return;
                     _randomTime = value;
@@ -446,7 +465,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public string DisplayTime {
-                get { return $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+                get => $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
                 set {
                     int time;
                     if (!FlexibleParser.TryParseTime(value, out time)) return;
@@ -458,7 +477,7 @@ namespace AcManager.Pages.Drive {
             private int _windDirection;
 
             public int WindDirection {
-                get { return _windDirection; }
+                get => _windDirection;
                 set {
                     value = ((value % 360 + 360) % 360).Round();
                     if (Equals(value, _windDirection)) return;
@@ -473,14 +492,14 @@ namespace AcManager.Pages.Drive {
             }
 
             public int WindDirectionFlipped {
-                get { return (_windDirection + 180) % 360; }
-                set { WindDirection = (value - 180) % 360; }
+                get => (_windDirection + 180) % 360;
+                set => WindDirection = (value - 180) % 360;
             }
 
             private double _windSpeedMin;
 
             public double WindSpeedMin {
-                get { return _windSpeedMin; }
+                get => _windSpeedMin;
                 set {
                     value = value.Round(0.1);
                     if (Equals(value, _windSpeedMin)) return;
@@ -500,7 +519,7 @@ namespace AcManager.Pages.Drive {
             private double _windSpeedMax;
 
             public double WindSpeedMax {
-                get { return _windSpeedMax; }
+                get => _windSpeedMax;
                 set {
                     value = value.Round(0.1);
                     if (Equals(value, _windSpeedMax)) return;
@@ -563,7 +582,7 @@ namespace AcManager.Pages.Drive {
             private bool _randomWindSpeed;
 
             public bool RandomWindSpeed {
-                get { return _randomWindSpeed; }
+                get => _randomWindSpeed;
                 set {
                     if (Equals(value, _randomWindSpeed)) return;
                     _randomWindSpeed = value;
@@ -575,7 +594,7 @@ namespace AcManager.Pages.Drive {
             private bool _randomWindDirection;
 
             public bool RandomWindDirection {
-                get { return _randomWindDirection; }
+                get => _randomWindDirection;
                 set {
                     if (Equals(value, _randomWindDirection)) return;
                     _randomWindDirection = value;

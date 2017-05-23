@@ -230,9 +230,9 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
-            return Directories.GetSubDirectories(@"series*").Select(dir => {
-                var id = LocationToId(dir);
-                return Filter(id, dir) ? CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)) : null;
+            return Directories.GetContentDirectories(@"series*").Select(dir => {
+                var id = Directories.GetId(dir);
+                return Filter(id, dir) ? CreateAcPlaceholder(id, Directories.CheckIfEnabled(dir)) : null;
             }).NonNull();
         }
 

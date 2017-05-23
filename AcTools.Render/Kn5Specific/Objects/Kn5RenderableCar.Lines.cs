@@ -258,7 +258,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         Vector3.UnitX, new Color4(1f, 0f, 1f, 0f), radius: x.Radius);
                 var r = DebugLinesObject.GetLinesCircle(Matrix.Translation((x.IsLeft ? 0.5f : -0.5f) * Vector3.UnitX * x.Width),
                         Vector3.UnitX, new Color4(1f, 0f, 1f, 0f), radius: x.RimRadius);
-                return new CarDebugLinesObject(x.Name, new RenderableList(x.Name, Matrix.Translation(x.CenterSusp) * graphicMatrix) { a, b, r });
+
+                var matrix = Matrix.Translation(x.CenterWheel);
+
+                if (x.StaticToe != 0f) {
+                    matrix = Matrix.RotationY(-x.CenterWheel.X.Sign() * x.StaticToe.ToRadians()) * matrix;
+                }
+
+                if (x.StaticCamber != 0f) {
+                    matrix = Matrix.RotationZ(-x.CenterWheel.X.Sign() * x.StaticCamber.ToRadians()) * matrix;
+                }
+
+                return new CarDebugLinesObject(x.Name, new RenderableList(x.Name, matrix * graphicMatrix) { a, b, r });
             });
         });
         #endregion
@@ -366,7 +377,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 _wingsLines.DrawLines(this, holder, camera);
             }
         }
-        
+
         private void DrawText(string text, Matrix objectTransform, ICamera camera, Vector2 screenSize, Color4 color) {
             var onScreenPosition = Vector3.TransformCoordinate(Vector3.Zero, objectTransform * camera.ViewProj) * 0.5f +
                     new Vector3(0.5f);
@@ -381,11 +392,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (_debugText == null) {
                 _debugText = new TextBlockRenderer(sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16f);
             }
-            
+
             if (IsColliderVisible) {
                 _colliderLines.DrawLabels(this, camera, screenSize);
             }
-            
+
             if (AreWheelsContoursVisible) {
                 _wheelsLines.DrawLabels(this, camera, screenSize);
             }
@@ -393,11 +404,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (IsFuelTankVisible) {
                 _fuelTankLines.DrawLabels(this, camera, screenSize);
             }
-            
+
             if (AreFlamesVisible) {
                 _flamesLines.DrawLabels(this, camera, screenSize);
             }
-            
+
             if (AreWingsVisible) {
                 _wingsLines.DrawLabels(this, camera, screenSize);
             }
@@ -405,6 +416,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private TextBlockRenderer _debugText;
         #endregion
-        
+
     }
 }

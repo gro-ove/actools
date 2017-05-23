@@ -309,6 +309,7 @@
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\UserChampionshipsManager.cs" />
     <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
+    <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />
@@ -335,7 +336,7 @@
     <Compile Include="Managers\Online\OnlineManagerStatus.cs" />
     <Compile Include="Managers\Online\ServerEntry.cs" />
     <Compile Include="Managers\ServerPresetsManager.cs" />
-    <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
+    <Compile Include="Managers\Directories\AcDirectoriesBase.cs" />
     <Compile Include="Managers\Directories\IAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />

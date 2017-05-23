@@ -86,8 +86,7 @@ namespace AcManager.Tools {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
-                    var directory = FileUtils.EnsureUnique(Path.Combine(
-                            WeatherManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                    var directory = WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName());
                     Directory.CreateDirectory(directory);
 
                     var written = 0;
@@ -329,8 +328,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
-                    var filename = FileUtils.EnsureUnique(Path.Combine(
-                            PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                    var filename = PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName());
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     if (result == Choise.ApplyAndSave) {

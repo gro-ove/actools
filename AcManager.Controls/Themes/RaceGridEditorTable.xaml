@@ -196,7 +196,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="Detailed.AiDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding AiLevel, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding InputAiLevel, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                            Placeholder="Auto" Minimum="50" Maximum="100"
                            Mode="Integer" Style="{StaticResource Borderless.White}" />
         <DataTemplate.Triggers>
@@ -207,7 +207,7 @@
     </DataTemplate>
 
     <DataTemplate x:Key="Detailed.AggressionDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-        <mui:BetterTextBox x:Name="TextBox" Text="{Binding AiAggression, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+        <mui:BetterTextBox x:Name="TextBox" Text="{Binding InputAiAggression, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                            Placeholder="Auto" Minimum="0" Maximum="100"
                            Mode="Integer" Style="{StaticResource Borderless.White}" />
         <DataTemplate.Triggers>
@@ -261,9 +261,9 @@
                                                         Header="{x:Static co:ControlsStrings.TableHeader_Nationality}"
                                                         SortMemberPath="Nationality"
                                                         CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-                                <DataGridTemplateColumn Width="100" Header="Strength" SortMemberPath="AiLevel"
+                                <DataGridTemplateColumn Width="100" Header="Strength" SortMemberPath="InputAiLevel"
                                                         CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
-                                <DataGridTemplateColumn Width="100" Header="Aggression" SortMemberPath="AiAggression"
+                                <DataGridTemplateColumn Width="100" Header="Aggression" SortMemberPath="InputAiAggression"
                                                         CellTemplate="{StaticResource Detailed.AggressionDataTemplate}" />
                                 <DataGridTemplateColumn x:Name="PART_BallastColumn" Width="100" Header="Ballast"
                                                         SortMemberPath="Ballast"

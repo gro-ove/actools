@@ -76,7 +76,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     if (!_enumerator.MoveNext()) return false;
                     current = _enumerator.Current;
                 } while (!current.Key.StartsWith(_prefix));
-                
+
                 _current = new KeyValuePair<string, string>(current.Key.Substring(_prefix.Length), current.Value);
                 return true;
             }
@@ -294,7 +294,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 storage.Remove(key);
             }
         }
-        
+
         public static void Set([NotNull] this IStorage storage, [NotNull, LocalizationRequired(false)] string key, [NotNull] IReadOnlyDictionary<string, string> value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
             storage.SetStringList(key, value.SelectMany(x => new[] { x.Key, x.Value }));
@@ -724,7 +724,7 @@ namespace FirstFloor.ModernUI.Helpers {
             SetString(key, string.Join("\n", value.Select(Encode)));
         }
 
-        /* I know that this is not a proper protection or anything, but I just don’t want to save some
+        /* I know that this is not a proper protection or anything, but I just donâ€™t want to save some
             stuff plain-texted */
         private const string Something = "encisfinedontworry";
 

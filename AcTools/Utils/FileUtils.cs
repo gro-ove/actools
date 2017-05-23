@@ -430,14 +430,14 @@ namespace AcTools.Utils {
             return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
-        [Localizable(false)]
-        public static string EnsureUnique(string filename, string postfix, bool forcePostfix, int startWith = 1) {
+        [NotNull, Localizable(false)]
+        public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix, bool forcePostfix, int startFrom = 1) {
             if (!forcePostfix && !Exists(filename)) return filename;
-            
+
             var ext = Path.GetExtension(filename) ?? "";
             var start = filename.Substring(0, filename.Length - ext.Length);
 
-            for (var i = startWith; i < 99999; i++) {
+            for (var i = startFrom; i < 99999; i++) {
                 var result = start + string.Format(postfix, i) + ext;
                 if (!Exists(result)) return result;
             }
@@ -445,19 +445,19 @@ namespace AcTools.Utils {
             throw new Exception("Can’t find unique filename");
         }
 
-        [Localizable(false)]
-        public static string EnsureUnique(string filename, string postfix = "-{0}") {
+        [NotNull, Localizable(false)]
+        public static string EnsureUnique([NotNull] string filename, [NotNull] string postfix = "-{0}") {
             return EnsureUnique(filename, postfix, false);
         }
 
         public static void CopyRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
-                
+
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
                     Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
-                
+
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
                     File.Copy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
@@ -470,11 +470,11 @@ namespace AcTools.Utils {
         public static void HardlinkRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
-                
+
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
                     Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
-                
+
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
                     Hardlink(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
@@ -486,11 +486,11 @@ namespace AcTools.Utils {
         public static void HardlinkOrCopyRecursive(string source, string destination) {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
-                
+
                 foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
                     Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
-                
+
                 foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
                     HardlinkOrCopy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }

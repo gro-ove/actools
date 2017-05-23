@@ -38,8 +38,8 @@
             <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
                 <mui:DoubleSlider DockPanel.Dock="Bottom"
                                   Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
-                                  From="{Binding RaceGridViewModel.AiLevelMin, Converter={StaticResource SliderRoundConverter}}"
-                                  To="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}}"
+                                  From="{Binding RaceGridViewModel.AiLevelMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
+                                  To="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
                                   SmallChange="5" LargeChange="5" BindingMode="FromToFixed"
                                   mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}"
                                   mui:FancyHintsService.HorizontalAlignment="Center"
@@ -78,13 +78,13 @@
                 <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}"
                                       SecondValue="{Binding RaceGridViewModel.AiLevel}"
                                       Postfix='%' JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}"
-                                      Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="F0" />
+                                      Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="F1" />
             </DockPanel>
 
             <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">
                 <mui:DoubleSlider DockPanel.Dock="Bottom" Minimum="0" Maximum="100"
-                                  From="{Binding RaceGridViewModel.AiAggressionMin, Converter={StaticResource SliderRoundConverter}}"
-                                  To="{Binding RaceGridViewModel.AiAggression, Converter={StaticResource SliderRoundConverter}}"
+                                  From="{Binding RaceGridViewModel.AiAggressionMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
+                                  To="{Binding RaceGridViewModel.AiAggression, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
                                   SmallChange="5" LargeChange="5" BindingMode="FromToFixed" />
                 <mui:ContextMenuButton DockPanel.Dock="Right"
                                        Visibility="{Binding RaceGridViewModel.AiAggressionFixed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
@@ -119,7 +119,7 @@
                 <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}"
                                       SecondValue="{Binding RaceGridViewModel.AiAggression}"
                                       Postfix='%' JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}"
-                                      Content="Opponents aggression" RelativeRangeStringFormat="F0" />
+                                      Content="Opponents aggression" RelativeRangeStringFormat="F1" />
             </DockPanel>
 
             <!--<StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">

@@ -20,14 +20,14 @@ namespace AcManager.Pages.Selected {
     public partial class SelectedShowroomPage : ILoadableContent, IParametrizedUriContent {
         public class ViewModel : SelectedAcObjectViewModel<ShowroomObject> {
             public ViewModel([NotNull] ShowroomObject acObject) : base(acObject) {}
-            
+
             private ICommand _updatePreviewCommand;
             public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new DelegateCommand(UpdatePreview, () => SelectedObject.Enabled));
 
             private async void UpdatePreview() {
                 await Task.Run(() => {
                     const string sphereId = "__sphere";
-                    var sphereDirectory = Path.Combine(CarsManager.Instance.Directories.EnabledDirectory, sphereId);
+                    var sphereDirectory = CarsManager.Instance.Directories.GetLocation(sphereId, true);
 
                     try {
                         using (CarsManager.Instance.IgnoreChanges()) {
@@ -90,7 +90,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private string _id;
-        
+
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {

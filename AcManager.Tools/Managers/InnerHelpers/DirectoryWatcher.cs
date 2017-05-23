@@ -77,7 +77,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 _innerWatcher.EnableRaisingEvents = false;
                 _innerWatcher.Dispose();
                 _innerWatcher = null;
-                
+
                 lock (_listeners) {
                     foreach (var listener in _listeners) {
                         listener.FileOrDirectoryDeleted(this, new FileSystemEventArgs(WatcherChangeTypes.Deleted, TargetDirectory, null));
@@ -85,7 +85,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 }
             }
         }
-        
+
         public void Subscribe([NotNull] IDirectoryListener listener) {
             if (listener == null) throw new ArgumentNullException(nameof(listener));
             if (_failed) return;

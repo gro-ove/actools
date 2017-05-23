@@ -1,5 +1,5 @@
 ﻿namespace AcManager.Tools.Managers.InnerHelpers {
-    internal interface IWatchingChangeApplier {
+    public interface IWatchingChangeApplier {
         void ApplyChange(string location, WatchingChange change);
     }
 }

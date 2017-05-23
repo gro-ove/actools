@@ -109,7 +109,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public abstract bool HasData { get; }
-        
+
         public override string Name {
             get { return base.Name; }
             protected set {
@@ -242,45 +242,56 @@ namespace AcManager.Tools.AcObjectsNew {
             return FileAcManager.DeleteAsync(Id);
         }
 
-        public async Task ToggleAsync() {
+        public async Task<bool> ToggleAsync() {
             try {
                 await ToggleOverrideAsync();
+                return true;
             } catch (ToggleException ex) {
                 NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
+                return false;
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+                return false;
             }
         }
 
-        public async Task RenameAsync(string newId) {
+        public async Task<bool> RenameAsync(string newId) {
             try {
                 newId = newId?.Trim();
-                if (string.IsNullOrWhiteSpace(newId)) return;
+                if (string.IsNullOrWhiteSpace(newId)) return false;
+
                 await FileAcManager.RenameAsync(Id, newId, Enabled);
+                return true;
             } catch (ToggleException ex) {
                 NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotChangeIdExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
+                return false;
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.AcObject_CannotChangeId, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+                return false;
             }
         }
 
-        public async Task CloneAsync(string newId) {
+        public async Task<bool> CloneAsync(string newId) {
             try {
                 await FileAcManager.CloneAsync(Id, newId, Enabled);
+                return true;
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.AcObject_CannotClone, ToolsStrings.AcObject_CannotClone_Commentary, ex);
+                return false;
             }
         }
 
-        public async Task DeleteAsync() {
+        public async Task<bool> DeleteAsync() {
             try {
                 if (!SettingsHolder.Content.DeleteConfirmation ||
                         ModernDialog.ShowMessage(string.Format("Are you sure you want to move {0} to the Recycle Bin?", DisplayName), "Are You Sure?",
                                 MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     await DeleteOverrideAsync();
                 }
+                return true;
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+                return false;
             }
         }
 
@@ -290,7 +301,7 @@ namespace AcManager.Tools.AcObjectsNew {
         /// Using for remembering selected item when its ID is changed.
         /// </summary>
         public string PreviousId { get; internal set; }
-        
+
         protected void OnImageChanged(string propertyName) {
             OnPropertyChanged(propertyName);
             BetterImage.ReloadImage((string)GetType().GetProperty(propertyName)?.GetValue(this, null));

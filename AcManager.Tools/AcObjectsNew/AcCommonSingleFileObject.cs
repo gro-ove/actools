@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcCommonSingleFileObject : AcCommonObject {
@@ -10,20 +12,34 @@ namespace AcManager.Tools.AcObjectsNew {
         protected AcCommonSingleFileObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
 
-        private string _oldName;
+        protected string OldName;
 
         protected override void LoadOrThrow() {
-            _oldName = Id.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
-            Name = _oldName;
+            OldName = Id.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
+            Name = OldName;
         }
 
-        protected virtual Task RenameAsync() {
-            return RenameAsync(Name + Extension);
+        protected virtual string GetNewId([NotNull] string newName) {
+            return newName + Extension;
+        }
+
+        protected async Task RenameAsync() {
+            var name = Name;
+            if (string.IsNullOrWhiteSpace(name)) return;
+
+            var oldName = OldName;
+            if (!await RenameAsync(GetNewId(name))) {
+                var c = Changed;
+                Name = oldName;
+                Changed = c;
+            } else {
+                OldName = name;
+            }
         }
 
         public override void Save() {
-            if (_oldName != Name) {
-                RenameAsync();
+            if (OldName != Name) {
+                RenameAsync().Forget();
             }
         }
 

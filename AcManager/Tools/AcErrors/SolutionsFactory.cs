@@ -334,6 +334,7 @@ namespace AcManager.Tools.AcErrors {
 
 
                 case AcErrorType.Replay_TrackIsMissing:
+                case AcErrorType.Replay_CarIsMissing:
                     return new[] {
                         new MultiSolution(
                                 AppStrings.Solution_RemoveReplay,
@@ -342,6 +343,30 @@ namespace AcManager.Tools.AcErrors {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
                     };
+
+                /*case AcErrorType.Replay_WeatherIsMissing:
+                    return new ISolution[] {
+                        new AsyncSolution(
+                                "Change weather",
+                                "Pick a new weather to replace the old one",
+                                async e => {
+                                    await WeatherManager.Instance.EnsureLoadedAsync();
+                                    var newWeatherId = Prompt.Show("Pick a new weather ID", "Replace Weather In Replay",
+                                            WeatherManager.Instance.GetDefault()?.Id, required: true, suggestionsFixed: true,
+                                            suggestions: WeatherManager.Instance.EnabledOnly.Select(x => x.Id).ToArray());
+                                    if (string.IsNullOrWhiteSpace(newWeatherId) || WeatherManager.Instance.GetWrapperById(newWeatherId) == null) {
+                                        throw new SolvingException();
+                                    }
+
+                                    await ((ReplayObject)e.Target).ReplaceWeather(newWeatherId);
+                                }),
+                        new MultiSolution(
+                                AppStrings.Solution_RemoveReplay,
+                                AppStrings.Solution_RemoveReplay_Details,
+                                e => {
+                                    e.Target.DeleteCommand.Execute(null);
+                                })
+                    };*/
 
                 case AcErrorType.Replay_InvalidName:
                     return new[] {

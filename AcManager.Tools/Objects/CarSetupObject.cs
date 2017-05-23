@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
             if (lhsParent == null && rhsParent == null || lhsParent == rhsParent) {
                 return DisplayName.InvariantCompareTo(c.DisplayName);
             }
-            
+
             return lhsParent.InvariantCompareTo(rhsParent);
         }
 
@@ -164,8 +164,8 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        protected override Task RenameAsync() {
-            return RenameAsync(Path.Combine(Track?.Id ?? GenericDirectory, Name + Extension));
+        protected override string GetNewId(string newName) {
+            return Path.Combine(Track?.Id ?? GenericDirectory, newName + Extension);
         }
 
         public override void Save() {

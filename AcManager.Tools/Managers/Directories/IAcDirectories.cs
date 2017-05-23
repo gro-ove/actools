@@ -1,28 +1,52 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using AcManager.Tools.Managers.InnerHelpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
     public interface IAcDirectories : IDisposable {
-        [NotNull]
-        string EnabledDirectory { get; }
-
-        [CanBeNull]
-        string DisabledDirectory { get; }
-
         bool Actual { get; }
-
-        IEnumerable<string> GetSubDirectories();
-
-        IEnumerable<string> GetSubDirectories(string searchPattern);
-
-        IEnumerable<string> GetSubFiles(string searchPattern);
-
-        string GetLocation([NotNull] string id, bool enabled);
 
         bool CheckIfEnabled([NotNull] string location);
 
+        /// <summary>
+        /// For internal use in Extension.
+        /// </summary>
+        [NotNull, ItemNotNull]
+        IEnumerable<string> GetContent([NotNull] Func<string, string[]> contentFromDirectoriesSelector);
+
+        [NotNull]
+        string GetId([NotNull] string location);
+
+        [NotNull]
+        string GetLocation([NotNull] string id, bool enabled);
+
+        [CanBeNull]
+        string GetLocationByFilename([NotNull] string filename, out bool inner);
+
+        [NotNull]
+        string GetUniqueId([NotNull] string preferredId,
+                [NotNull] string postfix = "-{0}", bool forcePostfix = false, int startFrom = 1);
+
         void Subscribe(IDirectoryListener listener);
+    }
+
+    public static class AcDirectoriesExtension {
+        public static string GetMainDirectory(this IAcDirectories directories) {
+            return Path.GetFileName(directories.GetLocation(@"_", true));
+        }
+
+        public static IEnumerable<string> GetContentDirectories(this IAcDirectories directories) {
+            return directories.GetContent(Directory.GetDirectories);
+        }
+
+        public static IEnumerable<string> GetContentDirectories(this IAcDirectories directories, string searchPattern) {
+            return directories.GetContent(x => Directory.GetDirectories(x, searchPattern));
+        }
+
+        public static IEnumerable<string> GetContentFiles(this IAcDirectories directories, string searchPattern) {
+            return directories.GetContent(x => Directory.GetFiles(x, searchPattern));
+        }
     }
 }

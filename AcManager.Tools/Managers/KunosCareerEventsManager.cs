@@ -48,9 +48,9 @@ namespace AcManager.Tools.Managers {
         protected override IEnumerable<AcPlaceholderNew> ScanOverride() {
             if (OptionIgnoreSkippedEvents) return base.ScanOverride();
 
-            var entries = Directories.GetSubDirectories().Select(x => new {
+            var entries = Directories.GetContentDirectories().Select(x => new {
                 Name = Path.GetFileName(x)?.ToLowerInvariant(),
-                Path = x 
+                Path = x
             }).ToList();
 
             return LinqExtension.RangeFrom(1)
@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers {
                                 .Select(x => entries.FirstOrDefault(y => y.Name == x))
                                 .TakeWhile(x => x != null)
                                 .Select(dir =>
-                                        CreateAcPlaceholder(LocationToId(dir.Path), Directories.CheckIfEnabled(dir.Path)));
+                                        CreateAcPlaceholder(Directories.GetId(dir.Path), Directories.CheckIfEnabled(dir.Path)));
         }
 
         private static readonly Regex FilterRegex = new Regex(@"^event[1-9]\d*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

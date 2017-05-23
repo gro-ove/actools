@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers {
         public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
 
-        public AcDirectories ReplaysDirectories { get; private set; }
+        public IAcDirectories ReplaysDirectories { get; private set; }
         public AcDirectories UserChampionshipsDirectories { get; private set; }
 
         private void UpdateDirectories() {
@@ -69,7 +69,8 @@ namespace AcManager.Tools.Managers {
             FontsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetFontsDirectory(Value));
             KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
 
-            ReplaysDirectories = ReplaysDirectories ?? new AcDirectories(FileUtils.GetReplaysDirectory(), null);
+            FileUtils.EnsureDirectoryExists(FileUtils.GetReplaysDirectory());
+            ReplaysDirectories = ReplaysDirectories ?? new MultiDirectories(FileUtils.GetReplaysDirectory(), null);
             UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(FileUtils.GetDocumentsDirectory(), "champs"));
 
             CarsDirectories?.CreateIfMissing();
@@ -78,7 +79,6 @@ namespace AcManager.Tools.Managers {
             WeatherDirectories?.CreateIfMissing();
             PpFiltersDirectories?.CreateIfMissing();
             PythonAppsDirectories?.CreateIfMissing();
-            ReplaysDirectories?.CreateIfMissing();
             UserChampionshipsDirectories?.CreateIfMissing();
         }
 
@@ -86,9 +86,7 @@ namespace AcManager.Tools.Managers {
 
         [CanBeNull]
         public string Value {
-            get {
-                return _value;
-            }
+            get => _value;
             set {
                 if (_value == value) return;
 
@@ -97,7 +95,7 @@ namespace AcManager.Tools.Managers {
 
                 ValuesStorage.Set(Key, _value);
                 UpdateDirectories();
-                
+
                 Changed?.Invoke(this, new AcRootDirectoryEventArgs(oldValue, _value));
             }
         }
@@ -109,7 +107,7 @@ namespace AcManager.Tools.Managers {
                 return _value;
             }
         }
-        
+
         public void Reset() {
             ValuesStorage.Remove(Key);
         }

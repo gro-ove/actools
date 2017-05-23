@@ -99,10 +99,10 @@ namespace AcManager.Controls.ViewModels {
             public int? OpponentsNumber, StartingPosition;
 
             public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly;
-            public double? AiLevelArrangeRandom, AiLevel, AiLevelMin;
+            public double AiLevelArrangeRandom = 0.1, AiLevel = 95, AiLevelMin = 85;
 
             public bool? AiAggressionArrangeReverse;
-            public double? AiAggressionArrangeRandom, AiAggression, AiAggressionMin;
+            public double AiAggressionArrangeRandom = 0.1, AiAggression = 0, AiAggressionMin = 0;
 
             string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
@@ -262,15 +262,15 @@ namespace AcManager.Controls.ViewModels {
             }, data => {
                 ShuffleCandidates = data.ShuffleCandidates ?? true;
 
-                AiLevel = data.AiLevel ?? 95;
-                AiLevelMin = data.AiLevelMin ?? 85;
+                AiLevel = data.AiLevel;
+                AiLevelMin = data.AiLevelMin;
                 AiLevelArrangeRandom = data.AiLevelArrangeRandomly.HasValue ? (data.AiLevelArrangeRandomly.Value ? 1d : 0d) :
-                        data.AiLevelArrangeRandom ?? 0.1d;
+                        data.AiLevelArrangeRandom;
                 AiLevelArrangeReverse = data.AiLevelArrangeReverse ?? false;
 
-                AiAggression = data.AiAggression ?? 0;
-                AiAggressionMin = data.AiAggressionMin ?? 0;
-                AiAggressionArrangeRandom = data.AiAggressionArrangeRandom ?? 0.1;
+                AiAggression = data.AiAggression;
+                AiAggressionMin = data.AiAggressionMin;
+                AiAggressionArrangeRandom = data.AiAggressionArrangeRandom;
                 AiAggressionArrangeReverse = data.AiAggressionArrangeReverse ?? false;
 
                 FilterValue = data.FilterValue;

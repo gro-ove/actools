@@ -90,7 +90,7 @@ namespace AcManager.Pages.Selected {
             private WeatherObject _weather;
 
             public WeatherObject Weather {
-                get { return _weather; }
+                get => _weather;
                 set {
                     if (Equals(value, _weather)) return;
                     _weather = value;
@@ -101,7 +101,7 @@ namespace AcManager.Pages.Selected {
             private CarObject _car;
 
             public CarObject Car {
-                get { return _car; }
+                get => _car;
                 set {
                     if (Equals(value, _car)) return;
                     _car = value;
@@ -112,7 +112,7 @@ namespace AcManager.Pages.Selected {
             private CarSkinObject _carSkin;
 
             public CarSkinObject CarSkin {
-                get { return _carSkin; }
+                get => _carSkin;
                 set {
                     if (Equals(value, _carSkin)) return;
                     _carSkin = value;
@@ -123,7 +123,7 @@ namespace AcManager.Pages.Selected {
             private TrackObjectBase _track;
 
             public TrackObjectBase Track {
-                get { return _track; }
+                get => _track;
                 set {
                     if (Equals(value, _track)) return;
                     _track = value;
@@ -195,7 +195,7 @@ namespace AcManager.Pages.Selected {
             }
 
             var obj = ReplaysManager.Instance.GetById(id);
-            if (obj == null) {
+            if (obj == null || !obj.ParsedSuccessfully) {
                 return false;
             }
 

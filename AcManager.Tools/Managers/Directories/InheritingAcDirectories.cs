@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using AcManager.Tools.Managers.InnerHelpers;
+using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
-    public class InheritingAcDirectories : BaseAcDirectories, IDirectoryListener {
+    public class InheritingAcDirectories : AcDirectoriesBase, IDirectoryListener {
         private readonly IAcDirectories _parentDirectories;
 
         public InheritingAcDirectories(IAcDirectories parentDirectories, [NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory)
@@ -19,7 +20,7 @@ namespace AcManager.Tools.Managers.Directories {
             _parentDirectories = parentDirectories;
         }
 
-        private List<IDirectoryListener> _subscribed; 
+        private List<IDirectoryListener> _subscribed;
 
         public override void Subscribe(IDirectoryListener listener) {
             if (_subscribed == null) {
@@ -35,8 +36,8 @@ namespace AcManager.Tools.Managers.Directories {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TestArgs(FileSystemEventArgs e) {
-            return e.FullPath.StartsWith(EnabledDirectory, StringComparison.OrdinalIgnoreCase) ||
-                   DisabledDirectory != null && e.FullPath.StartsWith(DisabledDirectory, StringComparison.OrdinalIgnoreCase);
+            return FileUtils.IsAffected(EnabledDirectory, e.FullPath) ||
+                   DisabledDirectory != null && FileUtils.IsAffected(DisabledDirectory, e.FullPath);
         }
 
         public void FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {
