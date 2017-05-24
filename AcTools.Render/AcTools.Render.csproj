@@ -122,6 +122,7 @@
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.DebugMode.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Properties.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaLightBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaPlaneLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaTubeLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkDirectionalLight.cs" />
@@ -344,6 +345,7 @@
     <Content Include="Shaders\Dark\DarkMaterial.SimpleNoShadows.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
     <Content Include="Shaders\PpAo\PpAmbientShadows.fx" />
+    <Content Include="Shaders\Special\SpecialAreaLights.fx" />
     <Content Include="Shaders\Special\SpecialDebugReflections.fx" />
     <Content Include="Shaders\Special\SpecialPaintShop.fx" />
     <Content Include="Shaders\Special\SpecialRandom.fx" />

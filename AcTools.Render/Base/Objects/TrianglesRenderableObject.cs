@@ -73,7 +73,7 @@ namespace AcTools.Render.Base.Objects {
                 var add = true;
                 for (int j = i + 1, l = Math.Min(Vertices.Length, i + 10); j < l; j++) {
                     var nl = sqrLength[j];
-                    if (nl != 0f && Vector3.Dot(normalized[i], normalized[j]) > 0.99) {
+                    if (nl != 0f && Vector3.Dot(normalized[i], normalized[j]) > 0.97) {
                         if (pl > nl) {
                             sqrLength[j] = 0f;
                         } else {
@@ -84,11 +84,11 @@ namespace AcTools.Render.Base.Objects {
                 }
 
                 if (add) {
-                    filtered.Add(Vertices[i].Position + center);
+                    filtered.Add(Vertices[i].Position);
                 }
             }
 
-            AcToolsLogging.Write($"{Name}: {100d * filtered.Count / Vertices.Length:F1}% ({Vertices.Length})");
+            // AcToolsLogging.Write($"{Name}: {100d * filtered.Count / Vertices.Length:F1}% ({Vertices.Length})");
             _positions = filtered.ToArray();
         }
 

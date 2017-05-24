@@ -37,9 +37,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             };
         }
 
+        private const SpecialRenderMode AllowedFlags = SpecialRenderMode.SimpleTransparent |
+                SpecialRenderMode.Simple |
+                SpecialRenderMode.Outline |
+                SpecialRenderMode.Reflection |
+                SpecialRenderMode.Shadow |
+                SpecialRenderMode.GBuffer;
+
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline &&
-                    mode != SpecialRenderMode.Reflection && mode != SpecialRenderMode.Shadow && mode != SpecialRenderMode.GBuffer) return false;
+            if (!AllowedFlags.HasFlag(mode)) return false;
 
             Effect.FxMaterial.Set(_material);
             Effect.FxDiffuseMap.SetResource(_txDiffuse);

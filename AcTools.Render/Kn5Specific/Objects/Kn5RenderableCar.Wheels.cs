@@ -300,8 +300,17 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return radius == 0f || position == 0f ? Matrix.Identity : Matrix.RotationX(position / radius);
         }
 
+        private bool _blurredNodesBySpeedActive;
+
         private void SetBlurredBySpeed(float speedKph, float speedRad) {
-            if (speedKph == 0f && _blurredNodesActive == false) return;
+            if (speedKph == 0f && !_blurredNodesBySpeedActive) return;
+
+            if (speedKph == 0f && _blurredNodesActive == false) {
+                _blurredNodesBySpeedActive = false;
+                return;
+            }
+
+            _blurredNodesBySpeedActive = speedKph != 0f;
 
             speedKph = speedKph.Abs();
             speedRad = speedRad.Abs();
@@ -329,14 +338,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     var node = GetDummyByName($"WHEEL_{description.Name}");
                     if (node != null) {
                         foreach (var n in node.GetAllChildren().OfType<IKn5RenderableObject>()) {
-                            n.DynamicMaterialParams.RadialSpeedBlur = speedRad.Saturate();
+                            n.DynamicMaterialParams.RadialSpeedBlur = (speedRad / 3f).Saturate();
                         }
                     }
 
                     node = GetDummyByName($"DISC_{description.Name}");
                     if (node != null) {
                         foreach (var n in node.GetAllChildren().OfType<IKn5RenderableObject>()) {
-                            n.DynamicMaterialParams.RadialSpeedBlur = speedRad.Saturate();
+                            n.DynamicMaterialParams.RadialSpeedBlur = (speedRad / 3f).Saturate();
                         }
                     }
                 }
@@ -345,7 +354,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private bool OnTickWheels(float dt) {
             var speedRads = WheelsSpeedKph * 0.277778f;
-            SetBlurredBySpeed(WheelsSpeedKph, speedRads);
+            SetBlurredBySpeed(AlignWheelsByData ? WheelsSpeedKph : 0f, speedRads);
 
             if (WheelsSpeedKph == 0f || !AlignWheelsByData) return false;
 

@@ -18,10 +18,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             switch (newType) {
                 case DarkLightType.Point:
                     return new DarkPointLight();
-                case DarkLightType.Sphere:
-                    return new DarkAreaSphereLight();
-                case DarkLightType.Tube:
-                    return new DarkAreaTubeLight();
                 case DarkLightType.Directional:
                     return new DarkDirectionalLight {
                         _shadowsSize = _shadowsSize,
@@ -32,10 +28,16 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkSpotLight {
                         Direction = Direction
                     };
-                case DarkLightType.Plane:
+                case DarkLightType.Sphere:
+                    return new DarkAreaSphereLight();
+                case DarkLightType.Tube:
+                    return new DarkAreaTubeLight();
+                case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight {
                         Direction = Direction
                     };
+                case DarkLightType.LtcTube:
+                    return new DarkAreaLtcTubeLight();
                 default:
                     return base.ChangeTypeOverride(newType);
             }
@@ -54,7 +56,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Vector3 _direction = new Vector3(-1f, -1f, -1f);
 
         public Vector3 Direction {
-            get { return _direction; }
+            get => _direction;
             set {
                 value = Vector3.Normalize(value);
                 if (value.Equals(_direction)) return;
@@ -77,7 +79,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _shadowsSizeChanged;
 
         public float ShadowsSize {
-            get { return _shadowsSize; }
+            get => _shadowsSize;
             set {
                 if (Equals(value, _shadowsSize)) return;
                 _shadowsSize = value;
@@ -93,7 +95,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _isMainLightSource;
 
         public bool IsMainLightSource {
-            get { return _isMainLightSource; }
+            get => _isMainLightSource;
             set {
                 if (Equals(value, _isMainLightSource)) return;
                 _isMainLightSource = value;
@@ -153,7 +155,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
-            DisposeHelper.Dispose(ref _dummy);
         }
 
         public override void Rotate(Quaternion delta) {
@@ -162,20 +163,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             Direction = Vector3.TransformNormal(Vector3.TransformNormal(ActualDirection, Matrix.RotationQuaternion(delta)), parentMatrixInvert);
         }
 
-        private RenderableList _dummy;
+        protected override IRenderableObject CreateDummy() {
+            return new RenderableList {
+                DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
+                DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
+                DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
+                DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 0.12f)
+            };
+        }
 
-        public override void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
-            if (_dummy == null) {
-                _dummy = new RenderableList {
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
-                    DebugLinesObject.GetLinesCircle(Matrix.Identity, Vector3.UnitZ, new Color4(1f, 1f, 1f, 0f), 20, 0.04f),
-                    DebugLinesObject.GetLinesArrow(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 0.12f)
-                };
-            }
-
-            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY).ToFixedSizeMatrix(camera);
-            _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        protected override Matrix GetDummyTransformMatrix(ICamera camera) {
+            return ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY).ToFixedSizeMatrix(camera);
         }
     }
 }

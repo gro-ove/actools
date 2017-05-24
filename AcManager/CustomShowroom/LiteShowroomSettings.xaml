@@ -397,7 +397,7 @@
     <DataTemplate x:Key="CarSlotWrappedTemplate" DataType="customShowroom:CarSlotWrapped">
         <DockPanel Background="Transparent" Margin="0 0 0 12">
             <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="8 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2"
-                    Command="{Binding DeleteCommand}" ToolTip="Remove this car" 
+                    Command="{Binding DeleteCommand}" ToolTip="Remove this car"
                     Visibility="{Binding MainCar, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <Button.Style>
                     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
@@ -595,6 +595,9 @@
                                                         Value="{Binding Radius, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
                                         <Slider Minimum="0" Maximum="1" Value="{Binding Radius}" TickFrequency="1" TickPlacement="None" />
                                     </DockPanel>
+                                    <CheckBox IsChecked="{Binding VisibleLight}">
+                                        <Label Content="Visible" />
+                                    </CheckBox>
                                 </mui:SpacingStackPanel>
                             </DataTemplate>
 
@@ -616,6 +619,9 @@
                                                         Value="{Binding Length, Converter={StaticResource MultiplyConverter}, ConverterParameter=100, StringFormat='{}{0:F0}'}" />
                                         <Slider Minimum="0" Maximum="4" Value="{Binding Length}" TickFrequency="0.4" TickPlacement="None" />
                                     </DockPanel>
+                                    <CheckBox IsChecked="{Binding VisibleLight}">
+                                        <Label Content="Visible" />
+                                    </CheckBox>
                                 </mui:SpacingStackPanel>
                             </DataTemplate>
 
@@ -639,6 +645,9 @@
                                     </DockPanel>
                                     <CheckBox IsChecked="{Binding DoubleSide}">
                                         <Label Content="Double-sided" />
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding VisibleLight}">
+                                        <Label Content="Visible" />
                                     </CheckBox>
                                 </mui:SpacingStackPanel>
                             </DataTemplate>
@@ -706,7 +715,7 @@
             <TextBlock Text="Extra lights:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
             <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding ExtraLights}"
                           ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
-                            
+
             <c:MessageBlock CloseKey="t-for-movement">
                 <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">
                     <TextBlock.Text>Press “T” in showroom window to toggle movement mode.</TextBlock.Text>
@@ -720,7 +729,7 @@
             </TextBlock>
             <ItemsControl mui:Draggable.Destination="{x:Type lights:DarkLightBase}" mui:Draggable.Enabled="True" ItemsSource="{Binding CarLights}"
                           ItemTemplate="{StaticResource LightItemDataTemplate}" Background="Transparent" Padding="0 0 0 12" />
-                            
+
             <c:MessageBlock CloseKey="move-lights-between-lists">
                 <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap">
                     <TextBlock.Text>To assign a light to a car or showroom, simply move it to the specific list.</TextBlock.Text>

@@ -392,7 +392,7 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
-        public static MeshData CreateCylinder(float bottomRadius, float topRadius, float height, int sliceCount, int stackCount) {
+        public static MeshData CreateCylinder(float bottomRadius, float topRadius, float height, int sliceCount, int stackCount, bool caps) {
             if (sliceCount <= 0) throw new ArgumentOutOfRangeException(nameof(sliceCount));
 
             var ret = new MeshData();
@@ -435,8 +435,12 @@ namespace AcTools.Render.Base.Utils {
                     ret.Indices.Add((ushort)(i * ringVertexCount + j + 1));
                 }
             }
-            BuildCylinderTopCap(topRadius, height, sliceCount, ref ret);
-            BuildCylinderBottomCap(bottomRadius, height, sliceCount, ref ret);
+
+            if (caps) {
+                BuildCylinderTopCap(topRadius, height, sliceCount, ref ret);
+                BuildCylinderBottomCap(bottomRadius, height, sliceCount, ref ret);
+            }
+
             return ret;
         }
 

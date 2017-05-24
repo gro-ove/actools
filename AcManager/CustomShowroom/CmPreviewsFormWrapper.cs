@@ -42,7 +42,7 @@ namespace AcManager.CustomShowroom {
         }
 
         [ItemCanBeNull]
-        private static async Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] CarObject car, [CanBeNull] string skinId, 
+        private static async Task<IReadOnlyList<UpdatePreviewError>> Run([NotNull] CarObject car, [CanBeNull] string skinId,
                 [CanBeNull] IReadOnlyList<ToUpdatePreview> toUpdate, [CanBeNull] string presetFilename) {
             var carKn5 = FileUtils.GetMainCarFilename(car.Location, car.AcdData);
             if (!File.Exists(carKn5)) {
@@ -62,7 +62,9 @@ namespace AcManager.CustomShowroom {
                 AutoRotate = false,
                 AutoAdjustTarget = false,
                 AsyncTexturesLoading = true,
-                AsyncOverridesLoading = true
+                AsyncOverridesLoading = true,
+                AutoloadCarLights = false,
+                AutoloadShowroomLights = false
             }) {
                 var wrapper = new CmPreviewsFormWrapper(car, renderer, skinId, presetFilename);
 

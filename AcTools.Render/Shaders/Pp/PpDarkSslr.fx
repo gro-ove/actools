@@ -21,7 +21,7 @@
 		AddressU = Wrap;
 		AddressV = Wrap;
 	};
-    
+
 // input resources
     cbuffer cbPerFrame : register(b0) {
 		matrix gCameraProjInv;
@@ -201,7 +201,7 @@
             SetPixelShader( CompileShader( ps_5_0, ps_Sslr() ) );
         }
     }
-	
+
 	cbuffer POISSON_DISKS {
 		float2 poissonDisk[25] = {
 			float2(-0.5496699f, -0.3607742f),
@@ -272,6 +272,7 @@
 			reflection = GetReflection(coords, reflectedUv, blur);
 		}
 
+		// reflection = float4(0, 0, 0, 1);
 		float a = reflection.a * baseReflection.a;
 		return float4(diffuseColor + (reflection.rgb - baseReflection.rgb) * a, 1.0);
 	}

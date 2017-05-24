@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     public class FancyHint : NotifyPropertyChanged {
         #if DEBUG
         public static TimeSpan OptionMinimumTimeGap = TimeSpan.FromSeconds(10d);
-        public static bool OptionDebugMode = true;
+        public static bool OptionDebugMode = false;
         #else
         public static TimeSpan OptionMinimumTimeGap = TimeSpan.FromMinutes(30d);
         public static bool OptionDebugMode = false;

@@ -1,18 +1,55 @@
-using System;
+using System.Linq;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
-using AcTools.Render.Base.Shadows;
+using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
-    public class DarkAreaTubeLight : DarkLightBase {
-        public DarkAreaTubeLight() : base(DarkLightType.Tube) {
+    public class DarkAreaLtcTubeLight : DarkAreaTubeLight {
+        public DarkAreaLtcTubeLight() : base(DarkLightType.LtcTube) {}
+
+        protected override IRenderableObject CreateDummy() {
+            return DebugLinesObject.GetLinesCylinder(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, Radius, Length);
+        }
+
+        private bool _withCaps;
+
+        public bool WithCaps {
+            get => _withCaps;
+            set {
+                if (Equals(value, _withCaps)) return;
+                _withCaps = value;
+                ResetLightMesh();
+                OnPropertyChanged();
+            }
+        }
+
+        protected override void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
+            base.SetOverride(holder, ref light);
+            if (WithCaps) {
+                light.Flags |= EffectDarkMaterial.LightLtcTubeWithCaps;
+            }
+        }
+
+        protected override VisibleLightObject CreateLightMesh() {
+            var s = (Radius.Clamp(0.25f, 0.8f) * 80).RoundToInt();
+            var mesh = GeometryGenerator.CreateCylinder(Radius, Radius, Length, s, 1, WithCaps);
+            return new VisibleLightObject(DisplayName,
+                    mesh.Vertices.Select(x => new InputLayouts.VerticePC(x.Position, default(Vector4))).ToArray(),
+                    mesh.Indices.ToArray());
+        }
+    }
+
+    public class DarkAreaTubeLight : DarkAreaLightBase {
+        public DarkAreaTubeLight() : base(DarkLightType.Tube) {}
+
+        protected DarkAreaTubeLight(DarkLightType type) : base(type) {
             ShadowsAvailable = false;
             HighQualityShadowsAvailable = false;
         }
@@ -32,7 +69,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                 case DarkLightType.Sphere:
                     return new DarkAreaSphereLight {
                         Range = Range,
-                        Radius = Radius
+                        Radius = Radius,
+                        VisibleLight = VisibleLight
                     };
                 case DarkLightType.Tube:
                     return new DarkAreaTubeLight {
@@ -40,13 +78,23 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                         Range = Range,
                         Radius = Radius,
                         Length = Length,
+                        VisibleLight = VisibleLight
                     };
-                case DarkLightType.Plane:
+                case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight {
                         Direction = Direction,
                         Range = Range,
                         Width = Radius,
                         Height = Length,
+                        VisibleLight = VisibleLight
+                    };
+                case DarkLightType.LtcTube:
+                    return new DarkAreaLtcTubeLight {
+                        Direction = Direction,
+                        Range = Range,
+                        Radius = Radius,
+                        Length = Length,
+                        VisibleLight = VisibleLight
                     };
                 default:
                     return base.ChangeTypeOverride(newType);
@@ -56,7 +104,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Vector3 _direction = new Vector3(1f, 0f, 0f);
 
         public Vector3 Direction {
-            get { return _direction; }
+            get => _direction;
             set {
                 value = Vector3.Normalize(value);
                 if (value.Equals(_direction)) return;
@@ -88,7 +136,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _range = 2f;
 
         public float Range {
-            get { return _range; }
+            get => _range;
             set {
                 if (value.Equals(_range)) return;
                 _range = value;
@@ -100,11 +148,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _radius = 0.2f;
 
         public float Radius {
-            get { return _radius; }
+            get => _radius;
             set {
                 if (Equals(value, _radius)) return;
                 _radius = value;
                 DisposeHelper.Dispose(ref _dummy);
+                ResetLightMesh();
                 OnPropertyChanged();
             }
         }
@@ -112,21 +161,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _length = 1f;
 
         public float Length {
-            get { return _length; }
+            get => _length;
             set {
                 if (Equals(value, _length)) return;
                 _length = value;
                 DisposeHelper.Dispose(ref _dummy);
+                ResetLightMesh();
                 OnPropertyChanged();
             }
-        }
-
-        protected override void UpdateShadowsOverride(DeviceContextHolder holder, Vector3 shadowsPosition, IShadowsDraw shadowsDraw) {}
-
-        protected override void SetShadowOverride(out Vector4 size, out Matrix matrix, out ShaderResourceView view, ref Vector4 nearFar) {
-            size = default(Vector4);
-            matrix = Matrix.Identity;
-            view = null;
         }
 
         protected override void SetOverride(IDeviceContextHolder holder, ref EffectDarkMaterial.Light light) {
@@ -135,12 +177,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             light.DirectionW = ActualPosition + ActualDirection * Length / 2f;
             light.Range = Range;
             light.SpotlightCosMin = Radius;
-            light.Type = (uint)DarkLightType.Tube;
         }
 
-        public override void InvalidateShadows() {}
-
         protected override void DisposeOverride() {
+            base.DisposeOverride();
             DisposeHelper.Dispose(ref _dummy);
         }
 
@@ -156,15 +196,24 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         private RenderableList _dummy;
 
-        public override void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
-            if (_dummy == null) {
-                _dummy = new RenderableList {
-                    DebugLinesObject.GetLinesRoundedCylinder(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, Radius, Length)
-                };
-            }
+        protected override IRenderableObject CreateDummy() {
+            return DebugLinesObject.GetLinesRoundedCylinder(Matrix.Identity, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f), 20, Radius, Length);
+        }
 
-            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY);
-            _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        protected override Matrix GetDummyTransformMatrix(ICamera camera) {
+            return ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY);
+        }
+
+        protected override Matrix GetLightMeshTransformMatrix() {
+            return ActualPosition.LookAtMatrix(ActualPosition + ActualDirection, Vector3.UnitY);
+        }
+
+        protected override VisibleLightObject CreateLightMesh() {
+            var s = (_radius.Clamp(0.25f, 0.8f) * 80).RoundToInt();
+            var mesh = GeometryGenerator.CreateCylinder(_radius, _radius, _length, s, 1, false);
+            return new VisibleLightObject(DisplayName,
+                    mesh.Vertices.Select(x => new InputLayouts.VerticePC(x.Position, default(Vector4))).ToArray(),
+                    mesh.Indices.ToArray());
         }
     }
 }

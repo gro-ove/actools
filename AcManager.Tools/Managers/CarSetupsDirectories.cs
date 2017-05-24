@@ -26,7 +26,8 @@ namespace AcManager.Tools.Managers {
 
         public IEnumerable<string> GetContent(Func<string, string[]> contentFromDirectoriesSelector) {
             var enabledDirectory = _enabledDirectory;
-            return Directory.Exists(enabledDirectory) ? contentFromDirectoriesSelector(enabledDirectory) : new string[0];
+            return Directory.Exists(enabledDirectory) ?
+                    Directory.GetDirectories(enabledDirectory).SelectMany(contentFromDirectoriesSelector) : new string[0];
         }
 
         public string GetId(string location) {

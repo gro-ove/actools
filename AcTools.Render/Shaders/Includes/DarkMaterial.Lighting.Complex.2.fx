@@ -15,7 +15,9 @@ static const dword LIGHT_DIRECTIONAL = 3;
 #if ENABLE_AREA_LIGHTS == 1
 static const dword LIGHT_SPHERE = 4;
 static const dword LIGHT_TUBE = 5;
-static const dword LIGHT_PLANE = 6;
+static const dword LIGHT_LTC_PLANE = 6;
+static const dword LIGHT_LTC_TUBE = 7;
+static const dword LIGHT_LTC_SPHERE = 4;
 #endif
 
 static const dword LIGHT_NO_SHADOWS = 1;
@@ -24,7 +26,8 @@ static const dword LIGHT_SHADOWS_CUBE = 4;
 static const dword LIGHT_SPECULAR = 8;
 
 #if ENABLE_AREA_LIGHTS == 1
-static const dword LIGHT_PLANE_DOUBLE_SIDE = 16;
+static const dword LIGHT_LTC_PLANE_DOUBLE_SIDE = 16;
+static const dword LIGHT_LTC_TUBE_WITH_CAPS = 16;
 #endif
 
 struct Light {
@@ -362,7 +365,13 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 			break;
 		}
 #if ENABLE_AREA_LIGHTS == 1
+#if ENABLE_ADDITIONAL_AREA_LIGHTS == 1
 		case LIGHT_SPHERE: {
+            [flatten]
+            if (gFlatMirrored) {
+                position.y = -position.y;
+            }
+
 			direction = normalize(gEyePosW - position);
 			float nov = saturate(dot(normal, direction));
 			float3 r = reflect(-direction, normal);
@@ -381,11 +390,16 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 
 			diffuse += light.Color.xyz * attenuation;
 			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
-				specular += light.Color.xyz * value * attenuation;
+				specular += light.Color.xyz * value * attenuation * 0.002;
 			}
 			return;
 		}
 		case LIGHT_TUBE: {
+            [flatten]
+            if (gFlatMirrored) {
+                position.y = -position.y;
+            }
+
 			direction = normalize(gEyePosW - position);
 			float nov = saturate(dot(normal, direction));
 			float3 r = reflect(-direction, normal);
@@ -404,44 +418,85 @@ void GetLight_ByType(Light light, float3 normal, float3 position, const float sp
 
 			diffuse += light.Color.xyz * attenuation;
 			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
-				specular += light.Color.xyz * value * attenuation;
+				specular += light.Color.xyz * value * attenuation * 0.002;
 			}
 			return;
 		}
-		case LIGHT_PLANE: {
+		case LIGHT_LTC_TUBE: {
+			direction = normalize(gEyePosW - position);
+
+			float3 points[2];
+			points[0] = light.PosW.xyz;
+			points[1] = light.DirectionW.xyz;
+
+			bool withCaps = LIGHT_HAS_FLAG(light, LIGHT_LTC_TUBE_WITH_CAPS);
+			attenuation = AreaLight_Tube(normal, direction, position, float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1), points, LIGHT_GET_TUBE_RADIUS(light), withCaps);
+			diffuse += light.Color.xyz * attenuation;
+
+			[branch]
+			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+                float specularExpValue = specularExp;
+                float specularActualValue;
+                if (sunSpeculars) {
+                    specularExpValue *= gMapsMaterial.SunSpecularExp;
+                    specularActualValue = saturate(gMapsMaterial.SunSpecular);
+                } else {
+                    specularActualValue = specularValue;
+                }
+
+				float theta = acos(dot(normal, direction));
+				float2 uv = float2(clamp(1 - specularExpValue / 250, 0.03, 0.42), theta / (0.5 * 3.141592653));
+				uv = uv * LUT_SCALE + LUT_BIAS;
+
+				float4 t = gLtcMap.SampleLevel(samLtc, uv, 0);
+				float3x3 minv = float3x3(float3(1, 0, t.w),	float3(0, t.z, 0), float3(t.y, 0, t.x));
+				float spec = AreaLight_Tube(normal, direction, position, minv, points, LIGHT_GET_TUBE_RADIUS(light), withCaps);
+				spec *= gLtcAmp.SampleLevel(samLtc, uv, 0).w * specularActualValue * 0.1;
+				specular += light.Color.xyz * spec;
+			}
+			return;
+		}
+#endif
+		case LIGHT_LTC_PLANE: {
+			direction = normalize(gEyePosW - position);
+
 			float3 points[4];
 			points[0] = LIGHT_GET_PLANE_CORNER_0(light);
 			points[1] = LIGHT_GET_PLANE_CORNER_1(light);
 			points[2] = LIGHT_GET_PLANE_CORNER_2(light);
 			points[3] = LIGHT_GET_PLANE_CORNER_3(light);
 
-			bool doubleSide = LIGHT_HAS_FLAG(light, LIGHT_PLANE_DOUBLE_SIDE);
+            [flatten]
+            if (gFlatMirrored) {
+                points[0].y = -points[0].y;
+                points[1].y = -points[1].y;
+                points[2].y = -points[2].y;
+                points[3].y = -points[3].y;
+            }
 
-			direction = normalize(gEyePosW - position);
+			bool doubleSide = LIGHT_HAS_FLAG(light, LIGHT_LTC_PLANE_DOUBLE_SIDE);
 			attenuation = AreaLight_Plane(normal, direction, position, float3x3(1, 0, 0, 0, 1, 0, 0, 0, 1), points, doubleSide);
-
-			float specularExpValue = specularExp;
-			if (sunSpeculars) {
-				specularExpValue *= gMapsMaterial.SunSpecularExp;
-			}
-
 			diffuse += light.Color.xyz * attenuation;
 
 			[branch]
 			if (LIGHT_HAS_FLAG(light, LIGHT_SPECULAR)) {
+                float specularExpValue = specularExp;
+                float specularActualValue;
+                if (sunSpeculars) {
+                    specularExpValue *= gMapsMaterial.SunSpecularExp;
+                    specularActualValue = saturate(gMapsMaterial.SunSpecular);
+                } else {
+                    specularActualValue = specularValue;
+                }
+
 				float theta = acos(dot(normal, direction));
-				float2 uv = float2(clamp(1 - specularExpValue / 250, 0.03, 0.42), theta / (0.5 * 3.141592653));
+				float2 uv = float2(clamp(1 - specularExpValue / 250, 0.03, 0.42), theta / (0.5 * PI));
 				uv = uv * LUT_SCALE + LUT_BIAS;
 
 				float4 t = gLtcMap.SampleLevel(samLtc, uv, 0);
-				float3x3 Minv = float3x3(
-					float3(1, 0, t.w),
-					float3(0, t.z, 0),
-					float3(t.y, 0, t.x)
-					);
-
-				float spec = AreaLight_Plane(normal, direction, position, Minv, points, doubleSide);
-				spec *= gLtcAmp.SampleLevel(samLtc, uv, 0).w;
+				float3x3 minv = float3x3(float3(1, 0, t.w),	float3(0, t.z, 0), float3(t.y, 0, t.x));
+				float spec = AreaLight_Plane(normal, direction, position, minv, points, doubleSide);
+				spec *= gLtcAmp.SampleLevel(samLtc, uv, 0).w * specularActualValue * 0.1;
 				specular += light.Color.xyz * spec;
 			}
 			return;

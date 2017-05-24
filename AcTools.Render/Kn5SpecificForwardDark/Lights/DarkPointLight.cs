@@ -36,8 +36,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkAreaTubeLight {
                         Range = Range
                     };
-                case DarkLightType.Plane:
+                case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight {
+                        Range = Range
+                    };
+                case DarkLightType.LtcTube:
+                    return new DarkAreaLtcTubeLight {
                         Range = Range
                     };
                 default:
@@ -58,7 +62,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _range = 2f;
 
         public float Range {
-            get { return _range; }
+            get => _range;
             set {
                 if (value.Equals(_range)) return;
                 _range = value;
@@ -126,7 +130,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
-            DisposeHelper.Dispose(ref _dummy);
         }
 
         public override void Rotate(Quaternion delta) {}
@@ -135,17 +138,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             return new MoveableHelper(this, MoveableRotationAxis.None);
         }
 
-        private RenderableList _dummy;
+        protected override IRenderableObject CreateDummy() {
+            return DebugLinesObject.GetLinesSphere(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.04f);
+        }
 
-        public override void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
-            if (_dummy == null) {
-                _dummy = new RenderableList {
-                    DebugLinesObject.GetLinesSphere(Matrix.Identity, Vector3.UnitY, new Color4(1f, 1f, 1f, 0f), 20, 0.04f)
-                };
-            }
-            
-            _dummy.ParentMatrix = ActualPosition.ToFixedSizeMatrix(camera);
-            _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        protected override Matrix GetDummyTransformMatrix(ICamera camera) {
+            return ActualPosition.ToFixedSizeMatrix(camera);
         }
     }
 }

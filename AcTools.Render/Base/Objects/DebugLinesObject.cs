@@ -213,7 +213,7 @@ namespace AcTools.Render.Base.Objects {
         }
 
         [NotNull]
-        public static DebugLinesObject GetLinesRoundedCylinder(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f, 
+        public static DebugLinesObject GetLinesRoundedCylinder(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f,
                 float height = 0.32f) {
             var vertices = new List<InputLayouts.VerticePC>();
             var indices = new List<ushort>();
@@ -240,7 +240,7 @@ namespace AcTools.Render.Base.Objects {
                 var cos = a.Cos();
                 var sin = a.Sin();
                 var j = vertices.Count;
-                
+
                 var sa = Math.Abs(cos) < 0.001f;
                 var sb = i == segments || i == segments / 2;
 
@@ -294,6 +294,56 @@ namespace AcTools.Render.Base.Objects {
                     indices.Add((ushort)(j + jo - 1));
                 }
                 indices.Add((ushort)(i == segments ? 3 : j + jo + 3));
+            }
+
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
+        }
+
+        [NotNull]
+        public static DebugLinesObject GetLinesCylinder(Matrix matrix, Vector3 direction, Color4 color, int segments = 100, float radius = 0.16f,
+                float height = 0.32f) {
+            var vertices = new List<InputLayouts.VerticePC>();
+            var indices = new List<ushort>();
+
+            direction.Normalize();
+
+            Vector3 left, up;
+            if (Vector3.Dot(direction, Vector3.UnitY).Abs() > 0.9f) {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitZ));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            } else {
+                left = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+                up = Vector3.Normalize(Vector3.Cross(direction, left));
+            }
+
+            var side = direction * height * 0.5f;
+            left *= radius;
+            up *= radius;
+
+            vertices.Add(new InputLayouts.VerticePC(left + up + side, color));
+            vertices.Add(new InputLayouts.VerticePC(left + up - side, color));
+            vertices.Add(new InputLayouts.VerticePC(left - up + side, color));
+            vertices.Add(new InputLayouts.VerticePC(left - up - side, color));
+            vertices.Add(new InputLayouts.VerticePC(-left + up + side, color));
+            vertices.Add(new InputLayouts.VerticePC(-left + up - side, color));
+            vertices.Add(new InputLayouts.VerticePC(-left - up + side, color));
+            vertices.Add(new InputLayouts.VerticePC(-left - up - side, color));
+            indices.AddRange(Enumerable.Range(0, 8).Select(x => (ushort)x));
+
+            for (var i = 1; i <= segments; i++) {
+                var a = MathF.PI * 2f * i / segments;
+                var cos = a.Cos();
+                var sin = a.Sin();
+                var j = vertices.Count;
+
+                vertices.Add(new InputLayouts.VerticePC(left * cos + up * sin + side, color));
+                vertices.Add(new InputLayouts.VerticePC(left * cos + up * sin - side, color));
+
+                // circles
+                indices.Add((ushort)j);
+                indices.Add((ushort)(i == segments ? 0 : j + 2));
+                indices.Add((ushort)(j + 1));
+                indices.Add((ushort)(i == segments ? 1 : j + 3));
             }
 
             return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());

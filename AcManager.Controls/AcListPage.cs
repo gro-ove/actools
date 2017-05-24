@@ -20,14 +20,14 @@ namespace AcManager.Controls {
         }
 
         public bool SelectMode { get; set; }
-        
+
         private ListBox _list;
 
         private readonly DelayedPropertyWrapper<AcItemWrapper> _selectedWrapper;
         private AcObjectNew _currentObject;
 
         public AcObjectNew CurrentObject {
-            get { return _currentObject; }
+            get => _currentObject;
             set {
                 if (_currentObject != null) {
                     _currentObject.AcObjectOutdated -= SelectedAcObject_Outdated;
@@ -61,8 +61,8 @@ namespace AcManager.Controls {
                 typeof(AcListPage), new PropertyMetadata(OnAddNewCommandChanged));
 
         public CommandBase AddNewCommand {
-            get { return (CommandBase)GetValue(AddNewCommandProperty); }
-            set { SetValue(AddNewCommandProperty, value); }
+            get => (CommandBase)GetValue(AddNewCommandProperty);
+            set => SetValue(AddNewCommandProperty, value);
         }
 
         private static void OnAddNewCommandChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -95,8 +95,8 @@ namespace AcManager.Controls {
                 typeof(AcListPage));
 
         public string SaveScrollKey {
-            get { return (string)GetValue(SaveScrollKeyProperty); }
-            set { SetValue(SaveScrollKeyProperty, value); }
+            get => (string)GetValue(SaveScrollKeyProperty);
+            set => SetValue(SaveScrollKeyProperty, value);
         }
 
         private void OnAddButtonClick(object sender, RoutedEventArgs e) {
@@ -182,8 +182,8 @@ namespace AcManager.Controls {
         }
 
         public AcWrapperCollectionView ItemsSource {
-            get { return (AcWrapperCollectionView)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get => (AcWrapperCollectionView)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
         }
         #endregion
     }

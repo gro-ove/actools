@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
@@ -17,6 +18,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.Direct3D11;
+using SlimDX.DirectWrite;
 
 namespace AcTools.Render.Kn5SpecificForwardDark {
     public interface IDarkLightsDescriptionProvider {
@@ -58,7 +60,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _tryToGuessCarLightsIfMissing;
 
         public bool TryToGuessCarLightsIfMissing {
-            get { return _tryToGuessCarLightsIfMissing; }
+            get => _tryToGuessCarLightsIfMissing;
             set {
                 if (Equals(value, _tryToGuessCarLightsIfMissing)) return;
                 _tryToGuessCarLightsIfMissing = value;
@@ -267,7 +269,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         [NotNull]
         public DarkLightBase[] Lights {
-            get { return _lights; }
+            get => _lights;
             set {
                 if (Equals(value, _lights)) return;
 
@@ -289,6 +291,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _lights = value;
                 OnPropertyChanged();
                 IsDirty = true;
+                _mirrorDirty = true;
                 SetReflectionCubemapDirty();
             }
         }
@@ -312,6 +315,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     break;
                 case nameof(DarkLightBase.IsDeleted):
                     RemoveLight((DarkLightBase)sender);
+                    break;
+                case nameof(DarkAreaLightBase.Enabled):
+                case nameof(DarkAreaLightBase.VisibleLight):
+                    _mirrorDirty = true;
                     break;
                 default:
                     if (!Disposed) {
@@ -532,11 +539,33 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         #endregion
 
         #region Car and showroom lights (auto-loading)
+        private bool _autoloadCarLights = true;
+
+        public bool AutoloadCarLights {
+            get => _autoloadCarLights;
+            set {
+                if (Equals(value, _autoloadCarLights)) return;
+                _autoloadCarLights = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _autoloadShowroomLights = true;
+
+        public bool AutoloadShowroomLights {
+            get => _autoloadShowroomLights;
+            set {
+                if (Equals(value, _autoloadShowroomLights)) return;
+                _autoloadShowroomLights = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void OnCarChangedLights([NotNull] CarSlot slot, [CanBeNull] Kn5RenderableCar car) {
             var lightTag = DarkLightTag.GetCarTag(slot.Id);
             RemoveLights(lightTag);
 
-            if (car != null && !LoadObjLights(lightTag, car.RootDirectory) &&
+            if (AutoloadCarLights && car != null && !LoadObjLights(lightTag, car.RootDirectory) &&
                     TryToGuessCarLightsIfMissing) {
                 TryToGuessCarLights(lightTag, car);
                 _lightsGuessed[slot.Id] = true;
@@ -546,10 +575,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private void OnShowroomChangedLights() {
-            if (ShowroomNode == null) {
-                RemoveLights(DarkLightTag.Showroom);
-            } else {
+            if (AutoloadShowroomLights && ShowroomNode != null) {
                 LoadObjLights(DarkLightTag.Showroom, ShowroomNode.RootDirectory);
+            } else {
+                RemoveLights(DarkLightTag.Showroom);
             }
         }
 
@@ -766,6 +795,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private void DisposeLights() {
             Lights = new DarkLightBase[0]; // thus, disposing everything
             DisposeHelper.Dispose(ref _ltcViews);
+        }
+
+        private void DrawLights(DeviceContextHolder holder, ICamera camera, SpecialRenderMode mode) {
+            for (var i = 0; i < _lights.Length; i++) {
+                var l = _lights[i];
+                if (l.Enabled) {
+                    l.DrawLight(holder, camera, mode);
+                }
+            }
         }
     }
 }

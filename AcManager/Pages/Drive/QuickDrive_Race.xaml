@@ -115,8 +115,7 @@
                                         Value="{Binding RaceGridViewModel.AiAggressionArrangeRandom, Converter={StaticResource PercentageConverter}}" />
                             </DockPanel>
 
-                            <CheckBox IsChecked="{Binding RaceGridViewModel.AiAggressionInDriverName, Mode=TwoWay}"
-                                      Margin="0">
+                            <CheckBox IsChecked="{Binding RaceGridViewModel.AiAggressionInDriverName, Mode=TwoWay}">
                                 <Label Content="Show AI aggression in driver’s name" />
                             </CheckBox>
 

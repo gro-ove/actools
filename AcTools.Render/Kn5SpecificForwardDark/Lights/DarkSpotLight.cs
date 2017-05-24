@@ -42,9 +42,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkAreaTubeLight {
                         Range = Range
                     };
-                case DarkLightType.Plane:
+                case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight {
                         Direction = Direction,
+                        Range = Range
+                    };
+                case DarkLightType.LtcTube:
+                    return new DarkAreaLtcTubeLight {
                         Range = Range
                     };
                 default:
@@ -71,7 +75,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Vector3 _direction = new Vector3(-1f, -1f, -1f);
 
         public Vector3 Direction {
-            get { return _direction; }
+            get => _direction;
             set {
                 value = Vector3.Normalize(value);
                 if (value.Equals(_direction)) return;
@@ -93,11 +97,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _angle = 0.5f;
 
         public float Angle {
-            get { return _angle; }
+            get => _angle;
             set {
                 if (value.Equals(_angle)) return;
                 _angle = value;
-                DisposeHelper.Dispose(ref _dummy);
+                ResetDummy();
                 InvalidateShadows();
                 OnPropertyChanged();
             }
@@ -106,7 +110,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _spotFocus = 0.5f;
 
         public float SpotFocus {
-            get { return _spotFocus; }
+            get => _spotFocus;
             set {
                 if (value.Equals(_spotFocus)) return;
                 _spotFocus = value;
@@ -117,7 +121,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _range = 2f;
 
         public float Range {
-            get { return _range; }
+            get => _range;
             set {
                 if (value.Equals(_range)) return;
                 _range = value;
@@ -175,7 +179,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         protected override void DisposeOverride() {
             DisposeHelper.Dispose(ref _shadows);
-            DisposeHelper.Dispose(ref _dummy);
         }
 
         public override void Rotate(Quaternion delta) {
@@ -184,17 +187,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             Direction = Vector3.TransformNormal(Vector3.TransformNormal(ActualDirection, Matrix.RotationQuaternion(delta)), parentMatrixInvert);
         }
 
-        private RenderableList _dummy;
+        protected override IRenderableObject CreateDummy() {
+            return DebugLinesObject.GetLinesCone(Angle, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f));
+        }
 
-        public override void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
-            if (_dummy == null) {
-                _dummy = new RenderableList {
-                    DebugLinesObject.GetLinesCone(Angle, Vector3.UnitX, new Color4(1f, 1f, 1f, 0f))
-                };
-            }
-
-            _dummy.ParentMatrix = ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY).ToFixedSizeMatrix(camera);
-            _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        protected override Matrix GetDummyTransformMatrix(ICamera camera) {
+            return ActualPosition.LookAtMatrixXAxis(ActualPosition + ActualDirection, Vector3.UnitY).ToFixedSizeMatrix(camera);
         }
     }
 }

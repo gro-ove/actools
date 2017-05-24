@@ -186,19 +186,23 @@ namespace AcTools.Render.Shaders {
 		public const uint LightDirectional = 3;
 		public const uint LightSphere = 4;
 		public const uint LightTube = 5;
-		public const uint LightPlane = 6;
+		public const uint LightLtcPlane = 6;
+		public const uint LightLtcTube = 7;
+		public const uint LightLtcSphere = 4;
 		public const uint LightNoShadows = 1;
 		public const uint LightSmoothShadows = 2;
 		public const uint LightShadowsCube = 4;
 		public const uint LightSpecular = 8;
-		public const uint LightPlaneDoubleSide = 16;
+		public const uint LightLtcPlaneDoubleSide = 16;
+		public const uint LightLtcTubeWithCaps = 16;
 		public const uint HasNormalMap = 1;
 		public const uint UseNormalAlphaAsAlpha = 64;
 		public const uint AlphaTest = 128;
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
-		public const bool DebugMode = true;
+		public const bool DebugMode = false;
+		public const float Pi = 3.141592653f;
 		public const int ComplexLighting = 1;
 		public const float CubemapPadding = 0.95f;
 		public const float LutSize = 64.0f;
@@ -209,6 +213,7 @@ namespace AcTools.Render.Shaders {
 		public const int MaxLighsAmount = 50;
 		public const int MaxExtraShadows = 25;
 		public const bool EnableAreaLights = true;
+		public const bool EnableAdditionalAreaLights = false;
 		public const int MaxExtraShadowsSmooth = 25;
 		public const int MaxExtraShadowsFewer = 5;
 		private ShaderBytecode _b;
@@ -1494,6 +1499,49 @@ namespace AcTools.Render.Shaders {
 			DisposeHelper.Dispose(ref LayoutPT);
 			DisposeHelper.Dispose(ref InputSignaturePNTG);
 			DisposeHelper.Dispose(ref LayoutPNTG);
+			DisposeHelper.Dispose(ref E);
+			DisposeHelper.Dispose(ref _b);
+        }
+	}
+
+	public class EffectSpecialAreaLights : IEffectWrapper {
+		private ShaderBytecode _b;
+		public Effect E;
+
+        public ShaderSignature InputSignaturePC;
+        public InputLayout LayoutPC;
+
+		public EffectReadyTechnique TechMain, TechGPass;
+
+		[NotNull]
+		public EffectOnlyMatrixVariable FxWorldViewProj;
+		[NotNull]
+		public EffectOnlyBoolVariable FxOverrideColor;
+		[NotNull]
+		public EffectOnlyVector4Variable FxCustomColor;
+
+		public void Initialize(Device device) {
+			_b = EffectUtils.Load(ShadersResourceManager.Manager, "SpecialAreaLights");
+			E = new Effect(device, _b);
+
+			TechMain = new EffectReadyTechnique(E.GetTechniqueByName("Main"));
+			TechGPass = new EffectReadyTechnique(E.GetTechniqueByName("GPass"));
+
+			for (var i = 0; i < TechMain.Description.PassCount && InputSignaturePC == null; i++) {
+				InputSignaturePC = TechMain.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePC == null) throw new System.Exception("input signature (SpecialAreaLights, PC, Main) == null");
+			LayoutPC = new InputLayout(device, InputSignaturePC, InputLayouts.VerticePC.InputElementsValue);
+
+			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj"));
+			FxOverrideColor = new EffectOnlyBoolVariable(E.GetVariableByName("gOverrideColor"));
+			FxCustomColor = new EffectOnlyVector4Variable(E.GetVariableByName("gCustomColor"));
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			DisposeHelper.Dispose(ref InputSignaturePC);
+			DisposeHelper.Dispose(ref LayoutPC);
 			DisposeHelper.Dispose(ref E);
 			DisposeHelper.Dispose(ref _b);
         }

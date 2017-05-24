@@ -14,25 +14,12 @@ namespace AcTools.Render.Base.Utils {
             using (var ie = vertices.GetEnumerator()) {
                 if (!ie.MoveNext()) return new BoundingBox();
 
-                var v = ie.Current;
-                var minX = v.X;
-                var minY = v.Y;
-                var minZ = v.Z;
-                var maxX = v.X;
-                var maxY = v.Y;
-                var maxZ = v.Z;
-
+                var b = new BoundingBox(ie.Current, ie.Current);
                 while (ie.MoveNext()) {
-                    var n = ie.Current;
-                    if (minX > n.X) minX = n.X;
-                    if (minY > n.Y) minY = n.Y;
-                    if (minZ > n.Z) minZ = n.Z;
-                    if (maxX < n.X) maxX = n.X;
-                    if (maxY < n.Y) maxY = n.Y;
-                    if (maxZ < n.Z) maxZ = n.Z;
+                    ie.Current.ExtendBoundingBox(ref b);
                 }
 
-                return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
+                return b;
             }
         }
 
@@ -283,8 +270,8 @@ namespace AcTools.Render.Base.Utils {
             return result;
         }
 
-        private static readonly Dictionary<int, CacheObject> Cache = new Dictionary<int, CacheObject>(); 
-        private static readonly Dictionary<Tuple<int, int>, ArrayCacheObject> ArrayCache = new Dictionary<Tuple<int, int>, ArrayCacheObject>(); 
+        private static readonly Dictionary<int, CacheObject> Cache = new Dictionary<int, CacheObject>();
+        private static readonly Dictionary<Tuple<int, int>, ArrayCacheObject> ArrayCache = new Dictionary<Tuple<int, int>, ArrayCacheObject>();
 
         private class CacheObject : IDisposable {
             public static byte[] Array = new byte[512];
@@ -297,7 +284,7 @@ namespace AcTools.Render.Base.Utils {
                 } else {
                     System.Array.Clear(Array, 0, Array.Length);
                 }
-                
+
                 Pointer = Marshal.AllocHGlobal(len);
                 Data = new DataStream(Array, false, false);
             }
@@ -320,7 +307,7 @@ namespace AcTools.Render.Base.Utils {
                 } else {
                     System.Array.Clear(Array, 0, Array.Length);
                 }
-                
+
                 Pointer = Marshal.AllocHGlobal(elementLen);
                 Data = new DataStream(Array, false, false);
             }
@@ -375,7 +362,7 @@ namespace AcTools.Render.Base.Utils {
                     Marshal.StructureToPtr(o.GetValue(i), cobj.Pointer, true);
                     Marshal.Copy(cobj.Pointer, ArrayCacheObject.Array, elementLen * i, elementLen);
                 }
-                
+
                 variable.SetRawValue(cobj.Data, len);
             }
         }

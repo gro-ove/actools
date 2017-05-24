@@ -18,6 +18,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Forward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
+using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -25,6 +26,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -90,7 +92,9 @@ namespace AcManager.CustomShowroom {
 
         public static CarAmbientShadowsMode[] CarAmbientShadowsModes { get; } = EnumExtension.GetValues<CarAmbientShadowsMode>();
 
-        public static DarkLightType[] LightTypes { get; } = EnumExtension.GetValues<DarkLightType>();
+        public static DarkLightType[] LightTypes { get; } = EffectDarkMaterial.EnableAdditionalAreaLights.AsBoolean()
+                ? EnumExtension.GetValues<DarkLightType>()
+                : EnumExtension.GetValues<DarkLightType>().ApartFrom(DarkLightType.Sphere, DarkLightType.Tube, DarkLightType.LtcTube).ToArray();
 
         protected class SaveableData {
             public virtual Color AmbientDownColor { get; set; } = Color.FromRgb(150, 180, 180);
@@ -315,7 +319,7 @@ namespace AcManager.CustomShowroom {
             SsaaMode = SsaaModesExtended.GetByIdOrDefault<SettingEntry, int?>(o.SsaaMode);
             ShadowMapSize = ShadowResolutions.GetByIdOrDefault<SettingEntry, int?>(o.ShadowMapSize);
             CubemapReflectionMapSize = CubemapReflectionResolutions.GetByIdOrDefault<SettingEntry, int?>(o.CubemapReflectionMapSize);
-            
+
             Renderer.EnableShadows = o.EnableShadows;
             Renderer.UseBloom = o.UseBloom;
             Renderer.UseFxaa = o.UseFxaa;
@@ -502,7 +506,7 @@ namespace AcManager.CustomShowroom {
                     light.Tag = DarkLightTag.Extra;
                     updatedList.Add(light);
                 }
-                
+
                 if (!updatedList.SequenceEqual(Renderer.Lights)) {
                     Renderer.Lights = updatedList.ToArray();
                 }
@@ -609,19 +613,19 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.UseSsaa):
                     ActionExtension.InvokeInMainThread(SyncUseSsaa);
                     break;
-                    
+
                 case nameof(Renderer.ShadowMapSize):
                     ActionExtension.InvokeInMainThread(SyncShadowMapSize);
                     break;
-                    
+
                 case nameof(Renderer.CubemapReflectionMapSize):
                     ActionExtension.InvokeInMainThread(SyncCubemapReflectionsMapSize);
                     break;
-                    
+
                 case nameof(Renderer.Light):
                     ActionExtension.InvokeInMainThread(SyncLight);
                     break;
-                    
+
                 case nameof(Renderer.UseCorrectAmbientShadows):
                 case nameof(Renderer.BlurCorrectAmbientShadows):
                     ActionExtension.InvokeInMainThread(SyncCarAmbientShadowsMode);

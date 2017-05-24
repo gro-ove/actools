@@ -26,12 +26,26 @@ using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
     public enum DarkLightType : uint {
+        [Description("Point")]
         Point = EffectDarkMaterial.LightPoint,
+
+        [Description("Directional")]
         Directional = EffectDarkMaterial.LightDirectional,
+
+        [Description("Spot")]
         Spot = EffectDarkMaterial.LightSpot,
+
+        [Description("Sphere")]
         Sphere = EffectDarkMaterial.LightSphere,
+
+        [Description("Cylinder")]
         Tube = EffectDarkMaterial.LightTube,
-        Plane = EffectDarkMaterial.LightPlane,
+
+        [Description("Plane (LTC)")]
+        LtcPlane = EffectDarkMaterial.LightLtcPlane,
+
+        [Description("Cylinder (LTC)")]
+        LtcTube = EffectDarkMaterial.LightLtcTube,
     }
 
     public class DarkLightTag {
@@ -113,7 +127,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private string _displayName;
 
         public string DisplayName {
-            get { return _displayName; }
+            get => _displayName;
             set {
                 if (Equals(value, _displayName)) return;
                 _displayName = value;
@@ -126,7 +140,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _smoothChanging;
 
         public bool Enabled {
-            get { return _enabled; }
+            get => _enabled;
             set {
                 if (value == _enabled) return;
                 _enabled = value;
@@ -141,7 +155,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _useSpeculars = true;
 
         public bool UseSpeculars {
-            get { return _useSpeculars; }
+            get => _useSpeculars;
             set {
                 if (Equals(value, _useSpeculars)) return;
                 _useSpeculars = value;
@@ -154,7 +168,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _isVisibleInUi = true;
 
         public bool IsVisibleInUi {
-            get { return _isVisibleInUi; }
+            get => _isVisibleInUi;
             set {
                 if (Equals(value, _isVisibleInUi)) return;
                 _isVisibleInUi = value;
@@ -172,7 +186,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private DarkLightType _type;
 
         public DarkLightType Type {
-            get { return _type; }
+            get => _type;
             set {
                 if (Equals(value, _type)) return;
                 _type = value;
@@ -192,8 +206,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     return new DarkAreaSphereLight();
                 case DarkLightType.Tube:
                     return new DarkAreaTubeLight();
-                case DarkLightType.Plane:
+                case DarkLightType.LtcPlane:
                     return new DarkAreaPlaneLight();
+                case DarkLightType.LtcTube:
+                    return new DarkAreaLtcTubeLight();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newType), newType, null);
             }
@@ -286,7 +302,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         [CanBeNull]
         public string AttachedTo {
-            get { return _attachedTo; }
+            get => _attachedTo;
             set {
                 value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 if (Equals(value, _attachedTo)) return;
@@ -299,7 +315,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _attachedToSelect;
 
         public bool AttachedToSelect {
-            get { return _attachedToSelect; }
+            get => _attachedToSelect;
             set {
                 if (Equals(value, _attachedToSelect)) return;
                 _attachedToSelect = value;
@@ -310,7 +326,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private TimeSpan? _smoothDelay;
 
         public TimeSpan? SmoothDelay {
-            get { return _smoothDelay; }
+            get => _smoothDelay;
             set {
                 if (Equals(value, _smoothDelay)) return;
                 _smoothDelay = value;
@@ -321,7 +337,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _asHeadlightMultiplier;
 
         public float AsHeadlightMultiplier {
-            get { return _asHeadlightMultiplier; }
+            get => _asHeadlightMultiplier;
             set {
                 if (Equals(value, _asHeadlightMultiplier)) return;
                 _asHeadlightMultiplier = value;
@@ -476,7 +492,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Matrix _parentMatrix = Matrix.Identity;
 
         public Matrix ParentMatrix {
-            get { return _parentMatrix; }
+            get => _parentMatrix;
             set {
                 if (Equals(value, _parentMatrix)) return;
                 _parentMatrix = value;
@@ -493,7 +509,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Vector3 _position = new Vector3(0f, 2f, 0f);
 
         public Vector3 Position {
-            get { return _position; }
+            get => _position;
             set {
                 if (value.Equals(_position)) return;
                 _position = value;
@@ -509,7 +525,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private Color _color = Color.White;
 
         public Color Color {
-            get { return _color; }
+            get => _color;
             set {
                 if (value.Equals(_color)) return;
                 _color = value;
@@ -520,7 +536,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _brightness = 1f;
 
         public float Brightness {
-            get { return _brightness; }
+            get => _brightness;
             set {
                 if (value.Equals(_brightness)) return;
                 _brightness = value;
@@ -531,7 +547,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _useShadows;
 
         public bool UseShadows {
-            get { return _useShadows && _shadowsAvailable; }
+            get => _useShadows && _shadowsAvailable;
             set {
                 if (Equals(value, _useShadows)) return;
                 _useShadows = value;
@@ -542,7 +558,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _shadowsAvailable = true;
 
         public bool ShadowsAvailable {
-            get { return _shadowsAvailable; }
+            get => _shadowsAvailable;
             set {
                 if (Equals(value, _shadowsAvailable)) return;
                 _shadowsAvailable = value;
@@ -555,7 +571,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _highQualityShadowsAvailable = true;
 
         public bool HighQualityShadowsAvailable {
-            get { return _highQualityShadowsAvailable; }
+            get => _highQualityShadowsAvailable;
             set {
                 if (Equals(value, _highQualityShadowsAvailable)) return;
                 _highQualityShadowsAvailable = value;
@@ -566,7 +582,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _useHighQualityShadows;
 
         public bool UseHighQualityShadows {
-            get { return _useHighQualityShadows && _highQualityShadowsAvailable; }
+            get => _useHighQualityShadows && _highQualityShadowsAvailable;
             set {
                 if (Equals(value, _useHighQualityShadows)) return;
                 _useHighQualityShadows = value;
@@ -577,7 +593,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private float _shadowsBlurMultiplier = 1f;
 
         public float ShadowsBlurMultiplier {
-            get { return _shadowsBlurMultiplier; }
+            get => _shadowsBlurMultiplier;
             set {
                 if (Equals(value, _shadowsBlurMultiplier)) return;
                 _shadowsBlurMultiplier = value;
@@ -588,7 +604,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private int _shadowsResolution = OptionDefaultShadowsResolution;
 
         public int ShadowsResolution {
-            get { return _shadowsResolution; }
+            get => _shadowsResolution;
             set {
                 if (value == _shadowsResolution) return;
                 _shadowsResolution = value;
@@ -633,7 +649,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     _stopwatch = null;
                 }
             }
-            
+
             light.Type = (uint)Type;
             light.PosW = ActualPosition;
             light.Color = Color.ToVector3() * brightnessMultipler;
@@ -737,21 +753,43 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         public abstract void InvalidateShadows();
 
-        public abstract void DrawDummy(IDeviceContextHolder holder, ICamera camera);
+        public virtual void DrawLight(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode){}
+
+        private RenderableList _dummy;
+
+        public void DrawDummy(IDeviceContextHolder holder, ICamera camera) {
+            if (_dummy == null) {
+                var obj = CreateDummy();
+                _dummy = obj as RenderableList ?? new RenderableList { obj };
+            }
+
+            _dummy.ParentMatrix = GetDummyTransformMatrix(camera);
+            _dummy.Draw(holder, camera, SpecialRenderMode.Simple);
+        }
+
+        protected void ResetDummy() {
+            DisposeHelper.Dispose(ref _dummy);
+        }
+
+        protected abstract Matrix GetDummyTransformMatrix([CanBeNull] ICamera camera);
+
+        [NotNull]
+        protected abstract IRenderableObject CreateDummy();
 
         public void Dispose() {
             DisposeOverride();
             DisposeHelper.Dispose(ref _debugText);
             DisposeHelper.Dispose(ref _movable);
+            DisposeHelper.Dispose(ref _dummy);
         }
 
-        protected abstract void DisposeOverride();
+        protected virtual void DisposeOverride() { }
 
         #region Tag
         private DarkLightTag _tag = DarkLightTag.Extra;
 
         public DarkLightTag Tag {
-            get { return _tag; }
+            get => _tag;
             set {
                 if (value == _tag) return;
                 _tag = value;
@@ -767,7 +805,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _actAsHeadlight;
 
         public bool ActAsHeadlight {
-            get { return _actAsHeadlight; }
+            get => _actAsHeadlight;
             private set {
                 if (value == _actAsHeadlight) return;
                 _actAsHeadlight = value;
@@ -778,7 +816,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _actAsBrakeLight;
 
         public bool ActAsBrakeLight {
-            get { return _actAsBrakeLight; }
+            get => _actAsBrakeLight;
             private set {
                 if (value == _actAsBrakeLight) return;
                 _actAsBrakeLight = value;
@@ -794,7 +832,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private void UpdateActs() {
             var name = DisplayName;
             if (!Tag.IsCarTag || name == null) return;
-            
+
             if (name.Contains("brake", StringComparison.OrdinalIgnoreCase)) {
                 ActAsBrakeLight = true;
                 ActAsHeadlight = false;
@@ -809,7 +847,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         private bool _isDeleted;
 
         public bool IsDeleted {
-            get { return _isDeleted; }
+            get => _isDeleted;
             set {
                 if (value == _isDeleted) return;
                 _isDeleted = value;
@@ -855,5 +893,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
                     Enabled ? new Color4(1f, 1f, 1f, 0f) : new Color4(1f, 0.4f, 0.4f, 0f));
         }
         #endregion
+
+        [CanBeNull]
+        public virtual IRenderableObject GetRenderableObject() {
+            return null;
+        }
     }
 }

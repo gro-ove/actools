@@ -36,24 +36,23 @@ float4 GetReflection_Maps(float3 posW, float3 normal, float alpha, float specula
 	float3 reflected = reflect(-toEyeW, normal);
 	float3 refl = GetReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultiplier);
 
-	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultiplier;
+	float val = GetReflectionStrength(normal, toEyeW);
 	if (!HAS_FLAG(IS_ADDITIVE)) {
 		alpha = alpha + val * (1 - alpha);
 	}
 
 	GPassAlphaTest(alpha);
-	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
+	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val * reflectionMultiplier);
 }
 
 float4 GetReflection_Maps_NoAlpha(float3 posW, float3 normal, float alpha, float specularExpMultiplier, float reflectionMultiplier) {
 	float3 toEyeW = normalize(gEyePosW - posW);
 	float3 reflected = reflect(-toEyeW, normal);
 	float3 refl = GetReflection(reflected, gMaterial.SpecularExp * specularExpMultiplier);
-
-	float val = GetReflectionStrength(normal, toEyeW) * reflectionMultiplier;
+	float val = GetReflectionStrength(normal, toEyeW);
 
 	GPassAlphaTest(alpha);
-	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val);
+	return float4(refl, (gGPassTransparent ? saturate(alpha + val) : 1.0) * val * reflectionMultiplier);
 }
 
 float2 EncodeNormal(float3 n) {
@@ -187,19 +186,25 @@ PS_OUT ps_GPass_Maps(PS_IN pin) {
 	float alpha;
 	float3 normal;
 
+	if (HAS_FLAG(HAS_DETAILS_MAP)) {
+		float4 details = gDetailsMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
+		mapsValue.y *= (details.a * 0.5 + 0.5);
+	}
+
 	if (HAS_FLAG(HAS_NORMAL_MAP)) {
 		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : 1.0;
 
-		float blend = gMapsMaterial.DetailsNormalBlend;
-		if (blend > 0.0) {
-			float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
-			normalValue += (detailsNormalValue - 0.5) * blend * (1.0 - mask);
-		}
+        if (HAS_FLAG(HAS_DETAILS_MAP)) {
+            float blend = gMapsMaterial.DetailsNormalBlend;
+            if (blend > 0.0) {
+                float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
+                normalValue += (detailsNormalValue - 0.5) * blend * (1.0 - mask);
+            }
+        }
 
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	}
-	else {
+	} else {
 		normal = normalize(pin.NormalW);
 		alpha = 1.0;
 	}
@@ -351,8 +356,7 @@ PS_OUT ps_GPass_Debug(PS_IN pin) {
 		float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		alpha = HAS_FLAG(USE_NORMAL_ALPHA_AS_ALPHA) ? normalValue.a : gDiffuseMap.Sample(samAnisotropic, pin.Tex).a;
 		normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
-	}
-	else {
+	} else {
 		normal = normalize(pin.NormalW);
 		alpha = diffuseMapValue.a;
 	}

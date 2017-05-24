@@ -65,7 +65,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         public override bool ShowWireframe {
-            get { return base.ShowWireframe; }
+            get => base.ShowWireframe;
             set {
                 base.ShowWireframe = value;
                 (_carWrapper?.ElementAtOrDefault(0) as FlatMirror)?.SetInvertedRasterizerState(
@@ -227,9 +227,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _carWrapper.RemoveAt(0);
             }
 
+            DisposeHelper.Dispose(ref _mirror);
             var mirrorPlane = new Plane(Vector3.Zero, Vector3.UnitY);
-            _mirror = FlatMirror && CarNode != null ? new FlatMirror(CarNode, mirrorPlane) :
-                    new FlatMirror(mirrorPlane, OpaqueGround);
+            _mirror = FlatMirror
+                    ? new FlatMirror(
+                            new RenderableList("_cars", Matrix.Identity,
+                                    CarSlots.Select(x => x.CarNode).Concat(Lights.Select(x => x.Enabled ? x.GetRenderableObject() : null)).NonNull()),
+                            mirrorPlane)
+                    : new FlatMirror(mirrorPlane, OpaqueGround);
             if (FlatMirror && ShowWireframe) {
                 _mirror.SetInvertedRasterizerState(DeviceContextHolder.States.WireframeInvertedState);
             }
@@ -469,7 +474,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _meshDebug;
 
         public bool MeshDebug {
-            get { return _meshDebug; }
+            get => _meshDebug;
             set {
                 if (Equals(value, _meshDebug)) return;
                 _meshDebug = value;
@@ -593,6 +598,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
 
+            if (_complexMode) {
+                DrawLights(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+            }
+
             // debug stuff
             for (var i = CarSlots.Length - 1; i >= 0; i--) {
                 CarSlots[i].CarNode?.DrawDebug(DeviceContextHolder, ActualCamera);
@@ -653,7 +662,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         private bool _showDepth;
 
         public bool ShowDepth {
-            get { return _showDepth; }
+            get => _showDepth;
             set {
                 if (Equals(value, _showDepth)) return;
                 _showDepth = value;
@@ -735,7 +744,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private DarkDof _dof;
 
         public bool UseDof {
-            get { return _useDof; }
+            get => _useDof;
             set {
                 if (Equals(value, _useDof)) return;
                 _useDof = value;
@@ -755,7 +764,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private float _dofFocusPlane = 1.6f;
 
         public float DofFocusPlane {
-            get { return _dofFocusPlane; }
+            get => _dofFocusPlane;
             set {
                 if (Equals(value, _dofFocusPlane)) return;
                 _dofFocusPlane = value;
@@ -767,7 +776,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private float _dofScale = 1f;
 
         public float DofScale {
-            get { return _dofScale; }
+            get => _dofScale;
             set {
                 if (Equals(value, _dofScale)) return;
                 _dofScale = value;
@@ -894,6 +903,10 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
 
             DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+
+            if (_complexMode) {
+                DrawLights(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+            }
 
             if (ShowDepth) {
                 DeviceContextHolder.GetHelper<CopyHelper>().DepthToLinear(DeviceContextHolder, _lastDepthBuffer, InnerBuffer.TargetView,
@@ -1073,7 +1086,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private bool _useAccumulationDof;
 
         public bool UseAccumulationDof {
-            get { return _useAccumulationDof; }
+            get => _useAccumulationDof;
             set {
                 if (Equals(value, _useAccumulationDof)) return;
                 _useAccumulationDof = value;
@@ -1085,7 +1098,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private int _accumulationDofIterations = 100;
 
         public int AccumulationDofIterations {
-            get { return _accumulationDofIterations; }
+            get => _accumulationDofIterations;
             set {
                 if (Equals(value, _accumulationDofIterations)) return;
                 _accumulationDofIterations = value;
@@ -1096,7 +1109,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private float _accumulationDofApertureSize = 0.02f;
 
         public float AccumulationDofApertureSize {
-            get { return _accumulationDofApertureSize; }
+            get => _accumulationDofApertureSize;
             set {
                 if (Equals(value, _accumulationDofApertureSize)) return;
                 _accumulationDofApertureSize = value;
@@ -1109,7 +1122,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private bool _accumulationDofBokeh;
 
         public bool AccumulationDofBokeh {
-            get { return _accumulationDofBokeh; }
+            get => _accumulationDofBokeh;
             set {
                 if (Equals(value, _accumulationDofBokeh)) return;
                 _accumulationDofBokeh = value;
@@ -1223,7 +1236,7 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
         private bool _setCameraHigher = true;
 
         public bool SetCameraHigher {
-            get { return _setCameraHigher; }
+            get => _setCameraHigher;
             set {
                 if (Equals(value, _setCameraHigher)) return;
                 _setCameraHigher = value;

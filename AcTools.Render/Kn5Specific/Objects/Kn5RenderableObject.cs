@@ -51,7 +51,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
     public sealed class Kn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG>, IKn5RenderableObject {
         public readonly bool IsCastingShadows;
-        
+
         public Kn5Node OriginalNode { get; }
 
         public Matrix ModelMatrixInverted { get; set; }
@@ -143,7 +143,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
-            
+
             _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
             _material.Initialize(contextHolder);
 
@@ -173,7 +173,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 SpecialRenderMode.Deferred | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow;
 
         public AcDynamicMaterialParams DynamicMaterialParams { get; } = new AcDynamicMaterialParams();
-        
+
         protected override void DrawOverride(IDeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if ((_renderModes & mode) == 0) return;
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
@@ -196,10 +196,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             material.Draw(contextHolder, Indices.Length, mode);
         }
 
-        public override BaseRenderableObject Clone() {
-            return new ClonedKn5RenderableObject(this);
-        }
-
         public override void Dispose() {
             DisposeHelper.Dispose(ref _material);
             DisposeHelper.Dispose(ref _mirrorMaterial);
@@ -207,7 +203,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             base.Dispose();
         }
 
-        internal class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
+        public override BaseRenderableObject Clone() {
+            return new ClonedKn5RenderableObject(this);
+        }
+
+        private class ClonedKn5RenderableObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
             private readonly Kn5RenderableObject _original;
 
             internal ClonedKn5RenderableObject(Kn5RenderableObject original) : base(original.Name + "_copy", original.Vertices, original.Indices) {

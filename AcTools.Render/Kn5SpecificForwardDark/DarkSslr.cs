@@ -61,7 +61,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _effect.FxDepthMap.SetResource(depth);
             _effect.FxBaseReflectionMap.SetResource(BufferBaseReflection.View);
             _effect.FxNormalMap.SetResource(normals);
-        
+
             _effect.FxEyePosW.Set(camera.Position);
             _effect.FxWorldViewProj.SetMatrix(camera.ViewProj);
             _effect.FxWorldViewProjInv.SetMatrix(camera.ViewProjInvert);
@@ -73,12 +73,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 ShaderResourceView normals, ICamera camera, RenderTargetView target) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);
-            
+
             _effect.FxDiffuseMap.SetResource(colorMap);
             _effect.FxFirstStepMap.SetResource(firstStep);
             _effect.FxBaseReflectionMap.SetResource(baseReflection);
             _effect.FxNormalMap.SetResource(normals);
-            
+
             _effect.FxEyePosW.Set(camera.Position);
             _effect.FxWorldViewProj.SetMatrix(camera.ViewProj);
             _effect.FxWorldViewProjInv.SetMatrix(camera.ViewProjInvert);

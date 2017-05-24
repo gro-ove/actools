@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcTools.DataFile;
@@ -217,6 +218,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _existingRenderer = true;
                 _renderer = existingRenderer;
                 _carId = existingRenderer.CarNode?.CarId;
+
+                existingRenderer.AutoloadCarLights = false;
+                existingRenderer.AutoloadShowroomLights = false;
+                existingRenderer.Lights = existingRenderer.Lights.Where(x => !x.Tag.IsCarTag && !x.Tag.IsShowroomTag).ToArray();
             }
         }
 
@@ -262,7 +267,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 showroom = File.Exists(kn5) ? kn5 : null;
             }
 
-            var renderer = new DarkKn5ObjectRenderer(initialCar, showroom);
+            var renderer = new DarkKn5ObjectRenderer(initialCar, showroom) {
+                AutoloadCarLights = false,
+                AutoloadShowroomLights = false
+            };
             SetRendererOptions(renderer, options);
 
             renderer.SelectSkin(initialSkinId);
