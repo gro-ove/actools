@@ -155,6 +155,7 @@ namespace AcManager.Tools.AcManagersNew {
             // let’s move!
             try {
                 await MoveOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
+                AcCommonObject.MoveRatings<T>(oldId, newId, false);
             } catch (InformativeException) {
                 throw;
             } catch (Exception e) {
@@ -189,6 +190,7 @@ namespace AcManager.Tools.AcManagersNew {
             // let’s move!
             try {
                 await CloneOverrideAsync(oldId, newId, currentLocation, newLocation, currentAttached.Zip(newAttached, Tuple.Create), newEnabled);
+                AcCommonObject.MoveRatings<T>(oldId, newId, true);
             } catch (InformativeException) {
                 throw;
             } catch (Exception e) {

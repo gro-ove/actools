@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.SemiGui {
     public interface IGameUi : IDisposable {
-        void Show(Game.StartProperties properties);
+        void Show(Game.StartProperties properties, GameMode mode);
 
         void OnProgress(Game.ProgressState progress);
 
@@ -14,5 +14,9 @@ namespace AcManager.Tools.SemiGui {
         void OnError(Exception exception);
 
         CancellationToken CancellationToken { get; }
+    }
+
+    public enum GameMode {
+        Race, Replay, Benchmark
     }
 }

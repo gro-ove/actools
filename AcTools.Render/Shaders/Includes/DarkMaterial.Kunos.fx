@@ -3,6 +3,8 @@
 //// Standart
 
 float4 ps_Standard(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack(pin, color, alpha, normal);
 	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
@@ -20,6 +22,7 @@ technique10 Standard {
 //// Sky
 
 float4 ps_Sky(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
 	return float4(gBackgroundColor, 1.0);
 }
 
@@ -34,6 +37,8 @@ technique10 Sky {
 //// Alpha
 
 float4 ps_Alpha(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_Alpha(pin, color, alpha, normal);
 	float3 lighted = CalculateLight(color, normal, pin.PosW, pin.PosH.xy);
@@ -51,6 +56,8 @@ technique10 Alpha {
 //// Reflective
 
 float4 ps_Reflective(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack(pin, color, alpha, normal);
 
@@ -76,6 +83,8 @@ technique10 Reflective {
 //// NM
 
 float4 ps_Nm(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_Nm(pin, color, alpha, normal);
 
@@ -101,6 +110,8 @@ technique10 Nm {
 //// NM UV Mult
 
 float4 ps_NmUvMult(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_NmUvMult(pin, color, alpha, normal);
 
@@ -126,6 +137,8 @@ technique10 NmUvMult {
 //// AT NM
 
 float4 ps_AtNm(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_AtNm(pin, color, alpha, normal);
 
@@ -144,6 +157,8 @@ technique10 AtNm {
 //// Maps
 
 float4 ps_Maps(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal, maps; float alpha;
 	Unpack_Maps(pin, color, alpha, normal, maps);
 
@@ -177,6 +192,8 @@ technique10 SkinnedMaps {
 // Diff maps (as Maps, but multipliers are taken from diffuse alpha-channel)
 
 /*float4 ps_DiffMaps(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_DiffMaps(pin, color, alpha, normal);
 
@@ -201,6 +218,8 @@ technique10 DiffMaps {
 // Tyres
 
 float4 ps_Tyres(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 color, normal; float alpha;
 	Unpack_Tyres(pin, color, alpha, normal);
 
@@ -225,7 +244,8 @@ technique10 Tyres {
 //// GL
 
 float4 ps_Gl(PS_IN pin) : SV_Target {
-	return float4(normalize(pin.NormalW), 1.0);
+    FlatMirrorTest(pin);
+    return float4(normalize(pin.NormalW), 1.0);
 }
 
 technique10 Gl {
@@ -247,6 +267,8 @@ technique10 SkinnedGl {
 //// Windscreen
 
 float4 ps_Windscreen(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float4 txColor = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
 	float alpha = txColor.a;
@@ -283,6 +305,8 @@ technique10 Windscreen {
 //// Collider
 
 float4 ps_Collider(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 toEyeW = normalize(gEyePosW - pin.PosW);
 	float3 normal = normalize(pin.NormalW);
 	float opacify = pow(1.0 - dot(normal, toEyeW), 5.0);
@@ -304,6 +328,8 @@ technique10 Collider {
 //// Debug
 
 float4 ps_Debug(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 	float3 position = pin.PosW;
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
@@ -409,6 +435,8 @@ pt_PS_IN vs_AmbientShadow(pt_VS_IN vin) {
 }
 
 float4 ps_AmbientShadow(pt_PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
+
 #if COMPLEX_LIGHTING == 1
 	float3 gLightColor = gLights[0].Type == LIGHT_DIRECTIONAL ? gLights[0].Color.xyz : (float3)0.0;
 #endif
@@ -482,8 +510,8 @@ float4 GetFlatBackgroundGroundColor(float3 posW, float baseOpacity, float frense
 
 #if COMPLEX_LIGHTING == 1
 	float3 diffuse;
-	GetLight_NoSpecular(float3(0, 1, 0), posW, diffuse);
-	float3 light = diffuse * distanceMultiplier;
+	GetLight_NoSpecular_ExtraOnly(float3(0, 1, 0), posW, diffuse);
+	float3 light = (gLightDir.y * gLightColor + diffuse) * distanceMultiplier;
 #else
 	// how much surface is lighed according to light direction
 	float3 light = gLightDir.y * gLightColor * distanceMultiplier;

@@ -4,6 +4,7 @@ struct VS_IN {
 };
 
 struct PS_IN {
+	float3 PosW :   POSITION;
 	float4 PosH :   SV_POSITION;
 	float4 Color :  COLOR;
 };
@@ -27,19 +28,34 @@ float GetDepth(float4 posH) {
 }
 
 cbuffer cbPerObject : register(b0) {
+	matrix gWorld;
 	matrix gWorldViewProj;
 	bool gOverrideColor;
 	float4 gCustomColor;
 }
 
+cbuffer cbPerFrame {
+	int gFlatMirrorSide;
+}
+
+#define gFlatMirrored (gFlatMirrorSide == -1)
+
+void FlatMirrorTest(PS_IN pin){
+    if (gFlatMirrorSide != 0){
+        clip(pin.PosW.y * gFlatMirrorSide);
+    }
+}
+
 PS_IN vs_main(VS_IN vin) {
 	PS_IN vout;
+	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 	vout.Color = gOverrideColor ? gCustomColor : vin.Color;
 	return vout;
 }
 
 float4 ps_main(PS_IN pin) : SV_Target {
+    FlatMirrorTest(pin);
 	return float4(pin.Color.rgb, 1.0);
 }
 
@@ -52,6 +68,7 @@ technique10 Main {
 }
 
 PS_OUT ps_GPass(PS_IN pin) {
+    FlatMirrorTest(pin);
 	return PackResult((float4)0.0, float3(0, 1, 0), GetDepth(pin.PosH), 0.0);
 }
 

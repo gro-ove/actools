@@ -54,7 +54,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public int Points {
-            get { return _points; }
+            get => _points;
             set {
                 if (Equals(value, _points)) return;
                 _points = value;
@@ -65,7 +65,7 @@ namespace AcManager.Tools.Objects {
         private int _takenPlace;
 
         public int TakenPlace {
-            get { return _takenPlace; }
+            get => _takenPlace;
             set {
                 if (value == _takenPlace) return;
                 _takenPlace = value;
@@ -91,10 +91,46 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty("aiLevel", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(100d)]
         public double AiLevel {
-            get { return _aiLevel; }
+            get => _aiLevel;
             set {
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _aiAggression;
+
+        [JsonProperty("aiAggression", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
+        public double AiAggression {
+            get => _aiAggression;
+            set {
+                if (Equals(value, _aiAggression)) return;
+                _aiAggression = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _ballast;
+
+        [JsonProperty("ballast", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
+        public double Ballast {
+            get => _ballast;
+            set {
+                if (Equals(value, _ballast)) return;
+                _ballast = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _restrictor;
+
+        [JsonProperty("restrictor", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
+        public double Restrictor {
+            get => _restrictor;
+            set {
+                if (Equals(value, _restrictor)) return;
+                _restrictor = value;
                 OnPropertyChanged();
             }
         }
@@ -103,7 +139,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull, JsonProperty("nationality", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public string Nationality {
-            get { return _nationality; }
+            get => _nationality;
             set {
                 if (Equals(value, _nationality)) return;
                 _nationality = value;

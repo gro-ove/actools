@@ -49,7 +49,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _steerDeg;
 
         public float SteerDeg {
-            get { return _steerDeg; }
+            get => _steerDeg;
             set {
                 value = value.Clamp(-50f, 50f).Round(0.1f);
                 if (Equals(value, _steerDeg)) return;
@@ -266,7 +266,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _alignWheelsByData;
 
         public bool AlignWheelsByData {
-            get { return _alignWheelsByData; }
+            get => _alignWheelsByData;
             set {
                 if (Equals(value, _alignWheelsByData)) return;
                 _alignWheelsByData = value;
@@ -288,7 +288,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private float _wheelsPosition;
 
         public float WheelsSpeedKph {
-            get { return _wheelsSpeedKph; }
+            get => _wheelsSpeedKph;
             set {
                 if (Equals(value, _wheelsSpeedKph)) return;
                 _wheelsSpeedKph = value;

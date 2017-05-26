@@ -35,8 +35,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             var b = new byte[bufferSize + 4];
             var p = new byte[4];
-            long o;
-            for (var j =0;; j++) {
+            for (var j = 0;; j++) {
                 try {
                     if (j == 0) {
                         ReadBytes(p, 0, p.Length);
@@ -99,7 +98,6 @@ namespace AcManager.Tools.Miscellaneous {
                                     }
                                 }
                             } else {
-                                Logging.Debug($"{i}-{bytesRead}={i - bytesRead}");
                                 Seek(i - bytesRead, SeekOrigin.Current);
                             }
 

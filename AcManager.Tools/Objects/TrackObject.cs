@@ -138,7 +138,7 @@ namespace AcManager.Tools.Objects {
             if (information == null) {
                 return MultiLayouts != null;
             }
-            
+
             if (MultiLayouts == null) {
                 return true;
             }
@@ -190,7 +190,7 @@ namespace AcManager.Tools.Objects {
         private bool _extraLayoutChanged;
 
         public bool ExtraLayoutChanged {
-            get { return _extraLayoutChanged; }
+            get => _extraLayoutChanged;
             set {
                 if (Equals(value, _extraLayoutChanged)) return;
                 _extraLayoutChanged = value;
@@ -200,8 +200,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool Changed {
-            get { return base.Changed || ExtraLayoutChanged; }
-            protected set { base.Changed = value; }
+            get => base.Changed || ExtraLayoutChanged;
+            protected set => base.Changed = value;
         }
 
         private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -267,7 +267,7 @@ namespace AcManager.Tools.Objects {
         private string _commonName;
 
         public override string NameEditable {
-            get { return (MultiLayoutMode ? _commonName : null) ?? base.NameEditable; }
+            get => (MultiLayoutMode ? _commonName : null) ?? base.NameEditable;
             set {
                 if (MultiLayouts != null && _commonName != null) {
                     if (Equals(value, _commonName)) return;
@@ -285,12 +285,14 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string LayoutName {
-            get { return base.NameEditable; }
-            set { base.NameEditable = value; }
+            get => base.NameEditable;
+            set => base.NameEditable = value;
         }
 
         public override string DisplayName => MultiLayouts?.Count > 1 ?
                 $@"{_commonName ?? base.DisplayName} ({MultiLayouts.Count})" : base.DisplayName;
+
+        public string DisplayNameWithoutCount => MultiLayouts?.Count > 1 ? _commonName : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;
 

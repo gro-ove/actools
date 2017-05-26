@@ -320,7 +320,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _useUp;
 
         public bool UseUp {
-            get { return _useUp; }
+            get => _useUp;
             set {
                 if (value == _useUp) return;
                 _useUp = value;
@@ -355,11 +355,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         internal string DebugString => _up?.DebugString;
-        
+
         private bool _isDriverVisible;
 
         public bool IsDriverVisible {
-            get { return _isDriverVisible; }
+            get => _isDriverVisible;
             set {
                 if (Equals(value, _isDriverVisible)) return;
                 _isDriverVisible = value;
@@ -493,7 +493,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _isCrewVisible;
 
         public bool IsCrewVisible {
-            get { return _isCrewVisible; }
+            get => _isCrewVisible;
             set {
                 if (Equals(value, _isCrewVisible)) return;
                 _isCrewVisible = value;
@@ -526,7 +526,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private int _currentLod;
 
         public int CurrentLod {
-            get { return _currentLod; }
+            get => _currentLod;
             set {
                 if (Equals(value, _currentLod)) return;
                 _currentLod = value;
@@ -647,7 +647,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             private bool _debugMode, _debugModeSetLater;
 
             internal bool DebugMode {
-                get { return _debugMode; }
+                get => _debugMode;
                 set {
                     if (Equals(value, _debugMode)) return;
                     _debugMode = value;
@@ -677,7 +677,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _liveReload = true;
 
         public bool LiveReload {
-            get { return _liveReload; }
+            get => _liveReload;
             set {
                 if (Equals(value, _liveReload)) return;
                 _liveReload = value;
@@ -697,7 +697,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _magickOverride;
 
         public bool MagickOverride {
-            get { return _magickOverride; }
+            get => _magickOverride;
             set {
                 if (Equals(value, _magickOverride)) return;
                 _magickOverride = value;
@@ -719,7 +719,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         [CanBeNull]
         public string CurrentSkin {
-            get { return _currentSkin; }
+            get => _currentSkin;
             private set {
                 if (value == _currentSkin) return;
                 _currentSkin = value;
@@ -785,7 +785,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void SelectNextSkin(IDeviceContextHolder contextHolder) {
             if (Skins?.Any() != true) return;
-            
+
             if (contextHolder == null) {
                 contextHolder = _skinsWatcherHolder;
                 if (contextHolder == null) return;
@@ -797,7 +797,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void SelectPreviousSkin(IDeviceContextHolder contextHolder) {
             if (Skins?.Any() != true) return;
-            
+
             if (contextHolder == null) {
                 contextHolder = _skinsWatcherHolder;
                 if (contextHolder == null) return;
@@ -812,7 +812,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 contextHolder = _skinsWatcherHolder;
                 if (contextHolder == null) return;
             }
-            
+
             if (skinId == DefaultSkin) {
                 skinId = Skins?.FirstOrDefault();
             }
@@ -944,7 +944,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool? _cockpitLrActive;
 
         public bool CockpitLrActive {
-            get { return _cockpitLrActive ?? false; }
+            get => _cockpitLrActive ?? false;
             set {
                 if (Equals(value, _cockpitLrActive)) return;
                 _cockpitLrActive = value;
@@ -966,7 +966,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool? _seatbeltOnActive;
 
         public bool SeatbeltOnActive {
-            get { return _seatbeltOnActive ?? false; }
+            get => _seatbeltOnActive ?? false;
             set {
                 if (Equals(value, _seatbeltOnActive)) return;
                 _seatbeltOnActive = value;
@@ -986,7 +986,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool? _blurredNodesActive;
 
         public bool BlurredNodesActive {
-            get { return _blurredNodesActive ?? false; }
+            get => _blurredNodesActive ?? false;
             set {
                 if (Equals(value, _blurredNodesActive)) return;
                 _blurredNodesActive = value;
@@ -1006,7 +1006,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Matrix? _initiallyCalculatedPosition;
 
         public static void AdjustPosition([NotNull] RenderableList parent, Kn5RenderableCar car = null) {
-            Func<string, RenderableList> getDummyByName = s => car?.GetDummyByName(s) ?? parent.GetDummyByName(s);
+            RenderableList DummyByName(string s) => car?.GetDummyByName(s) ?? parent.GetDummyByName(s);
 
             var node = parent;
 
@@ -1025,10 +1025,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             node.UpdateBoundingBox();
 #endif
 
-            var wheelLf = getDummyByName("WHEEL_LF");
-            var wheelRf = getDummyByName("WHEEL_RF");
-            var wheelLr = getDummyByName("WHEEL_LR");
-            var wheelRr = getDummyByName("WHEEL_RR");
+            var wheelLf = DummyByName("WHEEL_LF");
+            var wheelRf = DummyByName("WHEEL_RF");
+            var wheelLr = DummyByName("WHEEL_LR");
+            var wheelRr = DummyByName("WHEEL_RR");
 
             if (wheelLf == null || wheelRf == null || wheelLr == null || wheelRr == null ||
                     !wheelLf.BoundingBox.HasValue || !wheelRf.BoundingBox.HasValue ||
@@ -1088,7 +1088,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _isColliderVisible;
 
         public bool IsColliderVisible {
-            get { return _isColliderVisible; }
+            get => _isColliderVisible;
             set {
                 if (Equals(value, _isColliderVisible)) return;
                 _isColliderVisible = value;
@@ -1223,7 +1223,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _fansEnabled;
 
         public bool FansEnabled {
-            get { return _fansEnabled; }
+            get => _fansEnabled;
             set {
                 if (Equals(value, _fansEnabled)) return;
                 _fansEnabled = value;
@@ -1320,7 +1320,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _wipersEnabled;
 
         public bool WipersEnabled {
-            get { return _wipersEnabled; }
+            get => _wipersEnabled;
             set {
                 if (Equals(value, _wipersEnabled)) return;
                 _wipersEnabled = value;
@@ -1366,7 +1366,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _leftDoorOpen;
 
         public bool LeftDoorOpen {
-            get { return _leftDoorOpen; }
+            get => _leftDoorOpen;
             set {
                 if (Equals(value, _leftDoorOpen)) return;
                 _leftDoorOpen = value;
@@ -1388,7 +1388,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _rightDoorOpen;
 
         public bool RightDoorOpen {
-            get { return _rightDoorOpen; }
+            get => _rightDoorOpen;
             set {
                 if (Equals(value, _rightDoorOpen)) return;
                 _rightDoorOpen = value;
@@ -1425,7 +1425,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             private bool _active;
 
             public bool Active {
-                get { return _active; }
+                get => _active;
                 set {
                     if (Equals(value, _active)) return;
                     _active = value;
@@ -1435,7 +1435,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             protected abstract void OnActiveChanged(bool newValue);
-            
+
             internal void Update(RenderableList parent, float value) {
                 _animator.Value?.SetTarget(parent, value);
                 Value = value;
@@ -1473,7 +1473,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public class SpoilerEntry : AnimationEntry {
             public readonly CarData.WingAnimation Description;
 
-            public SpoilerEntry(Kn5RenderableCar carNode, CarData.WingAnimation description) : base(carNode, 
+            public SpoilerEntry(Kn5RenderableCar carNode, CarData.WingAnimation description) : base(carNode,
                     description.KsAnimName, description.Duration) {
                 Description = description;
             }
@@ -1612,7 +1612,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _headlightsEnabled;
 
         public bool HeadlightsEnabled {
-            get { return _headlightsEnabled; }
+            get => _headlightsEnabled;
             set {
                 if (Equals(value, _headlightsEnabled)) return;
 
@@ -1694,7 +1694,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _brakeLightsEnabled;
 
         public bool BrakeLightsEnabled {
-            get { return _brakeLightsEnabled; }
+            get => _brakeLightsEnabled;
             set {
                 if (Equals(value, _brakeLightsEnabled)) return;
 
@@ -1729,7 +1729,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public Vector3 AmbientShadowSize {
-            get { return _ambientShadowSize; }
+            get => _ambientShadowSize;
             set {
                 if (Equals(value, _ambientShadowSize)) return;
                 _ambientShadowSize = value;

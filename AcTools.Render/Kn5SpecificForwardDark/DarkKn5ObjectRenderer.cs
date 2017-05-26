@@ -498,23 +498,35 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
         }
 
+        private void SetMirrorMode() {
+            if (!FlatMirror) {
+                _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.BackgroundGround);
+            } else if (FlatMirrorBlurred) {
+                _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TextureMirror);
+            } else {
+                _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TransparentMirror);
+            }
+        }
+
         protected override void DrawScene() {
             var effect = Effect;
+            var showroomNode = ShowroomNode;
 
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = GetRasterizerState();
 
             // draw reflection if needed
-            if (ShowroomNode == null && FlatMirror && _mirror != null) {
+            if (showroomNode == null && FlatMirror && _mirror != null) {
                 effect.FxLightDir.Set(new Vector3(_light.X, -_light.Y, _light.Z));
+                SetFlatMirrorSide(-1);
 
                 if (_complexMode) {
-                    DarkLightBase.FlipPreviousY(effect);
+                    DarkLightBase.FlipPreviousY(effect, _lights, _lights.Length);
                 }
 
                 if (FlatMirrorBlurred) {
-                    DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                    DeviceContext.ClearDepthStencilView(_mirrorDepthBuffer.DepthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                     DeviceContext.ClearRenderTargetView(_mirrorBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
 
                     DeviceContext.OutputMerger.SetTargets(_mirrorDepthBuffer.DepthView, _mirrorBuffer.TargetView);
@@ -547,21 +559,23 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 effect.FxLightDir.Set(_light);
 
                 if (_complexMode) {
-                    DarkLightBase.FlipPreviousY(effect);
+                    DarkLightBase.FlipPreviousY(effect, _lights, _lights.Length);
                 }
             }
 
             // draw a scene, apart from car
-            if (ShowroomNode != null) {
+            if (showroomNode != null) {
+                SetFlatMirrorSide(0);
+
                 if (CubemapAmbient != 0f) {
                     effect.FxCubemapAmbient.Set(0f);
                 }
 
                 DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.LessEqualDepthState;
-                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
+                showroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
 
                 DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
-                ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+                showroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
 
                 if (CubemapAmbient != 0f) {
                     effect.FxCubemapAmbient.Set(FxCubemapAmbientValue);
@@ -569,18 +583,19 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             } else {
                 // draw a mirror
                 if (_mirror != null) {
+                    SetFlatMirrorSide(-1);
+
+                    SetMirrorMode();
                     if (!FlatMirror) {
-                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.BackgroundGround);
                         _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
                     } else if (FlatMirrorBlurred && _mirrorBuffer != null) {
                         effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
-                        // _effect.FxWorldViewProjInv.SetMatrix(ActualCamera.ViewProjInvert);
-                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TextureMirror);
                         _mirror.Draw(DeviceContextHolder, ActualCamera, _mirrorBlurBuffer.View, null, null);
                     } else {
-                        _mirror.SetMode(DeviceContextHolder, FlatMirrorMode.TransparentMirror);
                         _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
                     }
+
+                    SetFlatMirrorSide(1);
                 }
             }
 
@@ -598,7 +613,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.States.ReadOnlyDepthState;
             DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
 
-            if (_complexMode) {
+            if (_areaLightsMode) {
                 DrawLights(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
             }
 
@@ -607,11 +622,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 CarSlots[i].CarNode?.DrawDebug(DeviceContextHolder, ActualCamera);
             }
 
+            SetFlatMirrorSide(0);
+
             if (ShowMovementArrows) {
-                if (ShowroomNode != null) {
-                    for (var i = CarSlots.Length - 1; i >= 0; i--) {
-                        CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera);
-                    }
+                for (var i = CarSlots.Length - 1; i >= 0; i--) {
+                    CarSlots[i].CarNode?.DrawMovementArrows(DeviceContextHolder, Camera);
                 }
 
                 if (_complexMode) {
@@ -629,7 +644,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone) {
-            return ShowroomNode != null && base.MoveObjectOverride(relativeFrom, relativeDelta, camera, tryToClone) ||
+            return base.MoveObjectOverride(relativeFrom, relativeDelta, camera, tryToClone) ||
                     _complexMode && _lights.Any(light => {
                         IMoveable cloned;
                         if (light.IsMovable && light.Movable.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out cloned)) {
@@ -645,9 +660,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         protected override void StopMovementOverride() {
-            if (ShowroomNode != null) {
-                base.StopMovementOverride();
-            }
+            base.StopMovementOverride();
 
             if (_complexMode) {
                 for (var i = _lights.Length - 1; i >= 0; i--) {
@@ -830,6 +843,18 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
             }
         }
 
+        private int _flatMirrorSide;
+        private void SetFlatMirrorSide(int side) {
+            if (ActualCamera.Position.Y <= 0f) side = 0;
+            if (_flatMirrorSide == side) return;
+
+            _flatMirrorSide = side;
+            Effect.FxFlatMirrorSide.Set(side);
+            if (_areaLightsMode) {
+                DeviceContextHolder.GetEffect<EffectSpecialAreaLights>().FxFlatMirrorSide.Set(side);
+            }
+        }
+
         protected override void DrawSceneToBuffer() {
             if (!GMode()) {
                 base.DrawSceneToBuffer();
@@ -873,8 +898,14 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
 
             if (ShowroomNode != null) {
                 ShowroomNode.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
+                SetFlatMirrorSide(0);
             } else {
                 if (_mirror != null) {
+                    SetFlatMirrorSide(-1);
+
+                    var effect = Effect;
+
+                    SetMirrorMode();
                     if (FlatMirror && !FlatMirrorBlurred) {
                         _mirror.DrawReflection(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
 
@@ -882,7 +913,6 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                         if (reflectionBuffer != null) {
                             DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, reflectionBuffer.View, _sslr.BufferResult.TargetView);
 
-                            var effect = Effect;
                             effect.FxDiffuseMap.SetResource(_sslr.BufferResult.View);
                             effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
@@ -899,14 +929,19 @@ Skin editing: {(ImageUtils.IsMagickSupported ? MagickOverride ? "Magick.NET av.,
                     } else {
                         _mirror.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
                     }
+
+                    SetFlatMirrorSide(1);
+                } else {
+                    SetFlatMirrorSide(0);
                 }
             }
 
             DrawCars(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
-
-            if (_complexMode) {
+            if (_areaLightsMode) {
                 DrawLights(DeviceContextHolder, ActualCamera, SpecialRenderMode.GBuffer);
             }
+
+            SetFlatMirrorSide(0);
 
             if (ShowDepth) {
                 DeviceContextHolder.GetHelper<CopyHelper>().DepthToLinear(DeviceContextHolder, _lastDepthBuffer, InnerBuffer.TargetView,

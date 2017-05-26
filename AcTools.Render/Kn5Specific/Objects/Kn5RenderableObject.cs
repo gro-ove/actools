@@ -60,7 +60,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _isTransparent;
 
         private bool IsTransparent {
-            get { return _isTransparent; }
+            get => _isTransparent;
             set {
                 _isTransparent = value;
                 _renderModes = value ? TransparentModes : OpaqueModes;

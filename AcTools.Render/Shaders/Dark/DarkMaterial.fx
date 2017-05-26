@@ -16,7 +16,7 @@ static const bool DEBUG_MODE = false;
 
 #include "DarkMaterial.Base.fx"
 #include "DarkMaterial.Reflection.fx"
-#include "DarkMaterial.Lighting.Complex.2.fx"
+#include "DarkMaterial.Lighting.Complex.fx"
 #include "DarkMaterial.Unpack.fx"
 #include "DarkMaterial.GPass.fx"
 #include "DarkMaterial.Kunos.fx"

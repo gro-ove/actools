@@ -141,6 +141,7 @@
 
     <Style TargetType="c:ModernMenu">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="attached:InputBindingBehavior.PropagateInputBindingsToWindow" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="c:ModernMenu">

@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -133,10 +134,39 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _realConditions)) return;
                     _realConditions = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ManualConditions));
+
+                    if (value) {
+                        _idealConditions = false;
+                        OnPropertyChanged(nameof(IdealConditions));
+                    }
+
                     SaveLater();
                     UpdateConditions();
                 }
             }
+
+            private bool _idealConditions;
+
+            public bool IdealConditions {
+                get => _idealConditions;
+                set {
+                    if (Equals(value, _idealConditions)) return;
+                    _idealConditions = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ManualConditions));
+
+                    if (value) {
+                        _realConditions = false;
+                        OnPropertyChanged(nameof(RealConditions));
+                    }
+
+                    SaveLater();
+                    UpdateConditions();
+                }
+            }
+
+            public bool ManualConditions => !_realConditions && !_idealConditions;
 
             private bool _realConditionsManualTime;
             public bool RealConditionsManualTime {
@@ -611,7 +641,20 @@ namespace AcManager.Pages.Drive {
                 if (_saveable.IsLoading) return;
                 _updateCancellationTokenSource?.Cancel();
 
-                if (!RealConditions) {
+                if (IdealConditions) {
+                    IsTemperatureClamped = false;
+                    IsWeatherNotSupported = false;
+                    ManualTime = false;
+                    RealWeather = null;
+                    _weatherTypeHelper.Reset();
+
+                    Temperature = 26d;
+                    Time = 12 * 60 * 60;
+                    SelectedWeather = WeatherManager.Instance.GetDefault();
+                    Controls.UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Optimum");
+                    WindSpeedMin = 0d;
+                    WindSpeedMax = 0d;
+                } else if (!RealConditions) {
                     IsTemperatureClamped = false;
                     IsWeatherNotSupported = false;
                     ManualTime = true;

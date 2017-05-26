@@ -78,8 +78,10 @@ namespace AcManager.Tools.Managers.Directories {
             }
 
             if (sameIds != null) {
-                NonfatalError.Notify("There are entries with the same ID!",
-                        $"Please, remove {sameIds.Select(x => $"“{x}”").JoinToReadableString()} from “{disabledDirectory}” and restart CM. Right now, it might behave very wrongly.");
+                NonfatalError.Notify("There are entries with the same file name",
+                        $@"Content Manager handles all sorts of content by their file/directory names. And, because disabled content is being moved to a separate folder (with “-off”-suffix), sometimes several entries might share the same names. This might cause CM to work very wrongly.
+
+So, please, open “{disabledDirectory}” and either remove or rename {sameIds.Select(x => $"“{x}”").JoinToReadableString()}. Then, restart CM.");
             }
         }
 
@@ -152,7 +154,7 @@ namespace AcManager.Tools.Managers.Directories {
         protected MultiDirectoriesBase([NotNull] string enabledDirectory) : this(enabledDirectory, enabledDirectory + @"-off") {}
 
         public IEnumerable<string> GetContent(Func<string, string[]> contentFromDirectoriesSelector) {
-            foreach (var subDirectory in Directory.GetDirectories(EnabledDirectory)) {
+            foreach (var subDirectory in Directory.GetDirectories(EnabledDirectory, "*", SearchOption.AllDirectories)) {
                 foreach (var sub in contentFromDirectoriesSelector(subDirectory)) {
                     yield return sub;
                 }

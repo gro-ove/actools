@@ -78,7 +78,7 @@ namespace CustomShowroom {
             return kn5file;
         }
 
-        public static string GetShowroomKn5() { 
+        public static string GetShowroomKn5() {
             var showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\showroom\showroom.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\industrial\industrial.kn5";
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\hdri_2\hdri_2.kn5";
@@ -90,7 +90,7 @@ namespace CustomShowroom {
             //showroomKn5File = @"D:\Games\Assetto Corsa\content\showroom\greenfield\greenfield.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\underpass\underpass.kn5";
             //showroomKn5File = @"D:\Games\Steam\SteamApps\common\assettocorsa\content\showroom\needfor_uc\needfor_uc.kn5";
-            //showroomKn5File = null;
+            showroomKn5File = null;
 
             return showroomKn5File;
         }

@@ -21,6 +21,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -30,6 +31,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
+        public static readonly int DefinitelyNonPrizePlace = 99999;
+
         [Localizable(false)]
         private static readonly GoodShuffle<string> ProgressStyles = GoodShuffle.Get(new[] {
             // from default FirstFloor.ModernUI set
@@ -98,9 +101,11 @@ namespace AcManager.Pages.Dialogs {
 
         [CanBeNull]
         private Game.StartProperties _properties;
+        private GameMode _mode;
 
-        void IGameUi.Show(Game.StartProperties properties) {
+        void IGameUi.Show(Game.StartProperties properties, GameMode mode) {
             _properties = properties;
+            _mode = mode;
 
             ShowDialogWithoutBlocking();
             Model.WaitingStatus = AppStrings.Race_Initializing;
@@ -112,10 +117,12 @@ namespace AcManager.Pages.Dialogs {
                     Model.WaitingStatus = AppStrings.Race_Preparing;
                     break;
                 case Game.ProgressState.Launching:
-                    Model.WaitingStatus = AppStrings.Race_LaunchingGame;
+                    Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_LaunchingGame :
+                            _mode == GameMode.Replay ? AppStrings.Race_LaunchingReplay : AppStrings.Race_LaunchingBenchmark;
                     break;
                 case Game.ProgressState.Waiting:
-                    Model.WaitingStatus = AppStrings.Race_Waiting;
+                    Model.WaitingStatus = _mode == GameMode.Race ? AppStrings.Race_Waiting :
+                            _mode == GameMode.Replay ? AppStrings.Race_WaitingReplay : AppStrings.Race_WaitingBenchmark;
                     break;
                 case Game.ProgressState.Finishing:
                     Model.WaitingStatus = AppStrings.Race_CleaningUp;
@@ -178,13 +185,26 @@ namespace AcManager.Pages.Dialogs {
 
             var dragExtra = result.GetExtraByType<Game.ResultExtraDrag>();
             var sessionsData = result.Sessions.Select(session => {
-                var takenPlaces = session.GetTakenPlacesPerCar();
-                var data = dragExtra == null ? new SessionFinishedData(session.Name.ApartFromLast(@" Session")) : new DragFinishedData {
-                    BestReactionTime = dragExtra.ReactionTime,
-                    Total = dragExtra.Total,
-                    Wins = dragExtra.Wins,
-                    Runs = dragExtra.Runs,
-                };
+                int[] takenPlaces;
+                SessionFinishedData data;
+
+                if (dragExtra != null) {
+                    data = new DragFinishedData {
+                        BestReactionTime = dragExtra.ReactionTime,
+                        Total = dragExtra.Total,
+                        Wins = dragExtra.Wins,
+                        Runs = dragExtra.Runs,
+                    };
+
+                    var delta = dragExtra.Wins * 2 - dragExtra.Runs;
+                    takenPlaces = new[] {
+                        delta >= 0 ? 0 : 1,
+                        delta <= 0 ? 0 : 1
+                    };
+                } else {
+                    data = new SessionFinishedData(session.Name.ApartFromLast(@" Session"));
+                    takenPlaces = session.GetTakenPlacesPerCar();
+                }
 
                 var sessionBestLap = session.BestLaps.MinEntryOrDefault(x => x.Time);
                 var sessionBest = sessionBestLap?.Time;
@@ -201,7 +221,7 @@ namespace AcManager.Pages.Dialogs {
                                 IsPlayer = i == 0,
                                 Car = entry.Car,
                                 CarSkin = entry.CarSkin,
-                                TakenPlace = takenPlaces.ElementAtOrDefault(i) + 1,
+                                TakenPlace = i < takenPlaces.Length ? takenPlaces[i] + 1 : DefinitelyNonPrizePlace,
                                 PrizePlace = takenPlaces.Length > 1,
                                 LapsCount = session.LapsTotalPerCar.ElementAtOrDefault(i),
                                 BestLapTime = bestLapTime,
@@ -325,7 +345,7 @@ namespace AcManager.Pages.Dialogs {
             private SessionFinishedData _selectedSession;
 
             public SessionFinishedData SelectedSession {
-                get { return _selectedSession; }
+                get => _selectedSession;
                 set {
                     if (Equals(value, _selectedSession)) return;
                     _selectedSession = value;
@@ -412,11 +432,9 @@ namespace AcManager.Pages.Dialogs {
 
             /* save replay alt button */
             ButtonWithComboBox saveReplayButton;
-            if (replayHelper != null) {
-                Func<string> buttonText = () => replayHelper.IsRenamed ?
-                        AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
-                Func<string> saveAsText = () => string.Format(replayHelper.IsRenamed ? "Saved as “{0}”" : "Save as “{0}”",
-                        replayHelper.Name);
+            if (replayHelper != null && replayHelper.IsAvailable) {
+                string ButtonText() => replayHelper.IsKept ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
+                string SaveAsText() => string.Format(replayHelper.IsKept ? "Saved as “{0}”" : "Suggested replay name: “{0}”", replayHelper.Name);
 
                 saveReplayButton = new ButtonWithComboBox {
                     Margin = new Thickness(4, 0, 0, 0),
@@ -425,15 +443,20 @@ namespace AcManager.Pages.Dialogs {
                     Content = ToolsStrings.Shared_Replay,
                     Command = new AsyncCommand(replayHelper.Play),
                     MenuItems = {
-                        new MenuItem { Header = saveAsText(), Command = new DelegateCommand(() => {
-                            var newName = Prompt.Show("Save replay as:", "Replay Name", replayHelper.Name, "?", required: true);
-                            if (!string.IsNullOrWhiteSpace(newName)) {
-                                replayHelper.Name = newName;
-                            }
+                        replayHelper.IsRenameable
+                                ? new MenuItem {
+                                    Header = SaveAsText(),
+                                    Command = new DelegateCommand(() => {
+                                        var newName = Prompt.Show("Save replay as:", "Replay Name", replayHelper.Name, "?", required: true);
+                                        if (!string.IsNullOrWhiteSpace(newName)) {
+                                            replayHelper.Name = newName;
+                                        }
 
-                            replayHelper.IsRenamed = true;
-                        }) },
-                        new MenuItem { Header = buttonText(), Command = new DelegateCommand(replayHelper.Rename) },
+                                        replayHelper.IsKept = true;
+                                    })
+                                }
+                                : new MenuItem { Header = "Replay name: " + replayHelper.Name, StaysOpenOnClick = true },
+                        new MenuItem { Header = ButtonText(), Command = new DelegateCommand(replayHelper.ToggleKept) },
                         new Separator(),
                         new MenuItem {
                             Header = "Share Replay",
@@ -447,13 +470,13 @@ namespace AcManager.Pages.Dialogs {
                         },
                     }
                 };
-                
-                replayHelper.PropertyChanged += (sender, args) => {
-                    if (args.PropertyName == nameof(ReplayHelper.IsRenamed)) {
-                        ((MenuItem)saveReplayButton.MenuItems[0]).Header = saveAsText();
-                        ((MenuItem)saveReplayButton.MenuItems[1]).Header = buttonText();
+
+                replayHelper.SubscribeWeak((sender, args) => {
+                    if (args.PropertyName == nameof(ReplayHelper.IsKept)) {
+                        ((MenuItem)saveReplayButton.MenuItems[0]).Header = SaveAsText();
+                        ((MenuItem)saveReplayButton.MenuItems[1]).Header = ButtonText();
                     }
-                };
+                });
             } else {
                 saveReplayButton = null;
             }
@@ -528,7 +551,7 @@ namespace AcManager.Pages.Dialogs {
             private State _currentState;
 
             public State CurrentState {
-                get { return _currentState; }
+                get => _currentState;
                 set {
                     if (Equals(value, _currentState)) return;
                     _currentState = value;
@@ -542,7 +565,7 @@ namespace AcManager.Pages.Dialogs {
             private string _waitingStatus;
 
             public string WaitingStatus {
-                get { return _waitingStatus; }
+                get => _waitingStatus;
                 set {
                     if (Equals(value, _waitingStatus)) return;
                     _waitingStatus = value;
@@ -553,7 +576,7 @@ namespace AcManager.Pages.Dialogs {
             private string _errorMessage;
 
             public string ErrorMessage {
-                get { return _errorMessage; }
+                get => _errorMessage;
                 set {
                     if (Equals(value, _errorMessage)) return;
                     _errorMessage = value;
@@ -564,7 +587,7 @@ namespace AcManager.Pages.Dialogs {
             private string _errorDescription = AppStrings.Common_MoreInformationInMainLog;
 
             public string ErrorDescription {
-                get { return _errorDescription; }
+                get => _errorDescription;
                 set {
                     if (Equals(value, _errorDescription)) return;
                     _errorDescription = value;
@@ -575,7 +598,7 @@ namespace AcManager.Pages.Dialogs {
             private BaseFinishedData _finishedData;
 
             public BaseFinishedData FinishedData {
-                get { return _finishedData; }
+                get => _finishedData;
                 set {
                     if (Equals(value, _finishedData)) return;
                     _finishedData = value;

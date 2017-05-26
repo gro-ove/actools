@@ -28,6 +28,32 @@ namespace AcManager.Tools.AcObjectsNew {
             _ratingKey = $"{typeName}:{id}:rating";
         }
 
+        public static void MoveRatings(Type type, string oldId, string newId, bool keepOld) {
+            var typeName = type.Name;
+            var isFavouriteOldKey = $"{typeName}:{oldId}:favourite";
+            var ratingOldKey = $"{typeName}:{oldId}:rating";
+            var isFavouriteNewKey = $"{typeName}:{newId}:favourite";
+            var ratingNewKey = $"{typeName}:{newId}:rating";
+
+            if (RatingsStorage.Contains(isFavouriteOldKey)) {
+                RatingsStorage.SetString(isFavouriteNewKey, RatingsStorage.GetString(isFavouriteOldKey));
+                if (!keepOld) {
+                    RatingsStorage.Remove(isFavouriteOldKey);
+                }
+            }
+
+            if (RatingsStorage.Contains(ratingOldKey)) {
+                RatingsStorage.SetString(ratingNewKey, RatingsStorage.GetString(ratingOldKey));
+                if (!keepOld) {
+                    RatingsStorage.Remove(ratingOldKey);
+                }
+            }
+        }
+
+        public static void MoveRatings<T>(string oldId, string newId, bool keepOld) {
+            MoveRatings(typeof(T), oldId, newId, keepOld);
+        }
+
         [NotNull]
         public string Location { get; protected set; }
 
@@ -50,7 +76,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private bool _isNew;
 
         public bool IsNew {
-            get { return _isNew; }
+            get => _isNew;
             set {
                 if (Equals(value, _isNew)) return;
                 _isNew = value;
@@ -111,7 +137,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public abstract bool HasData { get; }
 
         public override string Name {
-            get { return base.Name; }
+            get => base.Name;
             protected set {
                 value = value?.Trim();
 
@@ -132,14 +158,14 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [CanBeNull]
         public virtual string NameEditable {
-            get { return Name ?? Id; }
-            set { Name = value; }
+            get => Name ?? Id;
+            set => Name = value;
         }
 
         private bool _changed;
 
         public virtual bool Changed {
-            get { return _changed; }
+            get => _changed;
             protected set {
                 if (value == _changed || !Loaded) return;
                 _changed = value;
@@ -151,7 +177,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private int? _year;
 
         public virtual int? Year {
-            get { return _year; }
+            get => _year;
             set {
                 if (value == 0) value = null;
                 if (Equals(value, _year)) return;
@@ -181,7 +207,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private bool? _isFavourite;
 
         public bool IsFavourite {
-            get { return _isFavourite ?? (_isFavourite = RatingsStorage.GetBool(_isFavouriteKey)).Value; }
+            get => _isFavourite ?? (_isFavourite = RatingsStorage.GetBool(_isFavouriteKey)).Value;
             set {
                 if (Equals(value, _isFavourite)) return;
                 _isFavourite = value;

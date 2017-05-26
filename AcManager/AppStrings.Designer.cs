@@ -1278,7 +1278,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reflections resolution:.
+        ///   Looks up a localized string similar to Reflection resolution:.
         /// </summary>
         public static string AcSettings_Video_ReflectionsResolutionLabel {
             get {
@@ -1332,7 +1332,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shadows resolution:.
+        ///   Looks up a localized string similar to Shadow resolution:.
         /// </summary>
         public static string AcSettings_Video_ShadowResolutionLabel {
             get {
@@ -3533,7 +3533,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show AI Level In Driver’s Name.
+        ///   Looks up a localized string similar to Show AI level in driver’s name.
         /// </summary>
         public static string Drive_AiLevelInDriverName {
             get {
@@ -5632,11 +5632,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Starting benchmark….
+        /// </summary>
+        public static string Race_LaunchingBenchmark {
+            get {
+                return ResourceManager.GetString("Race_LaunchingBenchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starting session….
         /// </summary>
         public static string Race_LaunchingGame {
             get {
                 return ResourceManager.GetString("Race_LaunchingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting the replay….
+        /// </summary>
+        public static string Race_LaunchingReplay {
+            get {
+                return ResourceManager.GetString("Race_LaunchingReplay", resourceCulture);
             }
         }
         
@@ -5655,6 +5673,24 @@ namespace AcManager {
         public static string Race_Waiting {
             get {
                 return ResourceManager.GetString("Race_Waiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for the end of benchmark….
+        /// </summary>
+        public static string Race_WaitingBenchmark {
+            get {
+                return ResourceManager.GetString("Race_WaitingBenchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for the end of replay….
+        /// </summary>
+        public static string Race_WaitingReplay {
+            get {
+                return ResourceManager.GetString("Race_WaitingReplay", resourceCulture);
             }
         }
         
@@ -5785,7 +5821,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save replay.
+        ///   Looks up a localized string similar to Keep replay.
         /// </summary>
         public static string RaceResult_SaveReplay {
             get {
@@ -5812,7 +5848,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsave replay.
+        ///   Looks up a localized string similar to Don’t keep replay.
         /// </summary>
         public static string RaceResult_UnsaveReplay {
             get {

@@ -273,11 +273,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             set {
                 if (Equals(value, _lights)) return;
 
+                var someIsVisible = false;
+
                 for (var i = _lights.Length - 1; i >= 0; i--) {
                     var light = _lights[i];
                     if (!value.Contains(light)) {
                         light.Dispose();
                         light.PropertyChanged -= OnLightPropertyChanged;
+                        someIsVisible |= light.IsVisibleAsMesh;
                     }
                 }
 
@@ -285,14 +288,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     var light = value[i];
                     if (!_lights.Contains(light)) {
                         light.PropertyChanged += OnLightPropertyChanged;
+                        someIsVisible |= light.IsVisibleAsMesh;
                     }
                 }
 
                 _lights = value;
                 OnPropertyChanged();
                 IsDirty = true;
-                _mirrorDirty = true;
-                SetReflectionCubemapDirty();
+
+                if (someIsVisible) {
+                    _mirrorDirty = true;
+                }
+
+                if (ReflectionsWithMultipleLights) {
+                    SetReflectionCubemapDirty();
+                }
             }
         }
 
@@ -318,7 +328,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     break;
                 case nameof(DarkAreaLightBase.Enabled):
                 case nameof(DarkAreaLightBase.VisibleLight):
-                    _mirrorDirty = true;
+                    if (((DarkLightBase)sender).IsVisibleAsMesh) {
+                        _mirrorDirty = true;
+                    }
                     break;
                 default:
                     if (!Disposed) {
@@ -460,17 +472,6 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 var color = new Vector3(MathUtils.Random(1f), MathUtils.Random(1f),
                         MathUtils.Random(1f));
                 color.Normalize();
-
-                /*Light = new DarkSpotLight {
-                    Tag = DarkLightTag.Main,
-                    UseShadows = true,
-                    Color = color.ToDrawingColor(),
-                    Range = 10f,
-                    Angle = 0.5f,
-                    Brightness = 0.5f,
-                    SpotFocus = 0.75f,
-                    IsMovable = false
-                };*/
 
                 Light = new DarkSpotLight {
                     Tag = DarkLightTag.Main,
@@ -705,34 +706,38 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         #endregion
 
         #region Dark shaders modes
-        private bool _complexMode;
-        private bool _limitedMode;
+        private bool _complexMode, _areaLightsMode, _limitedMode;
         private EffectDarkMaterial.Mode _darkMode;
 
         private EffectDarkMaterial.Mode FindAppropriateMode() {
             if (IsInDebugMode()) {
                 _complexMode = true;
+                _areaLightsMode = true;
                 _limitedMode = false;
                 return EffectDarkMaterial.Mode.Main;
             }
 
             var useComplex = false;
             var areaLights = false;
+            var shadowsAmount = 0;
 
-            for (var i = 0; i < _lights.Length; i++) {
+            for (var i = 1; i < _lights.Length; i++) {
                 var light = _lights[i];
                 if (light.ActuallyEnabled) {
                     useComplex = true;
                     if (!light.ShadowsAvailable) areaLights = true;
+                    if (light.UseShadows) shadowsAmount++;
                 }
             }
 
             _complexMode = useComplex || IsFlatMirrorReflectedLightEnabled;
 
             if (areaLights) {
+                _areaLightsMode = true;
                 return EffectDarkMaterial.Mode.Main;
             }
 
+            _areaLightsMode = false;
             if (!EnableShadows) {
                 return useComplex ? EffectDarkMaterial.Mode.NoExtraShadows : EffectDarkMaterial.Mode.SimpleNoShadows;
             }
@@ -745,9 +750,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 return UsePcss ? EffectDarkMaterial.Mode.Simple : EffectDarkMaterial.Mode.SimpleNoPCSS;
             }
 
-            var shadowsAmount = _lights.Count(x => x.ActuallyEnabled && x.UseShadows);
             _limitedMode = shadowsAmount <= EffectDarkMaterial.MaxExtraShadowsFewer;
-
             return _limitedMode
                     ? (UsePcss ? EffectDarkMaterial.Mode.FewerExtraShadows : EffectDarkMaterial.Mode.FewerExtraShadowsNoPCSS)
                     : (UsePcss ? EffectDarkMaterial.Mode.NoAreaLights : EffectDarkMaterial.Mode.NoPCSS);
@@ -760,8 +763,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             _darkMode = FindAppropriateMode();
             if (_effect == null) {
+                AcToolsLogging.Write($"Mode set to {_darkMode}");
                 _effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>(e => e.SetMode(_darkMode, Device));
             } else if (_effect.GetMode() != _darkMode) {
+                AcToolsLogging.Write($"Mode changed from {_effect.GetMode()} to {_darkMode}");
                 _effect.SetMode(_darkMode, Device);
                 _pcssParamsSet = false;
                 _effectNoiseMapSet = false;
@@ -773,6 +778,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
 
             if (_darkMode == EffectDarkMaterial.Mode.Main) {
+                AcToolsLogging.Write($"Area lights textures set");
                 InitializeAreaLightsTextures();
             }
         }

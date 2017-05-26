@@ -20,7 +20,7 @@ namespace AcTools.Render.Forward {
         private Color _backgroundColor = Color.Gray;
 
         public Color BackgroundColor {
-            get { return _backgroundColor; }
+            get => _backgroundColor;
             set {
                 if (Equals(value, _backgroundColor)) return;
                 _backgroundColor = value;
@@ -33,7 +33,7 @@ namespace AcTools.Render.Forward {
         private float _backgroundBrightness = 1f;
 
         public float BackgroundBrightness {
-            get { return _backgroundBrightness; }
+            get => _backgroundBrightness;
             set {
                 if (Equals(value, _backgroundBrightness)) return;
                 _backgroundBrightness = value;
@@ -48,7 +48,7 @@ namespace AcTools.Render.Forward {
         private bool _useInterpolationCamera;
 
         public bool UseInterpolationCamera {
-            get { return _useInterpolationCamera; }
+            get => _useInterpolationCamera;
             set {
                 if (Equals(value, _useInterpolationCamera)) return;
                 _useInterpolationCamera = value;
@@ -73,7 +73,7 @@ namespace AcTools.Render.Forward {
         private byte[] _colorGradingData;
 
         public byte[] ColorGradingData {
-            get { return _colorGradingData; }
+            get => _colorGradingData;
             set {
                 if (Equals(value, _colorGradingData)) return;
                 _colorGradingData = value;
@@ -85,7 +85,7 @@ namespace AcTools.Render.Forward {
         private bool _useColorGrading;
 
         public bool UseColorGrading {
-            get { return _useColorGrading; }
+            get => _useColorGrading;
             set {
                 if (Equals(value, _useColorGrading)) return;
                 _useColorGrading = value;
@@ -106,7 +106,7 @@ namespace AcTools.Render.Forward {
         private bool _useFxaa = true;
 
         public bool UseFxaa {
-            get { return _useFxaa; }
+            get => _useFxaa;
             set {
                 if (Equals(_useFxaa, value)) return;
                 _useFxaa = value;
@@ -119,7 +119,7 @@ namespace AcTools.Render.Forward {
         private bool _isFxaaAvailable;
 
         public bool IsFxaaAvailable {
-            get { return _isFxaaAvailable; }
+            get => _isFxaaAvailable;
             set {
                 if (Equals(value, _isFxaaAvailable)) return;
                 _isFxaaAvailable = value;
@@ -132,7 +132,7 @@ namespace AcTools.Render.Forward {
         private bool _useSmaa;
 
         public bool UseSmaa {
-            get { return _useSmaa; }
+            get => _useSmaa;
             set {
                 if (!IsSmaaAvailable || Equals(value, _useSmaa)) return;
                 _useSmaa = value;
@@ -162,7 +162,7 @@ namespace AcTools.Render.Forward {
         private bool _showWireframe;
 
         public virtual bool ShowWireframe {
-            get { return _showWireframe; }
+            get => _showWireframe;
             set {
                 if (Equals(_showWireframe, value)) return;
                 _showWireframe = value;
@@ -174,7 +174,7 @@ namespace AcTools.Render.Forward {
         private bool _useBloom;
 
         public bool UseBloom {
-            get { return _useBloom; }
+            get => _useBloom;
             set {
                 if (Equals(value, _useBloom)) return;
 
@@ -199,7 +199,7 @@ namespace AcTools.Render.Forward {
         private bool _useLensFlares;
 
         public bool UseLensFlares {
-            get { return _useLensFlares; }
+            get => _useLensFlares;
             set {
                 if (Equals(value, _useLensFlares)) return;
                 _useLensFlares = value;
@@ -275,7 +275,7 @@ namespace AcTools.Render.Forward {
         private float _bloomRadiusMultiplier = 1f;
 
         public float BloomRadiusMultiplier {
-            get { return _bloomRadiusMultiplier; }
+            get => _bloomRadiusMultiplier;
             set {
                 if (value.Equals(_bloomRadiusMultiplier)) return;
                 _bloomRadiusMultiplier = value;
@@ -290,7 +290,7 @@ namespace AcTools.Render.Forward {
             DeviceContext.ClearRenderTargetView(InnerBuffer.TargetView, (Color4)BackgroundColor * BackgroundBrightness);
 
             if (DepthStencilView != null) {
-                DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
                 DeviceContext.OutputMerger.SetTargets(DepthStencilView, InnerBuffer.TargetView);
             } else {
                 DeviceContext.OutputMerger.SetTargets(InnerBuffer.TargetView);
@@ -308,7 +308,7 @@ namespace AcTools.Render.Forward {
         private ToneMappingFn _toneMapping;
 
         public ToneMappingFn ToneMapping {
-            get { return _toneMapping; }
+            get => _toneMapping;
             set {
                 if (Equals(value, _toneMapping)) return;
                 _toneMapping = value;
@@ -339,7 +339,7 @@ namespace AcTools.Render.Forward {
         private float _toneGamma = 1.0f;
 
         public float ToneGamma {
-            get { return _toneGamma; }
+            get => _toneGamma;
             set {
                 if (Equals(value, _toneGamma)) return;
                 _toneGamma = value;
@@ -353,7 +353,7 @@ namespace AcTools.Render.Forward {
         private float _toneExposure = 0.8f;
 
         public float ToneExposure {
-            get { return _toneExposure; }
+            get => _toneExposure;
             set {
                 if (Equals(value, _toneExposure)) return;
                 _toneExposure = value;
@@ -367,7 +367,7 @@ namespace AcTools.Render.Forward {
         private float _toneWhitePoint = 1.66f;
 
         public float ToneWhitePoint {
-            get { return _toneWhitePoint; }
+            get => _toneWhitePoint;
             set {
                 if (Equals(value, _toneWhitePoint)) return;
                 _toneWhitePoint = value;

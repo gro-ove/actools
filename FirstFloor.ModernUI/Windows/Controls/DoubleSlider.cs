@@ -22,56 +22,56 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double RangeLeft {
-            get { return (double)GetValue(RangeLeftProperty); }
-            set { SetValue(RangeLeftProperty, value); }
+            get => (double)GetValue(RangeLeftProperty);
+            set => SetValue(RangeLeftProperty, value);
         }
 
         public static readonly DependencyProperty RangeRightProperty = DependencyProperty.Register(nameof(RangeRight), typeof(double),
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double RangeRight {
-            get { return (double)GetValue(RangeRightProperty); }
-            set { SetValue(RangeRightProperty, value); }
+            get => (double)GetValue(RangeRightProperty);
+            set => SetValue(RangeRightProperty, value);
         }
 
         public static readonly DependencyProperty RangeLeftLimitProperty = DependencyProperty.Register(nameof(RangeLeftLimit), typeof(double),
                 typeof(DoubleThumb));
 
         public double RangeLeftLimit {
-            get { return (double)GetValue(RangeLeftLimitProperty); }
-            set { SetValue(RangeLeftLimitProperty, value); }
+            get => (double)GetValue(RangeLeftLimitProperty);
+            set => SetValue(RangeLeftLimitProperty, value);
         }
 
         public static readonly DependencyProperty RangeRightLimitProperty = DependencyProperty.Register(nameof(RangeRightLimit), typeof(double),
                 typeof(DoubleThumb));
 
         public double RangeRightLimit {
-            get { return (double)GetValue(RangeRightLimitProperty); }
-            set { SetValue(RangeRightLimitProperty, value); }
+            get => (double)GetValue(RangeRightLimitProperty);
+            set => SetValue(RangeRightLimitProperty, value);
         }
 
         public static readonly DependencyProperty RangeLeftWidthProperty = DependencyProperty.Register(nameof(RangeLeftWidth), typeof(double),
                 typeof(DoubleThumb));
 
         public double RangeLeftWidth {
-            get { return (double)GetValue(RangeLeftWidthProperty); }
-            set { SetValue(RangeLeftWidthProperty, value); }
+            get => (double)GetValue(RangeLeftWidthProperty);
+            set => SetValue(RangeLeftWidthProperty, value);
         }
 
         public static readonly DependencyProperty ChangeProperty = DependencyProperty.Register(nameof(Change), typeof(double),
                 typeof(DoubleThumb));
 
         public double Change {
-            get { return (double)GetValue(ChangeProperty); }
-            set { SetValue(ChangeProperty, value); }
+            get => (double)GetValue(ChangeProperty);
+            set => SetValue(ChangeProperty, value);
         }
 
         public static readonly DependencyProperty RangeRightWidthProperty = DependencyProperty.Register(nameof(RangeRightWidth), typeof(double),
                 typeof(DoubleThumb));
 
         public double RangeRightWidth {
-            get { return (double)GetValue(RangeRightWidthProperty); }
-            set { SetValue(RangeRightWidthProperty, value); }
+            get => (double)GetValue(RangeRightWidthProperty);
+            set => SetValue(RangeRightWidthProperty, value);
         }
 
         // some attached stuff for styles
@@ -118,8 +118,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleSlider), new PropertyMetadata(OnRangeLeftChanged));
 
         public double RangeLeft {
-            get { return (double)GetValue(RangeLeftProperty); }
-            set { SetValue(RangeLeftProperty, value); }
+            get => (double)GetValue(RangeLeftProperty);
+            set => SetValue(RangeLeftProperty, value);
         }
 
         private static void OnRangeLeftChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -150,8 +150,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleSlider), new PropertyMetadata(OnRangeRightChanged));
 
         public double RangeRight {
-            get { return (double)GetValue(RangeRightProperty); }
-            set { SetValue(RangeRightProperty, value); }
+            get => (double)GetValue(RangeRightProperty);
+            set => SetValue(RangeRightProperty, value);
         }
 
         private static void OnRangeRightChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -213,8 +213,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }));
 
         public double ThumbSize {
-            get { return (double)GetValue(ThumbSizeProperty); }
-            set { SetValue(ThumbSizeProperty, value); }
+            get => (double)GetValue(ThumbSizeProperty);
+            set => SetValue(ThumbSizeProperty, value);
         }
 
         public static readonly DependencyProperty ThumbSubSizeProperty = DependencyProperty.Register(nameof(ThumbSubSize), typeof(double),
@@ -226,8 +226,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }));
 
         public double ThumbSubSize {
-            get { return (double)GetValue(ThumbSubSizeProperty); }
-            set { SetValue(ThumbSubSizeProperty, value); }
+            get => (double)GetValue(ThumbSubSizeProperty);
+            set => SetValue(ThumbSubSizeProperty, value);
         }
 
         public static double GetThumbSizeDelta(DependencyObject obj) {
@@ -302,8 +302,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private DoubleSliderBindingMode _bindingMode = DoubleSliderBindingMode.FromToFixed;
 
         public DoubleSliderBindingMode BindingMode {
-            get { return _bindingMode; }
-            set { SetValue(BindingModeProperty, value); }
+            get => _bindingMode;
+            set => SetValue(BindingModeProperty, value);
         }
 
         public static readonly DependencyProperty RangeProperty = DependencyProperty.Register(nameof(Range), typeof(double), typeof(DoubleSlider),
@@ -317,8 +317,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private double _range;
 
         public double Range {
-            get { return _range; }
-            set { SetValue(RangeProperty, value); }
+            get => _range;
+            set => SetValue(RangeProperty, value);
         }
 
         private static void OnRangeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -347,8 +347,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private double _from = double.NaN;
 
         public double From {
-            get { return _from; }
-            set { SetValue(FromProperty, value); }
+            get => _from;
+            set => SetValue(FromProperty, value);
         }
 
         private static void OnFromChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -357,6 +357,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnFromChanged(double newValue) {
             _from = newValue;
+            if (double.IsNaN(_from)) return;
+
             _publicValuesBusy.Do(() => {
                 if (_bindingMode == DoubleSliderBindingMode.FromTo || _bindingMode == DoubleSliderBindingMode.FromToFixed || _valueNotSet) {
                     if (double.IsNaN(_to)) return;
@@ -382,8 +384,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private double _to = double.NaN;
 
         public double To {
-            get { return _to; }
-            set { SetValue(ToProperty, value); }
+            get => _to;
+            set => SetValue(ToProperty, value);
         }
 
         private static void OnToChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -392,6 +394,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnToChanged(double newValue) {
             _to = newValue;
+            if (double.IsNaN(_to)) return;
+
             _publicValuesBusy.Do(() => {
                 if (_bindingMode == DoubleSliderBindingMode.FromTo || _bindingMode == DoubleSliderBindingMode.FromToFixed || _valueNotSet) {
                     if (double.IsNaN(_from)) return;

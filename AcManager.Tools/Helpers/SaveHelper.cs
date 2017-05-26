@@ -157,7 +157,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public bool HasSavedData => Key != null && _storage.Contains(Key);
-        
+
         public string ToSerializedString() {
             var obj = _save();
             return obj == null ? null : Serialize(obj);
@@ -204,12 +204,12 @@ namespace AcManager.Tools.Helpers {
             if (IsLoading || _savingInProgress || Key == null) return;
             _savingInProgress = true;
 
-            await Task.Delay(1000);
+            await Task.Delay(300);
 
             if (IsLoading) {
                 return;
             }
-            
+
             Save();
             _savingInProgress = false;
         }

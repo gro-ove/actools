@@ -24,7 +24,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string TrackId {
-            get { return _trackId; }
+            get => _trackId;
             set {
                 if (Equals(value, _trackId)) return;
                 _trackId = value;
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public TrackObject Track {
-            get { return _track; }
+            get => _track;
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
@@ -78,7 +78,7 @@ namespace AcManager.Tools.Objects {
         private int _tyres;
 
         public int Tyres {
-            get { return _tyres; }
+            get => _tyres;
             set {
                 value = Math.Max(value, 0);
                 if (Equals(value, _tyres)) return;
@@ -187,7 +187,7 @@ namespace AcManager.Tools.Objects {
             Changed = false;
         }
 
-        public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.MainTrackObject.NameEditable ?? TrackId})";
+        // public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.MainTrackObject.NameEditable ?? TrackId})";
 
         private bool _hasData;
         private string _trackId;

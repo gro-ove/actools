@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -13,17 +15,19 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.SemiGui {
     public class ReplayHelper : NotifyPropertyChanged {
         public bool IsAvailable { get; }
+        public bool IsRenameable { get; }
 
-        public readonly string OriginalFilename;
+        [CanBeNull]
+        private readonly string _originalFilename;
 
-        [NotNull]
-        public string RenamedFilename { get; private set; }
+        [CanBeNull]
+        private string _renamedFilename;
 
         [NotNull]
         public string Name {
-            get { return _name; }
+            get => _name;
             set {
-                if (Equals(_name, value)) return;
+                if (Equals(_name, value) || !IsRenameable) return;
 
                 if (SettingsHolder.Drive.AutoAddReplaysExtension && !value.EndsWith(ReplayObject.ReplayExtension,
                         StringComparison.OrdinalIgnoreCase)) {
@@ -32,59 +36,89 @@ namespace AcManager.Tools.SemiGui {
 
                 var renamed = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), value));
 
-                if (IsRenamed) {
+                if (IsKept && _renamedFilename != null) {
                     try {
-                        File.Move(RenamedFilename, renamed);
+                        File.Move(_renamedFilename, renamed);
                     } catch (Exception e) {
                         NonfatalError.Notify(ToolsStrings.ReplayHelper_CannotSaveReplay, e);
                         return;
                     }
                 }
 
-                RenamedFilename = renamed;
+                _renamedFilename = renamed;
                 _name = value.ApartFromLast(ReplayObject.ReplayExtension);
 
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(RenamedFilename));
+                OnPropertyChanged(nameof(_renamedFilename));
 
-                if (IsRenamed) {
+                if (IsKept) {
                     OnPropertyChanged(nameof(Filename));
                 }
             }
         }
 
-        public string Filename => IsRenamed ? RenamedFilename : OriginalFilename;
+        public string Filename => IsKept ? _renamedFilename : _originalFilename;
 
-        internal ReplayHelper(Game.StartProperties startProperties, Game.Result result) {
-            OriginalFilename = Path.Combine(FileUtils.GetReplaysDirectory(), ReplayObject.PreviousReplayName);
-            RenamedFilename = FileUtils.EnsureUnique(OriginalFilename);
-            Name = GetReplayName(startProperties, result);
+        private static bool DoesReplayFit([CanBeNull] Game.StartProperties startProperties, string fileName) {
+            var carId = startProperties?.BasicProperties?.CarId ?? "";
+            var trackId = new[]{
+                startProperties?.BasicProperties?.TrackId,
+                startProperties?.BasicProperties?.TrackConfigurationId
+            }.NonNull().JoinToString('_');
+            return fileName.Contains(carId + "_" + trackId);
+        }
 
-            IsAvailable = File.Exists(OriginalFilename);
-            if (IsAvailable && SettingsHolder.Drive.AutoSaveReplays) {
-                IsRenamed = true;
+        internal ReplayHelper([CanBeNull] Game.StartProperties startProperties, Game.Result result) {
+            var directory = FileUtils.GetReplaysDirectory();
+
+            if (AcSettingsHolder.Replay.Autosave) {
+                var autosave = new DirectoryInfo(Path.Combine(directory, ReplayObject.AutosaveCategory));
+                if (!autosave.Exists) {
+                    _originalFilename = null;
+                    _renamedFilename = null;
+                    return;
+                }
+
+                var file = autosave.GetFiles()
+                                   .Where(x => DoesReplayFit(startProperties, x.Name))
+                                   .OrderByDescending(x => x.LastWriteTime)
+                                   .FirstOrDefault();
+                _originalFilename = file?.FullName;
+                _renamedFilename = file == null ? null : Path.Combine(directory, file.Name);
+                _name = file?.Name;
+                IsAvailable = file != null;
+            } else {
+                _originalFilename = Path.Combine(directory, ReplayObject.PreviousReplayName);
+                _renamedFilename = FileUtils.EnsureUnique(_originalFilename);
+                Name = GetReplayName(startProperties, result);
+
+                IsAvailable = File.Exists(_originalFilename);
+                IsRenameable = true;
+                if (IsAvailable && SettingsHolder.Drive.AutoSaveReplays) {
+                    IsKept = true;
+                }
             }
         }
 
-        private bool _isRenamed;
+        private bool _isKept;
         private string _name;
 
-        public bool IsRenamed {
-            get { return _isRenamed; }
+        public bool IsKept {
+            get => _isKept;
             set {
-                if (!IsAvailable || Equals(_isRenamed, value)) {
+                if (!IsAvailable || Equals(_isKept, value) || _originalFilename == null || _renamedFilename == null) {
                     Logging.Warning("Cannot change state");
                     return;
                 }
 
                 try {
                     if (value) {
-                        File.Move(OriginalFilename, RenamedFilename);
+                        File.Move(_originalFilename, _renamedFilename);
                     } else {
-                        File.Move(RenamedFilename, OriginalFilename);
+                        File.Move(_renamedFilename, _originalFilename);
                     }
 
-                    _isRenamed = value;
+                    _isKept = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(Filename));
                 } catch (Exception e) {
@@ -93,8 +127,8 @@ namespace AcManager.Tools.SemiGui {
             }
         }
 
-        public void Rename() {
-            IsRenamed = !IsRenamed;
+        public void ToggleKept() {
+            IsKept = !IsKept;
         }
 
         public Task Play() {
@@ -111,7 +145,7 @@ namespace AcManager.Tools.SemiGui {
             if (string.IsNullOrEmpty(s)) {
                 s = SettingsHolder.Drive.DefaultReplaysNameFormat;
             }
-            
+
             return FileUtils.EnsureFileNameIsValid(VariablesReplacement.Process(s, startProperties, result));
         }
     }

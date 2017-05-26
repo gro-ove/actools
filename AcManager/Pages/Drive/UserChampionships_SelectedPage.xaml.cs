@@ -42,7 +42,7 @@ namespace AcManager.Pages.Drive {
                 UserChampionships.NavigateToChampionshipPage(null);
                 return;
             }
-            
+
             DataContext = new ViewModel(acObject);
         }
 
@@ -54,7 +54,7 @@ namespace AcManager.Pages.Drive {
                 KunosCareer.NavigateToCareerPage(null);
                 return;
             }
-            
+
             DataContext = new ViewModel(acObject);
         }
 
@@ -216,7 +216,10 @@ namespace AcManager.Pages.Drive {
                     JumpStartPenalty = _acObject.Rules.JumpStartPenalty,
                     Penalties = _acObject.Rules.Penalties,
                     BotCars = _acObject.Drivers.Where(x => !x.IsPlayer).Select(x => new Game.AiCar {
-                        AiLevel = (int)(x.AiLevel * multipler).Clamp(25, 100),
+                        AiLevel = (x.AiLevel * multipler).Clamp(25, 100),
+                        AiAggression = (x.AiAggression * multipler).Clamp(0, 100),
+                        Ballast = x.Ballast,
+                        Restrictor = x.Restrictor,
                         CarId = x.CarId,
                         SkinId = x.SkinId,
                         DriverName = x.Name,
@@ -262,6 +265,9 @@ namespace AcManager.Pages.Drive {
                         var saveLater = !AcObject.Changed;
                         AcObject.Drivers = generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
                             AiLevel = x.AiLevel,
+                            AiAggression = x.AiAggression,
+                            Ballast = x.Ballast,
+                            Restrictor = x.Restrictor,
                             Nationality = x.Nationality
                         }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, AcObject.PlayerCarId,
                                 AcObject.PlayerCarSkinId)).ToArray();
@@ -331,7 +337,7 @@ namespace AcManager.Pages.Drive {
                         }
                     }
                 }
-                
+
                 ConditionsLoading = false;
 
                 if (weatherType != null) {
@@ -391,7 +397,7 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(CurrentRoundRoadTemperature));
                 }
             }
-            
+
             public double CurrentRoundRoadTemperature => Game.ConditionProperties.GetRoadTemperature(CurrentRoundTime, CurrentRoundTemperature,
                     CurrentRoundWeather?.TemperatureCoefficient ?? 0d);
 

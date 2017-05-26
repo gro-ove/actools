@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -14,6 +15,12 @@ namespace AcManager.Tools.Helpers.AcLog {
 
         public static void AddExtension([NotNull] IAcLogHelperExtension extension) {
             Extensions.Add(extension);
+        }
+
+        private static string TryToGetCarName(string log) {
+            var m = Regex.Matches(log, @"\bcontent/cars/([\w-]+)").Cast<Match>().LastOrDefault();
+            var id = m?.Success != true ? null : m.Groups[1].Value;
+            return string.IsNullOrWhiteSpace(id) ? @"?" : CarsManager.Instance.GetById(id)?.DisplayName ?? $"“{id}”";
         }
 
         [CanBeNull]
@@ -60,6 +67,14 @@ namespace AcManager.Tools.Helpers.AcLog {
 
                     if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
                         return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
+                    }
+
+                    if (crash.Contains(@"\drivetrain.cpp")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.DrivetrainIsDamaged, TryToGetCarName(log.Substring(0, i)));
+                    }
+
+                    if (crash.Contains(@"\analoginstruments.cpp")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.AnalogInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
                     }
                 } else {
                     crash = null;

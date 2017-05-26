@@ -176,6 +176,17 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
+        private bool _isVisibleAsMesh;
+
+        public bool IsVisibleAsMesh {
+            get => _isVisibleAsMesh;
+            set {
+                if (Equals(value, _isVisibleAsMesh)) return;
+                _isVisibleAsMesh = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsMovable { get; set; } = true;
 
         protected DarkLightBase(DarkLightType type) {
@@ -679,13 +690,21 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             }
         }
 
-        public static void FlipPreviousY(EffectDarkMaterial effect) {
-            for (var i = 0; i < _lightsBuffer.Length; i++) {
-                _lightsBuffer[i].DirectionW.Y *= -1f;
-                _lightsBuffer[i].PosW.Y *= -1f;
+        public static void FlipPreviousY(EffectDarkMaterial effect, DarkLightBase[] lights, int count) {
+            var j = 0;
+            for (var i = 0; i < count && j < EffectDarkMaterial.MaxLighsAmount; i++) {
+                var l = lights[i];
+                if (l.ActuallyEnabled) {
+                    l.FlipPreviousY(ref _lightsBuffer[j++]);
+                }
             }
 
             effect.FxLights.SetArray(_lightsBuffer);
+        }
+
+        protected virtual void FlipPreviousY(ref EffectDarkMaterial.Light light) {
+            light.DirectionW.Y *= -1f;
+            light.PosW.Y *= -1f;
         }
 
         public static void ToShader(IDeviceContextHolder holder, EffectDarkMaterial effect, DarkLightBase[] lights, int count, int shadowsCount) {

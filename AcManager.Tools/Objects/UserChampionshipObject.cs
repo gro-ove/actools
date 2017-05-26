@@ -60,10 +60,12 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadOrThrow() {
             // Base version would load object’s name from it’s filename, we don’t need this
-
             LoadJsonOrThrow();
-            LoadExtended();
-            LoadProgress();
+        }
+
+        public override void PastLoad() {
+            base.PastLoad();
+            ReloadExtendedData();
         }
 
         [NotNull]
@@ -75,7 +77,7 @@ namespace AcManager.Tools.Objects {
         public override bool HasData => true;
 
         public override bool Changed {
-            get { return base.Changed; }
+            get => base.Changed;
             protected set {
                 base.Changed = value;
                 if (value) {
@@ -94,7 +96,7 @@ namespace AcManager.Tools.Objects {
         private bool _changedData;
 
         public bool ChangedData {
-            get { return _changedData; }
+            get => _changedData;
             private set {
                 if (Equals(value, _changedData)) return;
                 _changedData = value;
@@ -106,7 +108,7 @@ namespace AcManager.Tools.Objects {
         private bool _changedExtended;
 
         public bool ChangedExtended {
-            get { return _changedExtended; }
+            get => _changedExtended;
             private set {
                 if (Equals(value, _changedExtended)) return;
                 _changedExtended = value;
@@ -119,7 +121,7 @@ namespace AcManager.Tools.Objects {
         private UserChampionshipRules _rules;
 
         public UserChampionshipRules Rules {
-            get { return _rules; }
+            get => _rules;
             private set {
                 if (Equals(value, _rules)) return;
                 _rules = value;
@@ -130,7 +132,7 @@ namespace AcManager.Tools.Objects {
         private List<UserChampionshipDriver> _drivers;
 
         public IReadOnlyList<UserChampionshipDriver> Drivers {
-            get { return _drivers; }
+            get => _drivers;
             set {
                 if (Equals(value, _drivers) || _drivers != null && value?.SequenceEqual(_drivers) == true) {
                     return;
@@ -186,7 +188,7 @@ namespace AcManager.Tools.Objects {
         private double _aiLevelTo;
 
         public double AiLevelTo {
-            get { return _aiLevelTo; }
+            get => _aiLevelTo;
             private set {
                 if (Equals(value, _aiLevelTo)) return;
                 _aiLevelTo = value;
@@ -203,7 +205,7 @@ namespace AcManager.Tools.Objects {
         private double _aiLevelFrom;
 
         public double AiLevelFrom {
-            get { return _aiLevelFrom; }
+            get => _aiLevelFrom;
             private set {
                 if (Equals(value, _aiLevelFrom)) return;
                 _aiLevelFrom = value;
@@ -220,7 +222,7 @@ namespace AcManager.Tools.Objects {
         private bool _aiLevelRange;
 
         public bool AiLevelRange {
-            get { return _aiLevelRange; }
+            get => _aiLevelRange;
             private set {
                 if (Equals(value, _aiLevelRange)) return;
                 _aiLevelRange = value;
@@ -253,7 +255,7 @@ namespace AcManager.Tools.Objects {
         private UserChampionshipRound[] _rounds;
 
         public UserChampionshipRound[] Rounds {
-            get { return _rounds; }
+            get => _rounds;
             set {
                 if (Equals(value, _rounds) || _rounds != null && value?.SequenceEqual(_rounds) == true) {
                     return;
@@ -279,7 +281,7 @@ namespace AcManager.Tools.Objects {
         private int _maxCars;
 
         public int MaxCars {
-            get { return _maxCars; }
+            get => _maxCars;
             set {
                 if (Equals(value, _maxCars)) return;
                 _maxCars = value;
@@ -296,7 +298,7 @@ namespace AcManager.Tools.Objects {
         private string _playerCarId;
 
         public string PlayerCarId {
-            get { return _playerCarId; }
+            get => _playerCarId;
             private set {
                 if (Equals(value, _playerCarId)) return;
 
@@ -328,13 +330,13 @@ namespace AcManager.Tools.Objects {
                 }
                 return _playerCar;
             }
-            private set { PlayerCarId = value?.Id; }
+            private set => PlayerCarId = value?.Id;
         }
 
         private string _playerCarSkinId;
 
         public string PlayerCarSkinId {
-            get { return _playerCarSkinId; }
+            get => _playerCarSkinId;
             private set {
                 if (Equals(value, _playerCarSkinId)) return;
                 _playerCarSkinId = value;
@@ -361,7 +363,7 @@ namespace AcManager.Tools.Objects {
                 }
                 return _playerCarSkin;
             }
-            set { PlayerCarSkinId = value?.Id; }
+            set => PlayerCarSkinId = value?.Id;
         }
 
         public void SetPlayerCar(CarObject car, CarSkinObject carSkin = null) {
@@ -374,7 +376,7 @@ namespace AcManager.Tools.Objects {
         private int _pointsForBestLap;
 
         public int PointsForBestLap {
-            get { return _pointsForBestLap; }
+            get => _pointsForBestLap;
             set {
                 if (Equals(value, _pointsForBestLap)) return;
                 _pointsForBestLap = value;
@@ -389,7 +391,7 @@ namespace AcManager.Tools.Objects {
         private int _pointsForPolePosition;
 
         public int PointsForPolePosition {
-            get { return _pointsForPolePosition; }
+            get => _pointsForPolePosition;
             set {
                 if (Equals(value, _pointsForPolePosition)) return;
                 _pointsForPolePosition = value;
@@ -404,7 +406,7 @@ namespace AcManager.Tools.Objects {
         private bool _realConditions;
 
         public bool RealConditions {
-            get { return _realConditions; }
+            get => _realConditions;
             set {
                 if (Equals(value, _realConditions)) return;
                 _realConditions = value;
@@ -419,7 +421,7 @@ namespace AcManager.Tools.Objects {
         private bool _realConditionsManualTime;
 
         public bool RealConditionsManualTime {
-            get { return _realConditionsManualTime; }
+            get => _realConditionsManualTime;
             set {
                 if (Equals(value, _realConditionsManualTime)) return;
                 _realConditionsManualTime = value;
@@ -434,7 +436,7 @@ namespace AcManager.Tools.Objects {
         private bool _coherentTime;
 
         public bool CoherentTime {
-            get { return _coherentTime; }
+            get => _coherentTime;
             set {
                 if (Equals(value, _coherentTime)) return;
                 _coherentTime = value;
@@ -571,7 +573,7 @@ namespace AcManager.Tools.Objects {
         private string _serializedRaceGridData;
 
         public string SerializedRaceGridData {
-            get { return _serializedRaceGridData; }
+            get => _serializedRaceGridData;
             set {
                 if (Equals(value, _serializedRaceGridData)) return;
                 _serializedRaceGridData = value;
@@ -586,7 +588,7 @@ namespace AcManager.Tools.Objects {
         private string _difficulty;
 
         public string Difficulty {
-            get { return _difficulty; }
+            get => _difficulty;
             set {
                 if (Equals(value, _difficulty)) return;
                 _difficulty = value;
@@ -599,7 +601,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string Name {
-            get { return base.Name; }
+            get => base.Name;
             protected set {
                 if (Equals(value, base.Name)) return;
                 base.Name = value;
@@ -615,7 +617,7 @@ namespace AcManager.Tools.Objects {
         private string _code;
 
         public string Code {
-            get { return _code; }
+            get => _code;
             set {
                 if (value != null) {
                     value = value.Trim();
@@ -636,7 +638,7 @@ namespace AcManager.Tools.Objects {
         private string _description;
 
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (Equals(value, _description)) return;
                 _description = value;
@@ -654,7 +656,7 @@ namespace AcManager.Tools.Objects {
         /// In absolute units.
         /// </summary>
         public Rect? PreviewCrop {
-            get { return _previewCrop; }
+            get => _previewCrop;
             set {
                 if (Equals(value, _previewCrop)) return;
                 _previewCrop = value;
@@ -667,7 +669,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public bool ChampionshipPointsGoalType {
-            get { return _championshipPointsGoal > 0; }
+            get => _championshipPointsGoal > 0;
             set {
                 if (Equals(value, ChampionshipPointsGoalType)) return;
                 if (ChampionshipPointsGoal == 0) {
@@ -686,7 +688,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPointsGoal;
 
         public int ChampionshipPointsGoal {
-            get { return _championshipPointsGoal; }
+            get => _championshipPointsGoal;
             set {
                 if (Equals(value, _championshipPointsGoal)) return;
 
@@ -707,7 +709,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipRankingGoal = 1;
 
         public int ChampionshipRankingGoal {
-            get { return _championshipRankingGoal; }
+            get => _championshipRankingGoal;
             set {
                 value = value.Clamp(1, 99999);
                 if (Equals(value, _championshipRankingGoal)) return;
@@ -985,7 +987,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Author {
-            get { return _author; }
+            get => _author;
             set {
                 if (value == _author) return;
                 _author = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -1003,7 +1005,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Version {
-            get { return _version; }
+            get => _version;
             set {
                 if (value == _version) return;
                 _version = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -1020,7 +1022,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string Url {
-            get { return _url; }
+            get => _url;
             set {
                 if (value == _url) return;
                 _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -1054,7 +1056,7 @@ namespace AcManager.Tools.Objects {
         private double _userAiLevelMultipler = 1;
 
         public double UserAiLevelMultipler {
-            get { return _userAiLevelMultipler; }
+            get => _userAiLevelMultipler;
             set {
                 value = value.Clamp(0.5, 1.5);
                 if (Equals(value, _userAiLevelMultipler)) return;
@@ -1087,7 +1089,7 @@ namespace AcManager.Tools.Objects {
         private CarSkinObject _userPlayerCarSkin;
 
         public CarSkinObject UserPlayerCarSkin {
-            get { return _userPlayerCarSkin ?? PlayerCarSkin; }
+            get => _userPlayerCarSkin ?? PlayerCarSkin;
             set {
                 if (Equals(value, _userPlayerCarSkin)) return;
                 _userPlayerCarSkin = value;
@@ -1098,7 +1100,7 @@ namespace AcManager.Tools.Objects {
         private int _firstPlaces;
 
         public int FirstPlaces {
-            get { return _firstPlaces; }
+            get => _firstPlaces;
             set {
                 if (value == _firstPlaces) return;
                 _firstPlaces = value;
@@ -1109,7 +1111,7 @@ namespace AcManager.Tools.Objects {
         private int _secondPlaces;
 
         public int SecondPlaces {
-            get { return _secondPlaces; }
+            get => _secondPlaces;
             set {
                 if (value == _secondPlaces) return;
                 _secondPlaces = value;
@@ -1120,7 +1122,7 @@ namespace AcManager.Tools.Objects {
         private int _thirdPlaces;
 
         public int ThirdPlaces {
-            get { return _thirdPlaces; }
+            get => _thirdPlaces;
             set {
                 if (value == _thirdPlaces) return;
                 _thirdPlaces = value;
@@ -1131,7 +1133,7 @@ namespace AcManager.Tools.Objects {
         private long _lastSelectedTimestamp;
 
         public long LastSelectedTimestamp {
-            get { return _lastSelectedTimestamp; }
+            get => _lastSelectedTimestamp;
             set {
                 if (Equals(value, _lastSelectedTimestamp)) return;
                 _lastSelectedTimestamp = value;
@@ -1156,7 +1158,7 @@ namespace AcManager.Tools.Objects {
         private int _completedEvents;
 
         public int CompletedEvents {
-            get { return _completedEvents; }
+            get => _completedEvents;
             set {
                 if (Equals(value, _completedEvents)) return;
                 _completedEvents = value;
@@ -1170,7 +1172,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPointsNeeded;
 
         public int ChampionshipPointsNeeded {
-            get { return _championshipPointsNeeded; }
+            get => _championshipPointsNeeded;
             set {
                 if (Equals(value, _championshipPointsNeeded)) return;
                 _championshipPointsNeeded = value;
@@ -1181,7 +1183,7 @@ namespace AcManager.Tools.Objects {
         private bool _isCompleted;
 
         public bool IsCompleted {
-            get { return _isCompleted; }
+            get => _isCompleted;
             set {
                 if (Equals(value, _isCompleted)) return;
                 _isCompleted = value;
@@ -1192,7 +1194,7 @@ namespace AcManager.Tools.Objects {
         private bool _isFinished;
 
         public bool IsFinished {
-            get { return _isFinished; }
+            get => _isFinished;
             set {
                 if (Equals(value, _isFinished)) return;
                 _isFinished = value;
@@ -1203,7 +1205,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPoints = -1;
 
         public int ChampionshipPoints {
-            get { return _championshipPoints; }
+            get => _championshipPoints;
             set {
                 if (Equals(value, _championshipPoints)) return;
                 _championshipPoints = value;
@@ -1221,7 +1223,7 @@ namespace AcManager.Tools.Objects {
         private int _championshipPlace;
 
         public int ChampionshipPlace {
-            get { return _championshipPlace; }
+            get => _championshipPlace;
             private set {
                 if (Equals(value, _championshipPlace)) return;
                 _championshipPlace = value;
@@ -1232,7 +1234,7 @@ namespace AcManager.Tools.Objects {
         private UserChampionshipRoundExtended _currentRound;
 
         public UserChampionshipRoundExtended CurrentRound {
-            get { return _currentRound; }
+            get => _currentRound;
             set {
                 if (Equals(value, _currentRound)) return;
                 _currentRound = value;
@@ -1250,7 +1252,7 @@ namespace AcManager.Tools.Objects {
         private ListCollectionView _championshipDriversView;
 
         public ListCollectionView ChampionshipDriversView {
-            get { return _championshipDriversView ?? (_championshipDriversView = new ListCollectionView(_drivers) { CustomSort = this }); }
+            get => _championshipDriversView ?? (_championshipDriversView = new ListCollectionView(_drivers) { CustomSort = this });
             set {
                 if (Equals(value, _championshipDriversView)) return;
                 _championshipDriversView = value;

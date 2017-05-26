@@ -90,7 +90,7 @@ namespace AcTools.Render.Base.Objects {
             float distance;
             var intersects = bb.HasValue &&
                     Ray.Intersects(pickingRay, bb.Value, out distance) &&
-                    DoesIntersect(pickingRay, 0.02f / bb.Value.GetCenter().GetOnScreenSize(camera));
+                    DoesIntersect(pickingRay, 0.01f / bb.Value.GetCenter().GetOnScreenSize(camera));
 
             Draw(contextHolder, camera, intersects ? SpecialRenderMode.Outline : SpecialRenderMode.Simple);
             return intersects;

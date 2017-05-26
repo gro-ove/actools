@@ -233,11 +233,11 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyResourceArrayVariable FxExtraShadowMaps, FxShadowMaps;
 		[NotNull]
-		public EffectOnlyIntVariable FxNumSplits;
+		public EffectOnlyIntVariable FxNumSplits, FxFlatMirrorSide;
 		[NotNull]
 		public EffectOnlyFloatVariable FxGPassAlphaThreshold, FxReflectionPower, FxCubemapAmbient, FxFlatMirrorPower;
 		[NotNull]
-		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxFlatMirrored, FxUseAo, FxCubemapReflections;
+		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxUseAo, FxCubemapReflections;
 		[NotNull]
 		public EffectOnlyVector2Variable FxShadowMapSize;
 		[NotNull]
@@ -369,13 +369,13 @@ namespace AcTools.Render.Shaders {
 			FxExtraShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gExtraShadowMaps"));
 			FxShadowMaps = new EffectOnlyResourceArrayVariable(E.GetVariableByName("gShadowMaps"));
 			FxNumSplits = new EffectOnlyIntVariable(E.GetVariableByName("gNumSplits"));
+			FxFlatMirrorSide = new EffectOnlyIntVariable(E.GetVariableByName("gFlatMirrorSide"));
 			FxGPassAlphaThreshold = new EffectOnlyFloatVariable(E.GetVariableByName("gGPassAlphaThreshold"));
 			FxReflectionPower = new EffectOnlyFloatVariable(E.GetVariableByName("gReflectionPower"));
 			FxCubemapAmbient = new EffectOnlyFloatVariable(E.GetVariableByName("gCubemapAmbient"));
 			FxFlatMirrorPower = new EffectOnlyFloatVariable(E.GetVariableByName("gFlatMirrorPower"));
 			FxGPassTransparent = new EffectOnlyBoolVariable(E.GetVariableByName("gGPassTransparent"));
 			FxPcssEnabled = new EffectOnlyBoolVariable(E.GetVariableByName("gPcssEnabled"));
-			FxFlatMirrored = new EffectOnlyBoolVariable(E.GetVariableByName("gFlatMirrored"));
 			FxUseAo = new EffectOnlyBoolVariable(E.GetVariableByName("gUseAo"));
 			FxCubemapReflections = new EffectOnlyBoolVariable(E.GetVariableByName("gCubemapReflections"));
 			FxShadowMapSize = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowMapSize"));
@@ -1514,7 +1514,9 @@ namespace AcTools.Render.Shaders {
 		public EffectReadyTechnique TechMain, TechGPass;
 
 		[NotNull]
-		public EffectOnlyMatrixVariable FxWorldViewProj;
+		public EffectOnlyMatrixVariable FxWorld, FxWorldViewProj;
+		[NotNull]
+		public EffectOnlyIntVariable FxFlatMirrorSide;
 		[NotNull]
 		public EffectOnlyBoolVariable FxOverrideColor;
 		[NotNull]
@@ -1533,7 +1535,9 @@ namespace AcTools.Render.Shaders {
 			if (InputSignaturePC == null) throw new System.Exception("input signature (SpecialAreaLights, PC, Main) == null");
 			LayoutPC = new InputLayout(device, InputSignaturePC, InputLayouts.VerticePC.InputElementsValue);
 
+			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld"));
 			FxWorldViewProj = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorldViewProj"));
+			FxFlatMirrorSide = new EffectOnlyIntVariable(E.GetVariableByName("gFlatMirrorSide"));
 			FxOverrideColor = new EffectOnlyBoolVariable(E.GetVariableByName("gOverrideColor"));
 			FxCustomColor = new EffectOnlyVector4Variable(E.GetVariableByName("gCustomColor"));
 		}

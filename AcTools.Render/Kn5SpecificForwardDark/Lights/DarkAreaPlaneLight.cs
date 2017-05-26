@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -169,6 +170,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             if (DoubleSide) {
                 light.Flags |= EffectDarkMaterial.LightLtcPlaneDoubleSide;
             }
+        }
+
+        protected override void FlipPreviousY(ref EffectDarkMaterial.Light light) {
+            base.FlipPreviousY(ref light);
+            light.SpotlightCosMax *= -1f;
+            light.Extra.Y *= -1f;
         }
 
         public override void Rotate(Quaternion delta) {

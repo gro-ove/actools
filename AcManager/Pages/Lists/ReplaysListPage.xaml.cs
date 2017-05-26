@@ -27,7 +27,10 @@ namespace AcManager.Pages.Lists {
 
         private class ViewModel : AcListPageViewModel<ReplayObject> {
             public ViewModel(IFilter<ReplayObject> listFilter)
-                    : base(ReplaysManager.Instance, listFilter) {}
+                    : base(ReplaysManager.Instance, listFilter) {
+                GroupBy(nameof(ReplayObject.EditableCategory),
+                        id => string.Equals(id, ReplayObject.AutosaveCategory, StringComparison.OrdinalIgnoreCase) ? "Autosave" : id);
+            }
 
             protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Replays);
         }

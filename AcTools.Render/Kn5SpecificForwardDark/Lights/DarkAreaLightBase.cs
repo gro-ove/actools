@@ -17,6 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
         protected DarkAreaLightBase(DarkLightType type) : base(type) {
             ShadowsAvailable = false;
             HighQualityShadowsAvailable = false;
+            IsVisibleAsMesh = true;
         }
 
         private bool _visibleLight;
@@ -122,7 +123,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
             _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-            // _effect.FxWorld.SetMatrix(objectTransform);
+            _effect.FxWorld.SetMatrix(objectTransform);
         }
 
         public Vector4? OverrideColor { get; set; }

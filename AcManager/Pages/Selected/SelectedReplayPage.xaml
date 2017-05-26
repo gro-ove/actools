@@ -5,6 +5,14 @@
         xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
@@ -27,6 +35,21 @@
         </c:AcObjectBase.ToolBars>
 
         <StackPanel>
+            <StackPanel Style="{StaticResource SettingsPanel}">
+                <DockPanel>
+                    <Label Content="Category:" />
+                    <Button Command="{Binding ClearCategoryCommand}" Content="{x:Static c:ControlsStrings.Common_Clear}" />
+                    <Button Command="{Binding ChangeCategoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True"
+                                       Text="{Binding SelectedObject.Category, Mode=OneWay}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Rating:" />
+                    <c:RatingBar Rating="{Binding SelectedObject.Rating}" HorizontalAlignment="Left" />
+                </DockPanel>
+            </StackPanel>
+
             <Grid Margin="20 0 20 20" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -109,16 +132,29 @@
                 </mui:PlaceholderTextBlock>
             </Grid>
 
-            <Grid Margin="0 20 0 8"
-                    Visibility="{Binding SelectedObject.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:ReplayObject.PreviousReplayName}}">
-                <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <StackPanel Margin="8">
-                    <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
-                    <TextBlock TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage}" />
-                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage_Commentary}"
-                            Visibility="{Binding AutoSaveReplays, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                </StackPanel>
-            </Grid>
+            <mui:BooleanSwitch Value="{Binding SelectedObject.IsAutoSave}">
+                <mui:Cell Margin="0 20 0 8">
+                    <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                    <mui:BooleanSwitch Value="{Binding UseOldReplaysAutoSaveSystem, Source={x:Static t:SettingsHolder.Drive}}"  Margin="8">
+                        <mui:BooleanSwitch.True>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
+                                <TextBlock TextWrapping="Wrap" Margin="0 4 0 0" Text="{x:Static c:ControlsStrings.Replay_CrMessage}" />
+                                <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static c:ControlsStrings.Replay_CrMessage_Commentary}"
+                                           Visibility="{Binding AutoSaveReplays, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                            </StackPanel>
+                        </mui:BooleanSwitch.True>
+                        <mui:BooleanSwitch.False>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
+                                <TextBlock TextWrapping="Wrap" Margin="0 4 0 0"
+                                           Text="This replay was saved automatically and it will be overwritten soon. Move it from “Autosave” category to keep it." />
+                                <Button Command="{Binding KeepReplayCommand}" Content="Keep Replay" Visibility="{Binding KeepReplayCommand}" Margin="0 8 0 0" />
+                            </StackPanel>
+                        </mui:BooleanSwitch.False>
+                    </mui:BooleanSwitch>
+                </mui:Cell>
+            </mui:BooleanSwitch>
         </StackPanel>
     </c:AcObjectBase>
 </selected:SelectedAcObjectPage>

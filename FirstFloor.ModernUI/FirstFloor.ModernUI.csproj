@@ -158,6 +158,7 @@
     <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
     <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
+    <Compile Include="Windows\Controls\RememberingExpander.cs" />
     <Compile Include="Windows\Controls\RoundSlider.cs" />
     <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
     <Compile Include="Windows\Controls\StretchyWrapPanel.cs" />

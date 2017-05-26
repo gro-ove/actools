@@ -41,10 +41,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly RoutedEvent InitializeEvent = EventManager.RegisterRoutedEvent(nameof(Initialize), RoutingStrategy.Bubble,
                 typeof(EventHandler<InitializeEventArgs>), typeof(ModernMenu));
-        
+
         public event EventHandler<InitializeEventArgs> Initialize {
-            add { AddHandler(InitializeEvent, value); }
-            remove { RemoveHandler(InitializeEvent, value); }
+            add => AddHandler(InitializeEvent, value);
+            remove => RemoveHandler(InitializeEvent, value);
         }
 
         public class InitializeEventArgs : RoutedEventArgs {
@@ -127,8 +127,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernMenu), new PropertyMetadata(new LinkGroupCollection(), OnLinkGroupsChanged));
 
         public LinkGroupCollection LinkGroups {
-            get { return (LinkGroupCollection)GetValue(LinkGroupsProperty); }
-            set { SetValue(LinkGroupsProperty, value); }
+            get => (LinkGroupCollection)GetValue(LinkGroupsProperty);
+            set => SetValue(LinkGroupsProperty, value);
         }
 
         private static void OnLinkGroupsChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -143,7 +143,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (newValue != null) {
                 newValue.CollectionChanged += OnLinkGroupsCollectionChanged;
             }
-            
+
             RebuildMenu(newValue);
         }
         #endregion
@@ -162,7 +162,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (oldValue != null) {
                 oldValue.PropertyChanged -= Group_PropertyChanged;
             }
-            
+
             if (newValue != null) {
                 newValue.PropertyChanged += Group_PropertyChanged;
                 SelectedLink = newValue.SelectedLink;
@@ -182,8 +182,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernMenu), new PropertyMetadata(OnSelectedLinkChanged));
 
         public Link SelectedLink {
-            get { return (Link)GetValue(SelectedLinkProperty); }
-            set { SetValue(SelectedLinkProperty, value); }
+            get => (Link)GetValue(SelectedLinkProperty);
+            set => SetValue(SelectedLinkProperty, value);
         }
 
         private static void OnSelectedLinkChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -218,8 +218,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernMenu), new PropertyMetadata(OnSelectedSourceChanged));
 
         public Uri SelectedSource {
-            get { return (Uri)GetValue(SelectedSourceProperty); }
-            set { SetValue(SelectedSourceProperty, value); }
+            get => (Uri)GetValue(SelectedSourceProperty);
+            set => SetValue(SelectedSourceProperty, value);
         }
 
         private static void OnSelectedSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -250,7 +250,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             base.OnApplyTemplate();
-            
+
             _subMenuListBox = GetTemplateChild("PART_SubMenu") as ListBox;
             if (_subMenuListBox != null) {
                 _subMenuListBox.Drop += OnDrop;
@@ -391,16 +391,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernMenu));
 
         public string SaveKey {
-            get { return (string)GetValue(SaveKeyProperty); }
-            set { SetValue(SaveKeyProperty, value); }
+            get => (string)GetValue(SaveKeyProperty);
+            set => SetValue(SaveKeyProperty, value);
         }
 
         public static readonly DependencyProperty DefaultSourceProperty = DependencyProperty.Register(nameof(DefaultSource), typeof(Uri),
                 typeof(ModernMenu));
 
         public Uri DefaultSource {
-            get { return (Uri)GetValue(DefaultSourceProperty); }
-            set { SetValue(DefaultSourceProperty, value); }
+            get => (Uri)GetValue(DefaultSourceProperty);
+            set => SetValue(DefaultSourceProperty, value);
         }
     }
 }

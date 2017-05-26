@@ -1,13 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -71,6 +76,8 @@ namespace AcManager.Pages.Lists {
 
             public ViewModel([NotNull] CarObject car, IFilter<CarSetupObject> listFilter)
                     : base(car.SetupsManager, listFilter) {
+                GroupBy(nameof(CarSetupObject.TrackId),
+                        id => TracksManager.Instance.GetById(id?.ToString() ?? "")?.DisplayNameWithoutCount ?? $@"[{id}]");
                 SelectedCar = car;
             }
 

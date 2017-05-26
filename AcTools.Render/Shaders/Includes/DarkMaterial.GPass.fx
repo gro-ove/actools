@@ -95,6 +95,8 @@ float GetDepth(float4 posH) {
 //// Standart
 
 PS_OUT ps_GPass_Standard(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	GPassAlphaTest(gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
 	return PackResult((float4)0.0, normalize(pin.NormalW), GetDepth(pin.PosH), 0.0);
 }
@@ -120,6 +122,8 @@ technique10 GPass_Alpha {
 //// Reflective
 
 PS_OUT ps_GPass_Reflective(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	return GetResult(GetDepth(pin.PosH), pin.PosW, normalize(pin.NormalW), gDiffuseMap.Sample(samAnisotropic, pin.Tex).a);
 }
 
@@ -134,6 +138,8 @@ technique10 GPass_Reflective {
 //// NM
 
 PS_OUT ps_GPass_Nm(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 	float alpha = normalValue.a * diffuseMapValue.a;
@@ -152,6 +158,8 @@ technique10 GPass_Nm {
 //// NM UV Mult
 
 PS_OUT ps_GPass_NmUvMult(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
 	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultiplier));
 	float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
@@ -179,6 +187,8 @@ technique10 GPass_AtNm {
 //// Maps
 
 PS_OUT ps_GPass_Maps(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	float3 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex).rgb;
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 	float mask = diffuseMapValue.a;
@@ -231,6 +241,8 @@ technique10 GPass_SkinnedMaps {
 // Diff maps (as Maps, but multipliers are taken from diffuse alpha-channel)
 
 /*PS_OUT ps_GPass_DiffMaps(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 float3 normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW));
@@ -248,6 +260,8 @@ SetPixelShader(CompileShader(ps_4_0, ps_GPass_DiffMaps()));
 // Tyres
 
 PS_OUT ps_GPass_Tyres(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	float4 diffuseMapValue = lerp(
 		gDiffuseMap.Sample(samAnisotropic, pin.Tex),
 		gDiffuseBlurMap.Sample(samAnisotropic, pin.Tex),
@@ -290,7 +304,7 @@ technique10 GPass_SkinnedGl {
 //// Ground
 
 PS_OUT ps_GPass_FlatMirror(pt_PS_IN pin) {
-	return PackResult((float4)0.0, float3(0, 1, 0), GetDepth(pin.PosH), 0.0);
+	return PackResult(float4(0, 1, 0, 0), float3(0, 1, 0), GetDepth(pin.PosH), 0.0);
 }
 
 technique10 GPass_FlatMirror {
@@ -348,6 +362,8 @@ float4 GetReflection_Debug(float3 posW, float3 normal, float alpha) {
 }
 
 PS_OUT ps_GPass_Debug(PS_IN pin) {
+    FlatMirrorTest(pin);
+
 	float4 diffuseMapValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
 	float3 normal;

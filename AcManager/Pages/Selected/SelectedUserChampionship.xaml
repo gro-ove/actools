@@ -349,7 +349,81 @@
                                     Value="{Binding RaceGridViewModel.OpponentsNumberLimited}" />
                         </StackPanel>
 
-                        <StackPanel>
+                        <DockPanel>
+                            <mui:DoubleSlider DockPanel.Dock="Bottom" Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100"
+                                    From="{Binding RaceGridViewModel.AiLevelMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
+                                    To="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" SmallChange="5" LargeChange="5"
+                                    BindingMode="FromToFixed" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoubleSlider}}"
+                                    mui:FancyHintsService.HorizontalAlignment="Center" mui:FancyHintsService.VerticalAlignment="Bottom" mui:FancyHintsService.TriggerOnLoad="True"
+                                    mui:FancyHintsService.AttachTo="{x:Type Thumb}" />
+                            <mui:ContextMenuButton DockPanel.Dock="Right"
+                                    Visibility="{Binding RaceGridViewModel.AiLevelFixed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                                <c:ModernPopup Padding="8">
+                                    <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                                        <DockPanel
+                                                IsEnabled="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠1'}">
+                                            <Label Content="{x:Static g:AppStrings.Drive_AiArrangeOrder}" ToolTip="{x:Static g:AppStrings.Drive_AiArrangeOrder_Tooltip}" />
+                                            <mui:LabeledToggleButton LabelChecked="{x:Static mui:UiStrings.Common_Ascending}" Margin="0 0 0 0"
+                                                    LabelUnchecked="{x:Static mui:UiStrings.Common_Descending}" IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse}" />
+                                        </DockPanel>
+
+                                        <DockPanel>
+                                            <Label Content="Randomization:" />
+                                            <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
+                                                    Value="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource PercentageConverter}}" />
+                                        </DockPanel>
+
+                                        <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}">
+                                            <Label Content="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" />
+                                        </CheckBox>
+
+                                        <CheckBox IsChecked="{mui:Stored 'aiRelativeRange=True'}" Margin="0">
+                                            <Label Content="Show relative range" />
+                                        </CheckBox>
+                                    </StackPanel>
+                                </c:ModernPopup>
+                            </mui:ContextMenuButton>
+                            <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" SecondValue="{Binding RaceGridViewModel.AiLevel}" Postfix='%' JoinIfEqual="True"
+                                    RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="F1" />
+                        </DockPanel>
+
+                        <DockPanel>
+                            <mui:DoubleSlider DockPanel.Dock="Bottom" Minimum="0" Maximum="100"
+                                    From="{Binding RaceGridViewModel.AiAggressionMin, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}"
+                                    To="{Binding RaceGridViewModel.AiAggression, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" SmallChange="5"
+                                    LargeChange="5" BindingMode="FromToFixed" />
+                            <mui:ContextMenuButton DockPanel.Dock="Right"
+                                    Visibility="{Binding RaceGridViewModel.AiAggressionFixed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                                <c:ModernPopup Padding="8">
+                                    <StackPanel Style="{StaticResource SettingsPanel}" Margin="0">
+                                        <DockPanel
+                                                IsEnabled="{Binding RaceGridViewModel.AiAggressionArrangeRandom, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠1'}">
+                                            <Label Content="{x:Static g:AppStrings.Drive_AiArrangeOrder}" ToolTip="{x:Static g:AppStrings.Drive_AiArrangeOrder_Tooltip}" />
+                                            <mui:LabeledToggleButton LabelChecked="{x:Static mui:UiStrings.Common_Ascending}" Margin="0 0 0 0"
+                                                    LabelUnchecked="{x:Static mui:UiStrings.Common_Descending}" IsChecked="{Binding RaceGridViewModel.AiAggressionArrangeReverse}" />
+                                        </DockPanel>
+
+                                        <DockPanel>
+                                            <Label Content="Randomization:" />
+                                            <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
+                                                    Value="{Binding RaceGridViewModel.AiAggressionArrangeRandom, Converter={StaticResource PercentageConverter}}" />
+                                        </DockPanel>
+
+                                        <CheckBox IsChecked="{Binding RaceGridViewModel.AiAggressionInDriverName, Mode=TwoWay}">
+                                            <Label Content="Show AI aggression in driver’s name" />
+                                        </CheckBox>
+
+                                        <CheckBox IsChecked="{mui:Stored 'aiRelativeRange=True'}" Margin="0">
+                                            <Label Content="Show relative range" />
+                                        </CheckBox>
+                                    </StackPanel>
+                                </c:ModernPopup>
+                            </mui:ContextMenuButton>
+                            <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
+                                    JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="Opponents aggression" RelativeRangeStringFormat="F1" />
+                        </DockPanel>
+
+                        <!--<StackPanel>
                             <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
                             <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
                         </StackPanel>
@@ -389,7 +463,7 @@
                             <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">
                                 <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
                             </CheckBox>
-                        </StackPanel>
+                        </StackPanel>-->
                     </mui:SpacingUniformGrid>
 
                     <!--<DockPanel Visibility="{Binding SelectedObject.IsStarted, Converter={StaticResource BooleanToVisibilityConverter}}">

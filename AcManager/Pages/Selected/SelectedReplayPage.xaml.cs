@@ -7,15 +7,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.LargeFilesSharing;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -130,6 +135,37 @@ namespace AcManager.Pages.Selected {
                     OnPropertyChanged();
                 }
             }
+
+            private CommandBase _changeCategoryCommand;
+
+            public ICommand ChangeCategoryCommand => _changeCategoryCommand ?? (_changeCategoryCommand = new DelegateCommand(() => {
+                const string key = "__replayLastUsedCategory";
+                var newCategory = Prompt.Show("Where to move selected replay?", "Change Replay’s Category",
+                        ValuesStorage.GetString(key), "?", required: true, maxLength: 60,
+                        suggestions: ReplaysManager.Instance.EnabledOnly.Select(x => x.Category).ApartFrom(ReplayObject.AutosaveCategory));
+                if (string.IsNullOrWhiteSpace(newCategory)) return;
+
+                ValuesStorage.Set(key, newCategory);
+                SelectedObject.EditableCategory = FileUtils.EnsureFileNameIsValid(newCategory);
+            }));
+
+            private CommandBase _clearCategoryCommand;
+
+            public ICommand ClearCategoryCommand => _clearCategoryCommand ?? (_clearCategoryCommand = new DelegateCommand(() => {
+                SelectedObject.EditableCategory = null;
+            }, () => SelectedObject.EditableCategory != null))
+                    .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
+
+            private AsyncCommand _keepReplayCommand;
+
+            public AsyncCommand KeepReplayCommand => _keepReplayCommand ?? (_keepReplayCommand = new AsyncCommand(async () => {
+                SelectedObject.EditableCategory = null;
+
+                await Task.Delay(10);
+                SelectedObject.SaveCommand.Execute(null);
+            }, () => SelectedObject.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave))
+                    .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory))
+                    .ListenOnWeak(AcSettingsHolder.Replay, nameof(AcSettingsHolder.Replay.Autosave));
 
             [Localizable(false)]
             protected override void FilterExec(string type) {

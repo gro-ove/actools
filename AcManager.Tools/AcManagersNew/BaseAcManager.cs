@@ -83,7 +83,7 @@ namespace AcManager.Tools.AcManagersNew {
                 }
             }
         }
-        
+
         public IAcWrapperObservableCollection WrappersList {
             get {
                 EnsureScanned();
@@ -119,7 +119,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public virtual IAcManagerScanWrapper ScanWrapper { get; set; }
-        
+
         public void Scan() {
             var scanned = _isScanned;
             lock (ScanningLock) {
@@ -206,7 +206,7 @@ namespace AcManager.Tools.AcManagersNew {
 
                 IsLoaded = true;
                 ListReady();
-                
+
                 if (GetType() != typeof(CarSkinsManager)) {
                     Logging.Write($"[{GetType().Name}] Loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms");
                 }
@@ -250,7 +250,7 @@ namespace AcManager.Tools.AcManagersNew {
                         LoadedCount++;
                     }
                 }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
-            } while (anyLoaded); 
+            } while (anyLoaded);
 
             IsLoaded = true;
             ListReady();
@@ -261,14 +261,14 @@ namespace AcManager.Tools.AcManagersNew {
                 Load();
             }
         }
-        
+
         public void Reload([NotNull]string id) {
             if (id == null) throw new ArgumentNullException(nameof(id));
             var wrapper = GetWrapperById(id);
             if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             wrapper.Value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
         }
-        
+
         protected void ListReady() {
             InnerWrappersList.Ready();
             OnListUpdate();
@@ -312,7 +312,7 @@ namespace AcManager.Tools.AcManagersNew {
             UpdateList();
             ResetLoading();
         }
-        
+
         [CanBeNull]
         public AcItemWrapper GetWrapperById([NotNull] string id) {
             EnsureScanned();
@@ -345,7 +345,7 @@ namespace AcManager.Tools.AcManagersNew {
         [NotNull]
         public T EnsureWrapperLoaded([NotNull] AcItemWrapper wrapper) {
             if (wrapper == null) throw new ArgumentNullException(nameof(wrapper));
-            
+
             lock (wrapper) {
                 if (wrapper.IsLoaded) {
                     return (T)wrapper.Value;
@@ -402,7 +402,7 @@ namespace AcManager.Tools.AcManagersNew {
             var wrapper = WrappersList.FirstOrDefault();
             return wrapper == null ? null : EnsureWrapperLoaded(wrapper);
         }
-        
+
         public IAcObjectNew GetObjectById(string id) {
             return GetById(id);
         }

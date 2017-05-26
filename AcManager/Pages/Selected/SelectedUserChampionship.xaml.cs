@@ -311,6 +311,9 @@ namespace AcManager.Pages.Selected {
 
                         SetDrivers(generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
                             AiLevel = x.AiLevel,
+                            AiAggression = x.AiAggression,
+                            Ballast = x.Ballast,
+                            Restrictor = x.Restrictor,
                             Nationality = x.Nationality
                         }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, SelectedObject.PlayerCarId,
                                 SelectedObject.PlayerCarSkinId)).ToArray());

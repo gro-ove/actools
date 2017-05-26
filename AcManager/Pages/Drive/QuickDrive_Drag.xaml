@@ -1,50 +1,51 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive_Drag" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Drag+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Drag+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-            <Thickness x:Key="ElementMargin">0 0 8 8</Thickness>
-        </ResourceDictionary>
-    </UserControl.Resources>
+      <Thickness x:Key="ElementMargin">0 0 8 8</Thickness>
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <Grid x:Name="Wrapper">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
+  <Grid x:Name="Wrapper">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="1*" />
+    </Grid.ColumnDefinitions>
 
-        <UniformGrid MaxHeight="128" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
-            <StackPanel Margin="{StaticResource ElementMargin}">
-                <mui:ValueLabel Value="{Binding MatchesCount}" Content="Total"
-                        Postfix="{Binding MatchesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_RoundPostfix}}" />
-                <Slider Minimum="1" Maximum="20" Value="{Binding MatchesCount}" />
-            </StackPanel>
+    <UniformGrid MaxHeight="128" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
+      <StackPanel Margin="{StaticResource ElementMargin}">
+        <mui:ValueLabel Value="{Binding MatchesCount}" Content="Total"
+            Postfix="{Binding MatchesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_RoundPostfix}}" />
+        <Slider Minimum="1" Maximum="20" Value="{Binding MatchesCount}" />
+      </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}">
-                <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
-                <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"
-                        FixedMode="False" PreviewProvider="{Binding}" />
-            </StackPanel>
+      <StackPanel Margin="{StaticResource ElementMargin}">
+        <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
+        <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"
+            FixedMode="False" PreviewProvider="{Binding}" />
+      </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}">
-                <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
-                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
-                </CheckBox>
-            </StackPanel>
-            
-            <StackPanel Margin="{StaticResource ElementMargin}">
-                <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
-                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
-            </StackPanel>
-        </UniformGrid>
+      <StackPanel Margin="{StaticResource ElementMargin}">
+        <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
+          <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+        </CheckBox>
+      </StackPanel>
 
-        <uc:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
-    </Grid>
+      <StackPanel Margin="{StaticResource ElementMargin}">
+        <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" Postfix='%'
+            Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
+        <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
+      </StackPanel>
+    </UniformGrid>
+
+    <uc:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
+  </Grid>
 </UserControl>

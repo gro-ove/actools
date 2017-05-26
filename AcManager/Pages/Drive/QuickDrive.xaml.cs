@@ -92,9 +92,11 @@ namespace AcManager.Pages.Drive {
                 }), new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
 
 #if DEBUG
-                new InputBinding(new AsyncCommand(() => {
-                    return LapTimesManager.Instance.AddEntry(Model.SelectedCar.Id, Model.SelectedTrack.IdWithLayout, DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)));
-                }), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
+                new InputBinding(new AsyncCommand(() =>
+                        LapTimesManager.Instance.AddEntry(
+                                Model.SelectedCar.Id, Model.SelectedTrack.IdWithLayout,
+                                DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)))),
+                        new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
 #endif
 
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
@@ -159,6 +161,9 @@ namespace AcManager.Pages.Drive {
 
             public string TrackPropertiesPresetFilename, TrackPropertiesData;
 
+            [JsonProperty(@"ico")]
+            public bool IdealConditions;
+
             [JsonProperty(@"wsf")]
             public double WindSpeedMin = 10;
 
@@ -216,7 +221,7 @@ namespace AcManager.Pages.Drive {
             private bool _skipLoading;
 
             public Uri SelectedMode {
-                get { return _selectedMode; }
+                get => _selectedMode;
                 set {
                     if (Equals(value, _selectedMode)) return;
                     _selectedMode = value;
@@ -279,7 +284,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public CarObject SelectedCar {
-                get { return _selectedCar; }
+                get => _selectedCar;
                 set {
                     if (Equals(value, _selectedCar)) return;
                     _selectedCar = value;
@@ -316,7 +321,7 @@ namespace AcManager.Pages.Drive {
             public TrackStateViewModel TrackState => TrackStateViewModel.Instance;
 
             public TrackObjectBase SelectedTrack {
-                get { return _selectedTrack; }
+                get => _selectedTrack;
                 set {
                     if (Equals(value, _selectedTrack)) return;
                     _selectedTrack = value;
@@ -345,7 +350,7 @@ namespace AcManager.Pages.Drive {
             private int _timeMultipler;
 
             public int TimeMultipler {
-                get { return _timeMultipler; }
+                get => _timeMultipler;
                 set {
                     if (value == _timeMultipler) return;
                     _timeMultipler = value.Clamp(TimeMultiplerMinimum, TimeMultiplerMaximum);
@@ -378,6 +383,7 @@ namespace AcManager.Pages.Drive {
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
+                    IdealConditions = IdealConditions,
                     RealConditionsLocalWeather = RealConditionsLocalWeather,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsManualTime = RealConditionsManualTime,
@@ -410,6 +416,7 @@ namespace AcManager.Pages.Drive {
                     TimeMultipler = o.TimeMultipler;
 
                     RealConditions = _weatherId == null && o.RealConditions;
+                    IdealConditions = _weatherId == null && o.IdealConditions;
                     RealConditionsTimezones = o.RealConditionsTimezones ?? true;
                     RealConditionsLocalWeather = o.RealConditionsLocalWeather ?? false;
                     RealConditionsManualTime = o.RealConditionsManualTime ?? false;
@@ -469,6 +476,7 @@ namespace AcManager.Pages.Drive {
                     }
                 }, () => {
                     RealConditions = false;
+                    IdealConditions = false;
                     RealConditionsTimezones = true;
                     RealConditionsManualTime = false;
                     RealConditionsLocalWeather = false;
@@ -720,7 +728,7 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public QuickDriveModeViewModel SelectedModeViewModel {
-                get { return _selectedModeViewModel; }
+                get => _selectedModeViewModel;
                 set {
                     if (Equals(value, _selectedModeViewModel)) return;
                     if (_selectedModeViewModel != null) {
@@ -861,6 +869,7 @@ namespace AcManager.Pages.Drive {
 
         private void OnCarContextMenu(object sender, ContextMenuButtonEventArgs e) {
             var menu = new ContextMenu()
+                    .AddItem("Change car", Model.ChangeCarCommand)
                     .AddItem("Change car to random", Model.RandomCarCommand, @"Ctrl+Alt+1")
                     .AddItem("Change skin to random", Model.RandomCarSkinCommand, @"Ctrl+Alt+R")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
@@ -885,6 +894,7 @@ namespace AcManager.Pages.Drive {
 
         private void OnTrackContextMenu(object sender, ContextMenuButtonEventArgs e) {
             e.Menu = new ContextMenu()
+                    .AddItem("Change track", Model.ChangeTrackCommand)
                     .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")
                     .AddItem("Randomize everything", Model.RandomizeCommand, @"Alt+R", iconData: (Geometry)TryFindResource(@"ShuffleIconData"))
                     .AddSeparator()

@@ -20,7 +20,7 @@ namespace FirstFloor.ModernUI.Windows {
         private string _key;
 
         public string Key {
-            get { return _key; }
+            get => _key;
             set {
                 if (Equals(_key, value)) return;
 
@@ -85,7 +85,7 @@ namespace FirstFloor.ModernUI.Windows {
             private string _value;
 
             public string Value {
-                get { return _value ?? (_value = ValuesStorage.GetString(_key, _defaultValue)); }
+                get => _value ?? (_value = ValuesStorage.GetString(_key, _defaultValue));
                 set {
                     if (Equals(value, Value)) return;
                     _value = value;

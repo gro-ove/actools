@@ -36,6 +36,34 @@
                         Content="{x:Static g:AppStrings.AcSettings_Replays_MaximumSize}" />
                 <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
             </DockPanel>
+
+            <!--replays autosave-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays Autosave:" />
+
+            <CheckBox IsChecked="{Binding Replay.Autosave}" ToolTip="Autosave replays using new AC mechanism added in 1.14 update">
+                <Label Content="{x:Static g:AppStrings.Settings_Replays_AutosaveReplays}" />
+            </CheckBox>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Replay.MinTimeSecond}" mui:BetterTextBox.Minimum="0" Postfix=" sec"
+                                Content="Minimum time" />
+                <Slider Minimum="0" Maximum="120" Value="{Binding Replay.MinTimeSecond}" TickFrequency="12" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Replay.RacesLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for races" />
+                <Slider Minimum="0" Maximum="20" Value="{Binding Replay.RacesLimit}" TickFrequency="2" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Replay.QualifyLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for qualifications" />
+                <Slider Minimum="0" Maximum="20" Value="{Binding Replay.QualifyLimit}" TickFrequency="2" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Replay.OthersLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for other sessions" />
+                <Slider Minimum="0" Maximum="20" Value="{Binding Replay.OthersLimit}" TickFrequency="2" TickPlacement="BottomRight" />
+            </DockPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -47,15 +47,15 @@ namespace AcManager.Tools.SemiGui {
         }
 
         public static Task StartBenchmarkAsync(Game.StartProperties properties) {
-            return StartAsync(properties, false);
+            return StartAsync(properties, GameMode.Benchmark);
         }
 
         public static Task StartReplayAsync(Game.StartProperties properties) {
-            return StartAsync(properties, false);
+            return StartAsync(properties, GameMode.Replay);
         }
 
         public static Task<Game.Result> StartAsync(Game.StartProperties properties) {
-            return StartAsync(properties, true);
+            return StartAsync(properties, GameMode.Race);
         }
 
         private static void PrepareRaceModeImmediateStart(Game.StartProperties properties) {
@@ -121,7 +121,7 @@ namespace AcManager.Tools.SemiGui {
 
         private static bool _nationCodesProviderSet;
 
-        private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
+        private static async Task<Game.Result> StartAsync(Game.StartProperties properties, GameMode mode) {
             if (!_nationCodesProviderSet) {
                 _nationCodesProviderSet = true;
                 Game.NationCodeProvider = NationCodeProvider.Instance;
@@ -158,7 +158,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
             // properties.SetAdditional(new FocusHelper());
 
-            if (raceMode) {
+            if (mode == GameMode.Race) {
                 if (properties.AssistsProperties == null) {
                     properties.AssistsProperties = _defaultAssistsFactory?.Create();
                 }
@@ -172,9 +172,9 @@ namespace AcManager.Tools.SemiGui {
             if (_uiFactory == null) {
                 using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                 using (ScreenshotsConverter.OnlyNewIfEnabled()) {
-                    if (raceMode) {
+                    if (mode == GameMode.Race) {
                         properties.SetAdditional(new RaceCommandExecutor(properties));
-                    } else {
+                    } else if (mode == GameMode.Replay) {
                         properties.SetAdditional(new ReplayCommandExecutor(properties));
                     }
 
@@ -184,7 +184,7 @@ namespace AcManager.Tools.SemiGui {
 
             using (var ui = _uiFactory.Create()) {
                 Logging.Write($"Starting game: {properties.GetDescription()}");
-                ui.Show(properties);
+                ui.Show(properties, mode);
 
                 CancellationTokenSource linked = null;
                 IsInGame = true;
@@ -193,14 +193,14 @@ namespace AcManager.Tools.SemiGui {
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {
-                        if (raceMode) {
+                        if (mode == GameMode.Race) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
                             Started?.Invoke(null, new GameStartedArgs(properties));
 
                             if (SettingsHolder.Drive.ContinueOnEscape) {
                                 properties.SetAdditional(new ContinueRaceHelper());
                             }
-                        } else {
+                        } else if (mode == GameMode.Replay) {
                             properties.SetAdditional(new ReplayCommandExecutor(properties));
                         }
 
@@ -224,7 +224,7 @@ namespace AcManager.Tools.SemiGui {
                         return null;
                     }
 
-                    if (raceMode) {
+                    if (mode == GameMode.Race) {
                         if (result == null) {
                             var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
                             if (whatsGoingOn != null) {

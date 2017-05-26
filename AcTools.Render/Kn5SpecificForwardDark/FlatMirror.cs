@@ -118,8 +118,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             public void SetTextures(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals) {
                 Effect.FxDiffuseMap.SetResource(reflection);
-                Effect.FxMapsMap.SetResource(depth);
-                Effect.FxNormalMap.SetResource(normals);
+                //Effect.FxMapsMap.SetResource(depth);
+                //Effect.FxNormalMap.SetResource(normals);
             }
 
             public override void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
@@ -143,7 +143,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             new Vector3(i < 2 ? 1 : -1, 0, i % 2 == 0 ? -1 : 1),
                             new Vector2(i < 2 ? 1 : 0, i % 2));
                 }
-                
+
                 BaseIndices = new ushort[] { 0, 1, 2, 3, 2, 1 };
             }
 
@@ -167,6 +167,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 _mode = mode;
                 DisposeHelper.Dispose(ref _material);
+
                 switch (mode) {
                     case FlatMirrorMode.TransparentMirror:
                         _material = new TransparentMirrorMaterial();
@@ -202,9 +203,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             public void SetTexture(ShaderResourceView reflection, ShaderResourceView depth, ShaderResourceView normals) {
                 var material = _material as TextureMirrorMaterial;
-                if (material == null) return;
-
-                material.SetTextures(reflection, depth, normals);
+                material?.SetTextures(reflection, depth, normals);
             }
         }
 
@@ -248,14 +247,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 RasterizerState rasterizerState = null) {
             if (camera != null && camera.Position.Y > 0) {
                 var state = contextHolder.DeviceContext.Rasterizer.State;
-                var effect = contextHolder.GetEffect<EffectDarkMaterial>();
                 try {
                     contextHolder.DeviceContext.Rasterizer.State = rasterizerState ?? _rasterizerState ?? contextHolder.States.InvertedState;
-                    effect.FxFlatMirrored.Set(true);
                     base.Draw(contextHolder, camera, mode, filter);
                 } finally {
                     contextHolder.DeviceContext.Rasterizer.State = state;
-                    effect.FxFlatMirrored.Set(false);
                 }
             }
         }

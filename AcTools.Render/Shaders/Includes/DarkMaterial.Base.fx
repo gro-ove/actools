@@ -77,8 +77,6 @@ cbuffer cbPerObject : register(b0) {
 	AlphaMaterial gAlphaMaterial;
 	NmUvMultMaterial gNmUvMultMaterial;
 	TyresMaterial gTyresMaterial;
-
-	bool gFlatMirrored;
 }
 
 cbuffer cbPerFrame {
@@ -92,7 +90,11 @@ cbuffer cbPerFrame {
 	bool gUseAo;
 	bool gCubemapReflections;
 	float gCubemapAmbient;
+
+	int gFlatMirrorSide;
 }
+
+#define gFlatMirrored (gFlatMirrorSide == -1)
 
 cbuffer cbTextureFlatMirror {
 	// matrix gWorldViewProjInv;
@@ -193,6 +195,18 @@ struct PS_IN {
 	float2 Tex        : TEXCOORD;
 	float3 TangentW   : TANGENT;
 };
+
+void FlatMirrorTest(pt_PS_IN pin){
+    if (gFlatMirrorSide != 0){
+        clip(pin.PosW.y * gFlatMirrorSide);
+    }
+}
+
+void FlatMirrorTest(PS_IN pin){
+    if (gFlatMirrorSide != 0){
+        clip(pin.PosW.y * gFlatMirrorSide);
+    }
+}
 
 PS_IN vs_main(VS_IN vin) {
 	PS_IN vout;

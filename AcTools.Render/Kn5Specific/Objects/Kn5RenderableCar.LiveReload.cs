@@ -43,9 +43,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     break;
                 case "car.ini":
                     _fuelTankLines.Reset();
+                    _wheelsLines.Reset();
                     _colliderLines.Reset(); // because they are affected by offset
                     ReloadSteeringWheelLock();
                     CamerasChanged?.Invoke(this, EventArgs.Empty);
+                    if (AlignWheelsByData) {
+                        UpdateWheelsMatrices();
+                    }
                     break;
                 case "cameras.ini":
                     ExtraCamerasChanged?.Invoke(this, EventArgs.Empty);
@@ -77,10 +81,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     ReloadSuspension();
                     _wheelsLines.Reset();
                     _wheelsDesc = null;
+                    if (AlignWheelsByData) {
+                        UpdateWheelsMatrices();
+                    }
                     break;
                 case "tyres.ini":
                     _wheelsLines.Reset();
                     _wheelsDesc = null;
+                    if (AlignWheelsByData) {
+                        UpdateWheelsMatrices();
+                    }
                     break;
                 case "wing_animations.ini":
                     ResetWings();

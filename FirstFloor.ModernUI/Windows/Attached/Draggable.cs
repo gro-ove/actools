@@ -47,16 +47,16 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         /// Weak event.
         /// </summary>
         public static event EventHandler<DraggableMovedEventArgs> DragStarted {
-            add { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragStartedInner), value); }
-            remove { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragStartedInner), value); }
+            add => WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragStartedInner), value);
+            remove => WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragStartedInner), value);
         }
 
         /// <summary>
         /// Weak event.
         /// </summary>
         public static event EventHandler<DraggableMovedEventArgs> DragEnded {
-            add { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragEndedInner), value); }
-            remove { WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragEndedInner), value); }
+            add => WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.AddHandler(Events, nameof(Events.DragEndedInner), value);
+            remove => WeakEventManager<DraggableEvents, DraggableMovedEventArgs>.RemoveHandler(Events, nameof(Events.DragEndedInner), value);
         }
 
         public static bool GetEnabled(FrameworkElement obj) {
@@ -283,13 +283,14 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static bool IsIgnored(DependencyObject o) {
             return (o as UIElement)?.IsEnabled == true &&
-                    (o is TextBoxBase || o is Thumb || o is PasswordBox || o is ColorPicker);
+                    (o is TextBoxBase || o is Thumb || o is PasswordBox || o is ColorPicker || o is Slider);
         }
 
         private static bool IgnoreSpecialControls(object sender, MouseEventArgs e) {
             var reference = sender as UIElement;
             var element = reference?.InputHitTest(e.GetPosition(reference)) as DependencyObject;
-            if (element == null || IsIgnored(element)) return true;
+            if (element == null || IsIgnored(element) ||
+                    reference.FindVisualChildren<Popup>().Any(x => x.IsOpen)) return true;
             return element.GetParents().TakeWhile(parent => !ReferenceEquals(parent, sender)).Any(IsIgnored);
         }
 

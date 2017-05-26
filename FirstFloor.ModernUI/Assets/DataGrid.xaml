@@ -157,7 +157,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                     <c:Cell  SnapsToDevicePixels="True">
-                        <Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />
+                        <!--<Rectangle Fill="{TemplateBinding Background}" Opacity="{DynamicResource BackgroundAccentOpacity}" />-->
                         <Border BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                             <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"

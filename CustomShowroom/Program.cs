@@ -74,7 +74,7 @@ namespace CustomShowroom {
             if (!Parser.Default.ParseArguments(args, options) || options.Help) {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                
+
                 var form = new Form {
                     Width = 640,
                     Height = 480,
@@ -171,7 +171,7 @@ namespace CustomShowroom {
             if (!File.Exists(showroomKn5File)) {
                 showroomKn5File = null;
             }
-            
+
             if (options.Mode == Mode.Lite) {
                 using (var renderer = new ToolsKn5ObjectRenderer(new CarDescription(kn5File))) {
                     renderer.UseMsaa = options.UseMsaa;
@@ -202,9 +202,10 @@ namespace CustomShowroom {
                     renderer.FlatMirrorReflectedLight = true;
                     renderer.TryToGuessCarLightsIfMissing = true;
 
+                    renderer.FlatMirrorBlurred = true;
                     renderer.FlatMirror = true;
 
-                    renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
+                    //renderer.AddCar(new CarDescription(@"D:\Games\Assetto Corsa\content\cars\ferrari_f40\ferrari_f40.kn5"));
 #endif
 
                     renderer.MagickOverride = options.MagickOverride;

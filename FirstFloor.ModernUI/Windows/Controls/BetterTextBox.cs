@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -52,8 +53,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterComboBox));
 
         public string Placeholder {
-            get { return (string)GetValue(PlaceholderProperty); }
-            set { SetValue(PlaceholderProperty, value); }
+            get => (string)GetValue(PlaceholderProperty);
+            set => SetValue(PlaceholderProperty, value);
         }
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
@@ -79,8 +80,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [CanBeNull]
         public new object SelectedItem {
-            get { return GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
+            get => GetValue(SelectedItemProperty);
+            set => SetValue(SelectedItemProperty, value);
         }
 
         private static void OnSelectedItemChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -197,8 +198,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterComboBox), new PropertyMetadata(OnItemsSourceChanged));
 
         public new IEnumerable ItemsSource {
-            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get => (IEnumerable)GetValue(ItemsSourceProperty);
+            set => SetValue(ItemsSourceProperty, value);
         }
 
         private static void OnItemsSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -209,8 +210,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterComboBox), new PropertyMetadata(OnNullableChanged));
 
         public bool Nullable {
-            get { return (bool)GetValue(NullableProperty); }
-            set { SetValue(NullableProperty, value); }
+            get => (bool)GetValue(NullableProperty);
+            set => SetValue(NullableProperty, value);
         }
 
         private static void OnNullableChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -227,15 +228,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterTextBox), new FrameworkPropertyMetadata(0.5));
 
         public double PlaceholderOpacity {
-            get { return (double)GetValue(PlaceholderOpacityProperty); }
-            set { SetValue(PlaceholderOpacityProperty, value); }
+            get => (double)GetValue(PlaceholderOpacityProperty);
+            set => SetValue(PlaceholderOpacityProperty, value);
         }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string), typeof(BetterTextBox));
 
         public string Placeholder {
-            get { return (string)GetValue(PlaceholderProperty); }
-            set { SetValue(PlaceholderProperty, value); }
+            get => (string)GetValue(PlaceholderProperty);
+            set => SetValue(PlaceholderProperty, value);
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e) {

@@ -1,19 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class ReplayObject : AcCommonSingleFileObject {
-        public static string PreviousReplayName => @"cr";
+        public static string PreviousReplayName { get; } = @"cr";
+        public static string AutosaveCategory { get; } = @"temp";
         public const string ReplayExtension = ".acreplay";
 
         public override string Extension => ReplayExtension;
@@ -21,15 +21,32 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string Category { get; }
 
+        private string _editableCategory;
+
+        [CanBeNull]
+        public string EditableCategory {
+            get => _editableCategory;
+            set {
+                value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (Equals(value, _editableCategory)) return;
+                _editableCategory = value;
+                OnPropertyChanged();
+                if (value != Category) {
+                    Changed = true;
+                }
+            }
+        }
+
         public ReplayObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             Category = Path.GetDirectoryName(id);
+            EditableCategory = Category;
             if (string.IsNullOrWhiteSpace(Category)) Category = null;
         }
 
         protected override string GetNewId(string newName) {
             var fileName = SettingsHolder.Drive.AutoAddReplaysExtension ? newName + Extension : newName;
-            return Category == null ? fileName : Path.Combine(Category, fileName);
+            return EditableCategory == null ? fileName : Path.Combine(EditableCategory, fileName);
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -40,12 +57,23 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
+        public bool IsAutoSave => !AcSettingsHolder.Replay.Autosave
+                ? Category == null && Id == PreviousReplayName : string.Equals(Category, AutosaveCategory, StringComparison.OrdinalIgnoreCase);
+
         public override string Name {
             get => base.Name;
             protected set {
                 ErrorIf(value == null || value.Contains("[") || value.Contains("]"), AcErrorType.Replay_InvalidName);
                 base.Name = value;
             }
+        }
+
+        public override void Save() {
+            if (EditableCategory != Category) {
+                RenameAsync();
+            }
+
+            base.Save();
         }
 
         /*public async Task ReplaceWeather(string newWeatherId) {
@@ -74,6 +102,7 @@ namespace AcManager.Tools.Objects {
         }*/
 
         protected override void LoadOrThrow() {
+            EditableCategory = Category;
             OldName = Path.GetFileName(Id).ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
             Name = OldName;
 
@@ -119,7 +148,6 @@ namespace AcManager.Tools.Objects {
                                 AcErrorType.Replay_CarIsMissing, CarId);
                     }
 
-                    Logging.Debug($"{Id}: pos: 0x{reader.Position:X}");
                     try {
                         DriverName = reader.ReadString();
                         reader.ReadInt64();
@@ -136,12 +164,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string DisplayName =>
-                Category != null
-                        ? $"[{Category}] {base.DisplayName}"
-                        : Id == PreviousReplayName && Name == PreviousReplayName
-                                ? ToolsStrings.ReplayObject_PreviousSession
-                                : base.DisplayName;
+        public override string DisplayName => IsAutoSave && Name == PreviousReplayName
+                ? ToolsStrings.ReplayObject_PreviousSession
+                : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;

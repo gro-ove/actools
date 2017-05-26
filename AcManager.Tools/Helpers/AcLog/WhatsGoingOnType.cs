@@ -33,6 +33,12 @@ namespace AcManager.Tools.Helpers.AcLog {
         CloudsMightBeMissing,
 
         // TRANSLATE ME
+        [Description("Analog instruments of {0} might be broken")]
+        AnalogInstrumentsAreDamaged,
+
+        [Description("Drivetrain of {0} might be broken")]
+        DrivetrainIsDamaged,
+
         [Description("AI spline might be missing or broken")]
         AiSplineMissing,
 
