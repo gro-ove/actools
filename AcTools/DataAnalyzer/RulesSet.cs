@@ -99,6 +99,8 @@ namespace AcTools.DataAnalyzer {
         private static RulesSet FromLines([NotNull] string[] strings) {
             var list = new List<Rule>(strings.Length);
             string fileName = null, section = null;
+            Match sectionParsed = null;
+            IEnumerable<string> sectionNumbered = null;
             foreach (var raw in strings) {
                 var splitted = SpacesRegex.Split(raw.Trim());
                 if (splitted.Length == 0 || splitted[0].Length == 0) continue;
@@ -109,6 +111,7 @@ namespace AcTools.DataAnalyzer {
                 if (FileNameRegex.IsMatch(path[0])) {
                     fileName = path[0];
                     section = path.Length >= 2 ? path[1] : null;
+                    sectionParsed = null;
 
                     if (path.Length >= 3) {
                         property = path[2];
@@ -119,6 +122,7 @@ namespace AcTools.DataAnalyzer {
                     property = path[path.Length - 1];
                     if (path.Length > 1) {
                         section = path[path.Length - 2];
+                        sectionParsed = null;
                     }
                     if (path.Length > 2) {
                         fileName = path[path.Length - 3];
@@ -144,15 +148,21 @@ namespace AcTools.DataAnalyzer {
                 var weight = FlexibleParser.TryParseDouble(extra.FirstOrDefault(x => x.StartsWith("×"))?.Substring(1)) ?? 1d;
                 var tests = extra.Select(GetTest).NonNull().ToArray();
 
-                list.Add(new Rule {
-                    Type = type,
-                    FileName = fileName,
-                    Section = section,
-                    Property = property,
-                    Params = actualParams,
-                    Tests = tests,
-                    Weight = weight
-                });
+                if (sectionParsed == null && section != null) {
+                    sectionParsed = Regex.Match(section, @"(.*)\{(.+)\}(.*)");
+                    if (sectionParsed.Success) {
+                        var prefix = sectionParsed.Groups[1].Value;
+                        var postfix = sectionParsed.Groups[3].Value;
+                        sectionNumbered = sectionParsed.Groups[2].Value.ToDiapason(0, 100).Select(x => prefix + x + postfix);
+                    } else {
+                        sectionNumbered = new[] { section };
+                    }
+                }
+
+                list.AddRange(from s in sectionNumbered ?? new string[0]
+                              select new Rule {
+                                  Type = type, FileName = fileName, Section = s, Property = property, Params = actualParams, Tests = tests, Weight = weight
+                              });
             }
 
             return new RulesSet(list.ToArray());

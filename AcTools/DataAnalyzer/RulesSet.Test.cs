@@ -22,48 +22,60 @@ namespace AcTools.DataAnalyzer {
                 using (var writer = new BinaryWriter(memory)) {
                     for (var i = 0; i < _rules.Length; i++) {
                         var r = _rules[i];
+
+                        IniFileSection iniFileSection;
+                        if (r.Section != null) {
+                            var iniFile = data.GetIniFile(r.FileName);
+                            if (iniFile.ContainsKey(r.Section)) {
+                                iniFileSection = iniFile[r.Section];
+                            } else {
+                                writer.Write(-1);
+                                continue;
+                            }
+                        } else {
+                            iniFileSection = null;
+                        }
+
                         switch (r.Type) {
                             case RuleType.Vector2:
-                                writer.Write(data.GetIniFile(r.FileName)[r.Section]
+                                writer.Write(iniFileSection?
                                         .GetVector2(r.Property)
                                         .Select(x => (x / r.GetDoubleParam(0, 1d)).Round(0.001))
-                                        .GetEnumerableHashCode());
+                                        .GetEnumerableHashCode() ?? -1);
                                 break;
 
                             case RuleType.Vector3:
-                                writer.Write(data.GetIniFile(r.FileName)[r.Section]
+                                writer.Write(iniFileSection?
                                         .GetVector3(r.Property)
                                         .Select(x => (x / r.GetDoubleParam(0, 1d)).Round(0.001))
-                                        .GetEnumerableHashCode());
+                                        .GetEnumerableHashCode() ?? -1);
                                 break;
 
                             case RuleType.Vector4:
-                                writer.Write(data.GetIniFile(r.FileName)[r.Section]
+                                writer.Write(iniFileSection?
                                         .GetVector4(r.Property)
                                         .Select(x => (x / r.GetDoubleParam(0, 1d)).Round(0.001))
-                                        .GetEnumerableHashCode());
+                                        .GetEnumerableHashCode() ?? -1);
                                 break;
 
                             case RuleType.Number:
-                                var testedValue = data.GetIniFile(r.FileName)[r.Section]
-                                        .GetDouble(r.Property, 0d);
+                                var testedValue = iniFileSection?
+                                        .GetDouble(r.Property, 0d) ?? 0d;
                                 if (r.Tests?.Any(x => x(testedValue) != true) == true) return new byte[_rules.Length * sizeof(int)];
                                 writer.Write((testedValue / r.GetDoubleParam(0, 1d)).Round(0.001).GetHashCode());
                                 break;
 
                             case RuleType.String:
-                                writer.Write(data.GetIniFile(r.FileName)[r.Section]
+                                writer.Write(iniFileSection?
                                         .GetPossiblyEmpty(r.Property)?.GetHashCode() ?? -1);
                                 break;
 
                             case RuleType.Lut:
                                 Lut lut;
                                 if (r.Section != null) {
-                                    var section = data.GetIniFile(r.FileName)[r.Section];
-                                    var value = section.GetNonEmpty(r.Property);
-
+                                    var value = iniFileSection?.GetNonEmpty(r.Property);
                                     if (value != null && value.IndexOf('=') != -1) {
-                                        lut = section.GetLut(r.Property);
+                                        lut = iniFileSection.GetLut(r.Property);
                                     } else if (value?.EndsWith(".lut", StringComparison.OrdinalIgnoreCase) == true) {
                                         lut = data.GetLutFile(value).Values;
                                     } else {
@@ -110,10 +122,13 @@ namespace AcTools.DataAnalyzer {
                 int* ld = (int*)lhp, rd = (int*)rhp;
                 for (var i = 0; i < a; i++) {
                     var rule = rules._rules[i];
-                    total += rule.Weight;
 
                     var l = ld[i];
-                    if (l == rd[i]) {
+                    var r = rd[i];
+
+                    if (l == r) {
+                        if (l == -1) continue;
+
                         workedRulesList?.Add(rule);
                         same += rule.Weight;
 
@@ -121,6 +136,8 @@ namespace AcTools.DataAnalyzer {
                             zeros = false;
                         }
                     }
+
+                    total += rule.Weight;
                 }
             }
 

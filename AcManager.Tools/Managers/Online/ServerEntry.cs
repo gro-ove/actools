@@ -78,8 +78,10 @@ namespace AcManager.Tools.Managers.Online {
             var information = baseInformation as ServerInformationComplete;
 
             if (!IsFullyLoaded || information != null) {
-                DisplayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName);
+                int? extPort = null;
+                DisplayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort);
                 ActualName = baseInformation.Name ?? Id;
+                PortExtended = baseInformation is ServerInformationExtended ext ? ext.PortExtended : extPort;
             }
 
             if (information == null) {
@@ -117,7 +119,7 @@ namespace AcManager.Tools.Managers.Online {
                 TrackId = information.TrackId;
                 Track = TrackId == null ? null : GetTrack(TrackId);
             }
-            
+
             bool missingContent;
             if (IsFullyLoaded) {
                 var missingCar = SetMissingCarErrorIfNeeded(errors);
@@ -182,7 +184,7 @@ namespace AcManager.Tools.Managers.Online {
 
             errorMessage.Add(list.Count == 1
                     ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
-                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(@", ")));
+                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToReadableString()));
             return true;
         }
 
@@ -207,255 +209,6 @@ namespace AcManager.Tools.Managers.Online {
             return TracksManager.Instance.GetLayoutByKunosId(informationId);
         }
 
-        private string GetFailedReason(WebException e) {
-            switch (e.Status) {
-                case WebExceptionStatus.RequestCanceled:
-                    return "Server did not respond in given time";
-                case WebExceptionStatus.ConnectFailure:
-                    return "Connect failure";
-                default:
-                    Logging.Warning(e.Status);
-                    return "Unknown reason";
-            }
-        }
-
-        public enum UpdateMode {
-            Lite,
-            Normal,
-            Full
-        }
-
-        private bool _updating;
-
-        public async Task Update(UpdateMode mode, bool background = false, bool fast = false) {
-            if (_updating) return;
-            _updating = true;
-
-            var errors = new List<string>(3);
-            var driversCount = -1;
-            var resultStatus = ServerStatus.Ready;
-
-            try {
-                if (!background) {
-                    CurrentDrivers = null;
-                    Status = ServerStatus.Loading;
-                    IsAvailable = false;
-                }
-
-                var informationUpdated = false;
-                if (!IsFullyLoaded) {
-                    UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.1);
-
-                    ServerInformationComplete loaded;
-                    try {
-                        loaded = await GetInformationDirectly();
-                    } catch (WebException e) {
-                        errors.Add($"Can’t load any information: {GetFailedReason(e)}.");
-                        resultStatus = ServerStatus.Error;
-                        return;
-                    }
-
-                    var update = UpdateValues(loaded, errors, false);
-                    if (update != null) {
-                        resultStatus = update.Value;
-                        if (update != ServerStatus.MissingContent) {
-                            // Loaded data isn’t for this server (port by which it was loaded differs).
-                            // Won’t even set drivers count in this case, whole data is obsviously wrong.
-                            return;
-                        }
-                    }
-
-                    driversCount = loaded.Clients;
-                    informationUpdated = true;
-                }
-
-                if (mode != UpdateMode.Lite ||
-                        !(Sessions?.Count > 0) // if there are no sessions (!), maybe information is damaged, let’s re-download
-                        ) {
-                    UpdateProgress = new AsyncProgressEntry("Loading actual server information…", 0.2);
-
-                    ServerInformationComplete loaded;
-                    try {
-                        loaded = await GetInformation(informationUpdated);
-                    } catch (WebException e) {
-                        errors.Add($"Can’t load information: {GetFailedReason(e)}.");
-                        resultStatus = ServerStatus.Error;
-                        return;
-                    }
-
-                    if (loaded != null) {
-                        if (loaded.Ip == Ip && loaded.PortHttp == PortHttp || informationUpdated || loaded.LoadedDirectly) {
-                            // If loaded information is compatible with existing, use it immediately. Otherwise — apparently,
-                            // server changed — we’ll try to load an actual data directly from it later, but only if it wasn’t
-                            // loaded just before that and loaded information wasn’t loaded from it.
-                            var update = UpdateValues(loaded, errors, false);
-                            if (update != null) {
-                                resultStatus = update.Value;
-                                if (update != ServerStatus.MissingContent) return;
-                            }
-                            driversCount = loaded.Clients;
-                        } else {
-                            ServerInformation directlyLoaded;
-                            try {
-                                directlyLoaded = await GetInformationDirectly();
-                            } catch (WebException e) {
-                                errors.Add($"Can’t load new information: {GetFailedReason(e)}.");
-                                resultStatus = ServerStatus.Error;
-                                return;
-                            }
-                            
-                            var update = UpdateValues(directlyLoaded, errors, false);
-                            if (update != null) {
-                                resultStatus = update.Value;
-                                if (update != ServerStatus.MissingContent) return;
-                            }
-                            driversCount = loaded.Clients;
-                        }
-                    }
-                }
-
-                if (Ping == null || mode == UpdateMode.Full || !SettingsHolder.Online.PingOnlyOnce) {
-                    UpdateProgress = new AsyncProgressEntry("Pinging server…", 0.3);
-                    var pair = SettingsHolder.Online.ThreadsPing
-                            ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
-                            : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout);
-                    if (pair != null) {
-                        Ping = (long)pair.Item2.TotalMilliseconds;
-                    } else {
-                        Ping = null;
-                        errors.Add(ToolsStrings.Online_Server_CannotPing);
-                        resultStatus = ServerStatus.Error;
-                        return;
-                    }
-                }
-
-                UpdateProgress = new AsyncProgressEntry("Loading players list…", 0.4);
-
-                ServerCarsInformation information;
-                try {
-                    information = await KunosApiProvider.GetCarsInformationAsync(Ip, PortHttp);
-                } catch (WebException e) {
-                    errors.Add($"Can’t load drivers information: {GetFailedReason(e)}.");
-                    resultStatus = ServerStatus.Error;
-                    return;
-                }
-
-                if (!BookingMode) {
-                    CurrentDriversCount = information.Cars.Count(x => x.IsConnected);
-                    driversCount = -1;
-                }
-                
-                var currentDrivers = (BookingMode ? information.Cars : information.Cars.Where(x => x.IsConnected))
-                        .Select(x => {
-                            var driver = CurrentDrivers?.FirstOrDefault(y => y.Name == x.DriverName && y.Team == x.DriverTeam &&
-                                    y.CarId == x.CarId && y.CarSkinId == x.CarSkinId) ?? new CurrentDriver(x);
-                            return driver;
-                        })
-                        .ToList();
-                if (CurrentDrivers == null || !CurrentDrivers.SequenceEqual(currentDrivers)) {
-                    CurrentDrivers = currentDrivers;
-
-                    var count = 0;
-                    var booked = false;
-                    foreach (var x in currentDrivers) {
-                        if (x.IsConnected) count++;
-                        if (x.IsBookedForPlayer) {
-                            booked = true;
-                            SetSelectedCarEntry(Cars?.GetByIdOrDefault(x.CarId, StringComparison.OrdinalIgnoreCase));
-                        }
-                    }
-
-                    ConnectedDrivers = count;
-                    IsBookedForPlayer = booked;
-                }
-
-                if (Cars == null) {
-                    Logging.Unexpected();
-                    errors.Add("Data is still missing");
-                    resultStatus = ServerStatus.Error;
-                    return;
-                }
-
-                for (int i = 0, c = Cars.Count; i < c; i++) {
-                    var entry = Cars[i];
-
-                    var wrapper = entry.CarObjectWrapper;
-                    if (wrapper == null) continue;
-
-                    /* load car if not loaded */
-                    CarObject car;
-                    if (wrapper.IsLoaded) {
-                        car = (CarObject)wrapper.Value;
-                    } else {
-                        UpdateProgress = new AsyncProgressEntry($"Loading cars ({wrapper.Id})…", 0.5 + 0.4 * i / c);
-                        await Task.Delay(fast ? 10 : 50);
-                        car = (CarObject)await wrapper.LoadedAsync();
-                    }
-
-                    /* load skin */
-                    if (!car.SkinsManager.IsLoaded) {
-                        UpdateProgress = new AsyncProgressEntry($"Loading {car.DisplayName} skins…", 0.5 + 0.4 * (0.5 + i) / c);
-
-                        await Task.Delay(fast ? 10 : 50);
-                        await car.SkinsManager.EnsureLoadedAsync();
-                    }
-
-                    /* set next available skin */
-                    if (CurrentSessionType == Game.SessionType.Booking) {
-                        entry.AvailableSkin = car.SelectedSkin;
-                        entry.Total = 0;
-                        entry.Available = 0;
-                        entry.IsAvailable = true;
-                    } else {
-                        var cars = information.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
-                        string availableSkinId;
-
-                        if (BookingMode) {
-                            availableSkinId = cars.FirstOrDefault(x => x.IsRequestedGuid)?.CarSkinId;
-                            entry.Total = 0;
-                            entry.Available = 0;
-                            entry.IsAvailable = true;
-                        } else {
-                            availableSkinId = cars.FirstOrDefault(y => !y.IsConnected)?.CarSkinId;
-                            entry.Total = cars.Count;
-                            entry.Available = cars.Count(y => !y.IsConnected);
-                            entry.IsAvailable = entry.Available > 0;
-                        }
-
-                        entry.AvailableSkin = availableSkinId == null
-                                ? null : availableSkinId == string.Empty ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId);
-                    }
-
-                    // TODO: Revert back `errors.Add(ToolsStrings.Online_Server_CarsDoNotMatch);` (?)
-                }
-
-                if (IsBookedForPlayer) {
-                    FixedCar = true;
-                } else {
-                    FixedCar = false;
-                    LoadSelectedCar();
-                }
-            } catch (InformativeException e) {
-                errors.Add($@"{e.Message}.");
-                resultStatus = ServerStatus.Error;
-            } catch (Exception e) {
-                errors.Add(string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message));
-                resultStatus = ServerStatus.Error;
-                Logging.Error(e);
-            } finally {
-                if (driversCount != -1) {
-                    CurrentDriversCount = driversCount;
-                }
-
-                UpdateProgress = AsyncProgressEntry.Ready;
-                Errors = errors;
-                Status = !SettingsHolder.Online.LoadServersWithMissingContent && resultStatus == ServerStatus.MissingContent ?
-                        ServerStatus.Error : resultStatus;
-                AvailableUpdate();
-                _updating = false;
-            }
-        }
-
         public void LoadSelectedCar() {
             if (Cars == null) return;
 
@@ -473,7 +226,7 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged();
             }
         }
-        
+
         private CarEntry _selectedCarEntry;
 
         [CanBeNull]

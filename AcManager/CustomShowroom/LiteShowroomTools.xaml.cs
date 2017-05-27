@@ -94,7 +94,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public ViewModel Model => (ViewModel)DataContext;
-        
+
         public enum Mode {
             Main,
             VisualSettings,
@@ -113,7 +113,7 @@ namespace AcManager.CustomShowroom {
             private bool _ignoreModeChange;
 
             public Mode Mode {
-                get { return _mode; }
+                get => _mode;
                 set {
                     if (Equals(value, _mode) || _ignoreModeChange) return;
 
@@ -172,7 +172,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public ToolsKn5ObjectRenderer Renderer {
-                get { return _renderer; }
+                get => _renderer;
                 set {
                     if (Equals(value, _renderer)) return;
                     _renderer = value;
@@ -192,7 +192,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public DarkRendererSettings Settings {
-                get { return _settings; }
+                get => _settings;
                 private set {
                     if (Equals(value, _settings)) return;
                     _settings = value;
@@ -203,7 +203,7 @@ namespace AcManager.CustomShowroom {
             private DarkRendererCars _cars;
 
             public DarkRendererCars Cars {
-                get { return _cars; }
+                get => _cars;
                 set {
                     if (Equals(value, _cars)) return;
                     _cars = value;
@@ -218,7 +218,7 @@ namespace AcManager.CustomShowroom {
             public DelegateCommand AddCarCommand => _addCarCommand ?? (_addCarCommand = new DelegateCommand(() => {
                 var car = SelectCarDialog.Show(_selectedCarToAdd ?? CarsManager.Instance.GetDefault(), ref _selectedCarSkinToAdd);
                 if (car == null) return;
-                
+
                 _selectedCarToAdd = car;
                 var slot = DarkRenderer?.AddCar(CarDescription.FromDirectory(car.Location, car.AcdData));
                 if (slot != null && _selectedCarSkinToAdd != null) {
@@ -233,7 +233,7 @@ namespace AcManager.CustomShowroom {
             private CarSkinObject _skin;
 
             public CarSkinObject Skin {
-                get { return _skin; }
+                get => _skin;
                 set {
                     if (Equals(value, _skin)) return;
                     _skin = value;
@@ -252,13 +252,13 @@ namespace AcManager.CustomShowroom {
                 public bool AmbientShadowFade = true;
                 [JsonProperty("asa")]
                 public bool AmbientShadowAccurate = true;
-                
+
                 [JsonProperty("asbm")]
                 public float AmbientShadowBodyMultiplier = 0.75f;
-                
+
                 [JsonProperty("aswm")]
                 public float AmbientShadowWheelMultiplier = 0.35f;
-                
+
                 public bool LiveReload;
 
                 [JsonProperty("cp")]
@@ -287,9 +287,7 @@ namespace AcManager.CustomShowroom {
             }
 
             public ViewModel([NotNull] ToolsKn5ObjectRenderer renderer, CarObject carObject, string skinId) {
-                if (renderer == null) throw new ArgumentNullException(nameof(renderer));
-
-                Renderer = renderer;
+                Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
                 renderer.PropertyChanged += OnRendererPropertyChanged;
                 Renderer.CameraMoved += OnCameraMoved;
                 OnCarNodeUpdated();
@@ -336,7 +334,7 @@ namespace AcManager.CustomShowroom {
             private float _cameraFov;
 
             public float CameraFov {
-                get { return _cameraFov; }
+                get => _cameraFov;
                 set {
                     if (Equals(value, _cameraFov)) return;
                     _cameraFov = value;
@@ -349,7 +347,7 @@ namespace AcManager.CustomShowroom {
             private bool _cameraOrbit;
 
             public bool CameraOrbit {
-                get { return _cameraOrbit; }
+                get => _cameraOrbit;
                 set {
                     if (Equals(value, _cameraOrbit)) return;
                     _cameraOrbit = value;
@@ -362,7 +360,7 @@ namespace AcManager.CustomShowroom {
             private bool _cameraAutoRotate;
 
             public bool CameraAutoRotate {
-                get { return _cameraAutoRotate; }
+                get => _cameraAutoRotate;
                 set {
                     if (Equals(value, _cameraAutoRotate)) return;
                     _cameraAutoRotate = value;
@@ -379,7 +377,7 @@ namespace AcManager.CustomShowroom {
             private bool _cameraAutoAdjustTarget;
 
             public bool CameraAutoAdjustTarget {
-                get { return _cameraAutoAdjustTarget; }
+                get => _cameraAutoAdjustTarget;
                 set {
                     if (Equals(value, _cameraAutoAdjustTarget)) return;
                     _cameraAutoAdjustTarget = value;
@@ -503,7 +501,7 @@ namespace AcManager.CustomShowroom {
             private int _selectedObjectTrianglesCount;
 
             public int SelectedObjectTrianglesCount {
-                get { return _selectedObjectTrianglesCount; }
+                get => _selectedObjectTrianglesCount;
                 set {
                     if (Equals(value, _selectedObjectTrianglesCount)) return;
                     _selectedObjectTrianglesCount = value;
@@ -589,7 +587,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public IList<PaintShop.PaintableItem> SkinItems {
-                get { return _skinItems; }
+                get => _skinItems;
                 set {
                     if (Equals(value, _skinItems)) return;
 
@@ -735,7 +733,7 @@ namespace AcManager.CustomShowroom {
                             break;
                         }
                     }
-                    
+
                     if (skin == null) {
                         waiting.Dispose();
                         NonfatalError.Notify("Can’t save skin", "Skin can’t be created?");
@@ -787,7 +785,7 @@ namespace AcManager.CustomShowroom {
             private double _ambientShadowDiffusion;
 
             public double AmbientShadowDiffusion {
-                get { return _ambientShadowDiffusion; }
+                get => _ambientShadowDiffusion;
                 set {
                     value = value.Clamp(0.0, 100.0);
                     if (Equals(value, _ambientShadowDiffusion)) return;
@@ -800,7 +798,7 @@ namespace AcManager.CustomShowroom {
             private double _ambientShadowBrightness;
 
             public double AmbientShadowBrightness {
-                get { return _ambientShadowBrightness; }
+                get => _ambientShadowBrightness;
                 set {
                     value = value.Clamp(150.0, 800.0);
                     if (Equals(value, _ambientShadowBrightness)) return;
@@ -813,7 +811,7 @@ namespace AcManager.CustomShowroom {
             private int _ambientShadowIterations;
 
             public int AmbientShadowIterations {
-                get { return _ambientShadowIterations; }
+                get => _ambientShadowIterations;
                 set {
                     value = value.Round(100).Clamp(400, 24000);
                     if (Equals(value, _ambientShadowIterations)) return;
@@ -826,7 +824,7 @@ namespace AcManager.CustomShowroom {
             private bool _ambientShadowHideWheels;
 
             public bool AmbientShadowHideWheels {
-                get { return _ambientShadowHideWheels; }
+                get => _ambientShadowHideWheels;
                 set {
                     if (Equals(value, _ambientShadowHideWheels)) return;
                     _ambientShadowHideWheels = value;
@@ -838,7 +836,7 @@ namespace AcManager.CustomShowroom {
             private bool _ambientShadowFade;
 
             public bool AmbientShadowFade {
-                get { return _ambientShadowFade; }
+                get => _ambientShadowFade;
                 set {
                     if (Equals(value, _ambientShadowFade)) return;
                     _ambientShadowFade = value;
@@ -850,7 +848,7 @@ namespace AcManager.CustomShowroom {
             private bool _ambientShadowAccurate;
 
             public bool AmbientShadowAccurate {
-                get { return _ambientShadowAccurate; }
+                get => _ambientShadowAccurate;
                 set {
                     if (Equals(value, _ambientShadowAccurate)) return;
                     _ambientShadowAccurate = value;
@@ -858,11 +856,11 @@ namespace AcManager.CustomShowroom {
                     SaveLater();
                 }
             }
-            
+
             private float _ambientShadowBodyMultiplier = 0.8f;
 
             public float AmbientShadowBodyMultiplier {
-                get { return _ambientShadowBodyMultiplier; }
+                get => _ambientShadowBodyMultiplier;
                 set {
                     if (Equals(value, _ambientShadowBodyMultiplier)) return;
                     _ambientShadowBodyMultiplier = value;
@@ -873,7 +871,7 @@ namespace AcManager.CustomShowroom {
             private float _ambientShadowWheelMultiplier = 0.69f;
 
             public float AmbientShadowWheelMultiplier {
-                get { return _ambientShadowWheelMultiplier; }
+                get => _ambientShadowWheelMultiplier;
                 set {
                     if (Equals(value, _ambientShadowWheelMultiplier)) return;
                     _ambientShadowWheelMultiplier = value;

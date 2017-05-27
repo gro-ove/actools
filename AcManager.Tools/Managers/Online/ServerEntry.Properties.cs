@@ -465,7 +465,7 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged(nameof(ErrorsString));
             }
         }
-        
+
         /// <summary>
         /// Errors, already joined to one string, for optimization purposes.
         /// </summary>
@@ -474,7 +474,7 @@ namespace AcManager.Tools.Managers.Online {
         private string _errorsString;
 
         private bool _hasErrors;
-        
+
         public bool HasErrors {
             get { return _hasErrors; }
             private set {

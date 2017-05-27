@@ -38,7 +38,7 @@ namespace AcManager.Tools.Managers.Online {
         private readonly List<string> _excludedReferences = new List<string>(2);
 
         private string _originsString;
-        
+
         public string OriginsString => _originsString ?? (_originsString = _origins.JoinToString(','));
 
         private string _referencesString;
@@ -134,7 +134,7 @@ namespace AcManager.Tools.Managers.Online {
                 SetReference(key);
             }
         }
-        
+
         public void RemoveReference(string key) {
             if (_references.Remove(key)) {
                 _referencesString = null;
@@ -186,6 +186,33 @@ namespace AcManager.Tools.Managers.Online {
         [ItemNotNull]
         private Task<ServerInformationComplete> GetInformationDirectly() {
             return KunosApiProvider.GetInformationDirectAsync(Ip, PortHttp);
+        }
+
+        private Tuple<ServerInformationExtended, DateTime> _extendedDataLastModified;
+
+        /// <summary>
+        /// Throws an exception.
+        /// </summary>
+        /// <returns></returns>
+        [ItemNotNull]
+        private async Task<ServerInformationExtended> GetExtendedInformationDirectly() {
+            var result = await KunosApiProvider.GetExtendedInformationDirectAsync(Ip,
+                    PortExtended ?? throw new Exception("Extended port is not set"),
+                    _extendedDataLastModified?.Item2);
+
+            if (result.Item1 != null) {
+                _extendedDataLastModified = result;
+            } else if (_extendedDataLastModified != null) {
+                _extendedDataLastModified = Tuple.Create(_extendedDataLastModified.Item1, result.Item2);
+            }
+
+            if (result.Item1 == null) {
+                Logging.Debug("Cached information used!");
+            } else {
+                Logging.Debug("New information loaded: " + result.Item2);
+            }
+
+            return result.Item1 ?? _extendedDataLastModified?.Item1 ?? throw new Exception("Server went mad");
         }
 
         /// <summary>

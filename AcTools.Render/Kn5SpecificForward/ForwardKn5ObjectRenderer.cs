@@ -468,7 +468,6 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         public void ResetCamera() {
             UseFpsCamera = false;
-            AutoRotate = true;
             _resetState = 1f;
         }
 

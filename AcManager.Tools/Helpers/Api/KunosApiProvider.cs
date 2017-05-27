@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -26,10 +27,9 @@ using SharpCompress.Compressors.Deflate;
 namespace AcManager.Tools.Helpers.Api {
     public partial class KunosApiProvider {
         public static bool OptionSaveResponses = false;
-        public static bool OptionUseWebClient = false;
         public static bool OptionForceDisabledCache = false;
         public static bool OptionNoProxy = false;
-        
+
         public static TimeSpan OptionWebRequestTimeout = TimeSpan.FromSeconds(10d);
 
         // actual server should be able to respond in four seconds, otherwise there is no sense
@@ -38,119 +38,109 @@ namespace AcManager.Tools.Helpers.Api {
 
         public static int ServersNumber => InternalUtils.KunosServersNumber;
 
+        private static object _serverUriSync = new object();
+
         [CanBeNull]
-        private static string ServerUri => InternalUtils.GetKunosServerUri(SettingsHolder.Online.OnlineServerId);
+        private static string ServerUri {
+            get {
+                lock (_serverUriSync) {
+                    return InternalUtils.GetKunosServerUri(SettingsHolder.Online.OnlineServerId);
+                }
+            }
+        }
 
         private static void NextServer() {
-            InternalUtils.MoveToNextKunosServer();
-            Logging.Warning("Fallback to: " + (ServerUri ?? @"NULL"));
+            lock (_serverUriSync) {
+                InternalUtils.MoveToNextKunosServer();
+                Logging.Warning("Fallback to: " + (ServerUri ?? @"NULL"));
+            }
         }
 
         private static HttpRequestCachePolicy _cachePolicy;
 
+        private class LoadedData {
+            [CanBeNull]
+            public string Data;
+            public DateTime LastModified;
+        }
+
         [ItemNotNull]
-        private static Task<string> LoadAsync(string uri, TimeSpan? timeout = null) {
+        private static async Task<LoadedData> LoadAsync(string uri, DateTime? ifModifiedSince, TimeSpan? timeout = null) {
             if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
-            return OptionUseWebClient ? LoadUsingClientAsync(uri, timeout.Value) : LoadUsingRequestAsync(uri, timeout.Value);
+
+            try {
+                using (var order = KillerOrder.Create((HttpWebRequest)WebRequest.Create(uri), timeout.Value)) {
+                    var request = order.Victim;
+                    request.Method = "GET";
+                    request.UserAgent = InternalUtils.GetKunosUserAgent();
+
+                    if (ifModifiedSince.HasValue) {
+                        request.IfModifiedSince = ifModifiedSince.Value;
+                    }
+
+                    request.Headers.Add("Accept-Encoding", "gzip");
+
+                    if (OptionNoProxy) {
+                        request.Proxy = null;
+                    }
+
+                    if (OptionForceDisabledCache) {
+                        request.CachePolicy = _cachePolicy ??
+                                (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
+                    }
+
+                    request.Timeout = (int)timeout.Value.TotalMilliseconds;
+
+                    string result;
+                    DateTime resultLastModified;
+
+                    using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false)) {
+                        if (response.StatusCode == HttpStatusCode.NotModified) {
+                            return new LoadedData { LastModified = response.LastModified };
+                        }
+
+                        if (response.StatusCode != HttpStatusCode.OK) throw new Exception($@"StatusCode = {response.StatusCode}");
+
+                        resultLastModified = response.LastModified;
+                        using (var stream = response.GetResponseStream()) {
+                            if (stream == null) throw new Exception(@"ResponseStream = null");
+
+                            if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
+                                using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
+                                using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
+                                    result = await reader.ReadToEndAsync().ConfigureAwait(false);
+                                }
+                            } else {
+                                using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+                                    result = await reader.ReadToEndAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+                    }
+
+                    if (OptionSaveResponses) {
+                        var filename = FilesStorage.Instance.GetFilename("Logs",
+                                $"Dump_{Regex.Replace(uri.Split('/').Last(), @"\W+", "_")}.json");
+                        if (!File.Exists(filename)) {
+                            File.WriteAllText(FilesStorage.Instance.GetFilename(filename), result);
+                        }
+                    }
+
+                    return new LoadedData {
+                        Data = result,
+                        LastModified = resultLastModified
+                    };
+                }
+            } catch (WebException e) when
+                    (e.Response is HttpWebResponse response && response.StatusCode == HttpStatusCode.NotModified) {
+                return new LoadedData { LastModified = response.LastModified };
+            }
         }
 
         [NotNull]
         private static string Load(string uri, TimeSpan? timeout = null) {
             if (!timeout.HasValue) timeout = OptionWebRequestTimeout;
-            return OptionUseWebClient ? LoadUsingClient(uri, timeout.Value) : LoadUsingRequest(uri, timeout.Value);
-        }
 
-        private class TimeoutyWebClient : WebClient {
-            private readonly TimeSpan _timeout;
-
-            public TimeoutyWebClient(TimeSpan? timeout = null) {
-                _timeout = timeout ?? OptionWebRequestTimeout;
-            }
-
-            protected override WebRequest GetWebRequest(Uri uri) {
-                var w = base.GetWebRequest(uri);
-                if (w == null) return null;
-                w.Timeout = (int)_timeout.TotalMilliseconds;
-                return w;
-            }
-        }
-
-        [ItemNotNull]
-        private static async Task<string> LoadUsingClientAsync(string uri, TimeSpan timeout) {
-            using (var order = KillerOrder.Create(new TimeoutyWebClient(timeout) {
-                Headers = {
-                    [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
-                }
-            }, timeout)) {
-                return await order.Victim.DownloadStringTaskAsync(uri).ConfigureAwait(false);
-            }
-        }
-
-        [NotNull]
-        private static string LoadUsingClient(string uri, TimeSpan timeout) {
-            using (var client = new TimeoutyWebClient(timeout) {
-                Headers = {
-                    [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
-                }
-            }) {
-                return client.DownloadString(uri);
-            }
-        }
-
-        [ItemNotNull]
-        private static async Task<string> LoadUsingRequestAsync(string uri, TimeSpan timeout) {
-            using (var order = KillerOrder.Create((HttpWebRequest)WebRequest.Create(uri), timeout)) {
-                var request = order.Victim;
-                request.Method = "GET";
-                request.UserAgent = InternalUtils.GetKunosUserAgent();
-                request.Headers.Add("Accept-Encoding", "gzip");
-
-                if (OptionNoProxy) {
-                    request.Proxy = null;
-                }
-
-                if (OptionForceDisabledCache) {
-                    request.CachePolicy = _cachePolicy ??
-                            (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
-                }
-
-                request.Timeout = (int)timeout.TotalMilliseconds;
-
-                string result;
-                using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false)) {
-                    if (response.StatusCode != HttpStatusCode.OK) throw new Exception($@"StatusCode = {response.StatusCode}");
-
-                    using (var stream = response.GetResponseStream()) {
-                        if (stream == null) throw new Exception(@"ResponseStream = null");
-
-                        if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
-                            using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
-                                using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
-                                    result = await reader.ReadToEndAsync().ConfigureAwait(false);
-                                }
-                            }
-                        } else {
-                            using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-                                result = await reader.ReadToEndAsync().ConfigureAwait(false);
-                            }
-                        }
-                    }
-                }
-
-                if (OptionSaveResponses) {
-                    var filename = FilesStorage.Instance.GetFilename("Logs",
-                            $"Dump_{Regex.Replace(uri.Split('/').Last(), @"\W+", "_")}.json");
-                    if (!File.Exists(filename)) {
-                        File.WriteAllText(FilesStorage.Instance.GetFilename(filename), result);
-                    }
-                }
-
-                return result;
-            }
-        }
-
-        [NotNull]
-        private static string LoadUsingRequest(string uri, TimeSpan timeout) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
@@ -165,9 +155,9 @@ namespace AcManager.Tools.Helpers.Api {
                         (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
             }
 
-            request.ContinueTimeout = (int)timeout.TotalMilliseconds;
-            request.ReadWriteTimeout = (int)timeout.TotalMilliseconds;
-            request.Timeout = (int)timeout.TotalMilliseconds;
+            request.ContinueTimeout = (int)timeout.Value.TotalMilliseconds;
+            request.ReadWriteTimeout = (int)timeout.Value.TotalMilliseconds;
+            request.Timeout = (int)timeout.Value.TotalMilliseconds;
 
             string result;
             using (var response = (HttpWebResponse)request.GetResponse()) {
@@ -197,13 +187,13 @@ namespace AcManager.Tools.Helpers.Api {
             if (!OptionSaveResponses) return result;
 
             var filename = FilesStorage.Instance.GetFilename(@"Logs",
-                                                             $"Dump_{Regex.Replace(uri.Split('/').Last(), @"\W+", "_")}.json");
+                    $"Dump_{Regex.Replace(uri.Split('/').Last(), @"\W+", "_")}.json");
             if (!File.Exists(filename)) {
                 File.WriteAllText(FilesStorage.Instance.GetFilename(filename), result);
             }
             return result;
         }
-        
+
         [NotNull]
         private static T[] LoadListUsingRequest<T>(string uri, TimeSpan timeout, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
             var request = (HttpWebRequest)WebRequest.Create(uri);
@@ -244,7 +234,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 }
             }
-            
+
             return result;
         }
 
@@ -331,7 +321,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
-            if (result.Ip == string.Empty) {
+            if (result.Ip != ip) { // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
             }
 
@@ -354,14 +344,25 @@ namespace AcManager.Tools.Helpers.Api {
             return result;
         }
 
+        private static ServerInformationExtended PrepareLoadedDirectly(ServerInformationExtended result, string ip) {
+            if (result.Ip != ip) { // because, loaded directly, IP might different from global IP
+                result.Ip = ip;
+            }
+
+            result.LoadedDirectly = true;
+            return result;
+        }
+
         [ItemNotNull]
         public static async Task<ServerInformationComplete> GetInformationAsync(string ip, int port) {
-            if (SteamIdHelper.Instance.Value == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
+            var steamId = SteamIdHelper.Instance.Value;
+            if (steamId == null) throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
 
             while (ServerUri != null) {
-                var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
+                var requestUri = $@"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={steamId}";
                 try {
-                    var result = JsonConvert.DeserializeObject<ServerInformationComplete>(await LoadAsync(requestUri, OptionWebRequestTimeout));
+                    var result = JsonConvert.DeserializeObject<ServerInformationComplete>(
+                            (await LoadAsync(requestUri, null, OptionWebRequestTimeout).ConfigureAwait(false)).Data);
                     if (result.Ip == string.Empty) {
                         result.Ip = ip;
                     }
@@ -380,17 +381,27 @@ namespace AcManager.Tools.Helpers.Api {
         [ItemNotNull]
         public static async Task<ServerInformationComplete> GetInformationDirectAsync(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
-            var loaded = await LoadAsync(requestUri, OptionDirectRequestTimeout).ConfigureAwait(false);
-            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(loaded), ip);
+            var loaded = await LoadAsync(requestUri, null, OptionDirectRequestTimeout).ConfigureAwait(false);
+            return PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationComplete>(loaded.Data), ip);
+        }
+
+        [ItemNotNull]
+        public static async Task<Tuple<ServerInformationExtended, DateTime>> GetExtendedInformationDirectAsync(string ip, int portExt, DateTime? lastModified) {
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
+            var requestUri = $@"http://{ip}:{portExt}/api/details?guid={steamId}";
+            var loaded = await LoadAsync(requestUri, lastModified, OptionDirectRequestTimeout).ConfigureAwait(false);
+            return Tuple.Create(loaded.Data == null ? null :
+                    PrepareLoadedDirectly(JsonConvert.DeserializeObject<ServerInformationExtended>(loaded.Data), ip),
+                    loaded.LastModified);
         }
 
         [ItemNotNull]
         public static async Task<ServerCarsInformation> GetCarsInformationAsync(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portC}/JSON|{steamId}";
-            var loaded = await LoadAsync(requestUri, OptionDirectRequestTimeout).ConfigureAwait(false);
+            var loaded = await LoadAsync(requestUri, null, OptionDirectRequestTimeout).ConfigureAwait(false);
             try {
-                return JsonConvert.DeserializeObject<ServerCarsInformation>(loaded);
+                return JsonConvert.DeserializeObject<ServerCarsInformation>(loaded.Data);
             } catch (Exception) {
                 Logging.Warning(loaded);
                 throw;
@@ -398,7 +409,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static ServerInformationComplete TryToGetInformationDirect(string ip, int portC) {
+        private static ServerInformationComplete TryToGetInformationDirect(string ip, int portC) {
             var requestUri = $@"http://{ip}:{portC}/INFO";
 
             try {
@@ -417,7 +428,7 @@ namespace AcManager.Tools.Helpers.Api {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var arguments = new[] { carId, skinId, driverName, teamName, steamId, password }.Select(x => x ?? "").JoinToString('|');
             var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlPathEncode(arguments)}";
-            
+
             try {
                 var response = Load(requestUri, OptionDirectRequestTimeout);
                 var split = response.Split(',');
@@ -451,11 +462,11 @@ namespace AcManager.Tools.Helpers.Api {
                 return null;
             }
         }
-        
+
         public static void TryToUnbook(string ip, int portC) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $@"http://{ip}:{portC}/UNSUB|{HttpUtility.UrlEncode(steamId)}";
-            
+
             try {
                 // using much bigger timeout to increase chances of unbooking from bad servers
                 Load(requestUri, TimeSpan.FromSeconds(30));

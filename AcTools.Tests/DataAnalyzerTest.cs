@@ -33,7 +33,7 @@ namespace AcTools.Tests {
             var j = 0;
             
             foreach (var car in d) {
-                foreach (var s in wrapper.FindSimular(car.Data, "aero", false, 0.95)) {
+                foreach (var s in wrapper.FindSimular(car.Data, "aero", false, 0.85)) {
                     AcToolsLogging.Write($"{car.Id} is similar to {s.CarId} by {s.Value * 100:F1}%");
                     j++;
                 }

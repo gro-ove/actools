@@ -3276,6 +3276,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Car’s skin {0} is missing..
+        /// </summary>
+        public static string Online_Server_CarSkinIsMissing {
+            get {
+                return ResourceManager.GetString("Online_Server_CarSkinIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cars’ skins {0} are missing..
+        /// </summary>
+        public static string Online_Server_CarSkinsAreMissing {
+            get {
+                return ResourceManager.GetString("Online_Server_CarSkinsAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not implemented.
         ///.
         /// </summary>
@@ -3327,6 +3345,15 @@ namespace AcManager.Tools {
         public static string Online_Server_UnhandledError {
             get {
                 return ResourceManager.GetString("Online_Server_UnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather {0} is missing..
+        /// </summary>
+        public static string Online_Server_WeatherIsMissing {
+            get {
+                return ResourceManager.GetString("Online_Server_WeatherIsMissing", resourceCulture);
             }
         }
         

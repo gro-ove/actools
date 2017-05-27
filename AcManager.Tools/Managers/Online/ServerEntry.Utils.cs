@@ -1,5 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -8,8 +10,17 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Regex SortingCheatsRegex = new Regex(@"^(?:AA+|[ !-]+|A(?![b-zB-Z0-9])+)+| ?-$", RegexOptions.Compiled);
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
-        private static string CleanUp(string name, [CanBeNull] string oldName) {
-            name = name.Trim();
+        private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
+            const string mark = "🛈";
+            var specialIndex = name.IndexOf(mark, StringComparison.InvariantCulture);
+            if (specialIndex != -1) {
+                extPort = FlexibleParser.TryParseInt(name.Substring(specialIndex + mark.Length));
+                name = name.Substring(0, specialIndex).Trim();
+            } else {
+                extPort = null;
+                name = name.Trim();
+            }
+
             name = SpacesCollapseRegex.Replace(name, " ");
             if (SettingsHolder.Online.FixNames) {
                 name = SortingCheatsRegex.Replace(name, "");

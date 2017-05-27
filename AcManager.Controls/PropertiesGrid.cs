@@ -136,6 +136,8 @@ namespace AcManager.Controls {
         }
 
         private int _id = -1;
+        private FrameworkElement _toolTipDonor;
+        private object _toolTipDonored;
 
         private void OnMouseMove(object sender, MouseEventArgs e) {
             var id = GetChildId(e);
@@ -143,12 +145,31 @@ namespace AcManager.Controls {
 
             _id = id;
 
-            var childToolTip = InternalChildren.OfType<FrameworkElement>().ElementAtOrDefault(id)?.ToolTip;
+            var child = InternalChildren.OfType<FrameworkElement>().ElementAtOrDefault(id);
+            var childToolTip = child?.ToolTip;
+
+            /* if (ReferenceEquals(_toolTipDonor, child)) return;
+
+            if (_toolTipDonor != null) {
+                ToolTip = null;
+                _toolTipDonor.ToolTip = _toolTipDonored;
+                _toolTipDonor = null;
+                _toolTipDonored = null;
+            }
+
+            if (childToolTip != null) {
+                _toolTipDonored = childToolTip;
+                _toolTipDonor = child;
+                _toolTipDonor.ToolTip = null;
+                ToolTip = _toolTipDonored;
+            }*/
 
             if (childToolTip == null) {
                 _toolTip.Visibility = Visibility.Hidden;
+                // ToolTip = null;
             } else {
                 _toolTip.Visibility = Visibility.Visible;
+                // ToolTip = _toolTip;
 
                 var toolTip = childToolTip as ToolTip;
                 if (toolTip == null) {
