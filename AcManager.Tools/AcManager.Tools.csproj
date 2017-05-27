@@ -282,6 +282,7 @@
     <Compile Include="Helpers\Loaders\ILoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
+    <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
     <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />

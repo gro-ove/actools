@@ -12,6 +12,7 @@ namespace AcManager.Tools.Helpers.Loaders {
     public static class FlexibleLoader {
         internal static ILoader CreateLoader(string uri) {
             if (GoogleDriveLoader.Test(uri)) return new GoogleDriveLoader(uri);
+            if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
             if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);

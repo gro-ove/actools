@@ -586,6 +586,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         protected override void OnCarSlotRemoved(CarSlot slot) {
             base.OnCarSlotRemoved(slot);
             RemoveLights(DarkLightTag.GetCarTag(slot.Id));
+            _mirrorDirty = true;
         }
         #endregion
 

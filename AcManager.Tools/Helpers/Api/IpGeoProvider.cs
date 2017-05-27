@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.Api {
         public string Postal;
     }
 
-    public class IpGeoProvider {
+    public static class IpGeoProvider {
         private const string RequestUri = "http://ipinfo.io/geo";
 
         public static IpGeoEntry Get() {

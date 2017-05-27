@@ -96,7 +96,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             private Matrix? _setLocalMatrixLater;
 
             public Matrix? LocalMatrix {
-                get { return CarNode?.LocalMatrix ?? _setLocalMatrixLater; }
+                get => CarNode?.LocalMatrix ?? _setLocalMatrixLater;
                 set {
                     if (!value.HasValue) {
                         _setLocalMatrixLater = null;
@@ -115,7 +115,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             [CanBeNull]
             public Kn5RenderableCar CarNode {
-                get { return _carNode; }
+                get => _carNode;
                 private set {
                     if (Equals(value, _carNode)) return;
 
@@ -212,7 +212,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 GCHelper.CleanUp();
             }
 
-            public void SetCar(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin) {
+            public void SetCar([CanBeNull] CarDescription car, [CanBeNull] string skinId = Kn5RenderableCar.DefaultSkin) {
                 _renderer.ClearBeforeChangingCar();
 
                 try {
@@ -283,7 +283,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 }
             }
 
-            public async Task SetCarAsync(CarDescription car, string skinId = Kn5RenderableCar.DefaultSkin,
+            public async Task SetCarAsync([CanBeNull] CarDescription car, [CanBeNull] string skinId = Kn5RenderableCar.DefaultSkin,
                     CancellationToken cancellationToken = default(CancellationToken)) {
                 _renderer.ClearBeforeChangingCar();
 
@@ -422,7 +422,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _carLightsEnabled;
 
         public bool CarLightsEnabled {
-            get { return MainSlot.CarNode?.HeadlightsEnabled ?? _carLightsEnabled; }
+            get => MainSlot.CarNode?.HeadlightsEnabled ?? _carLightsEnabled;
             set {
                 _carLightsEnabled = value;
                 foreach (var carSlot in CarSlots) {
@@ -436,7 +436,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _carBrakeLightsEnabled;
 
         public bool CarBrakeLightsEnabled {
-            get { return MainSlot.CarNode?.BrakeLightsEnabled ?? _carBrakeLightsEnabled; }
+            get => MainSlot.CarNode?.BrakeLightsEnabled ?? _carBrakeLightsEnabled;
             set {
                 _carBrakeLightsEnabled = value;
                 foreach (var carSlot in CarSlots) {

@@ -37,7 +37,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _autoRotate = true;
 
         public bool AutoRotate {
-            get { return _autoRotate; }
+            get => _autoRotate;
             set {
                 if (value == _autoRotate) return;
                 _autoRotate = value;
@@ -48,7 +48,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _autoAdjustTarget = true;
 
         public bool AutoAdjustTarget {
-            get { return _autoAdjustTarget; }
+            get => _autoAdjustTarget;
             set {
                 if (value == _autoAdjustTarget) return;
                 _autoAdjustTarget = value;
@@ -63,7 +63,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _useFpsCamera;
 
         public bool UseFpsCamera {
-            get { return _useFpsCamera; }
+            get => _useFpsCamera;
             set {
                 if (Equals(value, _useFpsCamera)) return;
                 _useFpsCamera = value;
@@ -182,7 +182,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [NotNull]
         public CarSlot MainSlot {
-            get { return _mainSlot; }
+            get => _mainSlot;
             private set {
                 if (Equals(value, _mainSlot)) return;
                 _mainSlot = value;
@@ -197,13 +197,14 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [NotNull]
         public CarSlot[] CarSlots {
-            get { return _carSlots; }
+            get => _carSlots;
             set {
                 if (value.Length == 0) value = new[] { _mainSlot };
                 if (Equals(value, _carSlots)) return;
 
                 if (_carSlots != null) {
                     foreach (var removed in _carSlots.Where(x => !value.Contains(x))) {
+                        removed.SetCar(null);
                         OnCarSlotRemoved(removed);
                     }
                 }
@@ -222,23 +223,23 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected virtual void OnCarSlotRemoved(CarSlot slot){}
 
-        public void AddSlot(CarSlot light) {
+        public void AddSlot(CarSlot slot) {
             var updated = new CarSlot[_carSlots.Length + 1];
             Array.Copy(_carSlots, updated, _carSlots.Length);
-            updated[updated.Length - 1] = light;
+            updated[updated.Length - 1] = slot;
             CarSlots = updated;
         }
 
-        public void InsertSlotAt(CarSlot light, int index) {
+        public void InsertSlotAt(CarSlot slot, int index) {
             var updated = new CarSlot[_carSlots.Length + 1];
             Array.Copy(_carSlots, updated, index);
             Array.Copy(_carSlots, index, updated, index + 1, _carSlots.Length - index);
-            updated[index] = light;
+            updated[index] = slot;
             CarSlots = updated;
         }
 
-        public void RemoveSlot(CarSlot light) {
-            var index = _carSlots.IndexOf(light);
+        public void RemoveSlot(CarSlot slot) {
+            var index = _carSlots.IndexOf(slot);
             if (index == -1) return;
 
             var updated = new CarSlot[_carSlots.Length - 1];
@@ -304,7 +305,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [CanBeNull]
         public Kn5RenderableShowroom ShowroomNode {
-            get { return _showroomNode; }
+            get => _showroomNode;
             private set {
                 if (Equals(value, _showroomNode)) return;
                 _showroomNode = value;
@@ -352,7 +353,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _isCubemapReflectionActive = false;
 
         public bool IsCubemapReflectionActive {
-            get { return _isCubemapReflectionActive; }
+            get => _isCubemapReflectionActive;
             private set {
                 if (value == _isCubemapReflectionActive) return;
                 _isCubemapReflectionActive = value;
@@ -377,7 +378,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _enableShadows;
 
         public bool EnableShadows {
-            get { return _enableShadows; }
+            get => _enableShadows;
             set {
                 if (value == _enableShadows) return;
                 _enableShadows = value;
@@ -389,7 +390,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _usePcss;
 
         public bool UsePcss {
-            get { return _usePcss; }
+            get => _usePcss;
             set {
                 if (value == _usePcss) return;
                 _usePcss = value;
@@ -474,7 +475,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private bool _reflectionCubemapAtCamera;
 
         public bool ReflectionCubemapAtCamera {
-            get { return _reflectionCubemapAtCamera; }
+            get => _reflectionCubemapAtCamera;
             set {
                 if (Equals(value, _reflectionCubemapAtCamera)) return;
                 _reflectionCubemapAtCamera = value;
@@ -499,7 +500,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private Vector3 _light = Vector3.Normalize(new Vector3(-0.2f, 1.0f, 0.8f));
 
         public Vector3 Light {
-            get { return _light; }
+            get => _light;
             set {
                 value = Vector3.Normalize(value);
                 if (Equals(_light, value)) return;
@@ -544,7 +545,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private int _cubemapReflectionMapSize = 2048;
 
         public int CubemapReflectionMapSize {
-            get { return _cubemapReflectionMapSize; }
+            get => _cubemapReflectionMapSize;
             set {
                 if (Equals(value, _cubemapReflectionMapSize)) return;
                 _cubemapReflectionMapSize = value;
@@ -556,7 +557,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         private int _cubemapReflectionFacesPerFrame = 1;
 
         public int CubemapReflectionFacesPerFrame {
-            get { return _cubemapReflectionFacesPerFrame; }
+            get => _cubemapReflectionFacesPerFrame;
             set {
                 value = value.Clamp(1, 6);
                 if (Equals(value, _cubemapReflectionFacesPerFrame)) return;
@@ -960,7 +961,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         private CarCameraMode _currentMode;
 
         public CarCameraMode CurrentMode {
-            get { return _currentMode; }
+            get => _currentMode;
             set {
                 if (Equals(value, _currentMode)) return;
                 _currentMode = value;
@@ -991,7 +992,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         private int? _currentExtraCamera;
 
         public int? CurrentExtraCamera {
-            get { return _currentExtraCamera; }
+            get => _currentExtraCamera;
             set {
                 if (value == _currentExtraCamera) return;
                 _currentExtraCamera = value;

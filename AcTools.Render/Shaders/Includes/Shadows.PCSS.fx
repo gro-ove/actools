@@ -147,7 +147,7 @@ void FindBlocker(Texture2D shadowMapTex, out float avgBlockerDepth, out float nu
 }
 
 float PCF_Filter(Texture2D shadowMapTex, float2 uv, float zReceiver, float filterRadiusUV){
-	float2 random = normalize(gNoiseMap.SampleLevel(samRandom, uv * 1000.0, 0).xy);
+	float2 random = normalize(gNoiseMap.SampleLevel(samRandom, uv * 4000.0, 0).xy);
 
 	float sum = 0.0f;
 	for (int i = 0; i < PCF_NUM_SAMPLES; ++i){

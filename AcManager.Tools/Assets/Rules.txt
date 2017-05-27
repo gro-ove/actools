@@ -110,14 +110,7 @@ engine.ini
 
 [turbo:v0]
 engine.ini
-    TURBO_0/LAG_DN            number   0.0001  ≠0
-        LAG_UP                number   0.0001
-        MAX_BOOST             number   0.01
-        WASTEGATE             number   0.01
-        DISPLAY_MAX_BOOST     number   0.01
-        REFERENCE_RPM         number   10
-        GAMMA                 number   0.01
-    TURBO_1/LAG_DN            number   0.0001
+    TURBO_{0-5}/LAG_DN        number   0.0001  ≠0
         LAG_UP                number   0.0001
         MAX_BOOST             number   0.01
         WASTEGATE             number   0.01
@@ -144,7 +137,7 @@ drivetrain.ini
 [aero:v0]
 aero.ini
     HEADER/VERSION          number   1
-    WING_0/CHORD            number   0.01
+    WING_{0-5}/CHORD        number   0.01
         SPAN                number   0.01
         POSITION            vector3  0.01
         CL_GAIN             vector3  0.01
