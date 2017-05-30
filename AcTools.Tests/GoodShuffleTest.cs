@@ -2,28 +2,27 @@
 using System.Diagnostics;
 using System.Linq;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
-    // [Ignore]
+    [TestFixture]
     public class GoodShuffleTest {
-        [TestMethod]
+        [Test]
         public void GoodShuffleTest_TestUniformity() {
             var array = new[] { 1, 2, 3, 4, 5 };
             var g1 = GoodShuffle.Get(array);
             var g2 = GoodShuffle.Get(array);
-            
+
 
             var n1Of10 = Enumerable.Range(0, 10).Select(x => g1.Next).Count(x => x == 1);
             var n2Of100 = Enumerable.Range(0, 100).Select(x => g2.Next).Count(x => x == 2);
-            
+
 
             Assert.AreEqual(n1Of10, 2, 0, "n1Of10: isn’t uniform enough");
             Assert.AreEqual(n2Of100, 20, 0, "n2Of100: isn’t uniform enough");
         }
 
-        [TestMethod]
+        [Test]
         public void GoodShuffleTest_TestUniformityWithIgnored() {
             var array = new[] { 1, 2, 3, 4, 5 };
             var g1 = GoodShuffle.Get(array);
@@ -41,7 +40,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(21, n4Of109, "isn’t uniform enough");
         }
 
-        [TestMethod]
+        [Test]
         public void GoodShuffleTest_TestRandomity() {
             // arrange
             var array = new[] { 1, 2, 3, 4, 5 };
@@ -59,7 +58,7 @@ namespace AcTools.Tests {
             return (double)Enumerable.Range(0, iterations).Select(x => input()).Count(count) / iterations;
         }
 
-        [TestMethod]
+        [Test]
         public void LimitedShuffleTest() {
             var array = Enumerable.Range(1, 10).ToArray();
 
@@ -77,7 +76,7 @@ namespace AcTools.Tests {
             }
         }
 
-        [TestMethod]
+        [Test]
         public void BigLimitedShuffleTest() {
             var array = Enumerable.Range(1, 100).ToArray();
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
-using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.ContentInstallation {
     public interface IFileInfo {
@@ -37,6 +36,19 @@ namespace AcManager.Tools.ContentInstallation {
     /// </summary>
     [CanBeNull]
     public delegate string CopyCallback([NotNull] IFileInfo info);
+
+    public class InstallationDetails {
+        [NotNull]
+        public CopyCallback CopyCallback;
+
+        [NotNull]
+        public string[] ToRemoval;
+
+        public InstallationDetails([NotNull] CopyCallback copyCallback, [CanBeNull] string[] toRemoval) {
+            CopyCallback = copyCallback;
+            ToRemoval = toRemoval ?? new string[0];
+        }
+    }
 
     internal abstract class ContentInstallatorBase : IAdditionalContentInstallator {
         public ContentInstallationParams InstallationParams { get; }
@@ -123,11 +135,11 @@ namespace AcManager.Tools.ContentInstallation {
             await CopyFileEntries(callback, progress, cancellation);
         }
 
-        public async Task InstallEntryToAsync(ContentEntryBase entryBase,
+        /*public async Task InstallEntryToAsync(ContentEntryBase entryBase,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var callback = await entryBase.GetCopyCallback(cancellation);
+            var callback = await entryBase.GetInstallationDetails(cancellation);
             if (callback == null) return;
             await CopyFileEntries(callback, progress, cancellation);
-        }
+        }*/
     }
 }

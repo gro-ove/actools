@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -10,7 +12,9 @@ using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
@@ -27,7 +31,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void SuperintendentSavingAll(object sender, EventArgs e) {
             foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
-               item.Save();
+                item.Save();
             }
         }
 
@@ -108,6 +112,21 @@ namespace AcManager.Tools.AcManagersNew {
             await Task.Run(() => FileUtils.RecycleVisible(attached.Prepend(location).ToArray()));
             if (!FileUtils.Exists(location)) {
                 RemoveFromList(id);
+            }
+        }
+
+        /// <summary>
+        /// Delete several entries at once (recycling is a very slow operation, so it’s better to make it only once
+        /// for all entries requred to be removed).
+        /// </summary>
+        /// <param name="list">Tuple is (ID, location, attached)</param>
+        protected virtual async Task DeleteOverrideAsync(IEnumerable<Tuple<string, string, IEnumerable<string>>> list) {
+            var actualList = list.ToList();
+            await Task.Run(() => FileUtils.RecycleVisible(actualList.SelectMany(x => x.Item3.Prepend(x.Item2)).ToArray()));
+            foreach (var e in actualList) {
+                if (!FileUtils.Exists(e.Item2)) {
+                    RemoveFromList(e.Item1);
+                }
             }
         }
 
@@ -211,7 +230,7 @@ namespace AcManager.Tools.AcManagersNew {
             return RenameAsync(id, id, !wrapper.Value.Enabled);
         }
 
-        public Task DeleteAsync([NotNull]string id) {
+        public Task DeleteAsync([NotNull] string id) {
             if (!Directories.Actual) return Task.Delay(0);
             if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -235,6 +254,28 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             return location;
+        }
+
+        // special version to remove a lot of objects at once
+        public async Task<bool> DeleteAsync([NotNull] IEnumerable<string> ids) {
+            if (!Directories.Actual) return false;
+            if (ids == null) throw new ArgumentNullException(nameof(ids));
+
+            var objs = (await ids.Select(GetByIdAsync).WhenAll(10)).ToList();
+            if (objs.Contains(null)) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(ids));
+
+            try {
+                if (!SettingsHolder.Content.DeleteConfirmation ||
+                        ModernDialog.ShowMessage(
+                                string.Format("Are you sure you want to move {0} to the Recycle Bin?", objs.Select(x => x.DisplayName).JoinToReadableString()),
+                                "Are You Sure?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    await DeleteOverrideAsync(objs.Select(x => Tuple.Create(x.Id, x.Location, GetAttachedFiles(x.Location).NonNull())));
+                }
+                return true;
+            } catch (Exception ex) {
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
+                return false;
+            }
         }
     }
 }

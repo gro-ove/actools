@@ -1,10 +1,10 @@
 using AcTools.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class MathUtilsTest {
-        [TestMethod]
+        [Test]
         public void Round() {
             Assert.AreEqual(0.35, 0.352.Round(0.01), 0.0000001);
             Assert.AreEqual(0.36, 0.352.Round(0.02), 0.0000001);
@@ -17,7 +17,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(350, 340.Round(50));
         }
 
-        [TestMethod]
+        [Test]
         public void RoughlyEquals() {
             Assert.IsTrue(15.342.RoughlyEquals(15.34));
             Assert.IsFalse(15.34.RoughlyEquals(15.342));

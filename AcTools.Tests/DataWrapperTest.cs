@@ -4,16 +4,16 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using AcTools.AcdFile;
 using AcTools.DataFile;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class DataWrapperTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public void TestPacked() {
             var file = DataWrapper.FromCarDirectory(Path.Combine(TestDir, "data", "peugeot_504"));
             Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
@@ -24,7 +24,7 @@ namespace AcTools.Tests {
             Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
         }
 
-        [TestMethod]
+        [Test]
         public void TestEnc() {
             var enc = AcdEncryption.FromAcdFilename("anything/actually");
             var bytes = Encoding.UTF8.GetBytes("Long testing string with русскими символами and emojis like 😺");

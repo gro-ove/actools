@@ -63,8 +63,12 @@ namespace AcManager.Tools.ContentInstallation {
         private void InitializeOptions() {
             if (_updateOptions == null) {
                 _updateOptions = GetUpdateOptions().ToArray();
-                _selectedOption = _updateOptions.FirstOrDefault();
+                _selectedOption = GetDefaultUpdateOption(_updateOptions);
             }
+        }
+
+        protected virtual UpdateOption GetDefaultUpdateOption(UpdateOption[] list) {
+            return list.FirstOrDefault();
         }
 
         private UpdateOption _selectedOption;
@@ -129,9 +133,12 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         [ItemCanBeNull]
-        public async Task<CopyCallback> GetCopyCallback(CancellationToken cancellation) {
+        public async Task<InstallationDetails> GetInstallationDetails(CancellationToken cancellation) {
             var destination = await GetDestination(cancellation);
-            return destination == null ? null : GetCopyCallback(destination);
+            return destination != null ?
+                    new InstallationDetails(GetCopyCallback(destination),
+                            SelectedOption?.CleanUp?.Invoke(destination)?.ToArray()) :
+                    null;
         }
     }
 
@@ -271,6 +278,28 @@ namespace AcManager.Tools.ContentInstallation {
         public override string NewFormat => ToolsStrings.ContentInstallation_WeatherNew;
         public override string ExistingFormat => ToolsStrings.ContentInstallation_WeatherExisting;
 
+        protected override IEnumerable<UpdateOption> GetUpdateOptions() {
+            bool PreviewFilter(string x) {
+                return x != @"preview.jpg";
+            }
+
+            IEnumerable<string> RemoveClouds(string location) {
+                yield return Path.Combine(location, "clouds");
+            }
+
+            return new[] {
+                new UpdateOption(ToolsStrings.Installator_UpdateEverything),
+                new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst) { RemoveExisting = true },
+                new UpdateOption("Update Everything, Remove Existing Clouds If Any"){ CleanUp = RemoveClouds },
+                new UpdateOption("Keep Preview"){ Filter = PreviewFilter },
+                new UpdateOption("Update Everything, Remove Existing Clouds If Any & Keep Preview"){ Filter = PreviewFilter, CleanUp = RemoveClouds },
+            };
+        }
+
+        protected override UpdateOption GetDefaultUpdateOption(UpdateOption[] list) {
+            return list.ElementAtOrDefault(2) ?? base.GetDefaultUpdateOption(list);
+        }
+
         public override IFileAcManager GetManager() {
             return WeatherManager.Instance;
         }
@@ -297,17 +326,6 @@ namespace AcManager.Tools.ContentInstallation {
 
         public override IFileAcManager GetManager() {
             return DriverModelsManager.Instance;
-        }
-
-        protected override CopyCallback GetCopyCallback([NotNull] string destination) {
-            var filter = SelectedOption?.Filter;
-            return fileInfo => {
-                var filename = fileInfo.Key;
-                if (EntryPath != string.Empty && !FileUtils.IsAffected(EntryPath, filename)) return null;
-
-                var subFilename = FileUtils.GetRelativePath(filename, EntryPath);
-                return filter == null || filter(subFilename) ? Path.Combine(destination, subFilename) : null;
-            };
         }
     }
 }

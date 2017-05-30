@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public sealed class UpdateOption : Displayable {
@@ -9,12 +11,16 @@ namespace AcManager.Tools.ContentInstallation {
             DisplayName = name;
         }
 
+        [CanBeNull]
         public Func<string, bool> Filter { get; set; }
+
+        [CanBeNull]
+        public Func<string, IEnumerable<string>> CleanUp { get; set; }
 
         public bool RemoveExisting { get; set; }
 
         public bool Enabled {
-            get { return _enabled; }
+            get => _enabled;
             set {
                 if (Equals(value, _enabled)) return;
                 _enabled = value;

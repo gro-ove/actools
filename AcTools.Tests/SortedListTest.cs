@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class SortedListTest {
-        [TestMethod]
+        [Test]
         public void TestSmall() {
             const int size = 16;
             var random = new Random(Guid.NewGuid().GetHashCode());
@@ -19,7 +19,7 @@ namespace AcTools.Tests {
             Assert.IsTrue(list.SequenceEqual(list.OrderBy(x => x)), "not sorted properly");
         }
 
-        [TestMethod]
+        [Test]
         public void TestBig() {
             const int size = 10000;
             var random = new Random(Guid.NewGuid().GetHashCode());

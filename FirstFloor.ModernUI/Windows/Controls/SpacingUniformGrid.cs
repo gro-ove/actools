@@ -47,9 +47,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
-            var childConstraint = new Size((constraint.Width - _totalSpacingWidth) / _columns, (constraint.Height - _totalSpacingHeight) / _rows);
-            var maxChildDesiredWidth = 0.0;
-            var maxChildDesiredHeight = 0.0;
+            var childConstraint = new Size(
+                    Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
+                    Math.Max(constraint.Height - _totalSpacingHeight, 0) / _rows);
+
+            var maxChildDesiredWidth = 0d;
+            var maxChildDesiredHeight = 0d;
 
             //  Measure each child, keeping track of maximum desired width and height.
             for (int i = 0, count = InternalChildren.Count; i < count; ++i) {

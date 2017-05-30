@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using AcTools.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class ExifCommentTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
@@ -30,7 +30,7 @@ namespace AcTools.Tests {
         }
 
 
-        [TestMethod]
+        [Test]
         public void EnsureUniqueTest() {
             var r = Path.Combine(TestDir, "r.jpg");
             Assert.AreEqual("Comment (р.я.)", ExifComment.Read(r));

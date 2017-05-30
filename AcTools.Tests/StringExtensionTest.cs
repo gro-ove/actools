@@ -1,11 +1,11 @@
 using System.Linq;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class StringExtensionTest {
-        [TestMethod]
+        [Test]
         public void Diapason() {
             Assert.AreEqual(101, "0-100".ToDiapason(0, 1000).Count());
             Assert.AreEqual(5050, "0-100".ToDiapason(0, 1000).Sum());
@@ -32,7 +32,7 @@ namespace AcTools.Tests {
             Assert.IsFalse("-10,18.3,23-28,980-".DiapasonContains(18.35, false));
         }
 
-        [TestMethod]
+        [Test]
         public void NegativeDiapason() {
             Assert.AreEqual(201, "-100-100".ToDiapason(-1000, 1000).Count());
             Assert.AreEqual(0, "-100-100".ToDiapason(-1000, 1000).Sum());
@@ -43,8 +43,8 @@ namespace AcTools.Tests {
 
             Assert.IsTrue("-10--5".DiapasonContains(-7));
         }
-        
-        [TestMethod]
+
+        [Test]
         public void TimeDiapason() {
             Assert.IsTrue("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("11:43")));
             Assert.IsTrue("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("11:48")));
@@ -57,7 +57,7 @@ namespace AcTools.Tests {
             Assert.IsTrue("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("20:24")));
         }
 
-        [TestMethod]
+        [Test]
         public void Version() {
             Assert.IsTrue("0.1.2".CompareAsVersionTo("0.0.8") > 0);
             Assert.IsTrue("0.1.2".CompareAsVersionTo("0.0test.8") > 0);
@@ -68,7 +68,7 @@ namespace AcTools.Tests {
             Assert.IsTrue("1.1.2".CompareAsVersionTo("2") < 0);
         }
 
-        [TestMethod]
+        [Test]
         public void ReplaceStuff() {
             Assert.AreEqual("abc abc qwe ab", "abc abc abc ab".ReplaceLastOccurrence("abc", "qwe"));
             Assert.AreEqual("abc abc abc qwe", "abc abc abc ab".ReplaceLastOccurrence("ab", "qwe"));

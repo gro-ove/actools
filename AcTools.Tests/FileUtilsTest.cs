@@ -1,13 +1,12 @@
 ﻿using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using AcTools.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class FileUtilsTest {
-        [TestMethod]
+        [Test]
         public void GetRelativePath() {
             Assert.AreEqual(@"system32\a.exe",
                     FileUtils.GetRelativePath(@"C:\Windows\system32\a.exe", @"C:\Windows"));
@@ -25,20 +24,33 @@ namespace AcTools.Tests {
                     FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
         }
 
-        [TestMethod]
+        [Test]
+        public void NormalizePath() {
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\Windows"));
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\Windows\"));
+            Assert.AreEqual(@"C:\Windows", FileUtils.NormalizePath(@"C:\/Windows\\"));
+        }
+
+        [Test]
         public void IsAffected() {
             Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows", @"C:\Windows\system32\a.exe"));
             Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows\", @"C:\WiNDows\system32\a.exe"));
             Assert.IsTrue(FileUtils.IsAffected(@"C:/WinDOws", @"C:\Windows\system32\a.exe"));
-            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows\s", @"C:\Windows\system32\a.exe"));
+            Assert.IsFalse(FileUtils.IsAffected(@"C:\Windows\s", @"C:\Windows\system32\a.exe"));
             Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows", @"C:\Windows"));
+            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows", @"c:/windows/system32"));
+            Assert.IsFalse(FileUtils.IsAffected(@"C:\Windows", @"c:/wind"));
+            Assert.IsFalse(FileUtils.IsAffected(@"C:\Windows2", @"c:/windows/system32"));
+            Assert.IsFalse(FileUtils.IsAffected(@"C:\Windows\qwerty", @"c:/windows/system32/abc"));
+            Assert.IsFalse(FileUtils.IsAffected(@"williams_fw24\content\driver\driver_fw24.kn5",
+                    @"williams_fw24\content\cars\msf_williams_fw24\CAR_SUSP_LF.ksanim"));
         }
 
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public void EnsureUniqueTest() {
             var a = Path.Combine(TestDir, "a");
             Assert.AreEqual(a, FileUtils.EnsureUnique(a));

@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 using AcTools.DataAnalyzer;
 using AcTools.DataFile;
 using AcTools.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class DataAnalyzerTest {
         private static readonly string AcRoot = AcRootFinder.TryToFind();
 
@@ -16,7 +16,7 @@ namespace AcTools.Tests {
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public void Wrapper() {
             var rulesSet = Path.Combine(TestDir, "analyzer", "rules.txt");
             var storage = Path.Combine(TestDir, "analyzer", "storage.data");
@@ -31,7 +31,7 @@ namespace AcTools.Tests {
 
             var w = Stopwatch.StartNew();
             var j = 0;
-            
+
             foreach (var car in d) {
                 foreach (var s in wrapper.FindSimular(car.Data, "aero", false, 0.85)) {
                     AcToolsLogging.Write($"{car.Id} is similar to {s.CarId} by {s.Value * 100:F1}%");

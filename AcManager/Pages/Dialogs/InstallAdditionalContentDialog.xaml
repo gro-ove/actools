@@ -89,71 +89,94 @@
                   <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
                 </StackPanel>
 
-                <ItemsControl ItemsSource="{Binding Entries}">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <mui:SpacingStackPanel Spacing="8" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <DockPanel>
-                        <CheckBox x:Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                <DockPanel>
+                  <ItemsControl ItemsSource="{Binding ExtraOptions}" DockPanel.Dock="Bottom"
+                      Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <mui:SpacingStackPanel Spacing="8" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <DockPanel>
+                          <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                          <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                        </DockPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 8 0 4" Style="{StaticResource Label}"
+                      Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
 
-                        <!--name and some information-->
-                        <DockPanel Dock="Top">
-                          <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
-                              Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                          <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" />
-                          <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
-                            <DockPanel>
-                              <TextBlock Style="{StaticResource Small}"
-                                  Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
-                              <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding DisplayEntryId, Mode=OneWay}" />
-                            </DockPanel>
-                            <DockPanel>
-                              <TextBlock Style="{StaticResource Small}"
-                                  Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
-                              <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding DisplayEntryPath, Mode=OneWay}" />
-                            </DockPanel>
-                          </mui:SpacingUniformGrid>
-                          <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0">
-                            <DockPanel>
-                              <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
-                              <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}"
-                                  Placeholder="?" />
-                            </DockPanel>
-                            <DockPanel>
-                              <TextBlock Style="{StaticResource Small}" Text="New version: " />
-                              <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Entry.Version, Mode=OneWay}"
-                                  Placeholder="?" x:Name="NewVersion" />
-                            </DockPanel>
-                          </mui:SpacingUniformGrid>
+                  <ItemsControl ItemsSource="{Binding Entries}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <mui:SpacingStackPanel Spacing="8" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <DockPanel>
+                          <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
+
+                          <!--name and some information-->
+                          <DockPanel Dock="Top">
+                            <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
+                                Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                            <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" />
+                            <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+                              <DockPanel>
+                                <TextBlock Style="{StaticResource Small}"
+                                    Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
+                                <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding DisplayEntryId, Mode=OneWay}" />
+                              </DockPanel>
+                              <DockPanel>
+                                <TextBlock Style="{StaticResource Small}"
+                                    Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
+                                <mui:PathTrimmingTextBlock Style="{StaticResource Small}" Text="{Binding DisplayEntryPath, Mode=OneWay}" />
+                              </DockPanel>
+                            </mui:SpacingUniformGrid>
+                            <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0">
+                              <DockPanel>
+                                <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
+                                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}"
+                                    Placeholder="?" />
+                              </DockPanel>
+                              <DockPanel>
+                                <TextBlock Style="{StaticResource Small}" Text="New version: " />
+                                <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Entry.Version, Mode=OneWay}"
+                                    Placeholder="?" x:Name="NewVersion" />
+                              </DockPanel>
+                            </mui:SpacingUniformGrid>
+                          </DockPanel>
+
+                          <!--update options-->
+                          <mui:BooleanSwitch Value="{Binding IsNew}">
+                            <mui:BooleanSwitch.False>
+                              <mui:BetterComboBox ItemsSource="{Binding Entry.UpdateOptions}" SelectedItem="{Binding Entry.SelectedOption}" Margin="0 4 0 0"
+                                  IsEnabled="{Binding Active}" IsEditable="False" />
+                            </mui:BooleanSwitch.False>
+                          </mui:BooleanSwitch>
                         </DockPanel>
 
-                        <!--update options-->
-                        <mui:BooleanSwitch Value="{Binding IsNew}">
-                          <mui:BooleanSwitch.False>
-                            <mui:BetterComboBox ItemsSource="{Binding Entry.UpdateOptions}" SelectedItem="{Binding Entry.SelectedOption}"
-                                Margin="0 4 0 0" IsEnabled="{Binding InstallEntry}" IsEditable="False" />
-                          </mui:BooleanSwitch.False>
-                        </mui:BooleanSwitch>
-                      </DockPanel>
+                        <DataTemplate.Triggers>
+                          <DataTrigger Binding="{Binding IsNew}" Value="True">
+                            <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding IsNewer}" Value="True">
+                            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding IsOlder}" Value="True">
+                            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
+                          </DataTrigger>
+                        </DataTemplate.Triggers>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
 
-                      <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsNew}" Value="True">
-                          <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsNewer}" Value="True">
-                          <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsOlder}" Value="True">
-                          <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
-                        </DataTrigger>
-                      </DataTemplate.Triggers>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                </DockPanel>
               </mui:Switch>
 
               <Button Command="{Binding ConfirmCommand}" Content="OK" Margin="0 12 0 0" />

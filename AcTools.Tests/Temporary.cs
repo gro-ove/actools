@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class Temporary {
         private static bool TryKuhn(bool[] used, int[][] g, int[] mt, int v) {
             if (used[v]) return false;
@@ -35,7 +34,7 @@ namespace AcTools.Tests {
             bool r = false;
 
             if (i == j) return true;
-            
+
             if (a[i] >= j - d && a[i] <= j + d &&
                 a[j] >= i - d && a[j] <= i + d) {
                 r = true;
@@ -50,7 +49,7 @@ namespace AcTools.Tests {
             return r;
         }
 
-        [TestMethod]
+        [Test]
         public void A580375() {
             var size = 10;
             var maxDelta = 1;
@@ -86,7 +85,7 @@ namespace AcTools.Tests {
             Debug.WriteLine(counter.Select(x => $"{100d * x / iters:F1}%").JoinToString(", "));
         }
 
-        [TestMethod]
+        [Test]
         public void A580301() {
             var size = 10;
             var maxDelta = 1;

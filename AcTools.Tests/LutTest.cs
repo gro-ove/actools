@@ -1,11 +1,11 @@
 using System.Linq;
 using AcTools.Utils.Physics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class LutTest {
-        [TestMethod]
+        [Test]
         public void LinearInterpolation() {
             var lut = new Lut {
                 new LutPoint(1d, 1d),
@@ -30,7 +30,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(4d, lut.InterpolateLinear(4.5d));
         }
 
-        [TestMethod]
+        [Test]
         public void CubicInterpolation() {
             var lut = new Lut {
                 new LutPoint(1d, 1d),
@@ -52,7 +52,7 @@ namespace AcTools.Tests {
             Assert.IsTrue(lut.InterpolateCubic(1.9d) < 1d);
         }
 
-        [TestMethod]
+        [Test]
         public void LutValueParse() {
             var lut = Lut.FromValue("(|0=0.7|1000=0.8|4000=0.9|)");
 
@@ -65,21 +65,21 @@ namespace AcTools.Tests {
             Assert.AreEqual(0.9, lut.InterpolateLinear(4500d), 0.00001);
         }
 
-        [TestMethod]
+        [Test]
         public void ToStringTest() {
             var val = "(|0=0.7|1000=0.8|4000=0.9|)";
             var lut = Lut.FromValue(val);
             Assert.AreEqual(val, lut.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void OptimizeTest() {
             var val = "(|0=0.7|2000=0.8|4000=0.9|5000=0.6|)";
             var lut = Lut.FromValue(val);
             Assert.AreEqual("(|0=0.7|4000=0.9|5000=0.6|)", lut.Optimize().ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void MinMax() {
             var lut = new Lut();
             lut.UpdateBoundingBox();

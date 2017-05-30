@@ -1,21 +1,18 @@
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using AcTools.DataFile;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class PhysicsTest {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
 
-        [TestMethod]
+        [Test]
         public void TurboTest() {
             var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "turbo_test"));
             var torque = TorquePhysicUtils.LoadCarTorque(data);
@@ -27,7 +24,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(150d, torque.InterpolateLinear(5000d), 0.1);
         }
 
-        [TestMethod]
+        [Test]
         public void CtrlTest() {
             var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "ctrl_test"));
             var torque = TorquePhysicUtils.LoadCarTorque(data);
@@ -43,7 +40,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(100d, torque.InterpolateLinear(5000d), 0.1);
         }
 
-        [TestMethod]
+        [Test]
         public void InterpolationMode() {
             var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "two_points"));
 
@@ -62,7 +59,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(200d, detailedMode.InterpolateLinear(5000d), 0.1);
         }
 
-        [TestMethod]
+        [Test]
         public void NegativePoint() {
             var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "negative_point"));
 
@@ -72,7 +69,7 @@ namespace AcTools.Tests {
             Assert.AreEqual(200d, powerLutPointsOnly.InterpolateLinear(5000d), 0.1);
         }
 
-        [TestMethod]
+        [Test]
         public void ConsiderLimiterMode() {
             var data = new DataDirectoryWrapper(Path.Combine(TestDir, "physics", "two_points"));
 

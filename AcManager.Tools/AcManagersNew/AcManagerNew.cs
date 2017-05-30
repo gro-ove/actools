@@ -68,6 +68,12 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
+        protected override Task DeleteOverrideAsync(IEnumerable<Tuple<string, string, IEnumerable<string>>> list) {
+            using (IgnoreChanges()) {
+                return base.DeleteOverrideAsync(list);
+            }
+        }
+
         protected override async Task CleanSpaceOverrideAsync(string id, string location) {
             // using (IgnoreChanges()) { // TODO?
                 await base.CleanSpaceOverrideAsync(id, location);

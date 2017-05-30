@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using System.Linq;
 using AcTools.Utils.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class SublistTest {
-        [TestMethod]
+        [Test]
         public void Test() {
             var o = Enumerable.Range(0, 10).ToList();
 

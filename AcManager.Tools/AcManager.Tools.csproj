@@ -151,7 +151,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ContentInstallation\ContentInstallationEntry.cs" />
+    <Compile Include="ContentInstallation\ContentInstallationEntry.Extra.Gbw.cs" />
     <Compile Include="ContentInstallation\ContentInstallationManager.cs" />
+    <Compile Include="ContentInstallation\ContentInstallationEntry.Extra.cs" />
     <Compile Include="ContentInstallation\ContentScanner.cs" />
     <Compile Include="ContentInstallation\FileInfoEnumerableExtension.cs" />
     <Compile Include="ContentInstallation\SevenZipContentInstallator.cs" />

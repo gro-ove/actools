@@ -367,6 +367,11 @@ namespace AcTools.Utils {
             return result;
         }
 
+        public static string NormalizePath(string filename) {
+            return filename.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar },
+                    StringSplitOptions.RemoveEmptyEntries).JoinToString(Path.DirectorySeparatorChar);
+        }
+
         /// <summary>
         /// Is A in any way a parent of B?
         /// </summary>
@@ -377,10 +382,11 @@ namespace AcTools.Utils {
             if (parent == null) throw new ArgumentNullException(nameof(parent));
             if (child == null) throw new ArgumentNullException(nameof(child));
 
-            parent = parent.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-            child = child.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            parent = NormalizePath(parent);
+            child = NormalizePath(child);
 
             if (string.Equals(parent, child, StringComparison.OrdinalIgnoreCase)) return true;
+            if (!child.StartsWith(parent, StringComparison.OrdinalIgnoreCase)) return false;
 
             var s = child.SubstringExt(parent.Length);
             return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;

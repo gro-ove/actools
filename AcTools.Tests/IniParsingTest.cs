@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using AcTools.DataFile;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AcTools.Tests {
-    [TestClass]
+    [TestFixture]
     public class IniParsingTest {
         private static string Data = @"[SECTION_0]
 KEY0=VALUE0 ; COMMENT
@@ -17,18 +17,18 @@ KEY1=VALUE1 // another type of comment
 VAL_WITH_EQ=VAL=UE1 // another type of comment
 KEY_WITHOUT_VALUE= ; missing value
 KEY_WITHOUT_VALUE= // missing value
-KEY_WITHOUT_VALUE_AND_COMMENT_BUNCH_OF_SPACES=      
+KEY_WITHOUT_VALUE_AND_COMMENT_BUNCH_OF_SPACES=
 IMMEDIATE_VALUE_AFTERWARDS_SHOULD_BE_IGNORED
 KEY_WITHOUT_VALUE_AND_COMMENT=
 =VALUE_WITHOUT_KEY
 NORMAL  =VA;LUE
 
-COMPLI  =    
+COMPLI  =
 CATED
 
 NO_EMPTY_LINE=AFTERWARDS";
 
-        [TestMethod]
+        [Test]
         public void IniParsing() {
             var parsed = IniFile.Parse(Data);
 
@@ -50,7 +50,7 @@ NO_EMPTY_LINE=AFTERWARDS";
             Assert.AreEqual("kkk", parsed["TOTALLY MESSED UP SECTION"].GetNonEmpty("value"));
         }
 
-        [TestMethod]
+        [Test]
         public void IniSemicolonsParsing() {
             var parsed = IniFile.Parse(Data, IniFileMode.ValuesWithSemicolons);
 
