@@ -35,7 +35,7 @@
 
         <!-- data section -->
         <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Car}" Margin="0 8 -8 0"
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outsize="True" Padding="0 0 8 0">
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0">
             <DockPanel>
                 <!-- tags -->
                 <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />

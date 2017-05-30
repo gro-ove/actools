@@ -25,6 +25,7 @@ namespace LicensePlates {
 
         private readonly Dictionary<string, MagickImage> _images = new Dictionary<string, MagickImage>();
 
+
         private MagickImage LoadImage(string filename) {
             MagickImage result;
             filename = filename.ToLowerInvariant();
@@ -95,7 +96,7 @@ namespace LicensePlates {
 
         private static object DefaultValue(DynValue value) {
             if (value == null) return null;
-            
+
             if (value.Function != null) {
                 return new Func<string>(() => value.Function.Call().CastToString());
             }
@@ -249,7 +250,7 @@ namespace LicensePlates {
                 image.Write(filename);
             }
         }
-        
+
         public void CreateNormalsMap(bool previewMode, string filename) {
             using (var image = CreateNormalsMap(previewMode)) {
                 image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt1");

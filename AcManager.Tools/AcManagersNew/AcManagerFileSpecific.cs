@@ -16,7 +16,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private Regex _regex;
 
-        private bool FilterId(string id) {
+        protected virtual bool FilterId(string id) {
             return SearchPattern == @"*" || (_regex ?? (_regex = new Regex(
                     SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
                     .IsMatch(id);

@@ -100,27 +100,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             readable = readable / 1024;
-
-            string format;
-            switch (round) {
-                case 1:
-                    format = @"0.# ";
-                    break;
-
-                case 2:
-                    format = @"0.## ";
-                    break;
-
-                case 3:
-                    format = @"0.### ";
-                    break;
-
-                default:
-                    format = @"0 ";
-                    break;
-            }
-
-            return readable.ToString(format) + suffix;
+            return $@"{readable.ToString($@"F{round}")} {suffix}";
         }
 
         public static string ToTitle(this string s) {
@@ -367,7 +347,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Keys.HanjaMode:
                 case Keys.JunjaMode:
                 case Keys.HangulMode:
-                case Keys.FinalMode: //duplicate values: Hanguel, Kana, Kanji  
+                case Keys.FinalMode: //duplicate values: Hanguel, Kana, Kanji
                 case Keys.IMEAccept:
                 case Keys.IMEConvert: //duplicate: IMEAceept
                 case Keys.IMEModeChange:
@@ -384,7 +364,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Keys.Zoom:
                     return UiStrings.KeyZoom;
 
-                //oem keys 
+                //oem keys
                 case Keys.OemSemicolon: //oem1
                     return @";";
                 case Keys.OemQuestion: //oem2
@@ -662,7 +642,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Key.HanjaMode:
                 case Key.JunjaMode:
                 case Key.HangulMode:
-                case Key.FinalMode: //duplicate values: Hanguel, Kana, Kanji  
+                case Key.FinalMode: //duplicate values: Hanguel, Kana, Kanji
                     return null;
 
                 //special Key
@@ -675,7 +655,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Key.Zoom:
                     return UiStrings.KeyZoom;
 
-                //oem Key 
+                //oem Key
                 case Key.OemSemicolon:
                     return @";";
                 case Key.OemQuestion:

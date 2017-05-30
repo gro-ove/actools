@@ -45,6 +45,7 @@ namespace AcManager.Tools.Managers {
         public AcDirectories ShowroomsDirectories { get; private set; }
         public AcDirectories WeatherDirectories { get; private set; }
         public AcDirectories PpFiltersDirectories { get; private set; }
+        public AcDirectories DriverModelsDirectories { get; private set; }
         public AcDirectories PythonAppsDirectories { get; private set; }
         public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
@@ -58,6 +59,7 @@ namespace AcManager.Tools.Managers {
             ShowroomsDirectories?.Obsolete();
             WeatherDirectories?.Obsolete();
             PpFiltersDirectories?.Obsolete();
+            DriverModelsDirectories?.Obsolete();
             PythonAppsDirectories?.Obsolete();
 
             CarsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetCarsDirectory(Value));
@@ -65,6 +67,7 @@ namespace AcManager.Tools.Managers {
             ShowroomsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetShowroomsDirectory(Value));
             WeatherDirectories = Value == null ? null : new AcDirectories(FileUtils.GetWeatherDirectory(Value));
             PpFiltersDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPpFiltersDirectory(Value));
+            DriverModelsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetDriverModelsDirectory(Value));
             PythonAppsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPythonAppsDirectory(Value));
             FontsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetFontsDirectory(Value));
             KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
@@ -78,6 +81,7 @@ namespace AcManager.Tools.Managers {
             ShowroomsDirectories?.CreateIfMissing();
             WeatherDirectories?.CreateIfMissing();
             PpFiltersDirectories?.CreateIfMissing();
+            DriverModelsDirectories?.CreateIfMissing();
             PythonAppsDirectories?.CreateIfMissing();
             UserChampionshipsDirectories?.CreateIfMissing();
         }

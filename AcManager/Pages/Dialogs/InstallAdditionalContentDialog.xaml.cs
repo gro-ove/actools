@@ -1,212 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using JetBrains.Annotations;
-using AcManager.Controls.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class InstallAdditionalContentDialog : INotifyPropertyChanged {
-        public string Filename { get; set; }
+    public partial class InstallAdditionalContentDialog {
+        private static InstallAdditionalContentDialog _dialog;
 
-        public class EntryWrapper : NotifyPropertyChanged {
-            public ContentEntry Entry { get; }
-
-            private bool _installEntry;
-
-            public bool InstallEntry {
-                get { return _installEntry; }
-                set {
-                    if (Equals(value, _installEntry)) return;
-                    _installEntry = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private UpdateOption _selectedOption;
-
-            public UpdateOption SelectedOption {
-                get { return _selectedOption; }
-                set {
-                    if (Equals(value, _selectedOption)) return;
-                    _selectedOption = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private readonly UpdateOption[] _updateOptionsList;
-
-            public IReadOnlyList<UpdateOption> UpdateOptionsList => _updateOptionsList;
-
-            public EntryWrapper(ContentEntry entry, bool isNew) {
-                Entry = entry;
-                InstallEntry = true;
-                IsNew = isNew;
-
-                if (isNew) return;
-                _updateOptionsList = entry.Type.GetUpdateOptions().ToArray();
-                SelectedOption = _updateOptionsList[0];
-            }
-
-            public bool IsNew { get; set; }
-
-            public string DisplayName => IsNew ? Entry.Type.GetNew(Entry.Name) : Entry.Type.GetExisting(Entry.Name);
+        public static void Initialize() {
+            ContentInstallationManager.Instance.Queue.CollectionChanged += OnQueueChanged;
         }
 
-        [CanBeNull]
-        public IReadOnlyList<EntryWrapper> Entries {
-            get { return _entries; }
-            set {
-                if (Equals(value, _entries)) return;
-                _entries = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsEmpty));
+        private static bool _waiting;
+        private static async void OnQueueChanged(object o, NotifyCollectionChangedEventArgs a) {
+            if (_waiting) return;
 
-                if (value != null) {
-                    foreach (var wrapper in value) {
-                        wrapper.PropertyChanged += (sender, args) => {
-                            if (args.PropertyName == nameof(EntryWrapper.InstallEntry)) {
-                                InstallCommand.RaiseCanExecuteChanged();
+            var added = a.Action == NotifyCollectionChangedAction.Add;
+            if (added != (_dialog != null)) {
+                _waiting = true;
+                await Task.Delay(100);
+                _waiting = false;
+
+                if (added) {
+                    if (_dialog == null) {
+                        _dialog = new InstallAdditionalContentDialog();
+                        _dialog.Show();
+                        _dialog.Closed += (sender, args) => {
+                            foreach (var entry in ContentInstallationManager.Instance.Queue.ToList()) {
+                                entry.CancelCommand.Execute();
                             }
+
+                            _dialog = null;
                         };
                     }
+                } else if (ContentInstallationManager.Instance.Queue.Count == 0 && _dialog?.IsActive != true) {
+                    _dialog?.Close();
                 }
             }
         }
 
-        public bool IsEmpty => _entries?.Any() != true;
-
-        private IAdditionalContentInstallator _installator;
-        private CancellationTokenSource _cancellationTokenSource;
-
-        [CanBeNull]
-        private IReadOnlyList<EntryWrapper> _entries;
-
-        public InstallAdditionalContentDialog(string filename) {
-            Filename = filename;
-
+        public InstallAdditionalContentDialog() {
             DataContext = this;
             InitializeComponent();
 
-            Buttons = new[] {
-                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, InstallCommand),
-                CancelButton
+            Buttons = new [] {
+                // TODO: rename “close” to “hide”?
+                CloseButton
             };
         }
 
-        private bool _loaded;
+        private void OnDrop(object sender, DragEventArgs e) {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
-        private void OnLoaded(object sender, RoutedEventArgs args) {
-            if (_loaded) return;
-            _loaded = true;
+            Focus();
 
-            CreateInstallator();
+            var data = e.Data.GetData(DataFormats.FileDrop) as string[] ??
+                    (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
+                                                                        .Select(x => x.Trim())
+                                                                        .Select(x => x.Length > 1 && x.StartsWith(@"""") && x.EndsWith(@"""")
+                                                                                ? x.Substring(1, x.Length - 2) : x);
+            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
         }
 
-        private async void CreateInstallator() {
-            try {
-                _installator = await ContentInstallation.FromFile(Filename);
-            } catch (Exception e) {
-                NonfatalError.Notify(AppStrings.AdditionalContent_CannotInstall, e);
-                Close();
-                return;
+        private void OnDragEnter(object sender, DragEventArgs e) {
+            if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
+                    (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
+                e.Effects = DragDropEffects.All;
             }
-
-            var msg = AppStrings.AdditionalContent_InputPassword_Prompt;
-            while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {
-                var password = Prompt.Show(msg, AppStrings.AdditionalContent_InputPassword_Title, passwordMode: true);
-                if (password == null) {
-                    Close();
-                    return;
-                }
-
-                try {
-                    await _installator.TrySetPasswordAsync(password);
-                    break;
-                } catch (PasswordException) {
-                    msg = AppStrings.AdditionalContent_InputPassword_InvalidPrompt;
-                }
-            }
-
-            UpdateEntries();
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (!_loaded) return;
-            _loaded = false;
-
-            _cancellationTokenSource?.Cancel();
-            DisposeHelper.Dispose(ref _installator);
-        }
-
-        private async void UpdateEntries() {
-            Loading.Visibility = Visibility.Visible;
-            MainContent.Visibility = Visibility.Collapsed;
-
-            try {
-                using (_cancellationTokenSource = new CancellationTokenSource()) {
-                    Entries = (await _installator.GetEntriesAsync(null, _cancellationTokenSource.Token)).Select(x => {
-                        var manager = x.Type.GetManager();
-                        if (manager == null) return null;
-                        var existed = manager.GetObjectById(x.Id);
-                        return new EntryWrapper(x, existed == null);
-                    }).Where(x => x != null).ToArray();
-                }
-            } catch (PasswordException e) {
-                NonfatalError.Notify(AppStrings.AdditionalContent_PasswordIsInvalid, e);
-                Close();
-            } catch (Exception e) {
-                NonfatalError.Notify(AppStrings.AdditionalContent_CannotUnpack, AppStrings.AdditionalContent_CannotUnpack_Commentary, e);
-                Close();
-            } finally {
-                _cancellationTokenSource = null;
-            }
-
-            Loading.Visibility = Visibility.Collapsed;
-            MainContent.Visibility = Visibility.Visible;
-        }
-
-        private AsyncCommand _installCommand;
-
-        public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async () => {
-            var entries = Entries;
-            if (entries == null) return;
-
-            using (var waiting = new WaitingDialog()) {
-                foreach (var wrapper in entries.Where(entry => entry.InstallEntry)) {
-                    waiting.Title = String.Format(AppStrings.AdditionalContent_Installing, wrapper.Entry.Name);
-                    if (waiting.CancellationToken.IsCancellationRequested) return;
-
-                    try {
-                        var manager = wrapper.Entry.Type.GetManager();
-                        if (manager == null) continue;
-
-                        var directory = await manager.PrepareForAdditionalContentAsync(wrapper.Entry.Id,
-                                wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
-                        await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
-                    } catch (Exception e) {
-                        NonfatalError.Notify(string.Format(AppStrings.AdditionalContent_CannotInstallFormat, wrapper.Entry.Name), e);
-                    }
-                }
-            }
-
-            Close();
-        }, () => Entries?.Any(x => x.InstallEntry) == true));
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        private static async void ProcessDroppedFiles(IEnumerable<string> files) {
+            if (files == null) return;
+            await ArgumentsHandler.ProcessArguments(files);
         }
     }
 }

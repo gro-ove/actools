@@ -228,7 +228,7 @@ namespace AcManager.Tools.Managers {
 
                 var obj = CreateAndLoadAcObject(newId, true);
                 InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                UpdateList();
+                UpdateList(true);
 
                 return obj;
             }

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -28,6 +29,34 @@ namespace AcManager.Tools.Managers.Online {
                 name = SimpleCleanUpRegex.Replace(name, "");
             }
             return name;
+        }
+
+        public bool CheckCars() {
+            var cars = Cars;
+            if (cars == null) return false;
+
+            for (var i = cars.Count - 1; i >= 0; i--) {
+                var car = cars[i];
+                if (car.CarExists != (CarsManager.Instance.GetWrapperById(car.Id) != null)) {
+                    goto Dirty;
+                }
+            }
+
+            return false;
+
+            Dirty:
+
+            Cars = null;
+            SetSelectedCarEntry(null);
+
+            if (CurrentDrivers != null) {
+                foreach (var currentDriver in CurrentDrivers) {
+                    currentDriver.ResetCar();
+                }
+            }
+
+            Status = ServerStatus.Unloaded;
+            return true;
         }
     }
 }

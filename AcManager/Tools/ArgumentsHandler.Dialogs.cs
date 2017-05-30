@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools {
-    public partial class ArgumentsHandler {
+    public static partial class ArgumentsHandler {
         private enum Choise {
             ApplyAndSave,
             Apply,
@@ -26,7 +25,7 @@ namespace AcManager.Tools {
         /// <param name="applyable">Can be applied.</param>
         /// <param name="appliableWithoutSaving">Can be applied without saving.</param>
         /// <returns>User choise.</returns>
-        private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
+        private static Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool appliableWithoutSaving = true) {
             var description = string.Format(AppStrings.Arguments_SharedMessage, shared.Name ?? AppStrings.Arguments_SharedMessage_EmptyValue,
                     shared.EntryType == SharedEntryType.Weather

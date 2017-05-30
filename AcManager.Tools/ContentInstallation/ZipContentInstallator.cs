@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcTools;
@@ -10,9 +11,9 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
-    internal class ZipContentInstallator : BaseContentInstallator {
-        public static async Task<IAdditionalContentInstallator> Create(string filename) {
-            var result = new ZipContentInstallator(filename);
+    internal class ZipContentInstallator : ContentInstallatorBase {
+        public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams) {
+            var result = new ZipContentInstallator(filename, installationParams);
             await result.CreateExtractorAsync();
             return result;
         }
@@ -22,7 +23,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public string Filename { get; }
 
-        private ZipContentInstallator(string filename) {
+        private ZipContentInstallator(string filename, ContentInstallationParams installationParams) : base(installationParams) {
             Filename = filename;
         }
 
@@ -46,7 +47,8 @@ namespace AcManager.Tools.ContentInstallation {
                 _archiveEntry = archiveEntry;
             }
 
-            public string Filename => _archiveEntry.FullName.Replace('/', '\\');
+            public string Key => _archiveEntry.FullName.Replace('/', '\\');
+            public long Size => _archiveEntry.Length;
 
             public async Task<byte[]> ReadAsync() {
                 using (var memory = new MemoryStream())
@@ -56,7 +58,7 @@ namespace AcManager.Tools.ContentInstallation {
                 }
             }
 
-            public async Task CopyTo(string destination) {
+            public async Task CopyToAsync(string destination) {
                 using (var fileStream = new FileStream(destination, FileMode.Create))
                 using (var stream = _archiveEntry.Open()) {
                     await stream.CopyToAsync(fileStream);
@@ -64,10 +66,14 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync() {
+        protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
             if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
             return Task.FromResult(_extractor.Entries.Where(x => !x.FullName.EndsWith("\\") && !x.FullName.EndsWith("/"))
                                              .Select(x => (IFileInfo)new ArchiveFileInfo(x)));
+        }
+
+        protected override Task LoadMissingContents(CancellationToken cancellation) {
+            throw new NotSupportedException();
         }
 
         public override void Dispose() {

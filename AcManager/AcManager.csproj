@@ -126,9 +126,8 @@
       <HintPath>..\Packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
       <HintPath>..\Packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
@@ -146,9 +145,8 @@
       <HintPath>..\Packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SharpCompress, Version=0.16.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96">
+      <HintPath>..\packages\SharpCompress.0.16.1\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -443,6 +441,9 @@
     <Compile Include="Pages\Lists\PpFiltersListPage.xaml.cs">
       <DependentUpon>PpFiltersListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\DriverModelsListPage.xaml.cs">
+      <DependentUpon>DriverModelsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
@@ -509,7 +510,6 @@
     </Compile>
     <Compile Include="SomeCommonCommandsHelper.cs" />
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
-    <Compile Include="Tools\ArgumentHandleResult.cs" />
     <Compile Include="Tools\ArgumentsHandler.SharedUserChampionship.cs" />
     <Compile Include="Tools\ArgumentsHandler.Online.cs" />
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
@@ -538,6 +538,9 @@
     </Compile>
     <Compile Include="Pages\Selected\SelectedFontPage.xaml.cs">
       <DependentUpon>SelectedFontPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedDriverModelPage.xaml.cs">
+      <DependentUpon>SelectedDriverModelPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsSharing.xaml.cs">
       <DependentUpon>SettingsSharing.xaml</DependentUpon>
@@ -903,6 +906,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\DriverModelsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\ToolsListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1160,6 +1167,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedFontPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\SelectedDriverModelPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

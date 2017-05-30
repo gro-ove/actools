@@ -57,9 +57,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -122,6 +121,7 @@
     <Compile Include="Kn5File\Kn5.FromJson.cs" />
     <Compile Include="Utils\AcKunosContent.cs" />
     <Compile Include="Utils\AcLocaleProvider.cs" />
+    <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
     <Compile Include="Utils\MemoryChunk.cs" />
     <Compile Include="KnhFile\Knh.cs" />

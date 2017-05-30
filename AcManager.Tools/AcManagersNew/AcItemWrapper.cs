@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.AcManagersNew {
     public interface IAcWrapperLoader {
         /// <summary>
-        /// Not recommended way, but can’t think of something better 
+        /// Not recommended way, but can’t think of something better
         /// at the moment. After all, it’s not that bad.
         /// </summary>
         /// <param name="id"></param>
@@ -30,10 +30,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public AcItemWrapper([NotNull]IAcWrapperLoader loader, [NotNull]AcPlaceholderNew initialValue) {
-            if (loader == null) throw new ArgumentNullException(nameof(loader));
-            if (initialValue == null) throw new ArgumentNullException(nameof(initialValue));
-            _loader = loader;
-            _value = initialValue;
+            _loader = loader ?? throw new ArgumentNullException(nameof(loader));
+            _value = initialValue ?? throw new ArgumentNullException(nameof(initialValue));
             IsLoaded = _value.GetType().IsSubclassOf(typeof(AcObjectNew));
         }
 
@@ -56,7 +54,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         [NotNull]
         public AcPlaceholderNew Value {
-            get { return _value; }
+            get => _value;
             internal set {
                 if (value == null) throw new ArgumentNullException();
                 if (Equals(value, _value)) return;
@@ -78,7 +76,7 @@ namespace AcManager.Tools.AcManagersNew {
         private bool _isLoaded;
 
         public bool IsLoaded {
-            get { return _isLoaded; }
+            get => _isLoaded;
             private set {
                 if (Equals(value, _isLoaded)) return;
                 _isLoaded = value;
@@ -133,25 +131,25 @@ namespace AcManager.Tools.AcManagersNew {
 
     public class WrappedValueChangedEventManager : WeakEventManager {
         private WrappedValueChangedEventManager() {}
-        
+
         public static void AddListener(IBaseAcObjectObservableCollection source, IWeakEventListener listener) {
             CurrentManager.ProtectedAddListener(source, listener);
         }
-        
+
         public static void RemoveListener(IBaseAcObjectObservableCollection source, IWeakEventListener listener) {
             CurrentManager.ProtectedRemoveListener(source, listener);
         }
-        
+
         protected override void StartListening(object source) {
             var typedSource = (IBaseAcObjectObservableCollection)source;
             typedSource.WrappedValueChanged += OnWrappedValueChanged;
         }
-        
+
         protected override void StopListening(object source) {
             var typedSource = (IBaseAcObjectObservableCollection)source;
             typedSource.WrappedValueChanged -= OnWrappedValueChanged;
         }
-        
+
         private static WrappedValueChangedEventManager CurrentManager {
             get {
                 var managerType = typeof(WrappedValueChangedEventManager);
@@ -163,7 +161,7 @@ namespace AcManager.Tools.AcManagersNew {
                 return manager;
             }
         }
-        
+
         private void OnWrappedValueChanged(object sender, WrappedValueChangedEventArgs args) {
             // what is that?!
             Logging.Write("WHOA");

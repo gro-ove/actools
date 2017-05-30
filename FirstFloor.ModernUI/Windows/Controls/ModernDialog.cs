@@ -278,6 +278,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(IconSourceProperty, value); }
         }
 
+        public static readonly DependencyProperty ButtonRowContentAlignmentProperty = DependencyProperty.Register(nameof(ButtonRowContentAlignment),
+                typeof(HorizontalAlignment), typeof(ModernDialog));
+
+        public HorizontalAlignment ButtonRowContentAlignment {
+            get { return (HorizontalAlignment)GetValue(ButtonRowContentAlignmentProperty); }
+            set { SetValue(ButtonRowContentAlignmentProperty, value); }
+        }
+
         public static readonly DependencyProperty ButtonsRowContentProperty = DependencyProperty.Register(nameof(ButtonsRowContent), typeof(object),
                 typeof(ModernDialog));
 
@@ -360,7 +368,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             base.OnApplyTemplate();
-            
+
             _bottomRow = GetTemplateChild("PART_BottomRow") as FrameworkElement;
             if (_bottomRow != null) {
                 _bottomRow.SizeChanged += OnBottomRowSizeChanged;
@@ -401,15 +409,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private ICommand _copyCommand;
 
-        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => {
-            Clipboard.SetText(StackTrace);
-        }));
+        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => { Clipboard.SetText(StackTrace); }));
 
         private ICommand _restartCommand;
 
-        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
-            _restartHelper?.Restart();
-        }));
+        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => { _restartHelper?.Restart(); }));
 
         private ICommand _exitCommand;
 

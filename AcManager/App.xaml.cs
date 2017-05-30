@@ -96,7 +96,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
-            
+
             AppArguments.Set(AppFlag.NoProxy, ref KunosApiProvider.OptionNoProxy);
 
             var proxy = AppArguments.Get(AppFlag.Proxy);
@@ -260,7 +260,7 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/track"), new DelegateCommand<string>(id => {
                 WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
             }));
-            
+
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             BetterImage.RemoteUserAgent = CmApiProvider.UserAgent;
@@ -316,7 +316,7 @@ namespace AcManager {
 
             _hibernator = new AppHibernator();
             _hibernator.SetListener();
-            
+
             AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
             CommonFixes.Initialize();
 
@@ -326,6 +326,10 @@ namespace AcManager {
 
             // paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
+
+            // auto-show that thing
+            // TODO: find a way to show a bit of progress bar on main window?
+            InstallAdditionalContentDialog.Initialize();
         }
 
         private class LiveryGenerator : ILiveryGenerator {
@@ -359,7 +363,7 @@ namespace AcManager {
             } catch (Exception e) {
                 Logging.Error(e);
             }
-            
+
             PopupHelper.Initialize();
             CommonCommands.SetHelper(new SomeCommonCommandsHelper());
         }
@@ -399,7 +403,7 @@ namespace AcManager {
                 if (!string.IsNullOrWhiteSpace(additional)) {
                     CarAnalyzer.OptionSimilarAdditionalSourceIds = additional.Split(';', ',').Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
                 }
-                
+
                 await Task.Delay(500);
                 if (AppArguments.Has(AppFlag.TestIfAcdAvailable) && !Acd.IsAvailable()) {
                     NonfatalError.NotifyBackground(@"This build can’t work with encrypted ACD-files");

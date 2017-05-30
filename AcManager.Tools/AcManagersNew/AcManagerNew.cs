@@ -140,7 +140,7 @@ namespace AcManager.Tools.AcManagersNew {
                         id = Directories.GetId(FileUtils.GetOriginalFilename(dir));
                         obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                        UpdateList();
+                        UpdateList(true);
                     }
                     break;
 
@@ -171,7 +171,7 @@ namespace AcManager.Tools.AcManagersNew {
                     if (FileUtils.Exists(change.NewLocation)) {
                         obj = CreateAndLoadAcObject(Directories.GetId(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                        UpdateList();
+                        UpdateList(true);
                     }
 
                     break;

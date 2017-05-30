@@ -15,7 +15,7 @@ namespace AcManager.Tools.Managers {
 
         public override IAcDirectories Directories { get; }
 
-        internal CarSkinsManager(string carId, AcDirectoriesBase directories, EventHandler collectionReadyHandler) {
+        internal CarSkinsManager(string carId, AcDirectoriesBase directories, EventHandler<CollectionReadyEventArgs> collectionReadyHandler) {
             CarId = carId;
             Directories = directories;
             InnerWrappersList.CollectionReady += collectionReadyHandler;
@@ -26,7 +26,7 @@ namespace AcManager.Tools.Managers {
                 return AlphanumComparatorFast.Compare(x, y);
             }
         }
-        
+
         /// <summary>
         /// Gets first enabled skin.
         /// </summary>

@@ -133,7 +133,7 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
                                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel"
                                 VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item"
-                                mui:FancyScrollHelper.InvertLocation="True" mui:FancyScrollHelper.Outsize="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
+                                mui:FancyScrollHelper.InvertLocation="True" mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
                             <i:Interaction.Behaviors>
                                 <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
                             </i:Interaction.Behaviors>

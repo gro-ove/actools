@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
@@ -122,7 +123,7 @@ namespace AcManager.Pages.Settings {
             [Localizable(false)]
             public ICommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new DelegateCommand(() => {
                 ValuesStorage.Storage.CleanUp(x =>
-                        x.StartsWith(".") || 
+                        x.StartsWith(".") ||
                         x.StartsWith("KunosCareerObject.SelectedEvent__") ||
                         x.StartsWith("__aclistpageviewmodel_selected_") ||
                         x.StartsWith("__carobject_selectedskin_") ||

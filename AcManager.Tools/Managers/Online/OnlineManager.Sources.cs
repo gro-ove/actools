@@ -35,7 +35,7 @@ namespace AcManager.Tools.Managers.Online {
         public IEnumerable<OnlineSourceWrapper> Wrappers => _wrappers.Values;
 
         [CanBeNull]
-        private IOnlineSource GetSource(string key) {
+        private static IOnlineSource GetSource(string key) {
             return Sources.GetValueOrDefault(key);
         }
 

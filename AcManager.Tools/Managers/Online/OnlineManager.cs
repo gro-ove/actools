@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcManager.Tools.Lists;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -27,12 +29,31 @@ namespace AcManager.Tools.Managers.Online {
         private readonly List<ServerEntry> _removeWhenReleased = new List<ServerEntry>(2);
 
         private OnlineManager() {
-            _holdedList.Released += HoldedList_Released;
+            _holdedList.Released += OnHoldedListReleased;
+
+            CarsManager.Instance.WrappersList.CollectionReady += OnCarsListCollectionReady;
         }
 
-        private void HoldedList_Released(object sender, ReleasedEventArgs<ServerEntry> e) {
+        private void OnCarsListCollectionReady(object sender, CollectionReadyEventArgs eventArgs) {
+            Logging.Debug("Event " + eventArgs.JustReady);
+
+            if (eventArgs.JustReady) return;
+
+            var dirty = false;
+            for (var i = List.Count - 1; i >= 0; i--) {
+                var server = List[i];
+                Logging.Debug("server: " + server.Id);
+                dirty |= server.CheckCars();
+            }
+
+            if (dirty) {
+                PingEverything(null).Forget();
+            }
+        }
+
+        private void OnHoldedListReleased(object sender, ReleasedEventArgs<ServerEntry> e) {
             var index = _removeWhenReleased.IndexOf(e.Value);
-            if (index != -1) { 
+            if (index != -1) {
                 _removeWhenReleased.RemoveAt(index);
                 List.Remove(e.Value);
             }

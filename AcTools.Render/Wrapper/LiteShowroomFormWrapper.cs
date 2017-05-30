@@ -242,7 +242,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         protected static IProgress<double> Wrap(IProgress<Tuple<string, double?>> baseProgress, string message = null) {
-            return new ProgressWrapper(baseProgress, message ?? "Rendering…");
+            return new ProgressWrapper(baseProgress, message ?? "Renderingâ€¦");
         }
 
         protected virtual void SplitShotPieces(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
@@ -252,7 +252,7 @@ namespace AcTools.Render.Wrapper {
             var information = dark.SplitShot(multipler, OptionHwDownscale && downscale ? 0.5d : 1d, destination,
                     !OptionHwDownscale && downscale, Wrap(progress), cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
-rem Use montage.exe from ImageMagick for Windows to run this script 
+rem Use montage.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
 montage.exe *-*.{information.Extension} -tile {information.Cuts}x{information.Cuts} -geometry +0+0 out.jpg
 echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
@@ -269,12 +269,12 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     if (cancellation.IsCancellationRequested) return;
 
                     if (downscale && !OptionHwDownscale) {
-                        progress?.Report(Tuple.Create("Downscaling…", (double?)0.93));
+                        progress?.Report(Tuple.Create("Downscalingâ€¦", (double?)0.93));
                         image.Downscale();
                         if (cancellation.IsCancellationRequested) return;
                     }
 
-                    progress?.Report(Tuple.Create("Saving…", (double?)0.95));
+                    progress?.Report(Tuple.Create("Savingâ€¦", (double?)0.95));
                     ImageUtils.SaveImage(image, filename, 95, new ImageUtils.ImageInformation());
                 }
             }
@@ -284,25 +284,25 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
         protected void ShotInner(double multipler, bool downscale, string filename, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             using (var stream = new MemoryStream()) {
-                progress?.Report(Tuple.Create("Rendering…", (double?)0.2));
+                progress?.Report(Tuple.Create("Renderingâ€¦", (double?)0.2));
                 _renderer.Shot(multipler, OptionHwDownscale && downscale ? 0.5 : 1d, 1d, stream, true,
-                        progress.ToDouble("Rendering…").Subrange(0.2, 0.6), cancellation);
+                        progress.ToDouble("Renderingâ€¦").Subrange(0.2, 0.6), cancellation);
                 stream.Position = 0;
                 if (cancellation.IsCancellationRequested) return;
 
                 using (var destination = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                    progress?.Report(Tuple.Create("Saving…", (double?)0.9));
+                    progress?.Report(Tuple.Create("Savingâ€¦", (double?)0.9));
                     ImageUtils.Convert(stream, destination, !OptionHwDownscale && downscale
                             ? new Size((_renderer.ActualWidth * multipler / 2).RoundToInt(), (_renderer.ActualHeight * multipler / 2).RoundToInt())
                             : (Size?)null, 95, new ImageUtils.ImageInformation());
                 }
             }
         }
-        
+
         protected virtual void SplitShot(double multipler, bool downscale, string filename) {
             SplitShotInner(multipler, downscale, filename);
         }
-        
+
         protected virtual void Shot(double multipler, bool downscale, string filename) {
             ShotInner(multipler, downscale, filename);
         }
@@ -399,7 +399,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     }
                     break;
 
-                case Keys.A: 
+                case Keys.A:
                     if (dark != null) {
                         if (!args.Control && !args.Alt && !args.Shift) {
                             dark.UseAo = !dark.UseAo;
@@ -419,7 +419,7 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
                     }
                     break;
 
-                case Keys.Z: 
+                case Keys.Z:
                     if (dark != null) {
                         if (args.Control && args.Alt && !args.Shift) {
                             dark.RemoveMovingLight();

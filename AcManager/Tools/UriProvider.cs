@@ -34,6 +34,9 @@ namespace AcManager.Tools {
                 case nameof(FontObject):
                     return UriExtension.Create("/Pages/Selected/SelectedFontPage.xaml?Id={0}", obj.Id);
 
+                case nameof(DriverModelObject):
+                    return UriExtension.Create("/Pages/Selected/SelectedDriverModelPage.xaml?Id={0}", obj.Id);
+
                 case nameof(PpFilterObject):
                     return UriExtension.Create("/Pages/Selected/SelectedPpFilterPage.xaml?Id={0}", obj.Id);
 

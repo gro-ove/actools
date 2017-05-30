@@ -12,6 +12,7 @@ using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
@@ -80,7 +81,7 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public async Task<List<string>> UsingsRescan(IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<List<string>> UsingsRescan(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 await EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) return null;
@@ -88,10 +89,13 @@ namespace AcManager.Tools.Managers {
                 await CarsManager.Instance.EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) return null;
 
-                var list = (await CarsManager.Instance.LoadedOnly.Select(async car => {
+                var i = 0;
+                var cars = CarsManager.Instance.LoadedOnly.ToList();
+
+                var list = (await cars.Select(async car => {
                     if (cancellation.IsCancellationRequested) return null;
 
-                    progress?.Report(car.Id);
+                    progress?.Report(car.DisplayName, i++, cars.Count);
                     return new {
                         CarId = car.Id,
                         FontIds = (await Task.Run(() => new IniFile(car.Location, @"digital_instruments.ini"), cancellation))

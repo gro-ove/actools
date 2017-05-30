@@ -57,9 +57,8 @@
       <HintPath>..\Libraries\AcTools.CookerHood\AcTools.CookerHood.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.2.1.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.2.1\lib\net\JetBrains.Annotations.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
+      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
@@ -68,14 +67,13 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SharpCompress, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.14.0\lib\net45\SharpCompress.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.16.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96">
+      <HintPath>..\packages\SharpCompress.0.16.1\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="Steamworks.NET">
       <HintPath>D:\Games\Assetto Corsa\launcher\support\Steamworks.NET.dll</HintPath>
@@ -153,13 +151,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ContentInstallation\ContentInstallationManager.cs" />
+    <Compile Include="ContentInstallation\ContentScanner.cs" />
     <Compile Include="ContentInstallation\FileInfoEnumerableExtension.cs" />
-    <Compile Include="ContentInstallation\Types\TypeCar.cs" />
-    <Compile Include="ContentInstallation\Types\TypeCarSkin.cs" />
-    <Compile Include="ContentInstallation\Types\TypeFont.cs" />
-    <Compile Include="ContentInstallation\Types\TypeShowroom.cs" />
-    <Compile Include="ContentInstallation\Types\TypeTrack.cs" />
-    <Compile Include="ContentInstallation\Types\TypeWeather.cs" />
+    <Compile Include="ContentInstallation\SevenZipContentInstallator.cs" />
     <Compile Include="Data\BaseUpdater.cs" />
     <Compile Include="Data\DataUpdater.cs" />
     <Compile Include="Data\DataProvider.cs" />
@@ -243,8 +238,7 @@
     <Compile Include="Helpers\AcSettings\IniSettings.cs" />
     <Compile Include="Helpers\AcSettings\OculusSettings.cs" />
     <Compile Include="Helpers\AcSettings\PythonSettings.cs" />
-    <Compile Include="ContentInstallation\Types\ContentType.cs" />
-    <Compile Include="ContentInstallation\BaseContentInstallator.cs" />
+    <Compile Include="ContentInstallation\ContentInstallatorBase.cs" />
     <Compile Include="ContentInstallation\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="ContentInstallation\UpdateOption.cs" />
@@ -290,6 +284,7 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Managers\DriverModelsManager.cs" />
     <Compile Include="Managers\Online\FileBasedOnlineSources.cs" />
     <Compile Include="Managers\Online\LanOnlineSource.cs" />
     <Compile Include="Managers\Online\OnlineManager.Sources.cs" />
@@ -316,6 +311,7 @@
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />
+    <Compile Include="Objects\DriverModelObject.cs" />
     <Compile Include="Objects\ServerPresetAssistState.cs" />
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
@@ -415,7 +411,7 @@
     <Compile Include="Helpers\TaskExtension.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
     <Compile Include="Helpers\TimeSpanExtension.cs" />
-    <Compile Include="ContentInstallation\ContentEntry.cs" />
+    <Compile Include="ContentInstallation\ContentEntryBase.cs" />
     <Compile Include="ContentInstallation\ContentInstallation.cs" />
     <Compile Include="ContentInstallation\SharpCompressContentInstallator.cs" />
     <Compile Include="ContentInstallation\IAdditionalContentInstallator.cs" />

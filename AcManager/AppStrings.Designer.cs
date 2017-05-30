@@ -3965,6 +3965,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Driver Models.
+        /// </summary>
+        public static string DriverModel_MissingDriverModels {
+            get {
+                return ResourceManager.GetString("DriverModel_MissingDriverModels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter By Similar Acceleration.
         /// </summary>
         public static string Filter_ByAcceleration {
@@ -4384,6 +4393,15 @@ namespace AcManager {
         public static string List_Cars {
             get {
                 return ResourceManager.GetString("List_Cars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} driver model.
+        /// </summary>
+        public static string List_DriverModels {
+            get {
+                return ResourceManager.GetString("List_DriverModels", resourceCulture);
             }
         }
         
@@ -8738,6 +8756,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove model to Recycle Bin (Ctrl+Delete).
+        /// </summary>
+        public static string Toolbar_Delete_DriverModelTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Delete_DriverModelTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove font to Recycle Bin (Ctrl+Delete).
         /// </summary>
         public static string Toolbar_Delete_FontTooltip {
@@ -8986,6 +9013,15 @@ namespace AcManager {
         public static string Toolbar_Folder_CarTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_Folder_CarTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open model’s folder (Ctrl+F).
+        /// </summary>
+        public static string Toolbar_Folder_DriverModelTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Folder_DriverModelTooltip", resourceCulture);
             }
         }
         

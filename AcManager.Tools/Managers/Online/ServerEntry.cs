@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -73,7 +69,6 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add($"HTTP port changed (from {PortHttp} to {baseInformation.PortHttp})");
                 return ServerStatus.Error;
             }
-
 
             var information = baseInformation as ServerInformationComplete;
 

@@ -202,6 +202,13 @@ namespace AcManager.Tools.Managers.Online {
             public CarSkinObject CarSkin => _carSkin ?? (_carSkin = CarSkinId != null ? Car?.GetSkinById(CarSkinId) : Car?.GetFirstSkinOrNull());
             private CarSkinObject _carSkin;
 
+            internal void ResetCar() {
+                _car = null;
+                _carSkin = null;
+                OnPropertyChanged(nameof(Car));
+                OnPropertyChanged(nameof(CarSkin));
+            }
+
             protected bool Equals(CurrentDriver other) {
                 return string.Equals(Name, other.Name) && string.Equals(Team, other.Team) && string.Equals(CarId, other.CarId) &&
                         string.Equals(CarSkinId, other.CarSkinId) && IsConnected == other.IsConnected && IsBookedForPlayer == other.IsBookedForPlayer;

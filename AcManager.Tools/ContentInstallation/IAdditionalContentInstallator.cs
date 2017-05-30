@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
@@ -10,13 +11,19 @@ namespace AcManager.Tools.ContentInstallation {
 
         bool IsPasswordRequired { get; }
 
+        bool IsNotSupported { get; }
+
+        string NotSupportedMessage { get; }
+
         bool IsPasswordCorrect { get; }
 
-        Task TrySetPasswordAsync(string password);
+        Task TrySetPasswordAsync(string password, CancellationToken cancellation);
 
-        Task<IReadOnlyList<ContentEntry>> GetEntriesAsync([CanBeNull]IProgress<string> progress, CancellationToken cancellation);
+        [ItemCanBeNull]
+        Task<IReadOnlyList<ContentEntryBase>> GetEntriesAsync([CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
 
-        Task InstallEntryToAsync(ContentEntry entry, Func<string, bool> filter, string destination, [CanBeNull]IProgress<string> progress,
-                CancellationToken cancellation);
+        Task InstallEntryToAsync(CopyCallback callback, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+
+        Task InstallEntryToAsync(ContentEntryBase entryBase, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
     }
 }

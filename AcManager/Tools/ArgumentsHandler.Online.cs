@@ -19,9 +19,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools {
-    public partial class ArgumentsHandler {
-
-        public async Task<ArgumentHandleResult> ProgressRaceOnline(NameValueCollection p) {
+    public static partial class ArgumentsHandler {
+        private static async Task<ArgumentHandleResult> ProgressRaceOnline(NameValueCollection p) {
             /* required arguments */
             var ip = p.Get(@"ip");
             var port = FlexibleParser.TryParseInt(p.Get(@"port"));
@@ -100,14 +99,13 @@ namespace AcManager.Tools {
 
         private class FakeSource : IOnlineListSource {
             private ServerInformation _information;
-            private readonly string _id;
 
             public FakeSource(string ip, int httpPort) {
                 _information = new ServerInformation { Ip = ip, PortHttp = httpPort };
-                _id = _information.Id;
+                Id = _information.Id;
             }
 
-            public string Id => _id;
+            public string Id { get; }
 
             public string DisplayName => "Temporary Source";
 
@@ -124,7 +122,7 @@ namespace AcManager.Tools {
             }
         }
 
-        public async Task<ArgumentHandleResult> ProgressRaceOnlineJoin(NameValueCollection p) {
+        private static async Task<ArgumentHandleResult> ProgressRaceOnlineJoin(NameValueCollection p) {
             /* required arguments */
             var ip = p.Get(@"ip");
             var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));

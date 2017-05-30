@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -46,6 +47,24 @@ namespace AcTools.Utils.Helpers {
         [NotNull]
         public static string ReadAsStringAndDispose([NotNull] this Stream s) {
             return ReadAsBytesAndDispose(s).ToUtf8String();
+        }
+
+        public static void CopyTo(this Stream input, Stream output, int bytes, int bufferSize = 81920) {
+            var buffer = new byte[bufferSize];
+            int read;
+            while (bytes > 0 && (read = input.Read(buffer, 0, Math.Min(buffer.Length, bytes))) > 0) {
+                output.Write(buffer, 0, read);
+                bytes -= read;
+            }
+        }
+
+        public static async Task CopyToAsync(this Stream input, Stream output, long bytes, int bufferSize = 81920) {
+            var buffer = new byte[bufferSize];
+            int read;
+            while (bytes > 0 && (read = await input.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytes))) > 0) {
+                await output.WriteAsync(buffer, 0, read);
+                bytes -= read;
+            }
         }
     }
 }

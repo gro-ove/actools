@@ -130,7 +130,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public void SortAffectingValueChanged() {
             if (Loaded) {
-                Manager.UpdateList();
+                Manager.UpdateList(false);
             }
         }
 

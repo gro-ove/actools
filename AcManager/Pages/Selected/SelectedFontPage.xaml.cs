@@ -131,7 +131,7 @@ namespace AcManager.Pages.Selected {
             RedrawTestText();
         }
 
-        private void SelectedFontPage_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             TextBox.Text = ValuesStorage.GetString(KeyTestText, @"0123456789 Test");
         }
 
@@ -149,7 +149,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void AcObjectBase_OnIconMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnIconMouseDown(object sender, MouseButtonEventArgs e) {
             new ImageViewer(Model.SelectedObject.FontBitmap).ShowDialog();
         }
 
@@ -177,7 +177,7 @@ namespace AcManager.Pages.Selected {
             var totalY = 0d;
 
             using (var dc = RenderOpen()) {
-                foreach (var cropped in text.Select(fontObject.BitmapForChar).Where(cropped => cropped != null)) {
+                foreach (var cropped in text.Select(fontObject.FontObjectBitmap.BitmapForChar).Where(cropped => cropped != null)) {
                     dc.DrawImage(cropped, new Rect(totalX, 0, cropped.PixelWidth, cropped.PixelHeight));
                     totalX += cropped.PixelWidth;
                     totalY = Math.Max(totalY, cropped.PixelHeight);
@@ -200,7 +200,7 @@ namespace AcManager.Pages.Selected {
             VerticalAlignment = VerticalAlignment.Top;
             Margin = new Thickness(4d);
         }
-        
+
         protected override Visual GetVisualChild(int index) => _visual;
 
         protected override int VisualChildrenCount => 1;

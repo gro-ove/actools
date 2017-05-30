@@ -63,7 +63,7 @@
                         </Track>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="attached:FancyScrollHelper.Outsize" Value="True">
+                        <Trigger Property="attached:FancyScrollHelper.Outside" Value="True">
                             <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
                         </Trigger>
                         <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
@@ -73,7 +73,7 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="attached:FancyScrollHelper.Outsize" Value="True" />
+                                <Condition Property="attached:FancyScrollHelper.Outside" Value="True" />
                                 <Condition Property="attached:FancyScrollHelper.InvertLocation" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="1 0" />
@@ -130,7 +130,7 @@
                         </Track>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="attached:FancyScrollHelper.Outsize" Value="True">
+                        <Trigger Property="attached:FancyScrollHelper.Outside" Value="True">
                             <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
                         </Trigger>
                         <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
@@ -140,7 +140,7 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="attached:FancyScrollHelper.Outsize" Value="True" />
+                                <Condition Property="attached:FancyScrollHelper.Outside" Value="True" />
                                 <Condition Property="attached:FancyScrollHelper.InvertLocation" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 1" />

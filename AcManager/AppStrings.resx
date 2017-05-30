@@ -1377,6 +1377,9 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
     <value>Open font’s folder (Ctrl+F)</value>
   </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Open model’s folder (Ctrl+F)</value>
+  </data>
   <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
     <value>Open PP filter’s folder (Ctrl+F)</value>
   </data>
@@ -1409,6 +1412,9 @@ If you need some other values, please, contact us and we’ll add them.
   </data>
   <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
     <value>Remove font to Recycle Bin (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>Remove model to Recycle Bin (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
     <value>Remove PP filter to Recycle Bin (Ctrl+Delete)</value>
@@ -1483,6 +1489,9 @@ If you need some other values, please, contact us and we’ll add them.
   </data>
   <data name="Font_MissingFonts" xml:space="preserve">
     <value>Missing Fonts</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>Missing Driver Models</value>
   </data>
   <data name="Common_DisablingFormat" xml:space="preserve">
     <value>Disabling {0}…</value>
@@ -1810,6 +1819,10 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="List_Replays" xml:space="preserve">
     <value>{0} replay</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} driver model</value>
     <comment>Will be pluralized automatically</comment>
   </data>
   <data name="List_ServerPresets" xml:space="preserve">

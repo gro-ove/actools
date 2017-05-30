@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 using SharpCompress.Readers;
 
 namespace AcManager.Tools {
-    public partial class ArgumentsHandler {
+    public static partial class ArgumentsHandler {
         private class UserChampionshipInformation : IUserChampionshipInformation {
             public string Name { get; set; }
 
@@ -29,7 +29,7 @@ namespace AcManager.Tools {
             public string Difficulty { get; set; }
         }
 
-        private ArgumentHandleResult ProcessSharedUserChampionshipExt(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedUserChampionshipExt(SharedEntry shared, byte[] data) {
             byte[] mainData = null, extraData = null, previewImage = null;
 
             string sharedId = null;
@@ -145,7 +145,7 @@ namespace AcManager.Tools {
 
         private static string _openId;
 
-        private void OnUserChampionshipsManagerCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+        private static void OnUserChampionshipsManagerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems.Count == 1 && (e.NewItems[0] as AcItemWrapper)?.Id == _openId) {
                 UserChampionshipsManager.Instance.WrappersList.CollectionChanged -= OnUserChampionshipsManagerCollectionChanged;
 
@@ -156,7 +156,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedUserChampionship(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedUserChampionship(SharedEntry shared, byte[] data) {
             string sharedId = null;
             using (var stream = new MemoryStream(data)) {
                 var reader = ReaderFactory.Open(stream);

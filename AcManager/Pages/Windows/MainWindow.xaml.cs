@@ -23,6 +23,7 @@ using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools;
 using AcManager.Tools.About;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
@@ -54,7 +55,7 @@ using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
-    public partial class MainWindow : IFancyBackgroundListener {
+    public partial class MainWindow : IFancyBackgroundListener, IPluginsSusanin {
         public static bool OptionLiteModeSupported = false;
 
         private readonly bool _cancelled;
@@ -98,12 +99,12 @@ namespace AcManager.Pages.Windows {
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
             AppKeyHolder.ProceedMainWindow(this);
-            
+
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
                                                  .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += OnlineLinkChanged;
             }
-            
+
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
                                                  .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += LapTimesLinkChanged;
@@ -143,6 +144,8 @@ namespace AcManager.Pages.Windows {
                 LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
             }
 
+            ContentInstallationManager.PluginsSusanin = this;
+
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
@@ -179,12 +182,9 @@ namespace AcManager.Pages.Windows {
             UpdateOnlineSourcesLinks();
         }
 
-        private async void HandleMessagesAsync(IEnumerable<string> data) {
+        private static async void HandleMessagesAsync(IEnumerable<string> data) {
             await Task.Delay(1);
-            foreach (var argument in data) {
-                await _argumentsHandler.ProcessArgument(argument);
-                await Task.Delay(1);
-            }
+            await ArgumentsHandler.ProcessArguments(data, TimeSpan.FromMilliseconds(1));
         }
 
         private void OnOnlineSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -208,7 +208,7 @@ namespace AcManager.Pages.Windows {
 
         private const string KeyOfficialStarterNotification = "mw.osn";
 
-        private bool OfficialStarterNotification() {
+        private static bool OfficialStarterNotification() {
             if (ValuesStorage.GetBool(KeyOfficialStarterNotification)) return false;
 
             if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.OfficialStarterType) {
@@ -300,30 +300,15 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private readonly ArgumentsHandler _argumentsHandler = new ArgumentsHandler();
-
         private async void ProcessArguments() {
             if (OptionLiteModeSupported) {
                 Visibility = Visibility.Hidden;
             }
 
-            var cancelled = true;
-            foreach (var arg in AppArguments.Values) {
-                Logging.Write("Input: " + arg);
-
-                var result = await _argumentsHandler.ProcessArgument(arg);
-                if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify(AppStrings.Main_CannotProcessArgument, AppStrings.Main_CannotProcessArgument_Commentary);
-                }
-
-                if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
-                    Visibility = Visibility.Visible;
-                    cancelled = false;
-                }
-            }
-
-            if (OptionLiteModeSupported && cancelled) {
+            if (await ArgumentsHandler.ProcessArguments(AppArguments.Values) && OptionLiteModeSupported) {
                 Close();
+            } else {
+                Visibility = Visibility.Visible;
             }
         }
 
@@ -481,11 +466,9 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private async void ProcessDroppedFiles(IEnumerable<string> files) {
+        private static async void ProcessDroppedFiles(IEnumerable<string> files) {
             if (files == null) return;
-            foreach (var filename in files) {
-                await _argumentsHandler.ProcessArgument(filename);
-            }
+            await ArgumentsHandler.ProcessArguments(files);
         }
 
         private void OnClosed(object sender, EventArgs e) {
@@ -539,7 +522,7 @@ namespace AcManager.Pages.Windows {
         public IEnumerable<FrameworkElement> GetQuickSwitches() {
             InitializePopup();
             return ((QuickSwitchesBlock)Popup.Child).Items;
-        } 
+        }
 
         private void ToggleQuickSwitches(bool force = true) {
             if (Popup.IsOpen) {
@@ -578,12 +561,12 @@ namespace AcManager.Pages.Windows {
         private void OnKeyDown(object sender, KeyEventArgs e) {
             if (Keyboard.Modifiers != ModifierKeys.Alt && Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Shift) ||
                     !SettingsHolder.Drive.QuickSwitches) return;
-           
+
             switch (e.SystemKey) {
                 case Key.OemTilde:
                     ToggleQuickSwitches();
                     break;
-                    
+
                 default:
                     var k = e.SystemKey - Key.D1;
                     if (k < 0 || k > 9) return;
@@ -730,7 +713,7 @@ namespace AcManager.Pages.Windows {
             FancyHints.DragForContentSection.MaskAsUnnecessary();
         }
 
-        private void MakeSureOnlineIsReady([CanBeNull] Uri uri) {
+        private static void MakeSureOnlineIsReady([CanBeNull] Uri uri) {
             if (uri?.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase) == true) {
                 OnlineManager.EnsureInitialized();
             }
@@ -742,6 +725,12 @@ namespace AcManager.Pages.Windows {
 
         private void OnMainMenuInitialize(object sender, ModernMenu.InitializeEventArgs e) {
             MakeSureOnlineIsReady(e.LoadedUri);
+        }
+
+        void IPluginsSusanin.ShowPluginsList() {
+            if (IsVisible) {
+                NavigateTo(new Uri("/Pages/Settings/SettingsPage.xaml?Category=SettingsGeneral", UriKind.Relative));
+            }
         }
     }
 }

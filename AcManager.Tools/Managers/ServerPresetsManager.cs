@@ -155,7 +155,7 @@ namespace AcManager.Tools.Managers {
 
                 var obj = CreateAndLoadAcObject(id, true);
                 InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                UpdateList();
+                UpdateList(true);
 
                 return obj;
             }

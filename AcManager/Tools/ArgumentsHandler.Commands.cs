@@ -24,9 +24,9 @@ using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
 
 namespace AcManager.Tools {
-    public partial class ArgumentsHandler {
+    public static partial class ArgumentsHandler {
         [Obsolete]
-        private async Task<ArgumentHandleResult> ProcessUriRequestObsolete(string request) {
+        private static async Task<ArgumentHandleResult> ProcessUriRequestObsolete(string request) {
             string key, param;
             NameValueCollection query;
 
@@ -80,7 +80,7 @@ namespace AcManager.Tools {
             return ArgumentHandleResult.Successful;
         }
 
-        private async Task<ArgumentHandleResult> ProcessUriRequest(string uri) {
+        private static async Task<ArgumentHandleResult> ProcessUriRequest(string uri) {
             if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return ArgumentHandleResult.FailedShow;
 
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
@@ -136,7 +136,7 @@ namespace AcManager.Tools {
             }
         }
 
-        public async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale, bool around) {
+        private static async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale, bool around) {
             if (string.IsNullOrWhiteSpace(id)) {
                 throw new InformativeException("ID is missing");
             }
@@ -160,7 +160,7 @@ namespace AcManager.Tools {
             return ArgumentHandleResult.Successful;
         }
 
-        public async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
+        private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
             var path = await LoadRemoveFile(url, extension: compressed ? @".zip" : @".acreplay");
             if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
 
@@ -216,12 +216,12 @@ namespace AcManager.Tools {
             }
         }
 
-        public async Task<ArgumentHandleResult> ProcessRsrEvent(string id) {
+        private static async Task<ArgumentHandleResult> ProcessRsrEvent(string id) {
             Logging.Write("RSR Event: " + id);
             return await Rsr.RunAsync(id) ? ArgumentHandleResult.SuccessfulShow : ArgumentHandleResult.Failed;
         }
 
-        public async Task<ArgumentHandleResult> ProcessRsrSetup(string id) {
+        private static async Task<ArgumentHandleResult> ProcessRsrSetup(string id) {
             string data, header;
             using (var client = new WebClient {
                 Headers = {

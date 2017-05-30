@@ -75,7 +75,7 @@ namespace AcTools.Utils {
                     return Path.Combine(carDir, fromData);
                 }
             }
-            
+
             return Directory.GetFiles(carDir, "*.kn5").MaxEntryOrDefault(x => new FileInfo(x).Length);
         }
 
@@ -127,6 +127,11 @@ namespace AcTools.Utils {
         [NotNull, Pure]
         public static string GetPpFiltersDirectory(string acRoot) {
             return Path.Combine(acRoot, "system", "cfg", "ppfilters");
+        }
+
+        [NotNull, Pure]
+        public static string GetDriverModelsDirectory(string acRoot) {
+            return Path.Combine(acRoot, "content", "driver");
         }
 
         [NotNull, Pure]

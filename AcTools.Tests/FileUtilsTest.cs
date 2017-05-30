@@ -25,6 +25,15 @@ namespace AcTools.Tests {
                     FileUtils.GetRelativePath(@"C:\Windows", @"C:\Windows"));
         }
 
+        [TestMethod]
+        public void IsAffected() {
+            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows", @"C:\Windows\system32\a.exe"));
+            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows\", @"C:\WiNDows\system32\a.exe"));
+            Assert.IsTrue(FileUtils.IsAffected(@"C:/WinDOws", @"C:\Windows\system32\a.exe"));
+            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows\s", @"C:\Windows\system32\a.exe"));
+            Assert.IsTrue(FileUtils.IsAffected(@"C:\Windows", @"C:\Windows"));
+        }
+
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();

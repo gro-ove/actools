@@ -274,8 +274,8 @@ namespace AcManager.Tools.AcManagersNew {
             OnListUpdate();
         }
 
-        public void UpdateList() {
-            InnerWrappersList.Update();
+        public void UpdateList(bool force) {
+            InnerWrappersList.Update(force);
             if (InnerWrappersList.IsReady) {
                 OnListUpdate();
             }
@@ -291,7 +291,7 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Remove(wrapper);
-            UpdateList();
+            UpdateList(true);
             ResetLoading();
         }
 
@@ -303,13 +303,13 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Replace(wrapper, newItem);
-            UpdateList();
+            UpdateList(true);
             ResetLoading();
         }
 
         protected void AddInList(AcItemWrapper newItem) {
             InnerWrappersList.Add(newItem);
-            UpdateList();
+            UpdateList(true);
             ResetLoading();
         }
 
@@ -403,8 +403,12 @@ namespace AcManager.Tools.AcManagersNew {
             return wrapper == null ? null : EnsureWrapperLoaded(wrapper);
         }
 
-        public IAcObjectNew GetObjectById(string id) {
+        IAcObjectNew IAcManagerNew.GetObjectById(string id) {
             return GetById(id);
+        }
+
+        async Task<IAcObjectNew> IAcManagerNew.GetObjectByIdAsync(string id) {
+            return await GetByIdAsync(id).ConfigureAwait(false);
         }
 
         [CanBeNull]

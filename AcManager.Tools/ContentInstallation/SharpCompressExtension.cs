@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.Zip;
@@ -41,6 +42,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
+        [NotNull]
         public static IArchive Open(string filename, string password) {
             var archive = ArchiveFactory.Open(filename);
             if (password == null) return archive;
@@ -59,18 +61,39 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        public static bool HasAnyEncryptedFiles(this IArchive archive) {
+        public static bool HasAnyEncryptedFiles([NotNull] this IArchive archive) {
+            if (archive == null) throw new ArgumentNullException(nameof(archive));
             try {
-                using (var entry = archive.Entries
-                                          .Where(x => x.IsEncrypted && x.Size > 0 && !x.IsDirectory)
-                                          .MinEntryOrDefault(x => x.CompressedSize)?
-                                          .OpenEntryStream()) {
-                    return entry != null && entry.ReadByte() != -1;
+                var entry = archive.Entries
+                                   .Where(x => x.IsEncrypted && x.Size > 0 && !x.IsDirectory)
+                                   .MinEntryOrDefault(x => x.CompressedSize);
+                if (entry == null) return false;
+
+                if (archive.IsSolid) {
+                    using (var reader = archive.ExtractAllEntries()) {
+                        while (reader.MoveToNextEntry()) {
+                            if (reader.Entry.IsDirectory) continue;
+                            using (var stream = reader.OpenEntryStream()) {
+                                stream.ReadByte();
+                                return false;
+                            }
+                        }
+
+                        return false;
+                    }
+                }
+
+                using (var stream = entry.OpenEntryStream()) {
+                    stream.ReadByte();
+                    return false;
                 }
             } catch (CryptographicException) {
                 return true;
-            } catch (Exception e) {
-                Logging.Write("HasAnyEncryptedFiles(): " + e);
+            } catch (NullReferenceException) {
+                // specially for not very reliable library
+                return true;
+            } catch (InvalidFormatException) {
+                // might be file crc mismatch
                 return true;
             }
         }

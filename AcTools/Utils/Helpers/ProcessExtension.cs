@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ProcessExtension {
-        private static string GetQuotedArgument([NotNull] string argument) {
+        public static string GetQuotedArgument([NotNull] string argument) {
             // The argument is processed in reverse character order.
             // Any quotes (except the outer quotes) are escaped with backslash.
             // Any sequences of backslashes preceding a quote (including outer quotes) are doubled in length.

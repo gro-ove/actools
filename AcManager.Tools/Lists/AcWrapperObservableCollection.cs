@@ -11,8 +11,12 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Lists {
+    public class CollectionReadyEventArgs : EventArgs {
+        public bool JustReady { get; set; }
+    }
+
     public interface IBaseAcObjectObservableCollection : INotifyCollectionChanged {
-        event EventHandler CollectionReady;
+        event EventHandler<CollectionReadyEventArgs> CollectionReady;
 
         void RefreshFilter(AcPlaceholderNew valueObject);
 
@@ -37,13 +41,13 @@ namespace AcManager.Tools.Lists {
         private readonly Dictionary<string, AcItemWrapper> _index = new Dictionary<string, AcItemWrapper>(50);
 
         protected override void Subscribe(AcItemWrapper item) {
-            item.ValueChanged += Item_ValueChanged;
+            item.ValueChanged += OnItemValueChanged;
             item.Value.PropertyChanged += Item_PropertyChanged;
             _index[item.Id.ToLowerInvariant()] = item;
         }
 
         protected override void Unsubscribe(AcItemWrapper item) {
-            item.ValueChanged -= Item_ValueChanged;
+            item.ValueChanged -= OnItemValueChanged;
             item.Value.PropertyChanged -= Item_PropertyChanged;
             _index.Remove(item.Id.ToLowerInvariant());
         }
@@ -64,7 +68,7 @@ namespace AcManager.Tools.Lists {
 
         public event WrappedValueChangedEventHandler WrappedValueChanged;
 
-        private void Item_ValueChanged(object sender, WrappedValueChangedEventArgs e) {
+        private void OnItemValueChanged(object sender, WrappedValueChangedEventArgs e) {
             e.OldValue.PropertyChanged -= Item_PropertyChanged;
             e.NewValue.PropertyChanged += Item_PropertyChanged;
             WrappedValueChanged?.Invoke(sender, e);
@@ -118,18 +122,19 @@ namespace AcManager.Tools.Lists {
             IsReady = false;
         }
 
-        public event EventHandler CollectionReady;
+        public event EventHandler<CollectionReadyEventArgs> CollectionReady;
 
         public bool IsReady { get; private set; }
 
         internal void Ready() {
             IsReady = true;
-            Update();
+            CollectionReady?.Invoke(this, new CollectionReadyEventArgs { JustReady = true });
         }
 
-        public void Update() {
-            if (!IsReady) return;
-            CollectionReady?.Invoke(this, new EventArgs());
+        public void Update(bool force) {
+            if (force || IsReady) {
+                CollectionReady?.Invoke(this, new CollectionReadyEventArgs());
+            }
         }
     }
 

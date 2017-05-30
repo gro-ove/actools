@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -7,6 +8,7 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public static class FlexibleLoader {
@@ -19,6 +21,31 @@ namespace AcManager.Tools.Helpers.Loaders {
             return new DirectLoader(uri);
         }
 
+        [ItemCanBeNull]
+        public static Task<string> TryToLoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var tmp = name == null
+                    ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
+                    : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+            return TryToLoadAsyncTo(argument, tmp, progress, cancellation);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<string> TryToLoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            try {
+                return await LoadAsyncTo(argument, destination, progress, cancellation).ConfigureAwait(false);
+            } catch (TaskCanceledException) {
+                return null;
+            } catch (WebException) when (cancellation.IsCancellationRequested) {
+                return null;
+            } catch (Exception e) {
+                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.Common_CannotDownloadFile_Commentary, e);
+                return null;
+            }
+        }
+
+        [ItemNotNull]
         public static Task<string> LoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var tmp = name == null
@@ -27,55 +54,53 @@ namespace AcManager.Tools.Helpers.Loaders {
             return LoadAsyncTo(argument, tmp, progress, cancellation);
         }
 
+        [ItemNotNull]
         public static async Task<string> LoadAsyncTo(string argument, string destination, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var loader = CreateLoader(argument);
 
-            try {
-                // TODO: Timeout?
-                using (var client = new CookieAwareWebClient {
-                    Headers = {
-                        [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                    }
-                }) {
-                    progress?.Report(AsyncProgressEntry.Indetermitate);
+            using (var order = KillerOrder.Create(new CookieAwareWebClient {
+                Headers = {
+                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
+                }
+            }, TimeSpan.FromMinutes(2))) {
+                var client = order.Victim;
+                progress?.Report(AsyncProgressEntry.Indetermitate);
 
-                    cancellation.ThrowIfCancellationRequested();
-                    cancellation.Register(client.CancelAsync);
+                cancellation.ThrowIfCancellationRequested();
+                cancellation.Register(client.CancelAsync);
 
-                    if (!await loader.PrepareAsync(client, cancellation) ||
-                            cancellation.IsCancellationRequested) return null;
-
-                    var skipEvent = 0;
-                    client.DownloadProgressChanged += (sender, args) => {
-                        if (++skipEvent > 50) {
-                            skipEvent = 0;
-                        } else {
-                            return;
-                        }
-
-                        var total = args.TotalBytesToReceive;
-                        if (total == -1 && loader.TotalSize != -1) {
-                            total = Math.Max(loader.TotalSize, args.BytesReceived);
-                        }
-
-                        // ReSharper disable once AccessToDisposedClosure
-                        progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
-                    };
-
-                    await loader.DownloadAsync(client, destination, cancellation);
-                    if (cancellation.IsCancellationRequested) return null;
-
-                    Logging.Debug("Loaded: " + destination);
+                if (!await loader.PrepareAsync(client, cancellation)) {
+                    throw new InformativeException("Can’t load file", "Loader preparation failed.");
                 }
 
-                return destination;
-            } catch (TaskCanceledException) {
-                return null;
-            } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.Common_CannotDownloadFile_Commentary, e);
-                return null;
+                cancellation.ThrowIfCancellationRequested();
+
+                var s = Stopwatch.StartNew();
+                client.DownloadProgressChanged += (sender, args) => {
+                    // ReSharper disable once AccessToDisposedClosure
+
+                    if (s.Elapsed.TotalMilliseconds > 20) {
+                        order.Delay();
+                        s.Restart();
+                    } else {
+                        return;
+                    }
+
+                    var total = args.TotalBytesToReceive;
+                    if (total == -1 && loader.TotalSize != -1) {
+                        total = Math.Max(loader.TotalSize, args.BytesReceived);
+                    }
+
+                    // ReSharper disable once AccessToDisposedClosure
+                    progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, total));
+                };
+
+                await loader.DownloadAsync(client, destination, cancellation);
+                cancellation.ThrowIfCancellationRequested();
             }
+
+            return destination;
         }
     }
 }

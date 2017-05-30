@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
@@ -247,10 +251,61 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         private JObject _missingContentReferences;
 
+        private IEnumerable<Task> InstallMissingContentTasks() {
+            var mref = _missingContentReferences;
+            if (mref == null) yield break;
+
+            var cars = mref["cars"] as JObject;
+            if (cars != null) {
+                foreach (var carPair in cars) {
+                    var car = CarsManager.Instance.GetById(carPair.Key);
+
+                    if (car == null) {
+                        if (carPair.Value.GetBoolValueOnly("unavailable") == true) continue;
+
+                        var url = carPair.Value.GetStringValueOnly("url") ??
+                                $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}";
+                        yield return ContentInstallationManager.Instance.InstallAsync(url);
+                    } else {
+                        var skins = carPair.Value["skins"] as JObject;
+                        if (skins != null) {
+                            foreach (var skinPair in skins) {
+                                if (car.SkinsManager.GetWrapperById(skinPair.Key) != null) continue;
+
+                                var url = skinPair.Value.GetStringValueOnly("url") ??
+                                        $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}";
+                                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                                    CarId = carPair.Key
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            var weather = mref["weather"] as JObject;
+            if (weather != null) {
+                foreach (var weatherPair in weather) {
+                    if (WeatherManager.Instance.GetWrapperById(weatherPair.Key) != null) continue;
+
+                    var url = weatherPair.Value.GetStringValueOnly("url") ??
+                            $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}";
+                    yield return ContentInstallationManager.Instance.InstallAsync(url);
+                }
+            }
+
+            var track = mref["track"] as JObject;
+            if (track != null && Track == null) {
+                var url = track.GetStringValueOnly("url") ??
+                        $"http://{Ip}:{PortExtended}/content/track";
+                yield return ContentInstallationManager.Instance.InstallAsync(url);
+            }
+        }
+
         private AsyncCommand _installMissingContentCommand;
 
         public AsyncCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new AsyncCommand(async () => {
-            
+            await InstallMissingContentTasks().WhenAll(5);
         }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
                 IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt));
 
@@ -324,7 +379,6 @@ namespace AcManager.Tools.Managers.Online {
                 IsAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
             } else {
                 var allCarsAvailable = true;
-                var trackBaseAvailable = true;
                 var trackAvailable = true;
 
                 var missingCarsIds = Cars?.Where(x => !x.CarExists).Select(x => x.Id).ToList();
@@ -334,15 +388,11 @@ namespace AcManager.Tools.Managers.Online {
                     allCarsAvailable = missingCarsIds.Count == missingButAvailable.Count;
                 }
 
-                if (TrackBaseId != null && TracksManager.Instance.GetWrapperById(TrackBaseId) == null) {
-                    trackBaseAvailable = mref["trackBase"] != null;
-                }
-
                 if (Track == null) {
                     trackAvailable = mref["track"] != null;
                 }
 
-                IsAbleToInstallMissingContentState = allCarsAvailable && trackBaseAvailable && trackAvailable
+                IsAbleToInstallMissingContentState = allCarsAvailable && trackAvailable
                         ? IsAbleToInstallMissingContent.AllOfIt : IsAbleToInstallMissingContent.Partially;
             }
 

@@ -1,30 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
+    public class FontObjectBitmap {
+        public FontObjectBitmap(string bitmapFilename, string fontFilename) :
+                this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {}
+
+        public FontObjectBitmap(byte[] bitmapData, byte[] fontData) :
+                this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).BitmapSource, fontData) {}
+
+        public FontObjectBitmap(BitmapSource font, byte[] fontData) {
+            _fontBitmapImage = font;
+
+            try {
+                _fontList = fontData.ToUtf8String().Split('\n').Select(line => FlexibleParser.TryParseDouble(line) ?? 0d).ToList();
+            } catch (Exception e) {
+                Logging.Warning("File damaged: " + e);
+            }
+        }
+
+        private readonly BitmapSource _fontBitmapImage;
+        private readonly List<double> _fontList;
+
+        private const char FirstChar = (char)32;
+        private const char LastChar = (char)126;
+
+        private static int CharToId(char c) => c < FirstChar || c > LastChar ? 0 : c - FirstChar;
+
+        [CanBeNull]
+        public CroppedBitmap BitmapForChar(char c) {
+            if (_fontBitmapImage == null) {
+                Logging.Warning("_fontBitmapImage == null!");
+                return null;
+            }
+
+            if (_fontList == null) {
+                Logging.Warning("_fontList == null!");
+                return null;
+            }
+
+            var i = CharToId(c);
+            var x = _fontList[i];
+            var width = (i + 1 == _fontList.Count ? 1d : _fontList[i + 1]) - x;
+
+            if (x + width <= 0d || x >= 1d) return null;
+            if (x < 0) {
+                width += x;
+                x = 0d;
+            }
+
+            width = Math.Min(width, 1d - x);
+
+            var rect = new Int32Rect((int)(x * _fontBitmapImage.PixelWidth), 0, (int)(width * _fontBitmapImage.PixelWidth), _fontBitmapImage.PixelHeight);
+            return new CroppedBitmap(_fontBitmapImage, rect);
+        }
+
+        public CroppedBitmap GetIcon() {
+            return BitmapForChar(SettingsHolder.Content.FontIconCharacter?.Cast<char?>().FirstOrDefault() ?? '3');
+        }
+    }
+
     public class FontObject : AcCommonSingleFileObject {
-        public const char FirstChar = (char)32;
-        public const char LastChar = (char)126;
-
-        public static int CharToId(char c) => c < FirstChar || c > LastChar ? 0 : c - FirstChar;
-
         public const string FontExtension = ".txt";
 
         public static readonly string[] BitmapExtensions = { @".bmp", @".png" };
@@ -47,18 +97,37 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
+        private FontObjectBitmap _fontObjectBitmap;
+        public FontObjectBitmap FontObjectBitmap => _fontObjectBitmap ?? (_fontObjectBitmap = new FontObjectBitmap(FontBitmap, Location));
+
+        private void UpdateFontBitmap() {
+            _fontObjectBitmap = null;
+            _iconBitmapLoaded = false;
+            OnPropertyChanged(nameof(IconBitmap));
+
+            var baseFilename = Location.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
+            var bitmap = BitmapExtensions.Select(ext => baseFilename + ext).FirstOrDefault(File.Exists);
+
+            if (bitmap != FontBitmap) {
+                FontBitmap = bitmap;
+            } else {
+                OnImageChangedValue(FontBitmap);
+            }
+
+            ErrorIf(FontBitmap == null, AcErrorType.Font_BitmapIsMissing);
+        }
+
         private string _fontBitmap;
-        private bool _fontBitmapLoaded;
-        private BitmapSource _fontBitmapImage;
-        private bool _fontListLoaded;
-        private List<double> _fontList;
 
         public string FontBitmap {
-            get { return _fontBitmap; }
+            get => _fontBitmap;
             set {
                 if (Equals(value, _fontBitmap)) return;
                 _fontBitmap = value;
+                _fontObjectBitmap = null;
+                _iconBitmapLoaded = false;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IconBitmap));
             }
         }
 
@@ -70,7 +139,7 @@ namespace AcManager.Tools.Objects {
                 if (_iconBitmapLoaded) return _iconBitmap;
 
                 _iconBitmapLoaded = true;
-                _iconBitmap = BitmapForChar(SettingsHolder.Content.FontIconCharacter?.Cast<char?>().FirstOrDefault() ?? '3');
+                _iconBitmap = FontObjectBitmap.GetIcon();
                 return _iconBitmap;
             }
             set {
@@ -94,61 +163,6 @@ namespace AcManager.Tools.Objects {
             return base.DeleteOverrideAsync();
         }
 
-        private void UpdateFontBitmap() {
-            _fontBitmapLoaded = false;
-            _fontBitmapImage = null;
-            _iconBitmapLoaded = false;
-            OnPropertyChanged(nameof(IconBitmap));
-
-            var baseFilename = Location.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
-            var bitmap = BitmapExtensions.Select(ext => baseFilename + ext).FirstOrDefault(File.Exists);
-
-            if (bitmap != FontBitmap) {
-                FontBitmap = bitmap;
-            } else {
-                OnImageChangedValue(FontBitmap);
-            }
-
-            ErrorIf(FontBitmap == null, AcErrorType.Font_BitmapIsMissing);
-        }
-
-        [CanBeNull]
-        public CroppedBitmap BitmapForChar(char c) {
-            if (!_fontBitmapLoaded) {
-                _fontBitmapLoaded = true;
-                _fontBitmapImage = UriToCachedImageConverter.Convert(FontBitmap);
-            }
-
-            if (!_fontListLoaded) {
-                _fontListLoaded = true;
-
-                try {
-                    _fontList = File.ReadAllLines(Location).Select(line => double.Parse(line, CultureInfo.InvariantCulture)).ToList();
-                } catch (Exception e) {
-                    Logging.Warning("File damaged: " + e);
-                }
-            }
-
-            if (_fontBitmapImage == null || _fontList == null) {
-                return null;
-            }
-
-            var i = CharToId(c);
-            var x = _fontList[i];
-            var width = (i + 1 == _fontList.Count ? 1d : _fontList[i + 1]) - x;
-
-            if (x + width <= 0d || x >= 1d) return null;
-            if (x < 0) {
-                width += x;
-                x = 0d;
-            }
-
-            width = Math.Min(width, 1d - x);
-
-            var rect = new Int32Rect((int)(x * _fontBitmapImage.PixelWidth), 0, (int)(width * _fontBitmapImage.PixelWidth), _fontBitmapImage.PixelHeight);
-            return new CroppedBitmap(_fontBitmapImage, rect);
-        }
-
         private string KeyUsingsCarsIds => @"__tmp_FontObject.UsingsCarsIds_" + Id;
 
         [NotNull]
@@ -156,7 +170,7 @@ namespace AcManager.Tools.Objects {
 
         [NotNull]
         public string[] UsingsCarsIds {
-            get { return _usingsCarsIds; }
+            get => _usingsCarsIds;
             set {
                 if (Equals(value, _usingsCarsIds)) return;
                 _usingsCarsIds = value;
@@ -170,7 +184,7 @@ namespace AcManager.Tools.Objects {
         private bool _isUsed;
 
         public bool IsUsed {
-            get { return _isUsed; }
+            get => _isUsed;
             set {
                 if (Equals(value, _isUsed)) return;
                 _isUsed = value;

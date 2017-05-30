@@ -67,7 +67,8 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static JObject Parse([LocalizationRequired(false)] string data) {
+        [NotNull]
+        public static JObject Parse([NotNull, LocalizationRequired(false)] string data) {
             try {
                 return JObject.Parse(data);
             } catch (Exception) {

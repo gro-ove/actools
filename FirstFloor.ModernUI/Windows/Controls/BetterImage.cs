@@ -167,8 +167,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _showBroken = true;
 
         public bool ShowBroken {
-            get { return _showBroken; }
-            set { SetValue(ShowBrokenProperty, value); }
+            get => _showBroken;
+            set => SetValue(ShowBrokenProperty, value);
         }
 
         public static readonly DependencyProperty HideBrokenProperty = DependencyProperty.Register(nameof(HideBroken), typeof(bool),
@@ -179,8 +179,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _hideBroken;
 
         public bool HideBroken {
-            get { return _hideBroken; }
-            set { SetValue(HideBrokenProperty, value); }
+            get => _hideBroken;
+            set => SetValue(HideBrokenProperty, value);
         }
 
         public static readonly DependencyProperty ClearOnChangeProperty = DependencyProperty.Register(nameof(ClearOnChange), typeof(bool),
@@ -191,8 +191,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _clearOnChange;
 
         public bool ClearOnChange {
-            get { return _clearOnChange; }
-            set { SetValue(ClearOnChangeProperty, value); }
+            get => _clearOnChange;
+            set => SetValue(ClearOnChangeProperty, value);
         }
 
         public static readonly DependencyProperty DelayedCreationProperty = DependencyProperty.Register(nameof(DelayedCreation), typeof(bool),
@@ -203,8 +203,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _delayedCreation = true;
 
         public bool DelayedCreation {
-            get { return _delayedCreation; }
-            set { SetValue(DelayedCreationProperty, value); }
+            get => _delayedCreation;
+            set => SetValue(DelayedCreationProperty, value);
         }
 
         public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(nameof(DecodeHeight), typeof(int),
@@ -215,8 +215,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private int _decodeHeight = -1;
 
         public int DecodeHeight {
-            get { return _decodeHeight; }
-            set { SetValue(DecodeHeightProperty, value); }
+            get => _decodeHeight;
+            set => SetValue(DecodeHeightProperty, value);
         }
 
         /// <summary>
@@ -234,8 +234,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private int _decodeWidth = -1;
 
         public int DecodeWidth {
-            get { return _decodeWidth; }
-            set { SetValue(DecodeWidthProperty, value); }
+            get => _decodeWidth;
+            set => SetValue(DecodeWidthProperty, value);
         }
 
         public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch),
@@ -246,8 +246,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Stretch _stretch = Stretch.Uniform;
 
         public Stretch Stretch {
-            get { return _stretch; }
-            set { SetValue(StretchProperty, value); }
+            get => _stretch;
+            set => SetValue(StretchProperty, value);
         }
 
         public static readonly DependencyProperty StretchDirectionProperty = DependencyProperty.Register(nameof(StretchDirection), typeof(StretchDirection),
@@ -258,8 +258,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private StretchDirection _stretchDirection = StretchDirection.Both;
 
         public StretchDirection StretchDirection {
-            get { return _stretchDirection; }
-            set { SetValue(StretchDirectionProperty, value); }
+            get => _stretchDirection;
+            set => SetValue(StretchDirectionProperty, value);
         }
 
         public static readonly DependencyProperty FilenameProperty = DependencyProperty.Register(nameof(Filename), typeof(string),
@@ -268,8 +268,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private string _filename;
 
         public string Filename {
-            get { return _filename; }
-            set { SetValue(FilenameProperty, value); }
+            get => _filename;
+            set => SetValue(FilenameProperty, value);
         }
 
         private static void OnFilenameChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -282,8 +282,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterImage), new PropertyMetadata(OnSourceChanged));
 
         public object Source {
-            get { return GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
+            get => GetValue(SourceProperty);
+            set => SetValue(SourceProperty, value);
         }
 
         private static bool _skipNext;
@@ -316,8 +316,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterImage), new PropertyMetadata(OnImageSourceChanged));
 
         public ImageSource ImageSource {
-            get { return (ImageSource)GetValue(ImageSourceProperty); }
-            set { SetValue(ImageSourceProperty, value); }
+            get => (ImageSource)GetValue(ImageSourceProperty);
+            set => SetValue(ImageSourceProperty, value);
         }
 
         private static void OnImageSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -338,8 +338,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Rect? _crop;
 
         public Rect? Crop {
-            get { return _crop; }
-            set { SetValue(CropProperty, value); }
+            get => _crop;
+            set => SetValue(CropProperty, value);
         }
 
         public static readonly DependencyProperty CropUnitsProperty = DependencyProperty.Register(nameof(CropUnits), typeof(ImageCropMode),
@@ -350,8 +350,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ImageCropMode _cropUnits = ImageCropMode.Relative;
 
         public ImageCropMode CropUnits {
-            get { return _cropUnits; }
-            set { SetValue(CropUnitsProperty, value); }
+            get => _cropUnits;
+            set => SetValue(CropUnitsProperty, value);
         }
 
         private void SetBitmapEntryDirectly(BitmapEntry value) {
@@ -367,8 +367,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterImage));
 
         public bool ForceFill {
-            get { return (bool)GetValue(ForceFillProperty); }
-            set { SetValue(ForceFillProperty, value); }
+            get => (bool)GetValue(ForceFillProperty);
+            set => SetValue(ForceFillProperty, value);
         }
 
         public static readonly DependencyProperty CollapseIfMissingProperty = DependencyProperty.Register(nameof(CollapseIfMissing), typeof(bool),
@@ -377,8 +377,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _collapseIfMissing;
 
         public bool CollapseIfMissing {
-            get { return _collapseIfMissing; }
-            set { SetValue(CollapseIfMissingProperty, value); }
+            get => _collapseIfMissing;
+            set => SetValue(CollapseIfMissingProperty, value);
         }
 
         private static void OnCollapseIfMissingChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -633,7 +633,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
-        private static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
+        public static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
             try {
                 // WrappingSteam here helps to avoid memory leaks. For more information:
                 // https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html

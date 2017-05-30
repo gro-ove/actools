@@ -12,12 +12,15 @@ namespace AcManager.Tools.AcManagersNew {
         [CanBeNull]
         IAcObjectNew GetObjectById([NotNull]string id);
 
+        [ItemCanBeNull]
+        Task<IAcObjectNew> GetObjectByIdAsync([NotNull]string id);
+
         void Rescan();
 
         Task RescanAsync();
 
         void Reload(string id);
 
-        void UpdateList();
+        void UpdateList(bool force);
     }
 }

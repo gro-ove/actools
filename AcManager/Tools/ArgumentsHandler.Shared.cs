@@ -19,10 +19,10 @@ using SharpCompress.Readers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools {
-    public partial class ArgumentsHandler {
+    public static partial class ArgumentsHandler {
         public static bool OptionUserChampionshipExtMode = true;
 
-        private async Task<ArgumentHandleResult> ProcessShared(string id) {
+        private static async Task<ArgumentHandleResult> ProcessShared(string id) {
             SharedEntry shared;
 
             using (var waiting = new WaitingDialog()) {
@@ -82,7 +82,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedWeather(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedWeather(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
@@ -116,7 +116,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedCustomShowroomPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedCustomShowroomPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
@@ -130,7 +130,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedCustomPreviewsPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedCustomPreviewsPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
@@ -144,7 +144,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedRaceGridPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedRaceGridPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared);
             switch (result) {
                 case Choise.Save:
@@ -167,7 +167,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedQuickDrivePreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, AppStrings.Arguments_Shared_JustGo);
             switch (result) {
                 case Choise.Save:
@@ -194,7 +194,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedAssistsSetupPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedAssistsSetupPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared);
             switch (result) {
                 case Choise.Save:
@@ -215,7 +215,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedTrackStatePreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
@@ -236,7 +236,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedSettingsPreset(IUserPresetable presetable, SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedSettingsPreset(IUserPresetable presetable, SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared);
             switch (result) {
                 case Choise.Save:
@@ -257,7 +257,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedForceFeedbackPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedForceFeedbackPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, saveable: false);
             switch (result) {
                 case Choise.Apply:
@@ -270,7 +270,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedControlsPreset(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedControlsPreset(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, AppStrings.Arguments_Shared_ApplyFfbOnly);
             switch (result) {
                 case Choise.Save:
@@ -298,7 +298,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedCarSetup(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedCarSetup(SharedEntry shared, byte[] data) {
             var content = data.ToUtf8String();
             var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
 
@@ -323,7 +323,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private ArgumentHandleResult ProcessSharedPpFilter(SharedEntry shared, byte[] data) {
+        private static ArgumentHandleResult ProcessSharedPpFilter(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared, appliableWithoutSaving: false);
             switch (result) {
                 case Choise.Save:

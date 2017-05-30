@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     /// <summary>
-    /// Online servers’ source.
+    /// Online serversâ€™ source.
     /// </summary>
     public interface IOnlineSource : IWithId {
         /// <summary>

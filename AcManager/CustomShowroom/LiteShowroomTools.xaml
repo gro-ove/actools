@@ -361,7 +361,7 @@
                         </mui:ModernTab>
                     </DockPanel>
 
-                    <ScrollViewer x:Key="Main" mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csMain">
+                    <ScrollViewer x:Key="Main" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csMain">
                         <StackPanel>
                             <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
 
@@ -448,7 +448,7 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
+                    <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
                         <StackPanel>
                             <DockPanel Margin="0 0 0 8">
                                 <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
@@ -516,13 +516,13 @@
                             <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save As New…" Padding="0 3 0 5" />
                         </mui:SpacingUniformGrid>
 
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outsize="True"
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outside="True"
                                       mui:SaveScroll.Key="__csSkinItems">
                             <ItemsControl ItemsSource="{Binding SkinItems}" ItemTemplate="{StaticResource PaintShopItemTemplate}" />
                         </ScrollViewer>
                     </DockPanel>
 
-                    <ScrollViewer x:Key="Camera" mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
+                    <ScrollViewer x:Key="Camera" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
                         <mui:SpacingStackPanel Spacing="4">
                             <DockPanel Margin="0 0 0 4">
                                 <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
@@ -597,7 +597,7 @@
                         </mui:SpacingStackPanel>
                     </ScrollViewer>
 
-                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Car" mui:SaveScroll.Key="__csCar">
+                    <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Car" mui:SaveScroll.Key="__csCar">
                         <mui:SpacingStackPanel Spacing="4">
                             <DockPanel Margin="0 0 0 4">
                                 <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
@@ -846,7 +846,7 @@
                         </mui:SpacingStackPanel>
                     </ScrollViewer>
 
-                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
+                    <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
                                   mui:SaveScroll.Key="__csAmbientShadows">
                         <StackPanel>
                             <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -963,7 +963,7 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <ScrollViewer mui:FancyScrollHelper.Outsize="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
+                    <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
                         <mui:SpacingStackPanel Spacing="4">
                             <DockPanel Margin="0 0 0 4">
                                 <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
